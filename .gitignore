@@ -1,0 +1,210 @@
+# Local agent instructions, skills, settings, and caches
+/.claude/
+/.agents/
+/CLAUDE.md
+/AGENTS.md
+
+# Local-only private materials
+/Sensitive/
+
+# Local-only dashboard and intentionally private platform content
+/Mission Control/
+/Platforms/Windows Servers/*
+!/Platforms/Windows Servers/README.md
+
+# Raw evidence, artifacts, and diagnostics
+**/Artifacts/
+**/Evidence/
+/Operations/Diagnostics/
+/Infrastructure/Hardware/Images/
+**/Screenshots/
+
+# Evidence images (exact filenames are allowlisted per directory)
+!/Infrastructure/Compute/Galaxy/Evidence/
+/Infrastructure/Compute/Galaxy/Evidence/*
+!/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/
+/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/*
+!/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/Screenshots/
+!/Infrastructure/Hardware/Images/
+!/Platforms/Netbird/Evidence/
+/Platforms/Netbird/Evidence/*
+!/Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/
+/Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/*
+!/Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/Screenshots/
+!/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/
+/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/*
+!/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/Screenshots/
+!/Platforms/Splunk/Splunk Enterprise/Evidence/
+/Platforms/Splunk/Splunk Enterprise/Evidence/*
+!/Platforms/Splunk/Splunk Enterprise/Evidence/Screenshots/
+!/Platforms/Wazuh/Evidence/
+/Platforms/Wazuh/Evidence/*
+!/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/
+/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/*
+!/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/Screenshots/
+
+# Media Stack evidence records (exact screenshot filenames are allowlisted per directory)
+!/Platforms/Media Stack/Evidence/
+/Platforms/Media Stack/Evidence/*
+!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/
+/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/*
+!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Evidence-Index.md
+!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Screenshots/
+!/Platforms/Media Stack/Evidence/Media Stack Refresh and Payload Filtering - 2026-07-17/
+
+# Generated logs, databases, state, backups, and archives
+*.log
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.bak
+*.backup
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.tfstate
+*.tfstate.*
+
+# Private keys, certificates with private material, and credential exports
+*.key
+*.pem
+*.pfx
+*.p12
+*.jks
+*.keystore
+*.ppk
+*.1pux
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+id_dsa
+id_dsa.*
+id_ecdsa
+id_ecdsa.*
+id_ed25519_sk
+id_ed25519_sk.*
+id_ecdsa_sk
+id_ecdsa_sk.*
+credentials*.json
+service-account*.json
+secrets*.json
+secrets*.yml
+secrets*.yaml
+client_secret_*.json
+token.json
+**/*Resume*
+Platforms/Teamspeak Hosting/Scripts/migration-scripts-job/channels.json
+
+# High-risk authentication, infrastructure-variable, VPN, and vault files
+*.tfvars
+*.tfvars.json
+*.tfplan
+kubeconfig
+kubeconfig.*
+*.kubeconfig
+**/.kube/config
+.npmrc
+.pypirc
+.netrc
+_netrc
+*.ovpn
+*.kdbx
+*.vault.yml
+*.vault.yaml
+vault.yml
+vault.yaml
+.vault_pass*
+**/.docker/config.json
+known_hosts
+authorized_keys
+.git-credentials
+.htpasswd
+htpasswd
+*.htpasswd
+wg0.conf
+wireguard.conf
+*.agekey
+**/.aws/credentials
+**/.aws/cli/cache/
+**/.config/gcloud/application_default_credentials.json
+**/.azure/accessTokens.json
+**/.azure/msal_token_cache.*
+**/.config/gh/hosts.yml
+**/.config/rclone/rclone.conf
+**/.config/doctl/config.yaml
+**/.config/glab-cli/config.yml
+**/.config/pip/pip.conf
+**/pip/pip.ini
+**/.config/sops/age/keys.txt
+**/.kaggle/kaggle.json
+**/.config/stripe/config.toml
+**/.cloudflared/*.json
+**/.bundle/config
+**/.gem/credentials
+**/.nuget/NuGet.Config
+**/.gradle/gradle.properties
+.pgpass
+pgpass.conf
+.my.cnf
+.smbcredentials
+.boto
+.envrc
+auth.json
+.yarnrc.yml
+**/.cargo/credentials*
+.terraformrc
+terraform.rc
+bitwarden_export*.json
+Passwords.csv
+*.mobileconfig
+
+# Local Claude settings nested anywhere in the tree
+**/.claude/settings.local.json
+
+# Windows Explorer metadata
+desktop.ini
+Thumbs.db
+ehthumbs*.db
+
+# Local shell histories, transcripts, and per-user SSH client state
+.bash_history
+.zsh_history
+.python_history
+.node_repl_history
+.mysql_history
+.psql_history
+.rediscli_history
+ConsoleHost_history.txt
+PowerShell_transcript.*.txt
+**/.ssh/config
+**/.ssh/environment
+
+# Transient root-level SSH Manager output
+/errors.log
+/deployments.log
+
+# Generated Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local environment and secret files
+.env
+.env.*
+*.env
+!.env.example
+!*.env.example
+
+# NetBird and Nginx Proxy Manager protected runtime state
+Platforms/Netbird/Configuration/config.yaml
+Platforms/Netbird/Configuration/dashboard.env
+Platforms/Netbird/Configuration/netbird_data/
+Platforms/Nginx Proxy Manager/Configuration/data/
+Platforms/Nginx Proxy Manager/Configuration/letsencrypt/

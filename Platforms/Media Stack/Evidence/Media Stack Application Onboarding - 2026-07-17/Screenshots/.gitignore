@@ -1,0 +1,19 @@
+# Only the listed onboarding screenshots are tracked
+*
+!.gitignore
+!S01-Jellyfin-Setup-Wizard-Server-Name-2026-07-17.png
+!S02-Jellyfin-Movies-Library-Settings-2026-07-17.png
+!S03-Jellyfin-TV-Library-Settings-2026-07-17.png
+!S04-qBittorrent-WebUI-Baseline-Categories-2026-07-17.png
+!S05-Jellyfin-QSV-Transcoding-Settings-2026-07-17.png
+!S06-Sonarr-Episode-Naming-2026-07-17.png
+!S07-Sonarr-Root-Folder-TV-2026-07-17.png
+!S08-Sonarr-Download-Client-Handling-2026-07-17.png
+!S09-Radarr-Movie-Naming-Hardlinks-2026-07-17.png
+!S10-Radarr-Root-Folder-Movies-2026-07-17.png
+!S11-Radarr-Quality-Delay-Profiles-2026-07-17.png
+!S12-Radarr-qBittorrent-Client-Detail-2026-07-17.png
+!S14-Seerr-Jellyfin-Library-Sync-2026-07-17.png
+!S15-Seerr-Radarr-Connection-Established-2026-07-17.png
+!S16-Seerr-Sonarr-Server-Settings-2026-07-17.png
+!S17-Seerr-Discover-Populated-2026-07-17.png

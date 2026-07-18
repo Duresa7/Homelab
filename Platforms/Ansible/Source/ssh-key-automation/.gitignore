@@ -1,0 +1,7 @@
+*.retry
+.ansible/
+.cache/
+.runtime-evidence/
+
+# Live identity records contain device-specific public keys and fingerprints.
+identities/*.yml

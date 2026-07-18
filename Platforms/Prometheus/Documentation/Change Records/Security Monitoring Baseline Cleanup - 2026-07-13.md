@@ -1,0 +1,112 @@
+﻿# Security Monitoring Baseline Cleanup
+
+**Created:** 2026-07-13  
+**Last updated:** 2026-07-17
+
+**Implementation date:** 2026-07-13  
+**Status:** Complete  
+**Primary owner:** Prometheus infrastructure monitoring  
+**Affected systems:** `security-01`, `app-01`, `edge-01`, `supabase-01`, `alpha-prod-01`, `purple-server`, `blue-server`, `red-server`, Wazuh manager, Prometheus
+
+## Scope
+
+Close the monitoring gaps deliberately deferred from the Security-A migration: install `node_exporter` on the three Galaxy nodes that lacked it, remove the obsolete Wazuh registrations so the operator can perform fresh enrollment, and reconcile the stale Prometheus target set. The operator also requested a verified list of the service endpoints moved or added by the related work.
+
+## Starting State
+
+- `purple-server`, `blue-server`, and `red-server` ran Debian 13 but had no exporter package, service, or TCP/9100 listener. `grey-server` already ran manual `node_exporter` 1.9.0.
+- The Wazuh manager listed disconnected ID `002` `edge-01` and ID `003` `wp-01`.
+- `app-01` had Wazuh agent 4.14.5 active with the incorrect `wp-01` key; `edge-01` had 4.10.3 active with its old key. Both still targeted retired manager address `192.168.70.20`.
+- `supabase-01` and `alpha-prod-01` had no Wazuh agent package or key.
+- Prometheus had six jobs: three healthy (`edge-01`, `grey-server`, `proxmox`) and three down/stale (`apps-01`, retired `security-01` address `192.168.70.20`, and `supabase-01`).
+
+## Decisions
+
+- Install Debian's signed `prometheus-node-exporter` package version `1.9.0-1+b4`; it matches the major/minor exporter version already used on `grey-server` and remains managed through APT.
+- Preserve one job per Proxmox node so existing job-label behavior for `grey-server` does not change.
+- Correct the local `security-01` target to `192.168.72.2`; remove `app-01` and `supabase-01` instead of presenting known-unavailable targets as monitoring coverage.
+- Remove only the two actual obsolete Wazuh registrations. Do not fabricate records for `supabase-01` or `alpha-prod-01`, which had no agent installed.
+- Prepare `app-01` and `edge-01` for the operator's requested fresh enrollment: retain their packages, repoint the manager address, clear stale keys, and stop/disable the services. Do not perform enrollment on the operator's behalf.
+- Use protected mode-0600 credential staging through 1Password for sudo operations. Secret values were never printed or retained in repository evidence.
+
+## Actions and Observed Results
+
+### 1. Install the missing node exporters
+
+APT installed `prometheus-node-exporter` 1.9.0-1+b4 and its collector package on `purple-server`, `blue-server`, and `red-server`. Each service is enabled and running. Local metrics checks and remote checks from `security-01` returned HTTP `200` with `node_uname_info` for all four Galaxy nodes.
+
+### 2. Reset obsolete Wazuh registrations
+
+`app-01` and `edge-01` were stopped and disabled, their manager address changed from `192.168.70.20` to `192.168.72.2`, and their stale client-key files cleared to zero bytes with root/Wazuh ownership. The manager registrations ID `002` `edge-01` and ID `003` `wp-01` were removed. A fresh manager list contains only local ID `000` `wazuh-01`.
+
+The incorrect `wp-01` identity and retired manager address are recorded in the [Wazuh troubleshooting log](../../../Wazuh/Documentation/Troubleshooting-Log.md#1-incorrect-and-stale-endpoint-identities).
+
+`supabase-01` and `alpha-prod-01` were left unchanged because neither has the agent installed. Fresh install/enrollment is tracked in the [Wazuh TODO](../../../Wazuh/Documentation/TODO.md).
+
+### 3. Reconcile Prometheus
+
+The versioned and live configurations now contain seven jobs: `security-01`, `edge-01`, `grey-server`, `purple-server`, `blue-server`, `red-server`, and `proxmox`. `promtool` validated the candidate before application.
+
+The first host-path replacement plus SIGHUP did not change the running target set because Docker's single-file bind mount remained attached to the old inode. A controlled Prometheus restart rebound the validated file. Prometheus returned ready, the in-container config passed `promtool`, the exact expected target set reported all seven jobs `UP`, and the retired `.70.20`, `app-01`, and `supabase-01` addresses were absent. See the [troubleshooting log](../Troubleshooting-Log.md#1-single-file-bind-mount-retained-the-old-inode).
+
+## Resulting Configuration
+
+| Job | Target | Result |
+|---|---|---|
+| `security-01` | `192.168.72.2:9100` | `UP` |
+| `edge-01` | `192.168.90.10:9100` | `UP` |
+| `grey-server` | `192.168.70.10:9100` | `UP` |
+| `purple-server` | `192.168.70.11:9100` | `UP` |
+| `blue-server` | `192.168.70.12:9100` | `UP` |
+| `red-server` | `192.168.70.13:9100` | `UP` |
+| `proxmox` | PVE exporter querying `192.168.70.10` | `UP` |
+
+## Service Endpoints
+
+| Service | Endpoint | Verification |
+|---|---|---|
+| Wazuh dashboard | `https://192.168.72.2/` | HTTP `302` |
+| Wazuh API | `https://192.168.72.2:55000/` | HTTP `401` without credentials (expected) |
+| Grafana | `http://192.168.72.2:3000/` | HTTP `302` |
+| Prometheus | `http://192.168.72.2:9090/` | HTTP `302`; readiness passed |
+| Security host node exporter | `http://192.168.72.2:9100/metrics` | HTTP `200` |
+| Proxmox API exporter | `http://192.168.72.2:9221/` | HTTP `200` |
+| Splunk Web | `https://192.168.72.3:8000/` | HTTP `303` |
+| Splunk HEC health | `https://192.168.72.3:8088/services/collector/health` | HTTP `200` locally; backend-only from client VLAN |
+| Splunk management API | `https://192.168.72.3:8089/` | HTTP `200` locally; backend-only from client VLAN |
+| SC4S syslog | `tcp://192.168.72.3:1514` and `udp://192.168.72.3:1514` | Listeners active |
+| Purple node exporter | `http://192.168.70.11:9100/metrics` | HTTP `200` from `security-01` |
+| Blue node exporter | `http://192.168.70.12:9100/metrics` | HTTP `200` from `security-01` |
+| Red node exporter | `http://192.168.70.13:9100/metrics` | HTTP `200` from `security-01` |
+
+## Verification
+
+- SSH Manager reported all three new exporter services enabled, running, and healthy.
+- The Prometheus assertion script found exactly seven expected jobs and all seven `UP`; stale addresses were absent.
+- Wazuh manager listed only local ID `000` after cleanup.
+- `app-01` and `edge-01` reported the new manager address, zero-byte client-key files, and inactive/disabled agent services.
+- Wazuh manager/indexer/dashboard, Docker, Splunkd, SC4S, and both SSH endpoints remained operational. The generic Ubuntu service-name check produced a false SSH warning, but `ssh.socket`, `ssh.service`, and TCP/22 were all active.
+- No firewall or WAN exposure was changed.
+
+## Rollback Points
+
+- Prometheus: `/home/REDACTED_USER_001/monitoring/prometheus.yml.bak.security-monitoring-cleanup-20260713` on `security-01`.
+- Wazuh manager keys: `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713` on `security-01`, mode 0600.
+- Endpoint configs: `/var/ossec/etc/ossec.conf.bak.security-monitoring-cleanup-20260713` on `app-01` and `edge-01`, mode 0600.
+- The newly installed exporter packages can be removed with APT if rollback is required; no Proxmox networking or firewall state changed.
+
+The Wazuh key rollback contains sensitive enrollment material and must remain root-readable only. It is not stored in this repository.
+
+## Step Evidence
+
+| Step | Evidence | What it demonstrates |
+|---|---|---|
+| S00 | [Preflight](../../Evidence/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13/Logs/S00-Preflight-2026-07-13.md) | Exact missing exporters, stale Wazuh identities, and stale Prometheus targets |
+| S01 | [Node exporter installation](../../Evidence/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13/Logs/S01-Node-Exporter-Installation-2026-07-13.md) | Package/service state and end-to-end metrics reachability |
+| S02 | [Wazuh registration reset](../../Evidence/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13/Logs/S02-Wazuh-Registration-Reset-2026-07-13.md) | Endpoint preparation and manager registration removal |
+| S03 | [Prometheus reconciliation](../../Evidence/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13/Logs/S03-Prometheus-Target-Reconciliation-2026-07-13.md) | Config validation, reload diagnosis, restart, and seven-target assertion |
+| S04 | [Final service and URL verification](../../Evidence/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13/Logs/S04-Final-Service-And-URL-Verification-2026-07-13.md) | Current health and replacement endpoint responses |
+
+## Remaining Work
+
+Only fresh Wazuh installation/enrollment remains, deliberately owned by the operator. The monitoring exporter and Prometheus cleanup requested in this change are complete.

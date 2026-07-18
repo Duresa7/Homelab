@@ -1,0 +1,13 @@
+[Unit]
+Description=Pre-warm the TNIO agent-answer cache with the most-asked questions
+After=lore-search-http.service
+Wants=lore-search-http.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/REDACTED_DEPLOYMENT_USER/lore-rag
+Environment=HOME=/home/REDACTED_DEPLOYMENT_USER
+Environment=PATH=/home/REDACTED_DEPLOYMENT_USER/.npm-global/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 /home/REDACTED_DEPLOYMENT_USER/lore-rag/agent_warmup.py --top 10 --days 14 --max-seconds 50
+StandardOutput=append:/home/REDACTED_DEPLOYMENT_USER/lore-rag/logs/warmup.log
+StandardError=append:/home/REDACTED_DEPLOYMENT_USER/lore-rag/logs/warmup.log

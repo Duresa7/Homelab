@@ -1,0 +1,46 @@
+﻿# Wazuh Runbook
+
+**Created:** 2026-07-13  
+**Last updated:** 2026-07-17
+
+## Manager Health
+
+Use SSH Manager against `security_01`. Expected units are enabled/active and expected listeners are TCP 1514, 1515, 443, and 55000:
+
+```bash
+systemctl is-active wazuh-manager wazuh-indexer wazuh-dashboard
+ss -lnt | grep -E ':(443|1514|1515|55000)[[:space:]]'
+curl -k -sS -o /dev/null -w '%{http_code}\n' https://127.0.0.1/
+curl -k -sS -o /dev/null -w '%{http_code}\n' https://127.0.0.1:55000/
+```
+
+Expected unauthenticated responses are dashboard `302` and API `401`.
+
+List agents without exposing keys:
+
+```bash
+sudo /var/ossec/bin/agent_control -l
+```
+
+## Fresh Agent Enrollment
+
+1. Confirm the host is intended for monitoring and its hostname is correct.
+2. Install or upgrade the Wazuh agent to a version supported by manager 4.14.5.
+3. Confirm the client `<address>` is `192.168.72.2` and protocol is TCP/1514.
+4. Create a fresh manager registration with the intended hostname. Do not reuse the removed 2026-07-13 identities or keys.
+5. Transfer/import the new key using a protected channel; never place it in shell history, screenshots, or repository evidence.
+6. Enable/start `wazuh-agent` on the endpoint.
+7. Verify the endpoint service is active and the manager reports the new identity active.
+
+`app-01` and `edge-01` completed this workflow on 2026-07-13 and are active as fresh manager IDs `004` and `005`. They are the only intended Wazuh endpoints; no further enrollment is planned.
+
+When the dashboard deployment workflow creates the new identity and supplies the generated install command, it also establishes the matching endpoint key. Do not manually recreate, copy, or reuse a key when the resulting agent is already active.
+
+## Remove an Obsolete Agent
+
+Stop the endpoint agent first, create protected rollback copies, remove the exact manager ID with `manage_agents -r`, and verify `agent_control -l`. Treat `client.keys` as a secret at all times.
+
+## URLs
+
+- Dashboard: `https://192.168.72.2/`
+- API: `https://192.168.72.2:55000/`

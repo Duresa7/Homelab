@@ -1,0 +1,141 @@
+---
+project:
+  name: Server-SSH
+  repository:
+    name: ssh-key-automation
+    path: /home/ansible/ssh-key-automation
+  inventory:
+    name: homelab-ssh-key-hosts
+    path: /home/ansible/ssh-key-automation/inventory/hosts.yml
+    credential: ansible-key
+  environment:
+    name: C UTF-8
+    variables:
+      LANG: C.utf8
+      LC_ALL: C.utf8
+
+views:
+  - All
+  - Mac
+  - Ansible Control
+  - Jedi PC
+  - Termix
+  - Onboarding
+
+templates:
+  - name: Onboard — New SSH Device
+    view: Onboarding
+    playbook: playbooks/ssh-identity-onboard.yml
+    arguments: []
+    survey:
+      - name: ssh_identity
+        title: SSH identity
+        description: Identity filename without .yml, for example mac, ansible-control, jedi-pc, or termix.
+        type: ""
+        required: true
+        values: []
+
+  - name: Termix — Add Current Key to Missing Candidates
+    view: Onboarding
+    playbook: playbooks/ssh-identity-onboard.yml
+    arguments:
+      - -e
+      - ssh_identity=termix
+      - -e
+      - ssh_target_group=termix_candidate_targets
+
+  - name: Mac — Audit
+    view: Mac
+    playbook: playbooks/ssh-key-audit.yml
+    arguments: [-e, ssh_identity=mac]
+  - name: Mac — Stage Replacement
+    view: Mac
+    playbook: playbooks/ssh-key-stage.yml
+    arguments: [-e, ssh_identity=mac]
+  - name: Mac — Verify Staged Key
+    view: Mac
+    playbook: playbooks/ssh-key-verify.yml
+    arguments: [-e, ssh_identity=mac]
+  - name: Mac — Retire Old Key
+    view: Mac
+    playbook: playbooks/ssh-key-retire.yml
+    arguments: [-e, ssh_identity=mac]
+    survey:
+      - name: ssh_retire_confirmation
+        title: Type RETIRE mac
+        description: Exact confirmation phrase required before the old key can be removed.
+        type: ""
+        required: true
+        values: []
+
+  - name: Ansible Control — Audit
+    view: Ansible Control
+    playbook: playbooks/ssh-key-audit.yml
+    arguments: [-e, ssh_identity=ansible-control]
+  - name: Ansible Control — Stage Replacement
+    view: Ansible Control
+    playbook: playbooks/ssh-key-stage.yml
+    arguments: [-e, ssh_identity=ansible-control]
+  - name: Ansible Control — Verify Staged Key
+    view: Ansible Control
+    playbook: playbooks/ssh-key-verify.yml
+    arguments: [-e, ssh_identity=ansible-control]
+  - name: Ansible Control — Retire Old Key
+    view: Ansible Control
+    playbook: playbooks/ssh-key-retire.yml
+    arguments: [-e, ssh_identity=ansible-control]
+    survey:
+      - name: ssh_retire_confirmation
+        title: Type RETIRE ansible-control
+        description: Exact confirmation phrase required before the old key can be removed.
+        type: ""
+        required: true
+        values: []
+
+  - name: Jedi PC — Audit
+    view: Jedi PC
+    playbook: playbooks/ssh-key-audit.yml
+    arguments: [-e, ssh_identity=jedi-pc]
+  - name: Jedi PC — Stage Replacement
+    view: Jedi PC
+    playbook: playbooks/ssh-key-stage.yml
+    arguments: [-e, ssh_identity=jedi-pc]
+  - name: Jedi PC — Verify Staged Key
+    view: Jedi PC
+    playbook: playbooks/ssh-key-verify.yml
+    arguments: [-e, ssh_identity=jedi-pc]
+  - name: Jedi PC — Retire Old Key
+    view: Jedi PC
+    playbook: playbooks/ssh-key-retire.yml
+    arguments: [-e, ssh_identity=jedi-pc]
+    survey:
+      - name: ssh_retire_confirmation
+        title: Type RETIRE jedi-pc
+        description: Exact confirmation phrase required before the old key can be removed.
+        type: ""
+        required: true
+        values: []
+
+  - name: Termix — Audit
+    view: Termix
+    playbook: playbooks/ssh-key-audit.yml
+    arguments: [-e, ssh_identity=termix]
+  - name: Termix — Stage Replacement
+    view: Termix
+    playbook: playbooks/ssh-key-stage.yml
+    arguments: [-e, ssh_identity=termix]
+  - name: Termix — Verify Staged Key
+    view: Termix
+    playbook: playbooks/ssh-key-verify.yml
+    arguments: [-e, ssh_identity=termix]
+  - name: Termix — Retire Old Key
+    view: Termix
+    playbook: playbooks/ssh-key-retire.yml
+    arguments: [-e, ssh_identity=termix]
+    survey:
+      - name: ssh_retire_confirmation
+        title: Type RETIRE termix
+        description: Exact confirmation phrase required before the old key can be removed.
+        type: ""
+        required: true
+        values: []

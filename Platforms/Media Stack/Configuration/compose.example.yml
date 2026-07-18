@@ -1,0 +1,135 @@
+name: media-stack
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    pull_policy: always
+    user: "1000:1000"
+    environment:
+      TZ: ${TZ:-America/New_York}
+      JELLYFIN_PublishedServerUrl: "http://${MEDIA_HOST_IP}:8096"
+    volumes:
+      - /opt/media-stack/config/jellyfin:/config
+      - /opt/media-stack/cache/jellyfin:/cache
+      - /data/media:/media
+      - /data/transcodes:/transcodes
+    devices:
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    ports:
+      - "8096:8096"
+    restart: unless-stopped
+    networks: [media]
+
+  jellyseerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    pull_policy: always
+    init: true
+    environment:
+      TZ: ${TZ:-America/New_York}
+      LOG_LEVEL: info
+    volumes:
+      - /opt/media-stack/config/jellyseerr:/app/config
+    ports:
+      - "5055:5055"
+    restart: unless-stopped
+    networks: [media]
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    pull_policy: always
+    environment: &lsio-environment
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ:-America/New_York}
+      UMASK: "002"
+    volumes:
+      - /opt/media-stack/config/sonarr:/config
+      - /data:/data
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+    networks: [media]
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    pull_policy: always
+    environment: *lsio-environment
+    volumes:
+      - /opt/media-stack/config/radarr:/config
+      - /data:/data
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
+    networks: [media]
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    pull_policy: always
+    environment: *lsio-environment
+    volumes:
+      - /opt/media-stack/config/prowlarr:/config
+    ports:
+      - "9696:9696"
+    restart: unless-stopped
+    networks: [media]
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    pull_policy: always
+    environment:
+      TZ: ${TZ:-America/New_York}
+      LOG_LEVEL: info
+      LOG_HTML: "false"
+      CAPTCHA_SOLVER: none
+    shm_size: 1gb
+    restart: unless-stopped
+    networks: [media]
+
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    pull_policy: always
+    profiles: [vpn]
+    cap_add: [NET_ADMIN]
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      TZ: ${TZ:-America/New_York}
+      VPN_SERVICE_PROVIDER: protonvpn
+      VPN_TYPE: wireguard
+      WIREGUARD_PRIVATE_KEY: ${PROTON_WIREGUARD_PRIVATE_KEY:?supply outside repository}
+      SERVER_COUNTRIES: ${PROTON_SERVER_COUNTRIES:-United States}
+      PORT_FORWARD_ONLY: "on"
+      VPN_PORT_FORWARDING: "on"
+      VPN_PORT_FORWARDING_STATUS_FILE: /gluetun/forwarded_port
+      VPN_PORT_FORWARDING_UP_COMMAND: >-
+        /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data
+        "json={\"listen_port\":{{PORT}},\"random_port\":false,\"upnp\":false}"
+        http://127.0.0.1:8080/api/v2/app/setPreferences'
+      FIREWALL_INPUT_PORTS: "8080"
+      FIREWALL_OUTBOUND_SUBNETS: ${MEDIA_LAN_SUBNET:?supply outside repository}
+    volumes:
+      - /opt/media-stack/config/gluetun:/gluetun
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    networks: [media]
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    pull_policy: always
+    profiles: [vpn]
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      <<: *lsio-environment
+      WEBUI_PORT: 8080
+    volumes:
+      - /opt/media-stack/config/qbittorrent:/config
+      - /data:/data
+    restart: unless-stopped
+
+networks:
+  media:
+    name: media

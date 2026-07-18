@@ -1,0 +1,577 @@
+{
+  "generated_at": "2026-05-12T00:00:00-04:00",
+  "notes": "Includes known no-vote/abstain failures plus generated route checks for every active Drive source.",
+  "questions": [
+    {
+      "expected_source": "Intel Faction Guide",
+      "forbidden_sources": [
+        "TNIO Imperial Intelligence Roster"
+      ],
+      "id": "intel_sith_join",
+      "intent": "policy_requirement",
+      "question": "what rank do I need to join Intel as a sith",
+      "required_facts": [
+        "Apprentice",
+        "Candidate"
+      ]
+    },
+    {
+      "expected_source": "Intel Faction Guide",
+      "forbidden_sources": [
+        "TNIO Imperial Intelligence Roster"
+      ],
+      "id": "intel_nfu_join",
+      "intent": "policy_requirement",
+      "question": "what rank does an NFU need to join Intel?",
+      "required_facts": [
+        "Imperial Military",
+        "any rank",
+        "Candidate"
+      ]
+    },
+    {
+      "expected_source": "Intel Faction Guide",
+      "forbidden_sources": [
+        "TNIO Imperial Intelligence Roster"
+      ],
+      "id": "intel_cipher",
+      "intent": "policy_requirement",
+      "question": "what do I need to become Cipher?",
+      "required_facts": [
+        "7S",
+        "Cipher",
+        "Intel Training"
+      ]
+    },
+    {
+      "expected_source": "Know Your Empire",
+      "forbidden_sources": [],
+      "id": "current_military_offices",
+      "intent": "roster_current_office",
+      "question": "Who is the current Minister of War and the current Commandant of the military?",
+      "required_facts": [
+        "Colonel Ghost",
+        "Colonel Racer"
+      ]
+    },
+    {
+      "expected_source": "Character Progression in The New Imperial Order",
+      "forbidden_sources": [
+        "A Guide to Crystals",
+        "Codex to the Beasts of the Galaxy"
+      ],
+      "id": "darth_status",
+      "intent": "policy_requirement",
+      "question": "What do I need to do to reach Darth status?",
+      "required_facts": [
+        "Road to Darth",
+        "Marks of Glory"
+      ]
+    },
+    {
+      "expected_source": "TNIO-Storyline-Narative (from discord channel)",
+      "forbidden_sources": [],
+      "id": "operation_bastion",
+      "intent": "story_lore_recap",
+      "question": "tell me about operation bastion in detail",
+      "required_facts": [
+        "Operation Bastion",
+        "Mirial"
+      ]
+    },
+    {
+      "expected_source": "TNIO Master Engineers: Droid Codex",
+      "forbidden_sources": [
+        "Imperial Mechanics: Universal Registry"
+      ],
+      "id": "captain_droids",
+      "intent": "policy_requirement",
+      "question": "As a military Captain, how many droids can I own, and how many functions can each one have?",
+      "required_facts": [
+        "7",
+        "3 functions"
+      ]
+    },
+    {
+      "expected_source": "TNIO Master Engineers: Starship Codex",
+      "forbidden_sources": [
+        "Imperial Mechanics: Universal Registry"
+      ],
+      "id": "captain_destroyer",
+      "intent": "policy_requirement",
+      "question": "As a military Captain can I own a Destroyer?",
+      "required_facts": [
+        "Captain",
+        "Corvette",
+        "Darth/Moff/Regulator",
+        "Destroyer"
+      ]
+    },
+    {
+      "expected_source": "Praetorian Legion Specializations Codex",
+      "forbidden_sources": [
+        "Master Ability List"
+      ],
+      "id": "sithspawn_creation",
+      "intent": "policy_requirement",
+      "question": "How can I create a sithspawn?",
+      "required_facts": [
+        "Sithspawn Alchemy",
+        "Sith Alchemy"
+      ]
+    },
+    {
+      "expected_source": null,
+      "forbidden_sources": [
+        "Codex to the Beasts of the Galaxy"
+      ],
+      "id": "smalltalk_beep",
+      "intent": "casual_persona",
+      "question": "beep boop",
+      "required_facts": []
+    },
+    {
+      "category": "crystal_policy",
+      "expected_source": "A Guide to Crystals",
+      "forbidden_sources": [],
+      "id": "route_a_guide_to_crystals",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about kyber crystal acquisition?",
+      "required_facts": []
+    },
+    {
+      "category": "beast_policy",
+      "expected_source": "Beast Trainers Codex",
+      "forbidden_sources": [],
+      "id": "route_beast_trainers_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about beast taming?",
+      "required_facts": []
+    },
+    {
+      "category": "beast_roster",
+      "expected_source": "Beastmaster's Log",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_beastmaster_s_log",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about beastmaster roster?",
+      "required_facts": []
+    },
+    {
+      "category": "character_progression",
+      "expected_source": "Character Progression in The New Imperial Order",
+      "forbidden_sources": [],
+      "id": "route_character_progression_in_the_new_imperial_order",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about sith rank progression?",
+      "required_facts": []
+    },
+    {
+      "category": "beast_policy",
+      "expected_source": "Codex to the Beasts of the Galaxy",
+      "forbidden_sources": [],
+      "id": "route_codex_to_the_beasts_of_the_galaxy",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about beast taming rules?",
+      "required_facts": []
+    },
+    {
+      "category": "combat_forms",
+      "expected_source": "Combat Form Codex",
+      "forbidden_sources": [],
+      "id": "route_combat_form_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about jar'kai rules?",
+      "required_facts": []
+    },
+    {
+      "category": "profile_character",
+      "expected_source": "Darth Aiterian Revik",
+      "forbidden_sources": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "id": "route_darth_aiterian_revik",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about character biography?",
+      "required_facts": []
+    },
+    {
+      "category": "profile_character",
+      "expected_source": "Grand Moff Harik",
+      "forbidden_sources": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "id": "route_grand_moff_harik",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about character profile?",
+      "required_facts": []
+    },
+    {
+      "category": "praetorian_history",
+      "expected_source": "History of the Praetorian Legion",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_history_of_the_praetorian_legion",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about praetorian legion history?",
+      "required_facts": []
+    },
+    {
+      "category": "asset_registry",
+      "expected_source": "Imperial Mechanics: Universal Registry",
+      "forbidden_sources": [
+        "policy_requirement",
+        "entry_requirement",
+        "promotion_requirements"
+      ],
+      "id": "route_imperial_mechanics_universal_registry",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about droid ownership?",
+      "required_facts": []
+    },
+    {
+      "category": "inquisition_relics",
+      "expected_source": "Inquisition Commemoratorii",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_inquisition_commemoratorii",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about commemoratorii inventory?",
+      "required_facts": []
+    },
+    {
+      "category": "inquisition_policy",
+      "expected_source": "Inquisitorius Specializations",
+      "forbidden_sources": [],
+      "id": "route_inquisitorius_specializations",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about inquisitorius specializations?",
+      "required_facts": []
+    },
+    {
+      "category": "imperial_intelligence_policy",
+      "expected_source": "Intel Faction Guide",
+      "forbidden_sources": [],
+      "id": "route_intel_faction_guide",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about imperial intelligence overview?",
+      "required_facts": []
+    },
+    {
+      "category": "current_roster",
+      "expected_source": "Know Your Empire",
+      "forbidden_sources": [
+        "policy_requirement",
+        "ownership_limits"
+      ],
+      "id": "route_know_your_empire",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about grand council roster?",
+      "required_facts": []
+    },
+    {
+      "category": "enemy_roster",
+      "expected_source": "Know Your Enemy Republic and Jedi Order",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_know_your_enemy_republic_and_jedi_order",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about jedi high council?",
+      "required_facts": []
+    },
+    {
+      "category": "mandalorian_policy",
+      "expected_source": "Mandalorian Enclave Codex",
+      "forbidden_sources": [],
+      "id": "route_mandalorian_enclave_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about enclave membership requirements?",
+      "required_facts": []
+    },
+    {
+      "category": "abilities",
+      "expected_source": "Master Ability List",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_master_ability_list",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about force powers?",
+      "required_facts": []
+    },
+    {
+      "category": "storyline",
+      "expected_source": "PRAE: The Consumption of Kesh (COMPLETE)",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_prae_the_consumption_of_kesh_complete",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about kesh campaign outcome?",
+      "required_facts": []
+    },
+    {
+      "category": "praetorian_policy",
+      "expected_source": "Praetorian Legion Specializations Codex",
+      "forbidden_sources": [],
+      "id": "route_praetorian_legion_specializations_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about specialization mastery titles?",
+      "required_facts": []
+    },
+    {
+      "category": "martial_policy",
+      "expected_source": "Praetorian Teras Kasi",
+      "forbidden_sources": [],
+      "id": "route_praetorian_teras_kasi",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about what is praetorian teras kasi?",
+      "required_facts": []
+    },
+    {
+      "category": "inquisition_policy",
+      "expected_source": "Purge Trooper Program",
+      "forbidden_sources": [],
+      "id": "route_purge_trooper_program",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about purge trooper program?",
+      "required_facts": []
+    },
+    {
+      "category": "roleplay_basics",
+      "expected_source": "Roleplaying 101",
+      "forbidden_sources": [],
+      "id": "route_roleplaying_101",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about guild chat etiquette?",
+      "required_facts": []
+    },
+    {
+      "category": "saber_training",
+      "expected_source": "Saber Form Training Codex",
+      "forbidden_sources": [],
+      "id": "route_saber_form_training_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about saber form rank restrictions?",
+      "required_facts": []
+    },
+    {
+      "category": "saber_roster",
+      "expected_source": "Saber Mastery and Combat Form Tracking",
+      "forbidden_sources": [
+        "policy_requirement",
+        "entry_requirement"
+      ],
+      "id": "route_saber_mastery_and_combat_form_tracking",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about saber form proficiency?",
+      "required_facts": []
+    },
+    {
+      "category": "sith_academy_policy",
+      "expected_source": "Sith Academy Faction Progression",
+      "forbidden_sources": [],
+      "id": "route_sith_academy_faction_progression",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about faction training marks?",
+      "required_facts": []
+    },
+    {
+      "category": "inquisition_law",
+      "expected_source": "Sith Inquisitorial Declaration",
+      "forbidden_sources": [],
+      "id": "route_sith_inquisitorial_declaration",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about inquisitorial jurisdiction?",
+      "required_facts": []
+    },
+    {
+      "category": "darth_reken_profile",
+      "expected_source": "The Dark Lord of the Sith",
+      "forbidden_sources": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "id": "route_the_dark_lord_of_the_sith",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about darth reken biography?",
+      "required_facts": []
+    },
+    {
+      "category": "inquisition_policy",
+      "expected_source": "The Inquisition",
+      "forbidden_sources": [],
+      "id": "route_the_inquisition",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about inquisition purpose?",
+      "required_facts": []
+    },
+    {
+      "category": "praetorian_policy",
+      "expected_source": "The Praetorian Compendium",
+      "forbidden_sources": [],
+      "id": "route_the_praetorian_compendium",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about praetorian rank ladder?",
+      "required_facts": []
+    },
+    {
+      "category": "dice_rules",
+      "expected_source": "TNIO Dice Roll System",
+      "forbidden_sources": [],
+      "id": "route_tnio_dice_roll_system",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about rank-based dice rolls?",
+      "required_facts": []
+    },
+    {
+      "category": "guild_marks",
+      "expected_source": "TNIO Guild Marks",
+      "forbidden_sources": [],
+      "id": "route_tnio_guild_marks",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about guild marks system?",
+      "required_facts": []
+    },
+    {
+      "category": "guild_rules",
+      "expected_source": "TNIO Guild Rules",
+      "forbidden_sources": [],
+      "id": "route_tnio_guild_rules",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about guild conduct?",
+      "required_facts": []
+    },
+    {
+      "category": "strongholds",
+      "expected_source": "TNIO Guild Strongholds Guide",
+      "forbidden_sources": [],
+      "id": "route_tnio_guild_strongholds_guide",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about stronghold layout?",
+      "required_facts": []
+    },
+    {
+      "category": "intel_roster",
+      "expected_source": "TNIO Imperial Intelligence Roster",
+      "forbidden_sources": [
+        "policy_requirement",
+        "entry_requirement",
+        "cipher_requirements"
+      ],
+      "id": "route_tnio_imperial_intelligence_roster",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about agent statuses?",
+      "required_facts": []
+    },
+    {
+      "category": "martial_policy",
+      "expected_source": "TNIO Martial Arts",
+      "forbidden_sources": [],
+      "id": "route_tnio_martial_arts",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about martial arts training?",
+      "required_facts": []
+    },
+    {
+      "category": "droid_policy",
+      "expected_source": "TNIO Master Engineers: Droid Codex",
+      "forbidden_sources": [],
+      "id": "route_tnio_master_engineers_droid_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about droid ownership rules?",
+      "required_facts": []
+    },
+    {
+      "category": "starship_policy",
+      "expected_source": "TNIO Master Engineers: Starship Codex",
+      "forbidden_sources": [],
+      "id": "route_tnio_master_engineers_starship_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about starship ownership?",
+      "required_facts": []
+    },
+    {
+      "category": "vehicle_policy",
+      "expected_source": "TNIO Master Engineers: Vehicle Codex",
+      "forbidden_sources": [],
+      "id": "route_tnio_master_engineers_vehicle_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about vehicle ownership rules?",
+      "required_facts": []
+    },
+    {
+      "category": "military_policy",
+      "expected_source": "TNIO-MD-01 The Imperial Military Faction",
+      "forbidden_sources": [],
+      "id": "route_tnio_md_01_the_imperial_military_faction",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about military faction eligibility?",
+      "required_facts": []
+    },
+    {
+      "category": "storyline",
+      "expected_source": "TNIO-Storyline-Narative (from discord channel)",
+      "forbidden_sources": [
+        "policy_requirement"
+      ],
+      "id": "route_tnio_storyline_narative_from_discord_channel",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about desolator attack?",
+      "required_facts": []
+    },
+    {
+      "category": "combat_rules",
+      "expected_source": "TNIO: A Guide to Combat and a Universal Rolling System",
+      "forbidden_sources": [],
+      "id": "route_tnio_a_guide_to_combat_and_a_universal_rolling_system",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about combat rolling system?",
+      "required_facts": []
+    },
+    {
+      "category": "planets",
+      "expected_source": "TNIO: Codex of Planets",
+      "forbidden_sources": [],
+      "id": "route_tnio_codex_of_planets",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about planet locations?",
+      "required_facts": []
+    },
+    {
+      "category": "honor_guard_policy",
+      "expected_source": "TNIO: Honor Guard Codex",
+      "forbidden_sources": [],
+      "id": "route_tnio_honor_guard_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about honor guard structure?",
+      "required_facts": []
+    },
+    {
+      "category": "war_forge_policy",
+      "expected_source": "TNIO: Ministry War Forge Codex",
+      "forbidden_sources": [],
+      "id": "route_tnio_ministry_war_forge_codex",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about war forge rules?",
+      "required_facts": []
+    },
+    {
+      "category": "praetorian_forging",
+      "expected_source": "TNIO: Praetorian Forging Codex (2026)",
+      "forbidden_sources": [],
+      "id": "route_tnio_praetorian_forging_codex_2026",
+      "intent": "routing_eval",
+      "question": "Which archive shelf should answer questions about material rarity restrictions?",
+      "required_facts": []
+    }
+  ],
+  "version": "tnio-eval-questions-v1"
+}

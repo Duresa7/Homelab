@@ -1,0 +1,15 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!S01-Proxmox-Blue-Server-Preflight-2026-07-10.jpg
+!S02-Docker-Network-LXC-Created-2026-07-10.jpg
+!S03-Docker-Network-SSH-HA-Ready-2026-07-10.jpg
+!S04-Docker-Runtime-Current-Validation-2026-07-11.jpg
+!S05-NPM-Admin-Initialized-2026-07-11.jpg
+!S05-NPM-First-Run-Healthy-2026-07-10.jpg
+!S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg
+!S06-UniFi-Internal-DNS-Record-2026-07-11.jpg
+!S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg
+!S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg
+!S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg
+!S09-NetBird-Healthy-After-Restart-2026-07-11.jpg

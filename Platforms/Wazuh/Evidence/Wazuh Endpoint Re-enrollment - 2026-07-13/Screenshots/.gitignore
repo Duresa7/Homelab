@@ -1,0 +1,4 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!S03-Wazuh-Endpoints-Active-2026-07-13.png

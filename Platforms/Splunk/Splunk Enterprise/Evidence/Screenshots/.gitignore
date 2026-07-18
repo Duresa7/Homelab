@@ -1,0 +1,43 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!Screenshot 2026-06-28 175948.png
+!Screenshot 2026-06-28 180042.png
+!Screenshot 2026-06-28 182636.png
+!Screenshot 2026-06-28 182935.png
+!Screenshot 2026-06-28 183036.png
+!Screenshot 2026-06-28 183418.png
+!Screenshot 2026-06-28 183653.png
+!Screenshot 2026-06-29 211322.png
+!Screenshot 2026-06-29 212649.png
+!Screenshot 2026-06-29 212728.png
+!Screenshot 2026-06-29 212751.png
+!Screenshot 2026-06-30 000305.png
+!Screenshot 2026-06-30 000349.png
+!Screenshot 2026-06-30 000525.png
+!Screenshot 2026-06-30 130841.png
+!Screenshot 2026-06-30 130849.png
+!Screenshot 2026-06-30 131038.png
+!Screenshot 2026-06-30 131052.png
+!Screenshot 2026-06-30 131209.png
+!Screenshot 2026-06-30 131323.png
+!Screenshot 2026-06-30 131353.png
+!Screenshot 2026-06-30 133108.png
+!Screenshot 2026-06-30 133152.png
+!Screenshot 2026-06-30 133401.png
+!Screenshot 2026-06-30 134005.png
+!Screenshot 2026-06-30 134033.png
+!Screenshot 2026-06-30 134524.png
+!Screenshot 2026-06-30 134549.png
+!Screenshot 2026-06-30 134703.png
+!Screenshot 2026-07-01 182042.png
+!Screenshot 2026-07-01 182959.png
+!Screenshot 2026-07-01 183115.png
+!Screenshot 2026-07-01 183141.png
+!Screenshot 2026-07-01 183450.png
+!Screenshot 2026-07-01 193859.png
+!Screenshot 2026-07-01 195057.png
+!Screenshot 2026-07-01 201953.png
+!Screenshot 2026-07-01 202008.png
+!vm-config-1 (1).png
+!vm-config-1 (2).png

@@ -1,0 +1,700 @@
+{
+  "files": [
+    {
+      "authority_for": [
+        "crystal_policy",
+        "crafting_policy",
+        "sith_alchemy",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A rules guide for kyber crystals in TNIO: how Sith acquire them, what color variations exist, and the special restrictions on white and black crystals. It also explains Crystal Cave Hunt and what Sith Alchemy I/II can create or alter.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_045",
+      "source_class": "rulebook",
+      "title": "A Guide to Crystals",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_045"
+    },
+    {
+      "authority_for": [
+        "beast_policy",
+        "beast_taming",
+        "sithspawn_policy",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A procedural guide to beast taming in TNIO, covering rank-based restrictions, roll mechanics, bonuses, and the step-by-step process for gaining a beast's trust and bond. It also defines Beastmaster-related roles, Sith Spawn approval, and how new or undiscovered beasts should be reported.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_039",
+      "source_class": "rulebook",
+      "title": "Beast Trainers Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_039"
+    },
+    {
+      "authority_for": [
+        "beast_roster",
+        "owned_beasts",
+        "member_standings"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "A spreadsheet-style beastmaster roster that lists rank point thresholds and tracks each member\u2019s total points alongside their owned/bonded creatures. It also shows example builds and a pending-removal note.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_010",
+      "source_class": "tracking_sheet",
+      "title": "Beastmaster's Log",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_010"
+    },
+    {
+      "authority_for": [
+        "character_progression",
+        "sith_progression",
+        "nfu_progression",
+        "promotion_requirements",
+        "marks",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "This doc explains how character rank progression works in The New Imperial Order for Sith and non-force user paths, including mark requirements, training systems, and higher-rank promotion via Marks of Glory. It also answers practical questions about where training happens and what to do if a master is absent.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_015",
+      "source_class": "rulebook",
+      "title": "Character Progression in The New Imperial Order",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_015"
+    },
+    {
+      "authority_for": [
+        "beast_policy",
+        "beast_catalog",
+        "creature_abilities",
+        "beast_point_limits",
+        "sithspawn_restrictions",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A beast codex for TNIO that defines guild taming point limits, combat rules, and an abilities index for tameable creatures. It also provides species entries with wild behavior, handler notes, and special notes on ysalamiri, Sithspawn, and noncombat beasts.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_003",
+      "source_class": "codex",
+      "title": "Codex to the Beasts of the Galaxy",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_003"
+    },
+    {
+      "authority_for": [
+        "combat_forms",
+        "saber_training",
+        "martial_policy",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A training codex for the combat forms Jar'kai, Sokan, and Tr\u00e0kata, covering their history, restrictions, teaching methods, and example maneuvers. It is written as an RP/flavor reference for duelists rather than a mechanical rules document.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_006",
+      "source_class": "codex",
+      "title": "Combat Form Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_006"
+    },
+    {
+      "authority_for": [
+        "profile_character",
+        "personal_assets",
+        "entity_profile"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "description": "A character sheet for Darth Aiterian Ilian Revik, covering his identity, rank, allegiances, combat mastery, Force abilities, possessions, beasts, and related campaign notes. It also serves as a roster-style reference for his former master, apprentices, and named assets.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_033",
+      "source_class": "character_profile",
+      "title": "Darth Aiterian Revik",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_033"
+    },
+    {
+      "authority_for": [
+        "profile_character",
+        "personal_assets",
+        "entity_profile"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "description": "A character dossier for Dorr'in Harik, also titled Grand Moff Harik, giving his personal profile, personality, background, ranks, factions, equipment, ships, droids, and combat abilities. It reads like a roster/codex entry for use in TNIO lore and gameplay reference.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_044",
+      "source_class": "character_profile",
+      "title": "Grand Moff Harik",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_044"
+    },
+    {
+      "authority_for": [
+        "praetorian_history",
+        "storyline",
+        "entity_profile"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "An archival timeline of the Praetorian Legion from its founding through the current era, organized by numbered ATC eras and key political, organizational, and artifact-driven developments. It records leadership changes, reforms, campaigns, and major recoveries that shaped the Legion.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_005",
+      "source_class": "chronicle",
+      "title": "History of the Praetorian Legion",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_005"
+    },
+    {
+      "authority_for": [
+        "asset_registry",
+        "droid_registry",
+        "vehicle_registry",
+        "starship_registry",
+        "fleet_roster"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "entry_requirement",
+        "promotion_requirements"
+      ],
+      "description": "A spreadsheet-style universal registry of imperial-linked mechanical assets, listing droids by owner/class/designation/functions and separate rosters for speeders, heavy vehicles, starships, and fleet entries. It also captures workshop-held or custom-built units and notable named machines.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_001",
+      "source_class": "registry_sheet",
+      "title": "Imperial Mechanics: Universal Registry",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_001"
+    },
+    {
+      "authority_for": [
+        "inquisition_relics",
+        "artifact_lore",
+        "entity_profile"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "An in-universe codex entry cataloguing the Commemoratorii, the Inquisition\u2019s major relics, weapons, and temple fixtures. It explains what each item does, who bears it, and how the Dark Temple\u2019s ritual infrastructure supports Inquisition authority.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_029",
+      "source_class": "relic_catalog",
+      "title": "Inquisition Commemoratorii",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_029"
+    },
+    {
+      "authority_for": [
+        "inquisition_policy",
+        "specialization_requirements",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A spreadsheet-style Inquisitorius specialization guide listing the four available paths and the rank requirements to choose them. It also outlines each specialization's flavor, granted equipment, and unlockable skills.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_030",
+      "source_class": "rulebook_sheet",
+      "title": "Inquisitorius Specializations",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_030"
+    },
+    {
+      "authority_for": [
+        "imperial_intelligence_policy",
+        "faction_entry",
+        "cipher_requirements",
+        "intel_rules",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "Official faction guide for Imperial Intelligence, covering what the faction is, who can join, and how its secrecy, conduct, uniforms, ranks, and special abilities work. It also answers common FAQ-style questions about Intel\u2019s purpose, headquarters, icon, and entry process.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_022",
+      "source_class": "rulebook",
+      "title": "Intel Faction Guide",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_022"
+    },
+    {
+      "authority_for": [
+        "current_roster",
+        "current_offices",
+        "leadership",
+        "faction_directory",
+        "who_runs_what"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "ownership_limits"
+      ],
+      "description": "An organizational reference guide for the Empire, listing key leadership and staff rosters across the Grand Council, Imperial Military, Sith Academy, Imperial Intelligence, Praetorian Legion, and several smaller factions. It functions as a who-runs-what directory for imperial command structure and specialized roles.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_007",
+      "source_class": "current_reference",
+      "title": "Know Your Empire",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_007"
+    },
+    {
+      "authority_for": [
+        "enemy_roster",
+        "republic_reference",
+        "jedi_reference",
+        "current_roster"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "An organizational reference guide to the Galactic Republic and Jedi Order, cataloging leadership rosters for the Jedi High Council, Republic government, military, SIS, allied forces, Green Jedi ranks, and former council members. It serves as a who\u2019s-who for the major institutions and their officers.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_032",
+      "source_class": "external_roster_reference",
+      "title": "Know Your Enemy Republic and Jedi Order",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_032"
+    },
+    {
+      "authority_for": [
+        "mandalorian_policy",
+        "enclave_membership",
+        "bounty_hunting_policy",
+        "faction_entry",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A codex for the Mandalorian Enclave that lays out its role inside the Imperial Military, its chain of command, rank structure, and rules for bounty hunting. It also covers how to join, what training/equipment members get, and the enclave\u2019s creed and clan culture.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_018",
+      "source_class": "codex",
+      "title": "Mandalorian Enclave Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_018"
+    },
+    {
+      "authority_for": [
+        "abilities",
+        "force_abilities",
+        "nfu_abilities",
+        "saber_forms",
+        "rank_unlocks"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "A master catalog of playable abilities and combat forms, organized by sheet and tier. It lists Force-user powers, saber/combat forms, and non-Force-user abilities, along with descriptions and unlock requirements.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_027",
+      "source_class": "ability_sheet",
+      "title": "Master Ability List",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_027"
+    },
+    {
+      "authority_for": [
+        "storyline",
+        "campaign_recap",
+        "kesh_campaign",
+        "praetorian_history"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "Campaign archive chronicling the Praetorian Legion\u2019s multi-phase conquest of Kesh, from first landings and revelations about the Omen and Remulus Dreypa to the final subjugation of the City of the Doomed and Sessel Spire. It ends with an official results section summarizing Imperial control and recovered assets.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_035",
+      "source_class": "chronicle",
+      "title": "PRAE: The Consumption of Kesh (COMPLETE)",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_035"
+    },
+    {
+      "authority_for": [
+        "praetorian_policy",
+        "praetorian_specializations",
+        "sithspawn_policy",
+        "alchemy_policy",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A Praetorian Legion codex explaining how advanced specializations work, how members earn mastery titles, and how each path is used in roleplay and event planning. It covers the progression ranks and practical guidance for Acquisitions, Lore and Philosophy, Martial Prowess, Mysticism and Empowerment, Synthetic Alchemy, Forge Alchemy, and Sithspawn Alchemy.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_021",
+      "source_class": "codex",
+      "title": "Praetorian Legion Specializations Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_021"
+    },
+    {
+      "authority_for": [
+        "martial_policy",
+        "teras_kasi",
+        "praetorian_training",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A codex entry for Praetorian Teras Kasi, covering its origin, stance, learning limits, and level-based techniques. It also explains the mastery trial and how the form is taught within Praetorian training.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_014",
+      "source_class": "codex",
+      "title": "Praetorian Teras Kasi",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_014"
+    },
+    {
+      "authority_for": [
+        "inquisition_policy",
+        "purge_trooper_policy",
+        "nfu_specialization",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A lore dossier on the Inquisitorius Purge Trooper Program, explaining why the non-Force-user Purge Troopers exist and how their anti-Force equipment and requisitions armory are organized.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_034",
+      "source_class": "lore_policy_doc",
+      "title": "Purge Trooper Program",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_034"
+    },
+    {
+      "authority_for": [
+        "roleplay_basics",
+        "chat_etiquette",
+        "rp_conduct",
+        "character_creation"
+      ],
+      "avoid_for": [],
+      "description": "A roleplaying guide for The New Imperial Order in Star Wars: The Old Republic, explaining how members should use guild, ops, group, and whisper chats. It also covers character creation, emotes, and basic conduct expectations for RP and guild interaction.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_026",
+      "source_class": "guide",
+      "title": "Roleplaying 101",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_026"
+    },
+    {
+      "authority_for": [
+        "saber_training",
+        "saber_form_policy",
+        "rank_restrictions",
+        "teaching_rules",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "Training codex for Saber Forms that sets guild rank limits, teaching rules, and mastery requirements. The body focuses on Form I, Shii-Cho, covering its history, stance, zones of contact, and progression from beginner to master training.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_019",
+      "source_class": "codex",
+      "title": "Saber Form Training Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_019"
+    },
+    {
+      "authority_for": [
+        "saber_roster",
+        "form_tracking",
+        "member_standings"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "entry_requirement"
+      ],
+      "description": "A roster-style tracking sheet for TNIO members' saber form proficiency and martial arts levels, using letter codes to record mastery across the seven lightsaber forms. It also notes rank-based and non-Force-user restrictions, plus active/inactive member listings.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_024",
+      "source_class": "tracking_sheet",
+      "title": "Saber Mastery and Combat Form Tracking",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_024"
+    },
+    {
+      "authority_for": [
+        "sith_academy_policy",
+        "academy_progression",
+        "overseer_progression",
+        "faction_entry",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "This document lays out the Sith Academy faction's progression system: training marks, rank requirements, specialization paths, and the chain of command from Overseers up to the Sphere of Philosophy. It also explains how academy members are expected to mentor newcomers and support recruitment.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_037",
+      "source_class": "rulebook",
+      "title": "Sith Academy Faction Progression",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_037"
+    },
+    {
+      "authority_for": [
+        "inquisition_law",
+        "tribunal_policy",
+        "crimes_punishments",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A Sith Inquisition declaration defining the Inquisition\u2019s jurisdiction, the purpose of tribunals, and the specific offenses it prosecutes. It also lists example punishments and clarifies that the Kaggath is abolished.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_009",
+      "source_class": "declaration",
+      "title": "Sith Inquisitorial Declaration",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_009"
+    },
+    {
+      "authority_for": [
+        "darth_reken_profile",
+        "kujan_profile",
+        "entity_profile"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "current_roster"
+      ],
+      "description": "Character dossier for Darth Reken, the Dark Lord of the Sith, covering his species, age, ranks, abilities, languages, stats, and major life events. It also includes a profile section for his Emperor\u2019s Hand, Kujan, including his origins, purpose, and combat style.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_042",
+      "source_class": "character_profile",
+      "title": "The Dark Lord of the Sith",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_042"
+    },
+    {
+      "authority_for": [
+        "inquisition_policy",
+        "inquisitorius_structure",
+        "purge_trooper_policy",
+        "tribunal_policy",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "This doc is an overview and organizational charter for the Inquisition, a loyalist Sith Imperial cult charged with enforcing the Sith Emperor\u2019s will through conversion, extermination, and public judgment of enemies. It also outlines the faction\u2019s rank structure, internal offices, and core directives.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_012",
+      "source_class": "charter",
+      "title": "The Inquisition",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_012"
+    },
+    {
+      "authority_for": [
+        "praetorian_policy",
+        "praetorian_progression",
+        "cohort_requirements",
+        "event_management",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A Praetorian Legion handbook that explains the order's rank ladder, cohort progression, training gates, and administrative systems. It also serves as a hub to related codices and reference documents for specialized Legion functions.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_023",
+      "source_class": "handbook",
+      "title": "The Praetorian Compendium",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_023"
+    },
+    {
+      "authority_for": [
+        "dice_rules",
+        "combat_rules",
+        "hp_by_rank",
+        "roll_modifiers",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A rules reference for TNIO character resolution, listing the target dice roll for each rank and the HP assigned to each rank. It also defines flat bonuses from MoG and faction head status.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_031",
+      "source_class": "rulebook",
+      "title": "TNIO Dice Roll System",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_031"
+    },
+    {
+      "authority_for": [
+        "guild_marks",
+        "marks",
+        "faction_progression",
+        "promotion_requirements",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A reference for TNIO's revised guild marking system, explaining what member-note marks mean, how force-user and non-force-user marks are assigned, and how faction progression is tracked. It also covers related mini-factions, abbreviations, and title thresholds tied to advancement.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_004",
+      "source_class": "rulebook",
+      "title": "TNIO Guild Marks",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_004"
+    },
+    {
+      "authority_for": [
+        "guild_rules",
+        "guild_conduct",
+        "faction_limits",
+        "discord_etiquette",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "Official TNIO guild rulebook covering member conduct, character standards, roll usage, faction limits, Discord etiquette, event scheduling, and officer hierarchy. It also spells out who has final authority and what restrictions apply to guild-owned content and spaces.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_028",
+      "source_class": "rulebook",
+      "title": "TNIO Guild Rules",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_028"
+    },
+    {
+      "authority_for": [
+        "strongholds",
+        "academy_locations",
+        "restricted_areas",
+        "event_spaces",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A practical stronghold map for the New Imperial Order, listing the Yavin 4 headquarters and The Desolator rooms plus what each space is used for. It notes where academy sessions, training, RP events, and restricted offices are located.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_040",
+      "source_class": "guide",
+      "title": "TNIO Guild Strongholds Guide",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_040"
+    },
+    {
+      "authority_for": [
+        "intel_roster",
+        "agent_status",
+        "call_signs",
+        "current_roster"
+      ],
+      "avoid_for": [
+        "policy_requirement",
+        "entry_requirement",
+        "cipher_requirements"
+      ],
+      "description": "A spreadsheet-style personnel roster for TNIO Imperial Intelligence, split into active agents, MIA/KIA/resigned members, and NPCs. It records call signs, ranks, status, and short notes/aliases for each entry.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_013",
+      "source_class": "roster_sheet",
+      "title": "TNIO Imperial Intelligence Roster",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_013"
+    },
+    {
+      "authority_for": [
+        "martial_policy",
+        "martial_arts_training",
+        "rank_restrictions",
+        "teaching_rules",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A TNIO martial arts codex covering how martial arts are taught, rank-based learning limits, and the rules for dojo instruction and mastery. It also details the stance, progression, and techniques for several specific forms such as Echani, Gand, IMMAS, K\u2019thri, Ter\u00e4s K\u00e4si, Togorian Lacerine, and Wrruushi.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_011",
+      "source_class": "codex",
+      "title": "TNIO Martial Arts",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_011"
+    },
+    {
+      "authority_for": [
+        "droid_policy",
+        "ownership_limits",
+        "engineering_policy",
+        "droid_construction",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A TNIO engineering codex covering how droids are classified, built, registered, owned, and used in events. It also lays out class-specific limits, fitment/armoring guidance, and how droid actions work in play.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_002",
+      "source_class": "codex",
+      "title": "TNIO Master Engineers: Droid Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_002"
+    },
+    {
+      "authority_for": [
+        "starship_policy",
+        "ownership_limits",
+        "engineering_policy",
+        "starship_acquisition",
+        "ship_rank_limits",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A TNIO codex for the Master Engineers program that explains how eligible members acquire, commission, and register starships. It also defines modification slots, ship categories, workshop procedures, and related combat/repair rules.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_036",
+      "source_class": "codex",
+      "title": "TNIO Master Engineers: Starship Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_036"
+    },
+    {
+      "authority_for": [
+        "vehicle_policy",
+        "ownership_limits",
+        "engineering_policy",
+        "vehicle_construction",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A TNIO Master Engineers codex for acquiring, building, registering, and modifying ground vehicles. It defines vehicle classes, ownership limits, workshop procedures, and the registry/approval rules tied to use in events.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_008",
+      "source_class": "codex",
+      "title": "TNIO Master Engineers: Vehicle Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_008"
+    },
+    {
+      "authority_for": [
+        "military_policy",
+        "military_progression",
+        "academy_cadre",
+        "visitor_rules",
+        "pet_droid_vehicle_rules",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A handbook for the TNIO Imperial Military Faction covering who may join, how cadets train and rank up, and the conduct, uniform, and command rules members must follow. It also defines how droids, visitors, pets, and vehicles are handled within the faction.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_020",
+      "source_class": "handbook",
+      "title": "TNIO-MD-01 The Imperial Military Faction",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_020"
+    },
+    {
+      "authority_for": [
+        "storyline",
+        "operation_recaps",
+        "imperial_news_bulletins",
+        "mirial_campaign",
+        "operation_bastion"
+      ],
+      "avoid_for": [
+        "policy_requirement"
+      ],
+      "description": "A compiled Discord-side storyline archive of TNIO imperial narrative beats, organized as a chain of \"Imperial News Bulletin\" entries. It covers the attack and defense of The Desolator, key battle outcomes, and the Imperial fleet\u2019s surprise assault on Mirial.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_043",
+      "source_class": "chronicle",
+      "title": "TNIO-Storyline-Narative (from discord channel)",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_043"
+    },
+    {
+      "authority_for": [
+        "combat_rules",
+        "dice_rules",
+        "hp_by_rank",
+        "initiative",
+        "action_checks",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A TNIO rules guide explaining the universal dice-rolling system used for combat and other RP actions that can fail. It lays out rank-based HP and dice, initiative, attack/defense resolution, and how faction bonuses and stacking rules work.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_025",
+      "source_class": "rulebook",
+      "title": "TNIO: A Guide to Combat and a Universal Rolling System",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_025"
+    },
+    {
+      "authority_for": [
+        "planets",
+        "planet_control",
+        "housing_eligibility",
+        "hyperlanes",
+        "planet_submission",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "An in-character TNIO archive codex that catalogs planets with control, climate, location, routes, landscape, and notes, plus guidance on player housing and how to submit new planets. It is meant as a reference for planetary affairs and major worlds in the faction's story.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_038",
+      "source_class": "codex",
+      "title": "TNIO: Codex of Planets",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_038"
+    },
+    {
+      "authority_for": [
+        "honor_guard_policy",
+        "recruitment",
+        "chain_of_command",
+        "duty_locations",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A codex for the Imperial Honor Guard detailing its purpose, hierarchy, conduct rules, recruitment, and where members may be deployed. It defines the Guard as the Empire\u2019s elite protectors and explains how its ranks and command chain work in practice.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_016",
+      "source_class": "codex",
+      "title": "TNIO: Honor Guard Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_016"
+    },
+    {
+      "authority_for": [
+        "war_forge_policy",
+        "crafting_policy",
+        "weapon_modification",
+        "rank_restrictions",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A codex for the Ministry War Forge event, outlining how participants craft and modify weapons, what ranks can use which materials, and what weapon/model reference lists are available. It also notes enclave-exclusive options, mod limits, and general forging rules.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_017",
+      "source_class": "codex",
+      "title": "TNIO: Ministry War Forge Codex",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_017"
+    },
+    {
+      "authority_for": [
+        "praetorian_forging",
+        "crafting_policy",
+        "forging_dc",
+        "rank_restrictions",
+        "crystal_acquisition",
+        "policy_requirement"
+      ],
+      "avoid_for": [],
+      "description": "A comprehensive Praetorian Forge codex covering material rarities, DCs, rank restrictions, and step-by-step forging/modification rules for lightsabers, melee weapons, blasters, and alchemical gear. It also records approval requirements and contributor credits for the guild\u2019s crafting system.",
+      "id": "REDACTED_GOOGLE_DRIVE_ID_041",
+      "source_class": "codex",
+      "title": "TNIO: Praetorian Forging Codex (2026)",
+      "web_url": "REDACTED_GOOGLE_DRIVE_URL_041"
+    }
+  ],
+  "generated_at": "2026-05-12T00:00:00-04:00",
+  "purpose": "Route TNIO questions to the right class of source and prevent policy answers from being drawn from rosters, registries, and raw sheet rows.",
+  "version": "tnio-source-authority-map-v1"
+}

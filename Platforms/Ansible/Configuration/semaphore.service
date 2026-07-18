@@ -1,0 +1,20 @@
+[Unit]
+Description=Semaphore UI
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root
+Environment=HOME=/root
+Environment=LANG=C.utf8
+Environment=LC_ALL=C.utf8
+Environment=PATH=/opt/ansible-current/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+ExecStart=/usr/bin/semaphore --config /root/config.json server
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

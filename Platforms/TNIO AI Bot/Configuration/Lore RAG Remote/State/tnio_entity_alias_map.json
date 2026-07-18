@@ -1,0 +1,177 @@
+{
+  "aliases": [
+    {
+      "alias": "Rock",
+      "canonical": "Darth Kruea",
+      "categories": [
+        "current_roster",
+        "grand_council"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Ghost",
+      "canonical": "Colonel Ghost",
+      "categories": [
+        "current_roster",
+        "imperial_military",
+        "master_engineers"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Racer",
+      "canonical": "Colonel Racer",
+      "categories": [
+        "current_roster",
+        "imperial_military",
+        "master_engineers"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Moon",
+      "canonical": "Colonel Moon",
+      "categories": [
+        "current_roster",
+        "imperial_military",
+        "master_engineers"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Sharps",
+      "canonical": "Colonel Sharps",
+      "categories": [
+        "current_roster",
+        "imperial_military"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Butcher",
+      "canonical": "Major Butcher",
+      "categories": [
+        "current_roster",
+        "imperial_military",
+        "intelligence"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Harik",
+      "canonical": "Grand Moff Dorr'in Harik",
+      "categories": [
+        "current_roster",
+        "grand_council",
+        "profile_character"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Dorr'in",
+      "canonical": "Grand Moff Dorr'in Harik",
+      "categories": [
+        "current_roster",
+        "grand_council",
+        "profile_character"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Beastarius",
+      "canonical": "Darth Beastarius",
+      "categories": [
+        "current_roster",
+        "imperial_intelligence",
+        "beastmasters"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Rakkos",
+      "canonical": "Darth Rakkos",
+      "categories": [
+        "current_roster",
+        "imperial_intelligence",
+        "honor_guard"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Erebus",
+      "canonical": "Darth Erebus Cain",
+      "categories": [
+        "current_roster",
+        "sith_academy",
+        "profile_character"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Erebus Cain",
+      "canonical": "Darth Erebus Cain",
+      "categories": [
+        "current_roster",
+        "sith_academy",
+        "profile_character"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Kasimir",
+      "canonical": "Darth Kasimir Revik",
+      "categories": [
+        "current_roster",
+        "sith_academy"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Vorrok",
+      "canonical": "Darth Vorrok Tuuk",
+      "categories": [
+        "current_roster",
+        "sith_academy"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "T'Falla",
+      "canonical": "Darth Tek T'Falla",
+      "categories": [
+        "current_roster",
+        "praetorian_legion"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Tek",
+      "canonical": "Darth Tek T'Falla",
+      "categories": [
+        "current_roster",
+        "praetorian_legion"
+      ],
+      "source_title": "Know Your Empire"
+    },
+    {
+      "alias": "Kujan",
+      "canonical": "Kujan",
+      "categories": [
+        "entity_profile"
+      ],
+      "source_title": "The Dark Lord of the Sith"
+    },
+    {
+      "alias": "Operation Bastion",
+      "canonical": "Domination Campaign: Operation Bastion Recap",
+      "categories": [
+        "storyline"
+      ],
+      "source_title": "TNIO-Storyline-Narative (from discord channel)"
+    }
+  ],
+  "generated_at": "2026-05-12T00:00:00-04:00",
+  "purpose": "Curated alias hints layered on top of the extracted source-map aliases.",
+  "version": "tnio-entity-alias-map-v1"
+}

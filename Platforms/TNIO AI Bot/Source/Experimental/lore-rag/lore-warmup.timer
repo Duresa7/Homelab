@@ -1,0 +1,13 @@
+[Unit]
+Description=Weekly pre-warm of the TNIO agent-answer cache
+
+[Timer]
+# Once a week (Sunday 04:30 UTC), top 10 most-asked questions.
+# Total weekly Codex spend: ~30 calls (10 questions × 3 calls each).
+OnCalendar=Sun *-*-* 04:30:00
+Persistent=true
+RandomizedDelaySec=900
+Unit=lore-warmup.service
+
+[Install]
+WantedBy=timers.target

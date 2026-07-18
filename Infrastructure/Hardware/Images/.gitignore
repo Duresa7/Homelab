@@ -1,0 +1,4 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!image-1776104321961.jpg

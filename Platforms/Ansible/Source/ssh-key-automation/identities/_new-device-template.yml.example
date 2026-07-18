@@ -1,0 +1,14 @@
+---
+# Copy this file to identities/<device-id>.yml, then replace every example value.
+# Only a public key belongs here. Never paste a private key.
+ssh_identity:
+  id: travel-laptop
+  display_name: Travel Laptop
+  fingerprint: SHA256:REPLACE_WITH_PUBLIC_KEY_FINGERPRINT
+  current_public_key: ssh-ed25519 REPLACE_WITH_PUBLIC_KEY_DATA travel-laptop
+  target_hosts:
+    - docker-main
+    - app-01
+  rotation:
+    replacement_public_key: ''
+    operator_verified: false

@@ -1,0 +1,88 @@
+# TNIO Bot Full Corpus Audit And Capability Upgrade - 2026-05-12
+
+**Created:** 2026-05-12  
+**Last updated:** 2026-07-16
+
+## Summary
+
+Implemented the full-corpus audit and accuracy-routing upgrade for the TNIO Discord bot.
+
+The local Google Drive connector confirmed the TNIO folder contains 45 active Docs/Sheets. The bot manifest on `REDACTED_OPERATIONAL_HOST` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
+
+## Local Audit Artifacts
+
+Created:
+
+- [corpus_inventory.json](../../Evidence/Corpus%20Audits/2026-05-12/corpus_inventory.json)
+- [source_authority_map.json](../../Evidence/Corpus%20Audits/2026-05-12/source_authority_map.json)
+- [policy_cards.json](../../Evidence/Corpus%20Audits/2026-05-12/policy_cards.json)
+- [entity_alias_map.json](../../Evidence/Corpus%20Audits/2026-05-12/entity_alias_map.json)
+- [eval_questions.json](../../Evidence/Corpus%20Audits/2026-05-12/eval_questions.json)
+- [Audit README](../../Evidence/Corpus%20Audits/2026-05-12/README.md)
+
+Connector notes:
+
+- Verified local connector listing against the TNIO folder: 45 files.
+- Successfully fetched and inspected representative Doc/Sheet content locally, including `Intel Faction Guide`, `Know Your Empire`, and `TNIO Imperial Intelligence Roster`.
+- `TNIO Master Engineers: Starship Codex` and `TNIO Master Engineers: Droid Codex` returned 403 on local text export, so their already-synced bot exports were used only for those content gaps.
+
+## Bot Artifacts Added
+
+Added these runtime artifacts to `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/`:
+
+- `tnio_source_authority_map.json`
+- `tnio_policy_cards.json`
+- `tnio_entity_alias_map.json`
+- `tnio_eval_questions.json`
+
+These tell the bot which archive shelf is authoritative for each kind of question, and which sources should be avoided for policy answers.
+
+## Bot Code Changes
+
+Updated `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_agent.py`:
+
+- Added corpus-artifact loading.
+- Added source authority routing for policy, roster/current office, story, profile, ownership, progression, ability, combat, engineering, faction, and casual/persona questions.
+- Policy questions now strongly prefer guides, codices, rulebooks, progression records, and policy tables.
+- Roster, tracking, registry, character-profile, and raw ability-sheet rows are penalized for policy questions unless they are actually the right source class.
+- Added artifact-based targeted retry calls when first retrieval does not contain a proper authoritative source.
+- Added artifact hints from curated aliases like Ghost, Racer, Moon, Sharps, Beastarius, Rakkos, Erebus, Harik, Kujan, and Operation Bastion.
+- Added stronger direct source-backed answers for Sithspawn creation so it uses Sithspawn Alchemy plus the relevant Sith Alchemy 2/3 ability rows instead of random Force ability rows.
+
+Updated `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_mcp_server.py`:
+
+- Bumped `/agent-answer` cache key from `v31` to `v32` so old wrong cached answers do not survive the routing upgrade.
+
+Added `/home/REDACTED_DEPLOYMENT_USER/lore-rag/test_corpus_accuracy.py`.
+
+## Verification
+
+Passed on `REDACTED_OPERATIONAL_HOST`:
+
+- `python3 -m py_compile lore_agent.py lore_mcp_server.py test_accuracy_policy.py test_corpus_accuracy.py`
+- `python3 test_accuracy_policy.py`
+- `python3 test_corpus_accuracy.py`
+
+Restarted only:
+
+- `lore-search-http.service`
+- `lore-discord-bot.service`
+
+Both services are active.
+
+Live `/agent-answer` checks:
+
+- `what rank do I need to join Intel as a sith` -> correct Apprentice/Candidate answer from `Intel Faction Guide`.
+- `As a military Captain, how many droids can I own, and how many functions can each one have?` -> correct 7 registrations / 3 functions from `TNIO Master Engineers: Droid Codex`.
+- `As a military Captain can I own a Destroyer?` -> correct Captain ceiling and Destroyer threshold from `TNIO Master Engineers: Starship Codex`.
+- `Who is the current Minister of War and the current Commandant of the military?` -> correct Colonel Ghost / Colonel Racer from `Know Your Empire`.
+- `What do I need to do to reach Darth status?` -> correct Road to Darth / MoG path from `Character Progression in The New Imperial Order`.
+- `tell me about operation bastion in detail` -> correct Operation Bastion recap from `TNIO-Storyline-Narative`.
+- `How can I create a sithspawn?` -> correct Sithspawn Alchemy answer from `Praetorian Legion Specializations Codex` plus Sith Alchemy 2/3 rows.
+- `beep boop` -> persona response, no random beast-codex retrieval.
+
+## Remaining Notes
+
+This is not model retraining. It is a retrieval and verification upgrade: the bot now has a durable source-authority map and policy-card layer so new questions are routed by topic and source class instead of only by keyword overlap.
+
+The bot still depends on the quality of Drive text extraction and the wording in the source records. If source records conflict, the intended behavior is to prefer the more authoritative/current source type and log enough evidence for later no-vote/abstain review.

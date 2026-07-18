@@ -1,0 +1,18 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!S01-First-Peer-Debian-Connected-2026-07-12.png
+!S02-Control-Center-Single-Peer-2026-07-12.png
+!S03-Peers-Two-Peers-Add-Peer-Types-2026-07-12.png
+!S04-Control-Center-Two-Peers-2026-07-12.png
+!S05-Debian-Route-Before-LAN-2026-07-12.png
+!S06-Add-Resource-Initial-2026-07-12.png
+!S07-Add-Resource-Details-2026-07-12.png
+!S08-Access-Policy-Name-2026-07-12.png
+!S09-Resource-Access-Policy-2026-07-12.png
+!S10-Add-Routing-Peer-Docker-Network-2026-07-12.png
+!S11-Routing-Peer-Advanced-Masquerade-2026-07-12.png
+!S12-Network-Complete-AlphaSec-Access-2026-07-12.png
+!S13-Debian-Tunnel-And-Route-Flip-2026-07-12.png
+!S14-Debian-Routed-Reach-And-SNI-2026-07-12.png
+!S15-Debian-HTTPS-200-Through-Tunnel-2026-07-12.png

@@ -1,0 +1,7 @@
+﻿// Permit the active local GNOME session for REDACTED_USER_001 to perform Polkit actions
+// without an authentication prompt. Remote/inactive sessions are excluded.
+polkit.addRule(function(action, subject) {
+    if (subject.user === "REDACTED_USER_001" && subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
+});

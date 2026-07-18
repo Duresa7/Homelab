@@ -1,0 +1,322 @@
+{
+  "generated_at": "2026-05-12T00:00:00-04:00",
+  "rules": [
+    {
+      "answer_facts": [
+        "Imperial Military members may join Imperial Intelligence at any rank.",
+        "Sith must be at least Apprentice before joining Imperial Intelligence.",
+        "Imperial Intelligence takes one faction slot.",
+        "New members begin as Candidate."
+      ],
+      "avoid_sources": [
+        "TNIO Imperial Intelligence Roster"
+      ],
+      "category": "imperial_intelligence_policy",
+      "id": "intel_joining_requirements",
+      "routing_queries": [
+        "Imperial Intelligence is available",
+        "Sith must be at least an Apprentice",
+        "How do I join Intel"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_022",
+      "source_title": "Intel Faction Guide",
+      "trigger_all_any_group": [
+        [
+          "join",
+          "joining",
+          "eligible",
+          "requirement",
+          "rank",
+          "slot"
+        ]
+      ],
+      "trigger_any": [
+        "intel",
+        "intelligence",
+        "imperial intelligence"
+      ]
+    },
+    {
+      "answer_facts": [
+        "NFU characters must be part of or join the Imperial Military and achieve at least 7S before Cipher consideration after Intel Training.",
+        "Sith must be at least Apprentice to join Intelligence and need no additional marks before Cipher consideration.",
+        "Cipher itself is listed as 10I + 7S for the NFU member-rank path."
+      ],
+      "avoid_sources": [
+        "TNIO Imperial Intelligence Roster"
+      ],
+      "category": "cipher_requirements",
+      "id": "intel_cipher_requirements",
+      "routing_queries": [
+        "NFU Characters 7S Cipher",
+        "Sith additional marks consideration Cipher",
+        "Cipher 10I 7S"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_022",
+      "source_title": "Intel Faction Guide",
+      "trigger_all_any_group": [
+        [
+          "become",
+          "promotion",
+          "promote",
+          "considered",
+          "need",
+          "requirement"
+        ]
+      ],
+      "trigger_any": [
+        "cipher"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Minister of War: Colonel Ghost.",
+        "Academy Commandant: Colonel Racer.",
+        "Minister of Intelligence: Darth Beastarius.",
+        "Keeper of Intelligence: Darth Rakkos.",
+        "Praetorian Legatus: Darth Tek T'Falla.",
+        "Sith Academy Grand Overseer: Darth Kasimir Revik.",
+        "High Overseer: Darth Vorrok Tuuk.",
+        "Forcemaster: Darth Erebus Cain."
+      ],
+      "avoid_sources": [],
+      "category": "current_roster",
+      "id": "current_offices_directory",
+      "routing_queries": [
+        "Know Your Empire Imperial Military Minister of War Academy Commandant",
+        "Know Your Empire Imperial Intelligence Minister Keeper"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_007",
+      "source_title": "Know Your Empire",
+      "trigger_any": [
+        "current",
+        "who is",
+        "who leads",
+        "minister",
+        "commandant",
+        "keeper",
+        "leader",
+        "in charge"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Apprentice/Sergeant: Starfighter through Freighter.",
+        "Lord/Captain: Starfighter through Corvette.",
+        "Lord I/Major, Lord II/Colonel, and High Lord/General: Starfighter through Frigate.",
+        "Darth/Moff/Regulator: Starfighter through Destroyer.",
+        "Councilor+: All."
+      ],
+      "avoid_sources": [
+        "Imperial Mechanics: Universal Registry"
+      ],
+      "category": "starship_policy",
+      "id": "starship_rank_limits",
+      "routing_queries": [
+        "ship types available by rank",
+        "Starfighter through Destroyer",
+        "Darth Moff Regulator Destroyer"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_036",
+      "source_title": "TNIO Master Engineers: Starship Codex",
+      "trigger_all_any_group": [
+        [
+          "rank",
+          "own",
+          "have",
+          "allowed",
+          "available",
+          "authorization",
+          "what can"
+        ]
+      ],
+      "trigger_any": [
+        "ship",
+        "starship",
+        "vessel",
+        "destroyer",
+        "corvette",
+        "frigate",
+        "freighter"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Lord/Captain: 7 droid registrations and 3 functions per droid; Assassin Function is not allowed at that bracket.",
+        "Councilor and above: Any registrations and Any functions.",
+        "Operational restrictions still govern droid escorts, supervision, and event use."
+      ],
+      "avoid_sources": [
+        "Imperial Mechanics: Universal Registry"
+      ],
+      "category": "droid_policy",
+      "id": "droid_rank_limits",
+      "routing_queries": [
+        "droid rank ownership limits functions",
+        "Lord Captain 7 registrations 3 functions",
+        "ownership laws single droid"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_002",
+      "source_title": "TNIO Master Engineers: Droid Codex",
+      "trigger_all_any_group": [
+        [
+          "own",
+          "have",
+          "function",
+          "functions",
+          "rank",
+          "allowed",
+          "registration",
+          "registrations"
+        ]
+      ],
+      "trigger_any": [
+        "droid",
+        "droids"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Sith progression is split into Road to Apprentice, Road to Lord, and Road to Darth sections.",
+        "Road to Darth is governed by Marks of Glory after Lord status.",
+        "This source should override unrelated crystal, beast, or ability rows for progression questions."
+      ],
+      "avoid_sources": [
+        "Master Ability List",
+        "Codex to the Beasts of the Galaxy"
+      ],
+      "category": "character_progression",
+      "id": "character_progression_sith",
+      "routing_queries": [
+        "Road to Darth Marks of Glory Darth Status",
+        "Road to Lord 60M",
+        "Road to Apprentice academy marks"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_015",
+      "source_title": "Character Progression in The New Imperial Order",
+      "trigger_all_any_group": [
+        [
+          "rank",
+          "become",
+          "reach",
+          "need",
+          "requirement",
+          "progression",
+          "marks"
+        ]
+      ],
+      "trigger_any": [
+        "apprentice",
+        "lord",
+        "darth",
+        "marks of glory",
+        "mog",
+        "promotion",
+        "progression"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Sithspawn creation belongs to Sithspawn Alchemy / Ritualist-line Praetorian material, not generic Force Sphere rows.",
+        "Sith Alchemy 2 and Sith Alchemy 3 distinguish intermediate and powerful Sithspawn creation.",
+        "Powerful Sithspawn creation requires approval through the relevant authority."
+      ],
+      "avoid_sources": [
+        "Master Ability List"
+      ],
+      "category": "sithspawn_policy",
+      "id": "sithspawn_creation",
+      "routing_queries": [
+        "Sithspawn Alchemy Specialization creation of Sithspawn life",
+        "Sith Alchemy 2 intermediate Sithspawn",
+        "Sith Alchemy 3 powerful Sithspawns"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_021",
+      "source_title": "Praetorian Legion Specializations Codex",
+      "trigger_all_any_group": [
+        [
+          "create",
+          "make",
+          "creation",
+          "alchemy",
+          "ritual",
+          "need",
+          "how"
+        ]
+      ],
+      "trigger_any": [
+        "sithspawn",
+        "sith spawn"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Military faction rules, academy structure, training, promotion, uniform, visitor, and pet/droid/vehicle rules belong in TNIO-MD-01.",
+        "Questions about current Military office holders belong to Know Your Empire instead."
+      ],
+      "avoid_sources": [
+        "Know Your Empire"
+      ],
+      "category": "military_policy",
+      "id": "military_faction_rules",
+      "routing_queries": [
+        "military faction eligibility academy cadre promotion requirements",
+        "personal pets droids vehicles academy grounds"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_020",
+      "source_title": "TNIO-MD-01 The Imperial Military Faction",
+      "trigger_all_any_group": [
+        [
+          "rank",
+          "join",
+          "need",
+          "allowed",
+          "own",
+          "academy",
+          "requirement"
+        ]
+      ],
+      "trigger_any": [
+        "military",
+        "captain",
+        "sergeant",
+        "academy cadre",
+        "drill instructor",
+        "pets",
+        "vehicles"
+      ]
+    },
+    {
+      "answer_facts": [
+        "Operation Bastion is a Domination Campaign recap in the storyline narrative.",
+        "The correct answer should read the recap section itself, not nearby bulletin chatter."
+      ],
+      "avoid_sources": [],
+      "category": "storyline",
+      "id": "operation_bastion_recap",
+      "routing_queries": [
+        "Domination Campaign Operation Bastion Recap",
+        "Mirial invasion timeline Operation Bastion"
+      ],
+      "source_id": "REDACTED_GOOGLE_DRIVE_ID_043",
+      "source_title": "TNIO-Storyline-Narative (from discord channel)",
+      "trigger_all_any_group": [
+        [
+          "operation",
+          "what",
+          "details",
+          "recap",
+          "happened",
+          "was"
+        ]
+      ],
+      "trigger_any": [
+        "operation bastion",
+        "bastion",
+        "mirial",
+        "campaign recap"
+      ]
+    }
+  ],
+  "version": "tnio-policy-cards-v1"
+}

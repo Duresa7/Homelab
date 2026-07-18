@@ -1,0 +1,19 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!Cluster-Net-Corosync-Link1-Prechange-Proxmox-Cluster-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-02-grey-server-Network-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-02-grey-server-Network-Before-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-03-purple-server-Network-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-03-purple-server-Network-Before-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-04-blue-server-Network-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-04-blue-server-Network-Before-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-05-red-server-Network-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-05-red-server-Network-Before-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-07-Corosync-Cluster-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-07-Corosync-Cluster-Before-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-08-Final-Proxmox-Dashboard-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-09-red-server-Bridge-VLANs-After-2026-07-10.png
+!Cluster-Net-Corosync-Link1-S-09-red-server-Bridge-VLANs-Before-2026-07-10.png
+!Network-Segmentation-Cluster-Net-Postchange-UniFi-Dashboard-2026-07-10.png
+!Network-Segmentation-Cluster-Net-Prechange-UniFi-Dashboard-2026-07-10.png
