@@ -1,7 +1,9 @@
-﻿# Unifi VPN, Networks & Port Profiles
+# Unifi VPN, Networks & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
+
+This is my inventory of VPN servers and clients, reusable firewall groups, and switch port profiles. I keep it in sync with the controller.
 
 ## VPN Servers
 
@@ -37,7 +39,7 @@ Reusable port/address groups referenced by firewall policies.
 
 | Profile | Port Mode | Native VLAN / Network | Tagged VLAN Management | Tagged VLANs | PoE | STP | 802.1X | PTP | Flow Control |
 |---|---|---|---|---|---|---|---|---|---|
-| Management | Uplink | Management | Allow All | All | Auto | On | Force Authorized | — | — |
-| Trusted | Edge | Trusted (VLAN 10) | — | — | Auto | On | Force Authorized | — | — |
-| IoT | Edge | IoT (VLAN 20) | — | — | Auto | On | Force Authorized | — | — |
+| Management | Uplink | Management | Allow All | All | Auto | On | Force Authorized | - | - |
+| Trusted | Edge | Trusted (VLAN 10) | - | - | Auto | On | Force Authorized | - | - |
+| IoT | Edge | IoT (VLAN 20) | - | - | Auto | On | Force Authorized | - | - |
 | Proxmox-Trunk | Uplink | None | Custom | Personal-A (40), Secure Client (60), AD-SERVERS (65), MGMT-A (70), Cluster-Net (71), Security-A (72), SERVERS-A (80), Access-A (85), DMZ-A (90) | Off | On (STP Uplink) | Force Authorized | On | On |

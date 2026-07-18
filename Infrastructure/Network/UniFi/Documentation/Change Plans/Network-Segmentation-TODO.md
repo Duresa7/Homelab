@@ -1,20 +1,20 @@
 # Network Segmentation TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-Zones (REDACTED_PRIVATE_ORG_LABEL-Access, REDACTED_PRIVATE_ORG_LABEL-Security, REDACTED_PRIVATE_ORG_LABEL-Cluster), networks (Access-A/85, Security-A/72, Cluster-Net/71), and the Zone Matrix / firewall policies connecting them are already done. Remaining work is below.
+I've already built the zones (REDACTED_PRIVATE_ORG_LABEL-Access, REDACTED_PRIVATE_ORG_LABEL-Security, REDACTED_PRIVATE_ORG_LABEL-Cluster), the networks (Access-A/85, Security-A/72, Cluster-Net/71), and the Zone Matrix / firewall policies connecting them. Remaining work is below.
 
 ## Access-A Deployment
 
 - [x] Deploy network-access / connectivity tooling onto Access-A: Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 now run on LXC 107 `docker-network`
 - [x] Assign a static IP from the reserved range: `192.168.85.2/24` (DHCP pool starts at `.6`)
-- [x] Confirm reachability from both Internal and VPN. Internal DNS and application administration were verified; the VPN-client path into Access-A was validated 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md)).
+- [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
 - [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other REDACTED_PRIVATE_ORG_LABEL-Access-to-External IPv4 traffic
 
-Infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; the first-peer enrollment and VPN-client path into Access-A were completed 2026-07-12 and are recorded in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
-The web and NTP destination addresses remain dynamic because Debian mirrors, container registries, certificate services, and NTP pools can rotate. Least privilege is enforced through the single-host source match, required ports only, ordered catch-all block, and logging rather than a brittle destination-IP list.
+I left the web and NTP destination addresses dynamic because Debian mirrors, container registries, certificate services, and NTP pools can rotate. Least privilege is enforced through the single-host source match, required ports only, ordered catch-all block, and logging rather than a brittle destination-IP list.
 
 ## Security-A Migration
 
@@ -25,20 +25,20 @@ The web and NTP destination addresses remain dynamic because Debian mirrors, con
 
 Completed 2026-07-12. The VM cutovers, replacement firewall paths, Security-A egress policy, Galaxy firewall changes, cleanup, rollback points, and verification are recorded in [Security-A Migration - 2026-07-12](../Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
 
-The operator updated the UniFi console SIEM/syslog destination to `192.168.72.3:1514` on 2026-07-12. A fresh CEF event was processed by SC4S, forwarded through HEC without drops, and indexed in Splunk's `netops` index. No additional Gateway-to-Security policy was required.
+I updated the UniFi console SIEM/syslog destination to `192.168.72.3:1514` on 2026-07-12. A fresh CEF event was processed by SC4S, forwarded through HEC without drops, and indexed in Splunk's `netops` index. No additional Gateway-to-Security policy was required.
 
 ### Deferred follow-ups
 
-- [x] Audit and reset the old Wazuh agents: removed disconnected `edge-01` and incorrect `wp-01` registrations; repointed/cleared `app-01` and `edge-01` for operator re-enrollment. `supabase-01` and `alpha-prod-01` have no agent installed; fresh enrollment is tracked in the [Wazuh TODO](../../../../../Platforms/Wazuh/Documentation/TODO.md).
+- [x] Audit and reset the old Wazuh agents: I removed the disconnected `edge-01` and incorrect `wp-01` registrations and repointed/cleared `app-01` and `edge-01` so I can re-enroll them. `supabase-01` and `alpha-prod-01` have no agent installed; fresh enrollment is tracked in the [Wazuh TODO](../../../../../Platforms/Wazuh/Documentation/TODO.md).
 - [x] Install and configure `node_exporter` on `purple-server`, `blue-server`, and `red-server`; all three targets report `UP`.
 - [x] Reconcile stale Prometheus targets: corrected `security-01`, removed unavailable `app-01`/`supabase-01`, and verified exactly seven retained jobs `UP`.
 - [ ] Review whether the retained Galaxy firewall accept for TCP 8006 from `192.168.70.0/24` can be narrowed in the MGMT-A lockdown change.
 
 The three completed follow-ups are recorded in [Security Monitoring Baseline Cleanup - 2026-07-13](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 
-## Next Bounded Change — MGMT-A Final Lockdown
+## Next Bounded Change: MGMT-A Final Lockdown
 
-The allowed-set decision is resolved: MGMT-A may be reached from Trusted (VLAN 10), Secure (VLAN 50), the existing WireGuard VPN zone, and future NetBird traffic arriving from REDACTED_PRIVATE_ORG_LABEL-Access through its routing peer. Implementing and validating the final MGMT-A block policy is intentionally out of scope for the Security-A migration and remains a separate change.
+I've resolved the allowed-set decision: MGMT-A may be reached from Trusted (VLAN 10), Secure (VLAN 50), the existing WireGuard VPN zone, and future NetBird traffic arriving from REDACTED_PRIVATE_ORG_LABEL-Access through its routing peer. Next I implement and validate the final MGMT-A block policy; I kept it out of the Security-A migration's scope on purpose, and it stays a separate bounded change.
 
 ## Cluster-Net Corosync Link Addition
 
@@ -46,7 +46,7 @@ The allowed-set decision is resolved: MGMT-A may be reached from Trusted (VLAN 1
 - [x] Verify each node's physical switch port uses the Proxmox-Trunk profile and carries Cluster-Net/71
 - [x] Add a second interface per node on Cluster-Net: grey=192.168.71.10, purple=.11, blue=.12, red=.13
 - [x] Add this as Corosync link1 alongside the existing link0 on MGMT-A; link0 was preserved
-- [x] Verify cluster health after the change (`pvecm status` — all 4 nodes, quorum intact, both links active)
+- [x] Verify cluster health after the change (`pvecm status` showed all 4 nodes, quorum intact, both links active)
 - [x] Confirm GUI/SSH access via the original 192.168.70.10 – .13 addresses is unaffected
 
 Completed 2026-07-10. The authoritative record, exact command transcripts, configuration exports, and step screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).

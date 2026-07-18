@@ -1,9 +1,9 @@
-﻿# PC Specifications — Jedi PC
+# PC Specifications: Jedi PC
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 
- 2026-07-8*
+Jedi PC is my primary Windows workstation, the machine I administer the homelab from.
 
 ## System Overview
 
@@ -24,7 +24,6 @@
 | Architecture | 64-bit |
 | Installed Date | 2025-07-15 |
 
-
 ## Processor (CPU)
 
 | Property | Value |
@@ -43,16 +42,14 @@
 | DIMM 1 | G.Skill International | F5-6000J3038F16G | 16 GB | 4800 MT/s (configured) |
 | DIMM 1 | G.Skill International | F5-6000J3038F16G | 16 GB | 4800 MT/s (configured) |
 
-> Note: Modules are rated for 6000 MT/s (DDR5); currently running at 4800 MT/s.
+The modules are rated for 6000 MT/s (DDR5); they currently run at 4800 MT/s.
 
 ## Graphics (GPU)
 
-### Primary — NVIDIA GeForce RTX 5070 Ti
-
-
-
-### Integrated — AMD Radeon Graphics (Ryzen iGPU)
-
+| Adapter | Model |
+|---|---|
+| Primary | NVIDIA GeForce RTX 5070 Ti |
+| Integrated | AMD Radeon Graphics (Ryzen iGPU) |
 
 ## Motherboard & BIOS
 
@@ -66,23 +63,21 @@
 ## Storage
 
 ### Physical Disks
+
 | Drive | Type | Bus | Capacity | Health |
 |---|---|---|---|---|
 | Samsung SSD 9100 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
 | Samsung SSD 990 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
 
-
 ### Logical Volumes
-| Letter | Label | Filesystem | Size | Health |
-|---|---|---|---|---|
-| C: | — | NTFS | 1862.27 GB | Healthy | 9100 Pro
-| D: | Storage | NTFS | 1862.27 GB | Healthy | 990 Pro
+
+| Letter | Label | Filesystem | Size | Health | Disk |
+|---|---|---|---|---|---|
+| C: | (none) | NTFS | 1862.27 GB | Healthy | 9100 Pro |
+| D: | Storage | NTFS | 1862.27 GB | Healthy | 990 Pro |
 
 ## Network
 
 | Adapter | Device Name | Link Speed |
 |---|---|---|
 | Ethernet | Realtek PCIe 2.5GbE Family Controller | 2.5 Gbps |
-
-
-

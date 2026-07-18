@@ -1,7 +1,7 @@
 # Security-A Migration
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 **Implementation date:** 2026-07-12  
 **Status:** Complete  
@@ -10,9 +10,9 @@
 
 ## Scope
 
-Move the two security and monitoring guests from MGMT-A/VLAN 70 to Security-A/VLAN 72, replace their cross-zone policy paths, apply workload-specific external egress restrictions, remove obsolete MGMT-A references, and prove the services still operate. The operator authorized the migration end to end and required zero new WAN-inbound exposure.
+Move the two security and monitoring guests from MGMT-A/VLAN 70 to Security-A/VLAN 72, replace their cross-zone policy paths, apply workload-specific external egress restrictions, remove obsolete MGMT-A references, and prove the services still operate. I ran the migration end to end and required zero new WAN-inbound exposure.
 
-Wazuh agent repointing was removed from the active scope at the operator's request and recorded as later work. During validation, live state also showed that three planned Proxmox `node_exporter` targets did not exist and three Prometheus targets were stale or offline; the operator approved deferring those baseline corrections rather than expanding this migration.
+I pulled Wazuh agent repointing out of the active scope and recorded it as later work. During validation, live state also showed that three planned Proxmox `node_exporter` targets did not exist and three Prometheus targets were stale or offline; I deferred those baseline corrections rather than expanding this migration.
 
 ## Starting State
 
@@ -23,23 +23,23 @@ Wazuh agent repointing was removed from the active scope at the operator's reque
 
 The UniFi controller had Wazuh policies aimed at `192.168.70.20` and a MGMT-A-to-DMZ node-exporter policy. The Galaxy Datacenter firewall allowed TCP 9100 and 8006 from all of `192.168.70.0/24`. No port forward or WAN-facing policy targeted either guest.
 
-Preflight confirmed both QEMU agents responded, both NICs were VirtIO on `vmbr0` with guest firewall enabled and VLAN tag 70, and neither proposed Security-A address was in use. Network configuration and firewall files were backed up before mutation.
+My preflight confirmed both QEMU agents responded, both NICs were VirtIO on `vmbr0` with guest firewall enabled and VLAN tag 70, and neither proposed Security-A address was in use. I backed up network configuration and firewall files before changing anything.
 
 ## Decisions
 
-- Static assignments: `security-01` = `192.168.72.2/24`; `splunk-siem` = `192.168.72.3/24`; gateway and DNS = `192.168.72.1`.
-- Hard cutover one guest at a time, Splunk first. `security-01` could not start until Splunk passed service, port, UI, and egress validation.
-- Preserve NIC model, MAC, bridge, and guest-firewall state; change only the VLAN tag and in-guest addressing.
-- Permit external TCP 80/443 and UDP 123 only from the two Security-A workload IPs, then block and log all remaining REDACTED_PRIVATE_ORG_LABEL-Security-to-External IPv4 traffic.
-- Add only the inbound/cross-zone paths required for Wazuh and monitoring. Do not add WAN-inbound policies or port forwards.
-- Keep the existing Galaxy TCP 8006 accept from `192.168.70.0/24` for later review, but replace the broad TCP 9100 accept with `192.168.72.2/32`.
-- Record MGMT-A's future allowed set as Trusted/VLAN 10, Secure/VLAN 50, WireGuard VPN, and future NetBird traffic sourced from REDACTED_PRIVATE_ORG_LABEL-Access. Final MGMT-A lockdown is a separate bounded change.
+- I assigned static addresses: `security-01` = `192.168.72.2/24`; `splunk-siem` = `192.168.72.3/24`; gateway and DNS = `192.168.72.1`.
+- I cut over hard, one guest at a time, Splunk first. `security-01` could not start until Splunk passed service, port, UI, and egress validation.
+- I preserved NIC model, MAC, bridge, and guest-firewall state; I changed only the VLAN tag and in-guest addressing.
+- I permitted external TCP 80/443 and UDP 123 only from the two Security-A workload IPs, then blocked and logged all remaining REDACTED_PRIVATE_ORG_LABEL-Security-to-External IPv4 traffic.
+- I added only the inbound/cross-zone paths required for Wazuh and monitoring. No WAN-inbound policies or port forwards.
+- I kept the existing Galaxy TCP 8006 accept from `192.168.70.0/24` for later review, but replaced the broad TCP 9100 accept with `192.168.72.2/32`.
+- I recorded MGMT-A's future allowed set as Trusted/VLAN 10, Secure/VLAN 50, WireGuard VPN, and future NetBird traffic sourced from REDACTED_PRIVATE_ORG_LABEL-Access. Final MGMT-A lockdown is a separate bounded change.
 
 ## Actions and Observed Results
 
 ### 1. Stage the replacement paths
 
-Seven enabled UniFi policies were created:
+I created seven enabled UniFi policies:
 
 | Policy | Path |
 |---|---|
@@ -51,17 +51,17 @@ Seven enabled UniFi policies were created:
 | Allow Security Workloads NTP Egress | `.72.2` and `.72.3` → External UDP 123 |
 | Block REDACTED_PRIVATE_ORG_LABEL-Security Other External Egress | remaining REDACTED_PRIVATE_ORG_LABEL-Security → External IPv4 |
 
-The Galaxy firewall received `/32` accepts from `192.168.72.2` for TCP 9100 and 8006. `pve-firewall compile` completed successfully.
+I added `/32` accepts from `192.168.72.2` for TCP 9100 and 8006 to the Galaxy firewall. `pve-firewall compile` completed successfully.
 
 ### 2. Cut over `splunk-siem`
 
-The NetworkManager connection was backed up under `/root/security-a-migration-20260712-213903`, changed to `192.168.72.3/24` with gateway/DNS `192.168.72.1`, and VM 109's Proxmox NIC tag was changed from 70 to 72 without altering the VirtIO MAC, bridge, or firewall flag. The guest rebooted cleanly.
+I backed up the NetworkManager connection under `/root/security-a-migration-20260712-213903`, changed the address to `192.168.72.3/24` with gateway/DNS `192.168.72.1`, and changed VM 109's Proxmox NIC tag from 70 to 72 without altering the VirtIO MAC, bridge, or firewall flag. The guest rebooted cleanly.
 
 Post-reboot observations: `Splunkd`, `sc4s`, `sshd`, `qemu-guest-agent`, and `firewalld` were active; SC4S listened on TCP and UDP 1514; Splunk listened on 8000, 8088, and 8089; Splunk Web returned HTTP 303; HTTPS HEC health returned HTTP 200. Internal access to `https://192.168.72.3:8000` returned HTTP 303. The handoff's HTTP/200 check was superseded by this host's already-enabled HTTPS-only setting: plain HTTP reset the connection and HTTPS returned the expected unauthenticated login redirect. HTTP and HTTPS egress returned 200, NTP sources remained reachable and synchronized, and an external TCP/53 connection timed out.
 
 ### 3. Cut over `security-01`
 
-Netplan was backed up under `/root/security-a-migration-20260713-014435`, changed to `192.168.72.2/24` with gateway/DNS `192.168.72.1`, and VM 200's Proxmox NIC tag was changed from 70 to 72 while preserving all other NIC fields. The guest rebooted cleanly.
+I backed up netplan under `/root/security-a-migration-20260713-014435`, changed the address to `192.168.72.2/24` with gateway/DNS `192.168.72.1`, and changed VM 200's Proxmox NIC tag from 70 to 72 while preserving all other NIC fields. The guest rebooted cleanly.
 
 Post-reboot observations: SSH, Docker, Wazuh manager, Wazuh indexer, and Wazuh dashboard were active. The Grafana, Prometheus, and PVE-exporter containers were up. Internal requests returned HTTP 302 from the Wazuh dashboard, Grafana, and Prometheus. HTTP and HTTPS egress returned 200, `systemd-timesyncd` reported an active upstream with seven packets received, and external TCP/53 timed out.
 
@@ -69,19 +69,19 @@ Monitoring-path tests from `security-01` returned HTTP 200 from `edge-01:9100`, 
 
 ### 4. Diagnose and correct the response path
 
-The first replacement policies were initially created without automatic response policies and later updated to request them. The forward policies showed the new flag, but the controller did not create the hidden reverse companions, so monitoring connections still timed out. Re-creating the four cross-zone policies with response generation enabled at creation materialized the return paths. A temporary single-port rule isolated the behavior and was removed after the final combined rule passed.
+I initially created the first replacement policies without automatic response policies and later updated them to request one. The forward policies showed the new flag, but the controller did not create the hidden reverse companions, so monitoring connections still timed out. Re-creating the four cross-zone policies with response generation enabled at creation materialized the return paths. I used a temporary single-port rule to isolate the behavior and removed it after the final combined rule passed.
 
 This behavior and the MCP deletion limitation are recorded in the [UniFi troubleshooting log](../Troubleshooting-Log.md).
 
 ### 5. Remove obsolete state and update access inventories
 
-The three original MGMT-A policies, four superseded forward-only policies, and the temporary response test policy were removed. A fresh API listing returned 32 enabled custom policies and none of the removed names or IDs. The old Galaxy TCP 9100 accept from `192.168.70.0/24` was removed; the planned TCP 8006 management accept was retained. `pve-firewall status` returned `enabled/running` after cleanup.
+I removed the three original MGMT-A policies, the four superseded forward-only policies, and the temporary response test policy. A fresh API listing returned 32 enabled custom policies and none of the removed names or IDs. I removed the old Galaxy TCP 9100 accept from `192.168.70.0/24` and retained the planned TCP 8006 management accept. `pve-firewall status` returned `enabled/running` after cleanup.
 
-The Ansible inventory now maps `security-01` to `192.168.72.2` and `splunk-siem` to `192.168.72.3`; `ansible-inventory --graph` succeeded with an explicit UTF-8 locale. Local SSH Manager entries were added for both new addresses using the existing approved key, and detailed health checks succeeded over direct SSH.
+I updated the Ansible inventory to map `security-01` to `192.168.72.2` and `splunk-siem` to `192.168.72.3`; `ansible-inventory --graph` succeeded with an explicit UTF-8 locale. I added local SSH Manager entries for both new addresses using the existing approved key, and detailed health checks succeeded over direct SSH.
 
 ### 6. Close the UniFi SIEM export handoff
 
-The operator changed the UniFi Activity Logging destination to `192.168.72.3:1514`. The authenticated controller UI showed SIEM Server enabled with that exact address and port and eight event-content categories selected.
+I changed the UniFi Activity Logging destination to `192.168.72.3:1514`. The authenticated controller UI showed SIEM Server enabled with that exact address and port and eight event-content categories selected.
 
 At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and processed it through `vendor_product_by_source` and `p_cef_kv`. Its HEC destination showed zero dropped and zero queued events. Splunk's `per_index_thruput` metric then recorded one `netops` event at `22:40:43` with an average age of 0.720 seconds. The `netops` hot bucket created its raw-data and `.tsidx` files at the same `22:40:27` event timestamp. This proves the controller-originated CEF path from UniFi through SC4S/HEC into Splunk; no additional Gateway-to-Security policy was required.
 
@@ -114,18 +114,6 @@ At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and pr
 | WAN inbound | No Security-A port forward or external-to-Security allow created |
 | UniFi feed | SC4S CEF source processed one fresh event at 22:40:27; Splunk indexed one `netops` event at 22:40:43 |
 
-## Step Evidence
-
-| Step | Evidence | What it demonstrates |
-|---|---|---|
-| S00 Preflight | [S00-Preflight-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S00-Preflight-2026-07-12.md) | Baseline NICs, addresses, policies, agent availability, and rollback inputs |
-| S01 Staging | [S01-Firewall-Staging-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S01-Firewall-Staging-2026-07-12.md) | Replacement UniFi policies and Galaxy `/32` accepts |
-| S02 Splunk cutover | [S02-Splunk-Cutover-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S02-Splunk-Cutover-2026-07-12.md) | Address/VLAN change and SIEM service validation |
-| S03 Security cutover | [S03-Security-Cutover-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S03-Security-Cutover-2026-07-12.md) | Address/VLAN change, monitoring diagnosis, and live targets |
-| S04 Cleanup/final | [S04-Cleanup-And-Final-Verification-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S04-Cleanup-And-Final-Verification-2026-07-12.md) | Obsolete-rule removal and full final sweep |
-| S05 Access inventories | [S05-Access-And-Inventory-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S05-Access-And-Inventory-2026-07-12.md) | SSH Manager and Ansible inventory update/validation |
-| S06 UniFi feed closure | [S06-UniFi-SIEM-Export-Validation-2026-07-12.md](../../Evidence/Security-A%20Migration%20-%202026-07-12/Logs/S06-UniFi-SIEM-Export-Validation-2026-07-12.md) | Saved controller destination and fresh CEF event indexed in `netops` |
-
 ## Rollback Points
 
 - VM 109 NetworkManager backup: `/root/security-a-migration-20260712-213903`.
@@ -136,9 +124,9 @@ At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and pr
 
 ## Deferred Follow-Ups
 
-- Audit/repoint/enroll the intended Wazuh agents. The manager currently showed only `edge-01` and `wp-01` active; the operator explicitly deferred agent work.
+- Audit/repoint/enroll the intended Wazuh agents. The manager showed only `edge-01` and `wp-01` active at cutover time; I deferred the agent work.
 - Install/configure `node_exporter` on `purple-server`, `blue-server`, and `red-server`, then add their targets if desired.
 - Remove or correct stale Prometheus targets for `app-01`, old `security-01` address `192.168.70.20`, and offline `supabase-01`.
 - Review the retained Galaxy TCP 8006 accept from `192.168.70.0/24` during MGMT-A lockdown.
 
-No availability or security incident occurred. The EFI variable pseudo-filesystem on `security-01` reported 88% utilization in the generic health check, but the root filesystem was 29% used and all workload validation passed.
+No availability or security incident occurred. The EFI variable pseudo-filesystem on `security-01` reported 88% used in the generic health check, but the root filesystem was 29% used and all workload validation passed.

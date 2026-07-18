@@ -1,9 +1,9 @@
-﻿# Cloudflare Domains
+# Cloudflare Domains
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 
-Last updated: 2026-07-09
+These are the domains I manage through Cloudflare.
 
 | Domain |
 | --- |

@@ -1,7 +1,9 @@
-﻿# Galaxy Node Spec Sheet
+# Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
+
+These are the hardware specifications for my four Galaxy cluster nodes. I keep this sheet in sync with the live machines.
 
 ## Nodes
 | Node | IP | CPU | Cores / Threads | Memory | GPU | Physical storage |
@@ -20,3 +22,9 @@
 | grey-server | /dev/sdb | HDD | TOSHIBA_DT01ACA200 | 1.82 TiB | ZFS |
 | purple-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | BIOS boot |
 | red-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | BIOS boot |
+
+## Memory Modules
+
+![Two SK hynix SO-DIMM memory modules with their part and serial labels redacted](Images/image-1776104321961.jpg)
+
+Two SK hynix SO-DIMM memory modules from the node hardware; I redacted the part and serial labels in the photo.
