@@ -1,9 +1,8 @@
 # Engineering
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-18
 
-Engineering contains shared automation, reusable tooling, and projects that are not yet deployed as platforms. Once a project becomes an operated service, its primary home is `Platforms/<Service>/`.
+This is where I keep shared automation, reusable tooling, and projects I have not yet deployed as services. Once a project becomes an operated service, its primary home moves to `Platforms/<Service>/`.
 
-The `Automation/` folder is reserved for automation that spans multiple infrastructure or platform owners. Service-specific scripts remain with their service.
-
+`Automation/` is reserved for automation that spans multiple infrastructure or platform owners. Service-specific scripts stay with their service.

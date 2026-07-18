@@ -1,9 +1,8 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-18
 
-Archive retains superseded, retired, or replaced material that still has historical value. Do not archive current authoritative records or use this category as a miscellaneous dumping ground.
+This is where I keep superseded, retired, or replaced material that still has historical value. Current authoritative records never move here, and I don't use this folder as a miscellaneous dump.
 
-Preserve enough original path and date context to explain where archived material came from.
-
+Everything archived keeps enough of its original path and date context to show where it came from.
