@@ -1,7 +1,9 @@
 ﻿# Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
+
+This is my configuration inventory of the QEMU VMs and templates on the Galaxy cluster.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |

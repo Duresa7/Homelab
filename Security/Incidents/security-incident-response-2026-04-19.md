@@ -1,13 +1,12 @@
-﻿# Security Incident Response Record
+# Security Incident Response Record
 
 **Created:** 2026-04-19  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 
 **Document ID:** SIR-2026-04-19-01
-**Classification:** Internal — Confidential
+**Classification:** Internal / Confidential
 **Status:** Complete (with tracked follow-ups)
 **Date of Action:** 2026-04-19
-**Prepared By:** REDACTED_NAME_001
 **Version:** 1.1
 
 ---
@@ -52,8 +51,8 @@ In response to the publicly disclosed Vercel security incident of April 2026, I 
 
 | Asset | Could it have been exposed via the Vercel breach? | Action I took |
 |---|---|---|
-| Supabase publishable key (`VITE_SUPABASE_ANON_KEY`) | Yes — stored as a Vercel environment variable | Rotated |
-| Supabase project URL (`VITE_SUPABASE_URL`) | Yes — stored as a Vercel environment variable, but not secret | No action (public identifier) |
+| Supabase publishable key (`VITE_SUPABASE_ANON_KEY`) | Yes; stored as a Vercel environment variable | Rotated |
+| Supabase project URL (`VITE_SUPABASE_URL`) | Yes; stored as a Vercel environment variable, but not secret | No action (public identifier) |
 | Supabase secret / service key | Not stored in Vercel (edge function secret only) | Rotated as a precaution |
 | Supabase database password | Not stored in Vercel | Rotated as a precaution |
 | Supabase legacy anon JWT API key | Not stored in Vercel by design, but present as a project-level credential | Disabled |
@@ -72,7 +71,7 @@ All actions performed on 2026-04-19.
 - I rotated the project publishable key. The new active key is labeled `default_v2` (type: publishable). I deleted the previous publishable key from the project.
 - I rotated the project secret (service) key. The new active key is labeled `secret_v2`. I deleted the previous secret key from the project.
 - I rotated the Postgres database password.
-- I disabled the legacy anon JWT API key as part of this response. Prior to this incident it remained active on the project; it is now marked `disabled` and no longer honored for authentication.
+- I disabled the legacy anon JWT API key as part of this response. Before this incident it remained active on the project; it is now marked `disabled` and no longer honored for authentication.
 
 ### 5.2 Edge function secret update
 - I updated the `delete-account` edge function's stored secrets (`EDGE_PUBLISHABLE_KEY`, `EDGE_SECRET_KEY`) to reference the new publishable and secret key values respectively.
@@ -101,21 +100,21 @@ All actions performed on 2026-04-19.
 
 | Check | Method | Result |
 |---|---|---|
-| Old publishable key no longer present on project | Supabase management API key list | Pass — only `default_v2` active |
-| Old secret key no longer present on project | Manual verification in Supabase dashboard | Pass — deleted |
-| Legacy anon JWT disabled | Supabase management API key list | Pass — `disabled: true` |
+| Old publishable key no longer present on project | Supabase management API key list | Pass; only `default_v2` active |
+| Old secret key no longer present on project | Manual verification in Supabase dashboard | Pass; deleted |
+| Legacy anon JWT disabled | Supabase management API key list | Pass; `disabled: true` |
 | Edge function secrets reference new keys | Manual verification in Supabase dashboard | Pass |
 | Vercel environment variables reference new keys | Manual verification in Vercel dashboard | Pass |
 | Site functional after rotation | Manual browser test (login + data load + account delete) | Pass |
 | Edge function invocation returns success | Supabase edge function logs after deploy | Pass |
-| No rotated values in repository working tree | `grep` across source tree | Pass — zero matches |
+| No rotated values in repository working tree | `grep` across source tree | Pass; zero matches |
 
 ---
 
 ## 7. Residual Risk
 
 - **Git history** was not rewritten. Any value ever committed historically remains in the repository's commit objects. Because I have rotated the corresponding credentials and disabled the originals, any such historical exposure is **mitigated by invalidation**. I consider no further action necessary unless the repository is published or shared outside the current access boundary.
-- **Vercel activity audit** was performed via the Vercel dashboard; I observed no suspicious activity. This finding does not rule out undetected access prior to logging availability.
+- **Vercel activity audit** was performed via the Vercel dashboard; I observed no suspicious activity. This finding does not rule out undetected access before logging availability.
 - **End-user sessions** were not forcibly invalidated. User access tokens remain valid for the duration of their normal lifetime. I have no evidence that these tokens are at risk, and mass invalidation would cause widespread sign-out disruption disproportionate to the observed risk.
 
 ---
@@ -134,7 +133,7 @@ All actions performed on 2026-04-19.
 
 ## 9. Lessons Learned
 
-1. **Environment variable inventory before an incident saves time during one.** Maintaining a current inventory of where each secret is stored (which platform, which configuration path) significantly accelerates targeted rotation.
+1. **Environment variable inventory before an incident saves time during one.** Maintaining a current inventory of where each secret is stored (which platform, which configuration path) accelerates targeted rotation.
 2. **Sensitive environment variable flags should be enabled on creation**, not retrofitted during incident response.
 3. **Pre-existing bugs can mask root cause during incident response.** A separate edge function bug surfaced during post-rotation testing and I initially suspected it was rotation-related. Distinguishing coincidental failures from incident-caused failures required careful log review.
 4. **Credential rotation without verification is incomplete.** I followed each rotation with a functional test to confirm the new credential was accepted and the old one was no longer honored.
@@ -147,4 +146,4 @@ All actions performed on 2026-04-19.
 |---|---|---|---|
 | REDACTED_NAME_001 | Project Owner | Actions §5, verification §6 | 2026-04-19 |
 
-This record is maintained for internal reference and is not intended for public distribution.
+I publish this record in redacted form, with identifiers replaced by stable placeholders.

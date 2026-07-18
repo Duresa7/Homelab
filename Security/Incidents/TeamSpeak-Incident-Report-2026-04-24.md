@@ -1,7 +1,7 @@
 # TeamSpeak Service Incident Report
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 **REDACTED_PRIVATE_ORG_LABEL United - Internal IT / Cybersecurity Operations**
 
@@ -29,26 +29,26 @@
 
 ## Executive Summary
 
-On 2026-04-24, REDACTED_PRIVATE_ORG_LABEL United observed intermittent TeamSpeak client connection
-failures against the community TeamSpeak endpoint `REDACTED_CUSTOM_DOMAIN_022`.
-The TeamSpeak server process, Docker containers, and Playit tunnel were online;
-however, DNS and management-plane configuration issues introduced connection
-fragility for end users and administrative tooling.
+On 2026-04-24, users reported intermittent TeamSpeak client connection failures
+against the community TeamSpeak endpoint `REDACTED_CUSTOM_DOMAIN_022`. I began
+triage with the service layer: the TeamSpeak server process, Docker containers,
+and Playit tunnel were all online. The connection fragility for end users and
+administrative tooling traced instead to DNS and management-plane configuration.
 
-The primary issue was a non-compliant SRV DNS chain in Cloudflare. The TeamSpeak
-SRV record pointed to `REDACTED_CUSTOM_DOMAIN_022`, which was itself a CNAME. SRV
-targets should resolve directly to the service hostname, not to an alias. Some
-clients and resolvers tolerate this behavior, while others can fail resolution or
-connection setup.
+I identified the primary issue as a non-compliant SRV DNS chain in Cloudflare.
+The TeamSpeak SRV record pointed to `REDACTED_CUSTOM_DOMAIN_022`, which was
+itself a CNAME. SRV targets should resolve directly to the service hostname, not
+to an alias. Some clients and resolvers tolerate this behavior, while others can
+fail resolution or connection setup.
 
-A secondary operational issue was identified with TS3 Manager. The TS3 Manager
+I also found a secondary operational issue with TS3 Manager. The TS3 Manager
 container generated ServerQuery command bursts and triggered TeamSpeak
 ServerQuery flood protection because the Docker bridge gateway IP was not in the
 TeamSpeak `query_ip_allowlist.txt` file.
 
-Corrective action was completed by updating the Cloudflare SRV target to point
-directly at the Playit hostname and by adding the Docker bridge gateway IP to the
-TeamSpeak ServerQuery allowlist.
+I corrected both: I updated the Cloudflare SRV target to point directly at the
+Playit hostname and added the Docker bridge gateway IP to the TeamSpeak
+ServerQuery allowlist.
 
 ---
 
@@ -93,7 +93,7 @@ _ts3._udp.REDACTED_CUSTOM_DOMAIN_022
 ```
 
 This introduced resolver/client compatibility risk because the SRV target was an
-alias. The record was corrected to point directly at the Playit hostname.
+alias. I corrected the record to point directly at the Playit hostname.
 
 Current DNS behavior:
 
@@ -113,7 +113,7 @@ REDACTED_CUSTOM_DOMAIN_022
 
 ### Finding 2 - TS3 Manager Triggered ServerQuery Flood Protection
 
-TeamSpeak ServerQuery flood thresholds were observed as:
+I observed the TeamSpeak ServerQuery flood thresholds as:
 
 ```text
 serverinstance_serverquery_flood_commands=10
@@ -133,7 +133,7 @@ TeamSpeak observed TS3 Manager ServerQuery traffic from Docker gateway IP:
 172.18.0.1
 ```
 
-That IP was not previously allowlisted. The allowlist was updated to include the
+That IP was not previously allowlisted. I updated the allowlist to include the
 Docker bridge gateway used by TS3 Manager.
 
 ### Finding 3 - TS3 Manager Should Use LAN ServerQuery
@@ -175,7 +175,7 @@ or DNS resolvers could fail to complete connection resolution.
 
 ### Not Root Cause
 
-The following were checked and were not the primary cause:
+I checked the following and ruled each out as the primary cause:
 
 - TeamSpeak process failure
 - TeamSpeak virtual server offline state
@@ -355,12 +355,11 @@ TTL: 300
 
 ## Closure Statement
 
-As of 2026-04-24, the TeamSpeak production service is operational. The public
-connection path has been corrected, TS3 Manager ServerQuery flood risk has been
-mitigated, Playit has been decoupled into a shared standalone compose project,
-and the deployment documentation has been updated to reflect the known-good
-state.
+As of 2026-04-24, the TeamSpeak production service is operational. I corrected
+the public connection path, mitigated the TS3 Manager ServerQuery flood risk,
+decoupled Playit into a shared standalone compose project, and updated the
+deployment documentation to reflect the known-good state.
 
-The incident should remain in monitoring status until external users confirm
+I am keeping the incident in monitoring status until external users confirm
 successful connection through `REDACTED_CUSTOM_DOMAIN_022` and
 `REDACTED_CUSTOM_DOMAIN_023`.

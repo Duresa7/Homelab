@@ -1,7 +1,9 @@
 ﻿# Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
+
+This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
 ## Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
@@ -128,7 +130,7 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 ### Administrative Access
 
-- SSH is public-key only as `REDACTED_USER_001`; three approved administrative keys are installed.
+- SSH is public-key only as `REDACTED_USER_001`; I installed the three approved administrative keys.
 - `REDACTED_USER_001` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root and `REDACTED_USER_001` password records remain locked pending protected console entry; this does not affect key-based SSH.
 
@@ -221,6 +223,6 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 ### Administrative Access
 
-- SSH is public-key only as `REDACTED_USER_001`; approved administrative keys are installed.
+- SSH is public-key only as `REDACTED_USER_001`; I installed the approved administrative keys.
 - `REDACTED_USER_001` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked. The administrative account retains a protected console password outside the repository.

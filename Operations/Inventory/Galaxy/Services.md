@@ -1,7 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
+
+This is my inventory of the workloads and services running on each Galaxy guest.
 
 ## Summary
 | Guest | Type | Node | Role | Key workloads |

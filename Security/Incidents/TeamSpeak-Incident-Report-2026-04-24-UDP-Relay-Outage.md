@@ -1,7 +1,7 @@
 # TeamSpeak Service Incident Report
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ## Document Control
 
@@ -12,7 +12,6 @@
 | Asset | alpha-prod-01 |
 | Service | TeamSpeak 3 voice services |
 | Report Owner | REDACTED_USER_001 REDACTED_NAME_003 |
-| Prepared By | Codex |
 | Report Date | 2026-04-24 |
 | Time Zone | America/New_York |
 | Classification | Internal Use |
@@ -24,15 +23,15 @@
 
 On 2026-04-24, users reported repeated TeamSpeak connection failures against the
 public Playit endpoints and Cloudflare DNS names for REDACTED_PRIVATE_ORG_LABEL United TeamSpeak
-services. Initial checks showed that TeamSpeak, Docker, DNS, and Playit were all
-nominal at a basic health-check level. Deeper testing showed that UDP packets
+services. I began triage with basic health checks, which showed TeamSpeak,
+Docker, DNS, and Playit all nominal. My deeper testing showed that UDP packets
 were reaching the TeamSpeak path, but the TeamSpeak client handshake was not
 completing.
 
-The issue was mitigated by removing Docker's UDP port proxy from the voice path.
-Both TeamSpeak containers were moved to host networking with unique native
-ports. After the change, TeamSpeak logs recorded successful client connections
-through the Playit path.
+I mitigated the issue by removing Docker's UDP port proxy from the voice path:
+I moved both TeamSpeak containers to host networking with unique native ports.
+After the change, TeamSpeak logs recorded successful client connections through
+the Playit path.
 
 ---
 
@@ -73,7 +72,7 @@ Trying to connect to server on REDACTED_CUSTOM_DOMAIN_022
 Failed to connect to server
 ```
 
-Direct Playit IPv4 testing also failed before mitigation:
+My direct Playit IPv4 testing also failed before mitigation:
 
 ```text
 Trying to connect to server on REDACTED_IPV4_011:6255
@@ -99,7 +98,8 @@ Failed to connect to server
 
 ## Root Cause
 
-The most likely root cause was a UDP relay compatibility issue across this path:
+I identified the most likely root cause as a UDP relay compatibility issue
+across this path:
 
 ```text
 TeamSpeak client
@@ -111,7 +111,7 @@ TeamSpeak client
 
 The TeamSpeak service itself was not offline. Evidence showed UDP traffic
 reaching the server path, but the TeamSpeak client handshake did not complete
-while the containers were using Docker UDP port publishing. After moving the
+while the containers were using Docker UDP port publishing. After I moved the
 TeamSpeak containers to host networking, the server recorded successful client
 connections through the Playit path.
 
@@ -119,23 +119,23 @@ connections through the Playit path.
 
 ## Corrective Actions Performed
 
-1. Enabled temporary TeamSpeak client logging for troubleshooting.
-2. Verified Docker service health and listener state.
-3. Verified Cloudflare DNS and SRV resolution.
-4. Verified Playit agent status and tunnel registration.
-5. Restarted the Playit agent to clear any stale relay session state.
-6. Moved `ts-valorant-01` to host networking.
-7. Moved `ts-valorant-02` to host networking.
-8. Changed TeamSpeak 2's native virtual server voice port to `9988/udp`.
-9. Verified listeners:
+1. I enabled temporary TeamSpeak client logging for troubleshooting.
+2. I verified Docker service health and listener state.
+3. I verified Cloudflare DNS and SRV resolution.
+4. I verified Playit agent status and tunnel registration.
+5. I restarted the Playit agent to clear any stale relay session state.
+6. I moved `ts-valorant-01` to host networking.
+7. I moved `ts-valorant-02` to host networking.
+8. I changed TeamSpeak 2's native virtual server voice port to `9988/udp`.
+9. I verified listeners:
    - `9987/udp`
    - `9988/udp`
    - `10011/tcp`
    - `10012/tcp`
    - `30033/tcp`
    - `30034/tcp`
-10. Updated ServerQuery allowlists for TS3 Manager source traffic.
-11. Updated the deployment document to reflect the host-network architecture.
+10. I updated ServerQuery allowlists for TS3 Manager source traffic.
+11. I updated the deployment document to reflect the host-network architecture.
 
 ---
 
@@ -152,8 +152,8 @@ connections through the Playit path.
 
 ## Security Assessment
 
-No evidence indicated credential compromise, malicious authentication attempts,
-or unauthorized administrative activity. The incident was assessed as an
+I found no evidence of credential compromise, malicious authentication attempts,
+or unauthorized administrative activity. I assessed the incident as an
 availability and network-path failure, not a confirmed security breach.
 
 No passwords, API keys, ServerQuery credentials, privilege keys, or Playit
