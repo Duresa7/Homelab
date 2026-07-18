@@ -1,7 +1,7 @@
 # Galaxy Cluster Red Server Expansion
 
 **Created:** 2026-07-07  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 **Author:** REDACTED_NAME_001  
 **Date:** 2026-07-07  
@@ -9,7 +9,7 @@
 
 ## Summary
 
-`red-server` was added as the fourth Proxmox VE node in the `Galaxy` cluster.
+I added `red-server` as the fourth Proxmox VE node in the `Galaxy` cluster.
 The node uses the same management VLAN pattern as the existing nodes:
 `vmbr0` is VLAN-aware and the host management address lives on `vmbr0.70`.
 
@@ -26,7 +26,7 @@ The cluster is healthy and quorate after the expansion.
 
 ## Join Procedure Used
 
-Preflight checks on `red-server`:
+My preflight checks on `red-server`:
 
 - `pve-manager/9.2.2`
 - No VMs or containers present
@@ -41,10 +41,10 @@ Cluster firewall change on `grey-server`:
 IN ACCEPT -source 192.168.70.13 -p tcp -dport 22 -log nolog # red-server (cluster SSH)
 ```
 
-This was added to `[group zero_access]` immediately before the default SSH drop rule.
+I added this to `[group zero_access]` immediately before the default SSH drop rule.
 
-SSH trust was established from `red-server` to `grey-server` by adding red's root
-public key to grey's root `authorized_keys`. After that, the join was run from
+I established SSH trust from `red-server` to `grey-server` by adding red's root
+public key to grey's root `authorized_keys`. After that, I ran the join from
 `red-server`:
 
 ```bash
@@ -59,7 +59,7 @@ successfully added node 'red-server' to cluster.
 
 ## Cluster Verification
 
-Verified from `grey-server` after the join:
+I verified from `grey-server` after the join:
 
 ```text
 Name:             Galaxy
@@ -86,7 +86,7 @@ Note: with four voting nodes, the quorum requirement is now `3`.
 
 ## SSH Hardening
 
-`red-server` was changed to match the existing key-only root SSH posture:
+I changed `red-server` to match my existing key-only root SSH posture:
 
 ```text
 PermitRootLogin without-password
@@ -95,20 +95,20 @@ PasswordAuthentication no
 KbdInteractiveAuthentication no
 ```
 
-Password-only SSH was explicitly tested and rejected:
+I tested password-only SSH and it was rejected:
 
 ```text
 Permission denied (publickey).
 ```
 
-Key-based SSH was verified from the admin workstation and between cluster nodes:
+I verified key-based SSH from the admin workstation and between cluster nodes:
 
 - `grey-server` to `red-server`
 - `red-server` to `grey-server`
 - `red-server` to `purple-server`
 - `red-server` to `blue-server`
 
-The local SSH manager config now includes:
+My local SSH manager config now includes:
 
 ```text
 red_server -> root@192.168.70.13
@@ -116,7 +116,7 @@ red_server -> root@192.168.70.13
 
 ## Repository And Subscription Popup Cleanup
 
-`red-server` APT sources were matched to `grey-server`:
+I matched `red-server`'s APT sources to `grey-server`:
 
 - Proxmox no-subscription repo enabled
 - Proxmox enterprise repo present but disabled
@@ -128,10 +128,10 @@ red_server -> root@192.168.70.13
 `apt-get update` completed successfully on all four nodes after the repository
 cleanup.
 
-The Proxmox no-subscription login popup was aligned with the existing grey-server
+I aligned the Proxmox no-subscription login popup with the existing grey-server
 patch on `purple-server`, `blue-server`, and `red-server` by changing the local
-`proxmoxlib.js` subscription check to the existing `NoMoreNagging` sentinel used
-on `grey-server`. `pveproxy` was restarted and verified active on all nodes.
+`proxmoxlib.js` subscription check to the `NoMoreNagging` sentinel already used
+on `grey-server`. I restarted `pveproxy` and verified it active on all nodes.
 This UI patch may need to be reapplied after future `proxmox-widget-toolkit`
 package updates.
 
@@ -144,7 +144,7 @@ GUI reachability returned HTTP 200 for all four nodes:
 
 ## SMART Result
 
-A short SMART self-test was run on red's M.2 NVMe disk:
+I ran a short SMART self-test on red's M.2 NVMe disk:
 
 | Field | Value |
 | --- | --- |
@@ -197,5 +197,5 @@ red-server:/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.no-sub
 ## Notes
 
 `REDACTED_INTERNAL_FQDN_003`, `REDACTED_INTERNAL_FQDN_002`, and `REDACTED_INTERNAL_FQDN_001` do not
-currently resolve from the Windows admin workstation. Use the management IPs or
+currently resolve from my Windows admin workstation. I use the management IPs or
 the SSH manager aliases until internal DNS is updated.

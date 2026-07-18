@@ -1,7 +1,7 @@
 ﻿# Galaxy Cluster Setup Document
 
 **Created:** 2026-05-30  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 **Author:** REDACTED_NAME_001
 **Date:** 2026-05-30
@@ -60,12 +60,12 @@ Corosync transport is `knet` in passive mode over preferred `link0` on MGMT-A pl
 During the May expansion, I confirmed the cluster prerequisites on all three
 nodes:
 
-- **Version parity** — all nodes reported `pve-manager/9.2.2`.
-- **Empty joiners** — `qm list` and `pct list` on both new nodes returned no
+- **Version parity:** all nodes reported `pve-manager/9.2.2`.
+- **Empty joiners:** `qm list` and `pct list` on both new nodes returned no
   guests. A node with existing VMs/CTs cannot join a cluster, so this mattered.
-- **Time sync** — `timedatectl` showed `System clock synchronized: yes` on all
+- **Time sync:** `timedatectl` showed `System clock synchronized: yes` on all
   nodes, all in `America/New_York`.
-- **Unique hostnames** — `grey-server`, `purple-server`, `blue-server`.
+- **Unique hostnames:** `grey-server`, `purple-server`, `blue-server`.
 
 For the July `red-server` expansion, the same checks were repeated before the
 join: PVE version parity, no existing guests, active time sync, and a unique
@@ -111,7 +111,7 @@ ssh -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@192.168.70.10 host
 
 ## 5. Firewall change (REQUIRED)
 
-> **Warning — this was a blocker and required a security-config change.**
+> **Warning: this was a blocker and required a security-config change.**
 
 `grey-server` runs the Proxmox firewall (`pve-firewall`, enabled). My active rule
 group is `zero_access`, which only permits SSH (port 22) from a short allowlist
@@ -149,12 +149,12 @@ pve-firewall restart
 pve-firewall status      # enabled/running
 ```
 
-> **Warning — shared firewall inheritance.** `cluster.fw` lives in `/etc/pve`,
+> **Warning: shared firewall inheritance.** `cluster.fw` lives in `/etc/pve`,
 > which is replicated cluster-wide. Once `purple-server` and `blue-server` joined,
 > they inherited this same firewall and now enforce the `zero_access` allowlist.
 > My management IPs were already in the allowlist, so administrative access was
 > not interrupted, but this is the reason all four node IPs (including grey's own
-> `.10`) need to remain in the group — the new nodes must accept SSH from grey for
+> `.10`) need to remain in the group: the new nodes must accept SSH from grey for
 > cluster operations and migrations.
 
 Corosync traffic between members is auto-permitted by the PVE firewall once the
@@ -206,7 +206,7 @@ Output ended with `successfully added node 'red-server' to cluster.`
 
 ## 7. Cluster authentication note (IMPORTANT)
 
-> **Warning — authentication method.** My first attempts to join over the default
+> **Warning: authentication method.** My first attempts to join over the default
 > API method failed. The API connection first rejected an incorrect fingerprint
 > (grey uses a custom `pveproxy` certificate, so the relevant fingerprint is the
 > one the API itself reports, not the node `pve-ssl.pem` fingerprint), and then
@@ -223,12 +223,12 @@ Output ended with `successfully added node 'red-server' to cluster.`
 ## 8. Removing stale node directories
 
 `grey-server` had two phantom node folders under `/etc/pve/nodes/` left over from
-an earlier install — `Grey-Server` (capitalized) and `REDACTED_NAME_003`. Both were empty of
+an earlier install: `Grey-Server` (capitalized) and `REDACTED_NAME_003`. Both were empty of
 guest configs and would otherwise appear as offline ghost nodes in the Datacenter
 view. I confirmed they held no guest configs and removed them.
 
 ```bash
-# On grey-server — confirm no guest configs first
+# On grey-server: confirm no guest configs first
 find /etc/pve/nodes/Grey-Server/qemu-server /etc/pve/nodes/Grey-Server/lxc \
      /etc/pve/nodes/REDACTED_NAME_003/qemu-server /etc/pve/nodes/REDACTED_NAME_003/lxc -type f | wc -l   # expect 0
 
@@ -279,5 +279,5 @@ docker-main) remained running throughout the join and were unaffected.
 
 ## 10. Backups created during this work
 
-- `grey-server:/root/cluster.fw.bak.*` — firewall config prior to the
+- `grey-server:/root/cluster.fw.bak.*`: firewall config from before the
   `zero_access` change.

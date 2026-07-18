@@ -1,11 +1,11 @@
-﻿# Galaxy Cluster Expansion: Node Preparation and Pre-Join Remediation
+# Galaxy Cluster Expansion: Node Preparation and Pre-Join Remediation
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-**Author:** REDACTED_NAME_001
-**Date:** 2026-05-27
-**Status:** In progress
+**Author:** REDACTED_NAME_001  
+**Date:** 2026-05-27  
+**Status:** In progress  
 **Classification:** Internal IT Documentation
 
 **Historical note:** This document records the preparation work for the original
@@ -17,13 +17,13 @@ May 2026 cluster expansion. The current four-node state after adding
 
 ## 1. Purpose
 
-This document records the work performed to prepare the existing Proxmox VE environment for the addition of two new cluster nodes, and to bring the existing node into a clean, join-ready state. It captures the current environment, the remediation steps executed on the existing node, the configuration standards defined for the new nodes, and the remaining tasks required to complete the cluster expansion.
+This record covers the work I did to prepare my existing Proxmox VE environment for two new cluster nodes and to bring the existing node into a clean, join-ready state. It captures the environment as I found it, the remediation I ran on the existing node, the configuration standards I defined for the new nodes, and the remaining tasks to complete the cluster expansion.
 
 ## 2. Scope
 
 In scope:
 
-- Assessment of the existing Proxmox node (grey-server) and the single-node cluster named Galaxy.
+- Assessment of my existing Proxmox node (grey-server) and the single-node cluster named Galaxy.
 - Remediation of stale configuration left over from a prior cluster topology.
 - Consolidation of the cluster identity onto the current management network.
 - Definition of installation and network standards for the two new nodes.
@@ -74,28 +74,28 @@ Out of scope (tracked as future work in Section 9):
 | purple-server | New node | 192.168.70.11 | REDACTED_INTERNAL_FQDN_002 |
 | blue-server | New node | 192.168.70.12 | REDACTED_INTERNAL_FQDN_001 |
 
-A three-node cluster provides an odd vote count, which satisfies corosync quorum requirements and allows the cluster to remain operational if a single node is lost.
+I targeted a three-node cluster because it provides an odd vote count, which satisfies corosync quorum requirements and lets the cluster remain operational if a single node is lost.
 
-## 5. Findings Prior to Remediation
+## 5. Findings Before Remediation
 
 1. **Duplicate APT repository entries.** The file /etc/apt/sources.list.d/proxmox.sources contained three identical pve-no-subscription stanzas, of which only one was active. Functionally correct, but untidy.
 2. **Decommissioned node remnants.** A previously removed cluster member, sith-server (192.168.40.60), still had firewall rules, security groups, and a hosts entry referencing it.
-3. **Stale cluster identity.** The Galaxy cluster identity (corosync ring address, hosts file, firewall rules, login banner, and known_hosts) was still anchored to the old VLAN 40 address 192.168.40.10, even though the live management address had been moved to VLAN 70 (192.168.70.10). The old address was not bound to any active interface. This would have caused new node joins to fail, because joining nodes would attempt to reach the existing node at an address that no longer exists.
+3. **Stale cluster identity.** The Galaxy cluster identity (corosync ring address, hosts file, firewall rules, login banner, and known_hosts) was still anchored to the old VLAN 40 address 192.168.40.10, even though I had moved the live management address to VLAN 70 (192.168.70.10). The old address was not bound to any active interface. This would have caused new node joins to fail, because joining nodes would attempt to reach the existing node at an address that no longer exists.
 
 ## 6. Remediation Performed on grey-server
 
-All changes were preceded by file backups stored under /root. The Proxmox firewall remained enabled and running throughout, and no running virtual machines or containers were interrupted.
+I preceded every change with file backups stored under /root. The Proxmox firewall remained enabled and running throughout, and no running virtual machines or containers were interrupted.
 
 ### 6.1 APT repository cleanup
 
-- Reduced /etc/apt/sources.list.d/proxmox.sources to a single active pve-no-subscription stanza.
-- Confirmed repository state: Debian trixie, trixie-updates, and trixie-security enabled; pve-no-subscription enabled; pve-enterprise disabled; ceph no-subscription enabled; pve-test disabled.
-- Verified with apt-get update (five repository hits, no errors).
+- I reduced /etc/apt/sources.list.d/proxmox.sources to a single active pve-no-subscription stanza.
+- I confirmed the repository state: Debian trixie, trixie-updates, and trixie-security enabled; pve-no-subscription enabled; pve-enterprise disabled; ceph no-subscription enabled; pve-test disabled.
+- I verified with apt-get update (five repository hits, no errors).
 - Backup: /etc/apt/sources.list.d/proxmox.sources.bak.20260525-183548
 
 ### 6.2 Removal of decommissioned node (sith-server)
 
-Removed all sith-server references from the firewall and hosts configuration:
+I removed all sith-server references from the firewall and hosts configuration:
 
 - cluster.fw: removed the cluster_allow_sith group reference and definition, the orphaned gui_access_sith group, the sith-server GUI rule, and two SSH allow rules (192.168.40.60 and 192.168.50.164).
 - host.fw: removed the cluster_allow_sith group reference.
@@ -110,7 +110,7 @@ Verification:
 
 ### 6.3 Cluster identity consolidation to VLAN 70
 
-Repointed every reference to the old address 192.168.40.10 to the live management address 192.168.70.10:
+I repointed every reference to the old address 192.168.40.10 to the live management address 192.168.70.10:
 
 | File | Change |
 | --- | --- |
@@ -121,7 +121,7 @@ Repointed every reference to the old address 192.168.40.10 to the live managemen
 | /etc/pve/priv/known_hosts | stale 192.168.40.10 host key entry removed |
 | /etc/pve/.members | auto-updated by the cluster file system to 192.168.70.10 |
 
-Procedure for the corosync change:
+My procedure for the corosync change:
 
 1. Staged the new configuration to a temporary file and reviewed the diff (only ring0_addr and config_version changed).
 2. Moved the file into place to trigger propagation.
@@ -150,11 +150,11 @@ Verification:
 | DNS server | 192.168.70.1 | 192.168.70.1 |
 | Root file system | ext4 | ext4 |
 
-The ext4 layout was chosen for simplicity and to match the existing node. The implication is that cross-node migration will rely on shared storage or offline migration rather than ZFS replication. This can be revisited if replication or high availability becomes a requirement.
+I chose the ext4 layout for simplicity and to match the existing node. The implication is that cross-node migration will rely on shared storage or offline migration rather than ZFS replication. I can revisit this if replication or high availability becomes a requirement.
 
 ### 7.2 Post-install network configuration
 
-Because the switch ports use a trunk profile with no native VLAN, the Proxmox installer default (an untagged IP directly on vmbr0) does not provide connectivity. After the first boot, the network configuration must be edited at the node console to use a VLAN-aware bridge with the management IP on the tagged sub-interface vmbr0.70.
+Because the switch ports use a trunk profile with no native VLAN, the Proxmox installer default (an untagged IP directly on vmbr0) does not provide connectivity. After the first boot, I have to edit the network configuration at the node console to use a VLAN-aware bridge with the management IP on the tagged sub-interface vmbr0.70.
 
 Reference configuration for /etc/network/interfaces (substitute the actual NIC name and the correct address per node):
 
@@ -184,7 +184,7 @@ source /etc/network/interfaces.d/*
 
 Notes:
 
-- The bridge VLAN list is restricted to the VLANs in use (40, 60, 65, 70, 80, 90) rather than the full range, as a defense-in-depth measure.
+- I restricted the bridge VLAN list to the VLANs in use (40, 60, 65, 70, 80, 90) rather than the full range, as a defense-in-depth measure.
 - Apply with ifreload -a, then validate connectivity with ping to 192.168.70.1 and 192.168.70.10.
 - A host sub-interface is only required for a VLAN where the host itself needs an IP. Virtual machines use VLANs by setting the VLAN tag on their own virtual network device.
 
@@ -214,7 +214,7 @@ Authorized keys present for root: mac-air3-REDACTED_USER_001, REDACTED_SSH_KEY_L
 
 ### 8.3 Network security notes
 
-- The trunk port profile with native VLAN set to none is a deliberate hardening choice that reduces VLAN hopping risk by ensuring all frames are explicitly tagged.
+- I set the trunk port profile's native VLAN to none as a deliberate hardening choice; it reduces VLAN hopping risk by ensuring all frames are explicitly tagged.
 - Recommended follow-up: confirm at the gateway that other VLANs cannot initiate connections into the management VLAN, as a complement to the host-level firewall.
 
 ## 9. Remaining Tasks

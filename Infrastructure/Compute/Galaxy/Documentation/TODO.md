@@ -1,9 +1,9 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-18
 
-This is the detailed backlog for the Galaxy Proxmox cluster. The root [TODO](../../../../TODO.md) links here but does not duplicate these steps.
+This is my detailed backlog for the Galaxy Proxmox cluster. The root [TODO](../../../../TODO.md) links here but doesn't duplicate these steps.
 
 ## `blue-server` Recurring `pvestatd` Crashes
 
@@ -18,4 +18,4 @@ This is the detailed backlog for the Galaxy Proxmox cluster. The root [TODO](../
 - [ ] Restore `pvestatd` only as part of the approved work, verify node/resource status from a peer, and monitor for recurrence long enough to distinguish recovery from another temporary restart.
 - [ ] After the root cause is established, decide whether a bounded systemd restart policy is appropriate as resilience against a future daemon crash.
 
-Do not treat a successful manual restart alone as resolution; previous restarts restored status temporarily before the daemon failed again.
+I won't treat a successful manual restart alone as resolution; previous restarts restored status temporarily before the daemon failed again.

@@ -1,7 +1,9 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-18
+
+This is the home for Galaxy, my Proxmox VE cluster. I keep the Proxmox-owned networking, Corosync, storage, and firewall configuration here.
 
 ## Records
 
@@ -13,4 +15,4 @@
 - [Current inventory](../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md)
 - [Hardware inventory](../../Hardware/Nodes.md)
 
-Proxmox-owned networking, Corosync, storage, and firewall configuration belongs here. UniFi-owned VLAN, zone, switch-port, and gateway policy configuration belongs under `Infrastructure/Network/UniFi/` and should be cross-linked from the relevant Galaxy change record.
+UniFi-owned VLAN, zone, switch-port, and gateway policy configuration lives under `Infrastructure/Network/UniFi/`; I cross-link it from the relevant Galaxy change record rather than copying it here.

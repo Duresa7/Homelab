@@ -1,7 +1,7 @@
-﻿# Galaxy Debian Dev GNOME Installation
+# Galaxy Debian Dev GNOME Installation
 
 **Created:** 2026-07-15  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 **Status:** Complete  
 **Target:** Galaxy VM 102 on `grey-server`  
@@ -22,26 +22,26 @@ Add the renamed Debian development VM to SSH Manager with the existing Jedi-PC i
 
 ## Decisions
 
-- The canonical SSH Manager name is `debian_dev`, matching the guest hostname. The old requested name remains as compatibility alias `db_13_test`.
-- The complete Debian `task-gnome-desktop` task was selected because the request was for a GNOME desktop environment, not only the shell. Debian's supported packages were used instead of mixing unstable or third-party repositories.
-- Proxmox snapshot `pre-gnome-20260715` was created before package installation because removing a full desktop task is not a clean inverse operation.
-- The VM was rebooted only after explicit operator confirmation. Post-boot validation had to prove SSH recovery and automatic graphical startup before the change could close.
+- I made `debian_dev` the canonical SSH Manager name, matching the guest hostname. The old requested name remains as compatibility alias `db_13_test`.
+- I selected the complete Debian `task-gnome-desktop` task because I wanted a GNOME desktop environment, not only the shell, and I used Debian's supported packages instead of mixing unstable or third-party repositories.
+- I created Proxmox snapshot `pre-gnome-20260715` before package installation because removing a full desktop task is not a clean inverse operation.
+- I held the reboot until I was ready to watch it. Post-boot validation had to prove SSH recovery and automatic graphical startup before I closed the change.
 
 ## Actions and Results
 
-1. Confirmed the Jedi-PC public-key fingerprint matched the private-key path already used by SSH Manager for `REDACTED_USER_001` hosts.
-2. Added `debian_dev` at `192.168.40.135` to the SSH Manager environment, hot-reloaded the configuration, and completed an authenticated health check.
-3. Refreshed APT metadata, simulated the full desktop installation, verified guest and thin-pool capacity, and created the pre-change snapshot.
-4. Installed `task-gnome-desktop`, selected `graphical.target`, and started GDM.
-5. Verified package integrity, the active Wayland greeter, GNOME Shell and Xwayland processes, active SSH, zero failed systemd units, 47 GiB remaining disk space, and an overall healthy SSH Manager health result.
-6. After operator approval, rebooted VM 102 through Proxmox and verified a new boot ID, restored SSH access, active GDM and GNOME greeter processes, clean package state, zero failed units, and a cleared reboot-required marker.
-7. Repaired GNOME's wired-network question mark by moving `ens18` from legacy ifupdown/dhcpcd ownership to a native NetworkManager profile while preserving address `192.168.40.135` and the existing gateway/DNS.
-8. Added a Polkit rule that grants all Polkit-controlled actions to `REDACTED_USER_001` only from the active local GNOME session, eliminating graphical authentication prompts without extending the rule to remote SSH sessions.
-9. Removed a redundant legacy 1Password APT `.list` entry while retaining the package-maintained deb822 `.sources` definition and signing key.
-10. Diagnosed Claude Desktop's non-persistent sign-in warning as a first-run ordering edge case: GNOME Keyring and PAM were healthy, but Claude created `login.keyring` after the current authenticated session began and Chromium disabled libsecret when the new collection object was not yet exported.
-11. Added `REDACTED_USER_001` to the `kvm` group for Claude Cowork. The persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module were verified; activation and end-to-end Claude checks await the required GNOME sign-out/sign-in.
+1. I confirmed the Jedi-PC public-key fingerprint matched the private-key path already used by SSH Manager for `REDACTED_USER_001` hosts.
+2. I added `debian_dev` at `192.168.40.135` to the SSH Manager environment, hot-reloaded the configuration, and completed an authenticated health check.
+3. I refreshed APT metadata, simulated the full desktop installation, verified guest and thin-pool capacity, and created the pre-change snapshot.
+4. I installed `task-gnome-desktop`, selected `graphical.target`, and started GDM.
+5. I verified package integrity, the active Wayland greeter, GNOME Shell and Xwayland processes, active SSH, zero failed systemd units, 47 GiB remaining disk space, and an overall healthy SSH Manager health result.
+6. I rebooted VM 102 through Proxmox and verified a new boot ID, restored SSH access, active GDM and GNOME greeter processes, clean package state, zero failed units, and a cleared reboot-required marker.
+7. I repaired GNOME's wired-network question mark by moving `ens18` from legacy ifupdown/dhcpcd ownership to a native NetworkManager profile while preserving address `192.168.40.135` and the existing gateway/DNS.
+8. I added a Polkit rule that grants all Polkit-controlled actions to `REDACTED_USER_001` only from the active local GNOME session, eliminating graphical authentication prompts without extending the rule to remote SSH sessions.
+9. I removed a redundant legacy 1Password APT `.list` entry while retaining the package-maintained deb822 `.sources` definition and signing key.
+10. I diagnosed Claude Desktop's non-persistent sign-in warning as a first-run ordering edge case: GNOME Keyring and PAM were healthy, but Claude created `login.keyring` after the current authenticated session began and Chromium disabled libsecret when the new collection object was not yet exported.
+11. I added `REDACTED_USER_001` to the `kvm` group for Claude Cowork. I verified the persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module; activation and end-to-end Claude checks await the required GNOME sign-out/sign-in.
 
-The SSH Manager client timed out at five minutes while the large package transaction continued remotely. Live process and log checks proved that `apt-get` and `dpkg` remained active and progressing. The transaction subsequently completed with all requested packages in the `ii` state.
+My SSH Manager client timed out at five minutes while the large package transaction continued remotely. Live process and log checks proved that `apt-get` and `dpkg` remained active and progressing. The transaction subsequently completed with all requested packages in the `ii` state.
 
 ## Resulting Configuration
 
@@ -85,7 +85,7 @@ The SSH Manager client timed out at five minutes while the large package transac
 
 ## Rollback
 
-If GNOME causes an unacceptable regression, shut down or otherwise place VM 102 in an appropriate maintenance state and roll back to Proxmox snapshot `pre-gnome-20260715`. Verify hostname, SSH, networking, and package state afterward. The post-reboot checks passed, so the snapshot may be removed later under normal snapshot-retention housekeeping.
+If GNOME causes an unacceptable regression, I'll shut down or otherwise place VM 102 in an appropriate maintenance state and roll back to Proxmox snapshot `pre-gnome-20260715`, then verify hostname, SSH, networking, and package state. The post-reboot checks passed, so the snapshot may be removed later under normal snapshot-retention housekeeping.
 
 To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-REDACTED_USER_001-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
 
@@ -98,16 +98,16 @@ To remove Claude Cowork's KVM permission, run `gpasswd -d REDACTED_USER_001 kvm`
 - Optional housekeeping: remove snapshot `pre-gnome-20260715` when its short-term rollback value is no longer needed.
 - Save any desktop work, sign out of GNOME, sign back in with the normal account password, and relaunch Claude. Then verify the new GNOME process contains group 993, the login Secret Service collection is exported, Claude no longer logs `isEncryptionAvailable=false`, and Cowork can open `/dev/kvm`.
 
-## Step Evidence
+## Step Verification
 
-| Step | Evidence | Verification result |
+| Step | Work | Verified result |
 | --- | --- | --- |
-| S01 | [Preflight and identity](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S01-Preflight-And-Identity-2026-07-15.md) | Guest identity, repository candidate, capacity, and passwordless sudo confirmed |
-| S02 | [SSH registration and snapshot](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S02-SSH-And-Snapshot-2026-07-15.md) | New target authenticated and rollback snapshot appeared in Proxmox |
-| S03 | [Complete APT install log](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S03-GNOME-Package-Install-2026-07-15.log) | GNOME task, Shell, session, and GDM packages configured |
-| S04 | [Final verification](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S04-Final-Verification-2026-07-15.md) | Package, display-manager, SSH, systemd, disk, and health checks passed |
-| S05 | [Controlled reboot and post-boot verification](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S05-Controlled-Reboot-2026-07-15.md) | A new boot completed with SSH, GDM, GNOME greeter, graphical target, and system health restored |
-| S06 | [NetworkManager indicator repair](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S06-NetworkManager-Indicator-Repair-2026-07-15.md) | GNOME-facing wired state and NetworkManager autoconnect passed while address, route, DNS, and SSH remained stable |
-| S07 | [GNOME Polkit passwordless policy](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S07-GNOME-Polkit-Passwordless-2026-07-15.md) | Active local GNOME actions were approved without a prompt while remote Polkit remained denied |
-| S08 | [1Password APT source deduplication](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S08-1Password-APT-Source-Deduplication-2026-07-15.md) | Duplicate warnings cleared twice while repository signing and package visibility remained intact |
-| S09 | [Claude keyring and KVM repair](../../Evidence/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15/Logs/S09-Claude-Keyring-And-KVM-Repair-2026-07-15.md) | Root cause and persistent KVM membership confirmed; final Secret Service and `/dev/kvm` checks await a fresh GNOME login |
+| S01 | Preflight and identity | Guest identity, repository candidate, capacity, and passwordless sudo confirmed |
+| S02 | SSH registration and snapshot | New target authenticated and rollback snapshot appeared in Proxmox |
+| S03 | GNOME package installation | GNOME task, Shell, session, and GDM packages configured |
+| S04 | Final verification | Package, display-manager, SSH, systemd, disk, and health checks passed |
+| S05 | Controlled reboot and post-boot verification | A new boot completed with SSH, GDM, GNOME greeter, graphical target, and system health restored |
+| S06 | NetworkManager indicator repair | GNOME-facing wired state and NetworkManager autoconnect passed while address, route, DNS, and SSH remained stable |
+| S07 | GNOME Polkit passwordless policy | Active local GNOME actions were approved without a prompt while remote Polkit remained denied |
+| S08 | 1Password APT source deduplication | Duplicate warnings cleared twice while repository signing and package visibility remained intact |
+| S09 | Claude keyring and KVM repair | Root cause and persistent KVM membership confirmed; final Secret Service and `/dev/kvm` checks await a fresh GNOME login |
