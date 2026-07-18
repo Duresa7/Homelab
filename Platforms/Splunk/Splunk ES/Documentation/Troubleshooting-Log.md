@@ -1,9 +1,9 @@
-# 🔧 Splunk ES: Troubleshooting Log
+# Splunk ES: Troubleshooting Log
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-18
 
-Every problem hit while installing and configuring Splunk Enterprise Security, its cause, and the fix. Companion to [Build-Log.md](Build-Log.md). The build log records *what was done*; this records *what went wrong and the fix*.
+Every problem I hit while installing and configuring Splunk Enterprise Security, its cause, and the fix. Companion to [Build-Log.md](Build-Log.md). The build log records *what I did*; this records *what went wrong and the fix*.
 
 ## Quick index
 
@@ -13,15 +13,15 @@ Every problem hit while installing and configuring Splunk Enterprise Security, i
 
 ---
 
-## 1. ES install/setup slow, disk I/O bound (2026-07-02)
+## 1. ES install/setup slow, initially looked disk I/O bound (2026-07-02)
 
-**Symptom:** during the ES install/post-install setup (index and data model rebuild), the VM couldn't keep up — CPU-starved on only 4 allocated cores, and disk I/O became the bottleneck, with Splunk generating write/search load faster than the backing SSD storage could service it.
+**Symptom:** during the ES install/post-install setup (index and data model rebuild), the VM couldn't keep up. It was CPU-starved on only 4 allocated cores, and disk I/O looked like the bottleneck, with Splunk generating write/search load faster than the backing SSD storage appeared to service it.
 
-**Cause:** `splunk-siem` was sized for base Splunk Enterprise plus a single log source (UniFi via SC4S), at 4 cores / 12 GiB RAM. Splunk's own documentation lists 16 physical cores / 32 GB RAM as the minimum for a *production* ES search head [1] — the VM is well under that, and the post-install setup step (which rebuilds indexes and accelerates the CIM data models ES depends on) is exactly the CPU- and I/O-heavy operation that exposes an undersized host, even for a home lab at much smaller scale.
+**Cause:** I had sized `splunk-siem` for base Splunk Enterprise plus a single log source (UniFi via SC4S), at 4 cores / 12 GiB RAM. Splunk's own documentation lists 16 physical cores / 32 GB RAM as the minimum for a *production* ES search head [1]. The VM is well under that, and the post-install setup step (which rebuilds indexes and accelerates the CIM data models ES depends on) is exactly the CPU- and I/O-heavy operation that exposes an undersized host, even for a home lab at much smaller scale.
 
-**Fix:** increased `splunk-siem`'s vCPU allocation from 4 to 6 cores on the Proxmox host `grey-server`. Storage was left unchanged (still the single SSD-backed `ssd-lvm1` disk) — disk I/O was suspected initially but ruled out; the bottleneck was CPU. Confirmed resolved: Splunk Web now loads Enterprise Security fully, including Mission Control → Configure → All configurations.
+**Fix:** I increased `splunk-siem`'s vCPU allocation from 4 to 6 cores on the Proxmox host `grey-server`. I left storage unchanged (still the single SSD-backed `ssd-lvm1` disk); I suspected disk I/O initially but ruled it out, because the bottleneck was CPU. Confirmed resolved: Splunk Web now loads Enterprise Security fully, including Mission Control → Configure → All configurations.
 
-**Takeaway:** ES's setup step is far heavier than running base Splunk Enterprise; a VM comfortable for the SIEM build was not comfortable for ES. Two extra cores was enough to get past the setup step at this small scale, well short of Splunk's stated 16-core production minimum — a reminder that vendor minimums target production scale, not a single-source home lab.
+**Takeaway:** ES's setup step is far heavier than running base Splunk Enterprise; a VM comfortable for the SIEM build was not comfortable for ES. Two extra cores was enough to get past the setup step at this small scale, well short of Splunk's stated 16-core production minimum. Vendor minimums target production scale, not a single-source home lab.
 
 ---
 

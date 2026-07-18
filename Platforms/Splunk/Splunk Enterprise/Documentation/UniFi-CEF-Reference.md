@@ -1,9 +1,9 @@
 ﻿# UniFi System Logs / SIEM: CEF Reference
 
 **Created:** 2026-07-01  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-Reference notes for the UniFi → SC4S → Splunk pipeline (see [Build-Log.md](Build-Log.md) Step 6). Source: Ubiquiti Help, *UniFi System Logs & SIEM Integration*.
+My reference notes for the UniFi → SC4S → Splunk pipeline (see [Build-Log.md](Build-Log.md) Step 6). Source: Ubiquiti Help, *UniFi System Logs & SIEM Integration*.
 
 UniFi's **System Logging / SIEM** integration (Integration → System Logging / SIEM → *SIEM Server*) exports activity logs over syslog in **Common Event Format (CEF)**. You choose which categories to export and the destination IP/port.
 
@@ -15,9 +15,9 @@ CEF:Version|Device Vendor|Device Product|Device Version|Device Event Class ID|Na
 
 The `[Extension]` is a space-separated list of `key=value` pairs (the `UNIFI*` keys plus a few standard ones like `src`, `msg`, `suser`).
 
-## ⚠️ Routing nuance: two possible product strings
+## Routing nuance: three product strings
 
-SC4S routes by the CEF `device_vendor`_`device_product` key. With all categories exported (Network + UniFi OS + Protect), this deployment emits **three** product values, confirmed via `stats count by sc4s_product`:
+SC4S routes by the CEF `device_vendor`_`device_product` key. With all categories exported (Network + UniFi OS + Protect), my deployment emits **three** product values, which I confirmed via `stats count by sc4s_product`:
 
 | CEF `device_product` | Metadata key | Source subsystem |
 |---|---|---|
@@ -95,7 +95,7 @@ UNIFImclagBottomSwitchPorts, UNIFImclagBottomSwitchVersion, UNIFImclagGroup
 
 ## Notes on parsing in this deployment
 
-SC4S parses the CEF at ingest: the header vendor/product become `sc4s_vendor` / `sc4s_product`, and the extension keys become `UNIFI*` fields directly. The `cefutils` (CEF Extraction Add-on) does not need to add anything for the data to be searchable. Useful base search:
+SC4S parses the CEF at ingest: the header vendor/product become `sc4s_vendor` / `sc4s_product`, and the extension keys become `UNIFI*` fields directly. The `cefutils` (CEF Extraction Add-on) does not need to add anything for the data to be searchable. My go-to base search:
 
 ```spl
 index=netops sourcetype=cef | table _time sc4s_vendor sc4s_product UNIFIhost UNIFIadmin msg

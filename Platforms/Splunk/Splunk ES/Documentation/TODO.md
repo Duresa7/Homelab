@@ -1,18 +1,18 @@
 # Splunk ES: To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-18
 
-Planned follow-up configuration work for Splunk Enterprise Security. Completed work lives in [Build-Log.md](Build-Log.md).
+What I plan to do next on Splunk Enterprise Security. Completed work lives in [Build-Log.md](Build-Log.md).
 
 ## Completed Foundation
 
-- [x] Resolve the app install/setup issue hit on 2026-07-02 (tracked in [Troubleshooting-Log.md](Troubleshooting-Log.md) #1) — increasing `splunk-siem` from 4 to 6 vCPU resolved the CPU-bound setup stall, and the ES configuration UI was verified.
-- [x] Complete the ES post-install configuration step (index and data model rebuild) — the Splunk Web install workflow completed after the CPU correction; follow-on CIM scoping remains separate below.
+- [x] Resolved the app install/setup issue from 2026-07-02 (tracked in [Troubleshooting-Log.md](Troubleshooting-Log.md) #1): raising `splunk-siem` from 4 to 6 vCPU cleared the CPU-bound setup stall, and I verified the ES configuration UI.
+- [x] Completed the ES post-install configuration step (index and data model rebuild): the Splunk Web install workflow finished after the CPU correction; follow-on CIM scoping remains separate below.
 
 ## Data readiness
 
-- [ ] Normalize the existing UniFi/CEF data in `netops` to the Common Information Model (CIM) so it populates ES data models (Network Traffic, Authentication, etc.) — likely via the `cefutils` add-on already installed on the search head
+- [ ] Next I want to normalize the existing UniFi/CEF data in `netops` to the Common Information Model (CIM) so it populates ES data models (Network Traffic, Authentication, etc.), likely via the `cefutils` add-on already installed on the search head
 - [ ] Confirm ES's required indexes exist (`notable`, `risk`, `threat_activity`, and related) and are sized appropriately
 
 ## Access
