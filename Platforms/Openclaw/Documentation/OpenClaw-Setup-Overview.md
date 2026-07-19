@@ -1,24 +1,22 @@
 # OpenClaw Setup Overview
 
 **Created:** 2026-04-27  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 
 ## Document Metadata
 
 | Field | Value |
 |---|---|
 | Document Type | Setup Overview |
-| Prepared For | REDACTED_NAME_001 |
-| Prepared By | Codex |
 | Date | April 27, 2026 |
 | Time | 3:04 PM EDT |
 | Time Zone | America/New_York |
 | Environment | AI_Alpha_01 |
 | Purpose | Discord-accessible REDACTED_PRIVATE_ORG_LABEL United AI assistant |
 
-## Executive Summary
+## Overview
 
-This OpenClaw deployment provides a Discord-accessible AI assistant representing REDACTED_PRIVATE_ORG_LABEL United LLC. The assistant is configured for professional public-channel use, limited to a single Discord channel, with strict privacy and confidentiality rules.
+I run this OpenClaw deployment as a Discord-accessible AI assistant that represents REDACTED_PRIVATE_ORG_LABEL United LLC. I configured it for professional public-channel use, limited it to a single Discord channel, and set strict privacy and confidentiality rules.
 
 ## System Role
 

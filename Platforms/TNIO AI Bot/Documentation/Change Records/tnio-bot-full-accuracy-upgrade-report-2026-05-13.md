@@ -1,10 +1,10 @@
 # TNIO Bot Full Accuracy Upgrade Report - 2026-05-13
 
 **Created:** 2026-05-13  
-**Last updated:** 2026-07-16
+**Last updated:** 2026-07-18
 
 ## Summary
-Implemented the full accuracy-first upgrade for the TNIO Discord bot. This pass focused on making the bot choose the right class of source, prove factual TNIO answers from the corpus, avoid raw sheet/table dumps, preserve structured sheet data, and turn no-vote/abstain feedback into a reusable evaluation queue.
+I implemented the full accuracy-first upgrade for the TNIO Discord bot. This pass focused on making the bot choose the right class of source, prove factual TNIO answers from the corpus, avoid raw sheet/table dumps, preserve structured sheet data, and turn no-vote/abstain feedback into a reusable evaluation queue.
 
 This was not a one-off hardcoded fix for one question. The upgrade adds reusable routing, verification, monitoring, and test coverage around the whole active corpus.
 

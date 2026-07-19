@@ -1,11 +1,11 @@
 # TNIO Bot Accuracy-First Retrieval Fix Report - 2026-05-12
 
 **Created:** 2026-05-12  
-**Last updated:** 2026-07-16
+**Last updated:** 2026-07-18
 
 ## Summary
 
-Implemented the accuracy-first retrieval plan on `REDACTED_OPERATIONAL_HOST` for the TNIO Discord Librarian bot.
+I implemented the accuracy-first retrieval plan on `REDACTED_OPERATIONAL_HOST` for the TNIO Discord Librarian bot.
 
 The main issue was not missing Google Drive data. The correct answers were present in the synced TNIO archive, but the bot sometimes selected the wrong source class when answering new phrasings. In the Intel/Sith example, the `Intel Faction Guide` clearly says Sith must be at least Apprentice before joining Imperial Intelligence, but broad `Intel` retrieval could pull in `TNIO Imperial Intelligence Roster` rows and fallback ranking could surface those instead of the authoritative guide.
 
@@ -35,7 +35,7 @@ The main issue was not missing Google Drive data. The correct answers were prese
 - `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_mcp_server.py`
 - `/home/REDACTED_DEPLOYMENT_USER/lore-rag/test_accuracy_policy.py`
 
-Backups were created before overwrite:
+I created backups before overwrite:
 
 - `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_agent.py.bak.accuracy-policy-20260512T150221Z`
 - `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_source_map.py.bak.accuracy-policy-20260512T150221Z`
