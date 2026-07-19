@@ -1,7 +1,7 @@
 # Documentation Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 ## Purpose
 
@@ -9,9 +9,9 @@ This workspace models the responsibilities normally spread across enterprise kno
 
 This standard holds the rules I write my records to: documentation depth, content, evidence, incidents, voice, and file metadata. Workspace routing, component and platform layout, and backlog handling live in the working notes I keep outside this repository. Work-hierarchy terminology (project, plan, step) is defined in the root [glossary](../CONTEXT.md).
 
-## Voice and Authorship
+## Voice
 
-Every document in this repository is written in my first person; I never refer to myself in the third person or hide behind a role title. No AI is credited as an author, preparer, or reviewer of any document, and no AI co-author trailer goes on any git commit. Repository files carry no emoji. Prose follows my no-slop writing rules: no em dashes, no intensifiers, no filler, headings that name their content, and every claim ends on a concrete fact.
+I write every document here in my own first person, not in the third person or behind a role title. Repository files carry no emoji, and I keep the prose plain: no filler or intensifiers, headings that name their content, and every claim ending on a concrete fact.
 
 ## Documentation Tiers
 

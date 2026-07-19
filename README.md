@@ -35,7 +35,7 @@ Records live with the system that owns or enforces them. Deployed services are s
 
 | Category | What it holds | Example |
 |---|---|---|
-| [Governance](Governance/README.md) | My documentation standard, naming conventions, and audits | [Documentation Standard](Governance/Documentation-Standard.md) |
+| [Governance](Governance/README.md) | My documentation standard and naming conventions | [Documentation Standard](Governance/Documentation-Standard.md) |
 | [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
 | [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) |

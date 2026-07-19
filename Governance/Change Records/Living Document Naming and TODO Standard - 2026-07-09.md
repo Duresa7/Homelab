@@ -1,7 +1,7 @@
 # Living Document Naming and TODO Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 **Date:** 2026-07-09  
 **Status:** Complete
@@ -16,7 +16,7 @@ I created [TODO.md](../../TODO.md) at the workspace root as the intake list, hig
 
 ## Filename Audit
 
-My first pass renamed two clearly living Galaxy documents. I then audited all 22 dated filenames still present and recorded the review in [Dated Markdown Filename Audit - 2026-07-09.md](../Audits/Dated%20Markdown%20Filename%20Audit%20-%202026-07-09.md).
+My first pass renamed two clearly living Galaxy documents. I then reviewed all 22 dated filenames still present.
 
 Seventeen event or point-in-time records kept their dates. I renamed five more living inventories so I can maintain them in place.
 
