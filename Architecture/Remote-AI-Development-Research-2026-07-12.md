@@ -115,7 +115,7 @@ The first proof needs to demonstrate:
 
 ## Sources
 
-1. [T3 Code REMOTE.md](https://github.com/pingdotgg/t3code/blob/main/REMOTE.md) - remote-access flow: `npx t3 serve`, pairing, private-mesh recommendation, SSH-launched port forward, and remote-owns-state model.
+1. [T3 Code documentation](https://github.com/pingdotgg/t3code/tree/main/docs) - remote-access flow: `npx t3 serve`, pairing, private-mesh recommendation, SSH-launched port forward, and remote-owns-state model.
 2. [T3 Code repository](https://github.com/pingdotgg/t3code) - the web GUI for Codex and Claude that this pattern is built around.
 3. [Codex CLI](https://developers.openai.com/codex/cli) - Codex runs from a terminal and reads, changes, and runs code in the selected directory.
 4. [Codex CLI features: remote app server](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server) - `codex app-server` and `codex --remote`, SSH forwarding for plain WebSockets, TLS for non-local.

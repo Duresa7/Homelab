@@ -1,7 +1,7 @@
 # Termix Troubleshooting Log
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 ## Quick Index
 
@@ -78,7 +78,7 @@ The `AdminSettings` bundle contained one general password-reset status reference
 
 `docker-main` was running Termix package version 2.2.1 from an image created on 2026-05-13. Although the mutable image tag was `latest`, the local repository digest was `sha256:577c0e7024fa7767ffbd00e19a1e0ce28fb0027aab37c3f7d49e2c18bc001210`. The registry's current `latest` index was `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`, so the running tag was stale.
 
-The defect is corrected in [Termix 2.5.0's password-reset route](https://github.com/Termix-SSH/Termix/blob/release-2.5.0-tag/src/backend/database/routes/user-password-reset-routes.ts), which includes the six-digit value in the Docker log message. [Termix 2.5.0](https://github.com/Termix-SSH/Termix/releases/tag/release-2.5.0) was released on 2026-06-30.
+The defect is corrected in [Termix 2.5.0's password-reset route](https://github.com/Termix-SSH/Termix/blob/release-2.5.0-tag/src/backend/database/routes/user-password-reset-routes.ts), which includes the six-digit value in the Docker log message. [Termix 2.5.0](https://github.com/Termix-SSH/Termix/releases/tag/release-2.5.0-tag) was released on 2026-06-30.
 
 ### Corrective Action
 
