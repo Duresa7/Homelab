@@ -1,7 +1,7 @@
 # TNIO Lore Bot: Structural Fixes Report
 
 **Created:** 2026-05-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 - **Date:** 2026-05-11
 - **Filename:** `tnio-bot-fixes-report-2026-05-11.md`
@@ -11,9 +11,9 @@
 
 ---
 
-## 1. What was reported
+## 1. The problem I set out to fix
 
-> Discord bot using AI + Google Drive (TNIO folder) has been giving incorrect sources and weak answers. Not asking for cherry-pick fixes; the goal is structural improvements. Bot should also still handle friendly banter / off-archive questions.
+The Discord bot (AI over the Google Drive TNIO folder) had been giving incorrect sources and weak answers. I did not want cherry-pick fixes; I wanted structural improvements, and the bot still had to handle friendly banter and off-archive questions.
 
 ## 2. System layout I confirmed
 
@@ -126,7 +126,7 @@ Rewrote with these changes:
 
 ### 5.4 Re-auth Google Drive (gws)
 
-Walked through SSH-port-forward of the OAuth callback so the consent flow could complete from the user's PC against the headless LXC. Authentication succeeded for account `REDACTED_EMAIL_001` with the full default scope set (drive, sheets, gmail.modify, calendar, documents, presentations, tasks, pubsub, cloud-platform, openid, userinfo.email, userinfo.profile).
+I port-forwarded the OAuth callback over SSH so the consent flow could complete from my PC against the headless LXC. Authentication succeeded for account `REDACTED_EMAIL_001` with the full default scope set (drive, sheets, gmail.modify, calendar, documents, presentations, tasks, pubsub, cloud-platform, openid, userinfo.email, userinfo.profile).
 
 ## 6. Files touched on the server
 
@@ -200,11 +200,11 @@ New corpus version: `9d37aea703538e3d8b67`. The 6-min sync timer continues unatt
 
 ## 10. What Round 1 missed
 
-User reported that the bot, after Round 1 deployment, was **still** giving the wrong answer to *"can you tell me who is on the council?"* in Discord. The 19:44 UTC call cited `Inquisition Commemoratorii` + `Codex to the Beasts of the Galaxy` instead of the actual council documentation.
+After the Round 1 deployment I caught the bot **still** giving the wrong answer to *"can you tell me who is on the council?"* in Discord. The 19:44 UTC call cited `Inquisition Commemoratorii` + `Codex to the Beasts of the Galaxy` instead of the actual council documentation.
 
 ### Drill-down
 
-Pulled the agent-reply-records entry for the 19:44 call:
+I pulled the agent-reply-records entry for the 19:44 call:
 
 - `pre_sift_count`: not recorded (older code path)
 - `candidate_count`: 7
@@ -301,7 +301,7 @@ Round 1 backups (`bak.structural-fix-20260511`) remain in place as the deeper ro
 
 ## 15. What was still missing after Round 2c
 
-After Round 2c the bot found `TNIO Guild Rules - Grand Council (definition)` for "who's on the grand council?" but missed `Know Your Empire`, the doc that actually names the office-holders. User reported in Discord: *"the names are in know your empire"*.
+After Round 2c the bot found `TNIO Guild Rules - Grand Council (definition)` for "who's on the grand council?" but missed `Know Your Empire`, the doc that actually names the office-holders. I flagged it in Discord: the names are in Know Your Empire.
 
 ### Drill-down
 
@@ -343,7 +343,7 @@ This is deterministic routing, not LLM-dependent. Hints feed the title-overlap b
 
 ### 16.3 Cache invalidation
 
-Persisted cache file moved aside (`agent_answer_cache.json.bak.r2d-20260511`) so the new hints take effect immediately for previously-cached questions. Cache key still at `v30`; bump not needed because hints/auto_sweep changes don't alter the key but the in-memory + persisted cache from the prior pool is what we cleared.
+Persisted cache file moved aside (`agent_answer_cache.json.bak.r2d-20260511`) so the new hints take effect immediately for previously-cached questions. Cache key still at `v30`; a bump was not needed because hints/auto_sweep changes don't alter the key, but the in-memory and persisted cache from the prior pool is what I cleared.
 
 ## 17. Round 2d verification
 
@@ -383,7 +383,7 @@ To revert R2d alone: `cp lore_agent.py.bak.structural-fix-r2d-20260511 lore_agen
 
 ## 20. Why this round
 
-After Round 2d, leadership questions worked but only via a hand-coded regex + curated doc-title list. The user wanted a **general** improvement: the catalog should know what every Drive file is, what it covers, and which questions it answers, not just councils. And it must use **Google Drive as the source of truth** (no hand-curated catalog file).
+After Round 2d, leadership questions worked but only via a hand-coded regex + curated doc-title list. I wanted a **general** improvement: the catalog should know what every Drive file is, what it covers, and which questions it answers, not just councils. And it had to use **Google Drive as the source of truth** (no hand-curated catalog file).
 
 Solution: build the catalog *from* Drive content via an LLM-enrichment pass, persist into `source_map.json`, and consult it during routing. Re-runs automatically whenever sync detects a corpus change.
 

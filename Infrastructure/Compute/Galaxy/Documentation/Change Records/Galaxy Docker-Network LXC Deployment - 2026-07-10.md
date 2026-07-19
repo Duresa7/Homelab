@@ -1,7 +1,7 @@
 # Galaxy Docker-Network LXC Deployment
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 **Implementation window:** 2026-07-10 through 2026-07-11  
 **System:** Proxmox VE cluster `Galaxy`, UniFi Access-A (VLAN 85), and LXC 107 `docker-network`  
@@ -37,7 +37,7 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 
 9. I added the UniFi local DNS A record `REDACTED_CUSTOM_DOMAIN_016` to `192.168.85.2` with TTL 300 seconds.
 10. I issued and assigned the Cloudflare DNS-01 wildcard/apex certificate in Nginx Proxy Manager, enabled Force SSL and HTTP/2, verified the authenticated NetBird dashboard over HTTPS, and passed a controlled restart of both Compose projects.
-11. I removed task-generated installer and temporary leftovers and restricted the NetBird secret configuration files and NPM database to owner-only mode 0600.
+11. I removed the installer and temporary files left over from my deployment steps and restricted the NetBird secret configuration files and NPM database to owner-only mode 0600.
 
 ## Resulting LXC Configuration
 
@@ -191,7 +191,7 @@ The controlled Compose restart passed: containers reached readiness, Nginx valid
 
 ### S10: cleanup and permissions
 
-I removed the task-generated leftovers and confirmed owner-only permissions on the secret files.
+I removed the leftovers from my deployment steps and confirmed owner-only permissions on the secret files.
 
 ## Rollback
 

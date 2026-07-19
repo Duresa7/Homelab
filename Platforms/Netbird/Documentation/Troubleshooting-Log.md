@@ -1,7 +1,7 @@
 # NetBird Troubleshooting Log
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 This is my chronological troubleshooting record for the combined `docker-network` access-stack deployment. Configuration stays owned by its platform or infrastructure system; I keep the combined deployment narrative here.
 
@@ -160,7 +160,7 @@ All three policies have logging enabled.
 **Date:** 2026-07-11  
 **Step:** S09
 
-**Symptom:** My first Windows computer-control capture after the controlled Compose restarts was black and did not provide usable evidence of the resulting state.
+**Symptom:** My first screenshot after the controlled Compose restarts came out black and did not provide usable evidence of the resulting state.
 
 **Investigation:** The application health checks and HTTPS request had already passed, which isolated the problem to screenshot capture rather than the NetBird service.
 
@@ -173,13 +173,13 @@ All three policies have logging enabled.
 **Date:** 2026-07-11  
 **Steps:** S01, S03, S04, S05, S05A, S06, and S08
 
-**Symptom:** A standards review found that several early Markdown transcripts retained readable summaries and final verification but did not preserve every original automation envelope and tool-returned result in the task evidence folder.
+**Symptom:** My pre-commit standards review found that several early Markdown transcripts kept readable summaries and final verification but not the complete original commands and raw results.
 
-**Investigation:** The original requests and results remained available in the local rollout record for this task. I correlated each affected call by call ID, including deferred wait results for long-running SSH operations. I scanned the selected records for private keys, Cloudflare credential values, NetBird secret fields, and password assignments before retention.
+**Investigation:** The original commands and results were still in my local session records, so I matched each affected step back to its source, including the delayed results of long-running SSH operations. I scanned everything I planned to keep for private keys, Cloudflare credential values, NetBird secret fields, and password assignments before retaining it.
 
-**Corrective action:** I exported the exact selected `response_item` records as step-specific JSON files under the deployment evidence folder and linked them from the affected Markdown transcripts. No redaction was required because the selected records passed the secret scan. Where SSH Manager had already replaced verbose output with an explicit truncation marker, I disclosed the gap instead of reconstructing it.
+**Corrective action:** I exported the complete records as step-specific JSON files in my offline evidence folder and referenced them from the affected transcripts. No redaction was needed because the records passed the secret scan. Where SSH Manager had already replaced verbose output with an explicit truncation marker, I disclosed the gap instead of reconstructing it.
 
-**Verification:** All recovered files parse as JSON, all new local links resolve, and secret-pattern checks remain clear. S04's truncated wrapper output is supplemented by its separately retained complete raw install log. S03, S05, and S08 preserve their exact upstream truncation markers plus complete exit results and independent post-change verification.
+**Verification:** All recovered files parse as JSON, every reference from the affected transcripts resolves, and secret-pattern checks remain clear. S04's truncated wrapper output is supplemented by its separately retained complete raw install log. S03, S05, and S08 preserve their exact upstream truncation markers plus complete exit results and independent post-change verification.
 
 ## 11. NPM Retained a Stale NetBird Upstream Address After Recreation
 

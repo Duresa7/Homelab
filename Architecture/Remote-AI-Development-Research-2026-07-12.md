@@ -1,7 +1,7 @@
 # Persistent Remote Development: My Research
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 Before building a persistent remote development VM in my lab, I researched how the always-on remote coding setups I had seen actually work, what runs where, and how to reach one securely. These are my notes and the design I settled on. Every source I relied on is listed under [Sources](#sources).
 
@@ -48,7 +48,7 @@ OpenAI's Codex cloud is a different offload model: OpenAI creates a managed cont
 2. **Process persistence:** `tmux`, the T3 Code server, or another supervisor keeps a running agent or dev server alive when the client disconnects. The `tmux` manual states that sessions survive SSH timeouts and intentional detach and can be reattached [7].
 3. **Conversation persistence:** the agent stores session history so it can resume. Codex saves transcripts locally and supports `codex resume`; that history lives on whichever machine runs the CLI [8].
 
-`tmux` survives a network disconnect, not a VM reboot. After a reboot a service manager restarts the long-lived servers, and agent conversations resume from their saved transcripts. That is why I do not read "persistent" as one immortal model process.
+`tmux` survives a network disconnect, not a VM reboot. After a reboot a service manager can restart the long-lived servers (if their units are enabled), and agent conversations resume from their saved transcripts. That is why I do not read "persistent" as one immortal model process.
 
 ## Ways to operate it
 
@@ -88,7 +88,7 @@ I decided the cleanest proof of concept is a dedicated Ubuntu Server VM on Galax
 - Permit SSH only through the private overlay. No public port-forward for SSH, T3 Code, or a Codex app server.
 - Use an unprivileged development account without passwordless `sudo`.
 - Keep each concurrent agent in its own Git worktree and branch so agents never edit the same checkout.
-- Use VM snapshots for machine recovery, but treat Git commits and remote branches as the primary change history.
+- Use VM snapshots or backups for machine recovery, but treat Git commits and remote branches as the primary change history.
 - Give the VM narrowly scoped repository credentials and no access to the Proxmox management plane, broad LAN shares, or unrelated secrets.
 
 Ubuntu is my easiest first target because SSH, `tmux`, systemd, containers, and most development tooling are native. Native Windows is possible (VS Code Remote SSH supports Windows hosts and Codex runs on Windows), but WSL2 or an Ubuntu VM is simpler unless a project is Windows-specific.
@@ -111,7 +111,7 @@ The first proof needs to demonstrate:
 2. Reconnecting restores the terminal and conversation context.
 3. Builds, tests, memory use, and browser automation run on the VM.
 4. The service is reachable only through NetBird or an SSH tunnel.
-5. A snapshot and Git branch let me recover from a bad agent action.
+5. A snapshot or backup and a Git branch let me recover from a bad agent action.
 
 ## Sources
 

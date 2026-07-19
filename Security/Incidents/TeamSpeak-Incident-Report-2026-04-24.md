@@ -1,7 +1,7 @@
 # TeamSpeak Service Incident Report
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 **REDACTED_PRIVATE_ORG_LABEL United - Internal IT / Cybersecurity Operations**
 
@@ -29,8 +29,8 @@
 
 ## Executive Summary
 
-On 2026-04-24, users reported intermittent TeamSpeak client connection failures
-against the community TeamSpeak endpoint `REDACTED_CUSTOM_DOMAIN_022`. I began
+On 2026-04-24, REDACTED_PRIVATE_ORG_LABEL United observed intermittent TeamSpeak client connection
+failures against the community TeamSpeak endpoint `REDACTED_CUSTOM_DOMAIN_022`. I began
 triage with the service layer: the TeamSpeak server process, Docker containers,
 and Playit tunnel were all online. The connection fragility for end users and
 administrative tooling traced instead to DNS and management-plane configuration.

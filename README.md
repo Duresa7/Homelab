@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -27,7 +27,7 @@ This is the working repository for my homelab. I run a four-node Proxmox cluster
 
 ![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the four-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Architecture/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks (plus Cloudflare Tunnel for published services, so nothing requires an inbound port forward). The UniFi gateway enforces zone-based firewall policy across 14 networks in 12 firewall zones: infrastructure tiers with an `-A` suffix each live in their own custom zone under least-privilege rules, separate from the household networks. The Galaxy cluster (grey, purple, blue, and red servers) hosts the workloads; UniFi exports CEF syslog to the Splunk SIEM on Security-A, and every node and endpoint reports to Wazuh and Prometheus on the same VLAN.
+Traffic enters through two WAN uplinks (plus Cloudflare Tunnel for published services, so nothing requires an inbound port forward). The UniFi gateway enforces zone-based firewall policy across 14 networks in 12 firewall zones: infrastructure tiers with an `-A` suffix each live in their own custom zone under least-privilege rules, separate from the household networks. The Galaxy cluster (grey, purple, blue, and red servers) hosts the workloads; UniFi exports CEF syslog to the Splunk SIEM on Security-A, Wazuh agents on the app and edge hosts report to the manager there, and Prometheus on the same VLAN scrapes all four cluster nodes, the edge host, and the security host itself.
 
 ## Repository layout
 
