@@ -1,17 +1,17 @@
 ﻿# ansible-01 Key Distribution Report
 
 **Created:** 2026-04-17  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-Generated: 2026-04-17
-Source node: proxmox_grey
+Generated: 2026-04-17  
+Source node: proxmox_grey  
+Source LXC: 100 (ansible-01)
 
 > **Superseded:** This is a historical snapshot of the original hard-coded distribution playbook. The active implementation is [SSH Identity Automation](Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md), with operating instructions in the [SSH Identity Automation Runbook](Runbook.md).
-Source LXC: 100 (ansible-01)
 
 ## Overview
 
-This report combines the current Ansible inventory and the SSH key distribution playbook found on `ansible-01`.
+I inventoried my `ansible-01` control node and documented the SSH key distribution playbook I run there. This snapshot captures the inventory and playbook exactly as they existed on 2026-04-17.
 
 The playbook is configured to:
 

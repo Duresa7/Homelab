@@ -1,7 +1,7 @@
-﻿# Termix Troubleshooting Log
+# Termix Troubleshooting Log
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ## Quick Index
 
@@ -18,7 +18,7 @@
 
 ### Symptom
 
-Termix's `/metrics/start/:id` endpoint timed out for host IDs 1–4. Independent TCP/22 probes from both the `docker-main` host and the Termix container also timed out against `192.168.70.10–13`.
+Termix's `/metrics/start/:id` endpoint timed out for host IDs 1 through 4. Independent TCP/22 probes from both the `docker-main` host and the Termix container also timed out against `192.168.70.10` through `192.168.70.13`.
 
 ### Investigation
 
@@ -35,13 +35,13 @@ The Galaxy datacenter firewall applies `pve_mgmt` to every node. `docker-main` (
 
 ### Corrective Action
 
-Backed up `/etc/pve/firewall/cluster.fw` to mode-0600 `/root/cluster.fw.pre-termix-2026-07-14` on `grey-server`. Created cluster IPSet `pve_termix` with the single member `192.168.40.35`, then added an inbound TCP/22 `ACCEPT` from `+pve_termix` to `pve_mgmt`. The new rule is evaluated before the existing SSH drop and does not grant TCP/8006 or any other port.
+I backed up `/etc/pve/firewall/cluster.fw` to mode-0600 `/root/cluster.fw.pre-termix-2026-07-14` on `grey-server`. I created cluster IPSet `pve_termix` with the single member `192.168.40.35`, then added an inbound TCP/22 `ACCEPT` from `+pve_termix` to `pve_mgmt`. The new rule is evaluated before the existing SSH drop and does not grant TCP/8006 or any other port.
 
 ### Verification
 
 Live TCP/22 probes from `docker-main` returned open for all four node addresses. Termix then returned HTTP 200 for each host, with final stages `Authenticating with SSH key`, `SSH connection established successfully`, and `Metrics session established`.
 
-See [Termix SSH Host Onboarding - 2026-07-14](Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md) and its [evidence index](../Evidence/SSH%20Host%20Onboarding%20-%202026-07-14/Evidence-Index.md).
+See [Termix SSH Host Onboarding - 2026-07-14](Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md).
 
 ## 1. Password Reset Code Was Not Shown
 
@@ -54,14 +54,14 @@ See [Termix SSH Host Onboarding - 2026-07-14](Change%20Records/Termix%20SSH%20Ho
 Termix logged the successful reset request without the value:
 
 ```text
-[11:27:57 PM] [INFO] [🔐] Password reset code generated for user REDACTED_USER_001 (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
+[11:27:57 PM] [INFO] Password reset code generated for user REDACTED_USER_001 (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
 ```
 
 The API response also instructed the user to check Docker logs for a code that was not present.
 
 ### Investigation
 
-The following hypotheses were tested in order:
+I tested these hypotheses in order:
 
 | Rank | Hypothesis | Test | Result |
 |---:|---|---|---|
@@ -70,7 +70,7 @@ The following hypotheses were tested in order:
 | 3 | The value failed to persist | Decrypted a separate in-memory copy of the persisted encrypted SQLite file and queried only for row existence | The persisted file contained no reset row; the route wrote to the live in-memory database without calling the save trigger |
 | 4 | Browser cache served an old frontend | Compared the deployed package and image with the registry's current manifest and upstream release source | Not causal to the missing log value; the backend itself was old and defective |
 
-The deployed compiled route creates `resetCode`, inserts it into `settings`, and then logs only the username and expiry. Because the insert completed before the log line, the reset row existed in the live process. The encrypted database file on disk had last been written on 2026-07-07 and did not contain `reset_code_REDACTED_USER_001`; this explains why an offline database check could not recover it. Reset codes are short-lived process state in this path.
+The deployed compiled route creates `resetCode`, inserts it into `settings`, and then logs only the username and expiry. Because the insert completed before the log line, the reset row existed in the live process. The encrypted database file on disk had last been written on 2026-07-07 and did not contain `reset_code_REDACTED_USER_001`; that is why an offline database check could not recover it. Reset codes are short-lived process state in this path.
 
 The `AdminSettings` bundle contained one general password-reset status reference but zero `reset_code_`, `reset code`, or `resetCode` references. The only backend routes with `settings` in their path were the terminal-session and Guacamole feature settings; no generic admin settings-table reader was exposed.
 
@@ -82,9 +82,9 @@ The defect is corrected in [Termix 2.5.0's password-reset route](https://github.
 
 ### Corrective Action
 
-The operator authorized a direct Compose upgrade and explicitly instructed that no backup be taken. From `/opt/docker/termix`, the existing project was upgraded with `docker compose pull`, `docker compose down`, and `docker compose up -d`. Both `termix` and `guacd` were recreated; the named `termix_termix-data` volume was retained. No Compose file or environment setting was changed.
+I chose a direct Compose upgrade and deliberately took no backup. From `/opt/docker/termix`, I upgraded the existing project with `docker compose pull`, `docker compose down`, and `docker compose up -d`. Both `termix` and `guacd` were recreated; the named `termix_termix-data` volume was retained. I changed no Compose file or environment setting.
 
-The operator also explicitly instructed that no password-reset request be initiated on their behalf. Verification therefore inspected the corrected 2.5.0 logger template without generating or retaining a code.
+I also chose not to initiate a password-reset request during this work. Verification therefore inspected the corrected 2.5.0 logger template without generating or retaining a code.
 
 ### Verification
 
@@ -92,8 +92,6 @@ Termix now reports package version 2.5.0 and repository digest `sha256:4d3371311
 
 `guacd` logged that it was listening on TCP 4822. Its manual health command passed, Termix established a TCP connection to `guacd:4822`, and Docker's first scheduled five-minute health probe exited zero and changed the container to `healthy`. Both containers remained healthy with zero restarts in the final Compose check.
 
-The earlier 2026-07-13 reset code was scheduled to expire at 23:42:57 UTC and was invalidated by the restart because that code existed only in the former process's in-memory database. The operator must initiate a fresh reset when ready.
-
-See the [evidence index](../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Evidence-Index.md) for the redacted command transcripts.
+The earlier 2026-07-13 reset code was scheduled to expire at 23:42:57 UTC and was invalidated by the restart because that code existed only in the former process's in-memory database. I need to initiate a fresh reset when ready.
 
 The completed upgrade is recorded in [Termix Upgrade 2.2.1 to 2.5.0 - 2026-07-13](Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md).

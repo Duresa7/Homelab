@@ -1,7 +1,7 @@
 # Ansible and Semaphore Upgrade
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-18
 
 **Implementation date:** 2026-07-14  
 **Status:** Complete  
@@ -10,7 +10,7 @@
 
 ## Scope
 
-Upgrade Ansible and Semaphore on `ansible-01` to the latest official releases available on 2026-07-14, preserve recovery points and the existing Semaphore project, and make the controller and web UI return automatically after a Proxmox-node boot. Do not run a key-changing Semaphore task and do not perform Git operations.
+I upgraded Ansible and Semaphore on `ansible-01` to the latest official releases available on 2026-07-14, preserved recovery points and the existing Semaphore project, and made the controller and web UI return automatically after a Proxmox-node boot. I ran no key-changing Semaphore task and performed no Git operations.
 
 ## Starting State
 
@@ -18,7 +18,7 @@ Upgrade Ansible and Semaphore on `ansible-01` to the latest official releases av
 - Semaphore 2.17.33 ran as a direct process listening on TCP 3000. It had no systemd unit and was an orphaned child of PID 1, so boot recovery was not defined.
 - LXC 100 had no `onboot` setting.
 - The live Semaphore SQLite database held one project, 18 templates, six views, and one encrypted access key.
-- `/root/config.json` and `/root/database.sqlite` were mode 0644 and were tightened during the backup step.
+- `/root/config.json` and `/root/database.sqlite` were mode 0644; I tightened them during the backup step.
 
 ## Release Sources
 
@@ -28,17 +28,17 @@ Upgrade Ansible and Semaphore on `ansible-01` to the latest official releases av
 | ansible-core | 2.21.2 | [PyPI release](https://pypi.org/project/ansible-core/2.21.2/) |
 | Semaphore | 2.18.27 | [GitHub release](https://github.com/semaphoreui/semaphore/releases/tag/v2.18.27) |
 
-The Ansible 14.2.0 package declares `ansible-core~=2.21.2`. The official Semaphore Linux AMD64 package was verified against SHA256 `3ebf8b43de63eb4fd0c49b9d694d322bce52aea837908fe73a14c9dcbd60b104` before installation.
+The Ansible 14.2.0 package declares `ansible-core~=2.21.2`. I verified the official Semaphore Linux AMD64 package against SHA256 `3ebf8b43de63eb4fd0c49b9d694d322bce52aea837908fe73a14c9dcbd60b104` before installing it.
 
 ## Decisions and Rationale
 
-- Install current Ansible into a versioned virtual environment at `/opt/ansible-14.2.0`. Debian's candidate remained 12.0.0, so the upstream package was required to satisfy the request for the current release.
-- Select the runtime through `/opt/ansible-current` and `/usr/local/bin/ansible*` links. This keeps ordinary commands and Semaphore on one runtime while making a future version switch or rollback explicit.
-- Retain Debian's older Ansible packages as an emergency fallback instead of removing the last known packaged runtime.
-- Upgrade Semaphore with its official `.deb`, verified before installation, rather than replacing the binary from an unverified source.
-- Run Semaphore under systemd with restart-on-failure, `C.utf8`, `/opt/ansible-current/bin` first in `PATH`, and `UMask=0077`. The prior direct process had no service manager or boot behavior.
-- Enable `onboot: 1` for LXC 100. Ansible itself is a CLI and needs no daemon; automatic startup applies to the controller LXC and Semaphore.
-- Validate the controller boot path with a controlled LXC reboot, but do not reboot the entire Proxmox node solely for this change. The LXC reboot proves systemd and Semaphore recover from a real controller boot; Proxmox's persisted `onboot` setting is the authoritative node-boot policy.
+- I installed current Ansible into a versioned virtual environment at `/opt/ansible-14.2.0`. Debian's candidate remained 12.0.0, so the upstream package was the only way to get the current release.
+- I select the runtime through `/opt/ansible-current` and `/usr/local/bin/ansible*` links. This keeps ordinary commands and Semaphore on one runtime while making a future version switch or rollback explicit.
+- I kept Debian's older Ansible packages as an emergency fallback instead of removing the last known packaged runtime.
+- I upgraded Semaphore with its official `.deb`, verified before installation, rather than replacing the binary from an unverified source.
+- I run Semaphore under systemd with restart-on-failure, `C.utf8`, `/opt/ansible-current/bin` first in `PATH`, and `UMask=0077`. The prior direct process had no service manager or boot behavior.
+- I enabled `onboot: 1` for LXC 100. Ansible itself is a CLI and needs no daemon; automatic startup applies to the controller LXC and Semaphore.
+- I validated the controller boot path with a controlled LXC reboot but did not reboot the entire Proxmox node solely for this change. The LXC reboot proves systemd and Semaphore recover from a real controller boot; Proxmox's persisted `onboot` setting is the authoritative node-boot policy.
 
 ## Actions and Observed Results
 
@@ -48,7 +48,7 @@ The Ansible 14.2.0 package declares `ansible-core~=2.21.2`. The official Semapho
 4. Installed `python3.13-venv`, built `/opt/ansible-14.2.0`, installed Ansible 14.2.0 with ansible-core 2.21.2, and selected it through `/opt/ansible-current` plus `/usr/local/bin` command links.
 5. Verified the Semaphore 2.18.27 package checksum, installed it, gracefully stopped the unmanaged 2.17.33 process, deployed `semaphore.service`, and enabled and started the unit.
 6. Set Proxmox LXC 100 to `onboot: 1`.
-7. Refreshed and verified the backup manifest, checked both SQLite databases, validated HTTP and systemd state, ran the project validator, and syntax-checked all five operator playbooks.
+7. Refreshed and verified the backup manifest, checked both SQLite databases, validated HTTP and systemd state, ran the project validator, and syntax-checked all five playbooks.
 8. Deployed the reusable backup and secret-safe state-verification Python utilities under `/opt/homelab/ansible-tools` from the repository's native `Scripts/` sources.
 9. Compared the live database with the pre-upgrade online backup. Project, repository, inventory, template, view, environment, access-key metadata, encrypted key material, and environment payloads were unchanged. Semaphore 2.18.27 added 18 expected template-to-environment links during migration.
 10. Rebooted LXC 100. Its boot ID changed, Semaphore returned automatically as an enabled systemd service with zero restarts, the UI returned HTTP 200, and the current-boot journal contained no warning-or-higher entries.
@@ -91,7 +91,7 @@ No Semaphore task was launched and no authorized key was added, removed, or rota
 
 ## Rollback
 
-1. Stop `semaphore.service` and prevent operators from launching tasks.
+1. Stop `semaphore.service` and launch no tasks.
 2. Restore `/root/config.json`, `/root/database.sqlite`, and the saved 2.17.33 binary from `/root/semaphore-backups/upgrade-2026-07-14` if Semaphore rollback is required.
 3. Repoint `/opt/ansible-current` and `/usr/local/bin/ansible*` to a retained runtime. If necessary, remove only the `/usr/local/bin` shadow links to expose Debian's retained `/usr/bin` packages.
 4. Start Semaphore, verify SQLite integrity and HTTP 200, then rerun the project validator and syntax checks before resuming use.
@@ -99,13 +99,4 @@ No Semaphore task was launched and no authorized key was added, removed, or rota
 
 ## Remaining Work
 
-None required for the requested upgrade and boot persistence. The controller LXC was rebooted successfully. A full Proxmox-node reboot was intentionally not introduced solely as a test; persisted `onboot: 1` is the Proxmox node-boot control.
-
-## Step Evidence
-
-| Step | Evidence | Verification |
-|---|---|---|
-| S01 | [Discovery and backups](../../Evidence/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14/Logs/S01-Discovery-And-Backups-2026-07-14.md) | Starting versions, process model, object counts, permissions, and rollback copies recorded |
-| S02 | [Upgrades and boot persistence](../../Evidence/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14/Logs/S02-Upgrades-And-Boot-Persistence-2026-07-14.md) | Versioned Ansible runtime, verified Semaphore package, systemd unit, and LXC onboot applied |
-| S03 | [Post-upgrade verification](../../Evidence/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14/Logs/S03-Post-Upgrade-Verification-2026-07-14.md) | Versions, service, HTTP, databases, backups, project, playbooks, and boot configuration passed |
-| S04 | [Boot and preservation verification](../../Evidence/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14/Logs/S04-Boot-And-Preservation-Verification-2026-07-14.md) | Controlled LXC reboot, automatic service return, native tools, and unchanged encrypted project state verified |
+None required for the requested upgrade and boot persistence. I rebooted the controller LXC successfully and intentionally did not introduce a full Proxmox-node reboot solely as a test; persisted `onboot: 1` is the Proxmox node-boot control.

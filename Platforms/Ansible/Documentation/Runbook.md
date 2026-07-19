@@ -1,9 +1,9 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-18
 
-Run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
+I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
 ## Start Every Session
 
@@ -81,7 +81,7 @@ ansible-playbook playbooks/ssh-identity-onboard.yml --check \
   -e ssh_target_group=termix_candidate_targets
 ```
 
-When the machines are reachable and the operator is ready to test Termix itself, remove `--check`. Onboarding is additive: it does not remove the Mac, Ansible Control, Jedi PC, or any unrelated authorized key.
+When the machines are reachable and I'm ready to test from Termix itself, I remove `--check`. Onboarding is additive: it does not remove the Mac, Ansible Control, Jedi PC, or any unrelated authorized key.
 
 ## Add a New SSH-Capable Device
 

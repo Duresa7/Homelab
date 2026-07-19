@@ -1,15 +1,15 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-16
+**Last updated:** 2026-07-18
 
 ## The Simple Version
 
-Each device that can initiate SSH—Mac, Ansible Control, Jedi PC, or Termix—has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac, Ansible Control, or Termix keys.
+Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, or Termix) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac, Ansible Control, or Termix keys.
 
 ```mermaid
 flowchart LR
-    O["Operator"] -->|"runs normal Ansible"| A["Ansible project"]
+    O["Me"] -->|"runs normal Ansible"| A["Ansible project"]
     O -->|"optional click-to-run UI"| S["Semaphore"]
     S --> A
     A --> I["One selected identity file"]
@@ -34,9 +34,9 @@ Comments such as `jedi-pc` are labels. Exact comparison and removal use the key 
 
 ```mermaid
 flowchart LR
-    C["Current key only"] -->|"operator supplies new public key"| N["Replacement configured"]
+    C["Current key only"] -->|"I supply the new public key"| N["Replacement configured"]
     N -->|"stage"| B["Both keys present"]
-    B -->|"Ansible verify + owner login test"| V["Operator verified"]
+    B -->|"Ansible verify + my login test"| V["Verified by me"]
     V -->|"RETIRE identity confirmation"| R["Old key removed"]
     R -->|"promote replacement in identity file"| C
 ```
@@ -45,13 +45,13 @@ The removal gate stays closed unless all of these are true:
 
 - a distinct replacement public key is configured;
 - both old and replacement keys are present on every selected target;
-- the owner has tested the replacement and set `operator_verified: true`;
+- I have tested the replacement from the owner device and set `operator_verified: true`;
 - the exact `RETIRE <identity-id>` phrase is supplied;
 - every selected target is reachable.
 
 ## Privilege Model
 
-The controller does not use sudo for this workflow. It logs in as the account that owns the key file—such as `root`, `REDACTED_USER_001`, `openclaw`, `REDACTED_DEPLOYMENT_USER`, or Windows `Administrator`—and edits only that account's authorized-key store. This avoids interactive sudo passwords and avoids adding another passwordless-sudo dependency solely for key rotation.
+The controller does not use sudo for this workflow. It logs in as the account that owns the key file (`root`, `REDACTED_USER_001`, `openclaw`, `REDACTED_DEPLOYMENT_USER`, or Windows `Administrator`) and edits only that account's authorized-key store. I set it up this way to avoid interactive sudo passwords and to avoid adding another passwordless-sudo dependency solely for key rotation.
 
 The four Proxmox nodes share `/etc/pve/priv/authorized_keys`. `grey-server` is the sole writer; `purple-server`, `blue-server`, and `red-server` verify the cluster-backed result without performing duplicate writes.
 
@@ -76,4 +76,4 @@ This gives the web UI automatic recovery after a controller or Proxmox-node boot
 - `ws-dc-2-secondary` and `obi-pc` remain in `ssh_key_unknown`; the playbooks cannot select them.
 - `nas-family` is retired and is absent from the inventory and validator.
 - Private keys remain on their owner device or in Semaphore's encrypted Key Store.
-- The operator generates replacement keys; Ansible stages, verifies, and retires public keys only.
+- I generate replacement keys on the owner device; Ansible stages, verifies, and retires public keys only.

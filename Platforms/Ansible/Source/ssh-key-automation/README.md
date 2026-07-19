@@ -1,9 +1,9 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 
-This is a normal Ansible project for onboarding and rotating SSH public-key identities. Semaphore is an optional launcher over these files; it is not required to operate them.
+This is the Ansible project I use to onboard and rotate SSH public-key identities. Semaphore is an optional launcher over these files; it is not required to operate them.
 
 ## Safety Model
 
@@ -33,7 +33,7 @@ ansible-playbook playbooks/ssh-identity-onboard.yml \
   -e ssh_target_group=termix_candidate_targets
 ```
 
-Do not run that onboarding command until the operator is ready to test the new Termix host records.
+I don't run that onboarding command until I'm ready to test the new Termix host records.
 
 ## Rotation Workflow
 

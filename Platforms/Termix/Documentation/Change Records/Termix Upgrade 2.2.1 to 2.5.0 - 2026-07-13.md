@@ -1,7 +1,7 @@
 # Termix Upgrade 2.2.1 to 2.5.0
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-13
+**Last updated:** 2026-07-18
 
 **Date:** 2026-07-13  
 **Target:** `docker-main`, Compose project `/opt/docker/termix`  
@@ -9,7 +9,7 @@
 
 ## Scope
 
-Upgrade the existing Termix Compose project from package version 2.2.1 to 2.5.0 to correct the password-reset logger that generated but did not display the reset code. Retain the existing Compose definition and named data volume.
+I upgraded the existing Termix Compose project from package version 2.2.1 to 2.5.0 to correct the password-reset logger that generated but did not display the reset code. I retained the existing Compose definition and named data volume.
 
 ## Starting State
 
@@ -21,10 +21,10 @@ Upgrade the existing Termix Compose project from package version 2.2.1 to 2.5.0 
 
 ## Decisions
 
-- The operator explicitly directed that no backup be taken. This accepted the risk of performing a multi-version application/database migration without a new recovery copy.
-- The operator requested the simple full-project sequence `docker compose pull`, `docker compose down`, and `docker compose up -d`, so both Termix and its `guacd` companion were cycled together.
-- No password reset was initiated during verification. The corrected code path was verified statically in the deployed artifact, and the operator retains control of when to generate a fresh recovery code.
-- The Compose file was not edited or pinned during this bounded change; it continues to reference `ghcr.io/lukegus/termix:latest`.
+- I deliberately took no backup. I accepted the risk of a multi-version application/database migration without a new recovery copy.
+- I chose the simple full-project sequence `docker compose pull`, `docker compose down`, and `docker compose up -d`, so both Termix and its `guacd` companion cycled together.
+- I initiated no password reset during verification. I verified the corrected code path statically in the deployed artifact and kept control of when to generate a fresh recovery code.
+- I did not edit or pin the Compose file during this bounded change; it continues to reference `ghcr.io/lukegus/termix:latest`.
 
 ## Actions and Results
 
@@ -58,18 +58,8 @@ No reset code, password, token, encryption key, environment value, or decrypted 
 
 ## Rollback
 
-The previous image ID `sha256:7c98e47c2fbb6becb786914a76e1ba6c90a5402346cbdf5a0170360fd8e5f3c0` remained available locally after the upgrade. However, because the operator declined a backup and Termix may have migrated its persistent database, an application downgrade is not guaranteed safe and was not attempted. Any rollback should first inspect 2.5.0 migration compatibility and current data state.
+The previous image ID `sha256:7c98e47c2fbb6becb786914a76e1ba6c90a5402346cbdf5a0170360fd8e5f3c0` remained available locally after the upgrade. Because I declined a backup and Termix may have migrated its persistent database, an application downgrade is not guaranteed safe and I did not attempt it. Any rollback should first inspect 2.5.0 migration compatibility and current data state.
 
 ## Remaining Work
 
-The operator must initiate a fresh password reset when ready and retrieve the newly logged code directly from the live Termix logs. The pre-upgrade code was invalidated by the full Compose restart.
-
-## Step Evidence
-
-| Step | Evidence | Verification |
-|---|---|---|
-| S01 | [Runtime and image inspection](../../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Logs/S01-Runtime-And-Image-Inspection-2026-07-13.md) | Confirmed healthy Termix 2.2.1 and stale image digest |
-| S02 | [Reset path inspection](../../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Logs/S02-Reset-Path-Inspection-2026-07-13.md) | Confirmed defective logger template |
-| S03 | [Feedback-loop verification](../../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Logs/S03-Feedback-Loop-Verification-2026-07-13.md) | Repeated the assertion twice against the observed missing-code event |
-| S04 | [Compose upgrade](../../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Logs/S04-Compose-Upgrade-2026-07-13.md) | Pull, down, and up each exited zero |
-| S05 | [Post-upgrade verification](../../Evidence/Password%20Reset%20Code%20Missing%20-%202026-07-13/Logs/S05-Post-Upgrade-Verification-2026-07-13.md) | Both containers healthy; Termix 2.5.0; HTTP 200; corrected logger deployed |
+I need to initiate a fresh password reset when ready and retrieve the newly logged code directly from the live Termix logs. The pre-upgrade code was invalidated by the full Compose restart.

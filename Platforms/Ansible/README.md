@@ -1,9 +1,9 @@
-﻿# Ansible
+# Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-This platform owns the homelab's reusable Ansible control plane. The current deployment on `ansible-01` manages SSH public-key identities, while Semaphore provides an optional web interface over the same project.
+This platform owns my reusable Ansible control plane. The current deployment on `ansible-01` manages SSH public-key identities, and Semaphore gives me an optional web interface over the same project.
 
 ## Live Deployment
 
@@ -15,7 +15,7 @@ This platform owns the homelab's reusable Ansible control plane. The current dep
 - Boot behavior: Proxmox starts LXC 100 automatically; systemd starts Semaphore inside it
 - Source of truth: [SSH identity automation source](Source/ssh-key-automation/README.md)
 
-Semaphore is not required. Every operation can be run directly with `ansible-playbook` from the project directory.
+Semaphore is not required. I can run every operation directly with `ansible-playbook` from the project directory.
 
 ## Layout
 
@@ -24,17 +24,16 @@ Semaphore is not required. Every operation can be run directly with `ansible-pla
 | `Source/ssh-key-automation/` | Versioned inventory, identity definitions, playbooks, tests, and Semaphore manifest |
 | `Configuration/semaphore.service` | Deployed systemd unit for Semaphore startup and recovery |
 | `Scripts/` | Native Python backup and secret-safe verification utilities |
-| `Documentation/Architecture.md` | Simple explanation of how the system fits together |
+| `Documentation/Architecture.md` | How the system fits together |
 | `Documentation/Runbook.md` | Commands for audits, onboarding, and future rotations |
 | `Documentation/Troubleshooting-Log.md` | Chronological operational problems and fixes |
 | `Documentation/TODO.md` | Platform-owned backlog |
 | `Documentation/Change Records/` | Dated implementation history |
-| `Evidence/` | Command results and retained audit logs |
 
 ## Key Records
 
 - [Architecture](Documentation/Architecture.md)
-- [Operator runbook](Documentation/Runbook.md)
+- [Runbook](Documentation/Runbook.md)
 - [Platform TODO](Documentation/TODO.md)
 - [SSH identity automation implementation](Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
 - [Ansible and Semaphore upgrade](Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
