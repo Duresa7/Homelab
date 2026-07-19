@@ -1,11 +1,11 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ## Scope and Access
 
-Operate the LXC through the SSH Manager target `red_server`. The live Compose project is `/opt/media-stack` inside CT 842. Do not print, copy, or commit the live `.env`, application XML files containing API keys, WireGuard configuration, or qBittorrent credentials.
+I operate the LXC through the SSH Manager target `red_server`. The live Compose project is `/opt/media-stack` inside CT 842. I never print, copy, or commit the live `.env`, application XML files containing API keys, WireGuard configuration, or qBittorrent credentials.
 
 Enter a guest shell when interactive work is necessary:
 
@@ -13,7 +13,7 @@ Enter a guest shell when interactive work is necessary:
 pct enter 842
 ```
 
-Prefer bounded commands through `pct exec 842 -- ...` for repeatable checks.
+I prefer bounded commands through `pct exec 842 -- ...` for repeatable checks.
 
 ## Routine Health Check
 
@@ -57,13 +57,13 @@ Stop the complete stack:
 pct exec 842 -- sh -lc 'cd /opt/media-stack && docker compose --profile vpn down'
 ```
 
-Restart an ordinary application by name. For the download path, restart Gluetun and qBittorrent together so dependency ordering and port synchronization are reapplied:
+Restart an ordinary application by name. For the download path, I restart Gluetun and qBittorrent together so dependency ordering and port synchronization are reapplied:
 
 ```sh
 pct exec 842 -- sh -lc 'cd /opt/media-stack && docker compose --profile vpn up -d --force-recreate gluetun qbittorrent'
 ```
 
-Never remove `network_mode: service:gluetun` from qBittorrent as a troubleshooting shortcut.
+I never remove `network_mode: service:gluetun` from qBittorrent as a troubleshooting shortcut.
 
 ## VPN and Port-Forward Verification
 
@@ -73,13 +73,13 @@ Confirm the provider exit from the shared network namespace without retaining th
 pct exec 842 -- docker exec gluetun wget -qO- https://ipinfo.io/ip
 ```
 
-Compare Gluetun's active port file with qBittorrent's `listen_port` API preference. Also confirm `random_port=false` and `upnp=false`. The assigned number is ephemeral and should not be documented.
+Compare Gluetun's active port file with qBittorrent's `listen_port` API preference. Also confirm `random_port=false` and `upnp=false`. The assigned number is ephemeral and I do not document it.
 
 If the port is stale after a reconnect, recreate Gluetun and qBittorrent together, then repeat the comparison. Do not add a UniFi gateway port forward.
 
 ## Updates
 
-All images intentionally track `latest`. Treat every pull as a bounded change:
+All images intentionally track `latest`. I treat every pull as a bounded change:
 
 1. Record current image IDs and application versions without capturing secrets.
 2. Confirm protected backups exist for `/opt/media-stack/config` and `/data`.
@@ -91,11 +91,11 @@ pct exec 842 -- sh -lc 'cd /opt/media-stack && docker compose --profile vpn pull
 pct exec 842 -- sh -lc 'cd /opt/media-stack && docker compose --profile vpn up -d --force-recreate'
 ```
 
-The Seerr container retains the Compose service and container name `jellyseerr` for migration compatibility, but its image is `ghcr.io/seerr-team/seerr:latest`. Do not switch it back to the retired `fallenbagel/jellyseerr` image.
+The Seerr container retains the Compose service and container name `jellyseerr` for migration compatibility, but its image is `ghcr.io/seerr-team/seerr:latest`. I do not switch it back to the retired `fallenbagel/jellyseerr` image.
 
 ## Download Payload Filter
 
-qBittorrent's **Excluded file names** option is enabled with the 100-pattern baseline in the [payload-filtering research](Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). The list rejects common executable, installer, script, shortcut, macro-enabled document, driver, and loadable-library suffixes while preserving media, subtitles, archives, and disc images.
+qBittorrent's **Excluded file names** option is enabled with the 100-pattern baseline in my [payload-filtering research](Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). The list rejects common executable, installer, script, shortcut, macro-enabled document, driver, and loadable-library suffixes while preserving media, subtitles, archives, and disc images.
 
 Verify the setting through the local qBittorrent API from Gluetun's shared namespace:
 
@@ -103,7 +103,7 @@ Verify the setting through the local qBittorrent API from Gluetun's shared names
 pct exec 842 -- sh -lc 'docker exec gluetun wget -qO- http://127.0.0.1:8080/api/v2/app/preferences | jq "{excluded_file_names_enabled,pattern_count:(.excluded_file_names|split(\"\\n\")|length),autorun_enabled}"'
 ```
 
-Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and `autorun_enabled=false`. The filter applies to newly added torrents; changing it does not retroactively rewrite file priorities for an existing queue. Do not add archive or disc-image patterns without first deciding to reject those release formats.
+Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and `autorun_enabled=false`. The filter applies to newly added torrents; changing it does not retroactively rewrite file priorities for an existing queue. I do not add archive or disc-image patterns without first deciding to reject those release formats.
 
 ## Backup and Restore
 
@@ -120,7 +120,7 @@ Restore the files with their original ownership and modes, validate with `docker
 
 ## Credential Recovery
 
-Retrieve the qBittorrent login from approved secret storage. Never reset the credential by placing plaintext in Compose, shell arguments, documentation, or evidence.
+Retrieve the qBittorrent login from approved secret storage. I never reset the credential by placing plaintext in Compose, shell arguments, documentation, or evidence.
 
 ## Escalation
 

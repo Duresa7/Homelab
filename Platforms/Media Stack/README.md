@@ -1,9 +1,9 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-The Media Stack provides request management, media-library playback, release automation, indexer coordination, challenge handling, and VPN-isolated downloading from one dedicated Debian LXC.
+My media stack runs request management, media-library playback, release automation, indexer coordination, challenge handling, and VPN-isolated downloading from one dedicated Debian LXC.
 
 ## Current State
 
@@ -31,9 +31,9 @@ The Media Stack provides request management, media-library playback, release aut
 | qBittorrent | Download client | 8080 through Gluetun |
 | Gluetun | Proton WireGuard tunnel, firewall kill switch, and provider-side port forwarding | Owns qBittorrent's network namespace |
 
-qBittorrent cannot obtain an independent container network path because it uses `network_mode: service:gluetun`. Gluetun selects a Proton P2P endpoint, requests a forwarded port, and writes the active port into qBittorrent while keeping router-level UPnP/NAT-PMP disabled.
+qBittorrent has no independent container network path because I run it with `network_mode: service:gluetun`. Gluetun selects a Proton P2P endpoint, requests a forwarded port, and writes the active port into qBittorrent while keeping router-level UPnP/NAT-PMP disabled.
 
-Intel Quick Sync is available to Jellyfin through `/dev/dri/renderD128`. `/dev/net/tun` is passed to the unprivileged guest for Gluetun.
+I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel Quick Sync, and `/dev/net/tun` for Gluetun's tunnel.
 
 ## Records
 
@@ -50,4 +50,4 @@ Intel Quick Sync is available to Jellyfin through `/dev/dri/renderD128`. `/dev/n
 
 ## Remaining Onboarding
 
-Application onboarding completed on 2026-07-17: Jellyfin's guided setup, the Movies and TV Shows libraries, and Quick Sync transcoding; Sonarr and Radarr media management; the first Prowlarr indexer with the Standard sync profile; and the migrated Seerr connections — see the [application onboarding change record](Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md) and its 16-screenshot evidence set. One bounded end-to-end test (request → search → qBittorrent through the VPN → hard-link import → Jellyfin playback) remains before treating acquisition and import as fully validated, and the `flaresolverr` tag stays unused until an indexer requires challenge handling.
+I completed application onboarding on 2026-07-17: Jellyfin's guided setup, the Movies and TV Shows libraries, and Quick Sync transcoding; Sonarr and Radarr media management; the first Prowlarr indexer with the Standard sync profile; and the migrated Seerr connections. The [application onboarding change record](Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md) and its 16-screenshot evidence set hold the details. One bounded end-to-end test (request → search → qBittorrent through the VPN → hard-link import → Jellyfin playback) remains before I treat acquisition and import as fully validated, and the `flaresolverr` tag stays unused until an indexer requires challenge handling.
