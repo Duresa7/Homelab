@@ -1,9 +1,9 @@
 # alpha-prod-01 Infrastructure Document
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-19
 
-**REDACTED_PRIVATE_ORG_LABEL United — Secure by design. United by purpose.**
+This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three containerized TeamSpeak servers published through Playit tunnels and Cloudflare SRV records, a shared Playit agent, and the TS3 Manager admin UI. I keep the connect addresses, port map, allowlists, and compose files here so I can rebuild or extend the stack without reverse-engineering it.
 
 ---
 
@@ -133,7 +133,7 @@ fail to connect when an SRV record points at a CNAME.
 
 
 
-> **Credentials.** All ServerQuery passwords, API keys, ServerAdmin privilege keys, and server passwords below are stored in 1Password — item **"REDACTED_1PASSWORD_ITEM_TITLE_003"** in the `REDACTED_1PASSWORD_VAULT` vault. These credentials were last rotated on 2026-07-17.
+> **Credentials.** All ServerQuery passwords, API keys, ServerAdmin privilege keys, and server passwords below are stored in 1Password, item **"REDACTED_1PASSWORD_ITEM_TITLE_003"** in the `REDACTED_1PASSWORD_VAULT` vault. I last rotated these credentials on 2026-07-17.
 
 ### TeamSpeak 1 ServerQuery
 | Field | Value |
@@ -147,7 +147,7 @@ fail to connect when an SRV record points at a CNAME.
 ```
 *(stored in 1Password)*
 ```
-*(Used once on first connect to claim admin — already claimed)*
+*(Used once on first connect to claim admin; already claimed.)*
 
 ### TeamSpeak 1 Community Access
 | Field | Value |
@@ -214,9 +214,9 @@ fail to connect when an SRV record points at a CNAME.
 - **Database**: SQLite (stored in named volume `ts-data`)
 - **Network mode**: host
 - **Ports**:
-  - `9987/udp` — Voice
-  - `10011/tcp` — ServerQuery
-  - `30033/tcp` — File Transfer
+  - `9987/udp` - Voice
+  - `10011/tcp` - ServerQuery
+  - `30033/tcp` - File Transfer
 - **Public server listing**: Disabled
 - **Virtual server name**: `REDACTED_PRIVATE_ORG_LABEL x LYON`
 - **Server password**: Enabled *(stored in 1Password)*
@@ -230,9 +230,9 @@ fail to connect when an SRV record points at a CNAME.
   `teamspeak-02` compose project)
 - **Network mode**: host
 - **Ports**:
-  - `9988/udp` — Voice
-  - `10012/tcp` — ServerQuery
-  - `30034/tcp` — File Transfer
+  - `9988/udp` - Voice
+  - `10012/tcp` - ServerQuery
+  - `30034/tcp` - File Transfer
 - **Public Playit address**: `REDACTED_CUSTOM_DOMAIN_015:53810`
 - **Playit local target**: `127.0.0.1:9988/udp`
 - **Cloudflare connect address**: `REDACTED_CUSTOM_DOMAIN_023`
@@ -249,9 +249,9 @@ fail to connect when an SRV record points at a CNAME.
   `teamspeak-03` compose project)
 - **Network mode**: host
 - **Ports**:
-  - `9989/udp` — Voice
-  - `10013/tcp` — ServerQuery
-  - `30035/tcp` — File Transfer
+  - `9989/udp` - Voice
+  - `10013/tcp` - ServerQuery
+  - `30035/tcp` - File Transfer
 - **Public Playit address**: `REDACTED_CUSTOM_DOMAIN_010:49125`
 - **Playit local target**: `127.0.0.1:9989/udp`
 - **Cloudflare connect address**: `REDACTED_CUSTOM_DOMAIN_024`
@@ -450,8 +450,8 @@ services:
 
 ## Notes
 - Playit is intentionally decoupled from `~/teamspeak/docker-compose.yml`; running `docker compose down` in `~/teamspeak` will stop TeamSpeak 1 but will not stop `playit-agent`
-- Playit tunnels TeamSpeak UDP voice only — TCP services such as ServerQuery and file transfer are LAN/internal only
-- ts3-manager is not exposed through Playit — access it from the local network at `http://192.168.80.118:9000`
+- Playit tunnels TeamSpeak UDP voice only; TCP services such as ServerQuery and file transfer stay LAN/internal only
+- ts3-manager is not exposed through Playit; I access it from the local network at `http://192.168.80.118:9000`
 - To add future TeamSpeak servers to ts3-manager, connect via the host VLAN 80 IP and that server's unique ServerQuery host port
 - Future TeamSpeak servers must use unique host ports. TeamSpeak 2 currently uses `9988/udp`, `10012/tcp`, and `30034/tcp`; TeamSpeak 3 uses `9989/udp`, `10013/tcp`, and `30035/tcp`
 - Use normal/raw ServerQuery in TS3 Manager, not SSH
@@ -464,7 +464,7 @@ services:
   myTeamSpeak ID revocation list. When this happens, clients can connect but may
   see `myTeamSpeak ID is invalid`. The boot recovery cron job restarts the
   TeamSpeak containers after DNS is available so the revocation list is loaded.
-- TeamSpeak containers run with `network_mode: host` as of 2026-04-24 to keep
-  Playit UDP voice traffic out of Docker's UDP userland proxy. This resolved
-  TS3 client timeout behavior where packets reached the container but the
-  client handshake failed to complete.
+- I moved the TeamSpeak containers to `network_mode: host` on 2026-04-24 to keep
+  Playit UDP voice traffic out of Docker's UDP userland proxy. That resolved
+  TS3 client timeouts where packets reached the container but the client
+  handshake never completed.
