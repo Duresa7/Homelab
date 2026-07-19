@@ -1,146 +1,130 @@
-# Persistent Remote AI Development — Research
+# Persistent Remote Development: My Research
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-12
+**Last updated:** 2026-07-18
 
-## Short Answer
+Before building a persistent remote development VM in my lab, I researched how the always-on remote coding setups I had seen actually work, what runs where, and how to reach one securely. These are my notes and the design I settled on. Every source I relied on is listed under [Sources](#sources).
 
-The pattern is a **development machine that stays on**—a cloud VPS, a homelab VM, or a small physical computer—with the repository, development tools, AI-agent CLI, credentials, and running processes on that machine. The developer connects from a laptop or phone through SSH, a remote editor, or a web/desktop control client. A terminal multiplexer such as `tmux`, or an agent server such as T3 Code, keeps the work available after the client disconnects.
+## The pattern
 
-A homelab Ubuntu VM can serve the same role as a rented VPS. The main difference is where the VM is hosted and how it is reached securely.
+The setup is a development machine that stays on: a cloud VPS, a homelab VM, or a small physical computer, with the repository, development tools, AI-agent CLI, credentials, and running processes all living on that machine. I connect to it from a laptop or phone through SSH, a remote editor, or a web/desktop control client. A terminal multiplexer such as `tmux`, or an agent server such as T3 Code, keeps the work alive after the client disconnects.
 
-```mermaid
-flowchart LR
-    C["Thin client: MacBook, Windows PC, or phone"]
-    O["Private overlay or SSH tunnel"]
-    V["Always-on Ubuntu development VM"]
-    A["Codex CLI, Claude Code, or T3 Code server"]
-    W["Repository, worktrees, tools, tests, Docker, and browsers"]
-    M["OpenAI or Anthropic model service"]
+A homelab Ubuntu VM fills the same role as a rented VPS. The difference that matters is where the VM is hosted and how I reach it securely.
 
-    C <-->|"prompts, terminal UI, diffs"| O
-    O <-->|"private connection"| V
-    V --> A
-    A <--> W
-    A <-->|"inference API traffic"| M
-```
+![Flow diagram: a thin client connects over a private overlay to an always-on Ubuntu VM that runs the agent runtime against the local repo and tools, with inference traffic going out to a hosted model service](Diagrams/remote-dev-pattern.svg)
 
-## What Is Confirmed About Theo/T3
+## What the T3 Code project confirms
 
-The strongest primary-source evidence is the public T3 Code repository. T3 Code is a minimal web GUI for Codex and Claude, and its remote-access documentation describes the exact remote-development arrangement in question:
+The strongest primary source is the public T3 Code repository. T3 Code is a minimal web GUI for Codex and Claude, and its remote-access documentation describes the exact arrangement I wanted [1][2]:
 
-- A headless remote machine can run `npx t3 serve`; another device connects using a pairing link, token, or QR code.
-- T3 recommends a trusted private mesh network such as a tailnet instead of exposing the server directly to the public internet.
+- A headless remote machine runs `npx t3 serve`; another device connects with a pairing link, token, or QR code.
+- T3 recommends a trusted private mesh network such as a tailnet instead of exposing the server to the public internet.
 - Its desktop-managed SSH flow probes the remote host, starts or reuses the remote T3 server, creates a local port forward, and saves the environment.
-- In that SSH flow, the **remote host owns the T3 server, projects, files, Git state, terminals, and provider sessions**. The local desktop is the renderer and controller.
+- In that SSH flow the remote host owns the T3 server, projects, files, Git state, terminals, and provider sessions. The local desktop is the renderer and controller.
 
-Source: [T3 Code `REMOTE.md`](https://github.com/pingdotgg/t3code/blob/main/REMOTE.md) and [T3 Code repository](https://github.com/pingdotgg/t3code).
+That confirms the architecture is supported. It does not tell me which host any particular public demo runs on, so I treat demonstrations of many concurrent agent threads as evidence of the workflow layer, not proof of a specific underlying machine.
 
-This confirms that Theo's T3 project supports the architecture. It does **not**, by itself, prove that every workflow Theo has shown publicly runs on a rented VPS, identify his personal host provider, or establish the exact machine specifications he uses. Public demonstrations of many concurrent Codex threads show the workflow layer; they should not be treated as proof of a particular underlying host unless Theo states that directly.
+## What actually runs where
 
-## What Actually Runs Where
-
-Installing Codex CLI on an Ubuntu VM makes that VM the CLI's execution environment. OpenAI describes Codex CLI as running from a terminal and reading, changing, and running code on the machine in the selected directory. Current Codex also supports a remote TUI arrangement: `codex app-server` can listen on the remote machine and a TUI on another machine can connect with `codex --remote`; OpenAI recommends SSH port forwarding for plain WebSockets and authentication plus TLS for non-local connections. Sources: [Codex CLI](https://developers.openai.com/codex/cli) and [Codex CLI features — remote app server](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server).
+Installing Codex CLI on an Ubuntu VM makes that VM the CLI's execution environment: it reads, changes, and runs code on the machine in the selected directory. Codex also supports a remote TUI arrangement, where `codex app-server` listens on the remote machine and a TUI on another machine connects with `codex --remote`; OpenAI recommends SSH port forwarding for plain WebSockets, and authentication plus TLS for non-local connections [3][4].
 
 There are two separate kinds of compute:
 
-| Work | Where it normally runs in this design |
+| Work | Where it runs in this design |
 |---|---|
-| Model inference and reasoning | OpenAI/Anthropic infrastructure unless a local model is deliberately used |
+| Model inference and reasoning | OpenAI/Anthropic infrastructure, unless I deliberately run a local model |
 | Git, file reads/writes, dependency installation | Remote VM |
 | Type checking, compilation, tests, Docker builds | Remote VM |
 | Development server and headless browser tests | Remote VM |
 | Terminal or T3/VS Code user interface | Laptop or phone, with a small server component on the VM |
 
-Therefore, a larger VM does not make the hosted model itself think faster. It does move the expensive local parts—repository indexing, package managers, builds, tests, containers, browser processes, and multiple agent harnesses—off a constrained MacBook Air. It can also remove most local application overhead if the laptop uses a terminal or browser as a thin client. No GPU is normally required for Codex or Claude Code using hosted models; a GPU becomes relevant only for local inference or GPU-dependent project workloads.
+So a larger VM does not make the hosted model think faster. What it does is move the expensive local parts, repository indexing, package managers, builds, tests, containers, browser processes, and multiple agent harnesses, off a constrained laptop. It also removes most local application overhead when the laptop is just a terminal or browser. No GPU is needed for Codex or Claude Code against hosted models; a GPU only matters for local inference or GPU-dependent project workloads.
 
-OpenAI's **Codex cloud** is a different offload model: OpenAI creates a managed container, checks out the repository, runs setup, and lets the agent work in the background. It is useful when no self-hosted persistent machine is required. Sources: [Codex cloud](https://developers.openai.com/codex/cloud) and [Codex cloud environments](https://developers.openai.com/codex/cloud/environments).
+OpenAI's Codex cloud is a different offload model: OpenAI creates a managed container, checks out the repository, runs setup, and lets the agent work in the background [5][6]. That is useful when I do not need a self-hosted persistent machine at all.
 
-## Persistence Has Three Layers
+## Persistence has three layers
 
-1. **Machine persistence:** the VM remains powered on and its disk retains repositories, dependencies, credentials, and artifacts.
-2. **Process persistence:** `tmux`, T3 Code's server, or another supervisor keeps a running agent or development server alive when SSH or the client disconnects. The `tmux` manual explicitly states that sessions survive SSH timeouts and intentional detach and can be reattached. Source: [`tmux(1)` manual](https://man7.org/linux/man-pages/man1/tmux.1.html).
-3. **Conversation persistence:** the agent stores session history so it can be resumed. Codex stores transcripts locally and supports `codex resume`; the history lives on whichever machine is running the CLI. Source: [Codex CLI features — resuming conversations](https://developers.openai.com/codex/cli/features#resuming-conversations).
+1. **Machine persistence:** the VM stays powered on and its disk keeps repositories, dependencies, credentials, and artifacts.
+2. **Process persistence:** `tmux`, the T3 Code server, or another supervisor keeps a running agent or dev server alive when the client disconnects. The `tmux` manual states that sessions survive SSH timeouts and intentional detach and can be reattached [7].
+3. **Conversation persistence:** the agent stores session history so it can resume. Codex saves transcripts locally and supports `codex resume`; that history lives on whichever machine runs the CLI [8].
 
-`tmux` survives a network disconnect, not a VM reboot. After a reboot, a service manager can restart long-lived servers, while agent conversations are resumed from their saved transcripts. This is why "persistent" should not be interpreted as one immortal model process.
+`tmux` survives a network disconnect, not a VM reboot. After a reboot a service manager restarts the long-lived servers, and agent conversations resume from their saved transcripts. That is why I do not read "persistent" as one immortal model process.
 
-## Common Ways to Operate It
+## Ways to operate it
 
-### 1. SSH plus `tmux` — simplest and most portable
+### 1. SSH plus tmux, the simplest and most portable
 
-- Connect to the VM through a private overlay network.
-- SSH into the VM.
-- Start one `tmux` session per project or agent.
-- Run `codex`, `claude`, development servers, and test watchers in separate windows or panes.
-- Detach and later reattach from any device.
+Connect to the VM over a private overlay, SSH in, start one `tmux` session per project or agent, run `codex`, `claude`, dev servers, and test watchers in separate windows, then detach and reattach from any device. This is the pattern behind most "AI coding from a phone" setups. It has few moving parts and works with almost any terminal-based agent.
 
-This is the underlying pattern behind many "AI coding from a phone" setups. It has few moving parts and works with almost any terminal-based agent.
+### 2. T3 Code remote, the closest match to the T3 project
 
-### 2. T3 Code remote — closest match to Theo's current project
-
-- Install and authenticate Codex or Claude on the VM.
-- Run T3 Code headlessly on the VM, or let the desktop app launch it over SSH.
-- Connect from T3 Code desktop, a browser, phone, or tablet.
-- Keep files, Git operations, terminals, and agent-provider sessions on the VM.
-
-The SSH-launched path is particularly attractive because it uses local port forwarding and keeps the remote backend on loopback rather than publishing it. Direct headless access should use the private overlay and the pairing controls described in T3's documentation.
+Install and authenticate Codex or Claude on the VM, run T3 Code headlessly (or let the desktop app launch it over SSH), then connect from the T3 desktop app, a browser, phone, or tablet, keeping files, Git, terminals, and provider sessions on the VM. The SSH-launched path is attractive because it uses local port forwarding and keeps the backend on loopback instead of publishing it. Direct headless access should use the private overlay and T3's pairing controls.
 
 ### 3. Codex native remote TUI
 
-- Run the Codex app server on the VM.
-- Reach it through an SSH tunnel, or use authenticated `wss://` access.
-- Run the Codex TUI on the client with `codex --remote`.
-
-This removes the need for T3 Code when a terminal interface is sufficient. See [OpenAI's remote TUI instructions](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server).
+Run the Codex app server on the VM, reach it through an SSH tunnel or authenticated `wss://`, and run the Codex TUI on the client with `codex --remote` [4]. This drops T3 Code when a terminal interface is enough.
 
 ### 4. VS Code Remote SSH
 
-VS Code keeps the visible editor locally while the VS Code server, terminal, extensions, debugger, and project run on the remote host. Microsoft documents that new integrated terminals automatically run on the SSH host, and that a remote folder can also be reopened inside a Dev Container on that host. Source: [VS Code Remote SSH](https://code.visualstudio.com/docs/remote/ssh).
+VS Code keeps the visible editor local while the VS Code server, terminal, extensions, debugger, and project run on the remote host. New integrated terminals run on the SSH host automatically, and a remote folder can be reopened inside a Dev Container on that host [9].
 
 ### 5. Provider-hosted agents
 
-Codex cloud and Claude Code on the web already provide background, managed remote execution. They are convenient for repository-scoped tasks but are not the same as owning a durable general-purpose VM with arbitrary tools, services, network access, and files.
+Codex cloud and Claude Code on the web already give me background, managed remote execution. They are convenient for repository-scoped tasks but are not the same as owning a durable general-purpose VM with arbitrary tools, services, network access, and files.
 
-## Terminal Control Versus Full Computer Control
+## Terminal control versus full computer control
 
-For coding, "the agent controls the machine" usually means it can read and edit files, run shell commands, use Git, start development servers, run tests, and call configured tools. That is sufficient for most remote development and works well on a headless Ubuntu VM.
+For coding, "the agent controls the machine" means it reads and edits files, runs shell commands, uses Git, starts dev servers, runs tests, and calls configured tools. That is enough for most remote development and works well on a headless Ubuntu VM.
 
-Controlling a graphical desktop—seeing pixels, clicking buttons, and typing into arbitrary native applications—is a separate capability. It requires a desktop session plus a computer-use tool or automation harness. For example, Anthropic documents Claude Code computer use as actual screen and application control, but its CLI implementation is currently macOS-only; the Desktop version covers macOS and Windows. It also warns that computer use runs against the actual desktop rather than inside the Bash sandbox. Source: [Claude Code computer use](https://code.claude.com/docs/en/computer-use).
+Controlling a graphical desktop, seeing pixels, clicking buttons, and typing into native applications, is a separate capability that needs a desktop session plus a computer-use tool. Anthropic documents Claude Code computer use as actual screen and application control, but its CLI implementation is macOS-only, while the Desktop version covers macOS and Windows; it also warns that computer use runs against the real desktop rather than inside the Bash sandbox [10]. A headless Ubuntu coding VM should validate web interfaces with browser automation rather than a full remote desktop. I would only add a Windows VM when a workload needs Windows builds, native Windows applications, or Windows GUI testing, and I would isolate any full GUI control from personal accounts.
 
-A headless Ubuntu coding VM should normally validate web interfaces with browser automation rather than a full remote desktop. Use a Windows VM only when the workload specifically needs Windows builds, native Windows applications, or Windows GUI testing. Full GUI control should be isolated from personal accounts and daily-driver desktops.
+## How it fits my lab
 
-## Recommended Homelab Fit
+I decided the cleanest proof of concept is a dedicated Ubuntu Server VM on Galaxy, not a new public VPS:
 
-The cleanest proof of concept for this workspace is a dedicated Ubuntu Server VM on Galaxy, not a new public VPS:
-
-- Start around **4 vCPU, 8–16 GiB RAM, and 80–150 GiB SSD-backed storage** for web development, multiple agents, tests, and a few containers; resize from observed usage.
-- Apply the [Linux Host Baseline Standard](../Security/Hardening/Linux-Host-Baseline-Standard.md) before adding the workload.
-- Enroll the VM directly as a NetBird peer and restrict access to a specific developer-device group. The existing [NetBird platform](../Platforms/Netbird/README.md) already provides a verified remote overlay path, so it can fill the role that T3's documentation assigns to Tailscale.
-- Permit SSH only through the private overlay. Do not create a public port-forward for SSH, T3 Code, or a Codex app server.
+- Start around 4 vCPU, 8 to 16 GiB RAM, and 80 to 150 GiB SSD-backed storage for web development, several agents, tests, and a few containers, then resize from observed usage.
+- Apply my [Linux Host Baseline Standard](../Security/Hardening/Linux-Host-Baseline-Standard.md) before adding the workload.
+- Enroll the VM directly as a NetBird peer and restrict access to a specific developer-device group. My existing [NetBird deployment](../Platforms/Netbird/README.md) already gives me a verified overlay path, so it fills the role T3's docs assign to Tailscale.
+- Permit SSH only through the private overlay. No public port-forward for SSH, T3 Code, or a Codex app server.
 - Use an unprivileged development account without passwordless `sudo`.
-- Keep each concurrent agent in a separate Git worktree and branch to prevent agents from editing the same checkout.
-- Use VM snapshots or backups for machine recovery, but use Git commits and remote branches as the primary change history.
+- Keep each concurrent agent in its own Git worktree and branch so agents never edit the same checkout.
+- Use VM snapshots for machine recovery, but treat Git commits and remote branches as the primary change history.
 - Give the VM narrowly scoped repository credentials and no access to the Proxmox management plane, broad LAN shares, or unrelated secrets.
 
-Ubuntu is the easiest first target because SSH, `tmux`, systemd, containers, and most development tooling are native. Native Windows is viable—VS Code Remote SSH supports Windows SSH hosts, and Codex runs on Windows—but WSL2 or an Ubuntu VM is generally simpler unless the project is Windows-specific.
+Ubuntu is my easiest first target because SSH, `tmux`, systemd, containers, and most development tooling are native. Native Windows is possible (VS Code Remote SSH supports Windows hosts and Codex runs on Windows), but WSL2 or an Ubuntu VM is simpler unless a project is Windows-specific.
 
-## Security Boundaries That Matter
+## Security boundaries that matter
 
-- **Private access first:** T3 recommends a trusted private mesh network. OpenAI recommends SSH forwarding for plain WebSockets and requires remote authentication plus TLS for non-local connections. Do not publish an unauthenticated agent endpoint.
-- **Treat agent credentials as high value:** Codex can cache authentication on the executing host. Protect the development user's home directory, encrypt backups where appropriate, and never bake credentials into VM templates. Source: [Codex authentication](https://developers.openai.com/codex/auth).
-- **Sandbox and limit approvals:** Codex commands run inside a constrained environment by default, with approvals governing boundary crossings. Claude Code similarly separates permissions from OS-level filesystem and network sandboxing. Sources: [Codex sandboxing](https://developers.openai.com/codex/concepts/sandboxing) and [Claude Code permissions](https://code.claude.com/docs/en/permissions).
-- **Assume prompt injection is possible:** do not give an agent administrator credentials, unrestricted secret stores, or access to production systems merely because it runs on a dedicated VM.
-- **Use worktrees and review gates:** isolate parallel agents, require tests, and review diffs before merge or deployment. Persistence increases both productivity and the time available for a bad autonomous action.
+- **Private access first.** T3 recommends a trusted private mesh; OpenAI recommends SSH forwarding for plain WebSockets and requires authentication plus TLS for non-local connections [1][4]. I will not publish an unauthenticated agent endpoint.
+- **Treat agent credentials as high value.** Codex can cache authentication on the executing host, so I protect the development user's home directory, encrypt backups, and never bake credentials into VM templates [11].
+- **Sandbox and limit approvals.** Codex commands run in a constrained environment by default, with approvals governing boundary crossings, and Claude Code separates permissions from OS-level filesystem and network sandboxing [12][13].
+- **Assume prompt injection is possible.** I will not give an agent administrator credentials, unrestricted secret stores, or production access just because it runs on a dedicated VM.
+- **Use worktrees and review gates.** Isolate parallel agents, require tests, and review diffs before merge or deploy. Persistence raises productivity and also the time a bad autonomous action has to run.
 
-## Practical Recommendation
+## My decision
 
-Start with **Ubuntu VM + NetBird + SSH + `tmux` + Codex CLI**. This proves remote execution, persistence, and resource offload with the smallest number of components. Once stable, add **T3 Code remote** for its phone/browser/desktop experience. Keep full desktop control out of the first phase; add a separate Windows VM later only if a real GUI-only requirement appears.
+Start with an Ubuntu VM plus NetBird, SSH, `tmux`, and the Codex CLI. That proves remote execution, persistence, and resource offload with the fewest components. Once it is stable I will add T3 Code remote for the phone, browser, and desktop experience. Full desktop control stays out of the first phase; I add a separate Windows VM later only if a real GUI-only requirement shows up.
 
-The first proof should demonstrate:
+The first proof needs to demonstrate:
 
 1. An agent continues a safe test task after the laptop disconnects.
 2. Reconnecting restores the terminal and conversation context.
-3. Builds, tests, memory use, and browser automation occur on the VM.
+3. Builds, tests, memory use, and browser automation run on the VM.
 4. The service is reachable only through NetBird or an SSH tunnel.
-5. A snapshot/backup and Git branch allow recovery from a bad agent action.
+5. A snapshot and Git branch let me recover from a bad agent action.
 
+## Sources
+
+1. [T3 Code REMOTE.md](https://github.com/pingdotgg/t3code/blob/main/REMOTE.md) - remote-access flow: `npx t3 serve`, pairing, private-mesh recommendation, SSH-launched port forward, and remote-owns-state model.
+2. [T3 Code repository](https://github.com/pingdotgg/t3code) - the web GUI for Codex and Claude that this pattern is built around.
+3. [Codex CLI](https://developers.openai.com/codex/cli) - Codex runs from a terminal and reads, changes, and runs code in the selected directory.
+4. [Codex CLI features: remote app server](https://developers.openai.com/codex/cli/features#connect-the-tui-to-a-remote-app-server) - `codex app-server` and `codex --remote`, SSH forwarding for plain WebSockets, TLS for non-local.
+5. [Codex cloud](https://developers.openai.com/codex/cloud) - managed background execution in an OpenAI-hosted container.
+6. [Codex cloud environments](https://developers.openai.com/codex/cloud/environments) - repository checkout and setup for cloud runs.
+7. [tmux(1) manual](https://man7.org/linux/man-pages/man1/tmux.1.html) - sessions survive SSH timeout and detach and can be reattached.
+8. [Codex CLI features: resuming conversations](https://developers.openai.com/codex/cli/features#resuming-conversations) - local transcripts and `codex resume`.
+9. [VS Code Remote SSH](https://code.visualstudio.com/docs/remote/ssh) - server, terminal, extensions, and debugger run on the remote host; Dev Container support.
+10. [Claude Code computer use](https://code.claude.com/docs/en/computer-use) - screen and application control, macOS-only CLI, runs against the real desktop.
+11. [Codex authentication](https://developers.openai.com/codex/auth) - authentication caching on the executing host.
+12. [Codex sandboxing](https://developers.openai.com/codex/concepts/sandboxing) - constrained execution with approval-gated boundary crossings.
+13. [Claude Code permissions](https://code.claude.com/docs/en/permissions) - permissions separate from OS-level filesystem and network sandboxing.
