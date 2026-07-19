@@ -1,7 +1,7 @@
 ﻿# Wazuh Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ## Manager Health
 
@@ -32,7 +32,7 @@ sudo /var/ossec/bin/agent_control -l
 6. Enable/start `wazuh-agent` on the endpoint.
 7. Verify the endpoint service is active and the manager reports the new identity active.
 
-`app-01` and `edge-01` completed this workflow on 2026-07-13 and are active as fresh manager IDs `004` and `005`. They are the only intended Wazuh endpoints; no further enrollment is planned.
+I ran this workflow for `app-01` and `edge-01` on 2026-07-13; both are active as fresh manager IDs `004` and `005`. They are the only intended Wazuh endpoints, and I have no further enrollment planned.
 
 When the dashboard deployment workflow creates the new identity and supplies the generated install command, it also establishes the matching endpoint key. Do not manually recreate, copy, or reuse a key when the resulting agent is already active.
 

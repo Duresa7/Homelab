@@ -1,9 +1,9 @@
 ﻿# Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
-This reference intentionally excludes enrollment keys, credentials, certificates, and complete live configuration files.
+I intentionally keep enrollment keys, credentials, certificates, and complete live configuration files out of this reference.
 
 ## Manager
 

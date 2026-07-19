@@ -1,7 +1,7 @@
 # Portainer Edge Agent Setup
 
 **Created:** 2026-04-14  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ---
 
@@ -12,7 +12,7 @@
 | **Date** | 2026-04-14 |
 | **Version** | 1.0 |
 | **Status** | Completed |
-| **System** | docker-main (Proxmox VE — Grey Server) |
+| **System** | docker-main (Proxmox VE, Grey Server) |
 | **Purpose** | Centralized Docker management via Portainer Edge Agent across VLANs |
 
 ---
@@ -73,7 +73,7 @@ volumes:
 
 **Path:** `/opt/docker/portainer-edge-agent/`
 
-**docker-compose.yml** — same on every VM:
+**docker-compose.yml** (same on every VM):
 ```yaml
 name: portainer-edge-agent
 services:
@@ -95,7 +95,7 @@ volumes:
   portainer_agent_data:
 ```
 
-**.env** — unique per VM (get values from Portainer Add Environment wizard):
+**.env**, unique per VM (get values from the Portainer Add Environment wizard):
 ```env
 EDGE_ID=<generated-per-vm>
 EDGE_KEY=<generated-per-vm>
@@ -115,7 +115,7 @@ EDGE_KEY=<generated-per-vm>
 | Destination IP | 192.168.40.35 (docker-main) |
 | Ports | 8000, 9443 |
 | Action | Allow |
-| Auto Allow Return Traffic | ✅ |
+| Auto Allow Return Traffic | Enabled |
 
 ---
 

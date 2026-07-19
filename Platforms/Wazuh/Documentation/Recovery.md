@@ -1,7 +1,7 @@
 ﻿# Wazuh Recovery
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-18
 
 ## Service Recovery Order
 
@@ -15,7 +15,7 @@ Do not weaken firewall policy to compensate for a failed local service.
 
 ## 2026-07-13 Agent Removal Recovery
 
-The clean-removal change intentionally deleted `/var/ossec` from `app-01` and `edge-01`. Their former configuration backups and client keys no longer exist and cannot be used as rollback points.
+My 2026-07-13 clean-removal change intentionally deleted `/var/ossec` from `app-01` and `edge-01`. Their former configuration backups and client keys no longer exist, so they can't serve as rollback points.
 
 - Manager rollback point: `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713` on `security-01`.
 - Endpoint recovery: install a current supported agent, enroll a new exact-name identity against `192.168.72.2`, then enable/start and verify it active.
