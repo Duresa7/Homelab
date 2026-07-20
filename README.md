@@ -12,32 +12,30 @@
 ![Ansible](https://img.shields.io/badge/Ansible-18_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
 
-This is the working repository for my homelab. I run a four-node Proxmox cluster ("Galaxy") behind a zone-segmented UniFi network, with a Splunk SIEM and Wazuh watching the environment from a dedicated security VLAN. Everything I build, break, and fix here gets written down: build logs with the reasoning behind each decision, dated change records with step evidence, per-system troubleshooting logs, and incident reports. This repo is those records, published in redacted form.
+This repository documents my four-node Proxmox cluster, segmented UniFi network, deployed platforms, automation, monitoring, & security work. The [walkthrough guides](Guides/README.md) are the quickest way to follow a build from its first command to the checks I ran afterward.
 
-## Contents
+## Start Here
 
-- [Lab architecture](#lab-architecture)
-- [Repository layout](#repository-layout)
-- [Selected records](#selected-records)
-- [How I document](#how-i-document)
-- [Redaction and secrets](#redaction-and-secrets)
-- [Roadmap](#roadmap)
+- [Guides](Guides/README.md): chronological walkthroughs with commands, screenshots, checks, recovery notes, & links to the original records.
+- [Lab architecture](#lab-architecture): the environment in one view.
+- [Repository layout](#repository-layout): where the detailed records and configuration live.
+- [Build and change records](#build-and-change-records): longer records for several completed projects.
+- [Roadmap](#roadmap): the current work queue.
 
 ## Lab architecture
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the four-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Architecture/Diagrams/homelab-overview.svg)](Architecture/Diagrams/homelab-overview.svg)
 
-The diagram is a vector SVG: click it to open the full-size file and zoom in without losing sharpness.
-
-Traffic enters through two WAN uplinks (plus Cloudflare Tunnel for published services, so nothing requires an inbound port forward). The UniFi gateway enforces zone-based firewall policy across 14 networks in 12 firewall zones: infrastructure tiers with an `-A` suffix each live in their own custom zone under least-privilege rules, separate from the household networks. The Galaxy cluster (grey, purple, blue, and red servers) hosts the workloads; UniFi exports CEF syslog to the Splunk SIEM on Security-A, Wazuh agents on the app and edge hosts report to the manager there, and Prometheus on the same VLAN scrapes all four cluster nodes, the edge host, and the security host itself.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway enforces zone policy across 14 networks and 12 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh watches the app and edge hosts, & Prometheus scrapes the cluster, edge, and security targets.
 
 ## Repository layout
 
-Records live with the system that owns or enforces them. Deployed services are self-contained under `Platforms/`, and evidence sits beside the work that produced it.
+The guides provide the reading path. Detailed records stay with the system that owns the work, and screenshots remain beside the change that produced them.
 
 | Category | What it holds | Example |
 |---|---|---|
-| [Governance](Governance/README.md) | My documentation standard and naming conventions | [Documentation Standard](Governance/Documentation-Standard.md) |
+| [Guides](Guides/README.md) | Visitor walkthroughs across infrastructure and platforms | [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md) |
+| [Governance](Governance/README.md) | Documentation rules and naming conventions | [Documentation Standard](Governance/Documentation-Standard.md) |
 | [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
 | [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) |
@@ -46,27 +44,17 @@ Records live with the system that owns or enforces them. Deployed services are s
 | [Security](Security/README.md) | Incident reports, hardening standards, assessments | [Linux host baseline](Security/Hardening/Linux-Host-Baseline-Standard.md) |
 | [Archive](Archive/README.md) | Superseded records kept for history | Currently empty by design |
 
-## Selected records
-
-The writeups I would show first, each with the thing it proves:
+## Build and Change Records
 
 | Record | What it covers |
 |---|---|
-| [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) | Bare VM to a working CEF ingestion pipeline (SC4S in front of Splunk), with the reasoning at every fork and 41 build screenshots |
-| [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | Moved the SIEM and monitoring stack to their own VLAN 72 zone with zero new WAN-inbound exposure |
-| [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | Added a redundant cluster interconnect across all four nodes, verified with a full link-failure mesh test |
-| [Credential rotation incident response](Security/Incidents/security-incident-response-2026-04-19.md) | My response to the April 2026 Vercel disclosure: full credential rotation and access review on the exposed project |
-| [TeamSpeak UDP relay outage](Security/Incidents/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md) | Root-caused a voice outage to Docker's UDP port proxy and rebuilt the container network path |
-| [NetBird routed VPN path](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) | First WireGuard mesh peer with a routed path into the Access-A VLAN, evidenced step by step |
-| [SSH authorized-key cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md) | Normalized 15 hosts to a three-key fleet baseline and moved five private identities into 1Password custody |
-
-## How I document
-
-Every bounded project closes with a dated change record: scope, steps, observed results, verification, and rollback points. Problems go to the owning system's troubleshooting log as symptom, root cause, fix, and verification; anything service-impacting becomes an incident report under `Security/Incidents/`. Living documents (READMEs, runbooks, inventories) keep stable filenames and a `Last updated` date; point-in-time records keep their date in the filename. The full rules are in my [Documentation Standard](Governance/Documentation-Standard.md).
-
-## Redaction and secrets
-
-Secret values never enter this repository. Credentials live in 1Password and are referenced, never embedded. Private identifiers (domains, org names, some usernames) appear as stable `REDACTED_*` placeholders so repeated references stay readable across records. Raw step evidence that contains identifying detail stays offline; the screenshots published here are the redaction-safe subset.
+| [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
+| [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | VLAN 72, the Security-A zone, address changes, firewall policy, service moves, & post-migration checks |
+| [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | VLAN 71 interfaces, Corosync `link1`, four-node rollout, quorum checks, & link-failure tests |
+| [April 2026 incident response](Security/Incidents/security-incident-response-2026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
+| [TeamSpeak UDP relay outage](Security/Incidents/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
+| [NetBird routed VPN path](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) | First peer enrollment, routed resource, access policy, routing peer, masquerade, & HTTPS tunnel test |
+| [SSH authorized-key cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md) | Nineteen-host inventory, 15 reachable targets, fingerprint comparison, authorized-key cleanup, & final access checks |
 
 ## Roadmap
 
