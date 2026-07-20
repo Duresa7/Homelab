@@ -1,21 +1,13 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## The Simple Version
 
 Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, or Termix) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac, Ansible Control, or Termix keys.
 
-```mermaid
-flowchart LR
-    O["Me"] -->|"runs normal Ansible"| A["Ansible project"]
-    O -->|"optional click-to-run UI"| S["Semaphore"]
-    S --> A
-    A --> I["One selected identity file"]
-    I --> T["Identity-specific target allowlist"]
-    T --> H["Authorized keys on approved hosts"]
-```
+![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](Diagrams/automation-flow.svg)
 
 Semaphore stores the controller's execution credential and launches the same playbooks. It does not contain a second automation implementation, and the repository contains no private keys.
 
@@ -32,14 +24,7 @@ Comments such as `jedi-pc` are labels. Exact comparison and removal use the key 
 
 ## Rotation State Machine
 
-```mermaid
-flowchart LR
-    C["Current key only"] -->|"I supply the new public key"| N["Replacement configured"]
-    N -->|"stage"| B["Both keys present"]
-    B -->|"Ansible verify + my login test"| V["Verified by me"]
-    V -->|"RETIRE identity confirmation"| R["Old key removed"]
-    R -->|"promote replacement in identity file"| C
-```
+![Key rotation state machine for one identity: current key only, then replacement configured, both keys present, verified by me, and old key removed, after which the replacement is promoted back to the current key](Diagrams/key-rotation.svg)
 
 The removal gate stays closed unless all of these are true:
 
@@ -61,13 +46,7 @@ Ansible is a command-line runtime, not a continuously running daemon. The curren
 
 Semaphore is the continuously running part. The systemd unit at `/etc/systemd/system/semaphore.service`, mirrored in `Configuration/semaphore.service`, starts the UI with `/opt/ansible-current/bin` first in `PATH`, the required `C.utf8` locale, automatic restart on failure, and a restrictive file-creation mask.
 
-```mermaid
-flowchart LR
-    P["Proxmox node boots"] --> L["LXC 100 starts: onboot=1"]
-    L --> D["systemd starts semaphore.service"]
-    D --> S["Semaphore listens on TCP 3000"]
-    S --> A["Tasks use /opt/ansible-current"]
-```
+![Controller boot model: a Proxmox node boots, LXC 100 starts with onboot=1, systemd starts semaphore.service, Semaphore listens on TCP 3000, and tasks resolve into /opt/ansible-current](Diagrams/boot-model.svg)
 
 This gives the web UI automatic recovery after a controller or Proxmox-node boot. Direct Ansible commands need no service and are available as soon as the LXC is running.
 
