@@ -171,9 +171,9 @@ With the strict pin in place, a future blue shutdown or reboot leaves 107 & 108 
 ## Follow-Up Controls
 
 1. Keep the `pin-blue-local-storage` rule while 107 & 108 stay on `local-lvm`. Removing it re-enables the stranding path.
-2. For any future node maintenance, either shut the node down (services stay stopped, come back on blue) now that the pin is in place, or set the datacenter HA `shutdown_policy` to `freeze` so a power-down freezes HA services instead of relocating them. The pin already prevents relocation for these two guests, so `freeze` is defense in depth, not a required fix, and it changes behavior for every HA service, so treat it as a separate approved change.
+2. With the pin in place, a future blue shutdown or reboot leaves 107 & 108 stopped until blue rejoins, then they auto-start on blue. The HA manager no longer relocates them to another node, which is the intended behavior while their storage is node-local.
 3. If real failover for these services is ever wanted, it needs shared storage (Ceph or NFS) reachable by more than one node. None exists today; the pin is the correct posture until that changes.
-4. Add a line to the Galaxy maintenance procedure: before powering a node down, confirm any HA guest on that node is either on shared storage or pinned to it, so the UPS work (or any future node move) doesn't strand a guest again.
+4. Before powering a node down for maintenance, confirm any HA guest on that node is either on shared storage or pinned to it, so future node moves don't strand a guest again.
 
 ## Related Records
 
