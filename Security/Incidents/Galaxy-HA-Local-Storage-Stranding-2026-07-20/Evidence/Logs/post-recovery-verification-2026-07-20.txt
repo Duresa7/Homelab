@@ -1,0 +1,38 @@
+### Post-recovery verification captured 2026-07-20T17:15:26-04:00 (from blue-server) ###
+
+--- ha-manager status ---
+quorum OK
+master red-server (active, Mon Jul 20 17:15:17 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Mon Jul 20 17:15:22 2026)
+lrm grey-server (old timestamp - dead?, watchdog standby, Fri Aug 22 23:47:05 2025)
+lrm purple-server (idle, watchdog standby, Mon Jul 20 17:15:26 2026)
+lrm red-server (idle, watchdog standby, Mon Jul 20 17:15:26 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+
+--- ha-manager rules config (/etc/pve/ha/rules.cfg) ---
+node-affinity: pin-blue-local-storage
+	comment 107/108 use node-local local-lvm; no shared storage for failover, pin to blue
+	nodes blue-server
+	resources ct:107,ct:108
+	strict 1
+
+--- pct list (blue) ---
+VMID       Status     Lock         Name
+107        running                 docker-network
+108        running                 docker-blue
+
+--- active disks on blue (note the 'a' active flag) ---
+  vm-107-disk-0 pve   32.00g Vwi-aotz--
+  vm-108-disk-0 pve   15.00g Vwi-aotz--
+
+--- config file locations (both back on blue) ---
+-rw-r----- 1 root www-data 412 Jul 20 17:03 /etc/pve/nodes/blue-server/lxc/107.conf
+-rw-r----- 1 root www-data 277 Jul 20 17:03 /etc/pve/nodes/blue-server/lxc/108.conf
+
+--- recovery start task logs (blue) ---
+== UPID:blue-server:0000208B:000282E8:6A5E8D35:vzstart:107:root@pam:
+TASK OK
+== UPID:blue-server:0000220F:0002840E:6A5E8D38:vzstart:108:root@pam:
+TASK OK

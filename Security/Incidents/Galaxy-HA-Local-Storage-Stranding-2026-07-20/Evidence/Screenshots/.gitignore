@@ -1,0 +1,7 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!S01-CT107-Stopped-HA-Error-Purple-2026-07-20.png
+!S02-Cluster-Log-HAMigrate-Exit255-2026-07-20.png
+!S03-Both-CTs-Recovered-Blue-2026-07-20.png
+!S04-Cluster-Log-NoSuchLV-Cascade-2026-07-20.png

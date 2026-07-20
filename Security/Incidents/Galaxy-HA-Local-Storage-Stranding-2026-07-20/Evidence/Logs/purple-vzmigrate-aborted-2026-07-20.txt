@@ -1,0 +1,24 @@
+### purple-server: HA-driven vzmigrate task logs (verbatim), migration aborted ###
+### The manager tried to move 107 and 108 to red-server; purple held no disk to send. ###
+
+===== /var/log/pve/tasks/A/UPID:purple-server:0022308B:142DB12E:6A5E85BA:vzmigrate:107:root@pam:
+task started by HA resource agent
+2026-07-20 16:31:55 starting migration of CT 107 to node 'red-server' (192.168.70.13)
+2026-07-20 16:31:55 found local volume 'local-lvm:vm-107-disk-0' (in current VM config)
+2026-07-20 16:31:55 ERROR: storage migration for 'local-lvm:vm-107-disk-0' to storage 'local-lvm' failed - no such logical volume pve/vm-107-disk-0
+2026-07-20 16:31:55 aborting phase 1 - cleanup resources
+2026-07-20 16:31:55 ERROR: found stale volume copy 'local-lvm:vm-107-disk-0' on node 'red-server'
+2026-07-20 16:31:55 start final cleanup
+2026-07-20 16:31:55 ERROR: migration aborted (duration 00:00:01): storage migration for 'local-lvm:vm-107-disk-0' to storage 'local-lvm' failed - no such logical volume pve/vm-107-disk-0
+TASK ERROR: migration aborted
+
+===== /var/log/pve/tasks/A/UPID:purple-server:0022308A:142DB12E:6A5E85BA:vzmigrate:108:root@pam:
+task started by HA resource agent
+2026-07-20 16:31:55 starting migration of CT 108 to node 'red-server' (192.168.70.13)
+2026-07-20 16:31:55 found local volume 'local-lvm:vm-108-disk-0' (in current VM config)
+2026-07-20 16:31:55 ERROR: storage migration for 'local-lvm:vm-108-disk-0' to storage 'local-lvm' failed - no such logical volume pve/vm-108-disk-0
+2026-07-20 16:31:55 aborting phase 1 - cleanup resources
+2026-07-20 16:31:55 ERROR: found stale volume copy 'local-lvm:vm-108-disk-0' on node 'red-server'
+2026-07-20 16:31:55 start final cleanup
+2026-07-20 16:31:55 ERROR: migration aborted (duration 00:00:01): storage migration for 'local-lvm:vm-108-disk-0' to storage 'local-lvm' failed - no such logical volume pve/vm-108-disk-0
+TASK ERROR: migration aborted

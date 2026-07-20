@@ -1,0 +1,28 @@
+### purple-server: HA recovery-attempt task logs (verbatim /var/log/pve/tasks contents) ###
+### All failed because the services were already in the HA 'error' state. ###
+
+===== UPID:purple-server:00000D5E:0000CBD8:6A5E8A14:hamigrate:108:root@pam:
+Requesting HA migration for CT 108 to node blue-server
+service 'ct:108' in error state, must be disabled and fixed first
+TASK ERROR: command 'ha-manager migrate ct:108 blue-server' failed: exit code 255
+
+===== UPID:purple-server:000005FE:000020BC:6A5E8701:hamigrate:107:root@pam:
+Requesting HA migration for CT 107 to node blue-server
+service 'ct:107' in error state, must be disabled and fixed first
+TASK ERROR: command 'ha-manager migrate ct:107 blue-server' failed: exit code 255
+
+===== UPID:purple-server:000006A4:00002EEE:6A5E8725:hastart:108:root@pam:
+Requesting HA start for CT 108
+service 'ct:108' in error state, must be disabled and fixed first
+TASK ERROR: command 'ha-manager set ct:108 --state started' failed: exit code 255
+
+===== UPID:purple-server:00000704:000039FB:6A5E8742:hamigrate:107:root@pam:
+Requesting HA migration for CT 107 to node blue-server
+service 'ct:107' in error state, must be disabled and fixed first
+TASK ERROR: command 'ha-manager migrate ct:107 blue-server' failed: exit code 255
+
+### purple-server: representative vzstart failure (config present, disk absent) ###
+
+===== UPID:purple-server:0022310C:142DB8D8:6A5E85CE:vzstart:107:root@pam:
+task started by HA resource agent
+TASK ERROR: no such logical volume pve/vm-107-disk-0

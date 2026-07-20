@@ -1,0 +1,28 @@
+### blue-server orderly shutdown and HA relocation trigger ###
+### journalctl excerpt, 2026-07-20 EDT, filtered to the PVE/HA lines. Full journal retained on the host. ###
+
+Jul 20 16:30:12 blue-server systemd[1]: Stopping pve-guests.service - PVE guests...
+Jul 20 16:30:13 blue-server pve-guests[6416]: <root@pam> starting task UPID:blue-server:0000192B:0000AE32:6A5E8555:stopall::root@pam:
+Jul 20 16:30:13 blue-server pve-guests[6443]: all VMs and CTs stopped
+Jul 20 16:30:13 blue-server pve-guests[6416]: <root@pam> end task UPID:blue-server:0000192B:0000AE32:6A5E8555:stopall::root@pam: OK
+Jul 20 16:30:14 blue-server systemd[1]: Stopped pve-guests.service - PVE guests.
+Jul 20 16:30:14 blue-server systemd[1]: Stopping pve-ha-lrm.service - PVE Local HA Resource Manager Daemon...
+Jul 20 16:30:14 blue-server pve-ha-lrm[1278]: received signal TERM
+Jul 20 16:30:14 blue-server pve-ha-lrm[1278]: got shutdown request with shutdown policy 'conditional'
+Jul 20 16:30:14 blue-server pve-ha-lrm[1278]: shutdown LRM, stop all services
+Jul 20 16:30:14 blue-server pvestatd[1081]: received signal TERM
+Jul 20 16:30:14 blue-server pvestatd[1081]: server stopped
+Jul 20 16:30:14 blue-server pve-firewall[1082]: received signal TERM
+Jul 20 16:30:14 blue-server pve-firewall[1082]: server stopped
+Jul 20 16:30:24 blue-server pve-ha-lrm[6501]: stopping service ct:107
+Jul 20 16:30:24 blue-server pve-ha-lrm[6502]: stopping service ct:108
+Jul 20 16:30:24 blue-server pve-ha-lrm[6502]: <root@pam> starting task UPID:blue-server:00001967:0000B276:6A5E8560:vzshutdown:108:root@pam:
+Jul 20 16:30:24 blue-server pve-ha-lrm[6501]: <root@pam> starting task UPID:blue-server:00001968:0000B276:6A5E8560:vzshutdown:107:root@pam:
+Jul 20 16:30:26 blue-server pve-ha-lrm[6502]: service status ct:108 stopped
+
+### last -x (reboot / shutdown history) ###
+
+reboot   system boot  7.0.2-6-pve      Mon Jul 20 16:36 - still running
+reboot   system boot  7.0.2-6-pve      Mon Jul 20 16:22 - 16:30  (00:07)
+shutdown system down  7.0.2-6-pve      Mon Jul 20 16:30 - 16:36  (00:06)
+reboot   system boot  7.0.2-6-pve      Wed Jun 24 18:33 - crash
