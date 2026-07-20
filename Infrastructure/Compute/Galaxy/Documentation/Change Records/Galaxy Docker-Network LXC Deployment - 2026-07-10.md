@@ -1,7 +1,7 @@
 # Galaxy Docker-Network LXC Deployment
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 **Implementation window:** 2026-07-10 through 2026-07-11  
 **System:** Proxmox VE cluster `Galaxy`, UniFi Access-A (VLAN 85), and LXC 107 `docker-network`  
@@ -55,143 +55,180 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 | SSH | Public-key only as `REDACTED_USER_001`; root and password-based SSH disabled |
 | Hosted workloads | Nginx Proxy Manager 2.15.1; NetBird 0.74.3 |
 
-The HA resource is backed by node-local `local-lvm`. I accepted that this starts and monitors the guest but does not provide shared-storage failover to another node.
+The HA resource is backed by node-local `local-lvm`. I accepted that this starts and monitors the guest but doesn't provide shared-storage failover to another node.
 
 ## Troubleshooting During the Change
 
-- My first web-egress policy create request was rejected with `api.err.FirewallPolicyCreateRespondTrafficPolicyNotAllowed`. UniFi was attempting to create a respond-traffic companion that is not permitted for this zone direction. I corrected the request to set `create_allow_respond=false`; all three rules then passed preview, applied successfully, and appeared in the intended order.
-- My hand-built UDP NTP probe returned no usable response, so I did not accept it as proof of UDP 123 egress. I installed `ntpsec-ntpdig` in the guest, and `ntpdig -4 -t 5 -j time.cloudflare.com` returned structured time data from a stratum-3 server with exit code 0.
+- My first web-egress policy create request was rejected with `api.err.FirewallPolicyCreateRespondTrafficPolicyNotAllowed`. UniFi attempted to create a respond-traffic companion that isn't permitted for this zone direction. I set `create_allow_respond=false`; all three rules then passed preview & appeared in the requested order.
+- My hand-built UDP NTP probe returned no usable response, so I didn't accept it as proof of UDP 123 egress. I installed `ntpsec-ntpdig` in the guest, and `ntpdig -4 -t 5 -j time.cloudflare.com` returned structured time data from a stratum-3 server with exit code 0.
 
 ## Verification
 
-- The guest started successfully, reported Debian 13.1, and reached `192.168.85.1` with 0% packet loss.
-- SSH Manager connected as `REDACTED_USER_001`; passwordless sudo succeeded, the SSH service was active, and all three expected public-key fingerprints were present.
+- The guest started, reported Debian 13.1, & reached `192.168.85.1` with 0% packet loss.
+- SSH Manager connected as `REDACTED_USER_001`; passwordless sudo returned exit code 0, the SSH service was active, & all three approved public-key fingerprints were present.
 - `ha-manager` reported `ct:107` on `blue-server` with state `started`.
 - HTTP to `deb.debian.org` returned 200, and HTTPS to the Docker registry returned the expected unauthenticated 401 response, proving TCP 80/443 egress.
 - `ntpdig` reached `time.cloudflare.com` and returned valid time data, proving UDP 123 egress.
 - A direct TCP DNS attempt to `REDACTED_IPV4_001:53` timed out as expected under the final block rule.
 - The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `REDACTED_CUSTOM_DOMAIN_016`.
-- Nginx Proxy Manager, the NetBird dashboard, and the NetBird server containers were running; direct NPM administration and the NetBird identity endpoint returned HTTP 200.
-- The Let's Encrypt wildcard/apex certificate validated successfully, `https://REDACTED_CUSTOM_DOMAIN_016` returned HTTP 200, and the existing authenticated NetBird dashboard session loaded through NPM.
-- Both Compose projects restarted successfully; readiness was reached on the second check, NPM returned healthy, `nginx -t` passed, and direct/HTTPS probes returned 200.
+- Nginx Proxy Manager, the NetBird dashboard, & the NetBird server containers were running; direct NPM administration and the NetBird identity endpoint returned HTTP 200.
+- The Let's Encrypt wildcard/apex certificate passed validation, `https://REDACTED_CUSTOM_DOMAIN_016` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
+- Both Compose projects restarted; readiness passed on the second check, NPM returned `healthy`, `nginx -t` passed, & direct/HTTPS probes returned 200.
 
-## Step Evidence
+## Public Evidence Boundary
 
-The screenshots below capture each step's verified end state in the Proxmox, NPM, UniFi, and NetBird interfaces.
+The exact S01 through S10 command & request transcripts remain in the local-only scrub quarantine because they weren't cleared for the public tree. The public record doesn't contain the historical Nginx Proxy Manager or UniFi menu paths. I don't treat terminal screenshots as text transcripts or infer missing navigation. The walkthrough preserves the public-safe action, visible page, result, & verification for each legacy evidence ID, including the inserted S05A policy step.
 
-### S01: live preflight
+## Walkthrough
 
-I confirmed CTID availability, node capacity, VLAN readiness, and the starting controller state before creating anything.
+### Step 1: Check the target node and guest ID
 
-### S02: LXC creation
+**Action:** I checked the `blue-server` guest list for CTID 107, reviewed its CPU, memory, & storage use, checked VLAN 85 and the UniFi controller, & inspected `pvestatd`. I found `pvestatd` failed, restarted it, & verified it active before creating the guest.
 
-The created guest showed the intended resource, storage, and VLAN configuration, and the gateway was reachable.
+**Observed result:** CTID 107 didn't appear in the guest list. The node summary showed 1.46% use across 4 CPUs, 1.74 GiB of 11.57 GiB RAM in use, 4.53 GiB of 67.73 GiB local disk in use, and 0 B of 8 GiB swap in use. These values left more than the planned 4 GiB RAM allocation available.
 
-<details>
-<summary>Step S02 screenshot: validated docker-network LXC</summary>
+**Verification:** The Proxmox node summary displayed the guest inventory and the measured resources listed above, and `pvestatd` returned active after the restart. The exact VLAN 85 and controller preflight output remains in the local S01 transcript quarantine because it wasn't cleared for the public tree.
+
+**Evidence:**
+
+![Proxmox web UI showing the blue-server node summary during the preflight check, with the node's guest list, uptime, and resource usage visible](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S01-Proxmox-Blue-Server-Preflight-2026-07-10.jpg)
+
+### Step 2: Create the docker-network LXC
+
+**Action:** I created unprivileged CT 107 `docker-network` from Debian 13 with 2 vCPU, 4 GiB memory, 1 GiB swap, a 32 GiB `local-lvm` disk, `nesting=1,keyctl=1`, automatic boot, guest firewall processing, and `eth0` on VLAN 85 at `192.168.85.2/24`.
+
+**Observed result:** Proxmox created & started CT 107 with 2 vCPU, 4 GiB memory, 1 GiB swap, a 32 GiB disk, unprivileged mode, & `eth0` on VLAN 85 at `192.168.85.2/24`.
+
+**Verification:** The guest reached gateway `192.168.85.1` with 0% packet loss.
+
+**Evidence:**
 
 ![Validated LXC configuration](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S02-Docker-Network-LXC-Created-2026-07-10.jpg)
 
-</details>
+### Step 3: Harden SSH and add the guest to HA
 
-### S03: SSH hardening and HA
+**Action:** I created the `REDACTED_USER_001` administrator, installed the three approved public keys, granted NOPASSWD sudo, disabled root & password-based SSH, added the guest to SSH Manager as `docker_network`, & set its HA desired state to `started`.
 
-Key-only access, SSH hardening, administrator sudo, and the HA state all passed.
+**Observed result:** Key-only SSH and passwordless sudo worked, while root, password, and keyboard-interactive authentication were disabled. Proxmox showed CT 107 running as an unprivileged container on `blue-server`, with HA desired state `started`.
 
-<details>
-<summary>Step S03 screenshot: SSH and HA ready</summary>
+**Verification:** SSH Manager connected with an approved key, all three fingerprints were present, & `ha-manager` reported `ct:107` started on `blue-server`. The SSH checks are retained only in the local S03 transcript quarantine. The public screenshot verifies the running container, unprivileged setting, assigned resources, address, node, & HA state.
 
-![SSH hardening and HA state](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S03-Docker-Network-SSH-HA-Ready-2026-07-10.jpg)
+**Evidence:**
 
-</details>
+![Proxmox summary showing CT 107 running as an unprivileged container on blue-server with HA state started](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S03-Docker-Network-SSH-HA-Ready-2026-07-10.jpg)
 
-### S04: Docker runtime
+### Step 4: Install and verify Docker
 
-Docker, Compose, and the deployment path were ready.
+**Action:** I installed Docker Engine & Docker Compose, created `/opt/docker/netbird` and `/opt/docker/nginx-proxy-manager`, & created external network `proxy` with subnet `172.31.85.0/24`.
 
-### S05: Nginx Proxy Manager deployment
+**Observed result:** Docker Engine 29.6.1 & Docker Compose 5.3.1 returned their versions, and the `proxy` network existed at `172.31.85.0/24`.
 
-NPM came up healthy on first run and I initialized the protected administrator.
+**Verification:** I ran the public-safe verification commands retained in the terminal capture:
 
-<details>
-<summary>Step S05 screenshot: NPM healthy first run</summary>
+```sh
+set -o pipefail
+printf 'timestamp='; date --iso-8601=seconds
+id
+docker version --format 'client={{.Client.Version}} server={{.Server.Version}}'
+docker compose version
+printf 'docker_service='; systemctl is-active docker
+docker info --format 'driver={{.Driver}} cgroup={{.CgroupDriver}}'
+docker network inspect -f 'name={{.Name}} subnet={{(index .IPAM.Config 0).Subnet}} gateway={{(index .IPAM.Config 0).Gateway}}' proxy
+find /opt/docker -maxdepth 1 -mindepth 1 -type d -printf '%p %u:%g %m\n'
+docker ps --format 'table {{.Names}}\t{{.Status}}'
+```
+
+The capture showed the client & server versions, Compose version, active service, network subnet, directory ownership, & exit code 0. The installation request and complete raw output remain in the local-only scrub quarantine.
+
+**Evidence:**
+
+![Terminal capture showing Docker Engine 29.6.1 client and server, Docker Compose v5.3.1, the proxy network at 172.31.85.0/24, and exit code 0](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S04-Docker-Runtime-Current-Validation-2026-07-11.jpg)
+
+### Step 5: Deploy Nginx Proxy Manager
+
+**Action:** I deployed Nginx Proxy Manager 2.15.1 with TCP 80, 81, and 443 published and fixed address `172.31.85.10` on the `proxy` network, then initialized its administrator account.
+
+**Observed result:** NPM returned its first-run page over HTTP 200 & accepted the protected administrator setup.
+
+**Verification:** The administration UI returned HTTP 200 before and after initialization.
+
+**Evidence:**
 
 ![NPM healthy first-run state](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-First-Run-Healthy-2026-07-10.jpg)
 
-</details>
-
-<details>
-<summary>Step S05 screenshot: NPM administrator initialized</summary>
-
 ![NPM initialized administrator](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
 
-</details>
+### Step 5A: Apply the Access-A egress policies
 
-### S05A: UniFi egress policies
+**Action:** I created ordered allow rules for CT 107 TCP 80/443 and UDP 123, followed by a block for all other Access-A IPv4 traffic to External. I disabled automatic respond-policy generation after the first web-rule request was rejected.
 
-The final ordered Access-A egress policy set was in place and behaved as intended for allowed and blocked traffic.
+**Observed result:** UniFi saved the TCP 80/443 allow, UDP 123 allow, & catch-all IPv4 block in that order, with logging enabled on all three.
 
-<details>
-<summary>Step S05A screenshot: Access-A egress policies after change</summary>
+**Verification:** HTTP returned 200, the Docker registry returned its expected unauthenticated 401, `ntpdig` returned valid time data, and direct TCP DNS to `REDACTED_IPV4_001:53` timed out under the block rule.
+
+**Evidence:**
 
 ![Access-A egress policy set](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 
-</details>
+### Step 6: Add internal DNS
 
-### S06: internal DNS
+**UI action:** I added the UniFi local A record `REDACTED_CUSTOM_DOMAIN_016` pointing to `192.168.85.2` with TTL 300 seconds.
 
-The internal DNS A record, its TTL, and the resolver result all matched the intended values.
+**Observed result:** The controller saved the enabled DNS record.
 
-<details>
-<summary>Step S06 screenshot: UniFi internal DNS record</summary>
+**Verification:** The UniFi resolver and a Windows client both returned `192.168.85.2` for the hostname.
+
+**Evidence:**
 
 ![UniFi internal DNS record](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
-</details>
+### Step 7: Issue TLS and publish the NetBird proxy
 
-### S07: TLS and proxy
+**Action:** I issued the Cloudflare DNS-01 wildcard/apex certificate, assigned it to the NetBird proxy host, enabled Force SSL & HTTP/2, & applied the API, WebSocket, signal, management, & gRPC routes.
 
-Certificate issuance and assignment, Force SSL, HTTP/2, the advanced routes, and HTTPS validation all passed.
+**Observed result:** The certificate was issued and the NetBird proxy host reported Online.
 
-<details>
-<summary>Step S07 screenshot: wildcard certificate issued</summary>
+**Verification:** `nginx -t` passed & `https://REDACTED_CUSTOM_DOMAIN_016` returned HTTP 200.
+
+**Evidence:**
 
 ![Wildcard certificate issued](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 
-</details>
-
-<details>
-<summary>Step S07 screenshot: NetBird proxy online</summary>
-
 ![NetBird proxy online in NPM](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg)
 
-</details>
+### Step 8: Deploy the NetBird control plane
 
-### S08: NetBird control plane
+**Action:** I verified the official v0.74.3 installer checksum, selected Nginx Proxy Manager integration, kept direct services on loopback, joined both containers to `proxy`, and corrected the trusted proxy to `172.31.85.10/32`.
 
-The NetBird deployment and version checks passed, HTTPS login worked, and the authenticated dashboard loaded.
+**Observed result:** `netbird-dashboard` listened on `127.0.0.1:8080`, `netbird-server` listened on `127.0.0.1:8081` and `3478/udp`, & the authenticated dashboard loaded through NPM.
 
-<details>
-<summary>Step S08 screenshot: authenticated NetBird dashboard</summary>
+**Verification:** The direct dashboard and identity-provider probes returned HTTP 200 and the published login completed.
+
+**Evidence:**
 
 ![Authenticated NetBird dashboard](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg)
 
-</details>
+### Step 9: Test restart persistence
 
-### S09: restart validation
+**Action:** I restarted the Nginx Proxy Manager and NetBird Compose projects in a controlled sequence.
 
-The controlled Compose restart passed: containers reached readiness, Nginx validated, HTTPS returned 200, and the authenticated UI was restored.
+**Observed result:** NPM returned to `healthy` & both NetBird containers returned to running state.
 
-<details>
-<summary>Step S09 screenshot: NetBird healthy after restart</summary>
+**Verification:** Readiness passed on the second check, `nginx -t` passed, HTTPS returned 200, & the authenticated UI loaded again.
+
+**Evidence:**
 
 ![NetBird healthy after restart](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S09-NetBird-Healthy-After-Restart-2026-07-11.jpg)
 
-</details>
+### Step 10: Remove temporary files and restrict permissions
 
-### S10: cleanup and permissions
+**Action:** I removed the downloaded installer and other deployment leftovers, then set the NetBird secret configuration files and NPM database to owner-only mode 0600.
 
-I removed the leftovers from my deployment steps and confirmed owner-only permissions on the secret files.
+**Observed result:** The one-time installer was absent & the retained secret-bearing files reported mode 0600.
+
+**Verification:** I checked the live paths and file modes after cleanup.
+
+**Evidence:** The local S10 transcript holds the path & mode checks. No secret-bearing file content is published.
 
 ## Rollback
 

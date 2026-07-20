@@ -1,7 +1,7 @@
 # Galaxy Cluster-Net Corosync Link Addition
 
 **Created:** 2026-07-10  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Date:** 2026-07-10  
 **System:** Proxmox VE 9.2.2 cluster `Galaxy` and UniFi Network 10.4.57  
@@ -43,173 +43,151 @@ I completed read-only verification through the SSH manager and the UniFi control
 
 No UniFi mutation was required.
 
-## Evidence Captured Before Change
+## Public Evidence Boundary
 
-I captured both starting-state screenshots from my open Chrome dashboards before touching any node.
+The exact S-01 through S-09 command transcripts remain in the local-only scrub quarantine because they weren't cleared for the public tree. I don't treat the screenshots below as substitutes for those transcripts. This walkthrough records the retained configuration actions, observed results, & verification in public-safe form. The two starting-state dashboards & final UniFi capture keep their original pre-standard filenames; they map to Steps 1 & 8.
 
-<details>
-<summary>Pre-change screenshot: UniFi dashboard starting state</summary>
+## Walkthrough
+
+### Step 1: Verify the controller, trunks, hosts, and cluster
+
+**Action:** I performed read-only checks of the UniFi controller, the four Proxmox trunk ports, every node's bridge state, and the Corosync configuration before changing a host.
+
+**Observed result:** All four nodes were online and quorate on Corosync `link0`. VLAN 71 was admitted on grey, purple, and blue, but not in red's live bridge table. No node had `vmbr0.71`.
+
+**Verification:** UniFi reported all five adopted infrastructure devices online, all four switch ports used the Proxmox-Trunk profile, & the Proxmox cluster showed four votes with quorum three.
+
+**Evidence:**
 
 ![UniFi dashboard starting state](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Network-Segmentation-Cluster-Net-Prechange-UniFi-Dashboard-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Pre-change screenshot: Proxmox cluster starting state</summary>
-
 ![Proxmox cluster starting state](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-Prechange-Proxmox-Cluster-2026-07-10.png)
 
-</details>
+### Step 2: Add `vmbr0.71` on grey-server
 
-## Step Evidence
+**Action:** I saved a timestamped copy of `/etc/network/interfaces`, added static no-gateway interface `vmbr0.71` at `192.168.71.10/24`, and applied the network change on `grey-server`.
 
-I ran this change with step-based evidence rather than only a task-level before/after pair: each live step got paired UI captures where the state is visible in Proxmox or UniFi, and I verified the outcome before moving to the next step.
+**Observed result:** `vmbr0.71` came up without disturbing the existing MGMT-A interface.
 
-### S-01: controller, trunk, host, and cluster preflight
+**Verification:** The VLAN 71 gateway ping had 0% loss, the original management GUI returned HTTP 200, and cluster quorum stayed intact.
 
-Read-only preflight of the UniFi controller, trunk ports, hosts, and cluster. The pre-change captures above show the starting state; nothing mutated, so no separate after capture was needed.
-
-### S-02: add `vmbr0.71` on `grey-server`
-
-After the apply, `vmbr0.71` was up, the gateway ping showed 0% loss, the GUI returned HTTP 200, and quorum stayed intact.
-
-<details>
-<summary>Step S-02 screenshot: grey-server Network view before</summary>
+**Evidence:**
 
 ![Before Network view on grey-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-02-grey-server-Network-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-02 screenshot: grey-server Network view after</summary>
-
 ![After Network view on grey-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-02-grey-server-Network-After-2026-07-10.png)
 
-</details>
+### Step 3: Add `vmbr0.71` on purple-server
 
-### S-03: add `vmbr0.71` on `purple-server`
+**Action:** I saved the interfaces file and added static no-gateway interface `vmbr0.71` at `192.168.71.11/24`. Failed apply attempts triggered a rollback before the final apply passed.
 
-This step included failed attempts and a rollback before the final apply passed. Afterward `vmbr0.71` was up, the gateway ping showed 0% loss, the grey neighbor was reachable, the GUI returned HTTP 200, and quorum stayed intact.
+**Observed result:** The final configuration brought `vmbr0.71` up while preserving MGMT-A access.
 
-<details>
-<summary>Step S-03 screenshot: purple-server Network view before</summary>
+**Verification:** The gateway ping had 0% loss, the grey neighbor was reachable, the GUI returned HTTP 200, and quorum stayed intact.
+
+**Evidence:**
 
 ![Before Network view on purple-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-03-purple-server-Network-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-03 screenshot: purple-server Network view after</summary>
-
 ![After Network view on purple-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-03-purple-server-Network-After-2026-07-10.png)
 
-</details>
+### Step 4: Add `vmbr0.71` on blue-server
 
-### S-04: add `vmbr0.71` on `blue-server`
+**Action:** I saved the interfaces file, added static no-gateway interface `vmbr0.71` at `192.168.71.12/24`, and applied the change on `blue-server`.
 
-Afterward `vmbr0.71` was up, the gateway ping showed 0% loss, the grey and purple neighbors were reachable, the GUI returned HTTP 200, and quorum stayed intact.
+**Observed result:** `vmbr0.71` came up without changing the original management path.
 
-<details>
-<summary>Step S-04 screenshot: blue-server Network view before</summary>
+**Verification:** The gateway ping had 0% loss, the grey and purple neighbors were reachable, the GUI returned HTTP 200, and quorum stayed intact.
+
+**Evidence:**
 
 ![Before Network view on blue-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-04-blue-server-Network-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-04 screenshot: blue-server Network view after</summary>
-
 ![After Network view on blue-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-04-blue-server-Network-After-2026-07-10.png)
 
-</details>
+### Step 5: Admit VLAN 71 and add `vmbr0.71` on red-server
 
-### S-05: allow VLAN 71 and add `vmbr0.71` on `red-server`
+**Action:** I saved the interfaces file, added VLAN 71 to red's bridge admission policy, created static no-gateway interface `vmbr0.71` at `192.168.71.13/24`, and applied the network change.
 
-Afterward the bridge admitted VLAN 71, `vmbr0.71` was up, all three peers were reachable at Layer 2, the GUI returned HTTP 200, and quorum stayed intact.
+**Observed result:** The bridge admitted VLAN 71 and `vmbr0.71` came up.
 
-<details>
-<summary>Step S-05 screenshot: red-server Network view before</summary>
+**Verification:** All three Cluster-Net peers were directly reachable at Layer 2, the management GUI returned HTTP 200, and quorum stayed intact.
+
+**Evidence:**
 
 ![Before Network view on red-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-05-red-server-Network-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-05 screenshot: red-server Network view after</summary>
-
 ![After Network view on red-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-05-red-server-Network-After-2026-07-10.png)
 
-</details>
+### Step 6: Validate the Cluster-Net mesh
 
-### S-06: validate Cluster-Net
+**Action:** I checked all four `vmbr0.71` interfaces, their connected routes, gateway reachability, and peer neighbor resolution before touching Corosync.
 
-Full-mesh validation over the S-02 through S-05 results: all four `vmbr0.71` interfaces and connected routes were present, every gateway ping succeeded, and every peer resolved to a direct VLAN 71 MAC address. General peer ICMP remained blocked by the existing Proxmox host firewall policy.
+**Observed result:** Every interface and route was present, every gateway ping succeeded, and every peer resolved to a direct VLAN 71 MAC address. General peer ICMP remained blocked by the existing Proxmox host firewall policy.
 
-### S-07: add Corosync `link1`
+**Verification:** Direct neighbor resolution proved the full Layer-2 mesh despite the intentional ICMP restriction.
 
-I validated the candidate configuration before applying it. Afterward the cluster ran config version 8 with four nodes quorate and all peers connected on both links.
+**Evidence:** The local S-06 transcript holds the terminal validation. Steps 2 through 5 show the four before-and-after interface pairs used by the mesh checks.
 
-<details>
-<summary>Step S-07 screenshot: Corosync cluster view before</summary>
+### Step 7: Add Corosync link1
+
+**Action:** I saved `/etc/pve/corosync.conf`, added each node's `ring1_addr`, added `interface { linknumber: 1 }`, preserved every `ring0_addr` and `linknumber: 0` entry, and incremented `config_version` from 7 to 8.
+
+**Command retained for candidate validation:**
+
+```sh
+corosync -c /tmp/cluster-net-S07-corosync.conf -t
+```
+
+**Observed result:** The candidate passed validation and the live cluster adopted configuration version 8.
+
+**Verification:** All four nodes remained quorate and every peer connected on both Corosync links.
+
+**Evidence:**
 
 ![Before Cluster view](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-07-Corosync-Cluster-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-07 screenshot: Corosync cluster view after</summary>
-
 ![After Cluster view](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-07-Corosync-Cluster-After-2026-07-10.png)
 
-</details>
+### Step 8: Verify the original management paths
 
-### S-08: final management-path verification
+**Action:** I reopened the Proxmox and UniFi dashboards and probed every original MGMT-A Proxmox endpoint after the Corosync change.
 
-The final Proxmox dashboard showed Galaxy quorate with four nodes online, the final UniFi dashboard showed the controller operational, and every original MGMT-A GUI returned HTTP 200.
+**Observed result:** Proxmox showed Galaxy quorate with four nodes online, and UniFi remained operational.
 
-<details>
-<summary>Step S-08 screenshot: final Proxmox dashboard</summary>
+**Verification:** Every original MGMT-A GUI returned HTTP 200 and no node reported offline.
+
+**Evidence:**
 
 ![Final Proxmox dashboard](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-08-Final-Proxmox-Dashboard-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-08 screenshot: final UniFi dashboard</summary>
-
 ![Final UniFi dashboard](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Network-Segmentation-Cluster-Net-Postchange-UniFi-Dashboard-2026-07-10.png)
 
-</details>
+### Step 9: Normalize red-server's bridge VLAN range
 
-### S-09: normalize `red-server` bridge VLAN range
+**Action:** I guarded the follow-up change, replaced red's enumerated VLAN list with `bridge-vids 2-4094`, and applied the bridge configuration with `ifreload`.
 
-I applied the change guarded, with verification after `ifreload`. Afterward `bridge-vids 2-4094` matched grey and blue, quorum and both Corosync links remained healthy, and no rollback triggered.
+**Observed result:** Red's persistent and live bridge state matched grey and blue with 4,093 tagged VLAN entries.
 
-<details>
-<summary>Step S-09 screenshot: red-server bridge VLANs before</summary>
+**Verification:** VLAN 71 gateway reachability, four-node quorum, both Corosync links, scoped services, and the original red-server management GUI all passed. No rollback triggered.
+
+**Evidence:**
 
 ![Before bridge dialog on red-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-09-red-server-Bridge-VLANs-Before-2026-07-10.png)
 
-</details>
-
-<details>
-<summary>Step S-09 screenshot: red-server bridge VLANs after</summary>
-
 ![After bridge dialog on red-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-09-red-server-Bridge-VLANs-After-2026-07-10.png)
-
-</details>
 
 ## Completed Implementation
 
 1. I saved a timestamped copy of `/etc/network/interfaces` on every node under `/root/`.
 2. I added VLAN 71 to `red-server`'s bridge admission policy, then normalized the bridge to `bridge-vids 2-4094` in S-09 so it matches grey-server and blue-server.
 3. I added `vmbr0.71` as a static, no-gateway interface on every node using the addresses in the scope table.
-4. I applied one node at a time and verified that MGMT-A SSH/GUI access and cluster quorum remained healthy after each node.
+4. I applied one node at a time & verified that MGMT-A SSH/GUI access and four-node quorum remained intact after each node.
 5. I verified all-to-all Layer-2 reachability over `192.168.71.10` through `192.168.71.13` before changing Corosync.
 6. I saved a timestamped copy of `/etc/pve/corosync.conf` under `/root/` on every node.
 7. I built and validated the candidate Corosync configuration with `corosync -c /tmp/cluster-net-S07-corosync.conf -t`.
-8. I added `ring1_addr` for every node, added `interface { linknumber: 1 }`, and incremented `config_version` from `7` to `8`; every `ring0_addr` and `linknumber: 0` entry was preserved.
-9. I verified four-node quorum, all peers connected on both Corosync links, and original MGMT-A GUI/SSH access.
+8. I added `ring1_addr` for every node, added `interface { linknumber: 1 }`, & incremented `config_version` from `7` to `8`; every `ring0_addr` and `linknumber: 0` entry was preserved.
+9. I verified four-node quorum, all peers connected on both Corosync links, & original MGMT-A GUI/SSH access.
 
 ## Rollback Status
 
@@ -219,10 +197,10 @@ I deleted the timestamped interface and Corosync rollback copies on 2026-07-11 a
 - Any future reversal must be planned as a new guarded change validated against current live state.
 - The implementation remains additive: no existing MGMT-A address, default gateway, Corosync `ring0_addr`, or `link0` entry was removed.
 
-## Verification Status
+## Final Cluster Verification
 
-Implementation and final verification are complete. VLAN 71 is active on all four nodes, gateway reachability succeeds from each node, and all-to-all direct neighbor resolution proves the Layer-2 path. Corosync configuration version 8 is live; every node reports all peers connected on both `link0` and `link1`, quorum stayed intact, and the scoped core services stayed active. All four original MGMT-A Proxmox endpoints returned HTTP 200, the final Proxmox dashboard reported four nodes online and zero offline, and the UniFi API reported all five adopted infrastructure devices online.
+The implementation is complete. VLAN 71 is active on all four nodes, gateway reachability succeeds from each node, & all-to-all direct neighbor resolution proves the Layer-2 path. Corosync configuration version 8 is live; every node reports all peers connected on both `link0` and `link1`, quorum stayed intact, & the scoped core services stayed active. All four original MGMT-A Proxmox endpoints returned HTTP 200, the final Proxmox dashboard reported four nodes online and zero offline, & the UniFi API reported all five adopted infrastructure devices online.
 
 S-09 normalized `red-server` from the enumerated bridge VLAN list to `bridge-vids 2-4094`. Persistent configuration, live bridge state, and the 4,093 tagged VLAN-entry count now match grey-server and blue-server. VLAN 71 gateway reachability, four-node quorum, both Corosync links, all scoped core services, and the original red-server management GUI passed after `ifreload`; no rollback was triggered.
 
-The final failed-unit inventory also exposed pre-existing conditions outside this change: `pvestatd` on `blue-server` had been failed since 2026-07-05, and `grey-server` had a failed `hddpool` import plus a stale root-session scope. These did not prevent quorum, dual-link connectivity, or management access, and I took no unrelated recovery action.
+The final failed-unit inventory also exposed pre-existing conditions outside this change: `pvestatd` on `blue-server` had been failed since 2026-07-05, and `grey-server` had a failed `hddpool` import plus a stale root-session scope. These didn't prevent quorum, dual-link connectivity, or management access, and I took no unrelated recovery action.

@@ -1,7 +1,7 @@
 # Media Stack Application Onboarding
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
@@ -9,154 +9,226 @@
 
 ## Scope
 
-I completed the UI-guided application onboarding deferred by my [deployment record](Media%20Stack%20Deployment%20-%202026-07-17.md) and carried through the [refresh record](Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17.md): Jellyfin's guided setup, media libraries, and hardware transcoding; Sonarr and Radarr media management; the first Prowlarr indexer; and confirmation of the migrated Seerr connections to Jellyfin, Sonarr, and Radarr.
+I completed the UI-guided application onboarding deferred by my [deployment record](Media%20Stack%20Deployment%20-%202026-07-17.md) & carried through the [refresh record](Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17.md): Jellyfin's guided setup, media libraries, & hardware transcoding; Sonarr and Radarr media management; the first Prowlarr indexer; & confirmation of the migrated Seerr connections to Jellyfin, Sonarr, & Radarr.
 
-## Method and Evidence Boundary
+## UI Method & Public Evidence
 
-I performed the entire onboarding interactively in each application's web UI between 20:08 and 21:14 EDT on 2026-07-17. No shell commands were part of this change, so no command transcript exists; the retained evidence is the 16-screenshot set catalogued in the [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md). The applications themselves mask API-key fields shown during setup, and no secret value appears in the captures. I did not retain a screenshot for the S13 Prowlarr indexer addition, so that step is recorded without retained evidence.
+I performed the onboarding in each application's web UI between 20:08 & 21:14 EDT on 2026-07-17. No shell command ran, so this change produced no command transcript. The public evidence contains 16 screenshots catalogued in the [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md). The applications mask their API-key fields, & no secret value appears in the captures. S13 has no screenshot; its evidence entry records the gap.
 
-## Actions and Results
+## Walkthrough
 
-| Step | Action | Observed result |
-| --- | --- | --- |
-| S01 | Completed Jellyfin's guided setup | Server name `Jelly-Media` with English display language |
-| S02–S03 | Added the Jellyfin libraries | `Movies` (content type Movies) and `TV Shows` (content type Shows) created enabled with English/United States metadata defaults, real-time monitoring, and `Specials` season naming; the folder pickers are collapsed in the captures, and both libraries subsequently appeared in Seerr's library sync (S14) |
-| S04 | Confirmed the qBittorrent baseline | Web UI reachable on the LAN address; empty queue; existing `radarr` and `tv-sonarr` categories; 85.35 GiB free; DHT idle at zero nodes behind the VPN |
-| S05 | Applied the researched Quick Sync transcoding selections | Intel QuickSync with a blank device field; hardware decoding enabled for H264, HEVC, MPEG2, VC1, VP8, VP9, HEVC 10-bit, and VP9 10-bit with AV1 and both HEVC RExt profiles off; OS-native VA-API decoders preferred; hardware encoding on with both Intel Low-Power encoders off; HEVC output allowed, matching my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) |
-| S06–S07 | Set Sonarr media management | Episode renaming with Smart Replace; standard, daily, and anime formats retaining `{Quality Full}`; season folders `Season {season}`; root folder `/data/media/tv` with 85.4 GiB free and zero unmapped folders |
-| S08 | Verified Sonarr's download-client wiring | `qBittorrent via Proton VPN` enabled; completed-download handling on; failed-download redownload on, including from interactive search; no remote path mappings |
-| S09–S11 | Set Radarr media management and profiles | Movie renaming `{Movie Title} ({Release Year}) {Quality Full}` with matching folder format; hard-links-instead-of-copy enabled; 100 MB minimum-free-space import guard; root folder `/data/media/movies`; six stock quality profiles with the default delay profile |
-| S12 | Verified Radarr's qBittorrent client entry | Host `gluetun` port 8080 with category `radarr` and no stored username, password, or API key in the client entry; the Docker-subnet authentication bypass in qBittorrent's protected configuration covers this path per my [configuration reference](../../Configuration/README.md) |
-| S13 | Added the first Prowlarr indexer | One public torrent indexer enabled at priority 25 with the Standard sync profile at 20:55, syncing to Sonarr and Radarr through the application links established at deployment; I did not apply the `flaresolverr` tag because this indexer does not require challenge handling. No screenshot retained; see the [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md) |
-| S14–S16 | Completed Seerr's setup wizard | Jellyfin sign-in and library sync with Movies and TV Shows enabled; Radarr added as default server with a "connection established successfully" result, HD-1080p profile, root `/data/media/movies`, and minimum availability Released; Sonarr configured as default server with HD-1080p for standard and anime series, root `/data/media/tv`, and season folders on |
-| S17 | Confirmed the migrated request UI | Seerr's Discover view renders populated metadata after wizard completion, confirming the post-migration interface is functional and closing the Seerr-connection item from the refresh record's remaining verification |
+### Step 1: Complete the Jellyfin welcome screen
 
-## Step Evidence
+**UI path and action:** In Jellyfin Setup Wizard > Welcome, I set the server name to `Jelly-Media`, selected English as the display language, and continued.
 
-<details>
-<summary>Step S01 screenshot: Jellyfin setup wizard, server name</summary>
+**Observed result:** The wizard accepted the server identity and language settings.
+
+**Verification:** I confirmed both values on the welcome screen before continuing.
+
+**Evidence:**
 
 ![Jellyfin guided setup with server name Jelly-Media and English display language](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S01-Jellyfin-Setup-Wizard-Server-Name-2026-07-17.png)
 
-</details>
+### Step 2: Add the Jellyfin Movies library
 
-<details>
-<summary>Step S02 screenshot: Jellyfin Movies library</summary>
+**UI path and action:** In Jellyfin Setup Wizard > Set up your media libraries > Add Media Library, I created `Movies` with content type Movies, English and United States metadata defaults, and real-time monitoring enabled.
 
-![Movies library created enabled with English/United States metadata defaults and real-time monitoring; folder picker collapsed](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S02-Jellyfin-Movies-Library-Settings-2026-07-17.png)
+**Observed result:** Jellyfin saved the library as enabled. The folder picker is collapsed in the retained capture.
 
-</details>
+**Verification:** The `Movies` library later appeared and was enabled during Seerr's Jellyfin library sync in Step 14.
 
-<details>
-<summary>Step S03 screenshot: Jellyfin TV library</summary>
+**Evidence:**
 
-![TV Shows library created enabled with English/United States defaults and Specials season naming; folder picker collapsed](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S03-Jellyfin-TV-Library-Settings-2026-07-17.png)
+![Configured Add Media Library dialog for Movies with English and United States metadata defaults and real-time monitoring; folder picker collapsed](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S02-Jellyfin-Movies-Library-Settings-2026-07-17.png)
 
-</details>
+### Step 3: Add the Jellyfin TV Shows library
 
-<details>
-<summary>Step S04 screenshot: qBittorrent baseline</summary>
+**UI path and action:** In Jellyfin Setup Wizard > Set up your media libraries > Add Media Library, I created `TV Shows` with content type Shows, English and United States metadata defaults, real-time monitoring, and `Specials` season naming.
+
+**Observed result:** Jellyfin saved the library as enabled. The folder picker is collapsed in the retained capture.
+
+**Verification:** The `TV Shows` library later appeared and was enabled during Seerr's Jellyfin library sync in Step 14.
+
+**Evidence:**
+
+![Configured Add Media Library dialog for TV Shows with English and United States defaults and Specials season naming; folder picker collapsed](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S03-Jellyfin-TV-Library-Settings-2026-07-17.png)
+
+### Step 4: Check the qBittorrent baseline
+
+**UI path and action:** In qBittorrent Web UI > Transfers, I reviewed the queue, categories, free space, and DHT state before wiring the Arr applications to the client.
+
+**Observed result:** The UI was reachable with an empty queue, the `radarr` and `tv-sonarr` categories present, 85.35 GiB free, and DHT idle at zero nodes behind the VPN.
+
+**Verification:** The LAN UI displayed an empty queue, categories `radarr` & `tv-sonarr`, 85.35 GiB free, & DHT at zero nodes.
+
+**Evidence:**
 
 ![qBittorrent Web UI reachable with an empty queue, radarr and tv-sonarr categories, 85.35 GiB free, and DHT idle behind the VPN](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S04-qBittorrent-WebUI-Baseline-Categories-2026-07-17.png)
 
-</details>
+### Step 5: Configure Jellyfin Quick Sync transcoding
 
-<details>
-<summary>Step S05 screenshot: Jellyfin QSV transcoding</summary>
+**UI path and action:** In Jellyfin Dashboard > Playback > Transcoding, I selected Intel QuickSync, left the device field blank, enabled the researched decode formats and hardware encoding, disabled AV1 and both HEVC RExt profiles, preferred OS-native VA-API decoders, left both Intel Low-Power encoders off, allowed HEVC output, and saved.
+
+**Observed result:** Jellyfin retained Intel QuickSync, hardware encoding, HEVC output, OS-native VA-API decoders, & the disabled AV1/HEVC RExt selections from my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md).
+
+**Verification:** I reviewed the visible decode and encode selections after saving. The tone-mapping fields remain below the captured viewport and are tracked under deviations.
+
+**Evidence:**
 
 ![Intel QuickSync transcoding with the researched decode and encode selections; tone-mapping fields sit below the captured viewport](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S05-Jellyfin-QSV-Transcoding-Settings-2026-07-17.png)
 
-</details>
+### Step 6: Configure Sonarr episode naming
 
-<details>
-<summary>Step S06 screenshot: Sonarr episode naming</summary>
+**UI path and action:** In Sonarr > Settings > Media Management > Episode Naming, I enabled episode renaming, selected Smart Replace, kept `{Quality Full}` in the standard, daily, and anime formats, set season folders to `Season {season}`, and saved.
+
+**Observed result:** Sonarr saved the naming configuration.
+
+**Verification:** I reopened the media-management view and confirmed the retained values.
+
+**Evidence:**
 
 ![Sonarr episode renaming with Smart Replace and Season {season} folders](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S06-Sonarr-Episode-Naming-2026-07-17.png)
 
-</details>
+### Step 7: Set the Sonarr television root folder
 
-<details>
-<summary>Step S07 screenshot: Sonarr root folder</summary>
+**UI path and action:** In Sonarr > Settings > Media Management > Root Folders, I added `/data/media/tv` as the television root folder.
+
+**Observed result:** Sonarr reported 85.4 GiB free and zero unmapped folders.
+
+**Verification:** The root-folder page showed `/data/media/tv` available with no mapping error.
+
+**Evidence:**
 
 ![Sonarr television root folder /data/media/tv with 85.4 GiB free and zero unmapped folders](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S07-Sonarr-Root-Folder-TV-2026-07-17.png)
 
-</details>
+### Step 8: Verify Sonarr's qBittorrent connection
 
-<details>
-<summary>Step S08 screenshot: Sonarr download client</summary>
+**UI path and action:** In Sonarr > Settings > Download Clients, I opened `qBittorrent via Proton VPN`, enabled the client and completed-download handling, enabled failed-download redownload for automatic and interactive searches, and saved.
+
+**Observed result:** Sonarr retained the enabled client and handling settings with no remote path mappings.
+
+**Verification:** I reviewed the download-client settings after saving.
+
+**Evidence:**
 
 ![Sonarr qBittorrent via Proton VPN client enabled with completed-download handling and failed-download redownload on](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S08-Sonarr-Download-Client-Handling-2026-07-17.png)
 
-</details>
+### Step 9: Configure Radarr movie naming and imports
 
-<details>
-<summary>Step S09 screenshot: Radarr movie naming and hard-links</summary>
+**UI path and action:** In Radarr > Settings > Media Management, I set the movie filename to `{Movie Title} ({Release Year}) {Quality Full}`, used the matching folder format, enabled hard-links instead of copy, set the minimum-free-space import guard to 100 MB, and saved.
+
+**Observed result:** Radarr saved the naming and import settings.
+
+**Verification:** I reopened the media-management view and confirmed the retained values.
+
+**Evidence:**
 
 ![Radarr movie naming with hard-links-instead-of-copy enabled and a 100 MB minimum-free-space import guard](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S09-Radarr-Movie-Naming-Hardlinks-2026-07-17.png)
 
-</details>
+### Step 10: Set the Radarr movie root folder
 
-<details>
-<summary>Step S10 screenshot: Radarr root folder</summary>
+**UI path and action:** In Radarr > Settings > Media Management > Root Folders, I added `/data/media/movies` as the movie root folder.
+
+**Observed result:** Radarr reported 85.4 GiB free and zero unmapped folders.
+
+**Verification:** The root-folder page showed `/data/media/movies` available with no mapping error.
+
+**Evidence:**
 
 ![Radarr movie root folder /data/media/movies with 85.4 GiB free and zero unmapped folders](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S10-Radarr-Root-Folder-Movies-2026-07-17.png)
 
-</details>
+### Step 11: Review Radarr quality and delay profiles
 
-<details>
-<summary>Step S11 screenshot: Radarr quality and delay profiles</summary>
+**UI path and action:** In Radarr > Settings > Profiles, I reviewed the six stock quality profiles, the default delay profile, and the empty release-profile list.
+
+**Observed result:** Radarr retained the stock profile set with the default delay profile.
+
+**Verification:** The profiles page showed six quality profiles, one default delay profile, and no release profiles.
+
+**Evidence:**
 
 ![Radarr six stock quality profiles with the default delay profile and no release profiles](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S11-Radarr-Quality-Delay-Profiles-2026-07-17.png)
 
-</details>
+### Step 12: Verify Radarr's qBittorrent client entry
 
-<details>
-<summary>Step S12 screenshot: Radarr qBittorrent client detail</summary>
+**UI path and action:** In Radarr > Settings > Download Clients, I opened the qBittorrent entry and reviewed host `gluetun`, port 8080, and category `radarr`.
+
+**Observed result:** The entry contained no stored username, password, or API key. The protected qBittorrent configuration permits this Docker-subnet path as recorded in the [configuration reference](../../Configuration/README.md).
+
+**Verification:** The saved client detail displayed host `gluetun`, port 8080, & category `radarr`.
+
+**Evidence:**
 
 ![Radarr download-client entry pointing at host gluetun port 8080 with category radarr and no stored credential](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S12-Radarr-qBittorrent-Client-Detail-2026-07-17.png)
 
-</details>
+### Step 13: Add the first Prowlarr indexer
 
-S13 has no retained screenshot, as recorded above.
+**UI path and action:** In Prowlarr > Indexers > Add Indexer, I added one public torrent indexer at priority 25 with the Standard sync profile. I left the `flaresolverr` tag unused because this indexer doesn't require challenge handling.
 
-<details>
-<summary>Step S14 screenshot: Seerr Jellyfin library sync</summary>
+**Observed result:** At 20:55 the enabled indexer synced through the Sonarr & Radarr application links established during deployment.
+
+**Verification:** Prowlarr showed the indexer enabled and associated with the Standard sync profile.
+
+**Evidence:** S13 has no screenshot. The [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md) records the gap.
+
+### Step 14: Connect Seerr to Jellyfin
+
+**UI path and action:** In Seerr Setup Wizard > Jellyfin, I signed in to Jellyfin, continued to Library Sync, and enabled the returned `Movies` and `TV Shows` libraries.
+
+**Observed result:** Seerr listed both Jellyfin libraries and allowed them to be enabled.
+
+**Verification:** The library-sync page displayed `Movies` & `TV Shows` selected.
+
+**Evidence:**
 
 ![Seerr setup wizard signed in to Jellyfin with the Movies and TV Shows libraries synced and enabled](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S14-Seerr-Jellyfin-Library-Sync-2026-07-17.png)
 
-</details>
+### Step 15: Connect Seerr to Radarr
 
-<details>
-<summary>Step S15 screenshot: Seerr Radarr connection</summary>
+**UI path and action:** In Seerr Setup Wizard > Services > Radarr, I added Radarr as the default movie server with the HD-1080p profile, root `/data/media/movies`, and minimum availability Released.
+
+**Observed result:** Seerr returned `connection established successfully` & retained Radarr as the default server.
+
+**Verification:** I reviewed the saved Radarr connection state before continuing.
+
+**Evidence:**
 
 ![Seerr Radarr connection established with Radarr as default server](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S15-Seerr-Radarr-Connection-Established-2026-07-17.png)
 
-</details>
+### Step 16: Connect Seerr to Sonarr
 
-<details>
-<summary>Step S16 screenshot: Seerr Sonarr settings</summary>
+**UI path and action:** In Seerr Setup Wizard > Services > Sonarr, I added Sonarr as the default series server with HD-1080p for standard and anime series, root `/data/media/tv`, and season folders enabled.
+
+**Observed result:** Seerr retained the standard and anime profile selections and the root folder.
+
+**Verification:** I reviewed the saved Sonarr server settings before finishing the wizard.
+
+**Evidence:**
 
 ![Seerr Sonarr default-server settings with HD-1080p for standard and anime series and season folders on](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S16-Seerr-Sonarr-Server-Settings-2026-07-17.png)
 
-</details>
+### Step 17: Confirm the migrated Seerr interface
 
-<details>
-<summary>Step S17 screenshot: Seerr Discover populated</summary>
+**UI path and action:** I completed the Seerr setup wizard and opened Seerr > Discover.
+
+**Observed result:** The request interface rendered populated movie and television metadata.
+
+**Verification:** The Discover page displayed populated movie & television rows after the wizard completed.
+
+**Evidence:**
 
 ![Migrated Seerr request UI rendering populated Discover metadata after wizard completion](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S17-Seerr-Discover-Populated-2026-07-17.png)
 
-</details>
-
-## Deviations and Uncaptured Items
+## Configuration Deviations & Evidence Gaps
 
 - The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. I will adopt or explicitly decline those refinements no later than the end-to-end test.
 - Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I verify Sonarr hard-linking and the researched OpenCL/BT.2390 tone-mapping selections during the end-to-end test.
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
-- I did not re-capture the Sonarr and Radarr indexer health banners after the Prowlarr sync; the pre-onboarding warnings are recorded in my [troubleshooting log](../Troubleshooting-Log.md) and should now be clear.
+- The public set has no post-sync Sonarr or Radarr indexer-health capture. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both indexer-health pages.
 
-## Remaining Verification
+## Pending Acquisition Test
 
-I still need to run the bounded end-to-end test tracked in the [platform TODO](../TODO.md): one television and one movie request through Seerr, Prowlarr search, qBittorrent transfer inside the VPN namespace, hard-link import, and Jellyfin playback with the GPU active, inspecting qBittorrent's Content list against the payload filter during the transfer. FlareSolverr's real-indexer challenge validation stays pending until an indexer actually requires it.
+The bounded end-to-end test remains open in the [platform TODO](../TODO.md): one television & one movie request through Seerr, Prowlarr search, qBittorrent transfer inside the VPN namespace, hard-link import, & Jellyfin playback with the GPU active. During the transfer I will compare qBittorrent's Content list with the payload filter. FlareSolverr validation remains pending until an indexer requires challenge handling.
 
 ## Rollback
 

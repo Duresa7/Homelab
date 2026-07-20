@@ -1,9 +1,11 @@
 # Splunk SIEM Home Lab: Build Log
 
 **Created:** 2026-06-28  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 My build log for standing up a Splunk Enterprise SIEM in my home lab, from bare VM to a working log-ingestion pipeline. I recorded what I built, the exact commands, the alternatives I weighed at each fork, and my reasoning for every non-default choice. I wrote it for other IT and security practitioners: the goal is to show not just the steps but the decision-making behind them.
+
+This 2026-06 build predates the current step-evidence naming and text-transcript standard. I preserved the timestamp-based screenshot filenames and the exact commands already written in this log instead of renaming historical evidence or inventing missing transcripts. The screenshots are visible supplements to the walkthrough, not substitutes for a complete terminal transcript.
 
 ### Project documents
 
@@ -28,17 +30,14 @@ My build log for standing up a Splunk Enterprise SIEM in my home lab, from bare 
 
 ---
 
-## Design goals
+## Splunk SIEM design targets
 
-Four principles drove every decision in this build.
+The build uses four targets:
 
-**Isolation.** A SIEM ingests logs from the whole environment, which makes it both a high-value target and a heavy consumer of disk and I/O. I gave it its own dedicated VM on Security-A, not a shared host, so a compromise or a runaway index is contained to one blast radius.
-
-**Least privilege.** Nothing runs as root that does not have to. Splunk runs under a dedicated service account; SSH accepts keys only; the box sits behind the Proxmox firewall on a segmented VLAN.
-
-**Best-practice ingestion.** Getting data in is where most SIEM builds cut corners. Splunk's own guidance is explicit that syslog should not be sent directly into the indexer [2][3]. I followed the recommended pattern (a dedicated syslog collector in front of Splunk) even though the shortcut would have been faster.
-
-**Documentation as a deliverable.** I wrote down every step, command, and dead end as it happened, with reasoning, so the work is reproducible and reviewable.
+- VMID 109 runs alone on Security-A with 4 vCPU, 12 GiB RAM, a 150 GiB SSD-backed disk, & the Proxmox firewall enabled.
+- Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `REDACTED_USER_001`; password authentication & direct root login are disabled.
+- UniFi sends CEF to SC4S on TCP/UDP 1514. SC4S forwards through HEC on 8088 instead of sending syslog directly to the indexer, matching Splunk's guidance [2][3].
+- The log retains the commands, decisions, failures, verification results, & 40 screenshots from the 2026-06 build.
 
 ## Architecture
 
@@ -65,6 +64,12 @@ Four principles drove every decision in this build.
 | 4 | SSH access and hardening | Done | ed25519 key-only auth, root login disabled |
 | 5 | Splunk Enterprise install | Done | 10.4.0 as a dedicated user under systemd |
 | 6 | UniFi log ingestion (CEF via SC4S) | Done | UniFi to SC4S to Splunk, parsed as CEF |
+| 6.1 | Prepare HEC and indexes | Done | HEC token plus bounded network indexes |
+| 6.2 | Deploy SC4S | Done | Podman, systemd, receive buffers, and listeners |
+| 6.3 | Connect UniFi | Done | Test event and first parsed CEF records |
+| 6.4 | Route UniFi products | Done | Network, OS, and Protect events into `netops` |
+| 6.5 | Verify the pipeline | Done | SC4S alive and no new CEF leaking into `main` |
+| 6.6 | Confirm CEF fields | Done | Live `sc4s_*` and `UNIFI*` field names identified |
 
 ---
 
@@ -74,34 +79,31 @@ I created the VM `splunk-siem` (VMID 109) on the Proxmox host `grey-server`.
 
 ### Decision: dedicated VM, not LXC or Docker
 
-The first fork was how to host Splunk at all: a full VM, a Proxmox LXC container, or Docker.
+I compared three hosts for Splunk: a full VM, a Proxmox LXC container, & Docker.
 
-I went with a full VM for three concrete reasons. First, Splunk is supported and tested on full operating systems, and its own tuning requirements assume one; it needs Transparent Huge Pages disabled and raised `ulimits` (open files and max user processes), which are awkward to control from inside an unprivileged LXC [1]. Second, Splunk is a long-lived, stateful Java application whose indexes grow without bound, which is the opposite of the ephemeral, stateless workload containers are designed for. Third, a VM gives me clean snapshots and hard resource limits, and keeps the blast radius to one guest.
+I chose a full VM for three reasons. Splunk's documented tuning requires Transparent Huge Pages disabled & higher open-file and process limits, settings controlled at the guest OS level [1]. VMID 109 also provides 4 vCPU, 12 GiB RAM, a 150 GiB disk, guest snapshots, & a resource boundary at one guest.
 
 ### Sizing and rationale
 
 | Component | Setting | Rationale |
 |---|---|---|
-| vCPU | 4 cores, type `host` | Splunk's reference hardware is heavier, but at this ingest volume 4 cores is comfortable; `host` passes through CPU features for best performance [4] |
+| vCPU | 4 cores, type `host` | Four cores assigned; `host` exposes the physical CPU features to the guest [4] |
 | Memory | 12288 MiB (12 GiB) | Matches Splunk's reference RAM; below ~8 GiB, search performance degrades [4] |
-| Disk | Single 150 GiB, SSD-backed | Splunk is I/O bound; SSD is required for acceptable search speed. One disk for simplicity, sized well above the retention need |
-| Firmware | UEFI / OVMF, q35 | Modern chipset and boot path |
-| Guest agent | Enabled | Clean shutdown, IP reporting to Proxmox |
+| Disk | Single 150 GiB, SSD-backed | One SSD-backed volume holds the OS, indexes, & retained search data |
+| Firmware | UEFI / OVMF, q35 | OVMF firmware with the q35 machine type |
+| Guest agent | Enabled | Reports the guest IP to Proxmox & supports guest shutdown |
 
-I chose the disk options deliberately: `virtio-scsi-single` controller with **SSD emulation** (so the guest treats it as an SSD and TRIM works), **discard** on (so deleted index space is reclaimed), **iothread** on (a dedicated I/O thread for the disk), and **cache = none** (writes go straight to disk, which is the safe choice for a database-like workload that must not lose data on a power cut). Full disk and controller detail is in [VM-Specs.md](VM-Specs.md).
+The disk uses a `virtio-scsi-single` controller with **SSD emulation**, **discard**, **iothread**, & **cache = none**. These settings expose SSD behavior, return deleted blocks to the backing store, give the disk its own I/O thread, & bypass host writeback caching. [VM-Specs.md](VM-Specs.md) records the controller values.
 
 ### Network placement
 
-At initial build I bridged the VM on `vmbr0` and tagged it to **VLAN 70 (MGMT-A)**, the security/management tier that already hosted Wazuh and Prometheus. My reasoning: a SIEM is monitoring tooling and belongs with the rest of the observability stack, not in the application/server tier it watches. Keeping it out of the server VLAN means that if that tier is compromised, the log collector is not sitting in the same segment. I enabled the Proxmox firewall on the VM. This original placement was superseded by the 2026-07-12 Security-A migration recorded later in this log.
+At initial build I bridged the VM on `vmbr0` & tagged it to **VLAN 70 (MGMT-A)**, which already hosted Wazuh and Prometheus. This placed the collector in a different Layer-3 policy zone from the application/server tier it monitors. I enabled the Proxmox firewall on the VM. The 2026-07-12 Security-A migration later replaced this placement.
 
-<details>
-<summary>Screenshots: Proxmox VM creation settings (2)</summary>
+**Evidence: Proxmox VM creation settings**
 
 ![Proxmox Create VM confirmation tab: 4 cores, host CPU type, 12288 MiB memory, 150 GiB scsi0 disk on ssd-lvm1 with discard, ssd, and iothread on, net0 on vmbr0 with VLAN tag 70 and firewall enabled, VMID 109 on grey-server](../Evidence/Screenshots/vm-config-1%20%281%29.png)
 
 ![Proxmox Create VM confirmation tab scrolled to the top: guest agent enabled, OVMF BIOS, q35 machine, and the Rocky 10.2 boot ISO mounted on ide2](../Evidence/Screenshots/vm-config-1%20%282%29.png)
-
-</details>
 
 ---
 
@@ -111,7 +113,7 @@ I booted the VM from `Rocky-10.2-x86_64-boot.iso`.
 
 ### Decision: Rocky Linux, minimal, headless
 
-I chose Rocky Linux over Ubuntu or Debian because I wanted **RHEL-family parity**: most enterprise Splunk runs on RHEL and its derivatives, so the package manager, paths, and documentation all line up with what production environments use. That parity is worth more to me than familiarity, because the point of a home lab is to practise on what employers actually run.
+I chose Rocky Linux 10.2 for its RHEL-compatible RPM packages, `dnf`, systemd, filesystem paths, & SELinux behavior. Splunk's Linux install documentation supplies an RPM package, which is the package I used here [1].
 
 I did a **Minimal Install with no desktop environment** to keep the footprint small so RAM and disk go to Splunk. Splunk's web UI is reached over the network, so the server itself never needs a GUI.
 
@@ -134,20 +136,17 @@ I set the hostname from the terminal (it can also be set on the installer's Netw
 sudo hostnamectl set-hostname splunk-siem
 ```
 
-<details>
-<summary>Screenshots: Rocky Linux installer (2)</summary>
+**Evidence: Rocky Linux installer**
 
 ![Installer Network and Host Name screen: ens18 connected with DHCP address 192.168.70.109/24, default route and DNS 192.168.70.1](../Evidence/Screenshots/Screenshot%202026-06-28%20175948.png)
 
 ![Installer Create User screen: admin account with wheel-group membership checked and a required password rated Strong](../Evidence/Screenshots/Screenshot%202026-06-28%20180042.png)
 
-</details>
-
 ---
 
 ## Step 3: System update
 
-I brought the system fully up to date before installing anything, so the build starts from a known-patched baseline:
+I ran the Rocky package update before installing Splunk. The retained output ended with `Dependencies resolved`, `Nothing to do`, & `Complete`:
 
 ```bash
 sudo dnf upgrade --refresh -y
@@ -155,26 +154,23 @@ sudo reboot            # only if the kernel or systemd were updated
 cat /etc/rocky-release # confirm: Rocky Linux 10.2
 ```
 
-<details>
-<summary>Screenshots: system update (2)</summary>
+**Evidence: system update**
 
 ![sudo dnf upgrade --refresh -y finishing with Dependencies resolved, Nothing to do, Complete](../Evidence/Screenshots/Screenshot%202026-06-28%20182636.png)
 
 ![cat /etc/rocky-release returning Rocky Linux release 10.2 (Red Quartz), followed by sudo dnf check-update](../Evidence/Screenshots/Screenshot%202026-06-28%20182935.png)
 
-</details>
-
 ---
 
 ## Step 4: SSH access and hardening
 
-`openssh-server` ships with the Minimal install and `sshd` was already running. My goal here was to move from password authentication to key-only access and to remove the obvious remote attack paths.
+`openssh-server` ships with the Minimal install & `sshd` was already running. I replaced password authentication with three authorized Ed25519 keys & disabled direct root login.
 
-### Threat model and decisions
+### SSH authentication controls
 
-Password authentication over SSH is the single most-attacked surface on any internet-adjacent host; even on an internal VLAN it invites credential-guessing from anything that lands on the segment. I made two changes to close that path: I disabled password authentication entirely so only known public keys are accepted, and I disabled direct root login so an attacker cannot target the highest-value account by name.
+I set `PasswordAuthentication no` & `PermitRootLogin no`. The documented remote login path became the `REDACTED_USER_001` account with three authorized public keys; the Proxmox console remained the fallback.
 
-I chose `ed25519` as the key type. It is the modern best-practice algorithm: smaller keys and faster verification than RSA, with strong security margins.
+I used Ed25519 for all three client keys. I tested one key from a second SSH session before closing the first session.
 
 ```bash
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
@@ -208,16 +204,13 @@ sudo sshd -T | grep -Ei 'permitrootlogin|passwordauth|pubkeyauth'
 
 > **Safety note:** I confirmed key login from a second session before closing the first. Because password authentication was already off, a broken key setup would have locked the account out; the Proxmox console was my fallback.
 
-<details>
-<summary>Screenshots: SSH hardening and service checks (3)</summary>
+**Evidence: SSH hardening and service checks**
 
 ![systemctl status sshd showing active (running) and firewall-cmd --list-services listing cockpit, dhcpv6-client, and ssh](../Evidence/Screenshots/Screenshot%202026-06-28%20183036.png)
 
 ![sshd_config open in nano with PermitRootLogin no, PubkeyAuthentication yes, and PasswordAuthentication no set](../Evidence/Screenshots/Screenshot%202026-06-28%20183418.png)
 
 ![Console session showing the Rocky 10.2 release check, sshd active, firewall services, and ip a with ens18 at 192.168.70.109/24](../Evidence/Screenshots/Screenshot%202026-06-28%20183653.png)
-
-</details>
 
 ---
 
@@ -245,7 +238,7 @@ sudo rpm -i /tmp/splunk-10.4.0-f798d4d49089.x86_64.rpm
 sudo chown -R splunk:splunk /opt/splunk
 ```
 
-> **Gotcha:** I ran the first `rpm -i` without `sudo` and it failed with `can't create transaction lock ... Permission denied`, so nothing installed. The `Header V4 RSA/SHA256 ... NOKEY` warning is benign; it only means Splunk's GPG key is not imported, so the signature is not verified. Full write-up in [Troubleshooting-Log.md](Troubleshooting-Log.md) (#1 and #2).
+> **RPM permission failure:** I ran the first `rpm -i` without `sudo`; it returned `can't create transaction lock ... Permission denied`, so nothing installed. The `Header V4 RSA/SHA256 ... NOKEY` warning means Splunk's GPG key isn't imported & the signature isn't verified. Full write-up: [Troubleshooting-Log.md](Troubleshooting-Log.md) (#1 & #2).
 
 I enabled boot-start as a **systemd-managed** service, running as the `splunk` user:
 
@@ -273,8 +266,7 @@ sudo firewall-cmd --reload
 | License | Splunk nonprofit license, 10 GB/day ingest |
 | TLS | Plain HTTP for now; HTTPS is a planned follow-up |
 
-<details>
-<summary>Screenshots: Splunk Enterprise install (4)</summary>
+**Evidence: Splunk Enterprise installation**
 
 ![Install session: splunk service account created, RPM downloaded (1.5 GB at 263 MB/s), the unprivileged rpm -i failing with a transaction lock error, then the sudo install and boot-start enablement ending with Configured as systemd managed service](../Evidence/Screenshots/Screenshot%202026-06-29%20211322.png)
 
@@ -284,15 +276,13 @@ sudo firewall-cmd --reload
 
 ![Splunk Web login page served at http://192.168.70.109:8000 with the first-time sign-in notice](../Evidence/Screenshots/Screenshot%202026-06-29%20212751.png)
 
-</details>
-
 ---
 
 ## Step 6: UniFi log ingestion (CEF via SC4S)
 
-The first real data source is my UniFi network. This step is the core of the build, because getting data in correctly is where a SIEM is made or broken.
+UniFi was the first live data source. This step had to produce indexed CEF events before the remaining Splunk searches had data to query.
 
-### Background: what UniFi sends
+### UniFi CEF export format
 
 UniFi's **System Logging / SIEM** integration (Integration → System Logging / SIEM → SIEM Server) exports activity logs over syslog in **Common Event Format (CEF)** [9]. CEF is an industry-standard structured log format: a fixed header followed by `key=value` pairs, which lets any SIEM parse events from any vendor consistently.
 
@@ -300,28 +290,27 @@ UniFi's **System Logging / SIEM** integration (Integration → System Logging / 
 CEF:Version|Device Vendor|Device Product|Device Version|Event Class ID|Name|Severity|[Extension]
 ```
 
-I enabled all export categories (Network, UniFi OS, and Protect), which matters later. Full format and key reference is in [UniFi-CEF-Reference.md](UniFi-CEF-Reference.md).
+I enabled all three export categories: Network, UniFi OS, & Protect. The format & key reference is in [UniFi-CEF-Reference.md](UniFi-CEF-Reference.md).
 
 ### Decision: SC4S, not direct syslog, and not a Universal Forwarder
 
 I had three ingestion approaches on the table.
 
-I ruled out a **Universal Forwarder** first because it cannot apply here. A UF is an agent installed on a host to read its local files; UniFi is a closed appliance, so there is nothing to install it on. UniFi's only export mechanism is the push-based SIEM integration.
+I ruled out a **Universal Forwarder** first because it can't apply here. A UF is an agent installed on a host to read its local files; UniFi is a closed appliance, so there is nothing to install it on. UniFi's only export mechanism is the push-based SIEM integration.
 
-I ruled out **pointing UniFi's syslog straight at splunkd** on Splunk's own guidance. Splunk explicitly discourages direct TCP/UDP syslog input into the indexer, because a UDP listener drops events whenever Splunk restarts and a single stream is hard to scale [2][3]. There was also a practical blocker: the `splunk` service account cannot bind privileged ports.
+I ruled out **pointing UniFi's syslog straight at splunkd** on Splunk's own guidance. Splunk explicitly discourages direct TCP/UDP syslog input into the indexer, because a UDP listener drops events whenever Splunk restarts and a single stream is hard to scale [2][3]. There was also a practical blocker: the `splunk` service account can't bind privileged ports.
 
-I chose **Splunk Connect for Syslog (SC4S)** because it is Splunk's current recommended pattern for syslog collection [2][4]. SC4S is a containerized syslog-ng that receives syslog, parses it (including CEF natively), sets Splunk metadata, and forwards over HTTP Event Collector (HEC). It decouples ingestion from the indexer, so a Splunk restart does not lose events.
+I chose **Splunk Connect for Syslog (SC4S)** because it is Splunk's current recommended pattern for syslog collection [2][4]. SC4S is a containerized syslog-ng that receives syslog, parses it (including CEF natively), sets Splunk metadata, and forwards over HTTP Event Collector (HEC). It decouples ingestion from the indexer, so a Splunk restart doesn't lose events.
 
-I picked **Podman over Docker** to run the SC4S container. Podman is native to Rocky/RHEL (in the base repos), is daemonless and can run rootless (a smaller attack surface, which suits a security-tier host), and integrates cleanly with systemd. SC4S supports both equally [5].
+I picked **Podman over Docker** for SC4S. Podman ships in Rocky's base repositories, runs without a daemon, supports rootless containers, & exposes the SC4S service to systemd. SC4S supports both runtimes [5].
 
-### Splunk-side preparation
+### Step 6.1: Prepare Splunk HEC and indexes
 
 I enabled HEC (SSL, port 8088) and created a token named `sc4s`. I left the token's allowed indexes blank on purpose: SC4S sets the destination index per event, so restricting the token to a list would cause events aimed at other indexes to drop. A default (lastChance) index of `main` catches anything unrouted.
 
 I created the network-category indexes SC4S routes into, each capped at 5 GB to protect the disk: `netauth`, `netdns`, `netfw`, `netids`, `netops`.
 
-<details>
-<summary>Screenshots: HEC and index setup (5)</summary>
+**Evidence: HEC and index setup**
 
 ![HEC Edit Global Settings dialog: all tokens enabled, Enable SSL checked, HTTP port 8088](../Evidence/Screenshots/Screenshot%202026-06-30%20000305.png)
 
@@ -333,9 +322,7 @@ I created the network-category indexes SC4S routes into, each capped at 5 GB to 
 
 ![Edit Index dialog for netauth showing the 5 GB maximum index size](../Evidence/Screenshots/Screenshot%202026-06-30%20130849.png)
 
-</details>
-
-### SC4S deployment (Podman)
+### Step 6.2: Deploy SC4S with Podman
 
 ```bash
 # kernel receive buffers (16 MB), per SC4S guidance [4]
@@ -367,12 +354,9 @@ sudo firewall-cmd --permanent --add-port=1514/tcp
 sudo firewall-cmd --reload
 ```
 
-> **Gotcha: port 1514 already in use.** SC4S crash-looped with `Error binding socket; 0.0.0.0:1514, Address in use (98)`. `sudo ss -lntup | grep 1514` showed `splunkd` holding 1514, a leftover TCP data input from my earlier direct-ingest attempt (exactly the anti-pattern SC4S replaces). I deleted that input, the port came free, and SC4S bound cleanly. Full write-up in [Troubleshooting-Log.md](Troubleshooting-Log.md) (#4).
+> **Port 1514 conflict:** SC4S crash-looped with `Error binding socket; 0.0.0.0:1514, Address in use (98)`. `sudo ss -lntup | grep 1514` showed `splunkd` holding 1514 through a leftover TCP data input from my earlier direct-ingest attempt. I deleted that input; SC4S then bound TCP & UDP 1514. Full write-up: [Troubleshooting-Log.md](Troubleshooting-Log.md) (#4).
 
-Finally, I pointed UniFi's SIEM Server at `192.168.70.109:1514`.
-
-<details>
-<summary>Screenshots: SC4S deployment and first events (9)</summary>
+**Evidence: SC4S host and service setup**
 
 ![Kernel receive-buffer settings (net.core.rmem 17039360) appended to /etc/sysctl.conf and applied with sysctl -p](../Evidence/Screenshots/Screenshot%202026-06-30%20131038.png)
 
@@ -386,15 +370,19 @@ Finally, I pointed UniFi's SIEM Server at `192.168.70.109:1514`.
 
 ![SC4S container logs: Splunk HEC connection test successful, sc4s version 3.45.0, and firewall ports 1514/udp and 1514/tcp opened](../Evidence/Screenshots/Screenshot%202026-06-30%20133108.png)
 
+### Step 6.3: Point UniFi at SC4S and confirm the first events
+
+I pointed UniFi's SIEM Server at `192.168.70.109:1514`, sent a test event, and searched Splunk for the arriving CEF data.
+
+**Evidence: UniFi source configuration and first events**
+
 ![UniFi System Logging / SIEM panel pointed at 192.168.70.109 port 1514 with an Event Sent confirmation after Send Test Event](../Evidence/Screenshots/Screenshot%202026-06-30%20133152.png)
 
 ![stats count by index, sourcetype, host: CEF events from 192.168.70.1 arriving (still in main at this point) alongside SC4S startup events](../Evidence/Screenshots/Screenshot%202026-06-30%20134005.png)
 
 ![UniFi CEF events in Splunk search: the test syslog and an admin-access event with UNIFI extension fields parsed](../Evidence/Screenshots/Screenshot%202026-06-30%20134033.png)
 
-</details>
-
-### Index routing and the multi-product discovery
+### Step 6.4: Route every UniFi product into netops
 
 By default SC4S sends CEF to `main`. To route UniFi into `netops`, I added a metadata override at `/opt/sc4s/local/context/splunk_metadata.csv`. The key for CEF sources is `device_vendor`_`device_product`, taken from the CEF header [6].
 
@@ -415,8 +403,7 @@ Ubiquiti_UniFi Protect,index,netops
 
 Restart with `sudo systemctl restart sc4s`. Routing changes are forward-only; events already in `main` stay there.
 
-<details>
-<summary>Screenshots: index routing and product discovery (6)</summary>
+**Evidence: index routing and product discovery**
 
 ![splunk_metadata.csv with the initial single routing key Ubiquiti_UniFi OS,index,netops](../Evidence/Screenshots/Screenshot%202026-06-30%20134524.png)
 
@@ -430,9 +417,7 @@ Restart with `sudo systemctl restart sc4s`. Routing changes are forward-only; ev
 
 ![index=netops stats by sc4s_product returning only UniFi OS (59 events) before the extra routing keys were added](../Evidence/Screenshots/Screenshot%202026-07-01%20195057.png)
 
-</details>
-
-### Verification
+### Step 6.5: Verify the completed ingestion pipeline
 
 ```spl
 index=* sourcetype=sc4s:events "starting up"          # SC4S pipeline is alive
@@ -440,10 +425,9 @@ index=netops sourcetype=cef | stats count by sc4s_product   # all three products
 index=main   sourcetype=cef earliest=-30m | stats count by sc4s_product   # empty = nothing leaking
 ```
 
-The empty `main` result is the definitive proof: if any product string still lacked a routing key, new CEF events would be piling up in `main`. Zero there means every key matches and all UniFi data lands in `netops`, parsed as `sourcetype=cef` with fields extracted (vendor and product as `sc4s_vendor`/`sc4s_product`, and the extension keys as `UNIFI*`).
+The `main` search returned zero new CEF events. A product string without a routing key would land there; zero means the observed UniFi product keys matched & the events landed in `netops` as `sourcetype=cef`, with vendor/product in `sc4s_vendor`/`sc4s_product` and extension keys under `UNIFI*`.
 
-<details>
-<summary>Screenshots: pipeline verification (3)</summary>
+**Evidence: pipeline verification**
 
 ![Search for sourcetype=sc4s:events "starting up" returning two SC4S startup events](../Evidence/Screenshots/Screenshot%202026-06-30%20133401.png)
 
@@ -451,14 +435,11 @@ The empty `main` result is the definitive proof: if any product string still lac
 
 ![index=main sourcetype=cef over the last 30 minutes returning no results: nothing leaking to main](../Evidence/Screenshots/Screenshot%202026-07-01%20202008.png)
 
-</details>
-
-### Note on the CEF add-on
+### Step 6.6: Confirm the extracted CEF field names
 
 I installed the `cefutils` (CEF Extraction Add-on) [10] on the search head. Because SC4S already parses CEF at ingest, this add-on is largely redundant for search here; its remaining value is CIM normalization for future dashboards and correlation. See [Troubleshooting-Log.md](Troubleshooting-Log.md) (#7) for the field-name investigation.
 
-<details>
-<summary>Screenshots: CEF field-name investigation (4)</summary>
+**Evidence: CEF field-name investigation**
 
 ![Table of guessed CEF field names (device_vendor, device_product, signature) returning rows with only _time filled](../Evidence/Screenshots/Screenshot%202026-07-01%20182959.png)
 
@@ -467,8 +448,6 @@ I installed the `cefutils` (CEF Extraction Add-on) [10] on the search head. Beca
 ![fieldsummary limited to the guessed field prefixes returning no results](../Evidence/Screenshots/Screenshot%202026-07-01%20183141.png)
 
 ![fieldsummary listing the real fields on the events: UNIFI* extension keys and sc4s_* metadata fields](../Evidence/Screenshots/Screenshot%202026-07-01%20183450.png)
-
-</details>
 
 ---
 
@@ -482,9 +461,9 @@ I changed the UniFi console's SIEM export destination to `192.168.72.3:1514`. A 
 
 ---
 
-## Current state
+## Splunk 10.4.0 ingestion state
 
-The SIEM is an isolated Security-A VM running Splunk Enterprise 10.4.0 with a healthy, end-to-end-verified UniFi-to-SC4S-to-HEC ingestion pipeline at `192.168.72.3:1514`. Planned follow-ups are tracked in [TODO.md](TODO.md).
+The Security-A VM runs Splunk Enterprise 10.4.0. UniFi sends CEF to SC4S at `192.168.72.3:1514`; SC4S forwards through HEC, & Splunk stores the events in `netops`. Planned follow-ups are tracked in [TODO.md](TODO.md).
 
 ---
 
