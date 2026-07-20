@@ -20,7 +20,7 @@ CT 107 `docker-network` is the recorded reference implementation. The same basel
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Linux host baseline hardening steps from fresh guest to workload-ready](Diagrams/linux-baseline.svg)
 
 ## Walkthrough
 

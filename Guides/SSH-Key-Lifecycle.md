@@ -19,7 +19,7 @@ The fleet baseline contains three approved ED25519 public keys. The 2026-07-14 c
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![SSH key lifecycle stages and the managed target fleet](Diagrams/ssh-key-lifecycle.svg)
 
 ## Walkthrough
 

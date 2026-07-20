@@ -21,7 +21,7 @@ The recorded OpenClaw version is 2026.4.25. `openclaw-gateway.service` runs as a
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![OpenClaw scoped Discord assistant on loopback](Diagrams/openclaw.svg)
 
 ## Walkthrough
 

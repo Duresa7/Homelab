@@ -20,7 +20,7 @@ Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Nginx Proxy Manager TLS edge on the shared proxy network](Diagrams/nginx-proxy-manager.svg)
 
 ## Walkthrough
 

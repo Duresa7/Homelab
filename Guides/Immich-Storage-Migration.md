@@ -21,7 +21,7 @@ The migration completed on 2026-05-28 with Immich v2.7.5 in LXC 110 on `grey-ser
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Immich storage migration from the WD pool to the Toshiba pool](Diagrams/immich-migration.svg)
 
 ## Walkthrough
 

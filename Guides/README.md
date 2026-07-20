@@ -9,7 +9,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 ## Lab Map
 
-> Diagram placeholder
+![Homelab lab map: edge and compute layers feeding the platform groups](Diagrams/lab-map.svg)
 
 ## Infrastructure and Shared Procedures
 

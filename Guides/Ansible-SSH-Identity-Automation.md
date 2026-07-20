@@ -20,7 +20,7 @@ The controller is CT 100 `ansible-01` at `192.168.40.36`. The recorded stack run
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Ansible controller, playbooks, and managed targets](Diagrams/ansible-automation.svg)
 
 ## Walkthrough
 

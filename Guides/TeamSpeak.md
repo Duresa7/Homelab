@@ -21,7 +21,7 @@ I run three TeamSpeak servers on one Debian host, publish their UDP voice ports 
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![TeamSpeak servers, shared Playit tunnels, and Cloudflare SRV records](Diagrams/teamspeak.svg)
 
 ## Walkthrough
 

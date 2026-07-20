@@ -20,7 +20,7 @@ Prometheus runs on `security-01` at `192.168.72.2:9090` with a 15-second scrape 
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Prometheus scraping its seven node and API targets](Diagrams/prometheus.svg)
 
 ## Walkthrough
 

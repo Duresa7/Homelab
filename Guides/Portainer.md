@@ -20,7 +20,7 @@ The Portainer server runs on `docker-main` at `192.168.40.35` with HTTPS on 9443
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Portainer server and Edge Agent across a VLAN boundary](Diagrams/portainer.svg)
 
 ## Walkthrough
 

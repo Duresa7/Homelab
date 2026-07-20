@@ -21,7 +21,7 @@ VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3`. The cur
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Splunk SIEM UniFi CEF ingestion through SC4S and HEC into netops](Diagrams/splunk.svg)
 
 ## Walkthrough
 

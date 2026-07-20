@@ -21,7 +21,7 @@ The operated project path is `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. The reposi
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![TNIO Discord bot backed by the lore retrieval service](Diagrams/tnio-bot.svg)
 
 ## Walkthrough
 

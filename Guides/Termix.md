@@ -20,7 +20,7 @@ Termix 2.5.0 and guacd 1.6.0 run on `docker-main` at `192.168.40.35`; Termix ret
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Termix and guacd reaching nine hosts organized into four folders](Diagrams/termix.svg)
 
 ## Walkthrough
 

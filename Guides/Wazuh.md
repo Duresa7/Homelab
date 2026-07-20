@@ -20,7 +20,7 @@ The Wazuh stack runs on `security-01` / `wazuh-01` at `192.168.72.2`. The dashbo
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Wazuh manager, endpoints, and the firewall path](Diagrams/wazuh.svg)
 
 ## Walkthrough
 

@@ -20,7 +20,7 @@ The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![UniFi VLAN segmentation and firewall zones fed by the switch trunk](Diagrams/unifi-network.svg)
 
 ## Walkthrough
 

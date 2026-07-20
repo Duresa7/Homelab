@@ -21,7 +21,7 @@ All four nodes reported `pve-manager/9.2.2` with kernel `7.0.2-6-pve` during the
 
 ## How the Pieces Fit Together
 
-> Diagram placeholder
+![Galaxy four-node Proxmox cluster with two Corosync links and example guests](Diagrams/galaxy-cluster.svg)
 
 ## Walkthrough
 
