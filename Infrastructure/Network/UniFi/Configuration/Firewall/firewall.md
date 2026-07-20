@@ -1,13 +1,13 @@
-# Unifi Firewall Policies
+# UniFi Firewall Policies
 
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
 
-The gateway runs UniFi's zone-based (V2) firewall. Policies fall into two groups: **custom policies** I created, and **default policies** that UniFi auto-generates for every zone pair and for stateful/service handling.
+The gateway runs UniFi's zone-based V2 firewall. I maintain 32 custom policies; UniFi maintains the other 227 for zone defaults, connection state, & gateway services.
 
 ## Custom Policies
 
-32 user-defined policies. All are enabled, connection-state = ALL, and schedule = Always. I last verified this table against the live controller on 2026-07-12 after the Security-A migration.
+All 32 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. I last checked the table against the controller on 2026-07-12 after the Security-A migration.
 
 | Policy | Enabled | Action | Index | Protocol | IP Ver | Source Zone | Source Match | Dest Zone | Dest Match | Dest Port | Conn State | Schedule | Logging | Description |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -46,9 +46,9 @@ The gateway runs UniFi's zone-based (V2) firewall. Policies fall into two groups
 
 The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). I created the four cross-zone Security-A inbound/monitoring allows with automatic respond-policy generation enabled; setting that flag only after creation did not materialize a return companion on this controller.
 
-## Default Policies (UniFi-generated)
+## UniFi-Generated Policies
 
-The controller creates and maintains these automatically for the zone matrix, stateful tracking, and gateway services. I don't hand-edit them.
+The controller creates these for the zone matrix, state tracking, & gateway services. I don't edit them by hand.
 
 | Category | Count | Purpose |
 |---|---|---|
@@ -62,6 +62,6 @@ The controller creates and maintains these automatically for the zone matrix, st
 | Allow DHCPv6 | 2 | DHCPv6 leasing |
 | Other controller service policies | 11 | WireGuard, gateway services, IPv6 discovery/autoconfiguration, and controller-managed special cases |
 
-_Total live controller policies: 259 (32 user-defined plus 227 controller-maintained)._
+The controller held 259 live policies: 32 user-defined and 227 controller-maintained.
 
 The 2026-07-12 Security-A additions and MGMT-A rule retirement are documented in [Security-A Migration - 2026-07-12](../../Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md).

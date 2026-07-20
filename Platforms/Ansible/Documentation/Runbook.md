@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -31,7 +31,7 @@ curl -fsS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3000/
 
 The expected release baseline is Ansible 14.2.0, ansible-core 2.21.2, and Semaphore 2.18.27. The service checks should return `enabled`, `active`, and HTTP `200`.
 
-The retained native verification tool compares non-secret project structure and compares secret payloads only in memory, printing no secret or hash:
+The state checker compares the live database with the pre-upgrade copy and reports structural differences:
 
 ```bash
 python3 /opt/homelab/ansible-tools/verify_semaphore_state.py \
@@ -151,7 +151,7 @@ If Semaphore is unavailable, run the commands above directly; no functionality i
 - Semaphore project export before UI changes: `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json`
 - Runtime-upgrade backup set: `/root/semaphore-backups/upgrade-2026-07-14`
 
-The runtime backup set contains the pre-upgrade Semaphore 2.17.33 binary, SQLite database, configuration, package inventory, installed Ansible Python packages, the verified 2.18.27 installer, and `SHA256SUMS`. The directory and secret-bearing files are root-only.
+The runtime backup set contains the pre-upgrade Semaphore 2.17.33 binary, SQLite database, configuration, package inventory, installed Ansible Python packages, verified 2.18.27 installer, & `SHA256SUMS`.
 
 To roll back Ansible, repoint `/opt/ansible-current` and the `/usr/local/bin/ansible*` command links to a retained versioned runtime. If no upstream runtime is usable, remove only those shadowing command links to expose the still-installed Debian packages in `/usr/bin`, then validate the project before running a playbook.
 

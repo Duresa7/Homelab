@@ -81,7 +81,7 @@ If the port is stale after a reconnect, recreate Gluetun and qBittorrent togethe
 
 All images intentionally track `latest`. I treat every pull as a bounded change:
 
-1. Record current image IDs and application versions without capturing secrets.
+1. Record current image IDs and application versions.
 2. Confirm current backups exist for `/opt/media-stack/config` and `/data`.
 3. Pull and recreate the stack.
 4. Verify container health, Jellyfin hardware acceleration, Proton exit, forwarded-port synchronization, management UIs, and Arr download-client tests.
@@ -122,6 +122,6 @@ Restore the files with their original ownership and modes, validate with `docker
 
 Use `<YOUR_QBITTORRENT_USERNAME>` & `<YOUR_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
 
-## Escalation
+## Recording a Failure
 
 Record new operational faults chronologically in [Troubleshooting-Log.md](Troubleshooting-Log.md). Create a security incident under `Security/Incidents/` if VPN traffic leaks, credentials are exposed, or availability/security impact becomes material.

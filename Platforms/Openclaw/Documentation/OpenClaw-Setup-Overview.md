@@ -3,20 +3,13 @@
 **Created:** 2026-04-27  
 **Last updated:** 2026-07-20
 
-## Document Metadata
+**Recorded:** 2026-04-27 15:04 EDT  
+**Environment:** `AI_Alpha_01`  
+**Role:** Discord-accessible `<YOUR_ORG_NAME>` United assistant
 
-| Field | Value |
-|---|---|
-| Document Type | Setup Overview |
-| Date | April 27, 2026 |
-| Time | 3:04 PM EDT |
-| Time Zone | America/New_York |
-| Environment | AI_Alpha_01 |
-| Purpose | Discord-accessible `<YOUR_ORG_NAME>` United AI assistant |
+## Deployment Role
 
-## Overview
-
-I run this OpenClaw deployment as a Discord-accessible AI assistant that represents `<YOUR_ORG_NAME>` United LLC. I configured it for professional public-channel use, limited it to a single Discord channel, and set strict privacy and confidentiality rules.
+I run this OpenClaw deployment as a Discord assistant for `<YOUR_ORG_NAME>` United LLC. It responds in one allowlisted channel, requires a mention, rejects direct messages, & resets idle group sessions after 60 minutes.
 
 ## System Role
 
@@ -89,7 +82,7 @@ systemctl --user stop openclaw-gateway.service
 systemctl --user restart openclaw-gateway.service
 ```
 
-## Security and Privacy Posture
+## Discord Disclosure Rules
 
 The assistant has explicit instructions not to disclose:
 
@@ -150,17 +143,11 @@ Expected behavior:
 - If multiple people match, the bot asks which person was intended.
 - If no match is found, the bot asks the user to tag the person directly or provide the user ID.
 
-## Operational Notes
-
-- SSH manager MCP access remains available for authorized administrative work.
-- SSH manager details, command output, server aliases, and internal paths should not be exposed in Discord.
-- Administrative outcomes should be summarized safely when discussed in public channels.
-
 ## Technical Reference
 
 | Item | Value |
 |---|---|
-| SSH MCP Alias | AI_Alpha_01 |
+| SSH Manager target | AI_Alpha_01 |
 | Hostname | ai-alpha-01 |
 | Operating User | openclaw |
 | Home Directory | /home/openclaw |
@@ -204,10 +191,9 @@ Important backup files created during configuration:
 /home/openclaw/.openclaw/workspace/HEARTBEAT.md.bak.discord-public-2026-04-27T18-56-39-393Z
 ```
 
-## Recommended Future Maintenance
+## Open Work
 
 - Review OpenClaw updates periodically.
 - Review Discord allowlist settings after server or channel changes.
 - Keep persona files concise and aligned with public-channel use.
-- Avoid storing personal profiles of Discord users unless explicitly approved.
 - Keep future change records in this documentation folder.

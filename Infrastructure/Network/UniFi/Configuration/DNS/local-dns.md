@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-07-20
 
-This is my inventory of local DNS entries owned by the UniFi gateway. Public authoritative DNS stays under the Cloudflare infrastructure records.
+I track one local DNS record on the UniFi gateway. Public authoritative DNS stays in the Cloudflare records.
 
 ## Host Records
 
@@ -20,4 +20,4 @@ I created and verified the record on 2026-07-11:
 
 ![Enabled UniFi internal DNS record showing the address and 300-second TTL](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
-This local record does not create or modify the public Cloudflare DNS zone.
+The record exists only on the UniFi resolver. It doesn't change the public Cloudflare zone.

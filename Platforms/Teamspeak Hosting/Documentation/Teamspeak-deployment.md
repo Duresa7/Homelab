@@ -1,11 +1,9 @@
-# alpha-prod-01 Infrastructure Document
+# TeamSpeak Hosting on alpha-prod-01
 
 **Created:** 2026-05-27  
 **Last updated:** 2026-07-20
 
-This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three containerized TeamSpeak servers published through Playit tunnels and Cloudflare SRV records, a shared Playit agent, and the TS3 Manager admin UI. I keep the connect addresses, port map, allowlists, and compose files here so I can rebuild or extend the stack without reverse-engineering it.
-
----
+I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, & Compose projects.
 
 ## VM Details
 
@@ -16,8 +14,6 @@ This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three contain
 | IP | 192.168.80.118 |
 | VLAN | SERVERS-A (80) |
 | Subnet | 192.168.80.0/24 |
-
----
 
 ## Architecture Diagram
 
@@ -102,8 +98,6 @@ DNS Chain (for end-users):
     <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
 ```
 
----
-
 ## DNS Records (`<YOUR_BASE_DOMAIN>`)
 
 | Type | Name | Target | Port | Proxy |
@@ -127,73 +121,13 @@ DNS Chain (for end-users):
 `ts01` CNAME. SRV targets should not be aliases, and some TeamSpeak clients may
 fail to connect when an SRV record points at a CNAME.
 
----
+## Playit Tunnels
 
-## Values to Supply
-
-### TeamSpeak 1 ServerQuery
-| Field | Value |
-|-------|-------|
-| Container | ts-valorant-01 |
-| Login | serveradmin |
-| Password | `<YOUR_TS1_SERVERQUERY_PASSWORD>` |
-| API Key | `<YOUR_TS1_API_KEY>` |
-
-### TeamSpeak 1 ServerAdmin Privilege Key
-`<YOUR_TS1_SERVERADMIN_PRIVILEGE_KEY>`
-*(Used once on first connect to claim admin; already claimed.)*
-
-### TeamSpeak 1 Community Access
-| Field | Value |
-|-------|-------|
-| Connect Address | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` |
-| Server Password | `<YOUR_TS1_SERVER_PASSWORD>` |
-
-### TeamSpeak 2 ServerQuery
-| Field | Value |
-|-------|-------|
-| Container | ts-valorant-02 |
-| Login | serveradmin |
-| Password | `<YOUR_TS2_SERVERQUERY_PASSWORD>` |
-| API Key | `<YOUR_TS2_API_KEY>` |
-
-### TeamSpeak 2 ServerAdmin Privilege Key
-`<YOUR_TS2_SERVERADMIN_PRIVILEGE_KEY>`
-*(Generated at first startup; already claimed.)*
-
-### TeamSpeak 2 Community Access
-| Field | Value |
-|-------|-------|
-| Connect Address | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` |
-| Server Password | None intentionally configured; public to users who know the address |
-
-### TeamSpeak 3 ServerQuery
-| Field | Value |
-|-------|-------|
-| Container | ts-valorant-03 |
-| Login | serveradmin |
-| Password | `<YOUR_TS3_SERVERQUERY_PASSWORD>` |
-| API Key | `<YOUR_TS3_API_KEY>` |
-
-### TeamSpeak 3 ServerAdmin Privilege Key
-`<YOUR_TS3_SERVERADMIN_PRIVILEGE_KEY>`
-*(Generated at first startup; not confirmed claimed.)*
-
-### TeamSpeak 3 Community Access
-| Field | Value |
-|-------|-------|
-| Connect Address | `<YOUR_TEAMSPEAK_THREE_DOMAIN>` |
-| Alternate Address | `<YOUR_TEAMSPEAK_ALTERNATE_DOMAIN>` |
-| Server Password | None intentionally configured; public to users who know the address |
-
-### Playit Tunnels
 | TeamSpeak Server | Tunnel Name | Public Address | Local Host Port |
 |------------------|-------------|----------------|-----------------|
 | ts-valorant-01 | ts-valorant-01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 127.0.0.1:9987/udp |
 | ts-valorant-02 | ts-valorant-02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 127.0.0.1:9988/udp |
 | ts-valorant-03 | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | 127.0.0.1:9989/udp |
-
----
 
 ## Services
 
@@ -256,7 +190,6 @@ fail to connect when an SRV record points at a CNAME.
 - **Compose project**: `playit-agent`
 - **Location**: `~/playit-agent/docker-compose.yml`
 - **Network mode**: host
-- **Secret key**: stored in `.env` file
 - **Lifecycle**: independent from individual TeamSpeak compose projects
 - **Purpose**: shared Playit agent for TeamSpeak tunnels
 - **Current tunnel count**: 4 registered tunnels
@@ -274,20 +207,6 @@ fail to connect when an SRV record points at a CNAME.
   - TeamSpeak 1: `192.168.80.118:10011`
   - TeamSpeak 2: `192.168.80.118:10012`
   - TeamSpeak 3: `192.168.80.118:10013`
-- **Recommended TS2 entry**:
-  - Name: `ts-valorant-02`
-  - Host/IP: `192.168.80.118`
-  - ServerQuery port: `10012`
-  - Protocol: normal/raw ServerQuery, not SSH
-  - Login: `serveradmin`
-  - Password: TS2 - ServerQuery password documented above
-- **Recommended TS3 entry**:
-  - Name: `ts-valorant-03`
-  - Host/IP: `192.168.80.118`
-  - ServerQuery port: `10013`
-  - Protocol: normal/raw ServerQuery, not SSH
-  - Login: `serveradmin`
-  - Password: TS3 - ServerQuery password documented above
 - **Query allowlists**: each TeamSpeak server includes trusted local and
   management sources so TS3 Manager does not trigger ServerQuery flood
   protection.
@@ -332,8 +251,6 @@ Effective allowed ServerQuery sources for `ts-valorant-03`:
 
 `172.19.0.2` is the current TS3 Manager container address.
 
----
-
 ## Docker Compose Files
 
 ### ~/teamspeak/docker-compose.yml
@@ -363,11 +280,6 @@ services:
     network_mode: host
     environment:
       - SECRET_KEY=${PLAYIT_SECRET_KEY}
-```
-
-### ~/playit-agent/.env
-```
-PLAYIT_SECRET_KEY=<your_secret_key>
 ```
 
 ### ~/playit-agent/playit-boot-recover.sh
@@ -436,9 +348,7 @@ services:
       - "9000:8080"
 ```
 
----
-
-## Notes
+## Behavior and Constraints
 - Playit is intentionally decoupled from `~/teamspeak/docker-compose.yml`; running `docker compose down` in `~/teamspeak` will stop TeamSpeak 1 but will not stop `playit-agent`
 - Playit tunnels TeamSpeak UDP voice only; TCP services such as ServerQuery and file transfer stay LAN/internal only
 - ts3-manager is not exposed through Playit; I access it from the local network at `http://192.168.80.118:9000`

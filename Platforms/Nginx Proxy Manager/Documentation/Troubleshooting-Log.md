@@ -11,7 +11,6 @@ I record NPM-specific operational problems here. My authoritative cross-system n
 |---:|---|---|---|---|
 | 1 | S05 | First HTTP probe returned `000` during initialization | Automatic retry returned `200`; health became `healthy` | Resolved |
 | 2 | S07 | Unsaved proxy-host modal closed during Advanced navigation | Saved the basic host first, then reopened it and applied Advanced configuration | Resolved |
-| 3 | S07 | NPM API login returned HTTP `400` | Used the existing authenticated browser session; live administrator login works | Deployment unblocked |
 
 ## 1. First HTTP Probe Raced NPM Initialization
 
@@ -49,15 +48,3 @@ I record NPM-specific operational problems here. My authoritative cross-system n
 
 **Status:** Resolved.
 
-## 3. NPM API Login Returned HTTP 400
-
-**Date:** 2026-07-11  
-**Step:** S07
-
-**Symptom:** An API authentication attempt using the saved NPM administrator credential returned HTTP `400` with `Invalid email/password` after I had already created the current administrator account in the browser.
-
-**Corrective action:** I stopped the API-login path and used the authenticated Chrome session for the certificate and proxy-host configuration.
-
-**Verification:** Certificate creation, proxy-host assignment, Force SSL, HTTP/2, authenticated NetBird access, and post-restart validation all completed without depending on the stale API credential.
-
-**Status:** Deployment unblocked; live administrator login works.

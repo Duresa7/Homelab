@@ -1,11 +1,11 @@
-# Unifi Firewall Zones
+# UniFi Firewall Zones
 
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
 
-This is my inventory of firewall zones and the networks each zone contains. I keep it in sync with the controller.
+I track 12 firewall zones and their assigned networks here.
 
-## Firewall Zones → Networks
+## Zone Membership
 
 | Zone | Type | Networks (interfaces) in zone |
 |---|---|---|

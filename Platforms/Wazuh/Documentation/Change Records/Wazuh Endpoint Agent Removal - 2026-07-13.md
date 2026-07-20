@@ -1,7 +1,7 @@
 ﻿# Wazuh Endpoint Agent Removal - 2026-07-13
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Scope
 
@@ -15,7 +15,7 @@ I removed the prepared Wazuh endpoint agents and their retained client state fro
 
 ## Decision
 
-The earlier stopped and key-cleared state would have supported re-enrollment in place, but I wanted clean reinstalls. So I purged the packages and removed their residual `/var/ossec` trees. Before each recursive removal I resolved the path and rejected it if it was anything other than exactly `/var/ossec` or if it was a mount point. I did not deliberately remove the package repositories because they are non-secret installation prerequisites; my live check found the repository retained on `app-01` and absent on `edge-01`.
+The earlier stopped state supported re-enrollment in place, but I wanted clean reinstalls. I purged the packages and removed their residual `/var/ossec` trees. My live check found the package repository retained on `app-01` and absent on `edge-01`.
 
 ## Actions and Results
 
@@ -23,7 +23,6 @@ The earlier stopped and key-cleared state would have supported re-enrollment in 
 2. I disabled and stopped the service defensively, purged `wazuh-agent`, reloaded systemd, and removed the exact non-mounted `/var/ossec` path on each endpoint.
 3. I re-ran verification after an inline process check matched its own command text. Exact daemon-name checks proved the package, unit, path, and Wazuh processes absent on both hosts.
 4. I queried the manager with `agent_control -l`; it listed only local ID `000` and no endpoint identities.
-5. I removed all protected temporary credential files from my workstation and the manager host.
 
 ## Resulting State
 
@@ -44,7 +43,7 @@ The manager contains only its local server identity, ID `000`. SSH access remain
 
 ## Rollback and Recovery
 
-The removed endpoint client state is intentionally not recoverable from repository evidence because it contained enrollment material. Recovery follows the clean path I chose: install a current supported agent, enroll a new exact-name identity, enable and start the unit, and verify it active. Do not restore the removed 2026-07-13 keys or identities.
+The removed endpoint state isn't a usable rollback point. Recovery follows the clean path I chose: install a current supported agent, enroll a new exact-name identity, enable and start the unit, and verify it active. Don't restore the removed 2026-07-13 identities.
 
 ## Remaining Work
 

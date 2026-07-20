@@ -1,9 +1,9 @@
 # UniFi Network Troubleshooting Log
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Problems I hit while operating the UniFi network configuration, in chronological order. Durable change narratives stay in their owning change records.
+I record UniFi failures here in the order I encountered them. Each entry includes the failed attempt, correction, & observed result.
 
 ## 2026-07-12: Enabling `create_allow_respond` after policy creation did not create a return rule
 
@@ -19,9 +19,9 @@ Problems I hit while operating the UniFi network configuration, in chronological
 
 **Verification:** From `security-01`, `192.168.90.10:9100`, `192.168.70.10:9100`, and `192.168.70.10:8006` each returned HTTP 200. The live controller showed the intended four custom policies with automatic response enabled and no superseded/test policies.
 
-## 2026-07-12: MCP policy deletion disabled
+## 2026-07-12: The management tool blocked policy deletion
 
-**Symptom:** The UniFi MCP rejected firewall-policy deletion with: `Delete is disabled by policy for firewall_policies. Set UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE=true`.
+**Symptom:** The UniFi management tool rejected firewall-policy deletion with: `Delete is disabled by policy for firewall_policies. Set UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE=true`.
 
 **Corrective action:** I used the authenticated UniFi web interface to remove only the exact old, superseded, and test policy names the migration plan called out.
 

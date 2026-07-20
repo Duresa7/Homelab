@@ -1,9 +1,9 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is where I record configuration owned and enforced by the UniFi controller. Host-level and Proxmox Datacenter configuration stays with the owning compute platform.
+I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, & port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
 ## Configuration Records
 

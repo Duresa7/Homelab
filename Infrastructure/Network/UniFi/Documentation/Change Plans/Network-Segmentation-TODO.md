@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
 
-I've already built the zones (`<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, `<YOUR_ORG_NAME>`-Cluster), the networks (Access-A/85, Security-A/72, Cluster-Net/71), and the Zone Matrix / firewall policies connecting them. Remaining work is below.
+I've built the `<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, & `<YOUR_ORG_NAME>`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. The remaining unchecked item is the MGMT-A TCP 8006 rule review.
 
 ## Access-A Deployment
 
@@ -36,9 +36,9 @@ I updated the UniFi console SIEM/syslog destination to `192.168.72.3:1514` on 20
 
 The three completed follow-ups are recorded in [Security Monitoring Baseline Cleanup - 2026-07-13](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 
-## Next Bounded Change: MGMT-A Final Lockdown
+## MGMT-A Final Lockdown
 
-I've resolved the allowed-set decision: MGMT-A may be reached from Trusted (VLAN 10), Secure (VLAN 50), the existing WireGuard VPN zone, and future NetBird traffic arriving from `<YOUR_ORG_NAME>`-Access through its routing peer. Next I implement and validate the final MGMT-A block policy; I kept it out of the Security-A migration's scope on purpose, and it stays a separate bounded change.
+MGMT-A may be reached from Trusted VLAN 10, Secure VLAN 50, the WireGuard VPN zone, & future NetBird traffic arriving from `<YOUR_ORG_NAME>`-Access through its routing peer. The final block policy remains a separate change from the Security-A migration.
 
 ## Cluster-Net Corosync Link Addition
 
@@ -49,4 +49,4 @@ I've resolved the allowed-set decision: MGMT-A may be reached from Trusted (VLAN
 - [x] Verify cluster health after the change (`pvecm status` showed all 4 nodes, quorum intact, both links active)
 - [x] Confirm GUI/SSH access via the original 192.168.70.10 – .13 addresses is unaffected
 
-Completed 2026-07-10. The authoritative record, exact command transcripts, configuration exports, and step screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
+Completed 2026-07-10. The addresses, configuration, commands, checks, & screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).

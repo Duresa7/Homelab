@@ -1,19 +1,19 @@
 # Workspace Enterprise Restructure
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Date:** 2026-07-09  
 **Status:** Complete  
 **Scope:** Local `Homelab` workspace structure and documentation links
 
-## Objective
+## Scope
 
-Reorganize the homelab into an enterprise-style workspace that supports both operational documentation and active development, with records routed by ownership and evidence kept close to the system or incident it supports.
+I reorganized the repository into eight owner-based root categories for operational records & active development. Evidence moved beside the system, change, or incident that produced it.
 
 ## Decisions
 
-- I used generic enterprise categories: Governance, Architecture, Infrastructure, Platforms, Engineering, Operations, Security, and Archive.
+- I used eight root categories: Governance, Architecture, Infrastructure, Platforms, Engineering, Operations, Security, & Archive.
 - I kept deployed service documentation and source together under `Platforms/<Service>/`.
 - I scaled documentation depth with three tiers rather than forcing every service into the same structure.
 - I routed configuration to the system that owns or enforces it.
@@ -43,11 +43,11 @@ Reorganize the homelab into an enterprise-style workspace that supports both ope
 - TeamSpeak migration scripts moved into the platform's `Scripts/` area.
 - I kept the active TNIO AI Bot and Windows Server working trees intact internally to avoid disrupting development or deployment behavior.
 
-## Navigation and Standards Added
+## Navigation and Documentation Rules
 
 - Root workspace index and category purpose documents.
 - Human-readable documentation standard under Governance.
-- Routing, tiering, ownership, inventory, incident, and evidence rules in the working notes I keep outside the repository.
+- Routing, tiering, ownership, inventory, incident, & evidence rules in the Governance standard.
 - Galaxy, UniFi, and Cloudflare indexes.
 
 ## Verification
@@ -62,7 +62,7 @@ Reorganize the homelab into an enterprise-style workspace that supports both ope
 
 ## Rollback
 
-Rollback consists of reversing the primary migration table, returning internally organized records to their previous parent folders, and reverting the associated Markdown links. Because application source trees moved intact and no original files were deleted, rollback is a path operation rather than a content reconstruction.
+To roll back, I would reverse the migration table, return each record to its prior parent, & restore the old Markdown links. Application source trees moved intact and no original file was deleted, so rollback requires path changes rather than content reconstruction.
 
 ## Follow-Ups
 

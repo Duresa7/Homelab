@@ -1,10 +1,8 @@
 # Ansible TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Open Items
 
-_No open platform items._
-
-I track controller runtime changes, Semaphore maintenance, and SSH identity automation follow-ups here before promoting them to an active project or the root TODO.
+I have no open Ansible platform work. Future controller runtime, Semaphore, or SSH identity tasks start here before I move them into an active change record.

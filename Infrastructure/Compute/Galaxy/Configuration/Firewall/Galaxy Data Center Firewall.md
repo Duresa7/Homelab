@@ -5,7 +5,7 @@
 
 **Last verified:** 2026-07-14 after Termix SSH onboarding (live TCP/22 probes from `docker-main` and authenticated Termix sessions to all four nodes confirmed).
 
-My datacenter firewall (`/etc/pve/firewall/cluster.fw`) enables the cluster firewall and applies a single security group, `pve_mgmt`, through `[RULES]`. That datacenter-level `GROUP` attaches to **every node's** `PVEFW-HOST-IN` chain, so all four nodes are governed identically. No per-node `host.fw` exists.
+`/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
 ## IPSets
 
@@ -61,9 +61,9 @@ My datacenter firewall (`/etc/pve/firewall/cluster.fw`) enables the cluster fire
 | in | DROP | tcp | - | - | 22 | nolog | DROP SSH |
 | in | DROP | tcp | - | - | 8006 | nolog | Drop GUI |
 
-I replaced the former broad `192.168.70.0/24 → 8006` "Management Access" accept with the `pve_cluster` IPSet (the four node addresses). This preserves inter-node GUI proxying while removing blanket 8006 access for any device on the management VLAN, which closes the 8006 exposure the Security-A migration had deferred for review.
+I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, which contains only the four node addresses. Inter-node GUI proxying still works; another device on MGMT-A no longer inherits TCP 8006 access from its subnet.
 
-Proxmox also maintains an auto-generated `management` IPSet that `RETURN`-allows console ports (VNC `5900:5999`, SPICE `3128`, migration `60000:60050`) and would allow `22`/`8006`; the explicit `pve_mgmt` DROPs for `22`/`8006` are evaluated first and take precedence for those two ports. I left it at Proxmox's default on purpose.
+Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`, SPICE `3128`, migration `60000:60050`, SSH 22, & GUI 8006. The explicit `pve_mgmt` drops for 22 and 8006 run first, so they take precedence. I left the generated set unchanged.
 
 ## History
 

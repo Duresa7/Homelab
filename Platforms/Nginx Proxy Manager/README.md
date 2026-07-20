@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-07-20
 
-Nginx Proxy Manager (NPM) is my reverse-proxy and certificate-management service on the dedicated `docker-network` LXC. Its first consumer is NetBird, whose dashboard, API, WebSocket, and gRPC paths share the HTTPS host `<YOUR_NETBIRD_DOMAIN>`.
+I run Nginx Proxy Manager on the `docker-network` LXC. NetBird is its first consumer, with the dashboard, API, WebSocket, & gRPC paths sharing HTTPS host `<YOUR_NETBIRD_DOMAIN>`.
 
 ## Current State
 
@@ -38,10 +38,7 @@ The NPM health check is passing and the administrative UI returns HTTP `200` at 
 - `Documentation/`: deployment history, operating procedure, troubleshooting, and remaining work
 - `Configuration/`: reader-editable Compose reference and intended NetBird advanced routes
 
-The combined deployment evidence stays with NetBird, the primary platform owner for this bounded job, rather than being copied into a second evidence tree.
-
 ## Network Boundaries
 
 - NPM holds fixed address `172.31.85.10`; NetBird trusts only `172.31.85.10/32` as its HTTP proxy.
 - TCP 80, 81, & 443 bind on `192.168.85.2`; no WAN ingress points at the guest.
-- The Cloudflare DNS Write token is limited to the zone used for the wildcard and apex certificate.

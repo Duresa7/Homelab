@@ -1,8 +1,8 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is where I keep superseded, retired, or replaced material that still has historical value. Current authoritative records never move here, and I don't use this folder as a miscellaneous dump.
+Archive is empty today. When I retire a record, I keep enough of its original path & date to identify the system and event it came from.
 
-Everything archived keeps enough of its original path and date context to show where it came from.
+Current records stay with their owner. This directory isn't a holding area for files that lack a clear location.

@@ -1,9 +1,9 @@
 # Governance
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
-This is where I keep the rules for how the repository is organized and how I create and maintain records.
+Governance contains one living documentation standard & three dated workspace change records. The standard defines where work belongs, what a change record must contain, how evidence maps to a step, & which dates stay in a filename.
 
-- [Documentation standard](Documentation-Standard.md): the tiers, evidence, incident, voice, and metadata rules I hold my records to
+- [Documentation standard](Documentation-Standard.md): three documentation tiers plus the evidence, incident, voice, placeholder, filename, & metadata rules I use
 - [Change records](Change%20Records/): dated records of workspace-level reorganizations

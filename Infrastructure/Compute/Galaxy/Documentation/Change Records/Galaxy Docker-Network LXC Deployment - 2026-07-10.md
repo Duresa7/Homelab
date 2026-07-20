@@ -9,7 +9,7 @@
 
 ## Scope
 
-Provision a dedicated Debian 13 LXC on `blue-server` for network-access services, establish hardened SSH and Docker runtime access, place the guest on Access-A, and restrict its Internet egress to the protocols required for package, image, certificate, and time synchronization operations. The LXC hosts NetBird and Nginx Proxy Manager; detailed platform configuration and remaining application work are owned by their records under `Platforms/`.
+I provisioned a Debian 13 LXC on `blue-server` for network-access services. The guest runs NetBird and Nginx Proxy Manager on Access-A, accepts key-only SSH, & can reach the internet only for web, certificate, image, package, and time traffic. The platform records under `Platforms/` cover the application configuration.
 
 ## Starting State
 
@@ -18,26 +18,15 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 - The existing UniFi `Allow Internal to <YOUR_ORG_NAME>-Access` and `Allow VPN to <YOUR_ORG_NAME>-Access` policies provided the intended inbound zone paths.
 - There were no workload-specific `<YOUR_ORG_NAME>`-Access-to-External egress rules and no internal DNS record for `<YOUR_NETBIRD_DOMAIN>`.
 
-## Completed Implementation
+## Egress Policy Order
 
-1. I created unprivileged LXC 107 `docker-network` on `blue-server` from Debian GNU/Linux 13 (trixie).
-2. I assigned 2 vCPU, 4 GiB memory, 1 GiB swap, and a 32 GiB `local-lvm` root disk.
-3. I enabled `nesting=1,keyctl=1`, guest firewall processing, automatic boot, and HA desired state `started`.
-4. I connected `eth0` to VLAN 85 through `vmbr0` with static address `192.168.85.2/24`; both gateway and DNS use `192.168.85.1`.
-5. I created the `<YOUR_ADMIN_USERNAME>` administrator, copied the three approved administrative public keys, granted NOPASSWD sudo, disabled root SSH, and disabled password and keyboard-interactive SSH authentication.
-6. I added the LXC to SSH Manager as `docker_network` and verified key-based access.
-7. I installed Docker Engine and Compose and deployed Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 under `/opt/docker`.
-8. I created the following order-sensitive UniFi policies with logging enabled and automatic respond-policy generation disabled:
+I created three order-sensitive UniFi policies with logging enabled and automatic respond-policy generation disabled:
 
    | Order | Policy | Source | Destination | Protocol / port | Result |
    |---:|---|---|---|---|---|
    | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | TCP 80, 443 | Allow |
    | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | UDP 123 | Allow |
    | 10002 | `Block <YOUR_ORG_NAME>-Access Other External Egress` | Any, `<YOUR_ORG_NAME>`-Access | External | Any IPv4 | Block |
-
-9. I added the UniFi local DNS A record `<YOUR_NETBIRD_DOMAIN>` to `192.168.85.2` with TTL 300 seconds.
-10. I issued and assigned the Cloudflare DNS-01 wildcard/apex certificate in Nginx Proxy Manager, enabled Force SSL and HTTP/2, verified the authenticated NetBird dashboard over HTTPS, and passed a controlled restart of both Compose projects.
-11. I removed the installer and temporary files left over from my deployment steps and restricted the NetBird secret configuration files and NPM database to owner-only mode 0600.
 
 ## Resulting LXC Configuration
 
@@ -83,7 +72,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 **Observed result:** CTID 107 didn't appear in the guest list. The node summary showed 1.46% use across 4 CPUs, 1.74 GiB of 11.57 GiB RAM in use, 4.53 GiB of 67.73 GiB local disk in use, and 0 B of 8 GiB swap in use. These values left more than the planned 4 GiB RAM allocation available.
 
-**Verification:** The Proxmox node summary displayed the guest inventory and the measured resources listed above, and `pvestatd` returned active after the restart. The exact VLAN 85 and controller preflight output remains in the local S01 transcript quarantine because it wasn't cleared for the public tree.
+**Verification:** The Proxmox node summary displayed the guest inventory and the measured resources listed above, and `pvestatd` returned active after the restart.
 
 **Evidence:**
 
@@ -107,7 +96,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 **Observed result:** Key-only SSH and passwordless sudo worked, while root, password, and keyboard-interactive authentication were disabled. Proxmox showed CT 107 running as an unprivileged container on `blue-server`, with HA desired state `started`.
 
-**Verification:** SSH Manager connected with an approved key, all three fingerprints were present, & `ha-manager` reported `ct:107` started on `blue-server`. The SSH checks are retained only in the local S03 transcript quarantine. The public screenshot verifies the running container, unprivileged setting, assigned resources, address, node, & HA state.
+**Verification:** SSH Manager connected with an approved key, all three fingerprints were present, & `ha-manager` reported `ct:107` started on `blue-server`. The screenshot shows the running container, unprivileged setting, assigned resources, address, node, & HA state.
 
 **Evidence:**
 
@@ -134,7 +123,7 @@ find /opt/docker -maxdepth 1 -mindepth 1 -type d -printf '%p %u:%g %m\n'
 docker ps --format 'table {{.Names}}\t{{.Status}}'
 ```
 
-The capture showed the client & server versions, Compose version, active service, network subnet, directory ownership, & exit code 0. The installation request and complete raw output remain in the local-only scrub quarantine.
+The capture showed the client & server versions, Compose version, active service, network subnet, directory ownership, & exit code 0.
 
 **Evidence:**
 
@@ -224,7 +213,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Verification:** I checked the live paths and file modes after cleanup.
 
-**Evidence:** The local S10 transcript holds the path & mode checks. No secret-bearing file content is published.
+**Evidence:** I checked the live paths & file modes after cleanup.
 
 ## Rollback
 

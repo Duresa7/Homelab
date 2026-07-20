@@ -9,8 +9,6 @@
 **Purpose:** Splunk Enterprise (SIEM / log aggregation), homelab
 **Documented:** 2026-06-28
 
----
-
 ## Compute
 
 | Setting | Value | Notes |
@@ -40,8 +38,8 @@
 | SSD emulation | `ssd=on` | Guest sees it as SSD; enables TRIM |
 | Discard | `discard=on` | TRIM reclaims freed index space |
 | IO thread | `iothread=on` | Dedicated I/O thread for the disk |
-| Cache | Default (No cache) | Safe for SIEM (no data loss on power cut) |
-| Backing storage | SSD-backed LVM (`ssd-lvm1`) | Splunk is I/O-bound, so SSD required |
+| Cache | Default (No cache) | Host writeback cache disabled |
+| Backing storage | SSD-backed LVM (`ssd-lvm1`) | Carries OS and index I/O |
 
 ## Network
 

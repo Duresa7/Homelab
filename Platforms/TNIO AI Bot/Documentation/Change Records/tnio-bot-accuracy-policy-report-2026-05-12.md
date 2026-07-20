@@ -1,15 +1,15 @@
-# TNIO Bot Accuracy-First Retrieval Fix Report - 2026-05-12
+# TNIO Retrieval Source-Authority Fix - 2026-05-12
 
 **Created:** 2026-05-12  
 **Last updated:** 2026-07-20
 
-## Summary
+## Result
 
-I implemented the accuracy-first retrieval plan on `<YOUR_TNIO_HOST>` for the TNIO Discord Librarian bot.
+I changed the TNIO Librarian on `<YOUR_TNIO_HOST>` so policy questions prefer guides, codices, faction rules, & progression records over rosters and tracking sheets.
 
-The main issue was not missing Google Drive data. The correct answers were present in the synced TNIO archive, but the bot sometimes selected the wrong source class when answering new phrasings. In the Intel/Sith example, the `Intel Faction Guide` clearly says Sith must be at least Apprentice before joining Imperial Intelligence, but broad `Intel` retrieval could pull in `TNIO Imperial Intelligence Roster` rows and fallback ranking could surface those instead of the authoritative guide.
+The main issue was not missing Google Drive data. The correct answers were present in the synced TNIO archive, but the bot sometimes selected the wrong source class when answering new phrasings. In the Intel/Sith example, the `Intel Faction Guide` says Sith must be at least Apprentice before joining Imperial Intelligence, but broad `Intel` retrieval could pull in `TNIO Imperial Intelligence Roster` rows and fallback ranking could surface those instead of the authoritative guide.
 
-## Root Cause Fixed
+## Retrieval Changes
 
 - Added policy/requirement intent detection so rank, eligibility, ownership, permission, and progression questions are treated differently from roster/profile/lore recap questions.
 - Added source authority handling so guides, codices, faction rules, and progression records outrank rosters, registries, and tracking sheets for policy questions.
@@ -112,7 +112,7 @@ Live endpoint checks passed:
   - Correctly answers from `Know Your Empire`
   - No stale-session answer from the previous Darth comparison
 
-## Remaining Concern
+## Remaining Latency Issue
 
 The Minister/Commandant answer was accurate, but still took about 55 seconds. The next root improvement should be latency reduction for non-direct roster/current-office questions, likely by adding a direct current-office answer path or improving `Know Your Empire` routing speed.
 

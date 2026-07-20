@@ -10,7 +10,7 @@
 
 ## Scope
 
-I closed the monitoring gaps I had deliberately deferred from the Security-A migration: install `node_exporter` on the three Galaxy nodes that lacked it, remove the obsolete Wazuh registrations so I could perform fresh enrollment, and reconcile the stale Prometheus target set. I also wanted a verified list of the service endpoints moved or added by the related work.
+I installed `node_exporter` on the three Galaxy nodes that lacked it, removed two obsolete Wazuh registrations, & replaced the stale Prometheus target set. The final configuration contains seven jobs, all reporting `UP`.
 
 ## Starting State
 
@@ -20,7 +20,7 @@ I closed the monitoring gaps I had deliberately deferred from the Security-A mig
 - `supabase-01` and `alpha-prod-01` had no Wazuh agent package or key.
 - Prometheus had six jobs: three healthy (`edge-01`, `grey-server`, `proxmox`) and three down/stale (`apps-01`, retired `security-01` address `192.168.70.20`, and `supabase-01`).
 
-## Decisions
+## Package, Job and Agent Choices
 
 - I installed Debian's signed `prometheus-node-exporter` package version `1.9.0-1+b4`; it matches the major/minor exporter version already used on `grey-server` and stays managed through APT.
 - I preserved one job per Proxmox node so the existing job-label behavior for `grey-server` did not change.
@@ -95,16 +95,6 @@ My first host-path replacement plus SIGHUP did not change the running target set
 - The newly installed exporter packages can be removed with APT if rollback is required; no Proxmox networking or firewall state changed.
 
 The Wazuh manager backup preserves the pre-change registration state. Restoring it would also restore the retired identities.
-
-## Step Summary
-
-| Step | What it established |
-|---|---|
-| S00: Preflight | The exact missing exporters, stale Wazuh identities, and stale Prometheus targets |
-| S01: Node exporter installation | Package/service state and end-to-end metrics reachability |
-| S02: Wazuh registration reset | Endpoint preparation and manager registration removal |
-| S03: Prometheus reconciliation | Config validation, reload diagnosis, restart, and the seven-target assertion |
-| S04: Final service and URL verification | Current health and replacement endpoint responses |
 
 ## Remaining Work
 

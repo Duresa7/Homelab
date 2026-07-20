@@ -1,14 +1,12 @@
 # S03-S05 Media Stack Refresh Verification Transcript
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Capture timestamp:** 2026-07-17T21:25:24-04:00  
 **Target:** `red_server`, Proxmox CT 842 `media-01`  
 **Mechanism:** SSH Manager command execution; host shell invoking `pct exec`; guest POSIX shell  
 **Guest working directory:** `/opt/media-stack`
-
-The live Compose environment and application configuration contain secrets, so I did not print them. The VPN exit check retained only pass/fail status; I did not capture the provider address.
 
 ## Verification Request
 
@@ -24,7 +22,7 @@ pct exec 842 -- sh -lc 'cd /opt/media-stack; echo "container-state"; docker comp
 - Versions: Jellyfin 10.11.11; Seerr 3.3.0; Sonarr 4.0.19.2979-ls320; Radarr 6.3.0.10514-ls311; Prowlarr 2.4.0.5397-ls154; FlareSolverr 3.5.0; qBittorrent 5.2.3/libtorrent 2.0.13-ls468; Gluetun rolling `latest`.
 - Seerr status: `updateAvailable=false`, `commitsBehind=0`, `restartRequired=false`.
 - Jellyfin, Seerr, Sonarr, Radarr, and Prowlarr HTTP checks: `passed`.
-- VPN exit lookup from the Gluetun namespace: `passed`; I deliberately did not retain the address.
+- VPN exit lookup from the Gluetun namespace: `passed`.
 - qBittorrent at capture: filtering enabled; `*.exe` present; UPnP disabled; autorun disabled; listening port equal to the Proton forwarded-port file; torrent count `0`.
 
 Complete standard output:
@@ -113,7 +111,7 @@ Container qbittorrent Started
 
 ## Arr-to-qBittorrent Connectivity
 
-I checked the post-refresh containers from their own network namespaces without reading or printing stored API keys or passwords:
+I checked the post-refresh containers from their own network namespaces:
 
 ```sh
 pct exec 842 -- sh -lc 'for c in sonarr radarr; do if docker exec "$c" curl -fsS http://gluetun:8080/api/v2/app/version >/dev/null; then echo "$c-to-qbittorrent=passed"; else echo "$c-to-qbittorrent=failed"; exit 1; fi; done'

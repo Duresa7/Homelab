@@ -3,23 +3,16 @@
 **Created:** 2026-04-27  
 **Last updated:** 2026-07-20
 
-## Document Metadata
+**Change time:** 2026-04-27 15:04 EDT  
+**Environment:** `AI_Alpha_01`  
+**Service:** OpenClaw Gateway  
+**Status:** Running
 
-| Field | Value |
-|---|---|
-| Document Type | Change Record |
-| Date | April 27, 2026 |
-| Time | 3:04 PM EDT |
-| Time Zone | America/New_York |
-| Environment | AI_Alpha_01 |
-| Service | OpenClaw Gateway |
-| Status After Work | Running |
+## Result
 
-## Change Summary
+I upgraded OpenClaw from `2026.4.15` to `2026.4.25`, enabled the gateway service, limited the bot to one Discord channel, added a 60-minute group-session reset, & installed the Discord member resolver. The final service state was `active` on loopback.
 
-I completed configuration and operational changes to the OpenClaw deployment I use with Discord. The work covered service reliability, security posture, Discord channel control, session behavior, and public-channel behavior rules.
-
-## Completed Changes
+## Changes
 
 ### Service and Runtime
 
@@ -66,7 +59,7 @@ I completed configuration and operational changes to the OpenClaw deployment I u
 
 - Result: after 60 minutes of inactivity, the next inbound group message starts a fresh session automatically.
 
-### Persona and Public-Channel Behavior
+### Identity and Public-Channel Behavior
 
 - Updated `SOUL.md`, `IDENTITY.md`, and `AGENTS.md`.
 - Removed the requirement to reference AlphaFly in every response.
@@ -78,7 +71,7 @@ I am Alpha-Zeta-022 #22, a member of the <YOUR_ORG_NAME> AI Model Fleet develope
 ```
 
 - Added guidance that AlphaFly is the CEO and owner of `<YOUR_ORG_NAME>` United LLC.
-- Added strict rules preventing disclosure of:
+- Added rules preventing disclosure of:
   - credentials
   - API keys
   - tokens
@@ -90,13 +83,13 @@ I am Alpha-Zeta-022 #22, a member of the <YOUR_ORG_NAME> AI Model Fleet develope
   - backend/internal implementation details
   - hostnames, server names, logs, paths, and tool internals
 
-### Markdown Workspace Cleanup
+### Workspace Files
 
 - Archived stale `BOOTSTRAP.md`.
 - Archived old memory files under the OpenClaw workspace.
 - Replaced forced proactive heartbeat behavior with a no-proactive-tasks policy.
 - Added public Discord channel assumptions.
-- Added a safe refusal style for sensitive/internal requests.
+- Added a refusal response for internal requests.
 - Preserved SSH manager MCP usage for authorized administrative work.
 
 ### Discord Mention Handling
@@ -129,7 +122,7 @@ mcp__discord_member_resolver__resolve_discord_user
 
 - The active Discord channel session was reset after installation so the next message loads the updated skill/tool context.
 
-## Verification Performed
+## Final Checks
 
 - OpenClaw config validation passed.
 - Gateway service started successfully.
@@ -139,9 +132,7 @@ mcp__discord_member_resolver__resolve_discord_user
 - `discord-mention-resolver` appeared as a ready workspace skill.
 - `discord_member_resolver` appeared in the configured MCP server list.
 
-## Notes
+## Remaining Verification
 
-- No credentials, tokens, passwords, or private keys are documented in this record.
-- Internal operational details such as host alias, service name, configuration paths, Discord IDs, and backup paths are documented in `OpenClaw-Setup-Overview.md`.
-- The bot should be tested from Discord by mentioning it in `#alpha-ai`.
-- Any future changes to Discord permissions, persona, or channel scope should be documented in this folder.
+- Mention the bot in `#alpha-ai` and confirm its response from Discord.
+- Record future Discord permission, identity, or channel-scope changes in this folder.

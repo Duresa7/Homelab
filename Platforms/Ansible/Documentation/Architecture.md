@@ -3,13 +3,13 @@
 **Created:** 2026-07-14  
 **Last updated:** 2026-07-20
 
-## The Simple Version
+## Request Path
 
 Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, or Termix) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac, Ansible Control, or Termix keys.
 
 ![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](Diagrams/automation-flow.svg)
 
-Semaphore stores the controller's execution credential and launches the same playbooks. It does not contain a second automation implementation, and the repository contains no private keys.
+Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation.
 
 ## Identity Separation
 
@@ -50,9 +50,8 @@ Semaphore is the continuously running part. The systemd unit at `/etc/systemd/sy
 
 This gives the web UI automatic recovery after a controller or Proxmox-node boot. Direct Ansible commands need no service and are available as soon as the LXC is running.
 
-## Scope Boundaries
+## Hosts Outside Automation
 
 - `ws-dc-2-secondary` and `obi-pc` remain in `ssh_key_unknown`; the playbooks cannot select them.
 - `nas-family` is retired and is absent from the inventory and validator.
-- Private keys remain on their owner device or in Semaphore's encrypted Key Store.
-- I generate replacement keys on the owner device; Ansible stages, verifies, and retires public keys only.
+- I generate replacements on the device that owns the identity. Ansible stages, checks, & retires the public-key entries.

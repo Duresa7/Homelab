@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-20
 
-This is my configuration inventory of the QEMU VMs and templates on the Galaxy cluster.
+Galaxy currently has 11 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |

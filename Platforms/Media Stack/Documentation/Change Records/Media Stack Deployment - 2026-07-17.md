@@ -13,16 +13,16 @@ I deployed a dedicated 100 GiB media-automation LXC on VLAN 40 using Docker Comp
 
 ## Starting State
 
-No dedicated media guest or platform record existed. I supplied an approved Proton WireGuard configuration from outside the repository. My approved SSH public keys were already available from an established Linux guest.
+No dedicated media guest or platform record existed.
 
-## Decisions
+## Deployment Choices
 
 1. **Use an unprivileged LXC on `red-server`.** The workload benefits from low overhead and direct device pass-through; I did not need full VM isolation for this trusted single-purpose stack.
 2. **Use one 100 GiB local volume.** This is my explicit storage limit. Media, downloads, configuration, and transcodes therefore compete for the same capacity and require monitoring.
 3. **Route only qBittorrent through Proton.** Indexer and media services keep ordinary LAN egress, while qBittorrent shares Gluetun's network namespace and kill switch.
 4. **Enable Proton NAT-PMP, not router UPnP.** Proton assigns a port on the VPN endpoint. I keep qBittorrent's router-level UPnP/NAT-PMP disabled, and no UniFi inbound mapping is needed.
 5. **Track `latest` images.** I track `latest` intentionally; it is my preference and it creates an explicit requirement for bounded, verified updates.
-6. **Keep deployment values in `.env`.** The reader-editable Compose reference uses placeholders, while the live project loads its WireGuard and qBittorrent values from `/opt/media-stack/.env`.
+6. **Load deployment values from `.env`.** The Compose reference uses placeholders, while the live project reads `/opt/media-stack/.env`.
 
 ## Resulting Configuration
 
@@ -49,10 +49,8 @@ No dedicated media guest or platform record existed. I supplied an approved Prot
 | S07 | Verified provider-side port forwarding and kill-switch topology | Proton-assigned port equaled qBittorrent `listen_port`; `random_port=false`; `upnp=false`; qBittorrent network mode referenced Gluetun's container namespace |
 | S08 | Linked qBittorrent to Sonarr and Radarr | Both download clients created and reachable using separate `sonarr` and `radarr` categories |
 | S09 | Established the qBittorrent Web UI login | The new login worked, & the Sonarr and Radarr client tests passed |
-| S10 | Performed final runtime and baseline inspection | Eight containers running; Gluetun and Jellyfin healthy; root/data volume 9% used; protected `.env` mode `0600` |
+| S10 | Performed final runtime and baseline inspection | Eight containers running; Gluetun and Jellyfin healthy; root/data volume 9% used |
 | S11 | Recreated Gluetun and qBittorrent with an empty torrent queue | Gluetun returned healthy, qBittorrent returned running in Gluetun's exact namespace, the provider port resynchronized, and both auth-bypass controls persisted |
-
-I provisioned through CLI & API rather than a graphical setup wizard. The table records the verified result from each step.
 
 ## Known Incomplete Items
 
@@ -64,7 +62,7 @@ I provisioned through CLI & API rather than a graphical setup wizard. The table 
 ## Rollback
 
 1. Stop the Compose project with the `vpn` profile.
-2. Preserve `/opt/media-stack/config` and `/data` only through approved protected storage if application state must be retained.
+2. Back up `/opt/media-stack/config` and `/data` if application state must be retained.
 3. Remove CT 842 through the normal Proxmox guest-retirement workflow after confirming the exact target and backup disposition.
 4. Remove the corresponding LXC and service inventory entries and archive this platform record.
 

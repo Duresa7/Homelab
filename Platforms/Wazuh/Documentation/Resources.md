@@ -1,9 +1,9 @@
 ﻿# Wazuh Resource Specification
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-These are the VM and package specifications I verified for my Wazuh deployment on 2026-07-13.
+I verified these VM and package specifications on 2026-07-13.
 
 ## VM 200 `security-01`
 

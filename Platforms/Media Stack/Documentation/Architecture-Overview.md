@@ -3,9 +3,9 @@
 **Created:** 2026-07-17  
 **Last updated:** 2026-07-20
 
-## Purpose
+## Traffic Split
 
-I separate user-facing media workflows from download egress. Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, and FlareSolverr use the guest's ordinary VLAN path. Only qBittorrent shares Gluetun's network namespace and therefore exits through Proton VPN.
+Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, & FlareSolverr use the guest's VLAN 40 path. qBittorrent is the exception: it shares Gluetun's network namespace and exits through Proton VPN.
 
 ![Media Stack pipeline: LAN users reach Seerr for requests and Jellyfin for playback; Seerr and Prowlarr drive Sonarr and Radarr, which write to the tv and movie libraries that Jellyfin serves and hand downloads to qBittorrent; only qBittorrent egresses, through Gluetun and the Proton P2P endpoint out to internet peers](Diagrams/pipeline.svg)
 

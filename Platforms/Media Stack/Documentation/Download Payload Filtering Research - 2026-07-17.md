@@ -1,15 +1,15 @@
 # Download Payload Filtering Research
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-## Decision
+## Applied Filter
 
 I enabled qBittorrent's **Excluded file names** option and applied the baseline patterns below. It is the earliest useful built-in control in this stack: qBittorrent assigns matching payloads **Do not download** priority before a newly added torrent starts transferring. I kept Sonarr and Radarr's existing completed-download handling enabled as a second import-time check.
 
 This is defense in depth, not antivirus. qBittorrent matches names, not file contents, and Sonarr/Radarr decide what to import rather than preventing every unwanted byte from reaching the download directory.
 
-## Live Baseline
+## State Before the Change
 
 I inspected the running configuration read-only on 2026-07-17 before changing anything:
 
@@ -42,7 +42,7 @@ The corresponding `qBittorrent.conf` representation is `[BitTorrent]` followed b
 
 ### Baseline Patterns
 
-I applied this low-false-positive list, sized for a download directory that only ever holds television and movies:
+I applied this 100-pattern list to a download directory used only for television and movies:
 
 ```text
 *.ade
@@ -186,13 +186,13 @@ If disc-image media is unwanted, this stricter optional group exists:
 
 I left those six out of the baseline because Sonarr and Radarr recognize some of them as legitimate disc-media formats; their media-extension lists are the authority [8][9]. Adding them trades disc-image compatibility for a narrower accepted payload set.
 
-## Scope and Bypass Conditions
+## When the Filter Applies
 
 The filter is applied while a torrent is added when the caller did not explicitly supply file priorities [10], and again when a magnet receives its metadata [11]. Changing the preference only rebuilds qBittorrent's pattern list; it does not iterate through already loaded torrents and rewrite their priorities. I apply the filter before adding new work and would audit any pre-existing torrent manually.
 
 The deployed Sonarr and Radarr versions submit a URL or torrent file, category, start state, and optional queue/layout controls, but not qBittorrent's `filePriorities` parameter [12][13]. Their normal additions therefore receive qBittorrent's global exclusion filter.
 
-Known limitations:
+Known bypasses and limits:
 
 - A program renamed with an allowed media suffix, an executable without a suffix, or an archive renamed with an innocuous suffix can bypass a filename deny list.
 - Archive contents are not inspected. Blocking common archive suffixes prevents the normal case but cannot identify an archive solely from its bytes.
@@ -225,7 +225,7 @@ The exact commands and results are in the [functional filter-test transcript](..
 
 I did not give Sonarr or Radarr a real acquisition during this change because no indexers were configured. During the first real acquisition I will inspect qBittorrent's Content list before completion and verify only the intended media hard-links into the library. Because the queue was empty before the change, no retroactive audit was required.
 
-## Current Upstream Release Check
+## Release Check on 2026-07-17
 
 I compared the live stack with the latest non-prerelease GitHub releases on 2026-07-17:
 

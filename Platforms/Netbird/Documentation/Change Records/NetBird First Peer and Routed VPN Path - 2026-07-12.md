@@ -8,7 +8,7 @@
 
 ## Scope
 
-Validate the operational checks I left open after the initial NetBird control-plane deployment: enroll the first real peers, exercise the live WireGuard data path (rather than configuration-only probes), and confirm the intended VPN-client path into the Access-A zone with its owning route and firewall behavior documented.
+I enrolled the first two peers, exercised the WireGuard data path, & routed one peer into Access-A through CT 107. The checks covered the overlay tunnel, route selection, HTTPS service path, and UniFi firewall behavior.
 
 This closes the first item of the [network segmentation plan](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) ("confirm reachability from both Internal and VPN") and the "First Peer and VPN Path" section of the platform [TODO](../TODO.md).
 
@@ -23,7 +23,7 @@ This closes the first item of the [network segmentation plan](../../../../Infras
 
 ### Step 1: Enroll the temporary Debian peer
 
-**Action:** I generated a one-off User Device setup key in the NetBird dashboard & ran the installer on the temporary `debian` VM. The one-off setup-key value isn't stored in the repository or public evidence.
+**Action:** I generated a one-off User Device setup key in the NetBird dashboard & ran the installer on the temporary `debian` VM.
 
 **Commands:**
 
@@ -54,7 +54,7 @@ netbird up --management-url https://<YOUR_NETBIRD_DOMAIN> --setup-key <SETUP_KEY
 
 ### Step 3: Enroll the routing peer
 
-**Action:** I generated a one-off Server setup key & ran the same installer on CT 107 `docker-network`. The one-off setup-key value isn't stored in the repository or public evidence.
+**Action:** I generated a one-off Server setup key & ran the same installer on CT 107 `docker-network`.
 
 **Commands:**
 

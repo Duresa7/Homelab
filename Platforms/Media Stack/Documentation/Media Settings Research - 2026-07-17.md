@@ -1,11 +1,11 @@
 # Media Settings Research
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-## Purpose
+## Settings Covered
 
-This note records the exact Jellyfin 10.11.11 transcoding and Sonarr 4.0.19 media-management selections I chose for the deployed Media Stack. I combined what the first-party docs say with read-only checks of my running containers and Intel render device on 2026-07-17.
+I recorded the Jellyfin 10.11.11 transcoding and Sonarr 4.0.19 media-management settings selected for this stack. The choices come from the linked first-party documentation and read-only checks of the running containers and Intel render device on 2026-07-17.
 
 ## Verified Platform Context
 
@@ -86,7 +86,7 @@ This deployment satisfies the filesystem and container-path requirements because
 
 The formats above make only two material changes from the screenshot: add `{Release Group}` and pad the season folder to two digits. If I collect no anime, the anime format stays unused and needs no further tuning.
 
-## Immediate Walkthrough Position
+## Settings Already Applied and Remaining
 
 The screenshots and live read-only state show these steps are already complete:
 
@@ -101,8 +101,6 @@ I continue from the current screens in this order:
 2. In Sonarr, click **Show Advanced**, add `{Release Group}` to the three naming formats, change the season format to `Season {season:00}`, enable **Use Hardlinks instead of Copy**, and save.
 3. Finish the Jellyfin TV library using `/data/media/tv`; use content type **Shows**, leave embedded-title preferences disabled, and keep the library language and country selections appropriate for the collection.
 4. Perform one bounded end-to-end episode import. Confirm that the imported library file and completed-download file are hard links to the same inode, then trigger a lower-quality Jellyfin playback and verify the GPU is active.
-
-These instructions intentionally keep passwords, API keys, VPN material, and other secrets outside the repository.
 
 ## Sources
 

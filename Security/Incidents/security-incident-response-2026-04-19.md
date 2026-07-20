@@ -1,21 +1,16 @@
-# Security Incident Response Record
+# Vercel Security Incident Response - 2026-04-19
 
 **Created:** 2026-04-19  
 **Last updated:** 2026-07-20
 
-**Document ID:** SIR-2026-04-19-01
-**Classification:** Internal / Confidential
-**Status:** Complete (with tracked follow-ups)
-**Date of Action:** 2026-04-19
+**Incident ID:** SIR-2026-04-19-01  
+**Date of action:** 2026-04-19  
+**Status:** Complete with tracked follow-ups  
 **Version:** 1.1
 
----
+## 1. Incident Summary
 
-## 1. Executive Summary
-
-In response to the publicly disclosed Vercel security incident of April 2026, I performed a credential rotation and access-control review across the hosting, backend, and identity components of the `<YOUR_ORG_NAME>` application stack. I rotated all primary access credentials that were stored in or reachable from the affected platform, disabled legacy credentials, and verified related configuration. I observed no evidence of unauthorized access to this project during the review. I have identified and scoped residual follow-up items below.
-
----
+In response to Vercel's April 2026 security bulletin, I rotated the affected application credentials and reviewed access across Vercel, Supabase, & GitHub. I disabled the legacy Supabase anon key, reinstalled the Vercel GitHub integration with access limited to one repository, and verified the application after the changes. I found no evidence of unauthorized access to this project. Section 8 tracks the remaining precautionary work.
 
 ## 2. Incident Reference
 
@@ -30,38 +25,33 @@ In response to the publicly disclosed Vercel security incident of April 2026, I 
 | Response initiated | 2026-04-19 |
 | Response concluded | 2026-04-19 |
 
----
-
 ## 3. Scope of Review
 
 ### In-scope systems
 - **Hosting platform:** Vercel (primary deployment of the `<YOUR_ORG_NAME>` web application)
 - **Backend-as-a-service:** Supabase (project `<YOUR_SUPABASE_PROJECT_REF>`, organization `<YOUR_SUPABASE_ORGANIZATION_ID>`)
 - **Source control:** GitHub (auto-deploy integration to Vercel)
-- **Edge Functions:** Supabase `delete-account` function and its configured secrets
+- **Edge Functions:** Supabase `delete-account` function and its configuration
 
-### Out-of-scope (no indication of impact)
-- Google OAuth provider credentials (stored in Supabase, not Vercel)
-- Resend transactional email API key (stored in Supabase, not Vercel)
-- End-user session tokens (held in end-user browsers, not in Vercel infrastructure)
+### Out of Scope
 
----
+- Google OAuth provider credentials
+- Resend transactional email API key
+- End-user session tokens
 
 ## 4. Risk Assessment
 
-| Asset | Could it have been exposed via the Vercel breach? | Action I took |
+| Asset | Incident scope | Action I took |
 |---|---|---|
-| Supabase publishable key (`VITE_SUPABASE_ANON_KEY`) | Yes; stored as a Vercel environment variable | Rotated |
-| Supabase project URL (`VITE_SUPABASE_URL`) | Yes; stored as a Vercel environment variable, but not secret | No action (public identifier) |
-| Supabase secret / service key | Not stored in Vercel (edge function secret only) | Rotated as a precaution |
-| Supabase database password | Not stored in Vercel | Rotated as a precaution |
-| Supabase legacy anon JWT API key | Not stored in Vercel by design, but present as a project-level credential | Disabled |
-| Vercel ↔ GitHub integration token | Managed by Vercel; potentially within scope of internal systems | Reinstalled integration |
-| Supabase Personal Access Token (`SUPABASE_ACCESS_TOKEN`) | Stored locally only (`.env`); not in Vercel | Flagged for rotation (see §8) |
-| Google OAuth client secret | Stored in Supabase only | Flagged for rotation only if warranted (see §8) |
-| Resend API key | Stored in Supabase only | Flagged for rotation only if warranted (see §8) |
-
----
+| Supabase publishable key (`VITE_SUPABASE_ANON_KEY`) | Affected environment | Rotated |
+| Supabase project URL (`VITE_SUPABASE_URL`) | Public identifier | No action |
+| Supabase secret / service key | Precautionary | Rotated |
+| Supabase database password | Precautionary | Rotated |
+| Supabase legacy anon JWT API key | Legacy access path | Disabled |
+| Vercel GitHub integration | Potentially affected integration | Reinstalled with one-repository access |
+| Supabase Personal Access Token (`SUPABASE_ACCESS_TOKEN`) | Not implicated | Rotation remains open in Section 8 |
+| Google OAuth client secret | Not implicated | Rotate only if later evidence warrants it |
+| Resend API key | Not implicated | Rotate only if later evidence warrants it |
 
 ## 5. Actions Taken
 
@@ -82,19 +72,14 @@ All actions performed on 2026-04-19.
 - I confirmed that `VITE_SUPABASE_URL` remained unchanged (public identifier).
 - I confirmed no other environment variables in the Vercel project reference rotated values.
 
-### 5.4 Local environment update
-- I updated the local `.env` file to the new publishable key.
-
-### 5.5 GitHub integration refresh
+### 5.4 GitHub integration refresh
 - I uninstalled the Vercel GitHub App from the connected GitHub account.
 - I reinstalled the Vercel GitHub App, restricting repository access to the `<YOUR_ORG_NAME>` project repository only.
 - I triggered a test deployment to confirm the auto-deploy pipeline was restored.
 
-### 5.6 Code verification
-- I confirmed the repository working tree contains no references to the rotated key values. Grep searches for the prior publishable key value, the legacy anon JWT signature, the generic `sb_secret_` prefix, and the HS256 JWT header pattern all returned zero results.
+### 5.5 Code verification
+- I confirmed the repository working tree contains no references to the rotated values. The search returned zero matches.
 - I confirmed the `delete-account` edge function validates the caller's JWT via `auth.getUser(token)` inside the function body rather than relying solely on gateway-level verification.
-
----
 
 ## 6. Verification
 
@@ -109,15 +94,11 @@ All actions performed on 2026-04-19.
 | Edge function invocation returns success | Supabase edge function logs after deploy | Pass |
 | No rotated values in repository working tree | `grep` across source tree | Pass; zero matches |
 
----
-
 ## 7. Residual Risk
 
-- **Git history** was not rewritten. Any value ever committed historically remains in the repository's commit objects. Because I have rotated the corresponding credentials and disabled the originals, any such historical exposure is **mitigated by invalidation**. I consider no further action necessary unless the repository is published or shared outside the current access boundary.
-- **Vercel activity audit** was performed via the Vercel dashboard; I observed no suspicious activity. This finding does not rule out undetected access before logging availability.
-- **End-user sessions** were not forcibly invalidated. User access tokens remain valid for the duration of their normal lifetime. I have no evidence that these tokens are at risk, and mass invalidation would cause widespread sign-out disruption disproportionate to the observed risk.
-
----
+- **Git history:** I didn't rewrite history. The rotated and disabled values are no longer accepted.
+- **Vercel activity:** I found no suspicious activity in the dashboard. This doesn't rule out access that occurred before the available logs.
+- **End-user sessions:** I didn't invalidate active sessions. I found no evidence that user tokens were affected, and forced invalidation would have signed out every user.
 
 ## 8. Follow-Up Items
 
@@ -129,16 +110,12 @@ All actions performed on 2026-04-19.
 | F-4 | Evaluate rotation of Google OAuth client secret | Low | Rotate only if evidence of Supabase-side exposure emerges. Not indicated by the current incident. |
 | F-5 | Evaluate rotation of Resend API key | Low | Rotate only if evidence of Supabase-side exposure emerges. Not indicated by the current incident. |
 
----
+## 9. Verification Findings
 
-## 9. Lessons Learned
-
-1. **Environment variable inventory before an incident saves time during one.** Maintaining a current inventory of where each secret is stored (which platform, which configuration path) accelerates targeted rotation.
-2. **Sensitive environment variable flags should be enabled on creation**, not retrofitted during incident response.
-3. **Pre-existing bugs can mask root cause during incident response.** A separate edge function bug surfaced during post-rotation testing and I initially suspected it was rotation-related. Distinguishing coincidental failures from incident-caused failures required careful log review.
-4. **Credential rotation without verification is incomplete.** I followed each rotation with a functional test to confirm the new credential was accepted and the old one was no longer honored.
-
----
+1. The Supabase key list showed only `default_v2` active and the legacy anon JWT disabled.
+2. Login, data loading, account deletion, & the edge function all passed after rotation.
+3. A pre-existing edge function bug surfaced during testing. Its logs separated that failure from the credential changes.
+4. The repository search returned zero rotated-value matches.
 
 ## 10. Sign-Off
 

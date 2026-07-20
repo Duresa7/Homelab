@@ -10,7 +10,7 @@
 
 ## Scope
 
-Add the renamed Debian development VM to SSH Manager with the existing Jedi-PC identity, install the newest GNOME desktop supported by the VM's Debian 13 stable repositories, activate the graphical login, & verify the key fingerprint and system health.
+I added the renamed Debian development VM to SSH Manager with the existing Jedi-PC identity. I then installed the newest GNOME desktop available from Debian 13 stable, enabled the graphical login, & checked the key fingerprint and system health.
 
 ## Starting State
 
@@ -41,7 +41,7 @@ Add the renamed Debian development VM to SSH Manager with the existing Jedi-PC i
 10. I diagnosed Claude Desktop's non-persistent sign-in warning as a first-run ordering edge case: GNOME Keyring and PAM were healthy, but Claude created `login.keyring` after the current authenticated session began and Chromium disabled libsecret when the new collection object was not yet exported.
 11. I added `<YOUR_ADMIN_USERNAME>` to the `kvm` group for Claude Cowork. I verified the persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module; activation and end-to-end Claude checks await the required GNOME sign-out/sign-in.
 
-My SSH Manager client timed out at five minutes while the large package transaction continued remotely. Live process and log checks proved that `apt-get` and `dpkg` remained active and progressing. The transaction subsequently completed with all requested packages in the `ii` state.
+My SSH Manager client timed out after five minutes, but the package transaction kept running. Process and log checks showed active `apt-get` and `dpkg` work. The transaction finished with every requested package in the `ii` state.
 
 ## Resulting Configuration
 
@@ -85,7 +85,7 @@ My SSH Manager client timed out at five minutes while the large package transact
 
 ## Rollback
 
-If GNOME causes an unacceptable regression, I'll shut down or otherwise place VM 102 in an appropriate maintenance state and roll back to Proxmox snapshot `pre-gnome-20260715`, then verify hostname, SSH, networking, and package state. The post-reboot checks passed, so the snapshot may be removed later under normal snapshot-retention housekeeping.
+If GNOME causes a regression, I'll place VM 102 in maintenance, restore Proxmox snapshot `pre-gnome-20260715`, then check the hostname, SSH, networking, & package state. The post-reboot checks passed, so I can remove the snapshot when I no longer need the short-term rollback point.
 
 To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-<YOUR_ADMIN_USERNAME>-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
 

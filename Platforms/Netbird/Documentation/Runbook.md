@@ -5,7 +5,7 @@
 
 ## Scope
 
-I operate the NetBird v0.74.4 control plane on `docker-network`. I use SSH Manager MCP target `docker_network` for remote commands. The live Compose project is `/opt/docker/netbird`; I never copy its generated secret-bearing files into the repository or command transcripts.
+I operate the NetBird v0.74.4 control plane on `docker-network` through SSH Manager target `docker_network`. The live Compose project is `/opt/docker/netbird`.
 
 The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://<YOUR_NETBIRD_DOMAIN>`; direct local checks stay useful for isolating a container or proxy failure.
 
@@ -131,7 +131,7 @@ A raw-IP HTTPS request (`https://192.168.85.2`) returns a TLS `unrecognized_name
 The generated Compose reference currently uses `latest`, so `docker compose pull` can change the deployed version. I treat an update as a bounded change:
 
 1. Record the current container image digests and NetBird application version.
-2. Back up the protected live configuration and `netbird_data` volume.
+2. Back up the live configuration and `netbird_data` volume.
 3. Review upstream release notes and compatibility with the Nginx Proxy Manager routes.
 4. Pull and recreate only the two application services, naming them explicitly (see below).
 5. Repeat the direct, proxy-network, DNS, HTTPS, authentication, and restart checks.
@@ -148,7 +148,7 @@ docker compose up -d --force-recreate netbird-server dashboard
 I name the two services, `netbird-server` and `dashboard`, explicitly rather than acting on the whole project. Two points make this the reliable form:
 
 - `proxy` is an external Docker network declared under `networks:`, not a service. Including it in a service list (for example `docker compose pull proxy`) fails with `no such service: proxy`. Nginx Proxy Manager is a separate Compose project and is updated from its own directory, not through this one.
-- Because both images track the `latest` tag, `--force-recreate` replaces the running containers with the freshly pulled images even when the tag string is unchanged. Without it, Compose can leave the existing containers in place when it considers their definition unchanged, so a pulled update would not actually take effect.
+- Because both images track the `latest` tag, `--force-recreate` replaces the running containers with the freshly pulled images even when the tag string is unchanged. Without it, Compose can leave the existing containers in place when it considers their definition unchanged, so the pulled update wouldn't take effect.
 
 Tracking `latest` is my intentional 2026-07-12 maintenance decision. I continue to record the before/after image identity and verification for every update.
 
@@ -161,10 +161,8 @@ I back up these items together before an update or migration:
 - `/opt/docker/netbird/dashboard.env`
 - Docker volume `netbird_data`
 
-These artifacts contain secrets. I never store them in Git, evidence logs, screenshots, or unencrypted general-purpose storage.
-
 To restore, I recover the files with their original ownership and permissions, restore the volume, confirm the external `proxy` network exists, then run `docker compose up -d` and perform the full health check. I restore Nginx Proxy Manager independently if its proxy host or certificate state was also lost.
 
-## Escalation and Troubleshooting
+## Recording a Failure
 
 I use [Troubleshooting-Log.md](Troubleshooting-Log.md) for known deployment issues. For a new problem I capture the exact symptom and error first, then document failed attempts, hypotheses, tests, corrective action, and verification chronologically. I create a separate security incident record if availability or security impact becomes material.

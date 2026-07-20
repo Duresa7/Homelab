@@ -1,24 +1,22 @@
 # Splunk SIEM: Troubleshooting Log
 
 **Created:** 2026-07-01  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Every problem I hit during the build, what caused it, and how I fixed it. Companion to [Build-Log.md](Build-Log.md). The build log records *what I did*; this records *what went wrong and the fix*.
+I record each Splunk and SC4S failure here with its cause, correction, & observed result. The [build log](Build-Log.md) holds the deployment sequence.
 
-## Quick index
+## Quick Index
 
 | # | Where | Symptom | Root cause | Fix |
 |:-:|---|---|---|---|
 | 1 | Step 5 | `rpm -i` → transaction lock permission denied | Ran without `sudo` | Re-ran with `sudo` |
-| 2 | Step 5 | `splunk: command not found` | Install (#1) had actually failed; `/opt/splunk` was empty | Fixed once #1 succeeded |
+| 2 | Step 5 | `splunk: command not found` | Install (#1) had failed; `/opt/splunk` was empty | Fixed once #1 succeeded |
 | 3 | Step 6 | `Failed to enable unit: sc4s.service does not exist` | Unit file never created | Created `/lib/systemd/system/sc4s.service` |
 | 4 | Step 6 | SC4S crash-loop, `0.0.0.0:1514 Address in use` | `splunkd` already listening on 1514 (leftover TCP input) | Deleted the Splunk TCP input |
 | 5 | Step 6 | Search returned 0 results | Time range was real-time | Switched to a historical range |
 | 6 | Step 6 | UniFi test event "missing" | Searched the wrong sourcetype | Searched `sourcetype=cef` instead |
 | 7 | Step 6 | CEF header fields blank | Guessed field names; SC4S already parses CEF | Used real field names |
 | 8 | Step 6 | Only `UniFi OS` routed to `netops` | UniFi sends 3 product strings; only 1 key defined | Added all 3 routing keys |
-
----
 
 ## 1. RPM install failed: transaction lock permission denied
 
@@ -35,9 +33,7 @@ error: can't create transaction lock on /usr/lib/sysimage/rpm/.rpm.lock (Permiss
 sudo rpm -i /tmp/splunk-10.4.0-f798d4d49089.x86_64.rpm
 ```
 
-**Takeaway:** the `NOKEY` warning above the error is unrelated and **benign**: it only means Splunk's GPG signing key isn't imported, so the signature isn't verified. Package installs need root.
-
----
+The `NOKEY` warning was separate from the permission failure. It reported that the Splunk signing key wasn't imported; the transaction lock failed because the command lacked root permission.
 
 ## 2. `splunk: command not found` after "installing"
 
@@ -51,9 +47,6 @@ sudo: /opt/splunk/bin/splunk: command not found
 
 **Fix:** resolved itself once the `sudo rpm -i` in #1 succeeded and populated `/opt/splunk`.
 
-**Takeaway:** "directory exists but binary missing" usually means an earlier install step silently failed. Scroll back and check.
-
----
 
 ## 3. SC4S unit does not exist
 
@@ -71,9 +64,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now sc4s
 ```
 
-**Takeaway:** SC4S has several moving parts (volume, dirs, `env_file`, **unit file**). Missing the unit file is an easy step to skip.
-
----
 
 ## 4. SC4S crash-loop: port 1514 already in use
 
@@ -92,21 +82,15 @@ sudo ss -lntup | grep -w 1514
 
 **Fix:** I deleted that input (**Settings → Data Inputs → TCP → port 1514 → Delete**), then ran `sudo systemctl restart sc4s`. SC4S bound 1514 cleanly and the HEC connection test succeeded.
 
-**Takeaway:** for "address in use," `ss -lntup | grep <port>` names the culprit process immediately. Also: don't leave splunkd listening on syslog ports when using a dedicated collector.
-
----
 
 ## 5. Search returned 0 results (real-time trap)
 
-**Symptom:** `index=* sourcetype=sc4s:events "starting up"` showed **0 of 0 events**, even though SC4S had clearly started.
+**Symptom:** `index=* sourcetype=sc4s:events "starting up"` showed **0 of 0 events**, even though the SC4S logs showed it had started.
 
 **Cause:** I had the time picker set to **"All time (real-time)"**. A real-time search only shows events arriving from the moment you run it; the startup event had happened minutes earlier.
 
 **Fix:** I switched the time range to a historical window (**Last 24 hours** / **All time**). The events appeared.
 
-**Takeaway:** if you *know* data exists but a search is empty, check for real-time mode first.
-
----
 
 ## 6. UniFi test event "missing": wrong sourcetype
 
@@ -121,9 +105,6 @@ index=* sourcetype=cef Ubiquiti
 ```
 The UniFi events showed up immediately (`sourcetype=cef`, `sc4s_fromhostip=192.168.70.1`).
 
-**Takeaway:** `sc4s:events` = SC4S talking about itself; your device data is under its own sourcetype (`cef` here).
-
----
 
 ## 7. CEF header fields came back blank
 
@@ -137,9 +118,7 @@ index=netops sourcetype=cef | head 1 | fieldsummary | table field
 index=netops sourcetype=cef | table _time sc4s_vendor sc4s_product UNIFIhost UNIFIadmin msg
 ```
 
-**Takeaway:** because SC4S does index-time parsing, the search-head CEF add-on is largely **redundant** here; its only real value is CIM normalization for dashboards/correlation later. Blank columns usually mean wrong field names, not missing data. Confirm with `fieldsummary`.
-
----
+SC4S performs the CEF parsing in this deployment. The search-head add-on remains useful for future CIM normalization, but it isn't required to expose `sc4s_*` or `UNIFI*` fields.
 
 ## 8. Only one UniFi product routed to `netops`
 
@@ -166,7 +145,4 @@ index=netops sourcetype=cef earliest=-30m | stats count by sc4s_product   # prod
 index=main   sourcetype=cef earliest=-30m | stats count by sc4s_product   # 0 = nothing leaking
 ```
 
-**Takeaways**
-- SC4S metadata routing keys are **per `device_vendor`_`device_product`:** enumerate real values with `stats count by sc4s_product` rather than assuming.
-- Routing changes are **forward-only:** events already indexed in `main` stay there; only new events follow the new rule.
-- An **empty `main`** for new CEF is the definitive proof that every product key matches.
+SC4S routes on each `device_vendor`_`device_product` pair, and the change affects only new events. The empty `main` result for the final 30-minute window showed that all three observed product keys matched.

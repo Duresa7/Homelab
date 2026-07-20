@@ -5,7 +5,7 @@
 
 ## Scope
 
-Close the follow-ups I had queued for the NetBird and Nginx Proxy Manager access stack on CT 107 `docker-network`, record the intentionally reduced hardening scope, and reconcile the platform records with that decision.
+I closed the certificate-renewal and Docker-logging follow-ups for the NetBird and Nginx Proxy Manager stack on CT 107. I also recorded which remaining hardening items I declined or deferred.
 
 ## Starting State
 
@@ -31,7 +31,7 @@ Both Compose projects passed `docker compose config --quiet` before and after ap
 
 ### 3. Post-change upstream refresh
 
-My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting log](../Troubleshooting-Log.md#9-npm-retained-a-stale-netbird-upstream-address-after-recreation).
+My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting log](../Troubleshooting-Log.md#7-npm-retained-a-stale-netbird-upstream-address-after-recreation).
 
 ## Descope Decision
 
@@ -39,26 +39,23 @@ I kept log rotation and finished only the items I could take end to end in one s
 
 | Item | Disposition | Reason |
 |---|---|---|
-| Verify automated Let's Encrypt renewal | Completed | I could run the non-interactive DNS-01 staging renewal and scheduler check unattended |
-| Bounded logging for NPM and NetBird | Completed | I could apply the targeted Compose changes and verify health unattended |
-| Nested `.claude/settings.local.json` ignore rule | Completed | Narrow repository hygiene correction |
+| Verify automated Let's Encrypt renewal | Completed | The DNS-01 staging renewal and scheduler check passed |
+| Bounded logging for NPM and NetBird | Completed | The targeted Compose changes and service checks passed |
 | CT 107 reboot recovery | Descoped | Requires a disruptive maintenance window |
 | Restrict NPM administrative port 81 | Descoped | I need to confirm the approved management path first, and it carries lockout risk |
-| Console-password recovery | Descoped | I completed `<YOUR_ADMIN_USERNAME>`; the remaining root work needs manual handling |
 | Image pinning and version-review cadence | Declined | I chose to remain on `latest` |
 | Backups and restore testing | Declined | I chose not to implement them |
 | Certificate-lifecycle, service, endpoint, and health monitoring | Declined | I chose not to implement monitoring |
 | External reachability / ingress-NAT decision | Resolved | The service is internal-only with no WAN ingress |
 | Tighten `Peers → Access-A` policy | Descoped | I have not yet defined the production source groups and ports |
 
-Runbook recovery and update guidance remains as neutral reference material. I did not rewrite dated evidence or historical troubleshooting facts.
+The runbook keeps recovery and update procedures even though those items aren't active backlog.
 
 ## Rollback Points
 
 - For logging, restore the prior NetBird values (`max-size: "500m"`, `max-file: "2"`) and remove the NPM `logging` block, validate each Compose project, then recreate the affected services. I removed the temporary live rollback copies only after successful verification; the before-state diff is retained in S02 evidence.
 - The Nginx upstream refresh changed no persistent configuration. If a reload introduced a proxy fault, restart the existing NPM container from its unchanged Compose project and repeat `nginx -t` plus endpoint validation.
 - The renewal work was read-only against live certificate state. The staging dry-run did not replace the production certificate and therefore requires no certificate rollback.
-- After commit, the documentation and Mission Control changes can be reverted through version control without changing live service state.
 
 ## Verification Performed
 

@@ -1,11 +1,11 @@
 # Termix Upgrade 2.2.1 to 2.5.0
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Date:** 2026-07-13  
 **Target:** `docker-main`, Compose project `/opt/docker/termix`  
-**Status:** Completed
+**Status:** Complete
 
 ## Scope
 
@@ -19,11 +19,11 @@ I upgraded the existing Termix Compose project from package version 2.2.1 to 2.5
 - Persistent data was mounted from named volume `termix_termix-data` at `/app/data`.
 - The compiled 2.2.1 reset route omitted the reset value from its logger template.
 
-## Decisions
+## Upgrade Choices
 
 - I deliberately took no backup. I accepted the risk of a multi-version application/database migration without a new recovery copy.
 - I chose the simple full-project sequence `docker compose pull`, `docker compose down`, and `docker compose up -d`, so both Termix and its `guacd` companion cycled together.
-- I initiated no password reset during verification. I verified the corrected code path statically in the deployed artifact and kept control of when to generate a fresh recovery code.
+- I verified the corrected reset logger statically without initiating a reset.
 - I did not edit or pin the Compose file during this bounded change; it continues to reference `ghcr.io/lukegus/termix:latest`.
 
 ## Actions and Results
@@ -54,12 +54,10 @@ The first combined verification reached its two-minute limit while `guacd` still
 
 The first Termix-to-`guacd` Node probe printed `connected` but exited 2 because its timeout was not cleared after a successful connection. The corrected probe cleared the timeout and exited 0. Docker's first scheduled `guacd` probe then exited 0 at 23:46:21 UTC and set the container to `healthy`.
 
-No reset code, password, token, encryption key, environment value, or decrypted database content was printed or retained.
-
 ## Rollback
 
 The previous image ID `sha256:7c98e47c2fbb6becb786914a76e1ba6c90a5402346cbdf5a0170360fd8e5f3c0` remained available locally after the upgrade. Because I declined a backup and Termix may have migrated its persistent database, an application downgrade is not guaranteed safe and I did not attempt it. Any rollback should first inspect 2.5.0 migration compatibility and current data state.
 
 ## Remaining Work
 
-I need to initiate a fresh password reset when ready and retrieve the newly logged code directly from the live Termix logs. The pre-upgrade code was invalidated by the full Compose restart.
+Run one password-reset test to confirm the 2.5.0 logger returns the newly generated code. The pre-upgrade code expired with the former process.

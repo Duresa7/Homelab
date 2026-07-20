@@ -1,7 +1,7 @@
 # S05A qBittorrent Functional Filter-Test Transcript
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Capture timestamp:** 2026-07-17T21:32:51-04:00  
 **Target:** `red_server`, Proxmox CT 842 `media-01`  

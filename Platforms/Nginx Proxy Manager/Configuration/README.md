@@ -23,6 +23,5 @@ NPM writes its database, proxy-host state, & generated Nginx files under `data/`
 - The Let's Encrypt wildcard/apex certificate is assigned to the NetBird host, expires `2026-10-08 23:49:46 UTC`, and has Force SSL and HTTP/2 enabled.
 - The HTTPS client path, authenticated dashboard, first-peer VPN traffic, post-restart service health, non-interactive ACME renewal path, and bounded logging are all verified.
 - Keep HTTP/2 enabled on the NetBird proxy host because its advanced configuration includes native gRPC routes.
-- Supply `<YOUR_CLOUDFLARE_DNS_TOKEN>` through the NPM certificate form when creating the DNS-01 certificate.
 
 Review the [deployment record](../Documentation/Deployment.md) and [operations runbook](../Documentation/Runbook.md) before changing the live project.

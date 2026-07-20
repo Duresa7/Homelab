@@ -1,15 +1,14 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is the Ansible project I use to onboard and rotate SSH public-key identities. Semaphore is an optional launcher over these files; it is not required to operate them.
+I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
-## Safety Model
+## Change Boundaries
 
-- Private keys never enter this repository or Ansible.
 - Every identity has its own file and target allowlist under `identities/`.
-- This repository omits live identity files and retains only the schema example plus `identities/PUBLICATION-NOTICE.md`; the validator detects the notice and validates without them.
+- The public source includes the schema example and `identities/PUBLICATION-NOTICE.md` instead of the environment-specific identity files. The validator detects that layout.
 - Onboarding and staging use additive operations and never delete other keys.
 - Retirement requires a staged replacement, `operator_verified: true`, successful prechecks on every selected target, and the confirmation phrase `RETIRE <identity-id>`.
 - The four Proxmox nodes share one cluster-backed file. Only `grey-server` writes it; the other nodes independently verify the resulting state.
@@ -61,4 +60,4 @@ The template is intentionally invalid until edited so an example key can never b
 
 ## Semaphore
 
-`semaphore/task-templates.yml` is the reproducible UI manifest. Every template points to the same repository, inventory, identity files, and playbooks used by the direct commands above. Semaphore holds the existing `ansible-key` execution credential in its encrypted Key Store; the credential is not exported into this project.
+`semaphore/task-templates.yml` defines the UI. Every template points to the same repository, inventory, identity files, & playbooks used by the direct commands above.

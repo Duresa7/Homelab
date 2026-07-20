@@ -1,4 +1,4 @@
-# TNIO Lore Bot: Structural Fixes Report
+# TNIO Lore Retrieval, Cache and Source-Routing Fixes
 
 **Created:** 2026-05-11  
 **Last updated:** 2026-07-20
@@ -9,13 +9,11 @@
 - **Project root:** `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`
 - **Backup stamp for everything touched:** `bak.structural-fix-20260511`
 
----
+## 1. Failure Being Fixed
 
-## 1. The problem I set out to fix
+The Discord bot cited unrelated records, reused stale answers, & returned unranked candidates after sift failures. Casual messages also needed to stay outside archive retrieval.
 
-The Discord bot (AI over the Google Drive TNIO folder) had been giving incorrect sources and weak answers. I did not want cherry-pick fixes; I wanted structural improvements, and the bot still had to handle friendly banter and off-archive questions.
-
-## 2. System layout I confirmed
+## 2. Request Path
 
 ```
 Discord  →  bot.js  ──HTTP POST /agent-answer──▶  lore_http_server.py (127.0.0.1:19731)
@@ -42,7 +40,7 @@ Discord  →  bot.js  ──HTTP POST /agent-answer──▶  lore_http_server.p
 
 ## 3. Investigation summary
 
-### Logs I mined
+### Logs Reviewed
 
 - `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/logs/agent-negative-feedback.jsonl`: 18 user-flagged bad answers
 - `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/logs/agent-requests.log`: 409 recent agent requests
@@ -58,22 +56,20 @@ Discord  →  bot.js  ──HTTP POST /agent-answer──▶  lore_http_server.p
 | Cache mismatch served wrong answer in `~3ms` | 2 | High-confidence cached answer about previous topic re-served for new question |
 | Other (weak retrieval, prose vs. table) | 5 | Mixed |
 
-### Sync auth failure
+### Drive Sync Failure
 
-`gws` was throwing `invalid_grant: Token has been expired or revoked`. Sync had been failing silently since 18:50 UTC; only visible if you ran `systemctl --user status lore-rag-sync.service`. Nothing in the bot, no alert.
+`gws` returned `invalid_grant: Token has been expired or revoked`. Sync had failed since 18:50 UTC, but only the service status exposed it.
 
-## 4. Root causes (4 distinct)
+## 4. Four Root Causes
 
 1. **Google Drive OAuth token revoked.** Sync stalled → index frozen at 2026-05-11 18:44 UTC. Failure was silent.
 2. **`sift_candidates` fail-open behaviour** in `lore_agent.py`. Every error/skip path returned the unchanged candidate pool (up to 22 candidates × 1800-char excerpts ≈ 40KB → blew the model's context budget and produced more `llm_error` next round). The answerer then cited junk.
 3. **Cache poisoning.** `lore_mcp_server.lore_agent_answer` only excluded `best_effort` from caching. Wrong-source answers at `confidence: "high"` or `"medium"` were cached for the full TTL, serving repeat-bad-responses in ~3 ms.
 4. **No visibility into sync failures.** The wrapper script `sync_and_maybe_restart.sh` swallowed stderr from `sync_lore.py`.
 
-## 5. Changes applied
+## 5. Changes
 
-All edits are atomic Python text replacements with backups stamped `.bak.structural-fix-20260511`. Both Python files pass `py_compile`.
-
-### 5.1 `lore_agent.py`: sift robustness
+### 5.1 `lore_agent.py`: bounded sift fallback
 
 - **Added** `_deterministic_topk(candidates, k=12)`: score-sort helper using:
   1. `match_type` (`direct_*` / `term_sweep` first)
@@ -96,7 +92,7 @@ All edits are atomic Python text replacements with backups stamped `.bak.structu
 - **Pre-sift hard cap in `agent_answer` reduced from 22 → 16.**
 - The `sifted = [row for i, row in enumerate(...)]` enumerate target switched from `candidates` to `sift_pool` so successful-sift indices line up with the new capped pool.
 
-### 5.2 `lore_mcp_server.py`: cache safety
+### 5.2 `lore_mcp_server.py`: cache acceptance gate
 
 - **Cache-key namespace bumped** `agent-answer::v28::` → `agent-answer::v29::`. Instantly invalidates every poisoned entry.
 - **Cache acceptance gate** rewritten. The old gate only excluded `best_effort`. The new gate refuses to cache when **any** of these is true:
@@ -106,7 +102,7 @@ All edits are atomic Python text replacements with backups stamped `.bak.structu
   - `evidence["sift"]["skipped_reason"]` in `{"llm_error", "empty_response", "no_json", "bad_shape", "json_parse_error", "rejected_all_passthrough"}` (sift was unreliable)
 - **Persisted on-disk cache cleared:** `state/agent_answer_cache.json` moved aside to `state/agent_answer_cache.json.bak.structural-fix-20260511` so the bumped namespace doesn't reload stale entries on restart.
 
-### 5.3 `sync_and_maybe_restart.sh`: sync visibility
+### 5.3 `sync_and_maybe_restart.sh`: sync status
 
 Rewrote with these changes:
 
@@ -122,11 +118,11 @@ Rewrote with these changes:
   ```
 - Emits **`::SYNC_AUTH_FAILURE::`** on stderr when the sync output contains `invalid_grant` / `expired or revoked` / `authError`, so the failure is greppable in `journalctl --user -u lore-rag-sync.service`.
 - Emits `::SYNC_FAILURE::` for non-auth errors.
-- Still triggers `systemctl --user restart lore-search-http.service` when the corpus version actually changes.
+- Still triggers `systemctl --user restart lore-search-http.service` when the corpus version changes.
 
-### 5.4 Re-auth Google Drive (gws)
+### 5.4 Restore Google Drive sync
 
-I port-forwarded the OAuth callback over SSH so the consent flow could complete from my PC against the headless LXC. Authentication succeeded for account `<YOUR_GOOGLE_ACCOUNT>` with the full default scope set (drive, sheets, gmail.modify, calendar, documents, presentations, tasks, pubsub, cloud-platform, openid, userinfo.email, userinfo.profile).
+I restored `gws` access, started `lore-rag-sync.service`, & confirmed the next sync returned `last_result: "ok"` with zero consecutive failures.
 
 ## 6. Files touched on the server
 
@@ -172,26 +168,26 @@ After re-auth and manual `systemctl --user start lore-rag-sync.service`:
 
 New corpus version: `9d37aea703538e3d8b67`. The 6-min sync timer continues unattended.
 
-## 8. Operational notes / follow-ups
+## 8. Open Conditions and Rollback
 
-- **No action needed now:** `lore_agent.py.bak.*` and `lore_mcp_server.py.bak.*` files (~80 of them, from prior cherry-pick cycles) are still in the directory. Safe to prune older than today after confirming nothing references them; purely a tidying exercise, not a correctness issue.
-- **If you want to monitor sync health from elsewhere:** read `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/sync_status.json`: `consecutive_failures > 0` or `last_success_ts` older than ~1 hour means Drive content may be stale.
+- About 80 older `lore_agent.py.bak.*` and `lore_mcp_server.py.bak.*` files remain from prior changes. They aren't part of the runtime path.
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/sync_status.json` reports Drive health. `consecutive_failures > 0` or `last_success_ts` older than one hour indicates stale corpus data.
 - **If `llm_error` rate stays high under load** (visible as `evidence.sift.skipped_reason: "llm_error"` in `agent-requests.log`), the next structural lever is the `openclaw-gateway` lane queue; `journalctl` shows `lane wait exceeded: waitedMs=17311 queueAhead=0` events. That's the agent serializing on a single Codex session lane. Increasing lane concurrency (or running planner/answerer/sift in distinct sessions) would let sift retry without starving the answer call. Out of scope for this round.
 - **Long-term memory snapshot** (`state/memory/long_term_memory.{json,md}`) is from 2026-05-06; refresh weekly via the existing `lore-memory-build.timer` (next fire 2026-05-20).
-- **Backup hygiene:** the `*.bak.structural-fix-20260511` files are the rollback target for everything in this change set. To revert a single file:
+- The `*.bak.structural-fix-20260511` files are the rollback target for this change. To restore one file:
   ```
   cp /home/<YOUR_DEPLOYMENT_USER>/lore-rag/<file>.bak.structural-fix-20260511 /home/<YOUR_DEPLOYMENT_USER>/lore-rag/<file>
   systemctl --user restart lore-search-http.service lore-discord-bot.service
   ```
 
-## 9. Quick reference: what the bot should now do better
+## 9. Round 1 Behavior
 
 | Question class | Before | After |
 |---|---|---|
-| Archive question, sift LLM happy | Correct, often | Correct (no regression) |
-| Archive question, sift LLM errors out | **Wrong sources** (pass-through) | **Top-12 score-sorted, usually correct** |
-| Repeated question that previously cached badly | **3 ms stale wrong answer** | **Fresh attempt every time** (until a *good* answer succeeds and passes the cache gate) |
-| Friendly banter | Persona reply | Persona reply (no regression) |
+| Archive question, sift LLM returns candidates | Ranked answer | Ranked answer |
+| Archive question, sift LLM errors out | Raw candidate pass-through | Top 12 candidates by deterministic score |
+| Repeated question that previously cached badly | 3 ms stale answer | Fresh attempt until the response passes the cache gate |
+| Friendly banter | Persona reply | Persona reply |
 | Drive content recently updated | Stale (silent auth fail) | Fresh on next 6-min sync, status file shows health |
 
 ---
@@ -289,11 +285,11 @@ Beast Codex / Beast Trainers Codex no longer appears in cited sources for any co
 
 Round 1 backups (`bak.structural-fix-20260511`) remain in place as the deeper rollback point; apply Round 1 first if reverting both rounds, otherwise the R2 patches will be redundant.
 
-## 14. Lessons for future work
+## 14. Failure Conditions Confirmed
 
-- **Cap-and-merge order matters.** A plain `A + B + C` then `[:N]` silently starves whichever source comes last when an upstream source produces more rows than the cap. Per-source quotas are the safe pattern.
-- **Cache acceptance must mirror retrieval confidence.** "Confidence: high" from the answerer is necessary but not sufficient; the *retrieval* underneath also has to be trustworthy. `pre_sift_count` is a cheap floor.
-- **Match-type precision tiers are worth being explicit about.** Treating `term_sweep` as direct was a subtle but harmful conflation; making the tiers explicit in code keeps future refactors honest.
+- `A + B + C` followed by `[:N]` starved later sources when an earlier source filled the cap. Per-source quotas kept all three represented.
+- Answer confidence alone allowed weak retrieval into the cache. Adding the `pre_sift_count` floor blocked the observed thin-pool case.
+- Treating `term_sweep` as a direct match promoted broad keyword results. Separate match tiers corrected the order.
 
 ---
 
@@ -301,7 +297,7 @@ Round 1 backups (`bak.structural-fix-20260511`) remain in place as the deeper ro
 
 ## 15. What was still missing after Round 2c
 
-After Round 2c the bot found `TNIO Guild Rules - Grand Council (definition)` for "who's on the grand council?" but missed `Know Your Empire`, the doc that actually names the office-holders. I flagged it in Discord: the names are in Know Your Empire.
+After Round 2c the bot found `TNIO Guild Rules - Grand Council (definition)` for "who's on the grand council?" but missed `Know Your Empire`, the document that names the office-holders. I flagged it in Discord: the names are in Know Your Empire.
 
 ### Drill-down
 
@@ -372,18 +368,18 @@ All three previously-broken leadership questions now return correct names from `
 
 To revert R2d alone: `cp lore_agent.py.bak.structural-fix-r2d-20260511 lore_agent.py && systemctl --user restart lore-search-http.service`. Round 1 and R2/R2b/R2c backups remain in place underneath for deeper rollbacks.
 
-## 19. Additional lessons
+## 19. Routing Conditions Confirmed
 
-- **Routing must be deterministic for canonical "who's who" docs.** Embedding similarity is unreliable when the question's salient tokens (e.g. "Grand") appear in many unrelated docs. A 5-line regex + hint-list beats hoping the embedder agrees.
-- **Substring search misses role-suffix variants.** Body names ("Grand Council") and role names ("Grand Councilor") share the prefix but the suffix matters. When the user asks about the body, also search for the role.
+- Embedding similarity missed canonical office records when words such as `Grand` appeared in unrelated documents. A question detector and document hints restored the expected sources.
+- A search for `Grand Council` didn't match every `Grand Councilor` record. The route now expands body names to their role variants.
 
 ---
 
 # Round 3: Source-map overhaul (data-driven cataloging)
 
-## 20. Why this round
+## 20. Source-Map Gap
 
-After Round 2d, leadership questions worked but only via a hand-coded regex + curated doc-title list. I wanted a **general** improvement: the catalog should know what every Drive file is, what it covers, and which questions it answers, not just councils. And it had to use **Google Drive as the source of truth** (no hand-curated catalog file).
+After Round 2d, leadership questions depended on a regex and a short document-title list. Round 3 generated topics, canonical question classes, key entities, & descriptions for every Drive file instead.
 
 Solution: build the catalog *from* Drive content via an LLM-enrichment pass, persist into `source_map.json`, and consult it during routing. Re-runs automatically whenever sync detects a corpus change.
 
@@ -467,16 +463,16 @@ All cited via topic_index after the run:
 
 `enrich_source_map.py` is a new file (no original; backups are of the script itself across the sheet-flattener iteration).
 
-## 25. Operational notes for Round 3
+## 25. Round 3 Operations
 
-- **Re-running enrichment manually**: `/usr/bin/python3 /home/<YOUR_DEPLOYMENT_USER>/lore-rag/enrich_source_map.py`. Honors `ENRICH_MAX_DOCS=N` if you want to limit. Logs at `logs/enrich-run.log`.
+- **Manual enrichment**: `/usr/bin/python3 /home/<YOUR_DEPLOYMENT_USER>/lore-rag/enrich_source_map.py`. `ENRICH_MAX_DOCS=N` limits the run. Logs are in `logs/enrich-run.log`.
 - **Inspecting the catalog**: every entry under `documents[*]` in `state/source_map.json` now has `description`, `topics_enriched`, `canonical_for`, `key_entities`. Top-level `topic_index` is the reverse lookup.
 - **What happens when a Drive doc changes**: 6-min sync timer pulls Drive → `build_source_map` rebuilds with prior enrichment preserved by file id → if corpus version changed, `sync_and_maybe_restart.sh` runs `enrich_source_map.py` (only touches docs whose hash changed) → restarts `lore-search-http.service` so the new map takes effect. End to end fully automatic.
 - **What happens when Drive auth fails**: the Round 1 visibility wrapper still fires (`::SYNC_AUTH_FAILURE::` in journal, `state/sync_status.json` updated). Enrichment is skipped because corpus didn't change.
 
-## 26. Round 3 lessons
+## 26. Round 3 Conditions Confirmed
 
-- **Don't curate the catalog by hand.** Have the LLM read each Drive doc and write its own metadata. As long as the corpus is the source of truth, the catalog regenerates whenever the corpus changes, and there's nothing to drift.
-- **Preserve derived state across rebuilds.** Anything that takes >10 seconds per doc to recompute (LLM enrichment, embeddings, summaries) needs explicit preservation; otherwise a routine sync silently wipes it.
-- **Sheets are first-class.** Don't feed raw spreadsheet JSON to a summarizer. Flatten to tab-headed pseudo-prose first; the summary quality is night-and-day better.
-- **Token-overlap beats phrase-match for topic routing.** Real users won't say "grand council membership"; they'll say "who's on the grand council". Require ≥2 significant-word overlap, not the full topic phrase.
+- The catalog now derives metadata from each Drive document and rebuilds when the corpus changes.
+- A routine source-map rebuild erased enrichment that took more than 10 seconds per document to create. The rebuild now preserves derived metadata by file ID.
+- Raw Sheet JSON produced poor summaries. Flattening rows under tab headers gave the enricher readable records.
+- Full-phrase matching missed `who's on the grand council`. Requiring two significant overlapping words matched that phrasing.

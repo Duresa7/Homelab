@@ -8,7 +8,7 @@
 
 ## Scope
 
-Deploy Nginx Proxy Manager on CT 107 `docker-network` using my standard `/opt/docker/<service>` Compose layout. NPM provides the shared HTTP/HTTPS entry point and certificate lifecycle for NetBird while talking to the NetBird containers over a dedicated external Docker network.
+I deployed Nginx Proxy Manager on CT 107 `docker-network` under `/opt/docker/nginx-proxy-manager`. NPM provides NetBird's HTTP/HTTPS entry point and certificate lifecycle over the external `proxy` Docker network.
 
 NetBird is the primary owner of the combined job. I keep the combined step evidence with the NetBird platform.
 
@@ -27,15 +27,14 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 5. I published TCP ports 80, 81, and 443 on guest `192.168.85.2`.
 6. I mounted persistent `data/` and `letsencrypt/` directories into the container.
 7. The application reported version 2.15.1, passed its built-in health check, and returned HTTP `200` on ports 80 and 81.
-8. I completed the first-run administrator setup through the authenticated UI without placing the password in evidence.
+8. I completed the first-run administrator setup through the web UI.
 9. I saved the NetBird proxy host; it reported Online with upstream `http://netbird-dashboard:80`, Block Common Exploits, and WebSocket Support enabled.
 10. I applied the 1,296-character advanced configuration for API, OAuth2, WebSocket, signal, management, and gRPC routing.
 11. `nginx -t` succeeded, and an HTTP Host-header request through NPM returned the NetBird dashboard with status `200`.
-12. I created a zone-scoped Cloudflare DNS Write token for `<YOUR_BASE_DOMAIN>` and supplied it to NPM's DNS-01 certificate form.
-13. NPM obtained a Let's Encrypt DNS-01 certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`. The certificate expires `2026-10-08 23:49:46 UTC`.
-14. I assigned the certificate to `<YOUR_NETBIRD_DOMAIN>` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
-15. The HTTPS client path presented the expected certificate and loaded the authenticated NetBird dashboard.
-16. I restarted the NPM and NetBird Compose projects in a controlled validation. Both stacks returned healthy, the proxy configuration remained valid, and the authenticated HTTPS dashboard remained reachable.
+12. NPM obtained a Let's Encrypt DNS-01 certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`. The certificate expires `2026-10-08 23:49:46 UTC`.
+13. I assigned the certificate to `<YOUR_NETBIRD_DOMAIN>` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
+14. The HTTPS client path presented the expected certificate and loaded the authenticated NetBird dashboard.
+15. I restarted the NPM and NetBird Compose projects in a controlled validation. Both stacks returned healthy, the proxy configuration remained valid, and the authenticated HTTPS dashboard remained reachable.
 
 ## Resulting Configuration
 
@@ -54,10 +53,9 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 | Restart policy | `unless-stopped` |
 | Administrator | Initialized |
 | NetBird certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
-| Cloudflare DNS-01 input | Zone-scoped DNS Write token for `<YOUR_BASE_DOMAIN>` |
 | NetBird proxy host | Saved and Online; advanced routes, certificate, Force SSL, and HTTP/2 applied |
 
-The checked-in Compose file & NetBird advanced-routing snippet are reader-editable references. Runtime data, the SQLite database, private keys, & ACME state stay with the live service.
+The checked-in Compose file & NetBird advanced-routing snippet are reader-editable references. The SQLite database, generated Nginx files, & ACME state remain runtime data.
 
 ## Applied NetBird Integration
 
@@ -100,9 +98,9 @@ These results verify the runtime, inter-container path, saved host, certificate 
 - Routine rollback stops the Compose project without deleting `data/` or `letsencrypt/`.
 - Preserve the live Compose file, `data/`, and `letsencrypt/` together before an update or migration.
 - If an image update fails, restore the previously verified image version or digest and recreate the container against the preserved bind mounts.
-- Removing a proxy host or certificate is a separate application-level change; export or document its non-secret settings first and avoid deleting a certificate still used by another host.
+- Removing a proxy host or certificate is a separate application-level change; record its settings first and avoid deleting a certificate still used by another host.
 - Removing NPM from CT 107 also removes NetBird's intended TLS entry point. Coordinate rollback with the NetBird records.
 
 ## Operational Status
 
-No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material, & the [troubleshooting log](Troubleshooting-Log.md) retains the HTTP `400` API-login result.
+No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material.

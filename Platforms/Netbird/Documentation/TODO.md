@@ -10,7 +10,7 @@ The NetBird control plane, HTTPS publication, authenticated administrator dashbo
 - [x] Deploy Debian 13 LXC 107 `docker-network` on Access-A/VLAN 85 with HA, key-only SSH, Docker Engine, and Compose.
 - [x] Deploy NetBird 0.74.3 and Nginx Proxy Manager 2.15.1 under `/opt/docker`.
 - [x] Configure least-privilege UniFi egress, internal DNS, Cloudflare DNS-01 TLS, Force SSL, HTTP/2, and the authenticated dashboard.
-- [x] Validate controlled Compose restarts, remove deployment leftovers, and harden secret-bearing file permissions.
+- [x] Validate controlled Compose restarts, remove deployment leftovers, and restrict configuration file permissions.
 
 ## First Peer and VPN Path
 

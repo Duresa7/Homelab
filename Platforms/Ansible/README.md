@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This platform owns my reusable Ansible control plane. The current deployment on `ansible-01` manages SSH public-key identities, and Semaphore gives me an optional web interface over the same project.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 15 supported hosts, and Semaphore provides an optional web interface over the same playbooks.
 
 ## Live Deployment
 
@@ -15,7 +15,7 @@ This platform owns my reusable Ansible control plane. The current deployment on 
 - Boot behavior: Proxmox starts LXC 100 automatically; systemd starts Semaphore inside it
 - Source of truth: [SSH identity automation source](Source/ssh-key-automation/README.md)
 
-Semaphore is not required. I can run every operation directly with `ansible-playbook` from the project directory.
+Semaphore isn't required. Every operation also runs through `ansible-playbook` from the project directory.
 
 ## Layout
 

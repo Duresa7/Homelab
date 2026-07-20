@@ -10,9 +10,9 @@
 
 ## Scope
 
-Move the two security and monitoring guests from MGMT-A/VLAN 70 to Security-A/VLAN 72, replace their cross-zone policy paths, apply workload-specific external egress restrictions, remove obsolete MGMT-A references, and prove the services still operate. I ran the migration end to end and required zero new WAN-inbound exposure.
+I moved the two security and monitoring guests from MGMT-A/VLAN 70 to Security-A/VLAN 72. I replaced their cross-zone paths, limited external egress by workload, removed obsolete MGMT-A references, & checked each service after the cutover. I added no WAN-inbound exposure.
 
-I pulled Wazuh agent repointing out of the active scope and recorded it as later work. During validation, live state also showed that three planned Proxmox `node_exporter` targets did not exist and three Prometheus targets were stale or offline; I deferred those baseline corrections rather than expanding this migration.
+I left Wazuh agent repointing for later. Validation also found three missing Proxmox `node_exporter` targets and three stale or offline Prometheus targets, which I kept outside this migration.
 
 ## Starting State
 
@@ -25,7 +25,7 @@ The UniFi controller had Wazuh policies aimed at `192.168.70.20` and a MGMT-A-to
 
 My preflight confirmed both QEMU agents responded, both NICs were VirtIO on `vmbr0` with guest firewall enabled and VLAN tag 70, and neither proposed Security-A address was in use. I backed up network configuration and firewall files before changing anything.
 
-## Decisions
+## Addressing and Cutover Choices
 
 - I assigned static addresses: `security-01` = `192.168.72.2/24`; `splunk-siem` = `192.168.72.3/24`; gateway and DNS = `192.168.72.1`.
 - I cut over hard, one guest at a time, Splunk first. `security-01` could not start until Splunk passed service, port, UI, and egress validation.
@@ -35,7 +35,7 @@ My preflight confirmed both QEMU agents responded, both NICs were VirtIO on `vmb
 - I kept the existing Galaxy TCP 8006 accept from `192.168.70.0/24` for later review, but replaced the broad TCP 9100 accept with `192.168.72.2/32`.
 - I recorded MGMT-A's future allowed set as Trusted/VLAN 10, Secure/VLAN 50, WireGuard VPN, and future NetBird traffic sourced from `<YOUR_ORG_NAME>`-Access. Final MGMT-A lockdown is a separate bounded change.
 
-## Actions and Observed Results
+## Migration Walkthrough
 
 ### 1. Stage the replacement paths
 
@@ -85,7 +85,7 @@ I changed the UniFi Activity Logging destination to `192.168.72.3:1514`. The aut
 
 At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and processed it through `vendor_product_by_source` and `p_cef_kv`. Its HEC destination showed zero dropped and zero queued events. Splunk's `per_index_thruput` metric then recorded one `netops` event at `22:40:43` with an average age of 0.720 seconds. The `netops` hot bucket created its raw-data and `.tsidx` files at the same `22:40:27` event timestamp. This proves the controller-originated CEF path from UniFi through SC4S/HEC into Splunk; no additional Gateway-to-Security policy was required.
 
-## Resulting Configuration
+## Configuration After the Cutover
 
 | Item | Result |
 |---|---|
@@ -98,7 +98,7 @@ At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and pr
 | Ansible | Living inventory updated and graph validation passed |
 | UniFi SIEM export | `192.168.72.3:1514`; fresh CEF event verified through SC4S/HEC into `netops` |
 
-## Verification
+## Final Checks
 
 | Check | Observed result |
 |---|---|

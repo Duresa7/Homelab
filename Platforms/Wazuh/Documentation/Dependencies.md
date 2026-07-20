@@ -1,7 +1,7 @@
 ﻿# Wazuh Dependencies
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-17
+**Last updated:** 2026-07-20
 
 ## Host and Service Dependencies
 
@@ -15,6 +15,6 @@
 
 - UniFi policies provide only the approved zone-to-Wazuh paths and return traffic.
 - Galaxy/Proxmox supplies VM compute, storage, tagged VLAN 72, and guest firewall enforcement.
-- Endpoint agents require a fresh manager registration and protected enrollment key.
+- Endpoint agents require a fresh manager registration.
 
 No WAN-inbound policy or port forward is required or approved for Wazuh.

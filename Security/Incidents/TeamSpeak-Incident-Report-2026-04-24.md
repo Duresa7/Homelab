@@ -1,33 +1,24 @@
-# TeamSpeak Service Incident Report
+# TeamSpeak DNS and ServerQuery Incident - 2026-04-24
 
 **Created:** 2026-04-24  
 **Last updated:** 2026-07-20
 
-**`<YOUR_ORG_NAME>` United - Internal IT / Cybersecurity Operations**
-
----
-
-## Document Metadata
+## Incident Metadata
 
 | Field | Value |
 |-------|-------|
 | Incident ID | TS3-INC-2026-04-24-001 |
-| Document Classification | Internal |
 | Report Date | 2026-04-24 |
 | Report Timezone | America/New_York |
-| Environment | `<YOUR_ORG_NAME>` United Production |
+| Environment | Production |
 | Service | TeamSpeak 3 Voice Services |
 | Primary Host | alpha-prod-01 |
 | Host IP | 192.168.80.118 |
 | VLAN | SERVERS-A (80) |
-| Report Owner | `<YOUR_ADMIN_USERNAME>` `<YOUR_RETIRED_NODE_NAME>` / `<YOUR_ADMIN_USERNAME>` |
-| Organization | `<YOUR_ORG_NAME>` United |
 | Status | Resolved / Monitoring |
 | Severity | SEV-3 - Service Degradation |
 
----
-
-## Executive Summary
+## Incident Summary
 
 On 2026-04-24, `<YOUR_ORG_NAME>` United observed intermittent TeamSpeak client connection
 failures against the community TeamSpeak endpoint `<YOUR_TEAMSPEAK_ONE_DOMAIN>`. I began
@@ -50,8 +41,6 @@ I corrected both: I updated the Cloudflare SRV target to point directly at the
 Playit hostname and added the Docker bridge gateway IP to the TeamSpeak
 ServerQuery allowlist.
 
----
-
 ## Impact Assessment
 
 | Area | Impact |
@@ -62,8 +51,6 @@ ServerQuery allowlist.
 | Management Plane | TS3 Manager triggered ServerQuery flood protection and previously crashed. |
 | Security Exposure | No evidence of compromise was observed during this investigation. |
 | Data Loss | None identified. |
-
----
 
 ## Affected Assets
 
@@ -77,8 +64,6 @@ ServerQuery allowlist.
 | `<YOUR_BASE_DOMAIN>` | Cloudflare-managed DNS zone | Active |
 | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | Community connection endpoint | Active |
 | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | Community connection endpoint | Active |
-
----
 
 ## Technical Findings
 
@@ -153,8 +138,6 @@ It should not use:
 Playit forwards the public UDP voice service. It does not expose TeamSpeak
 ServerQuery TCP or file transfer TCP externally.
 
----
-
 ## Root Cause Analysis
 
 ### Primary Root Cause
@@ -185,8 +168,6 @@ I checked the following and ruled each out as the primary cause:
 - Slot exhaustion
 - Docker host outage
 
----
-
 ## Corrective Actions Completed
 
 | Action | Status | Notes |
@@ -199,9 +180,7 @@ I checked the following and ruled each out as the primary cause:
 | Confirmed allowlist reload | Complete | TeamSpeak logged updated allowlist with `172.18.0.1/32`. |
 | Restarted TS3 Manager container only | Complete | Manager was stopped and was started. |
 | Verified ServerQuery burst from manager path | Complete | Returned `error id=0 msg=ok`; no flood error observed. |
-| Updated deployment documentation | Complete | `Teamspeak-deployment.md` was corrected. |
-
----
+| Updated deployment record | Complete | [TeamSpeak deployment](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md) now matches the running layout. |
 
 ## Current Known-Good Configuration
 
@@ -259,8 +238,6 @@ Effective allowed ServerQuery sources for `ts-valorant-02`:
 172.21.0.1
 ```
 
----
-
 ## Validation Evidence
 
 ### TeamSpeak 1 Virtual Server
@@ -316,12 +293,8 @@ Port: 53810
 TTL: 300
 ```
 
----
+## Exposure Controls
 
-## Security Considerations
-
-- No secrets, API keys, or ServerQuery credentials should be stored in incident
-  reports.
 - TS3 Manager should remain LAN-only and should not be exposed through Playit or
   public DNS.
 - ServerQuery TCP ports `10011` and `10012` should remain internal only.
@@ -330,9 +303,7 @@ TTL: 300
 - ServerQuery should use a least-privilege administrative account where possible
   instead of broad-use serveradmin credentials.
 
----
-
-## Recommendations
+## Follow-Up Controls
 
 1. Keep the SRV target pointed directly at the Playit hostname.
 2. Keep TS3 Manager configured to LAN/internal ServerQuery ports using normal/raw
@@ -348,12 +319,9 @@ TTL: 300
    - Cloudflare SRV target correctness
    - Playit tunnel registration
 6. Consider pinning Docker image versions after stability validation.
-7. Maintain a change log for DNS, Playit tunnel, and TeamSpeak ServerQuery
-   changes.
+7. Record DNS, Playit tunnel, & ServerQuery changes with the TeamSpeak platform.
 
----
-
-## Closure Statement
+## Current Status
 
 As of 2026-04-24, the TeamSpeak production service is operational. I corrected
 the public connection path, mitigated the TS3 Manager ServerQuery flood risk,

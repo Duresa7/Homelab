@@ -7,27 +7,23 @@
 **Date:** 2026-05-30
 **System:** Proxmox VE 9.2.2 (kernel 7.0.2-6-pve, Debian Trixie)
 
-**Historical note:** This document records the May 2026 expansion from one node
-to three nodes. It was updated on 2026-07-09 after live verification of the
-current four-node cluster, including `red-server`, which was added on
-2026-07-07. The detailed red node expansion is documented in
+**Historical scope:** This document records the May 2026 expansion from one node
+to three. I checked the current four-node state on 2026-07-09 after adding
+`red-server` on 2026-07-07. The red node expansion is documented in
 [`Galaxy Cluster Red Server Expansion - 2026-07-07.md`](../Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md).
 The redundant Cluster-Net Corosync link added on 2026-07-10 is documented in
 [`Galaxy Cluster-Net Corosync Link Addition - 2026-07-10.md`](../Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
 
 ---
 
-## 1. Overview
+## 1. May 2026 Scope and Current State
 
-This document records the process I followed to bring my two new Proxmox nodes,
-`purple-server` and `blue-server`, into my existing `grey-server` Proxmox cluster
-named **Galaxy**. The end goal was a single management plane (one Datacenter view)
-covering the original three nodes. As of 2026-07-09, **Galaxy** is a four-node
-cluster after the later addition of `red-server`.
+I joined `purple-server` and `blue-server` to the single-node `Galaxy` cluster on
+`grey-server`. That produced one Datacenter view across three nodes. The later
+2026-07-07 addition of `red-server` raised membership to four.
 
-The cluster I built is a standard **PVE management cluster** (corosync + pmxcfs):
-unified web UI and live/offline migration across the nodes. I did **not** configure
-HA or shared storage as part of this work.
+Galaxy uses Corosync and `pmxcfs` for one management plane plus live or offline
+guest migration. This change didn't add HA or shared storage.
 
 ### Current node inventory
 
@@ -55,14 +51,13 @@ Corosync transport is `knet` in passive mode over preferred `link0` on MGMT-A pl
 
 ---
 
-## 3. Pre-flight checks
+## 3. Preflight Checks
 
-During the May expansion, I confirmed the cluster prerequisites on all three
-nodes:
+Before the May joins, I checked four prerequisites on all three nodes:
 
 - **Version parity:** all nodes reported `pve-manager/9.2.2`.
 - **Empty joiners:** `qm list` and `pct list` on both new nodes returned no
-  guests. A node with existing VMs/CTs cannot join a cluster, so this mattered.
+  guests. Proxmox won't join a node that already owns VM or CT configurations.
 - **Time sync:** `timedatectl` showed `System clock synchronized: yes` on all
   nodes, all in `America/New_York`.
 - **Unique hostnames:** `grey-server`, `purple-server`, `blue-server`.
@@ -80,12 +75,11 @@ timedatectl | grep -E "synchronized|Time zone"
 
 ---
 
-## 4. SSH key trust (joiners → founder)
+## 4. Joiner SSH Access to the Founder
 
-I joined the nodes using the SSH-based method (see Section 7 for why), which
-requires passwordless root SSH from each joining node to the founder. I appended
-the root public key of `purple-server` and `blue-server` to grey's
-`authorized_keys`. The same pattern was used later for `red-server`.
+I used Proxmox's SSH join path, which requires root SSH from each joiner to the
+founder. I added the `purple-server` and `blue-server` public keys to
+`grey-server`; `red-server` used the same path in July.
 
 ```bash
 # On each joining node: grab the root public key
@@ -100,7 +94,7 @@ grep -qF "root@red-server" /root/.ssh/authorized_keys \
   || echo "<red pubkey>" >> /root/.ssh/authorized_keys
 ```
 
-I then verified passwordless SSH worked in the joiner → founder direction:
+I then ran a batch-mode hostname check from each joiner to the founder:
 
 ```bash
 # On each joiner
@@ -109,22 +103,20 @@ ssh -o StrictHostKeyChecking=accept-new -o BatchMode=yes root@192.168.70.10 host
 
 ---
 
-## 5. Firewall change (REQUIRED)
-
-> **Warning: this was a blocker and required a security-config change.**
+## 5. Firewall Prerequisite
 
 `grey-server` runs the Proxmox firewall (`pve-firewall`, enabled). My active rule
 group is `zero_access`, which only permits SSH (port 22) from a short allowlist
 and then drops everything else with `IN DROP -p tcp -dport 22`. The May joiners
 (`.11` and `.12`) were not on that list, so their SSH to grey was silently dropped
-and `pvecm add` could not proceed. The July `red-server` join required the same
+and `pvecm add` couldn't proceed. The July `red-server` join required the same
 allowlist treatment for `.13`.
 
-Important detail: the `ssh_access` and `gui_access_grey` groups in `cluster.fw`
-are invoked with a leading `|`, which means they are **disabled**. The group that
-actually enforces SSH is `zero_access`. Editing `ssh_access` has no effect.
+The `ssh_access` and `gui_access_grey` groups in `cluster.fw` had a leading `|`,
+so Proxmox treated them as disabled. `zero_access` enforced SSH. Editing the
+disabled `ssh_access` group wouldn't change a packet decision.
 
-I backed up the config, then added the cluster node IPs to the **active**
+I copied the configuration, then added the cluster node IPs to the active
 `zero_access` group, immediately before its `DROP SSH` rule:
 
 ```bash
@@ -149,22 +141,19 @@ pve-firewall restart
 pve-firewall status      # enabled/running
 ```
 
-> **Warning: shared firewall inheritance.** `cluster.fw` lives in `/etc/pve`,
-> which is replicated cluster-wide. Once `purple-server` and `blue-server` joined,
-> they inherited this same firewall and now enforce the `zero_access` allowlist.
-> My management IPs were already in the allowlist, so administrative access was
-> not interrupted, but this is the reason all four node IPs (including grey's own
-> `.10`) need to remain in the group: the new nodes must accept SSH from grey for
-> cluster operations and migrations.
+`cluster.fw` lives in replicated `/etc/pve`. After `purple-server` and
+`blue-server` joined, the same `zero_access` allowlist applied to them. All four
+node addresses, including grey's `.10`, therefore had to remain in the group so
+cluster operations and migrations could open SSH between members.
 
 Corosync traffic between members is auto-permitted by the PVE firewall once the
 nodes are cluster members, so no manual UDP rules were needed.
 
 ---
 
-## 6. Joining the nodes
+## 6. Node Joins
 
-I joined one node at a time and confirmed quorum between each step.
+I joined one node at a time and checked quorum before the next command.
 
 ### purple-server
 
@@ -204,25 +193,22 @@ Output ended with `successfully added node 'red-server' to cluster.`
 
 ---
 
-## 7. Cluster authentication note (IMPORTANT)
+## 7. SSH Join Selection
 
-> **Warning: authentication method.** My first attempts to join over the default
-> API method failed. The API connection first rejected an incorrect fingerprint
-> (grey uses a custom `pveproxy` certificate, so the relevant fingerprint is the
-> one the API itself reports, not the node `pve-ssl.pem` fingerprint), and then
-> stopped at `EOF while reading password` because the API join authenticates as
-> `root@pam` and requires grey's actual root password.
->
-> I avoided the password requirement entirely by using the **`--use_ssh`** flag,
-> which performs the join over the SSH key trust established in Section 4 instead
-> of the API. This is why the SSH key setup and the firewall rule were
-> prerequisites for the join to succeed.
+My first API join rejected the fingerprint I supplied. `grey-server` uses a
+custom `pveproxy` certificate, so the API reports a different fingerprint from
+the node's `pve-ssl.pem`. The next attempt stopped at `EOF while reading password`
+because the API path expected an interactive `root@pam` login.
+
+I switched to `--use_ssh`. That path used the working root SSH connection from
+Section 4, which made the SSH allowlist and batch-mode hostname test prerequisites
+for every join.
 
 ---
 
-## 8. Removing stale node directories
+## 8. Stale Node Directory Removal
 
-`grey-server` had two phantom node folders under `/etc/pve/nodes/` left over from
+`grey-server` had two stale node folders under `/etc/pve/nodes/` from
 an earlier install: `Grey-Server` (capitalized) and `<YOUR_RETIRED_NODE_NAME>`. Both were empty of
 guest configs and would otherwise appear as offline ghost nodes in the Datacenter
 view. I confirmed they held no guest configs and removed them.
@@ -272,12 +258,12 @@ Corosync links:
 
 Every node reported every peer connected on both links. The original management GUI endpoints on `192.168.70.10` through `.13` each returned HTTP 200 after the addition.
 
-My existing production guests on `grey-server` (app-01, edge-01, alpha-prod-01,
-docker-main) remained running throughout the join and were unaffected.
+The four production guests on `grey-server` (`app-01`, `edge-01`,
+`alpha-prod-01`, & `docker-main`) stayed running through the joins.
 
 ---
 
-## 10. Backups created during this work
+## 10. Recovery File
 
 - `grey-server:/root/cluster.fw.bak.*`: firewall config from before the
   `zero_access` change.

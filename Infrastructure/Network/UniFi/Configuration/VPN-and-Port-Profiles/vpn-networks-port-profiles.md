@@ -1,9 +1,9 @@
-# Unifi VPN, Networks & Port Profiles
+# UniFi VPNs, Groups & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is my inventory of VPN servers and clients, reusable firewall groups, and switch port profiles. I keep it in sync with the controller.
+I track five WireGuard servers, one WireGuard client, five reusable firewall groups, & four switch port profiles here.
 
 ## VPN Servers
 

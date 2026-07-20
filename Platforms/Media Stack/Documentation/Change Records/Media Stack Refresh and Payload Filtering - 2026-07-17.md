@@ -1,7 +1,7 @@
 # Media Stack Refresh and Payload Filtering
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
@@ -18,7 +18,7 @@ I refreshed every media-stack image from its configured `latest` tag, replaced t
 - Sonarr used LinuxServer build `4.0.19.2979-ls319`.
 - qBittorrent 5.2.3 had `excluded_file_names_enabled=false`, an empty exclusion list, automatic command execution disabled, and an empty torrent queue.
 
-## Decisions
+## Refresh and Filter Choices
 
 1. **Migrate to Seerr rather than update the retired Jellyseerr image.** Seerr is the maintained successor and provides an in-place migration path using the existing `/app/config` data.
 2. **Preserve the `jellyseerr` Compose service name and configuration directory.** I changed only the image and init behavior, which minimizes migration risk and preserves the existing database.
@@ -28,16 +28,16 @@ I refreshed every media-stack image from its configured `latest` tag, replaced t
 
 ## Actions and Results
 
-| Step | Action | Observed result | Evidence disposition |
+| Step | Action | Observed result | Supporting record |
 | --- | --- | --- | --- |
-| S01 | Created a protected pre-migration configuration backup | `/opt/media-stack/backups/seerr-migration-2026-07-17/pre-migration-config.tar.gz` exists with restricted access; a protected pre-migration Compose copy is beside it | I did not capture the backup contents because they contain application secrets |
-| S02 | Changed the request image to `ghcr.io/seerr-team/seerr:latest`, added `init: true`, and ensured the existing config tree is owned by UID/GID 1000 | Compose validation passed and Seerr reused the existing `/app/config` data | Secret-free structure is represented by [`compose.example.yml`](../../Configuration/compose.example.yml) |
+| S01 | Created a pre-migration configuration backup | `/opt/media-stack/backups/seerr-migration-2026-07-17/pre-migration-config.tar.gz` and the pre-migration Compose copy exist | Backup path check |
+| S02 | Changed the request image to `ghcr.io/seerr-team/seerr:latest`, added `init: true`, and ensured the existing config tree is owned by UID/GID 1000 | Compose validation passed and Seerr reused the existing `/app/config` data | [`compose.example.yml`](../../Configuration/compose.example.yml) |
 | S03 | Pulled all eight configured images and reconciled the complete `vpn` profile | Seerr and Sonarr were recreated from newer images; the other six services already matched the pulled image state | Final running versions and container state are in the [verification transcript](../../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md) |
 | S04 | Enabled qBittorrent's excluded-file-name option with the researched baseline | API returned `excluded_file_names_enabled=true` and exactly 100 patterns; automatic command execution remained disabled | Pattern rationale and exact list are in the [research record](../Download%20Payload%20Filtering%20Research%20-%202026-07-17.md); current state is in the [verification transcript](../../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md) |
-| S05 | Restarted qBittorrent and performed full post-change checks | Eight services running; Jellyfin and Gluetun healthy; Seerr current; all management HTTP checks passed; Sonarr and Radarr each reached qBittorrent's API; VPN exit lookup succeeded without retaining the exit address; qBittorrent port matched Proton's forwarded port; queue remained empty | [Verification transcript](../../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md) |
+| S05 | Restarted qBittorrent and performed full post-change checks | Eight services running; Jellyfin and Gluetun healthy; Seerr current; all management HTTP checks passed; Sonarr and Radarr each reached qBittorrent's API; VPN exit lookup succeeded; qBittorrent port matched Proton's forwarded port; queue remained empty | [Verification transcript](../../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md) |
 | S05A | Added a stopped local-only torrent made from harmless one-byte placeholders | `.exe` and `.ps1` received priority `0`; `.mkv` and the intentionally allowed `.zip` received priority `1`; I removed the test torrent and temporary files | [Functional filter-test transcript](../../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S05A-Functional-Filter-Test-2026-07-17.md) |
 
-I did not capture the exact implementation command stream for S01-S04 while those actions ran, so I rely on the protected rollback artifact, the secret-free resulting structure, and the complete S05/S05A post-change transcripts. In future bounded refreshes I start transcript capture before the first mutation.
+Steps S01 through S04 have no command transcript. The S05 and S05A transcripts record the resulting container, version, VPN, port, & filter checks.
 
 ## Resulting Versions
 
@@ -62,7 +62,7 @@ This is filename filtering rather than content inspection. Renamed payloads, ext
 
 ## Rollback
 
-1. For the request service, stop Seerr, restore `/opt/media-stack/config/jellyseerr` and the protected Compose copy from `/opt/media-stack/backups/seerr-migration-2026-07-17`, validate Compose, and start the complete `vpn` profile. I do not restore the retired image unless a Seerr-specific failure requires that bounded rollback.
+1. For the request service, stop Seerr, restore `/opt/media-stack/config/jellyseerr` and the saved Compose copy from `/opt/media-stack/backups/seerr-migration-2026-07-17`, validate Compose, and start the complete `vpn` profile. I don't restore the retired image unless the failure is specific to Seerr.
 2. For qBittorrent, use its WebUI or `/api/v2/app/setPreferences` to set `excluded_file_names_enabled=false`; do not hand-edit the INI while qBittorrent is running.
 3. Re-run the service, VPN, forwarded-port, and qBittorrent preference checks after either rollback.
 

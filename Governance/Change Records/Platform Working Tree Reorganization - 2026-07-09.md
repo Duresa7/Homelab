@@ -7,13 +7,13 @@
 **Status:** Complete  
 **Scope:** TNIO AI Bot and `<YOUR_WINDOWS_DOMAIN>` Windows platform working trees
 
-## Objective
+## Scope
 
-Finish the enterprise workspace migration by separating the previously mixed TNIO and Windows working trees into documentation, source, configuration, scripts, tests, evidence, and retained artifacts. I chose not to preserve path compatibility with the former local working-tree layout.
+I separated the mixed TNIO and Windows working trees into documentation, source, configuration, scripts, tests, evidence, & artifacts. The local paths changed; I didn't preserve compatibility with the former layout.
 
 ## TNIO AI Bot
 
-The TNIO platform previously held source, duplicate implementations, scratch work, tests, documentation, audits, caches, logs, worktrees, service configuration, and a deployment bundle all at the platform root.
+The TNIO platform root held source, duplicate implementations, scratch work, tests, documentation, audits, caches, logs, worktrees, service configuration, & a deployment bundle.
 
 I reorganized it into:
 
@@ -31,7 +31,7 @@ I preserved references to the deployed path `/home/<YOUR_DEPLOYMENT_USER>/lore-r
 
 ## Windows `<YOUR_WINDOWS_DOMAIN>`
 
-The Windows platform previously mixed architecture, policy inventories, reports, runbooks, evidence ZIP files, implementation scripts, logs, domain-join material, and temporary scratch files at one level.
+The Windows platform kept architecture, policy inventories, reports, runbooks, evidence ZIP files, scripts, logs, domain-join material, & scratch files at one level.
 
 I reorganized it into:
 
@@ -48,7 +48,7 @@ I removed the leftover temporary directories, including `<YOUR_TEMP_DIRECTORY>`,
 
 ## Placement Rules Recorded
 
-I recorded the placement model in the Governance documentation standard and in the working notes I keep outside the repository:
+I recorded the placement model in the Governance documentation standard:
 
 - A decision sequence for completely new work.
 - A category routing table with concrete examples.
@@ -69,4 +69,4 @@ I recorded the placement model in the Governance documentation standard and in t
 
 ## Development Impact
 
-The local directory paths changed. Tools or commands that assumed files sat directly beneath the TNIO or `Windows <YOUR_WINDOWS_DOMAIN>` roots must use the new paths. This was a file-move migration only: I did not rewrite source contents, and I did not validate the code by running it. TNIO tests that assumed execution from `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` may need the deployed module path or an adjusted Python import path when run locally.
+The local paths changed. Tools that assumed files sat directly beneath the TNIO or `Windows <YOUR_WINDOWS_DOMAIN>` roots must use the new directories. I moved files without rewriting source or running code validation. TNIO tests written for `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` still need that module path, or an adjusted Python import path, when run from Windows.

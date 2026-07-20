@@ -3,9 +3,9 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-20
 
-This is my inventory of the workloads and services running on each Galaxy guest.
+This inventory maps 11 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
-## Summary
+## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>SSH<br>cron |
@@ -73,7 +73,7 @@ This is my inventory of the workloads and services running on each Galaxy guest.
 | --- | --- |
 | Coolify | Coolify app, Sentinel, Realtime, Postgres, Redis |
 | Traefik | Coolify ingress proxy: `traefik:v3.6` |
-| Generated apps | Opaque Coolify-generated app names omitted |
+| Generated apps | Coolify-managed application containers |
 | Wazuh agent | 4.14.5-1; enabled/active; fresh manager ID `004` as `app-01`; connected to `192.168.72.2:1514` |
 
 ## edge-01

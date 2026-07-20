@@ -3,19 +3,10 @@
 **Created:** 2026-04-14  
 **Last updated:** 2026-07-20
 
----
-
-| Field | Details |
-|-------|---------|
-| **Author** | Duresa7 (`<YOUR_ADMIN_USERNAME>`) `<YOUR_RETIRED_NODE_NAME>` |
-| **Organization** | `<YOUR_ORG_NAME>` United |
-| **Date** | 2026-04-14 |
-| **Version** | 1.0 |
-| **Status** | Completed |
-| **System** | docker-main (Proxmox VE, Grey Server) |
-| **Purpose** | Centralized Docker management via Portainer Edge Agent across VLANs |
-
----
+**Implementation date:** 2026-04-14  
+**Status:** Complete  
+**System:** `docker-main` on grey-server  
+**Purpose:** Manage Docker on `alpha-prod-01` through a Portainer Edge Agent across VLANs
 
 ## Infrastructure
 
@@ -23,8 +14,6 @@
 |------|----|------|------|
 | docker-main | 192.168.40.35 | VLAN 40 (Personal-A) | Portainer Server |
 | alpha-prod-01 | 192.168.80.118 | VLAN 80 (`<YOUR_ORG_NAME>`-Servers) | Edge Agent |
-
----
 
 ## Network Diagram
 
@@ -43,8 +32,6 @@ VLAN 40 (Personal-A)          VLAN 80 (<YOUR_ORG_NAME>-Servers)
     Browser access
     https://192.168.40.35:9443
 ```
-
----
 
 ## Portainer Server (docker-main)
 
@@ -67,13 +54,11 @@ volumes:
   portainer_data:
 ```
 
----
-
-## Edge Agent (per VM)
+## Edge Agent on `alpha-prod-01`
 
 **Path:** `/opt/docker/portainer-edge-agent/`
 
-**docker-compose.yml** (same on every VM):
+**docker-compose.yml**
 ```yaml
 name: portainer-edge-agent
 services:
@@ -95,13 +80,11 @@ volumes:
   portainer_agent_data:
 ```
 
-**.env**, unique per VM (get values from the Portainer Add Environment wizard):
+**.env** requires the generated Edge ID and key:
 ```env
-EDGE_ID=<generated-per-vm>
-EDGE_KEY=<generated-per-vm>
+EDGE_ID=<YOUR_PORTAINER_EDGE_ID>
+EDGE_KEY=<YOUR_PORTAINER_EDGE_KEY>
 ```
-
----
 
 ## UniFi Firewall Rule
 
@@ -116,8 +99,6 @@ EDGE_KEY=<generated-per-vm>
 | Ports | 8000, 9443 |
 | Action | Allow |
 | Auto Allow Return Traffic | Enabled |
-
----
 
 ## Registered Edge Agents
 

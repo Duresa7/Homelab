@@ -3,11 +3,9 @@
 **Created:** 2026-07-17  
 **Last updated:** 2026-07-20
 
-I keep [`compose.example.yml`](compose.example.yml) as a reader-editable reference for the live project at `/opt/media-stack/compose.yml`. It documents service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization with contextual placeholders for deployment-specific values.
+[`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
-[`media-stack.env.example`](media-stack.env.example) lists the required variable names. Copying either reference directly to production is intentionally insufficient until the protected values are supplied through my approved secret workflow.
-
-The live `.env` is `root:root` mode `0600`. I never replace it with the example, print it through `docker compose config`, or commit a populated variant.
+[`media-stack.env.example`](media-stack.env.example) lists the required deployment-specific variables. Both examples require editing before use.
 
 The request service intentionally retains the Compose key and configuration path name `jellyseerr` so the existing database is reused, but it runs the successor image `ghcr.io/seerr-team/seerr:latest` with `init: true`.
 
@@ -27,4 +25,4 @@ upnp=False
 
 Then I compare qBittorrent's listening port with Gluetun's `/gluetun/forwarded_port`. I do not weaken authentication for other source networks.
 
-The live qBittorrent configuration also enables `excluded_file_names_enabled` with the 100-pattern media-stack baseline documented in my [payload-filtering research](../Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). This application preference stays in qBittorrent's protected live configuration rather than Compose because the official Web API and WebUI own its serialization.
+The live qBittorrent configuration also enables `excluded_file_names_enabled` with the 100-pattern baseline documented in my [payload-filtering research](../Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). This setting belongs to qBittorrent rather than Compose because the Web API and WebUI serialize it.

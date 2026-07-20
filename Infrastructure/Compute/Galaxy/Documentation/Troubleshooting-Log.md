@@ -54,7 +54,7 @@ The repeated fault offset maps to `Perl_newSVhek`, where Perl attempted to read 
 - Similar recurring `pvestatd`/Perl crashes have been reported to Proxmox. Proxmox staff guidance for this failure pattern includes package verification, firmware and microcode review, and extended CPU/RAM testing. Package verification and the live log review did not expose a software-installation or disk fault on Blue.
 - Repeating `ip6tables-restore` errors from `pve-firewall` were present near the latest crash. They continued independently and are not presently linked to the `pvestatd` segmentation fault.
 
-### Current conclusion
+### Confirmed failure and open cause
 
 The immediate cause of the unknown Proxmox status is confirmed: `pvestatd` crashed and its unit does not restart automatically. The deeper cause remains open. Blue-specific firmware or hardware instability is my leading hypothesis because the failures recur only on this node, include allocator-pointer corruption and an abort, and the BIOS predates Lenovo's corrected minimum. A node-specific Proxmox/Perl code path remains possible because only `pvestatd` has been observed crashing.
 
@@ -77,7 +77,7 @@ The controlled follow-up is tracked in the [Galaxy TODO](TODO.md#blue-server-rec
 **Owner:** Galaxy VM 102 / `debian-dev`  
 **Status:** Resolved
 
-### Symptom and feedback loop
+### Reproduction
 
 GNOME displayed a question mark for the wired connection while DNS, the default route, and internet access continued to work. My tight CLI reproduction was:
 
@@ -146,7 +146,7 @@ I copied the legacy file to root-only rollback path `/root/apt-source-backups/1p
 **Owner:** Galaxy VM 102 / `debian-dev`  
 **Status:** Repair applied; final verification awaits a fresh GNOME login
 
-### Symptoms and feedback loop
+### Reproduction
 
 Claude Desktop warned that sign-in would not be saved without an installed and unlocked system keyring. Cowork separately reported that `<YOUR_ADMIN_USERNAME>` lacked permission to use `/dev/kvm`.
 
@@ -160,7 +160,7 @@ The virtualization problem was independent and direct: `/dev/kvm` was correctly 
 
 ### Corrective action
 
-I added `<YOUR_ADMIN_USERNAME>` persistently to group `kvm`. I replaced or deleted no keyring package, PAM file, keyring database, or stored secret. A credential-free blank unlock probe did not export the new login collection, confirming that the safe next step is a normal authenticated GNOME session cycle rather than weakening or resetting the keyring.
+I added `<YOUR_ADMIN_USERNAME>` to group `kvm`. I didn't change the keyring packages, PAM files, or keyring database. A blank unlock probe didn't export the new login collection, so the remaining test requires a normal GNOME sign-out and sign-in.
 
 ### Verification state
 

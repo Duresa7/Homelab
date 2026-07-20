@@ -10,7 +10,7 @@
 
 ## Scope
 
-I populated the previously empty Termix host manager with every machine that the configured SSH Manager could reach, gave Termix an independent least-privilege authentication path, and proved that Termix itself could establish each connection. I did not copy the SSH Manager's existing private keys into Termix.
+I populated the empty Termix host manager with every machine SSH Manager could reach. Termix now has nine verified hosts, one dedicated Ed25519 identity, and a TCP/22-only Proxmox firewall path from `docker-main`.
 
 ## Starting State
 
@@ -20,14 +20,14 @@ I populated the previously empty Termix host manager with every machine that the
 - `docker-main` could not reach TCP/22 on the four Proxmox nodes even though the same nodes were reachable through SSH Manager from my workstation.
 - The Termix Chrome path wasn't required; the local API could perform and verify the change.
 
-## Decisions and Rationale
+## Identity, Host and Firewall Choices
 
-- I generated a dedicated Ed25519 credential inside Termix rather than export or copy an existing private key. Only the new public key left Termix, and I installed it through the already-approved SSH Manager connections.
+- I generated a dedicated Ed25519 identity for Termix and installed its public key on the reachable accounts.
 - I used one reusable Termix credential with per-host username override because the reachable inventory contains both `root` and `<YOUR_ADMIN_USERNAME>` accounts.
 - I added only targets that passed the source reachability probe. A saved host without a deployable and verified authentication path would look complete while remaining unusable.
 - I diagnosed the Proxmox timeouts across both network layers before changing policy. UniFi flow records proved those SSH attempts were allowed; the Proxmox datacenter firewall's explicit TCP/22 drop was the actual blocker.
 - I gave Termix a dedicated Proxmox IPSet and TCP/22-only accept instead of adding Docker Main to a broader admin or automation group that also permits TCP/8006.
-- I took recovery copies before mutating Termix data and the Proxmox firewall because both stores are security-sensitive and authoritative.
+- I took recovery copies before changing Termix data and the Proxmox firewall.
 - I kept the Termix folder hierarchy shallow and task-oriented: `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, and `Homelab/Proxmox`. This makes the sidebar easier to scan than the original compute/network hierarchy; `docker-network` belongs in Docker because its operational role is hosting Docker workloads.
 
 ## Actions and Observed Results
@@ -79,7 +79,7 @@ These are deliberate exceptions, not silently skipped successes. When an endpoin
 
 | Check | Observed result |
 |---|---|
-| Termix credential | ID 1 exists; type Ed25519; fingerprint recorded; no private material exposed |
+| Termix credential | ID 1 exists; type Ed25519; fingerprint recorded |
 | Public-key installation | Exact generated public key present on all nine reachable accounts |
 | Termix host inventory | Nine expected records, IDs 1 through 9, no create failures |
 | Non-Proxmox connections | Five of five returned HTTP 200 and `SSH connection established successfully` |
@@ -93,13 +93,11 @@ These are deliberate exceptions, not silently skipped successes. When an endpoin
 | Post-reorganization connection set | Nine of nine hosts returned HTTP 200 and `success: true` through Termix's metrics connection path |
 | Termix runtime | Container `healthy`; restart count 0 |
 
-No password, private key, JWT secret, ephemeral JWT, database key, or decrypted database content was printed or retained.
-
 ## Rollback
 
 ### Termix
 
-To undo only the folder reorganization, restore the prior folder strings through the Termix host editor or stop Termix and restore the paired encrypted database and security material from `/opt/docker/termix/backups/pre-folder-reorganization-2026-07-14T1810Z.tar.gz`. To remove the onboarding entirely, delete host IDs 1 through 9 and credential ID 1 through Termix, then remove the corresponding public key fingerprint `<K05_FINGERPRINT>` from the nine accounts. If application data is damaged rather than merely unwanted, the complete pre-onboarding archive remains `/opt/docker/termix/backups/pre-host-import-2026-07-14T1900Z.tar.gz`; do not restore the encrypted database independently of its matching security files.
+To undo only the folder reorganization, restore the prior folder strings through the Termix host editor or restore `/opt/docker/termix/backups/pre-folder-reorganization-2026-07-14T1810Z.tar.gz`. To remove the onboarding, delete host IDs 1 through 9 and credential ID 1 through Termix, then remove public-key fingerprint `<K05_FINGERPRINT>` from the nine accounts. The complete pre-onboarding archive remains `/opt/docker/termix/backups/pre-host-import-2026-07-14T1900Z.tar.gz`.
 
 ### Proxmox
 
@@ -108,4 +106,3 @@ Remove the `+pve_termix` rule from `pve_mgmt`, remove member `192.168.40.35`, th
 ## Remaining Work
 
 - Reassess the ten unreachable SSH Manager entries when they are online or SSH is enabled. They are not present in Termix today because working authentication could not be deployed or verified.
-- The dedicated credential is intentionally reusable; do not create duplicate per-host private keys unless a later isolation requirement calls for them.

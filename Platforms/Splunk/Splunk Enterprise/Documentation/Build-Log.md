@@ -3,11 +3,9 @@
 **Created:** 2026-06-28  
 **Last updated:** 2026-07-20
 
-My build log for standing up a Splunk Enterprise SIEM in my home lab, from bare VM to a working log-ingestion pipeline. I recorded what I built, the exact commands, the alternatives I weighed at each fork, and my reasoning for every non-default choice. I wrote it for other IT and security practitioners: the goal is to show not just the steps but the decision-making behind them.
+I built a Splunk Enterprise 10.4.0 SIEM on Rocky Linux 10.2, then connected UniFi CEF through SC4S and HEC. The walkthrough retains the commands, failed attempts, search results, & screenshots from the 2026-06 build.
 
-This 2026-06 build predates the current step-evidence naming and text-transcript standard. I preserved the timestamp-based screenshot filenames and the exact commands already written in this log instead of renaming historical evidence or inventing missing transcripts. The screenshots are visible supplements to the walkthrough, not substitutes for a complete terminal transcript.
-
-### Project documents
+### Related Records
 
 | Document | Purpose |
 |---|---|
@@ -30,14 +28,13 @@ This 2026-06 build predates the current step-evidence naming and text-transcript
 
 ---
 
-## Splunk SIEM design targets
+## Build Targets
 
 The build uses four targets:
 
-- VMID 109 runs alone on Security-A with 4 vCPU, 12 GiB RAM, a 150 GiB SSD-backed disk, & the Proxmox firewall enabled.
+- VMID 109 runs alone on Security-A with 6 vCPU, 12 GiB RAM, a 150 GiB SSD-backed disk, & the Proxmox firewall enabled. The original build used 4 vCPU; I added two during the ES installation on 2026-07-02.
 - Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `<YOUR_ADMIN_USERNAME>`; password authentication & direct root login are disabled.
 - UniFi sends CEF to SC4S on TCP/UDP 1514. SC4S forwards through HEC on 8088 instead of sending syslog directly to the indexer, matching Splunk's guidance [2][3].
-- The log retains the commands, decisions, failures, verification results, & 40 screenshots from the 2026-06 build.
 
 ## Architecture
 
@@ -284,7 +281,7 @@ UniFi was the first live data source. This step had to produce indexed CEF event
 
 ### UniFi CEF export format
 
-UniFi's **System Logging / SIEM** integration (Integration → System Logging / SIEM → SIEM Server) exports activity logs over syslog in **Common Event Format (CEF)** [9]. CEF is an industry-standard structured log format: a fixed header followed by `key=value` pairs, which lets any SIEM parse events from any vendor consistently.
+UniFi's **System Logging / SIEM** integration exports activity logs over syslog in **Common Event Format (CEF)** [9]. Each record has a fixed header followed by `key=value` pairs.
 
 ```
 CEF:Version|Device Vendor|Device Product|Device Version|Event Class ID|Name|Severity|[Extension]

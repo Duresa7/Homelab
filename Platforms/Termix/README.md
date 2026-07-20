@@ -1,9 +1,9 @@
 # Termix
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Termix is my self-hosted SSH and remote-desktop management platform. It runs on `docker-main` with a companion Guacamole daemon.
+I run Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The current inventory contains nine SSH hosts in four folders.
 
 ## Deployment
 
@@ -19,11 +19,9 @@ Termix is my self-hosted SSH and remote-desktop management platform. It runs on 
 | Current verified version | Termix 2.5.0; Guacamole daemon 1.6.0 |
 | Current Termix image digest | `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c` |
 
-The application uses an encrypted SQLite file and operates on an in-memory database while running. I never retain database keys, reset codes, or decrypted database content in this workspace.
-
 ## Managed SSH Inventory
 
-Termix currently has nine verified SSH hosts organized into four shallow folders: `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, and `Homelab/Proxmox`. The inventory contains the four Galaxy Proxmox nodes, `docker-main`, `alpha-prod-01`, `app-01`, `edge-01`, and `docker-network`. All use the reusable `Termix Homelab SSH` Ed25519 credential with per-host username override. Its private key remains encrypted in Termix; only the public key is installed on managed accounts.
+Termix currently has nine verified SSH hosts organized into `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, & `Homelab/Proxmox`. The inventory contains the four Galaxy Proxmox nodes, `docker-main`, `alpha-prod-01`, `app-01`, `edge-01`, & `docker-network`. All use the `Termix Homelab SSH` Ed25519 identity with per-host username overrides.
 
 Ten additional SSH Manager entries were unreachable during the 2026-07-14 onboarding, and I intentionally did not save them as unverified Termix hosts. Their error states and the onboarding procedure are recorded in the change record below.
 

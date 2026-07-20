@@ -7,13 +7,12 @@
 **Date:** 2026-07-07  
 **System:** Proxmox VE 9.2.2, Debian Trixie, cluster `Galaxy`
 
-## Summary
+## Result
 
-I added `red-server` as the fourth Proxmox VE node in the `Galaxy` cluster.
-The node uses the same management VLAN pattern as the existing nodes:
-`vmbr0` is VLAN-aware and the host management address lives on `vmbr0.70`.
-
-The cluster is healthy and quorate after the expansion.
+I added `red-server` as the fourth Proxmox VE 9.2.2 node in `Galaxy`.
+Its VLAN-aware `vmbr0` carries management address `192.168.70.13/24` on
+`vmbr0.70`. After the join, the cluster reported 4 votes, quorum 3, &
+`Quorate: Yes`.
 
 ## Current Node Inventory
 
@@ -43,8 +42,7 @@ IN ACCEPT -source 192.168.70.13 -p tcp -dport 22 -log nolog # red-server (cluste
 
 I added this to `[group zero_access]` immediately before the default SSH drop rule.
 
-I established SSH trust from `red-server` to `grey-server` by adding red's root
-public key to grey's root `authorized_keys`. After that, I ran the join from
+I added `red-server`'s root public key to `grey-server`, then ran the join from
 `red-server`:
 
 ```bash
@@ -82,7 +80,7 @@ Nodeid      Votes Name
 4           1     red-server
 ```
 
-Note: with four voting nodes, the quorum requirement is now `3`.
+Four voting nodes set the quorum requirement to `3`.
 
 ## SSH Hardening
 
@@ -114,9 +112,9 @@ My local SSH manager config now includes:
 red_server -> root@192.168.70.13
 ```
 
-## Repository And Subscription Popup Cleanup
+## APT Sources and Login Popup
 
-I matched `red-server`'s APT sources to `grey-server`:
+I matched `red-server`'s APT source set to `grey-server`:
 
 - Proxmox no-subscription repo enabled
 - Proxmox enterprise repo present but disabled
@@ -125,13 +123,12 @@ I matched `red-server`'s APT sources to `grey-server`:
 - Proxmox test repo commented out
 - Debian Trixie, Trixie updates, and Trixie security enabled
 
-`apt-get update` completed successfully on all four nodes after the repository
-cleanup.
+`apt-get update` exited successfully on all four nodes after the source change.
 
-I aligned the Proxmox no-subscription login popup with the existing grey-server
-patch on `purple-server`, `blue-server`, and `red-server` by changing the local
+I matched the existing `grey-server` no-subscription popup change on
+`purple-server`, `blue-server`, & `red-server` by changing each local
 `proxmoxlib.js` subscription check to the `NoMoreNagging` sentinel already used
-on `grey-server`. I restarted `pveproxy` and verified it active on all nodes.
+on `grey-server`. I restarted `pveproxy` and confirmed it active on all four nodes.
 This UI patch may need to be reapplied after future `proxmox-widget-toolkit`
 package updates.
 
@@ -164,7 +161,7 @@ Saved result:
 <YOUR_SMART_REPORT_PATH>
 ```
 
-## Backups And Rollback Points
+## Recovery Files
 
 Firewall backup on `grey-server`:
 
@@ -194,7 +191,7 @@ red-server:/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.no-sub
 
 `grey-server` already had the same no-subscription popup patch in place before this work.
 
-## Notes
+## Unresolved DNS
 
 `<YOUR_RETIRED_NODE_FQDN>`, `<YOUR_PURPLE_SERVER_FQDN>`, and `<YOUR_BLUE_SERVER_FQDN>` do not
 currently resolve from my Windows admin workstation. I use the management IPs or

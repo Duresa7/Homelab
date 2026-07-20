@@ -1,24 +1,24 @@
 # Living Document Naming and TODO Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 **Date:** 2026-07-09  
 **Status:** Complete
 
-## Objective
+## Scope
 
-Create a central homelab backlog, distinguish living-document filenames from historical-record filenames, and require visible update metadata inside Markdown documents.
+I created one root backlog, separated living filenames from dated historical records, & added visible creation and update dates to every Markdown file.
 
 ## Central Backlog
 
-I created [TODO.md](../../TODO.md) at the workspace root as the intake list, high-level priority list, and index of the per-owner project backlogs. Detailed technical checklists stay with the infrastructure component or platform that owns the work.
+I created [TODO.md](../../TODO.md) as the intake list, priority list, & index of the owner-specific backlogs. Detailed checklists stay with the infrastructure component or platform that owns the work.
 
 ## Filename Audit
 
-My first pass renamed two clearly living Galaxy documents. I then reviewed all 22 dated filenames still present.
+My first pass renamed two living Galaxy documents. I then checked the 22 dated filenames that remained.
 
-Seventeen event or point-in-time records kept their dates. I renamed five more living inventories so I can maintain them in place.
+Seventeen event or point-in-time records kept their dates. Five living inventories lost their filename dates so I can update them in place.
 
 Living documents renamed across both passes:
 
@@ -46,6 +46,6 @@ Original creation, historical, and verification dates remain inside those docume
 
 - I updated the references to all seven renamed living documents.
 - The root README links the central TODO.
-- The Governance documentation standard and the working notes I keep outside the repository carry the filename, update-metadata, and backlog rules.
+- The Governance documentation standard carries the filename, update-metadata, & backlog rules.
 - I normalized every Markdown document with in-file `Created` and `Last updated` metadata.
 - The remaining dated Markdown filenames are historical or point-in-time records.

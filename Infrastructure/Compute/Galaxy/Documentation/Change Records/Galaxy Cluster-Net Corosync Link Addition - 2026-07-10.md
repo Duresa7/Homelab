@@ -9,9 +9,9 @@
 
 ## Scope
 
-Add an IP-only VLAN interface for Cluster-Net (VLAN 71) to each Galaxy node and add the resulting addresses to Corosync as redundant `link1`. The existing MGMT-A addresses and Corosync `link0` remain unchanged.
+I added an IP-only Cluster-Net interface on VLAN 71 to each Galaxy node, then used those four addresses for redundant Corosync `link1`. I left the MGMT-A addresses and Corosync `link0` unchanged.
 
-The S-09 follow-up also normalizes `red-server`'s VLAN-aware `vmbr0` bridge from the enumerated VLAN list to `bridge-vids 2-4094`, matching grey-server and blue-server without changing host addressing, routing, or Corosync configuration.
+During the S-09 follow-up, I changed `red-server`'s VLAN-aware `vmbr0` bridge from an enumerated VLAN list to `bridge-vids 2-4094`. That brought it in line with grey-server and blue-server without changing host addressing, routing, or Corosync.
 
 | Node | Existing MGMT-A / link0 | Current Cluster-Net / link1 |
 |---|---|---|
@@ -173,18 +173,6 @@ corosync -c /tmp/cluster-net-S07-corosync.conf -t
 
 ![After bridge dialog on red-server](../../Evidence/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10/Screenshots/Cluster-Net-Corosync-Link1-S-09-red-server-Bridge-VLANs-After-2026-07-10.png)
 
-## Completed Implementation
-
-1. I saved a timestamped copy of `/etc/network/interfaces` on every node under `/root/`.
-2. I added VLAN 71 to `red-server`'s bridge admission policy, then normalized the bridge to `bridge-vids 2-4094` in S-09 so it matches grey-server and blue-server.
-3. I added `vmbr0.71` as a static, no-gateway interface on every node using the addresses in the scope table.
-4. I applied one node at a time & verified that MGMT-A SSH/GUI access and four-node quorum remained intact after each node.
-5. I verified all-to-all Layer-2 reachability over `192.168.71.10` through `192.168.71.13` before changing Corosync.
-6. I saved a timestamped copy of `/etc/pve/corosync.conf` under `/root/` on every node.
-7. I built and validated the candidate Corosync configuration with `corosync -c /tmp/cluster-net-S07-corosync.conf -t`.
-8. I added `ring1_addr` for every node, added `interface { linknumber: 1 }`, & incremented `config_version` from `7` to `8`; every `ring0_addr` and `linknumber: 0` entry was preserved.
-9. I verified four-node quorum, all peers connected on both Corosync links, & original MGMT-A GUI/SSH access.
-
 ## Rollback Status
 
 I deleted the timestamped interface and Corosync rollback copies on 2026-07-11 after the implementation passed final verification. A second read-only scan returned no files matching `interfaces.bak.pre-cluster-net-*`, `interfaces.bak.pre-vlan-range-*`, or `corosync.conf.bak.pre-link1-*` on grey-server, purple-server, blue-server, or red-server.
@@ -195,8 +183,8 @@ I deleted the timestamped interface and Corosync rollback copies on 2026-07-11 a
 
 ## Final Cluster Verification
 
-The implementation is complete. VLAN 71 is active on all four nodes, gateway reachability succeeds from each node, & all-to-all direct neighbor resolution proves the Layer-2 path. Corosync configuration version 8 is live; every node reports all peers connected on both `link0` and `link1`, quorum stayed intact, & the scoped core services stayed active. All four original MGMT-A Proxmox endpoints returned HTTP 200, the final Proxmox dashboard reported four nodes online and zero offline, & the UniFi API reported all five adopted infrastructure devices online.
+VLAN 71 is active on all four nodes. Each node reached the gateway, and all-to-all neighbor resolution confirmed the Layer-2 path. Corosync configuration version 8 is live, with every peer connected on `link0` and `link1`. Quorum stayed at four votes, all four MGMT-A Proxmox endpoints returned HTTP 200, the Proxmox dashboard showed four nodes online and none offline, & the UniFi API showed all five adopted infrastructure devices online.
 
-S-09 normalized `red-server` from the enumerated bridge VLAN list to `bridge-vids 2-4094`. Persistent configuration, live bridge state, and the 4,093 tagged VLAN-entry count now match grey-server and blue-server. VLAN 71 gateway reachability, four-node quorum, both Corosync links, all scoped core services, and the original red-server management GUI passed after `ifreload`; no rollback was triggered.
+After S-09, `red-server` reported `bridge-vids 2-4094` in both persistent and live state. The bridge held 4,093 tagged VLAN entries, matching grey-server and blue-server. Gateway reachability, four-node quorum, both Corosync links, the scoped services, and the original management GUI all passed after `ifreload`.
 
 The final failed-unit inventory also exposed pre-existing conditions outside this change: `pvestatd` on `blue-server` had been failed since 2026-07-05, and `grey-server` had a failed `hddpool` import plus a stale root-session scope. These didn't prevent quorum, dual-link connectivity, or management access, and I took no unrelated recovery action.

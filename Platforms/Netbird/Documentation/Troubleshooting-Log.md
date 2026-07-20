@@ -15,9 +15,7 @@ This is my chronological troubleshooting record for the combined `docker-network
 | 4 | S05A | UniFi rejected the first web-egress policy create | Set `create_allow_respond` to `false` and reapplied | Resolved |
 | 5 | S05A | Handcrafted NTP probe returned no conclusive response | Installed `ntpsec-ntpdig` and verified Cloudflare NTP | Resolved |
 | 6 | S07 | NPM Advanced gear dismissed the proxy-host modal | Saved the basic host first, then applied Advanced configuration | Resolved |
-| 7 | S09 | First post-restart screenshot was black | Re-rendered the authenticated dashboard and recaptured the step | Resolved |
-| 8 | Audit | Early step records contained summaries without every automation envelope | Recovered source records and documented upstream limits | Resolved with exceptions noted |
-| 9 | Operational follow-up | Routing peer Management channel returned HTTP `502` after sequential container recreation | Reloaded validated NPM configuration to refresh the changed NetBird upstream address | Resolved |
+| 7 | Operational follow-up | Routing peer Management channel returned HTTP `502` after sequential container recreation | Reloaded validated NPM configuration to refresh the changed NetBird upstream address | Resolved |
 
 ## 1. `pvestatd` Was Failed on `blue-server`
 
@@ -48,7 +46,7 @@ installer_exit=1
 
 **Investigation:** I checked for the generated `config.yaml` and `docker-compose.yml` and confirmed both absent, proving the failure occurred before partial initialization.
 
-**Corrective action:** I installed Debian's `jq` 1.7 package and reran the official v0.74.3 installer with the approved Nginx Proxy Manager option.
+**Corrective action:** I installed Debian's `jq` 1.7 package and reran the official v0.74.3 installer with the Nginx Proxy Manager option.
 
 **Verification:** The second run exited `0`, generated the expected files, and started both NetBird containers.
 
@@ -121,33 +119,7 @@ All three policies have logging enabled.
 
 **Verification:** The proxy host reports Online, `nginx -t` succeeds, and a Host-header request through NPM returns the NetBird dashboard with HTTP `200`. The original modal issue is resolved. Later S07 work issued and assigned the Let's Encrypt certificate, enabled Force SSL and HTTP/2, and validated the HTTPS endpoint.
 
-## 7. First S09 Screenshot Was Black
-
-**Date:** 2026-07-11  
-**Step:** S09
-
-**Symptom:** My first screenshot after the controlled Compose restarts came out black and did not provide usable evidence of the resulting state.
-
-**Investigation:** The application health checks and HTTPS request had already passed, which isolated the problem to screenshot capture rather than the NetBird service.
-
-**Corrective action:** I brought the authenticated NetBird dashboard back to the foreground and let it render before capturing the step again. I replaced the unusable image rather than retaining it as successful evidence.
-
-**Verification:** The recaptured S09 screenshot shows the authenticated, healthy NetBird dashboard after both Compose projects restarted. Independent post-restart checks showed Nginx Proxy Manager healthy, both NetBird containers running, `nginx -t` successful, and HTTPS returning `200`.
-
-## 8. Pre-Commit Audit Found Summary-Only Early Evidence
-
-**Date:** 2026-07-11  
-**Steps:** S01, S03, S04, S05, S05A, S06, and S08
-
-**Symptom:** My pre-commit standards review found that several early Markdown transcripts kept readable summaries and final verification but not the complete original commands and raw results.
-
-**Investigation:** The original commands and results were still in my local session records, so I matched each affected step back to its source, including the delayed results of long-running SSH operations. I scanned everything I planned to keep for private keys, Cloudflare credential values, NetBird secret fields, and password assignments before retaining it.
-
-**Corrective action:** I exported the complete records as step-specific JSON files in my offline evidence folder and referenced them from the affected transcripts. No redaction was needed because the records passed the secret scan. Where SSH Manager had already replaced verbose output with an explicit truncation marker, I disclosed the gap instead of reconstructing it.
-
-**Verification:** All recovered files parse as JSON, every reference from the affected transcripts resolves, and secret-pattern checks remain clear. S04's truncated wrapper output is supplemented by its separately retained complete raw install log. S03, S05, and S08 preserve their exact upstream truncation markers plus complete exit results and independent post-change verification.
-
-## 9. NPM Retained a Stale NetBird Upstream Address After Recreation
+## 7. NPM Retained a Stale NetBird Upstream Address After Recreation
 
 **Date:** 2026-07-12  
 **Step:** Operational follow-up / bounded logging

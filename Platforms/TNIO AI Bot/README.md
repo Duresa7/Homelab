@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
 
-I keep TNIO as both an operated platform and an active development project.
+This platform contains the deployed TNIO lore-retrieval source snapshots, evaluation tests, runtime configuration, product description, & dated accuracy work.
 
 ## Layout
 
@@ -17,9 +17,9 @@ I keep TNIO as both an operated platform and an active development project.
 - `Documentation/Reference/`: supporting reference material
 - `Configuration/`: service units and remote-state configuration snapshots
 - `Evidence/`: corpus audits and remote snapshots
-- `Artifacts/`: deployment bundles and retained agent worktrees/state
+- `Artifacts/`: deployment bundles and generated state
 
-The source refers to the deployed Linux path `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. Those references describe the remote runtime, and I do not replace them with local Windows workspace paths.
+Source files that reference `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` describe the deployed Linux runtime.
 
 ## Key Records
 

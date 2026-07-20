@@ -5,17 +5,17 @@
 
 ## Purpose
 
-This standard defines how I write change records, walkthroughs, incident reports, evidence references, and file metadata. Documentation depth scales with the system's maturity, complexity, and operational importance.
+I use this standard for change records, walkthroughs, incident reports, evidence links, filenames, & metadata. Small experiments need one operating record. A security platform needs dependencies, recovery steps, validation, resource specifications, & dated change records.
 
 ## Voice
 
-I write in my own first person. I don't hide work behind terms such as "the operator," and I don't credit an AI as author, preparer, reviewer, or commit co-author.
+I write in my own first person. "I changed the rule" names who did the work; "the operator changed the rule" doesn't. I don't credit an AI as author, preparer, reviewer, or commit co-author.
 
-Every technical claim carries a checkable detail: a version, address, port, host, date, command result, file path, or measured count. Short sentences state the result. Longer sentences explain the mechanism & the check that proved it.
+Every technical claim carries something a reader can check: a version, address, port, host, date, command result, file path, or measured count. Short sentences state the result. Longer sentences explain the mechanism & the check that proved it.
 
 I use contractions in normal prose, vary sentence length, & keep headings literal. Repository prose has no emoji, em dash characters, filler, intensifiers, generic transitions, dramatic headings, repeated conclusions, or claims that end without a fact.
 
-Examples use contextual angle-bracket placeholders such as `<YOUR_WAN_IP>`, `<YOUR_ADMIN_USERNAME>`, & `<YOUR_NETBIRD_DOMAIN>`. Markdown prose wraps each placeholder in backticks. Executable examples keep the raw placeholder when backticks would change the syntax.
+Examples name the missing value with placeholders such as `<YOUR_WAN_IP>`, `<YOUR_ADMIN_USERNAME>`, & `<YOUR_NETBIRD_DOMAIN>`. Markdown prose wraps each placeholder in backticks. Executable examples keep the raw placeholder when backticks would change the syntax.
 
 ## Work Terms
 
@@ -59,17 +59,17 @@ Actual availability or security incidents get their own records under `Security/
 
 ## Change Records
 
-Every material piece of work captures the date, scope, starting state, actions taken, decisions with their reasoning (why I chose the approach over the alternatives I considered), resulting configuration, verification, rollback points, & remaining work. A command by itself proves nothing. I record the output or state that shows the result.
+A material change record needs nine things: date, scope, starting state, actions, decisions, resulting configuration, verification, rollback points, & remaining work. A command by itself proves nothing. I record the output or state that shows what changed.
 
 ## Evidence
 
-Evidence stays with the service, infrastructure component, change, or incident that produced it. Every bounded project, job, change, or incident gets a dedicated folder beneath the owner's `Evidence/` directory. That job's `Screenshots/`, `Exports/`, `Logs/`, & `Evidence-Index.md` live inside its project folder; unrelated jobs never mix in shared artifact-type folders. I create only artifact-type subfolders that contain evidence.
+Evidence stays with the service, infrastructure component, change, or incident that produced it. Each bounded job gets one folder beneath the owner's `Evidence/` directory. Its `Screenshots/`, `Exports/`, `Logs/`, & `Evidence-Index.md` stay inside that folder; unrelated jobs don't share artifact directories.
 
-The evidence directory is the durable source, not the only place where I present the evidence. I write the owning build log or change record as a chronological walkthrough & place each screenshot beside the result it demonstrates. An evidence index can catalog the complete set, but it doesn't replace the walkthrough. I link to the same evidence file instead of copying it into a second location.
+One artifact is enough. I keep the file in its evidence directory, then link it beside the matching step in the build log or change record. An evidence index can catalog the set, but it can't replace the chronological walkthrough.
 
-Each material walkthrough step uses a `Step N: <action>` heading & records the action, the exact command or UI path when retained, the observed result, the verification, & the evidence. I display screenshots directly in the step instead of hiding them in collapsible blocks or collecting them in a gallery. When a step has no retained capture or transcript, I state why in that step. A walkthrough with an explicit evidence entry & direct artifact link for every step serves as its own step evidence index; a separate summary table is optional.
+Each material walkthrough step uses a `Step N: <action>` heading. It records the action, exact command or UI path when retained, observed result, verification, & evidence. Screenshots appear in the applicable step, not in a gallery or collapsed block. If a step has no retained capture or transcript, I say so there.
 
-Historical work keeps the evidence filenames & transcript boundary that existed when I performed it. I don't invent commands, relabel old files, or publish a quarantined transcript to make an older record look compliant with a newer standard. The walkthrough maps each legacy artifact to its step & states whether the public record contains the exact command, text transcript, or capture. New work follows the current naming & transcript rules below.
+Historical work keeps the filenames & transcript boundary it had when I performed it. I don't invent a command, rename an old artifact, or publish a withheld transcript to make a 2026-04 record look like work captured under the 2026-07 standard. The walkthrough states whether each step has the exact command, a text transcript, a screenshot, or no retained artifact.
 
 Filenames are descriptive and carry ISO dates (`YYYY-MM-DD`) when the capture date matters. The associated documentation explains what the evidence demonstrates.
 
@@ -77,11 +77,11 @@ Raw `smartctl` output goes unchanged under `Operations/Diagnostics/SMART/`, foll
 
 ### Step-Based Evidence
 
-I treat material implementation, migration, repair, & troubleshooting work as the sequence of steps laid out in the project's plan. I collect evidence as each step completes, not after the project is done.
+I collect evidence when each implementation, migration, repair, or troubleshooting step completes. Waiting until the end loses the command, failure, or UI state that explains the result.
 
 Plans number steps like a guide: `Step N` is a titled phase and `Step N.M` is a concrete instruction within it. Evidence filenames carry the step number as an `S` prefix: `S01`, `S03.2`, or `S05A` for work inserted between planned steps.
 
-For a net-new deployment, I capture one screenshot after each material step has been validated. A fabricated before state adds no evidence & isn't required. For a modification to existing state, I retain paired before-and-after captures when both states are observable & useful.
+For a new deployment, I capture the validated state after each material graphical step. A fabricated before state proves nothing. For a change to existing state, I retain a before-and-after pair when both states show a real difference.
 
 For each material step I:
 
@@ -103,19 +103,19 @@ For terminal, CLI, SSH, API, or automation-driven work, I retain a text transcri
 
 Terminal screenshots may supplement a transcript, but they don't replace the exact command & textual output. Transcripts live under the project's `Evidence/<Project - YYYY-MM-DD>/Logs/` folder, linked from the applicable step in the change record.
 
-The owning change record keeps evidence with each material walkthrough step, linking the screenshot, command transcript, or request export to its verification result. A separate step evidence table is optional when the walkthrough itself provides that mapping. If a capture is impossible or adds no information, I record the reason instead of silently omitting it.
+The owning change record links each screenshot, command transcript, or request export to the verification it supports. A separate evidence table is optional when the walkthrough already maps every step. If a capture adds no information or can't be made, I record the reason in that step.
 
 When a public example requires a reader-supplied value, I use a contextual placeholder that names the value's role. I don't publish a live value or turn its omission into a separate explanation.
 
 ## Troubleshooting Records
 
-Operational problems go chronologically in the owning `Documentation/Troubleshooting-Log.md`: the symptom, exact error, failed attempts, hypotheses and tests, root cause when known, corrective action, and verification.
+Operational problems go in the owning `Documentation/Troubleshooting-Log.md` in time order. Each entry records the symptom, exact error, failed attempts, hypotheses, tests, root cause when known, corrective action, & verification.
 
 ## Incident Reports
 
 Incident reports live under `Security/Incidents/`, even when the affected service keeps its records under `Platforms/`. They follow the existing TeamSpeak naming convention: `<Service>-Incident-Report-YYYY-MM-DD[-Short-Description].md`.
 
-Each report includes metadata, executive summary, impact, affected assets, symptoms, timeline when available, findings, root cause or current hypothesis, corrective actions, validation, lessons learned, follow-ups, and closure status.
+Each report includes metadata, summary, impact, affected assets, symptoms, timeline when available, findings, root cause or current hypothesis, corrective actions, validation, lessons, follow-ups, & closure status.
 
 Routine troubleshooting belongs in the platform troubleshooting log. If it becomes an incident, I create the incident report and cross-link both records. When an incident has supporting files, it gets an incident-specific folder with `Evidence/` beneath it.
 
@@ -125,4 +125,4 @@ Living documents that I maintain over time keep stable, undated filenames: index
 
 Files that represent an event or captured state keep dates in their filenames: incident reports, bounded change records, migrations, audits, assessments, evidence reports, and inventory snapshots.
 
-Every Markdown file carries both `**Created:** YYYY-MM-DD` and `**Last updated:** YYYY-MM-DD` near the top of the document. `Created` stays fixed; `Last updated` changes whenever the content changes. Original event, implementation, migration, and snapshot dates stay as separate metadata.
+Every Markdown file carries `**Created:** YYYY-MM-DD` & `**Last updated:** YYYY-MM-DD` beneath its H1. `Created` stays fixed. `Last updated` changes with the content, while event, implementation, migration, & snapshot dates remain separate facts.

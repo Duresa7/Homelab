@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-20
 
-These are the hardware specifications for my four Galaxy cluster nodes. I keep this sheet in sync with the live machines.
+Galaxy has four nodes with 24 physical CPU cores, 105.21 GiB of memory, four NVMe boot devices, one 1.82 TiB SSD, & one 1.82 TiB ZFS disk. The tables keep each model, capacity, & management address separate.
 
 ## Nodes
 | Node | IP | CPU | Cores / Threads | Memory | GPU | Physical storage |
@@ -27,4 +27,4 @@ These are the hardware specifications for my four Galaxy cluster nodes. I keep t
 
 ![Two SK hynix SO-DIMM memory modules](Images/image-1776104321961.jpg)
 
-Two SK hynix SO-DIMM memory modules from the node hardware.
+The retained photo shows two SK hynix SO-DIMM modules from the node hardware.

@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
 
-My central backlog. I keep high-level priorities and links here and leave the detailed implementation steps in the owning system's TODO so nothing is written twice.
+This file is my central backlog and index. It holds one active priority plus links to ten system backlogs; the implementation steps stay in the owning system's TODO.
 
 ## Inbox
 
@@ -32,9 +32,9 @@ _No untriaged items._
 
 - [x] 2026-07-17: [Media Stack application onboarding](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). Jellyfin libraries and Quick Sync transcoding, Sonarr/Radarr media management, first Prowlarr indexer, and confirmed Seerr connections, evidenced by 16 screenshots. The bounded end-to-end acquisition test remains in the platform TODO.
 - [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and matched five retained identities to their known public fingerprints.
-- [x] 2026-07-14: [Termix SSH host onboarding](Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md). Dedicated encrypted Termix identity, nine verified hosts, four-folder inventory, and a TCP/22-only Galaxy firewall path for the four Proxmox nodes.
-- [x] 2026-07-14: [Ansible and Semaphore upgrade](Platforms/Ansible/Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md). Ansible 14.2.0/core 2.21.2, Semaphore 2.18.27, verified recovery backups, systemd startup, and Proxmox LXC auto-start.
-- [x] 2026-07-14: [Ansible SSH identity automation](Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md). Portable per-identity audit/onboard/stage/verify/retire playbooks, safety gates, and 18 Semaphore templates using the retained encrypted controller credential.
+- [x] 2026-07-14: [Termix SSH host onboarding](Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md). One reusable Ed25519 identity, nine verified hosts, four folders, & a TCP/22-only Galaxy firewall path for the four Proxmox nodes.
+- [x] 2026-07-14: [Ansible and Semaphore upgrade](Platforms/Ansible/Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md). Ansible 14.2.0/core 2.21.2, Semaphore 2.18.27, recovery backups, systemd startup, & Proxmox LXC auto-start.
+- [x] 2026-07-14: [Ansible SSH identity automation](Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md). Per-identity audit, onboard, stage, verify, & retire playbooks with safety gates and 18 Semaphore templates.
 - [x] 2026-07-13: [Galaxy datacenter firewall IPSet restructure](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Datacenter%20Firewall%20IPSet%20Restructure%20-%202026-07-13.md). I reorganized `pve_mgmt` into IPSets, narrowed management-VLAN `8006` to the cluster nodes, and removed the redundant `grey-server` host.fw.
 - [x] 2026-07-13: [Wazuh endpoint re-enrollment](Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md). Fresh `app-01` and `edge-01` identities active as IDs `004` and `005`.
 - [x] 2026-07-13: [Wazuh endpoint agent removal](Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md). I purged the `app-01` and `edge-01` agent packages and client data for a clean reinstall.

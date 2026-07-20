@@ -1,9 +1,9 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is my index of the current Galaxy cluster inventories:
+This index links the four current Galaxy inventories: one physical-node sheet, one VM inventory, one LXC inventory, & one workload map.
 
 | File | Contents |
 | --- | --- |

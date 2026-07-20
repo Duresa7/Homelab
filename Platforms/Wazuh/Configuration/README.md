@@ -26,4 +26,4 @@ This reference records endpoints, paths, package versions, & current agent state
 | `app-01` | 4.14.5-1 | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
 | `edge-01` | 4.14.5-1 | ID `005`, `edge-01` | `192.168.90.10` | Enabled/active; TCP 1514 established |
 
-`app-01` and `edge-01` are the only intended Wazuh endpoints. The dashboard verifies IDs `004` and `005` active on manager node `node01`. Never commit or display `/var/ossec/etc/client.keys` contents.
+`app-01` and `edge-01` are the only intended Wazuh endpoints. The dashboard verifies IDs `004` and `005` active on manager node `node01`.

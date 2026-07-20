@@ -1,12 +1,11 @@
-# TNIO Bot Full Accuracy Upgrade Report - 2026-05-13
+# TNIO Retrieval Evaluation and Verification Upgrade - 2026-05-13
 
 **Created:** 2026-05-13  
 **Last updated:** 2026-07-20
 
-## Summary
-I implemented the full accuracy-first upgrade for the TNIO Discord bot. This pass focused on making the bot choose the right class of source, prove factual TNIO answers from the corpus, avoid raw sheet/table dumps, preserve structured sheet data, and turn no-vote/abstain feedback into a reusable evaluation queue.
+## Result
 
-This was not a one-off hardcoded fix for one question. The upgrade adds reusable routing, verification, monitoring, and test coverage around the whole active corpus.
+I added source-class verification, structured Sheet records, a 214-case evaluation suite, a feedback review queue, & Drive-change monitoring to the TNIO Discord bot. The suite covers all 45 active manifest files, and all 26 P0 cases passed against the live endpoint.
 
 ## Corpus And Evaluation Coverage
 - Active bot manifest files: 45
@@ -18,12 +17,12 @@ This was not a one-off hardcoded fix for one question. The upgrade adds reusable
 - No-vote items: 16
 - Abstain items: 3
 
-## Key Runtime Changes
-- Added a stronger final answer verifier in `lore_agent.py`.
+## Runtime Changes
+- Added a final answer verifier in `lore_agent.py`.
 - Added source authority alignment checks using the deep corpus source map.
 - Added source conflict detection so the bot can flag when a weaker source is competing with a better authority source.
 - Added stricter policy-question handling so guide/codex/progression sources beat rosters and tracking sheets.
-- Added guards against "thin archives" / "not found" answers when retrieved evidence actually contains a direct rule.
+- Added guards against "thin archives" / "not found" answers when retrieved evidence contains a direct rule.
 - Added guards against raw sheet/table fragments such as `Column A`, `Row`, `Sheet`, or copied separator tables in final Discord answers.
 - Added specific verification for the Intel/Sith joining issue so the answer must include the Apprentice requirement when the evidence supports it.
 - Tightened session-context use so fresh questions do not inherit stale previous topics.
@@ -41,7 +40,7 @@ Sheet rows are now preserved with structured metadata instead of only plain text
 
 The HTTP/source compaction path now carries those fields forward into agent evidence. This lets the bot interpret rows as records instead of copying sheet internals into Discord.
 
-## New Scripts And Artifacts
+## Scripts and Generated State
 Added:
 
 - `build_golden_eval_suite.py`
@@ -57,7 +56,7 @@ Generated on `<YOUR_TNIO_HOST>`:
 - `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/feedback_eval_summary.json`
 - `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/drive_change_report.json`
 
-## Discord Logging Improvements
+## Discord Answer Logs
 The Discord bot now logs more evidence with each agent answer:
 
 - verifier blocked status
@@ -140,5 +139,6 @@ lore-search-http.service
 lore-discord-bot.service
 ```
 
-## Practical Impact
-The bot now has a measurable accuracy system around the corpus instead of relying on individual fixes after each bad answer. It still cannot guarantee every future phrasing will be perfect, but it now has stronger source selection, better table interpretation, final-answer blocking, feedback-driven evaluation, and Drive-change monitoring to keep improvements systematic.
+## Observed Coverage
+
+The change added 214 golden cases across 45 files, 19 feedback cases, source-conflict checks, raw-table guards, & Drive-manifest comparison. It doesn't guarantee an answer for every future phrasing; the live verification covers the 26 recorded P0 cases.

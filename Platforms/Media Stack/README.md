@@ -1,9 +1,9 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-My media stack runs request management, media-library playback, release automation, indexer coordination, challenge handling, and VPN-isolated downloading from one dedicated Debian LXC.
+I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
 ## Current State
 
@@ -46,8 +46,8 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 - [Download payload-filtering research](Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md)
 - [Troubleshooting log](Documentation/Troubleshooting-Log.md)
 - [Platform backlog](Documentation/TODO.md)
-- [Secret-free configuration reference](Configuration/README.md)
+- [Configuration reference](Configuration/README.md)
 
-## Remaining Onboarding
+## Remaining Acquisition Check
 
 I completed application onboarding on 2026-07-17: Jellyfin's guided setup, the Movies and TV Shows libraries, and Quick Sync transcoding; Sonarr and Radarr media management; the first Prowlarr indexer with the Standard sync profile; and the migrated Seerr connections. The [application onboarding change record](Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md) and its 16-screenshot evidence set hold the details. One bounded end-to-end test (request → search → qBittorrent through the VPN → hard-link import → Jellyfin playback) remains before I treat acquisition and import as fully validated, and the `flaresolverr` tag stays unused until an indexer requires challenge handling.

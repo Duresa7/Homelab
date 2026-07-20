@@ -3,9 +3,9 @@
 **Created:** 2026-07-01  
 **Last updated:** 2026-07-20
 
-My reference notes for the UniFi → SC4S → Splunk pipeline (see [Build-Log.md](Build-Log.md) Step 6). Source: Ubiquiti Help, *UniFi System Logs & SIEM Integration*.
+I use this reference for the UniFi to SC4S to Splunk pipeline in [Build-Log.md](Build-Log.md#step-6-unifi-log-ingestion-cef-via-sc4s). The format comes from Ubiquiti's *UniFi System Logs & SIEM Integration* documentation.
 
-UniFi's **System Logging / SIEM** integration (Integration → System Logging / SIEM → *SIEM Server*) exports activity logs over syslog in **Common Event Format (CEF)**. You choose which categories to export and the destination IP/port.
+UniFi's **System Logging / SIEM** integration (Integration → System Logging / SIEM → *SIEM Server*) exports activity logs over syslog in **Common Event Format (CEF)**. I select the exported categories and destination IP/port there.
 
 ## CEF header format
 
@@ -33,7 +33,7 @@ Ubiquiti_UniFi Network,index,netops
 Ubiquiti_UniFi Protect,index,netops
 ```
 
-(If you'd rather keep Protect's camera/physical-security data separate, point `Ubiquiti_UniFi Protect` at its own index instead.)
+I can separate Protect camera events later by pointing `Ubiquiti_UniFi Protect` at a different index.
 
 Restart SC4S after editing (`sudo systemctl restart sc4s`). If UniFi events ever fall back to `main`, check the actual `device_product` string and add the matching key.
 

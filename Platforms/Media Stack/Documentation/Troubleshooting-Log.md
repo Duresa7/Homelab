@@ -1,7 +1,7 @@
 # Media Stack Troubleshooting Log
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## 2026-07-18: Jellyfin Access from Another Device
 
@@ -9,7 +9,7 @@
 
 Someone in the house reported that another device could not add or connect to the Jellyfin server. I had no client-side error text or source-device identity during the initial diagnosis.
 
-### Hypotheses and Tests
+### Tests
 
 I ran read-only service checks on `media-01` and confirmed CT 842 was running, the Jellyfin container was `running` and `healthy`, TCP port `8096` was listening on IPv4 and IPv6 wildcard addresses, and `http://127.0.0.1:8096/System/Info/Public` returned Jellyfin 10.11.11 with `LocalAddress` set to `http://192.168.40.42:8096`. Jellyfin's active network configuration had `EnableRemoteAccess` set to `true` and no base URL.
 
@@ -17,7 +17,7 @@ A TCP connection test I ran from `Jedi PC` (`192.168.50.241`, Secure VLAN 50) to
 
 Inspecting the firewall, I found the enabled `Block Trusted to Personal-A` policy. The higher-priority `Allow Devices to Personal-A` policy permits only a defined client list, and the separate `Allow Device --> media-01` policy explicitly permits the two known Fire TV clients. A different device on the Trusted network that is absent from the allowlist is therefore expected to be blocked. Automatic Jellyfin discovery may also fail across VLAN boundaries even when TCP access is allowed because discovery depends on local broadcast behavior.
 
-### Current Finding and Next Verification
+### Current Finding
 
 The Jellyfin service and host listener are healthy; my leading hypothesis is source-device firewall eligibility or cross-VLAN discovery rather than a Jellyfin outage. I have not changed any network or application configuration. Next I will identify the failing device by UniFi client name, IP address, or MAC address, confirm its source network and policy match, and test the manually entered server URL `http://192.168.40.42:8096`. If the device should have access, I will preview a narrowly scoped allow policy or allowlist addition before making any UniFi change.
 
@@ -43,7 +43,7 @@ type=warning source=IndexerSearchCheck message=No indexers available with Automa
 
 I had not added any indexers to Prowlarr yet. The Prowlarr-to-Arr application links and the qBittorrent download clients were present, so the messages accurately described my incomplete onboarding rather than a failed integration.
 
-### Hypothesis, Test, and Current Verification
+### Isolated Cause
 
 My hypothesis was that no indexers existed rather than a Prowlarr-to-Arr or download-client failure. Prowlarr's application links were present, both Arr root paths existed, and the Sonarr and Radarr qBittorrent client-test APIs passed after I applied the final Web UI credential. That isolates the findings to the intentionally empty indexer inventory.
 
@@ -64,7 +64,7 @@ NameError: name 'source' is not defined
 
 Single-quoted Python dictionary keys were consumed by the enclosing shell quoting layer.
 
-### Failed Attempt, Hypothesis, Corrective Action, and Verification
+### Correction and Verification
 
 My failed attempts used single-quoted dictionary keys inside an outer single-quoted shell command. I verified the hypothesis by observing that the enclosing shell removed those quotes before Python parsed the script. I rewrote the formatter to assign dictionary values to variables using double-quoted keys before interpolation.
 
@@ -80,7 +80,7 @@ My first post-recreation verification reached qBittorrent immediately after Dock
 ConnectionResetError: [Errno 104] Connection reset by peer
 ```
 
-### Hypothesis and Test
+### Readiness Check
 
 I suspected an application-readiness race: the container process was running, but the Web UI socket had not completed initialization. Gluetun was already healthy and Docker had started qBittorrent successfully. No active torrents existed before the controlled restart.
 

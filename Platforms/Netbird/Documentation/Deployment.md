@@ -8,7 +8,7 @@
 
 ## Scope
 
-Deploy NetBird & its Nginx Proxy Manager dependency on a new Debian 13 LXC named `docker-network`. I isolated the service on VLAN 85, used my established `/opt/docker/<service>` Compose layout, & made it reachable through an internal UniFi DNS record. Nginx Proxy Manager routes the dashboard, HTTP API, WebSocket, & gRPC paths and terminates a Let's Encrypt certificate issued through Cloudflare DNS-01.
+I deployed NetBird and Nginx Proxy Manager on Debian 13 LXC 107 `docker-network`. The service runs on VLAN 85 in `/opt/docker/<service>` projects and resolves through an internal UniFi DNS record. Nginx Proxy Manager routes the dashboard, HTTP API, WebSocket, & gRPC paths and terminates a Let's Encrypt certificate issued through Cloudflare DNS-01.
 
 The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) holds the 11-step sequence for the guest, SSH, Docker, UniFi, DNS, TLS, proxy, & restart evidence. This record follows the same deployment from the NetBird platform boundary.
 
@@ -17,7 +17,6 @@ The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infras
 - VLAN 85 already existed and was available to the Proxmox environment.
 - No dedicated NetBird/Nginx Proxy Manager LXC or NetBird platform deployment existed.
 - I had settled on the name, address, and guest ID: `docker-network`, `192.168.85.2/24`, and CT 107.
-- The existing `docker-blue` LXC provided the three approved administrative public keys I reused for the new guest.
 - `<YOUR_NETBIRD_DOMAIN>` didn't yet have the required internal DNS record, certificate, or reverse-proxy host.
 
 ## Platform Deployment Summary
@@ -79,7 +78,7 @@ I verified resolution from both CT 107 and my Windows workstation.
 
 The proxy host `<YOUR_NETBIRD_DOMAIN>` is saved and Online with default upstream `http://netbird-dashboard:80`, Block Common Exploits enabled, and WebSocket Support enabled. I applied the 1,296-character advanced configuration to route NetBird API, OAuth2, WebSocket, signal, management, and gRPC requests to `netbird-server:80`.
 
-Nginx configuration validation succeeded, and an HTTP request through NPM with Host header `<YOUR_NETBIRD_DOMAIN>` returned the NetBird dashboard with HTTP `200`. Nginx Proxy Manager used a zone-scoped Cloudflare DNS Write token to issue a Let's Encrypt certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`. I assigned the certificate to the NetBird host with Force SSL and HTTP/2 enabled. The intended HTTPS URL returned `200`, and Chrome displayed an authenticated NetBird administrator dashboard.
+Nginx configuration validation succeeded, and a request through NPM with Host header `<YOUR_NETBIRD_DOMAIN>` returned HTTP `200`. Nginx Proxy Manager issued a Let's Encrypt certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` through Cloudflare DNS-01. I assigned it to the NetBird host with Force SSL and HTTP/2 enabled. The intended HTTPS URL returned `200`, and the authenticated administrator dashboard loaded.
 
 ### Controlled restart validation
 
@@ -101,7 +100,6 @@ I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Ngin
 | HTTPS certificate | Let's Encrypt wildcard/apex certificate issued through Cloudflare DNS-01 |
 | Certificate renewal | Non-interactive DNS-01 path verified by staging dry-run; NPM checks hourly and renews within 30 days of expiry |
 | Container logging | `json-file`, `max-size=10m`, `max-file=3` on both NetBird containers |
-| Cloudflare DNS-01 input | Zone-scoped DNS Write token for `<YOUR_BASE_DOMAIN>` |
 | NPM proxy host | Online; advanced routes, Force SSL, and HTTP/2 applied |
 | NetBird administrator | Existing administrator authenticated through `https://<YOUR_NETBIRD_DOMAIN>` |
 
@@ -130,7 +128,7 @@ These checks prove the direct control plane, its network dependencies, HTTPS pub
 - If a future image update fails, restore the recorded working image digest or version and recreate the two containers without deleting `netbird_data`.
 - Nginx Proxy Manager is a separate Compose project and can be stopped or repaired without deleting NetBird data.
 - UniFi DNS and firewall rollback belongs with the UniFi records. Remove only the record or rules created for this deployment and preserve their documented order.
-- Removing CT 107 is a final rollback only after protected application data is backed up and the service is intentionally retired.
+- Removing CT 107 is a final rollback only after the application state is backed up and the service is intentionally retired.
 
 ## Closed NetBird Work
 

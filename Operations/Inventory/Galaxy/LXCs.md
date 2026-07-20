@@ -3,9 +3,9 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-20
 
-This is my configuration inventory of the LXC containers on the Galaxy cluster.
+Galaxy currently has seven LXCs: five on grey or blue for automation, AI, Docker, & remote access, plus `media-01` on red. The tables record their guest IDs, resources, storage, interfaces, & host-device mappings.
 
-## Summary
+## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
@@ -18,7 +18,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
 ## LXC 100 - ansible-01
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | grey-server |
@@ -43,7 +43,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
 ## LXC 104 - ai-alpha-01
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | grey-server |
@@ -67,7 +67,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
 ## LXC 105 - ai-bravo-02
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | grey-server |
@@ -102,7 +102,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
 ## LXC 107 - docker-network
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | blue-server |
@@ -132,11 +132,11 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 - SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the three approved administrative keys.
 - `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root and `<YOUR_ADMIN_USERNAME>` password records remain locked pending protected console entry; this does not affect key-based SSH.
+- Root and `<YOUR_ADMIN_USERNAME>` password records are locked; public-key SSH remains available.
 
 ## LXC 108 - docker-blue
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | blue-server |
@@ -160,7 +160,7 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 ## LXC 110 - docker-main
 
-### Overview
+### Configuration
 | Setting | Value |
 | --- | --- |
 | Node | grey-server |
@@ -186,7 +186,7 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 ## LXC 842 - media-01
 
-### Overview
+### Configuration
 
 | Setting | Value |
 | --- | --- |
@@ -225,4 +225,4 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 - SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the approved administrative keys.
 - `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root is locked. The administrative account retains a protected console password outside the repository.
+- Root is locked; the administrative account uses the recorded public-key SSH path.

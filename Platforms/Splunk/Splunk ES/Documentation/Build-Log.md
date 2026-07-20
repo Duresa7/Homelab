@@ -1,11 +1,11 @@
 # Splunk Enterprise Security: Configuration Log
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-My log of installing and configuring **Splunk Enterprise Security (ES)** on top of the existing Splunk Enterprise SIEM build. Same audience and purpose as the base SIEM log: written for other IT/security practitioners, recording what I did, the exact steps and commands, the alternatives I considered, and the reasoning behind non-default choices. Companion to the [Splunk Enterprise build log](../../Splunk%20Enterprise/Documentation/Build-Log.md), which covers standing up the VM, OS, Splunk Enterprise itself, and UniFi log ingestion.
+I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 SIEM. The [Splunk Enterprise build log](../../Splunk%20Enterprise/Documentation/Build-Log.md) covers the VM, OS, base application, & UniFi ingestion path.
 
-### Project documents
+### Related Records
 
 | Document | Purpose |
 |---|---|
@@ -21,25 +21,21 @@ My log of installing and configuring **Splunk Enterprise Security (ES)** on top 
 | License | Splunk nonprofit donation program, which explicitly includes an ES entitlement (plus SOAR Community Edition) alongside the 10 GB/day Enterprise license [1] |
 | Started | 2026-07-02 |
 
----
-
 ## Step index
 
 | # | Step | Status | Summary |
 |:-:|---|:-:|---|
 | 1 | ES app install (Splunk Web) | Done | Installed via Manage Apps → Install app from file; hit a CPU-bound setup issue, fixed by raising the VM to 6 vCPU |
 
----
-
 ## Step 1: Splunk Enterprise Security app install
 
 ### What I did
 
-I installed the Splunk Enterprise Security app through **Splunk Web**, not the CLI: **Apps → Manage Apps → Install app from file**, uploading the ES `.spl` package. Done 2026-07-02, on the existing `splunk-siem` VM (the same instance already running Splunk Enterprise 10.4.0 and ingesting UniFi logs via SC4S).
+On 2026-07-02, I uploaded the ES `.spl` package through **Apps → Manage Apps → Install app from file** on `splunk-siem`. The same VM already ran Splunk Enterprise 10.4.0 and ingested UniFi logs through SC4S.
 
 ### Decision: Splunk Web install, not CLI
 
-Splunk supports installing ES either by uploading the `.spl` through Splunk Web or via `splunk install app <file>.spl` on the CLI. I took the Web UI path because it drives the same post-install setup/configuration workflow (index and data model rebuild) automatically after upload, which is convenient for a single-instance home lab. The CLI path is more common in scripted/production deployments (search head clusters, deployer-managed environments).
+Splunk supports either a Web upload or `splunk install app <file>.spl`. I used the Web path because this is one search head and the upload starts the post-install index and data-model work.
 
 ### Licensing
 
@@ -47,17 +43,9 @@ I confirmed before installing: the Splunk nonprofit donation program grant alrea
 
 ### Issue encountered: undersized VM (CPU-bound)
 
-The install/post-install setup step (which rebuilds indexes and accelerates the CIM data models ES depends on) is far more CPU- and I/O-intensive than running base Splunk Enterprise. On the VM's original 4 vCPU, this step crawled. I suspected disk I/O at first, but I left the VM's SSD-backed storage unchanged and the fix was CPU alone, which points to the 4-core allocation as the actual constraint rather than the disk.
+The index rebuild and CIM data-model acceleration stalled on the VM's original 4 vCPU. I left the SSD-backed storage unchanged and raised the VM to 6 vCPU; setup then completed.
 
-**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. I confirmed the fix by loading Enterprise Security fully in Splunk Web, including Mission Control → Configure → All configurations, on 2026-07-02. Full symptom/cause/fix writeup in [Troubleshooting-Log.md](Troubleshooting-Log.md) (#1). I updated the [Splunk Enterprise VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) to reflect the new core count, since the VM is shared infrastructure documented there.
-
----
-
-## Current state
-
-Step 1 is done: Enterprise Security is installed and running on `splunk-siem` at 6 vCPU. Next up is Step 2, scoping the CIM data models to the indexes actually in use, followed by the rest of the configuration work tracked in [TODO.md](TODO.md) (indexes, roles/capabilities, correlation searches, asset/identity, risk-based alerting).
-
----
+**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. Enterprise Security then loaded **Mission Control → Configure → All configurations** on 2026-07-02. The [troubleshooting log](Troubleshooting-Log.md#1-es-installsetup-slow-initially-looked-disk-io-bound-2026-07-02) records the failure, & [VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) records the 6-vCPU state. Remaining CIM, index, role, correlation-search, asset, identity, & risk work is in [TODO.md](TODO.md).
 
 ## References
 

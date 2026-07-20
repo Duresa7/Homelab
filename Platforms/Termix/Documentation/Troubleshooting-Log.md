@@ -67,12 +67,9 @@ I tested these hypotheses in order:
 |---:|---|---|---|
 | 1 | The deployed logger template never includes the generated value | Inspected the compiled reset route and ran the same static assertion twice against the observed event | Confirmed; both assertions reported `RED:code-absent` |
 | 2 | The admin UI provides the value instead | Searched the deployed `AdminSettings` asset and backend settings routes | Ruled out; no reset-code field or lookup exists in the admin bundle, and the settings routes are feature-specific |
-| 3 | The value failed to persist | Decrypted a separate in-memory copy of the persisted encrypted SQLite file and queried only for row existence | The persisted file contained no reset row; the route wrote to the live in-memory database without calling the save trigger |
-| 4 | Browser cache served an old frontend | Compared the deployed package and image with the registry's current manifest and upstream release source | Not causal to the missing log value; the backend itself was old and defective |
+| 3 | Browser cache served an old frontend | Compared the deployed package and image with the registry's current manifest and upstream release source | Not causal; the deployed backend itself omitted the value |
 
-The deployed compiled route creates `resetCode`, inserts it into `settings`, and then logs only the username and expiry. Because the insert completed before the log line, the reset row existed in the live process. The encrypted database file on disk had last been written on 2026-07-07 and did not contain `reset_code_<YOUR_ADMIN_USERNAME>`; that is why an offline database check could not recover it. Reset codes are short-lived process state in this path.
-
-The `AdminSettings` bundle contained one general password-reset status reference but zero `reset_code_`, `reset code`, or `resetCode` references. The only backend routes with `settings` in their path were the terminal-session and Guacamole feature settings; no generic admin settings-table reader was exposed.
+The deployed route created `resetCode` but logged only the username and expiry. The `AdminSettings` bundle contained no reset-code field, so neither documented retrieval path exposed the value.
 
 ### Root Cause
 
@@ -84,7 +81,7 @@ The defect is corrected in [Termix 2.5.0's password-reset route](https://github.
 
 I chose a direct Compose upgrade and deliberately took no backup. From `/opt/docker/termix`, I upgraded the existing project with `docker compose pull`, `docker compose down`, and `docker compose up -d`. Both `termix` and `guacd` were recreated; the named `termix_termix-data` volume was retained. I changed no Compose file or environment setting.
 
-I also chose not to initiate a password-reset request during this work. Verification therefore inspected the corrected 2.5.0 logger template without generating or retaining a code.
+I didn't initiate a password-reset request during the upgrade. Verification inspected the corrected 2.5.0 logger template.
 
 ### Verification
 
@@ -92,6 +89,6 @@ Termix now reports package version 2.5.0 and repository digest `sha256:4d3371311
 
 `guacd` logged that it was listening on TCP 4822. Its manual health command passed, Termix established a TCP connection to `guacd:4822`, and Docker's first scheduled five-minute health probe exited zero and changed the container to `healthy`. Both containers remained healthy with zero restarts in the final Compose check.
 
-The earlier 2026-07-13 reset code was scheduled to expire at 23:42:57 UTC and was invalidated by the restart because that code existed only in the former process's in-memory database. I need to initiate a fresh reset when ready.
+The earlier 2026-07-13 reset code expired with the former process. A fresh reset remains the final functional test.
 
 The completed upgrade is recorded in [Termix Upgrade 2.2.1 to 2.5.0 - 2026-07-13](Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md).

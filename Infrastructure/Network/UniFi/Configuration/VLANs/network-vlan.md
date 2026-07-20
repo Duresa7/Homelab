@@ -1,4 +1,4 @@
-# Unifi Network
+# UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-20
@@ -24,7 +24,7 @@
 
 ## Purpose and Device Placement
 
-This table says what each network is for; I use it to decide where a new device or workload belongs. The **Zone** column is the firewall zone the network sits in (see [zones](../Zones/zone.md)); it governs what the network may talk to. Networks with an **`-A`** suffix are the segmented `<YOUR_ORG_NAME>` infrastructure tier; each lives in its own custom zone under least-privilege policies. The unsuffixed VLANs are the general household tier. Device examples are drawn from the live controller and are illustrative, not exhaustive.
+I use this table when placing a new device or workload. The **Zone** column names the [firewall zone](../Zones/zone.md) that controls its network paths. Names ending in **`-A`** belong to the segmented `<YOUR_ORG_NAME>` infrastructure tier, while unsuffixed VLANs serve household and general lab devices. The examples reflect controller state but don't list every client.
 
 | Network (VLAN) | Zone | Trust tier | What belongs here: device types and examples |
 |---|---|---|---|
@@ -43,7 +43,7 @@ This table says what each network is for; I use it to decide where a new device 
 | Access-A (85) | `<YOUR_ORG_NAME>`-Access | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
 | DMZ-A (90) | Dmz | Internet-facing edge | `<YOUR_ORG_NAME>` public-facing edge workloads that accept inbound from the internet (edge-01 = .10), monitored from Security-A. Blocked from reaching Internal. |
 
-### Placement Quick Reference
+### Placement by Workload
 
 - Phone, tablet, or personal laptop (mine or family) → **Trusted (10)**
 - Smart-home gadget, camera, TV, or appliance → **IoT (20)**

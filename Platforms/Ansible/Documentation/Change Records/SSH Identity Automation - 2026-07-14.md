@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-14  
 **Status:** Complete  
@@ -12,7 +12,7 @@
 
 I implemented a reusable Ansible workflow that can onboard a new SSH public-key identity or rotate exactly one existing identity without replacing unrelated keys. Semaphore stays as an optional click-to-run interface over ordinary Ansible files. I rotated, replaced, added, and removed no current key during implementation.
 
-The four baseline identities are Mac, Ansible Control, Jedi PC, and Termix. I remain responsible for generating future replacement keys on the owner device.
+The four baseline identities are Mac, Ansible Control, Jedi PC, & Termix. Each replacement begins on the device that owns it.
 
 ## Starting State
 
@@ -23,17 +23,16 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, and Termix. I re
 - The controller trusted only part of the managed fleet's host keys.
 - `ws-dc-2-secondary` and `obi-pc` had not been safely inventoried and needed to remain out of scope.
 
-## Decisions and Rationale
+## Automation Boundaries
 
 - I keep one identity file per SSH origin. This is the boundary that prevents a Jedi PC operation from changing Mac, Ansible Control, or Termix.
-- I store public keys only. Private keys remain on their owner devices or in Semaphore's encrypted Key Store.
 - Onboarding and staging are additive. Deletion exists only in the dedicated retirement playbook after all preconditions pass.
 - Retirement requires a distinct replacement, presence of both keys on every target, an owner-device login test, `operator_verified: true`, an exact confirmation phrase, and full reachability.
 - I let target accounts manage their own authorized-key files instead of introducing sudo solely for this workflow.
 - I gave `grey-server` sole write responsibility for the Proxmox cluster-backed key file while all four nodes independently verify it.
 - Unknown Windows machines stay non-selectable until their actual authorized-key store and connectivity are verified.
 - I treat Semaphore as a launcher, not the source of truth. The project continues to work with normal `ansible-playbook` commands when Semaphore is unavailable.
-- I did not import the project into a second Semaphore project through the CLI: Semaphore deliberately excludes private-key material from project backups, which would produce an empty execution credential.
+- I kept the existing Semaphore project because its CLI export couldn't reproduce the working execution configuration in a second project.
 
 ## Actions and Observed Results
 
@@ -62,7 +61,6 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, and Termix. I re
 | Direct playbooks | Audit, Onboard, Stage, Verify, Retire |
 | Semaphore templates | 18 across five focused views, plus the aggregate `All` view |
 | Privilege escalation | None required by this workflow |
-| Private keys in repository | None |
 
 ## Final Key-State Audit
 
@@ -83,10 +81,8 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, and Termix. I re
 | Unknown target | `obi-pc` rejected before contact |
 | Check mode | Predicted Termix additions; following audit showed both still missing |
 | Final audits | Reachable hosts `changed=0`, `failed=0`; offline hosts explicitly unreachable |
-| Secret scan of retained logs | No private-key, public-key blob, password, token, or secret pattern found |
 | Network diagnosis | UniFi flows allowed controller SSH; no policy change made |
 | Semaphore UI | 18 templates total; four in each identity view, two in Onboarding, 18 in aggregate All; all remained Not launched |
-| Semaphore credential | Existing encrypted `ansible-key` retained as an SSH key; no private material exported or duplicated |
 
 ## Rollback
 

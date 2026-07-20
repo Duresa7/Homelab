@@ -19,7 +19,7 @@ I recorded & verified fresh Wazuh agent installations on `app-01` and `edge-01` 
 
 **UI path and action:** In Wazuh Dashboard > Agents management > Deploy new agent, I used the generated deployment workflow to install agent 4.14.5-1 on `app-01` and `edge-01` and create exact-name manager identities for both hosts.
 
-**Observed result:** The workflow created manager IDs `004` & `005` with matching endpoint enrollment state. I didn't manually copy, import, or reuse an enrollment key.
+**Observed result:** The workflow created manager IDs `004` & `005` with matching endpoint enrollment state.
 
 **Verification:** Both endpoints had the supported package installed after the workflow completed.
 
@@ -33,7 +33,7 @@ I recorded & verified fresh Wazuh agent installations on `app-01` and `edge-01` 
 
 **Verification:** TCP 1514 and 1515 were reachable through the existing policy path, with no new endpoint, manager, or firewall configuration required and no new WAN exposure.
 
-**Evidence:** The exact S02 text transcript remains in the local-only scrub quarantine & isn't linked from this public record. The resulting active sessions are corroborated by the manager dashboard in Step 3.
+**Evidence:** The manager dashboard in Step 3 corroborates the active endpoint sessions.
 
 ### Step 3: Confirm both endpoints in the manager dashboard
 
@@ -58,7 +58,7 @@ No port forward or new firewall policy is required. TCP 1515 is used when an age
 
 ## Retirement & Recovery
 
-If either fresh identity must be retired, stop its endpoint service, remove that exact new manager ID, purge the endpoint state if a clean retry is desired, and repeat fresh enrollment. Do not restore IDs `002`/`003` or their former keys.
+If either fresh identity must be retired, stop its endpoint service, remove that exact new manager ID, purge the endpoint state if a clean retry is desired, and repeat fresh enrollment. Don't restore IDs `002` or `003`.
 
 ## Remaining Work
 

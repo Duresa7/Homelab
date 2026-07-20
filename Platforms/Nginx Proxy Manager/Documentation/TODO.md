@@ -7,18 +7,16 @@ NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS h
 
 ## Complete NetBird Publication
 
-- [x] Configure a zone-scoped Cloudflare DNS Write token for the NPM DNS-01 certificate.
+- [x] Configure Cloudflare DNS-01 validation for the NPM certificate.
 - [x] Request the `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` DNS-01 certificate.
 - [x] Assign the certificate, enable Force SSL, and enable HTTP/2.
 - [x] Verify certificate presentation and the authenticated NetBird dashboard over HTTPS.
 - [x] Enroll the first NetBird peer and verify VPN traffic plus peer-dependent API, OAuth2, WebSocket, signal, management, and gRPC behavior. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 - [x] Verify the non-interactive Cloudflare DNS-01 renewal path with a successful Let's Encrypt staging dry-run and identify NPM's hourly renewal scheduler. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
-- [x] Capture S07 certificate, proxy-host, and TLS step evidence.
-- [x] Capture S08 authenticated-dashboard step evidence.
 
 ## Operational Readiness
 
-- [x] Perform NPM and NetBird Compose restart validation and capture S09 evidence.
+- [x] Perform NPM and NetBird Compose restart validation.
 - [x] Configure and verify bounded `json-file` logging (`10m` × `3`) for `nginx-proxy-manager`. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 Operational status is complete. I intentionally descoped further hardening on 2026-07-12; NPM stays internal-only with no WAN ingress and intentionally tracks `latest`.

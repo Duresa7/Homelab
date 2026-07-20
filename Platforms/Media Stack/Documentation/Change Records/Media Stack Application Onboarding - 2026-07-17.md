@@ -9,11 +9,11 @@
 
 ## Scope
 
-I completed the UI-guided application onboarding deferred by my [deployment record](Media%20Stack%20Deployment%20-%202026-07-17.md) & carried through the [refresh record](Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17.md): Jellyfin's guided setup, media libraries, & hardware transcoding; Sonarr and Radarr media management; the first Prowlarr indexer; & confirmation of the migrated Seerr connections to Jellyfin, Sonarr, & Radarr.
+I completed Jellyfin's guided setup, media libraries, & hardware transcoding; Sonarr and Radarr media management; the first Prowlarr indexer; & the migrated Seerr connections to Jellyfin, Sonarr, & Radarr. The [deployment record](Media%20Stack%20Deployment%20-%202026-07-17.md) and [refresh record](Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17.md) cover the infrastructure that came first.
 
-## UI Method & Public Evidence
+## UI Session and Screenshots
 
-I performed the onboarding in each application's web UI between 20:08 & 21:14 EDT on 2026-07-17. No shell command ran, so this change produced no command transcript. The public evidence contains 16 screenshots catalogued in the [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md). The applications mask their API-key fields, & no secret value appears in the captures. S13 has no screenshot; its evidence entry records the gap.
+I performed the onboarding in each application's web UI between 20:08 & 21:14 EDT on 2026-07-17. The [evidence index](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Evidence-Index.md) catalogs 16 screenshots. Step 13 has no screenshot.
 
 ## Walkthrough
 
@@ -153,13 +153,13 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 
 **UI path and action:** In Radarr > Settings > Download Clients, I opened the qBittorrent entry and reviewed host `gluetun`, port 8080, and category `radarr`.
 
-**Observed result:** The entry contained no stored username, password, or API key. The protected qBittorrent configuration permits this Docker-subnet path as recorded in the [configuration reference](../../Configuration/README.md).
+**Observed result:** Radarr reached qBittorrent at `gluetun:8080` through the `radarr` category. The [configuration reference](../../Configuration/README.md) covers the Docker-subnet path.
 
 **Verification:** The saved client detail displayed host `gluetun`, port 8080, & category `radarr`.
 
 **Evidence:**
 
-![Radarr download-client entry pointing at host gluetun port 8080 with category radarr and no stored credential](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S12-Radarr-qBittorrent-Client-Detail-2026-07-17.png)
+![Radarr download-client entry pointing at host gluetun port 8080 with category radarr](../../Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S12-Radarr-qBittorrent-Client-Detail-2026-07-17.png)
 
 ### Step 13: Add the first Prowlarr indexer
 
@@ -224,7 +224,7 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 - The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. I will adopt or explicitly decline those refinements no later than the end-to-end test.
 - Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I verify Sonarr hard-linking and the researched OpenCL/BT.2390 tone-mapping selections during the end-to-end test.
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
-- The public set has no post-sync Sonarr or Radarr indexer-health capture. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both indexer-health pages.
+- There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both health pages.
 
 ## Pending Acquisition Test
 

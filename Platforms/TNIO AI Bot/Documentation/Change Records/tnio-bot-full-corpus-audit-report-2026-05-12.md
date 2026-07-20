@@ -1,25 +1,25 @@
-# TNIO Bot Full Corpus Audit And Capability Upgrade - 2026-05-12
+# TNIO Corpus Authority Audit - 2026-05-12
 
 **Created:** 2026-05-12  
 **Last updated:** 2026-07-20
 
-## Summary
+## Result
 
-I implemented the full-corpus audit and accuracy-routing upgrade for the TNIO Discord bot.
+I compared all 45 active Drive files with the 45-file bot manifest, then added source-authority, policy, alias, & evaluation artifacts to the runtime.
 
 Using the local Google Drive connector, I confirmed the TNIO folder holds 45 active Docs/Sheets. The bot manifest on `<YOUR_TNIO_HOST>` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
 
-## Local Audit Artifacts
+## Audit Files
 
 I generated a local audit set from the TNIO folder: a corpus inventory, a source-authority map, policy cards, an entity-alias map, and an evaluation-question set. These fed the runtime artifacts I added to the bot below.
 
 Connector notes:
 
 - Verified local connector listing against the TNIO folder: 45 files.
-- Successfully fetched and inspected representative Doc/Sheet content locally, including `Intel Faction Guide`, `Know Your Empire`, and `TNIO Imperial Intelligence Roster`.
+- Fetched and inspected `Intel Faction Guide`, `Know Your Empire`, & `TNIO Imperial Intelligence Roster`.
 - `TNIO Master Engineers: Starship Codex` and `TNIO Master Engineers: Droid Codex` returned 403 on local text export, so their already-synced bot exports were used only for those content gaps.
 
-## Bot Artifacts Added
+## Runtime State Added
 
 I added these runtime artifacts to `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
 
@@ -37,7 +37,7 @@ I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py`:
 - Added corpus-artifact loading.
 - Added source authority routing for policy, roster/current office, story, profile, ownership, progression, ability, combat, engineering, faction, and casual/persona questions.
 - Policy questions now strongly prefer guides, codices, rulebooks, progression records, and policy tables.
-- Roster, tracking, registry, character-profile, and raw ability-sheet rows are penalized for policy questions unless they are actually the right source class.
+- Roster, tracking, registry, character-profile, and raw ability-sheet rows are penalized for policy questions unless they are the right source class.
 - Added artifact-based targeted retry calls when first retrieval does not contain a proper authoritative source.
 - Added artifact hints from curated aliases like Ghost, Racer, Moon, Sharps, Beastarius, Rakkos, Erebus, Harik, Kujan, and Operation Bastion.
 - Added stronger direct source-backed answers for Sithspawn creation so it uses Sithspawn Alchemy plus the relevant Sith Alchemy 2/3 ability rows instead of random Force ability rows.
@@ -74,8 +74,8 @@ Live `/agent-answer` checks:
 - `How can I create a sithspawn?` -> correct Sithspawn Alchemy answer from `Praetorian Legion Specializations Codex` plus Sith Alchemy 2/3 rows.
 - `beep boop` -> persona response, no random beast-codex retrieval.
 
-## Remaining Notes
+## Limits
 
-This is not model retraining. It is a retrieval and verification upgrade: the bot now has a durable source-authority map and policy-card layer so new questions are routed by topic and source class instead of only by keyword overlap.
+This changed retrieval and verification, not model weights. Questions now route by topic and source class in addition to keyword overlap.
 
 The bot still depends on the quality of Drive text extraction and the wording in the source records. If source records conflict, the intended behavior is to prefer the more authoritative/current source type and log enough evidence for later no-vote/abstain review.

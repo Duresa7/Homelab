@@ -1,18 +1,18 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Platforms holds my deployed applications and services. A platform folder can also carry its own application source, because this workspace doubles as a development workspace.
+This directory holds my deployed applications & services. A platform can also keep its application source here when moving it would break imports, tooling, or deployment paths.
 
-I use only the subfolders a platform justifies:
+Each platform uses only the directories its workload needs:
 
-- `Documentation/`: architecture, build/change logs, runbooks, troubleshooting, and TODOs
-- `Source/`: application source when separating it is safe for that project
-- `Configuration/`: versioned service configuration and reference exports
-- `Scripts/`: deployment, migration, maintenance, and recovery automation
-- `Tests/`: automated validation
-- `Evidence/`: screenshots, exports, logs, and an evidence index
+- `Documentation/`: architecture, change records, runbooks, troubleshooting, & TODOs.
+- `Source/`: application source when the project can keep it here safely.
+- `Configuration/`: versioned service configuration & reference exports.
+- `Scripts/`: deployment, migration, maintenance, & recovery automation.
+- `Tests/`: automated validation.
+- `Evidence/`: screenshots, exports, logs, & evidence indexes.
 
-I don't move active source just to satisfy this shape when doing so would break imports, tooling, or deployment paths. I refactor an active project deliberately and verify it afterward.
+When I move active source, I verify its imports, tooling, & deployment path after the change.
 

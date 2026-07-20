@@ -1,12 +1,12 @@
 # Media Stack Application Onboarding Evidence
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Capture window:** 2026-07-17, 20:08–21:14 EDT  
 **Mechanism:** Walkthrough I performed in a workstation browser against the LAN management interfaces of CT 842 `media-01`
 
-I performed the onboarding interactively in each application's web UI. No shell commands were part of the change, so no command transcript exists; the screenshots below are the complete retained evidence for this session. The applications' own interfaces mask the credential and API-key fields visible during capture, and no secret value appears in any image.
+I performed the onboarding in each application's web UI. The 16 screenshots below cover the saved settings; S13 is the one step without a capture.
 
 **S01:** Jellyfin's guided setup running with server name `Jelly-Media` and English display language.
 
@@ -52,21 +52,21 @@ I performed the onboarding interactively in each application's web UI. No shell 
 
 ![Radarr profiles](Screenshots/S11-Radarr-Quality-Delay-Profiles-2026-07-17.png)
 
-**S12:** Download client entry pointing at host `gluetun` port 8080 with category `radarr` and no stored username, password, or API key; the Docker-subnet authentication bypass in the protected qBittorrent configuration covers this path.
+**S12:** Download client entry pointing at host `gluetun` port 8080 with category `radarr`; the Docker-subnet path is documented in the [configuration reference](../../Configuration/README.md).
 
 ![Radarr qBittorrent client detail](Screenshots/S12-Radarr-qBittorrent-Client-Detail-2026-07-17.png)
 
 **S13:** Screenshot not retained. I kept no capture for the Prowlarr indexer addition. The addition itself, one enabled public torrent indexer at priority 25 with the Standard sync profile, added 20:55, with no `flaresolverr` tag because the indexer does not require challenge handling, is recorded in the change record without retained evidence.
 
-**S14:** Seerr setup wizard signed in to Jellyfin with the Movies and TV Shows libraries synced and enabled; the Jellyfin API key is masked by the wizard.
+**S14:** Seerr setup wizard connected to Jellyfin with the Movies and TV Shows libraries synced and enabled.
 
 ![Seerr Jellyfin library sync](Screenshots/S14-Seerr-Jellyfin-Library-Sync-2026-07-17.png)
 
-**S15:** "Radarr connection established successfully" with Radarr as default server: host `radarr` port 7878, HD-1080p profile, root `/data/media/movies`, minimum availability Released, scan and automatic search enabled; API key masked.
+**S15:** "Radarr connection established successfully" with Radarr as default server: host `radarr` port 7878, HD-1080p profile, root `/data/media/movies`, minimum availability Released, scan and automatic search enabled.
 
 ![Seerr Radarr connection](Screenshots/S15-Seerr-Radarr-Connection-Established-2026-07-17.png)
 
-**S16:** Sonarr as default server: host `sonarr` port 8989, HD-1080p profile for standard and anime series, root `/data/media/tv`, season folders on, scan and automatic search enabled; API key masked.
+**S16:** Sonarr as default server: host `sonarr` port 8989, HD-1080p profile for standard and anime series, root `/data/media/tv`, season folders on, scan and automatic search enabled.
 
 ![Seerr Sonarr settings](Screenshots/S16-Seerr-Sonarr-Server-Settings-2026-07-17.png)
 

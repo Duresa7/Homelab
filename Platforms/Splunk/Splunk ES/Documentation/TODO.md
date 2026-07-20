@@ -1,16 +1,16 @@
 # Splunk ES: To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-What I plan to do next on Splunk Enterprise Security. Completed work lives in [Build-Log.md](Build-Log.md).
+I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
 ## Completed Foundation
 
 - [x] Resolved the app install/setup issue from 2026-07-02 (tracked in [Troubleshooting-Log.md](Troubleshooting-Log.md) #1): raising `splunk-siem` from 4 to 6 vCPU cleared the CPU-bound setup stall, and I verified the ES configuration UI.
 - [x] Completed the ES post-install configuration step (index and data model rebuild): the Splunk Web install workflow finished after the CPU correction; follow-on CIM scoping remains separate below.
 
-## Data readiness
+## Data Readiness
 
 - [ ] Next I want to normalize the existing UniFi/CEF data in `netops` to the Common Information Model (CIM) so it populates ES data models (Network Traffic, Authentication, etc.), likely via the `cefutils` add-on already installed on the search head
 - [ ] Confirm ES's required indexes exist (`notable`, `risk`, `threat_activity`, and related) and are sized appropriately

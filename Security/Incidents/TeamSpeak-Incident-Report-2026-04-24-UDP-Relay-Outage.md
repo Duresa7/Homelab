@@ -1,25 +1,9 @@
-# TeamSpeak Service Incident Report
+# TeamSpeak UDP Relay Outage - 2026-04-24
 
 **Created:** 2026-04-24  
 **Last updated:** 2026-07-20
 
-## Document Control
-
-| Field | Value |
-|-------|-------|
-| Organization | `<YOUR_ORG_NAME>` United |
-| Environment | Production |
-| Asset | alpha-prod-01 |
-| Service | TeamSpeak 3 voice services |
-| Report Owner | `<YOUR_ADMIN_USERNAME>` `<YOUR_RETIRED_NODE_NAME>` |
-| Report Date | 2026-04-24 |
-| Time Zone | America/New_York |
-| Classification | Internal Use |
-| Credential Handling | No passwords, API keys, privilege keys, or Playit secrets are included |
-
----
-
-## Executive Summary
+## Incident Summary
 
 On 2026-04-24, users reported repeated TeamSpeak connection failures against the
 public Playit endpoints and Cloudflare DNS names for `<YOUR_ORG_NAME>` United TeamSpeak
@@ -32,8 +16,6 @@ I mitigated the issue by removing Docker's UDP port proxy from the voice path:
 I moved both TeamSpeak containers to host networking with unique native ports.
 After the change, TeamSpeak logs recorded successful client connections through
 the Playit path.
-
----
 
 ## Incident Metadata
 
@@ -51,16 +33,12 @@ the Playit path.
 | Affected Services | ts-valorant-01, ts-valorant-02 |
 | Unaffected Services | TS3 Manager web UI, ServerQuery control plane, Docker host |
 
----
-
 ## Affected Endpoints
 
 | Service | Public DNS | Playit Endpoint | Host Port |
 |---------|------------|-----------------|-----------|
 | TeamSpeak 1 | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
 | TeamSpeak 2 | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
-
----
 
 ## User-Visible Symptoms
 
@@ -79,8 +57,6 @@ Trying to connect to server on <YOUR_RELAY_IP>:6255
 Failed to connect to server
 ```
 
----
-
 ## Technical Findings
 
 | Control Point | Finding |
@@ -93,8 +69,6 @@ Failed to connect to server
 | TS3 Manager | No current flood, ban, or query-abuse indicators were observed |
 | Packet path | Public UDP attempts changed TeamSpeak network counters |
 | Client logging | Failed attempts did not complete as normal TeamSpeak client sessions |
-
----
 
 ## Root Cause
 
@@ -114,8 +88,6 @@ reaching the server path, but the TeamSpeak client handshake did not complete
 while the containers were using Docker UDP port publishing. After I moved the
 TeamSpeak containers to host networking, the server recorded successful client
 connections through the Playit path.
-
----
 
 ## Corrective Actions Performed
 
@@ -137,8 +109,6 @@ connections through the Playit path.
 10. I updated ServerQuery allowlists for TS3 Manager source traffic.
 11. I updated the deployment document to reflect the host-network architecture.
 
----
-
 ## Current State
 
 | Service | State | Notes |
@@ -148,30 +118,18 @@ connections through the Playit path.
 | playit-agent | Online | Shared standalone agent, two tunnels registered |
 | ts3-manager | Online | Web UI available on LAN port `9000` |
 
----
-
 ## Security Assessment
 
 I found no evidence of credential compromise, malicious authentication attempts,
-or unauthorized administrative activity. I assessed the incident as an
-availability and network-path failure, not a confirmed security breach.
+or unauthorized administrative activity. The observed failure was in the UDP
+network path, so I classified this as an availability incident rather than a
+confirmed security breach.
 
-No passwords, API keys, ServerQuery credentials, privilege keys, or Playit
-secrets are included in this report.
+## Operational Findings
 
----
-
-## Lessons Learned
-
-- UDP health requires more than container uptime and port listener checks.
-- Docker UDP publishing can introduce behavior that is difficult to distinguish
-  from upstream relay failure.
-- For latency-sensitive UDP services behind a relay, host networking is a
-  simpler and more deterministic architecture.
-- Client connection logs should be enabled temporarily during incidents to
-  distinguish application-layer rejection from network-path timeout.
-
----
+- Container uptime and open listeners didn't prove the TeamSpeak handshake worked.
+- The failure disappeared when I removed Docker's UDP proxy from the path and moved both containers to host networking.
+- Client connection logs distinguished the incomplete handshake from an application rejection.
 
 ## Follow-Up Actions
 
@@ -183,11 +141,9 @@ secrets are included in this report.
 | Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | `<YOUR_ORG_NAME>` United | Medium | Open |
 | Keep TeamSpeak containers on host networking for future voice servers | `<YOUR_ORG_NAME>` United | Medium | In Progress |
 
----
+## Linked Records
 
-## References
-
-- Deployment document: `Teamspeak-deployment.md`
+- [TeamSpeak deployment](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)
 - Host: `alpha-prod-01`
 - TS3 Manager: `http://192.168.80.118:9000`
 

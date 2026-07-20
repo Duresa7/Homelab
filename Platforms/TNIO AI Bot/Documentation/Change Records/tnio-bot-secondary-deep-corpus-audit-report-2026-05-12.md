@@ -1,12 +1,11 @@
-# TNIO Bot Secondary Deep Corpus Audit Report - 2026-05-12
+# TNIO Corpus Coverage Audit - 2026-05-12
 
 **Created:** 2026-05-12  
 **Last updated:** 2026-07-20
 
-## Summary
-I completed a secondary deep-pass corpus audit for the TNIO Discord bot. This pass processed every active file in the bot's current Google Drive manifest end-to-end, then rebuilt the runtime source authority artifacts so the bot has a stronger map of which records should answer which kinds of questions.
+## Result
 
-This was not limited to a small manual sample. The audit read all active exported Docs and Sheets available to the bot, including full text exports for Docs and all tabs, rows, and cells for Sheets.
+I processed all 45 files in the active Drive manifest and rebuilt the source-authority artifacts. The run covered 1,397,014 exported characters, 1,780 Sheet rows, 7,370 nonempty cells, 138 mapped topics, & 34 source-overlap risks.
 
 ## Scope
 - Active manifest files processed: 45
@@ -22,7 +21,7 @@ The two files still blocked by the local Google Drive connector were included th
 - TNIO Master Engineers: Starship Codex
 - TNIO Master Engineers: Droid Codex
 
-## Updated Runtime Artifacts
+## Rebuilt Runtime State
 The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
 
 - `tnio_deep_source_audit.json`
@@ -31,11 +30,11 @@ The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/<YOUR_DEPLOY
 - `tnio_eval_questions.json`
 - `tnio_deep_source_audit.md`
 
-The source authority map is now a deep-pass version:
+The resulting source-authority map is:
 - Version: `tnio-source-authority-map-v2-deep`
 - Size: 171,233 bytes
 
-## What Changed
+## Source Metadata
 The source map now carries more than broad labels. For each source, it records:
 
 - What topics the source is primary authority for
@@ -48,7 +47,7 @@ The source map now carries more than broad labels. For each source, it records:
 
 This should reduce cases where the bot answers a rules or eligibility question from a roster, tracking sheet, random table row, or loosely related source.
 
-## High-Risk Overlap Areas Found
+## Overlap Areas
 The deep pass found overlapping source coverage in several areas that can confuse retrieval:
 
 - abilities
@@ -92,5 +91,6 @@ Live endpoint checks passed for:
 - Sithspawn creation
 - casual non-archive banter
 
-## Practical Impact
-The bot should now have a broader, more accurate understanding of the whole TNIO corpus, not just the small set of previously reported failures. The biggest improvement is source selection: policy questions should lean on guide/codex/progression authority, office questions should lean on current organizational references, story questions should lean on narrative records, and casual banter should avoid pulling random archive fragments.
+## Verified Outcome
+
+Syntax and both regression suites passed, both services returned `active`, & five live endpoint checks returned the intended source class. Policy questions now prefer guides, codices, & progression records; office questions prefer organizational references; story questions prefer narrative records; casual messages avoid archive retrieval.

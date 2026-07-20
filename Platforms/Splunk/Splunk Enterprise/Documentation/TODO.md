@@ -1,11 +1,11 @@
 # Splunk SIEM: To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-What I plan to do next on the Splunk SIEM build. Completed work lives in [Build-Log.md](Build-Log.md).
+I track unfinished Splunk Enterprise work here. Completed deployment steps are in [Build-Log.md](Build-Log.md).
 
-## Hardening / config
+## TLS and Naming
 
 - [x] Assigned a static SIEM address: `192.168.72.3/24` on Security-A, gateway/DNS `192.168.72.1`.
 - [x] Enabled HTTPS on the Splunk web UI (`enableSplunkWebSSL`, Splunk's default self-signed cert). Reachable at `https://192.168.72.3:8000`.

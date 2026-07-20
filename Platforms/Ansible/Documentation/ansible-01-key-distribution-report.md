@@ -79,9 +79,9 @@ Path: `/home/ansible/ansible/playbooks/distribute_keys.yml`
         key: "{{ item }}"
         state: present
       loop:
-        - "<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>
-        - "<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>
-        - "<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>
+        - "<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>"
+        - "<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>"
+        - "<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>"
 
 - hosts: VM
   become: no
@@ -92,9 +92,9 @@ Path: `/home/ansible/ansible/playbooks/distribute_keys.yml`
         key: "{{ item }}"
         state: present
       loop:
-        - "<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>
-        - "<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>
-        - "<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>
+        - "<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>"
+        - "<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>"
+        - "<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>"
 ```
 
 ## Notes

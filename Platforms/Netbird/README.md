@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-07-20
 
-NetBird is my self-hosted overlay-network control plane. I run it alongside Nginx Proxy Manager in a dedicated Debian 13 `docker-network` LXC so that application routing, certificate handling, and the control plane share one isolated Docker host instead of landing in my existing `docker-blue` workload container.
+I run NetBird and Nginx Proxy Manager in Debian 13 LXC 107 `docker-network`. The control plane, reverse proxy, & certificate path share one VLAN 85 host instead of the existing `docker-blue` workload container.
 
 ## Current State
 
@@ -44,9 +44,8 @@ Initial publication, first-peer enrollment, the routed VPN path into Access-A, t
 - `Configuration/`: reader-editable Compose reference and configuration notes
 - `Evidence/`: step screenshots from bounded jobs
 
-## Security Boundaries
+## Network Boundaries
 
-- The Cloudflare DNS Write token is limited to the zone used for the wildcard and apex certificate.
 - NetBird trusts only Nginx Proxy Manager's fixed Docker address, `172.31.85.10/32`, as an HTTP proxy.
 - The LXC uses key-only SSH. Root login, password SSH, and keyboard-interactive SSH are disabled.
 - UniFi allows the LXC only the approved web and NTP egress before the catch-all Access-A external block.

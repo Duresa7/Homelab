@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-20
 
-Jedi PC is my primary Windows workstation, the machine I administer the homelab from.
+Jedi PC is my Windows 11 Pro administration workstation. It has a 16-core Ryzen 9 9950X3D, 32 GB of DDR5, an RTX 5070 Ti, two 2 TB NVMe drives, & a 2.5 Gbps Ethernet adapter.
 
 ## System Overview
 

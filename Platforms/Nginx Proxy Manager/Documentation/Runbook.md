@@ -5,7 +5,7 @@
 
 ## Scope
 
-I operate Nginx Proxy Manager 2.15.1 on `docker-network`. I use SSH Manager MCP target `docker_network` for remote CLI work. The live Compose project is `/opt/docker/nginx-proxy-manager`.
+I operate Nginx Proxy Manager 2.15.1 on `docker-network` through SSH Manager target `docker_network`. The live Compose project is `/opt/docker/nginx-proxy-manager`.
 
 ## Routine Health Check
 
@@ -108,7 +108,7 @@ I run `nginx -t` after changing an Advanced snippet and before treating the UI s
 The Compose reference uses `latest`; pulling can change the deployed application. I treat every update as a bounded change:
 
 1. Record the current NPM version and image digest.
-2. Back up the live Compose file, `data/`, and `letsencrypt/` through protected storage.
+2. Back up the live Compose file, `data/`, and `letsencrypt/`.
 3. Review NPM release notes and migration requirements.
 4. Run `docker compose pull` and `docker compose up -d`.
 5. Wait for `healthy`, run `nginx -t`, and validate the UI, certificates, renewal state, and every proxy host.

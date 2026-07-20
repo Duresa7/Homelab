@@ -1,8 +1,8 @@
 # Engineering
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-This is where I keep shared automation, reusable tooling, and projects I have not yet deployed as services. Once a project becomes an operated service, its primary home moves to `Platforms/<Service>/`.
+Engineering is empty today. It is reserved for shared automation, reusable tooling, & projects that haven't become operated services.
 
-`Automation/` is reserved for automation that spans multiple infrastructure or platform owners. Service-specific scripts stay with their service.
+Cross-owner automation belongs in `Engineering/Automation/`. Once I operate a project as a service, its primary home moves to `Platforms/<Service>/`; service-specific scripts move with it.

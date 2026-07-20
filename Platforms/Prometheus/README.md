@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-20
 
-Prometheus provides infrastructure metrics for the homelab. The deployed server runs in Docker on `security-01` (`192.168.72.2`) and scrapes the security host, the DMZ edge host, all four Galaxy Proxmox nodes, and the Proxmox API exporter.
+I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the security host, DMZ edge host, all four Galaxy Proxmox nodes, & the Proxmox API exporter.
 
 **Owner:** Homelab infrastructure monitoring
 

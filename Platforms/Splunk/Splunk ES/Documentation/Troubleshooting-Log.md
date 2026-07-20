@@ -1,17 +1,15 @@
 # Splunk ES: Troubleshooting Log
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Every problem I hit while installing and configuring Splunk Enterprise Security, its cause, and the fix. Companion to [Build-Log.md](Build-Log.md). The build log records *what I did*; this records *what went wrong and the fix*.
+I record Splunk Enterprise Security failures here with the cause, correction, & observed result. The [build log](Build-Log.md) holds the installation sequence.
 
-## Quick index
+## Quick Index
 
 | # | Where | Symptom | Root cause | Fix |
 |:-:|---|---|---|---|
 | 1 | Step 1 | ES setup slow/stalled under load | VM undersized for ES (CPU-bound, not disk) | Increased vCPU 4 → 6 |
-
----
 
 ## 1. ES install/setup slow, initially looked disk I/O bound (2026-07-02)
 
@@ -21,9 +19,7 @@ Every problem I hit while installing and configuring Splunk Enterprise Security,
 
 **Fix:** I increased `splunk-siem`'s vCPU allocation from 4 to 6 cores on the Proxmox host `grey-server`. I left storage unchanged (still the single SSD-backed `ssd-lvm1` disk); I suspected disk I/O initially but ruled it out, because the bottleneck was CPU. Confirmed resolved: Splunk Web now loads Enterprise Security fully, including Mission Control → Configure → All configurations.
 
-**Takeaway:** ES's setup step is far heavier than running base Splunk Enterprise; a VM comfortable for the SIEM build was not comfortable for ES. Two extra cores was enough to get past the setup step at this small scale, well short of Splunk's stated 16-core production minimum. Vendor minimums target production scale, not a single-source home lab.
-
----
+The 6-vCPU VM remains below Splunk's stated 16-core production minimum. That minimum describes production deployment, while this instance ingests one source.
 
 ## References
 

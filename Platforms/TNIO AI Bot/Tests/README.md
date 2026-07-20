@@ -6,5 +6,5 @@
 - `Legacy/` holds my earlier local retrieval evaluation.
 - `Lore RAG Remote/` holds the remote corpus and policy accuracy tests.
 
-I originally ran some of these tests from `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. Run from this reorganized workspace, they may need the deployed module path or an adjusted Python import path.
+Some tests expect modules under `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. A local run needs that module path or an adjusted Python import path.
 
