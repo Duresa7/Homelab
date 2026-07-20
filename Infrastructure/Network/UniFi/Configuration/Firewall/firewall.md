@@ -1,7 +1,7 @@
 # Unifi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-19
 
 The gateway runs UniFi's zone-based (V2) firewall. Policies fall into two groups: **custom policies** I created, and **default policies** that UniFi auto-generates for every zone pair and for stateful/service handling.
 
@@ -32,7 +32,7 @@ The gateway runs UniFi's zone-based (V2) firewall. Policies fall into two groups
 | Allow DMZ to REDACTED_PRIVATE_ORG_LABEL-Servers | Yes | ALLOW | 10000 | TCP | Both | Dmz | Client (1 MAC, edge-01) | REDACTED_PRIVATE_ORG_LABEL-Servers | Network: SERVERS-A | Any | All | Always | On | edge-01 can reach app-01 (ports 8080/80 per notes) |
 | Allow REDACTED_PRIVATE_ORG_LABEL-Servers to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | REDACTED_PRIVATE_ORG_LABEL-Servers | Any | REDACTED_PRIVATE_ORG_LABEL-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | Off | Agent access to the Wazuh manager on Security-A; automatic return policy enabled |
 | Allow DMZ to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | Dmz | Client (1 MAC, edge-01) | REDACTED_PRIVATE_ORG_LABEL-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | On | DMZ Wazuh-agent path to Security-A; automatic return policy enabled |
-| Allow Devices to Personal-A | Yes | ALLOW | 10001 | All | Both | Internal | Clients (7 MACs) | Internal | Network: Personal-A | Any | All | Always | On | - |
+| Allow Devices to Personal-A | Yes | ALLOW | 10001 | All | Both | Internal | Clients (9 MACs) | Internal | Network: Personal-A | Any | All | Always | On | Includes M1-Dev (`192.168.10.92`) |
 | Block Trusted to Personal-A | Yes | BLOCK | 10002 | All | Both | Internal | Network: Trusted | Internal | Network: Personal-A | Any | All | Always | Off | - |
 | Allow Security to DMZ monitoring | Yes | ALLOW | 10001 | TCP | Both | REDACTED_PRIVATE_ORG_LABEL-Security | IP 192.168.72.2 | Dmz | IP 192.168.90.10 | 9100 | All | Always | On | Prometheus on security-01 scrapes node_exporter on edge-01; automatic return policy enabled |
 | Allow Security to Proxmox monitoring | Yes | ALLOW | 10001 | TCP | Both | REDACTED_PRIVATE_ORG_LABEL-Security | IP 192.168.72.2 | REDACTED_PRIVATE_ORG_LABEL-Mgmt | IPs 192.168.70.10–.13 | 9100, 8006 | All | Always | On | Prometheus and PVE exporter reach Proxmox monitoring/API endpoints; automatic return policy enabled |
