@@ -31,7 +31,7 @@ I reset the deployed project directories to mode 0755, ordinary files to 0644, a
 
 ## 2026-07-14: Semaphore CLI export/import limitations
 
-My first export attempt omitted the required project ID or name and exited without creating a backup. I also could not inspect the JSON with `jq` because `jq` is not installed on the controller; I used Python for secret-safe structural inspection instead.
+My first export attempt omitted the required project ID or name and exited without creating a backup. I couldn't inspect the JSON with `jq` because `jq` isn't installed on the controller, so I used Python for the structural inspection.
 
 Semaphore's project backup contains key metadata but intentionally excludes the private key. Importing it as a new project would therefore create an empty SSH credential, so I did not use the CLI import path as a substitute for authenticated UI/API configuration. The original project export remains the rollback reference.
 

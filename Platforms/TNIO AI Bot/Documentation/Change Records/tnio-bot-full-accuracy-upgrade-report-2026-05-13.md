@@ -1,7 +1,7 @@
 # TNIO Bot Full Accuracy Upgrade Report - 2026-05-13
 
 **Created:** 2026-05-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Summary
 I implemented the full accuracy-first upgrade for the TNIO Discord bot. This pass focused on making the bot choose the right class of source, prove factual TNIO answers from the corpus, avoid raw sheet/table dumps, preserve structured sheet data, and turn no-vote/abstain feedback into a reusable evaluation queue.
@@ -50,12 +50,12 @@ Added:
 - `build_feedback_eval_queue.py`
 - `drive_change_monitor.py`
 
-Generated on `REDACTED_OPERATIONAL_HOST`:
+Generated on `<YOUR_TNIO_HOST>`:
 
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/tnio_golden_eval_suite.json`
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/feedback_eval_queue.jsonl`
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/feedback_eval_summary.json`
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/drive_change_report.json`
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/tnio_golden_eval_suite.json`
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/feedback_eval_queue.jsonl`
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/feedback_eval_summary.json`
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/drive_change_report.json`
 
 ## Discord Logging Improvements
 The Discord bot now logs more evidence with each agent answer:
@@ -115,7 +115,7 @@ The agent-answer cache namespace was bumped to `v34` so stale persisted answers 
 The HTTP server now quietly handles client disconnects during long-running live evaluations, preventing evaluator timeouts from producing noisy `BrokenPipeError` stack traces.
 
 ## Verification
-Passed on `REDACTED_OPERATIONAL_HOST`:
+Passed on `<YOUR_TNIO_HOST>`:
 
 ```text
 python3 -m py_compile lore_agent.py lore_mcp_server.py sync_lore.py build_feedback_eval_queue.py build_golden_eval_suite.py drive_change_monitor.py test_accuracy_policy.py test_corpus_accuracy.py test_golden_eval_suite.py

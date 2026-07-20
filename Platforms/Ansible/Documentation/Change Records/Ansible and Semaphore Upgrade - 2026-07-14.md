@@ -49,7 +49,7 @@ The Ansible 14.2.0 package declares `ansible-core~=2.21.2`. I verified the offic
 5. Verified the Semaphore 2.18.27 package checksum, installed it, gracefully stopped the unmanaged 2.17.33 process, deployed `semaphore.service`, and enabled and started the unit.
 6. Set Proxmox LXC 100 to `onboot: 1`.
 7. Refreshed and verified the backup manifest, checked both SQLite databases, validated HTTP and systemd state, ran the project validator, and syntax-checked all five playbooks.
-8. Deployed the reusable backup and secret-safe state-verification Python utilities under `/opt/homelab/ansible-tools` from the repository's native `Scripts/` sources.
+8. Deployed the reusable backup and state-verification Python utilities under `/opt/homelab/ansible-tools` from the repository's native `Scripts/` sources.
 9. Compared the live database with the pre-upgrade online backup. Project, repository, inventory, template, view, environment, access-key metadata, encrypted key material, and environment payloads were unchanged. Semaphore 2.18.27 added 18 expected template-to-environment links during migration.
 10. Rebooted LXC 100. Its boot ID changed, Semaphore returned automatically as an enabled systemd service with zero restarts, the UI returned HTTP 200, and the current-boot journal contained no warning-or-higher entries.
 
@@ -80,7 +80,7 @@ The Ansible 14.2.0 package declares `ansible-core~=2.21.2`. I verified the offic
 | Controller reboot | Boot ID changed; Semaphore automatically returned enabled/active with HTTP 200 |
 | Web response | HTTP 200 on TCP 3000 |
 | Database | Live and backup `PRAGMA integrity_check` returned `ok`; object counts preserved |
-| Semaphore preservation | Secret-safe structure, environment payloads, and encrypted access-key records matched the pre-upgrade backup |
+| Semaphore preservation | Project, inventory, template, environment, and access-key records matched the pre-upgrade backup |
 | Recovery files | Every file in `SHA256SUMS` returned `OK` |
 | Project validator | Exit 0: four identities, 15 supported hosts, two unknown hosts, 18 templates |
 | Playbook syntax | Audit, Stage, Verify, Retire, and Onboard passed |

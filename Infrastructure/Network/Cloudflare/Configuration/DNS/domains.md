@@ -1,13 +1,13 @@
 # Cloudflare Domains
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 These are the domains I manage through Cloudflare.
 
 | Domain |
 | --- |
-| REDACTED_CUSTOM_DOMAIN_001 |
-| REDACTED_CUSTOM_DOMAIN_002 |
-| REDACTED_CUSTOM_DOMAIN_007 |
-| REDACTED_CUSTOM_DOMAIN_008 |
+| `<YOUR_BASE_DOMAIN>` |
+| `<YOUR_SECONDARY_DOMAIN>` |
+| `<YOUR_APPLICATION_DOMAIN>` |
+| `<YOUR_SERVICE_DOMAIN>` |

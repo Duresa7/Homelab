@@ -1,7 +1,7 @@
 # alpha-prod-01 Infrastructure Document
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three containerized TeamSpeak servers published through Playit tunnels and Cloudflare SRV records, a shared Playit agent, and the TS3 Manager admin UI. I keep the connect addresses, port map, allowlists, and compose files here so I can rebuild or extend the stack without reverse-engineering it.
 
@@ -27,9 +27,9 @@ This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three contain
        | UDP voice via Cloudflare SRV records
        v
 +------------------+
-|   REDACTED_CUSTOM_DOMAIN_018      |  TS1: REDACTED_CUSTOM_DOMAIN_009:6255
-|   Free Network   |  TS2: REDACTED_CUSTOM_DOMAIN_015:53810
-|   NYC, New York  |  TS3: REDACTED_CUSTOM_DOMAIN_010:49125
+|   <YOUR_PLAYIT_RELAY_DOMAIN>      |  TS1: <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
+|   Free Network   |  TS2: <YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810
+|   NYC, New York  |  TS3: <YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125
 +------------------+
        |
        | UDP forwarded to alpha-prod-01 host ports
@@ -83,45 +83,45 @@ This is my reference for the TeamSpeak hosting VM `alpha-prod-01`: three contain
 +------------------+
 
 DNS Chain (for end-users):
-REDACTED_CUSTOM_DOMAIN_022
-       | SRV _ts3._udp.ts01 -> REDACTED_CUSTOM_DOMAIN_009:6255
-       | CNAME ts01 -> REDACTED_CUSTOM_DOMAIN_009
+<YOUR_TEAMSPEAK_ONE_DOMAIN>
+       | SRV _ts3._udp.ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
+       | CNAME ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
        v
-    REDACTED_CUSTOM_DOMAIN_018 -> alpha-prod-01:9987/udp
+    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9987/udp
 
-REDACTED_CUSTOM_DOMAIN_023
-       | SRV _ts3._udp.ts02 -> REDACTED_CUSTOM_DOMAIN_015:53810
-       | CNAME ts02 -> REDACTED_CUSTOM_DOMAIN_015
+<YOUR_TEAMSPEAK_TWO_DOMAIN>
+       | SRV _ts3._udp.ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810
+       | CNAME ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
        v
-    REDACTED_CUSTOM_DOMAIN_018 -> alpha-prod-01:9988/udp
+    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9988/udp
 
-REDACTED_CUSTOM_DOMAIN_024
-       | SRV _ts3._udp.ts03 -> REDACTED_CUSTOM_DOMAIN_010:49125
-       | CNAME ts03 -> REDACTED_CUSTOM_DOMAIN_010
+<YOUR_TEAMSPEAK_THREE_DOMAIN>
+       | SRV _ts3._udp.ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125
+       | CNAME ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>
        v
-    REDACTED_CUSTOM_DOMAIN_018 -> alpha-prod-01:9989/udp
+    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
 ```
 
 ---
 
-## DNS Records (REDACTED_CUSTOM_DOMAIN_001)
+## DNS Records (`<YOUR_BASE_DOMAIN>`)
 
 | Type | Name | Target | Port | Proxy |
 |------|------|--------|------|-------|
-| CNAME | ts01 | REDACTED_CUSTOM_DOMAIN_009 | - | DNS only |
-| SRV | _ts3._udp.ts01 | REDACTED_CUSTOM_DOMAIN_009 | 6255 | DNS only |
-| CNAME | ts02 | REDACTED_CUSTOM_DOMAIN_015 | - | DNS only |
-| SRV | _ts3._udp.ts02 | REDACTED_CUSTOM_DOMAIN_015 | 53810 | DNS only |
-| CNAME | ts03 | REDACTED_CUSTOM_DOMAIN_010 | - | DNS only |
-| SRV | _ts3._udp.ts03 | REDACTED_CUSTOM_DOMAIN_010 | 49125 | DNS only |
-| CNAME | ts-valorant-03 | REDACTED_CUSTOM_DOMAIN_010 | - | DNS only |
-| SRV | _ts3._udp.ts-valorant-03 | REDACTED_CUSTOM_DOMAIN_010 | 49125 | DNS only |
+| CNAME | ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
+| CNAME | ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
+| CNAME | ts03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
+| CNAME | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
 
-**TeamSpeak 1 connect address:** `REDACTED_CUSTOM_DOMAIN_022` (no port needed)
+**TeamSpeak 1 connect address:** `<YOUR_TEAMSPEAK_ONE_DOMAIN>` (no port needed)
 
-**TeamSpeak 2 connect address:** `REDACTED_CUSTOM_DOMAIN_023` (no port needed)
+**TeamSpeak 2 connect address:** `<YOUR_TEAMSPEAK_TWO_DOMAIN>` (no port needed)
 
-**TeamSpeak 3 connect address:** `REDACTED_CUSTOM_DOMAIN_024` (no port needed)
+**TeamSpeak 3 connect address:** `<YOUR_TEAMSPEAK_THREE_DOMAIN>` (no port needed)
 
 **DNS note:** The SRV target points directly to the Playit hostname instead of the
 `ts01` CNAME. SRV targets should not be aliases, and some TeamSpeak clients may
@@ -129,50 +129,42 @@ fail to connect when an SRV record points at a CNAME.
 
 ---
 
-## Credentials
-
-
-
-> **Credentials.** All ServerQuery passwords, API keys, ServerAdmin privilege keys, and server passwords below are stored in 1Password, item **"REDACTED_1PASSWORD_ITEM_TITLE_003"** in the `REDACTED_1PASSWORD_VAULT` vault. I last rotated these credentials on 2026-07-17.
+## Values to Supply
 
 ### TeamSpeak 1 ServerQuery
 | Field | Value |
 |-------|-------|
 | Container | ts-valorant-01 |
 | Login | serveradmin |
-| Password | *(stored in 1Password)* |
-| API Key | *(stored in 1Password)* |
+| Password | `<YOUR_TS1_SERVERQUERY_PASSWORD>` |
+| API Key | `<YOUR_TS1_API_KEY>` |
 
 ### TeamSpeak 1 ServerAdmin Privilege Key
-```
-*(stored in 1Password)*
-```
+`<YOUR_TS1_SERVERADMIN_PRIVILEGE_KEY>`
 *(Used once on first connect to claim admin; already claimed.)*
 
 ### TeamSpeak 1 Community Access
 | Field | Value |
 |-------|-------|
-| Connect Address | REDACTED_CUSTOM_DOMAIN_022 |
-| Server Password | *(stored in 1Password)* |
+| Connect Address | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` |
+| Server Password | `<YOUR_TS1_SERVER_PASSWORD>` |
 
 ### TeamSpeak 2 ServerQuery
 | Field | Value |
 |-------|-------|
 | Container | ts-valorant-02 |
 | Login | serveradmin |
-| Password | *(stored in 1Password)* |
-| API Key | *(stored in 1Password)* |
+| Password | `<YOUR_TS2_SERVERQUERY_PASSWORD>` |
+| API Key | `<YOUR_TS2_API_KEY>` |
 
 ### TeamSpeak 2 ServerAdmin Privilege Key
-```
-*(stored in 1Password)*
-```
+`<YOUR_TS2_SERVERADMIN_PRIVILEGE_KEY>`
 *(Generated at first startup; already claimed.)*
 
 ### TeamSpeak 2 Community Access
 | Field | Value |
 |-------|-------|
-| Connect Address | REDACTED_CUSTOM_DOMAIN_023 |
+| Connect Address | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` |
 | Server Password | None intentionally configured; public to users who know the address |
 
 ### TeamSpeak 3 ServerQuery
@@ -180,28 +172,26 @@ fail to connect when an SRV record points at a CNAME.
 |-------|-------|
 | Container | ts-valorant-03 |
 | Login | serveradmin |
-| Password | *(stored in 1Password)* |
-| API Key | *(stored in 1Password)* |
+| Password | `<YOUR_TS3_SERVERQUERY_PASSWORD>` |
+| API Key | `<YOUR_TS3_API_KEY>` |
 
 ### TeamSpeak 3 ServerAdmin Privilege Key
-```
-*(stored in 1Password)*
-```
+`<YOUR_TS3_SERVERADMIN_PRIVILEGE_KEY>`
 *(Generated at first startup; not confirmed claimed.)*
 
 ### TeamSpeak 3 Community Access
 | Field | Value |
 |-------|-------|
-| Connect Address | REDACTED_CUSTOM_DOMAIN_024 |
-| Alternate Address | REDACTED_CUSTOM_DOMAIN_021 |
+| Connect Address | `<YOUR_TEAMSPEAK_THREE_DOMAIN>` |
+| Alternate Address | `<YOUR_TEAMSPEAK_ALTERNATE_DOMAIN>` |
 | Server Password | None intentionally configured; public to users who know the address |
 
 ### Playit Tunnels
 | TeamSpeak Server | Tunnel Name | Public Address | Local Host Port |
 |------------------|-------------|----------------|-----------------|
-| ts-valorant-01 | ts-valorant-01 | REDACTED_CUSTOM_DOMAIN_009:6255 | 127.0.0.1:9987/udp |
-| ts-valorant-02 | ts-valorant-02 | REDACTED_CUSTOM_DOMAIN_015:53810 | 127.0.0.1:9988/udp |
-| ts-valorant-03 | ts-valorant-03 | REDACTED_CUSTOM_DOMAIN_010:49125 | 127.0.0.1:9989/udp |
+| ts-valorant-01 | ts-valorant-01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 127.0.0.1:9987/udp |
+| ts-valorant-02 | ts-valorant-02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 127.0.0.1:9988/udp |
+| ts-valorant-03 | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | 127.0.0.1:9989/udp |
 
 ---
 
@@ -218,8 +208,8 @@ fail to connect when an SRV record points at a CNAME.
   - `10011/tcp` - ServerQuery
   - `30033/tcp` - File Transfer
 - **Public server listing**: Disabled
-- **Virtual server name**: `REDACTED_PRIVATE_ORG_LABEL x LYON`
-- **Server password**: Enabled *(stored in 1Password)*
+- **Virtual server name**: `<YOUR_ORG_NAME> x LYON`
+- **Server password**: Enabled
 
 ### TeamSpeak 3 (ts-valorant-02)
 - **Image**: `teamspeak`
@@ -233,12 +223,12 @@ fail to connect when an SRV record points at a CNAME.
   - `9988/udp` - Voice
   - `10012/tcp` - ServerQuery
   - `30034/tcp` - File Transfer
-- **Public Playit address**: `REDACTED_CUSTOM_DOMAIN_015:53810`
+- **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810`
 - **Playit local target**: `127.0.0.1:9988/udp`
-- **Cloudflare connect address**: `REDACTED_CUSTOM_DOMAIN_023`
-- **Virtual server name**: `REDACTED_PRIVATE_ORG_LABEL United - Valorant Community`
+- **Cloudflare connect address**: `<YOUR_TEAMSPEAK_TWO_DOMAIN>`
+- **Virtual server name**: `<YOUR_ORG_NAME> United - Valorant Community`
 - **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `REDACTED_TEAMSPEAK_UNIQUE_ID_001`
+- **Unique ID**: `<YOUR_TEAMSPEAK_ONE_UNIQUE_ID>`
 
 ### TeamSpeak 3 (ts-valorant-03)
 - **Image**: `teamspeak`
@@ -252,13 +242,13 @@ fail to connect when an SRV record points at a CNAME.
   - `9989/udp` - Voice
   - `10013/tcp` - ServerQuery
   - `30035/tcp` - File Transfer
-- **Public Playit address**: `REDACTED_CUSTOM_DOMAIN_010:49125`
+- **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125`
 - **Playit local target**: `127.0.0.1:9989/udp`
-- **Cloudflare connect address**: `REDACTED_CUSTOM_DOMAIN_024`
-- **Cloudflare alternate address**: `REDACTED_CUSTOM_DOMAIN_021`
-- **Virtual server name**: `REDACTED_PRIVATE_ORG_LABEL United x Valorant 03`
+- **Cloudflare connect address**: `<YOUR_TEAMSPEAK_THREE_DOMAIN>`
+- **Cloudflare alternate address**: `<YOUR_TEAMSPEAK_ALTERNATE_DOMAIN>`
+- **Virtual server name**: `<YOUR_ORG_NAME> United x Valorant 03`
 - **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `REDACTED_TEAMSPEAK_UNIQUE_ID_002`
+- **Unique ID**: `<YOUR_TEAMSPEAK_THREE_UNIQUE_ID>`
 
 ### Playit Agent (playit-agent)
 - **Image**: `ghcr.io/playit-cloud/playit-agent:0.17`
@@ -382,13 +372,13 @@ PLAYIT_SECRET_KEY=<your_secret_key>
 
 ### ~/playit-agent/playit-boot-recover.sh
 ```sh
-# Runs from REDACTED_USER_001's crontab at reboot:
-# @reboot /home/REDACTED_USER_001/playit-agent/playit-boot-recover.sh
+# Runs from <YOUR_ADMIN_USERNAME>'s crontab at reboot:
+# @reboot /home/<YOUR_ADMIN_USERNAME>/playit-agent/playit-boot-recover.sh
 #
 # Purpose:
 # - Waits 90 seconds after VM/host boot
 # - Waits for Docker to respond
-# - Waits for REDACTED_CUSTOM_DOMAIN_003 DNS resolution
+# - Waits for <YOUR_PLAYIT_API_DOMAIN> DNS resolution
 # - Restarts TeamSpeak so myTeamSpeak revocation data loads after DNS is ready
 # - Starts playit-agent if missing
 # - Restarts playit-agent so it registers after network/DNS is stable
@@ -458,7 +448,7 @@ services:
 - Playit free plan uses Global Anycast routing
 - After Proxmox VM/host reboot, Playit can start before DNS is ready and log
   `failed to lookup address information: Try again` for
-  `https://REDACTED_CUSTOM_DOMAIN_003/agents/rundata`. The boot recovery cron job mitigates
+  `https://<YOUR_PLAYIT_API_DOMAIN>/agents/rundata`. The boot recovery cron job mitigates
   this by restarting only `playit-agent` after network and DNS are available.
 - TeamSpeak can also start before DNS is ready and fail to download the
   myTeamSpeak ID revocation list. When this happens, clients can connect but may

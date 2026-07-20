@@ -36,7 +36,7 @@ The removal gate stays closed unless all of these are true:
 
 ## Privilege Model
 
-The controller does not use sudo for this workflow. It logs in as the account that owns the key file (`root`, `REDACTED_USER_001`, `openclaw`, `REDACTED_DEPLOYMENT_USER`, or Windows `Administrator`) and edits only that account's authorized-key store. I set it up this way to avoid interactive sudo passwords and to avoid adding another passwordless-sudo dependency solely for key rotation.
+The controller does not use sudo for this workflow. It logs in as the account that owns the key file (`root`, `<YOUR_ADMIN_USERNAME>`, `openclaw`, `<YOUR_DEPLOYMENT_USER>`, or Windows `Administrator`) and edits only that account's authorized-key store. I set it up this way to avoid interactive sudo passwords and to avoid adding another passwordless-sudo dependency solely for key rotation.
 
 The four Proxmox nodes share `/etc/pve/priv/authorized_keys`. `grey-server` is the sole writer; `purple-server`, `blue-server`, and `red-server` verify the cluster-backed result without performing duplicate writes.
 

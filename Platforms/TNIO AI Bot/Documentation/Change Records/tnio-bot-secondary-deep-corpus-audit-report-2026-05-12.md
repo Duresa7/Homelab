@@ -1,7 +1,7 @@
 # TNIO Bot Secondary Deep Corpus Audit Report - 2026-05-12
 
 **Created:** 2026-05-12  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Summary
 I completed a secondary deep-pass corpus audit for the TNIO Discord bot. This pass processed every active file in the bot's current Google Drive manifest end-to-end, then rebuilt the runtime source authority artifacts so the bot has a stronger map of which records should answer which kinds of questions.
@@ -23,7 +23,7 @@ The two files still blocked by the local Google Drive connector were included th
 - TNIO Master Engineers: Droid Codex
 
 ## Updated Runtime Artifacts
-The following files were rebuilt on `REDACTED_OPERATIONAL_HOST` under `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/`:
+The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
 
 - `tnio_deep_source_audit.json`
 - `tnio_source_authority_map.json`
@@ -65,7 +65,7 @@ The deep pass found overlapping source coverage in several areas that can confus
 These areas now have stronger authority hints so the bot can prefer the correct class of source.
 
 ## Validation
-I ran syntax and regression checks on `REDACTED_OPERATIONAL_HOST`:
+I ran syntax and regression checks on `<YOUR_TNIO_HOST>`:
 
 ```text
 python3 -m py_compile lore_agent.py lore_mcp_server.py test_accuracy_policy.py test_corpus_accuracy.py

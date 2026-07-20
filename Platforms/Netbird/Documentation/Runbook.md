@@ -1,13 +1,13 @@
 # NetBird Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Scope
 
 I operate the NetBird v0.74.4 control plane on `docker-network`. I use SSH Manager MCP target `docker_network` for remote commands. The live Compose project is `/opt/docker/netbird`; I never copy its generated secret-bearing files into the repository or command transcripts.
 
-The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://REDACTED_CUSTOM_DOMAIN_016`; direct local checks stay useful for isolating a container or proxy failure. I keep the zone-scoped Cloudflare token in the 1Password `REDACTED_1PASSWORD_VAULT` vault as `REDACTED_1PASSWORD_ITEM_TITLE`, and its value must never appear in commands, screenshots, transcripts, or Git.
+The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://<YOUR_NETBIRD_DOMAIN>`; direct local checks stay useful for isolating a container or proxy failure.
 
 ## Routine Health Check
 
@@ -19,8 +19,8 @@ docker compose ps
 docker inspect -f 'name={{.Name}} status={{.State.Status}} restart={{.HostConfig.RestartPolicy.Name}}' netbird-dashboard netbird-server
 curl -sS -o /dev/null -w 'dashboard_http=%{http_code}\n' http://127.0.0.1:8080/
 curl -sS -o /dev/null -w 'idp_http=%{http_code}\n' http://127.0.0.1:8081/oauth2/.well-known/openid-configuration
-getent ahostsv4 REDACTED_CUSTOM_DOMAIN_016
-curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://REDACTED_CUSTOM_DOMAIN_016/
+getent ahostsv4 <YOUR_NETBIRD_DOMAIN>
+curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://<YOUR_NETBIRD_DOMAIN>/
 ```
 
 Expected baseline:
@@ -48,7 +48,7 @@ docker compose logs --no-color --tail=200 dashboard
 docker compose logs --no-color --tail=200 netbird-server
 ```
 
-I increase the tail or add `--since` when I need a bounded time window. I retain the exact command, complete output, timestamp, target, and exit code in the applicable job evidence log, and I redact secrets.
+I increase the tail or add `--since` when I need a bounded time window. I retain the exact command, complete output, timestamp, target, & exit code in the applicable job log.
 
 Both NetBird containers use bounded Docker `json-file` logging with `max-size=10m` and `max-file=3`, verified on 2026-07-12.
 
@@ -81,14 +81,14 @@ The live configuration must retain:
 - membership in both the private `netbird` and external `proxy` networks;
 - `172.31.85.10/32` as the only `reverseProxy.trustedHTTPProxies` entry for Nginx Proxy Manager.
 
-The repository Compose file is a secret-free reference. I never replace the live `config.yaml` or `dashboard.env` with placeholders from documentation.
+The repository Compose file is a reader-editable reference. I don't replace the live `config.yaml` or `dashboard.env` with the example file.
 
 ## HTTPS Validation
 
 I validate the live entry point from an internal client using UniFi DNS:
 
 ```sh
-curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://REDACTED_CUSTOM_DOMAIN_016/
+curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://<YOUR_NETBIRD_DOMAIN>/
 ```
 
 My established baseline is a valid certificate, HTTP `200`, and a successfully authenticated administrator dashboard without mixed-content errors. After a configuration change or upgrade I also exercise the management, signal, relay/WebSocket, and gRPC routes through the same name. I completed first-peer and routed VPN-path validation on 2026-07-12; it is recorded in the linked change record below.
@@ -97,7 +97,7 @@ The corresponding Nginx Proxy Manager settings and advanced routes live in its [
 
 ## Peers, Networks, and the VPN Path
 
-CT 107 is both the control plane and a NetBird peer acting as the **routing peer** for the Access-A zone. The routed network is defined in the dashboard (Network Routing → Networks) and documented in [REDACTED_PRIVATE_ORG_LABEL-Access-Network.md](../Configuration/REDACTED_PRIVATE_ORG_LABEL-Access-Network.md); the first-peer/VPN-path validation is recorded in [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+CT 107 is both the control plane and a NetBird peer acting as the **routing peer** for the Access-A zone. The routed network is defined in the dashboard (Network Routing → Networks) and documented in [Access-Network.md](../Configuration/Access-Network.md); the first-peer/VPN-path validation is recorded in [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
 I confirm the routing peer on `docker_network`:
 
@@ -120,8 +120,8 @@ ping -c3 100.121.111.204                       # CT 107 overlay IP
 ip route get 192.168.85.2                      # expect: dev wt0 table 7120
 
 # 3. Application layer through the tunnel (force SNI + tunnel IP):
-curl -k -m5 --resolve REDACTED_CUSTOM_DOMAIN_016:443:192.168.85.2 \
-    -o /dev/null -w '%{http_code}\n' https://REDACTED_CUSTOM_DOMAIN_016   # expect 200
+curl -k -m5 --resolve <YOUR_NETBIRD_DOMAIN>:443:192.168.85.2 \
+    -o /dev/null -w '%{http_code}\n' https://<YOUR_NETBIRD_DOMAIN>   # expect 200
 ```
 
 A raw-IP HTTPS request (`https://192.168.85.2`) returns a TLS `unrecognized_name` alert rather than a page; that is expected, because the front end has no server block for a bare-IP SNI, and it still confirms the connection reached the service through the tunnel.
@@ -154,7 +154,7 @@ Tracking `latest` is my intentional 2026-07-12 maintenance decision. I continue 
 
 ## Backup and Restore
 
-I back up these items together through the approved protected backup mechanism:
+I back up these items together before an update or migration:
 
 - `/opt/docker/netbird/docker-compose.yml`
 - `/opt/docker/netbird/config.yaml`

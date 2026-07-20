@@ -1,7 +1,7 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 This is my inventory of local DNS entries owned by the UniFi gateway. Public authoritative DNS stays under the Cloudflare infrastructure records.
 
@@ -9,7 +9,7 @@ This is my inventory of local DNS entries owned by the UniFi gateway. Public aut
 
 | Hostname | Type | Value | TTL | Enabled | Record ID | Purpose |
 |---|---|---|---:|---|---|---|
-| `REDACTED_CUSTOM_DOMAIN_016` | A | `192.168.85.2` | 300 | Yes | `REDACTED_UNIFI_DNS_RECORD_ID_001` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
+| `<YOUR_NETBIRD_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `<YOUR_NETBIRD_DNS_RECORD_ID>` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
 
 ## Verification
 

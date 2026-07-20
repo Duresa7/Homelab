@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 My central backlog. I keep high-level priorities and links here and leave the detailed implementation steps in the owning system's TODO so nothing is written twice.
 
@@ -31,7 +31,7 @@ _No untriaged items._
 ## Recently Completed
 
 - [x] 2026-07-17: [Media Stack application onboarding](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). Jellyfin libraries and Quick Sync transcoding, Sonarr/Radarr media management, first Prowlarr indexer, and confirmed Seerr connections, evidenced by 16 screenshots. The bounded end-to-end acquisition test remains in the platform TODO.
-- [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and placed five verified private identities under 1Password custody.
+- [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and matched five retained identities to their known public fingerprints.
 - [x] 2026-07-14: [Termix SSH host onboarding](Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md). Dedicated encrypted Termix identity, nine verified hosts, four-folder inventory, and a TCP/22-only Galaxy firewall path for the four Proxmox nodes.
 - [x] 2026-07-14: [Ansible and Semaphore upgrade](Platforms/Ansible/Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md). Ansible 14.2.0/core 2.21.2, Semaphore 2.18.27, verified recovery backups, systemd startup, and Proxmox LXC auto-start.
 - [x] 2026-07-14: [Ansible SSH identity automation](Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md). Portable per-identity audit/onboard/stage/verify/retire playbooks, safety gates, and 18 Semaphore templates using the retained encrypted controller credential.

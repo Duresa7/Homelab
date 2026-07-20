@@ -1,9 +1,9 @@
 ﻿# Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-I intentionally keep enrollment keys, credentials, certificates, and complete live configuration files out of this reference.
+This reference records endpoints, paths, package versions, & current agent state.
 
 ## Manager
 

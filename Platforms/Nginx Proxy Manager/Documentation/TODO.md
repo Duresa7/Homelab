@@ -1,14 +1,14 @@
 # Nginx Proxy Manager TODO
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS host, automated renewal path, and bounded logging are verified. This record preserves the completed publication and readiness work; I track no further hardening after my 2026-07-12 descope decision. Completed deployment details are recorded in [Deployment.md](Deployment.md).
 
 ## Complete NetBird Publication
 
-- [x] Store the zone-scoped Cloudflare DNS Write token as `REDACTED_1PASSWORD_ITEM_TITLE_002` in 1Password without retaining its value in Git or evidence.
-- [x] Request the `*.REDACTED_CUSTOM_DOMAIN_001` and `REDACTED_CUSTOM_DOMAIN_001` DNS-01 certificate.
+- [x] Configure a zone-scoped Cloudflare DNS Write token for the NPM DNS-01 certificate.
+- [x] Request the `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` DNS-01 certificate.
 - [x] Assign the certificate, enable Force SSL, and enable HTTP/2.
 - [x] Verify certificate presentation and the authenticated NetBird dashboard over HTTPS.
 - [x] Enroll the first NetBird peer and verify VPN traffic plus peer-dependent API, OAuth2, WebSocket, signal, management, and gRPC behavior. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).

@@ -1,7 +1,7 @@
 # Galaxy Datacenter Firewall IPSet Restructure - 2026-07-13
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-13  
 **Status:** Complete  
@@ -60,7 +60,7 @@ IPSet membership is recorded in the [firewall configuration reference](../../Con
 | Simulate: random mgmt `70.150 → :8006` and `:22` | **DROP** (broad hole closed) |
 | Live: purple `70.11 → grey :8006` | HTTP `200` (0.03s); inter-node GUI proxy intact |
 | Live: purple `70.11 → grey :22` | SSH banner returned |
-| Live: my admin session `REDACTED_PRIVATE_ADMIN_SOURCE → :22` | continuous throughout (pve_admins) |
+| Live: my admin session `<YOUR_ADMIN_SOURCE_IP> → :22` | continuous throughout (pve_admins) |
 | Cluster | `pvecm status`: 4 nodes, Quorate, 4 votes (corosync unaffected) |
 | host.fw removal | grey `PVEFW-HOST-IN` pve_mgmt jump 2 → 1; no `host.fw` on any node |
 

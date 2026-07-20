@@ -35,7 +35,7 @@ This 2026-06 build predates the current step-evidence naming and text-transcript
 The build uses four targets:
 
 - VMID 109 runs alone on Security-A with 4 vCPU, 12 GiB RAM, a 150 GiB SSD-backed disk, & the Proxmox firewall enabled.
-- Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `REDACTED_USER_001`; password authentication & direct root login are disabled.
+- Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `<YOUR_ADMIN_USERNAME>`; password authentication & direct root login are disabled.
 - UniFi sends CEF to SC4S on TCP/UDP 1514. SC4S forwards through HEC on 8088 instead of sending syslog directly to the indexer, matching Splunk's guidance [2][3].
 - The log retains the commands, decisions, failures, verification results, & 40 screenshots from the 2026-06 build.
 
@@ -123,11 +123,11 @@ I did a **Minimal Install with no desktop environment** to keep the footprint sm
 | Base environment | Minimal Install |
 | Add-ons | Standard, Headless Management |
 | Desktop environment | None |
-| User account | REDACTED_NAME_001 / `REDACTED_USER_001` (wheel/sudo, password required) |
+| User account | Duresa7 / `<YOUR_ADMIN_USERNAME>` (wheel/sudo, password required) |
 | Interface | `ens18` |
 | IP address | `192.168.70.109/24` (DHCP) |
 | Gateway / DNS | `192.168.70.1` |
-| MAC | `REDACTED_MAC_016` |
+| MAC | `<YOUR_SPLUNK_VM_MAC>` |
 | Hostname | `splunk-siem` |
 
 I set the hostname from the terminal (it can also be set on the installer's Network and Host Name screen):
@@ -168,7 +168,7 @@ cat /etc/rocky-release # confirm: Rocky Linux 10.2
 
 ### SSH authentication controls
 
-I set `PasswordAuthentication no` & `PermitRootLogin no`. The documented remote login path became the `REDACTED_USER_001` account with three authorized public keys; the Proxmox console remained the fallback.
+I set `PasswordAuthentication no` & `PermitRootLogin no`. The documented remote login path became the `<YOUR_ADMIN_USERNAME>` account with three authorized public keys; the Proxmox console remained the fallback.
 
 I used Ed25519 for all three client keys. I tested one key from a second SSH session before closing the first session.
 
@@ -182,9 +182,9 @@ I installed three `ed25519` public keys, one per client, each identified by its 
 
 | Key comment | Client | Passphrase |
 |---|---|:-:|
-| `mac-air3-REDACTED_USER_001` | MacBook Air | Yes |
+| `mac-air3-<YOUR_ADMIN_USERNAME>` | MacBook Air | Yes |
 | `ansible-control` | Ansible control node | No (automation needs unattended login) |
-| `REDACTED_SSH_KEY_LABEL_001-nopass` | jedi-pc workstation | No |
+| `<RETIRED_ROOT_KEY_LABEL>-nopass` | jedi-pc workstation | No |
 
 I hardened `/etc/ssh/sshd_config`:
 
@@ -362,7 +362,7 @@ sudo firewall-cmd --reload
 
 ![Podman already present via dnf, the splunk-sc4s-var volume created, and the /opt/sc4s directories made](../Evidence/Screenshots/Screenshot%202026-06-30%20131052.png)
 
-![env_file contents: HEC URL https://127.0.0.1:8088, TLS verify off, CEF UDP and TCP listeners on 1514, token line redacted](../Evidence/Screenshots/Screenshot%202026-06-30%20131209.png)
+![env_file contents with HEC URL https://127.0.0.1:8088, TLS verification off, and CEF UDP and TCP listeners on 1514](../Evidence/Screenshots/Screenshot%202026-06-30%20131209.png)
 
 ![sc4s.service unit open in nano showing the podman run configuration from the SC4S documentation](../Evidence/Screenshots/Screenshot%202026-06-30%20131323.png)
 

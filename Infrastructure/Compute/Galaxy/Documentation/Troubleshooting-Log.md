@@ -1,7 +1,7 @@
 # Galaxy Troubleshooting Log
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](TODO.md).
 
@@ -12,7 +12,7 @@ This is my chronological troubleshooting record for the Galaxy Proxmox cluster. 
 | 1 | 2026-07-13 | Proxmox reported `blue-server` as `unknown` while its guests remained online | `pvestatd` repeatedly crashes and does not restart; the deeper cause is not yet proven | Known issue; deferred |
 | 2 | 2026-07-15 | GNOME showed a question mark for wired networking on `debian-dev` although internet access worked | `ens18` was owned by legacy ifupdown/dhcpcd and therefore appeared unmanaged to NetworkManager | Resolved |
 | 3 | 2026-07-15 | `apt update` emitted repeated duplicate-target warnings for the 1Password repository | Equivalent legacy `.list` and maintained deb822 `.sources` entries were both active | Resolved |
-| 4 | 2026-07-15 | Claude Desktop would not persist sign-in and Cowork could not use `/dev/kvm` on `debian-dev` | Claude first created the login keyring after session authentication; `REDACTED_USER_001` was also absent from `kvm` | Repair applied; login cycle required |
+| 4 | 2026-07-15 | Claude Desktop would not persist sign-in and Cowork could not use `/dev/kvm` on `debian-dev` | Claude first created the login keyring after session authentication; `<YOUR_ADMIN_USERNAME>` was also absent from `kvm` | Repair applied; login cycle required |
 
 ## 1. Recurring `pvestatd` Failure on `blue-server`
 
@@ -148,7 +148,7 @@ I copied the legacy file to root-only rollback path `/root/apt-source-backups/1p
 
 ### Symptoms and feedback loop
 
-Claude Desktop warned that sign-in would not be saved without an installed and unlocked system keyring. Cowork separately reported that `REDACTED_USER_001` lacked permission to use `/dev/kvm`.
+Claude Desktop warned that sign-in would not be saved without an installed and unlocked system keyring. Cowork separately reported that `<YOUR_ADMIN_USERNAME>` lacked permission to use `/dev/kvm`.
 
 My tight reproduction combined Claude's `safeStorage` log with the live Secret Service tree. Claude selected `gnome_libsecret` but logged `isEncryptionAvailable=false`; the D-Bus service answered normally while `/org/freedesktop/secrets/collection/login` was absent.
 
@@ -160,10 +160,10 @@ The virtualization problem was independent and direct: `/dev/kvm` was correctly 
 
 ### Corrective action
 
-I added `REDACTED_USER_001` persistently to group `kvm`. I replaced or deleted no keyring package, PAM file, keyring database, or stored secret. A credential-free blank unlock probe did not export the new login collection, confirming that the safe next step is a normal authenticated GNOME session cycle rather than weakening or resetting the keyring.
+I added `<YOUR_ADMIN_USERNAME>` persistently to group `kvm`. I replaced or deleted no keyring package, PAM file, keyring database, or stored secret. A credential-free blank unlock probe did not export the new login collection, confirming that the safe next step is a normal authenticated GNOME session cycle rather than weakening or resetting the keyring.
 
 ### Verification state
 
-The account database reports `kvm:x:993:REDACTED_USER_001`, and the KVM device, CPU feature, and kernel modules all passed. The currently running GNOME Shell retains its old supplementary group list, so to activate both fixes I need to save my work, sign out, sign back in with the normal account password, and relaunch Claude.
+The account database reports `kvm:x:993:<YOUR_ADMIN_USERNAME>`, and the KVM device, CPU feature, and kernel modules all passed. The currently running GNOME Shell retains its old supplementary group list, so to activate both fixes I need to save my work, sign out, sign back in with the normal account password, and relaunch Claude.
 
 After that cycle, verification must show group 993 on the new GNOME process, an exported login Secret Service collection, no new Claude `isEncryptionAvailable=false` warning, and successful Cowork access to `/dev/kvm`.

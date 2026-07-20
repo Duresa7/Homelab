@@ -1,7 +1,7 @@
 ﻿# Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 This is my configuration inventory of the QEMU VMs and templates on the Galaxy cluster.
 
@@ -65,7 +65,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | 192.168.40.135/24 | 192.168.40.1 | enabled | REDACTED_MAC_003 |
+| net0 | virtio | vmbr0 | 40 | 192.168.40.135/24 | 192.168.40.1 | enabled | `<YOUR_DEBIAN_DEV_MAC>` |
 
 ### VM 103 - W11-Test-1
 
@@ -104,7 +104,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 65 | 192.168.65.112/24 | 192.168.65.1 | enabled | REDACTED_MAC_017 |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.112/24 | 192.168.65.1 | enabled | `<YOUR_WINDOWS_TEST_VM_MAC>` |
 
 ### VM 106 - kali-pen
 
@@ -142,7 +142,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | none | 192.168.40.226/24 | 192.168.40.1 | enabled | REDACTED_MAC_020 |
+| net0 | virtio | vmbr0 | none | 192.168.40.226/24 | 192.168.40.1 | enabled | `<YOUR_KALI_VM_MAC>` |
 
 ### VM 109 - splunk-siem
 
@@ -180,7 +180,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | REDACTED_MAC_016 |
+| net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | `<YOUR_SPLUNK_VM_MAC>` |
 
 ### VM 116 - app-01
 
@@ -217,7 +217,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | REDACTED_MAC_019 |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | `<YOUR_APP_HOST_MAC>` |
 
 ### VM 117 - supabase-01
 
@@ -255,7 +255,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.20/24 | 192.168.80.1 | enabled | REDACTED_MAC_009 |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.20/24 | 192.168.80.1 | enabled | `<YOUR_SUPABASE_HOST_MAC>` |
 
 ### VM 121 - edge-01
 
@@ -292,7 +292,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | REDACTED_MAC_006 |
+| net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | `<YOUR_EDGE_HOST_MAC>` |
 
 ### VM 200 - security-01
 
@@ -329,7 +329,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | REDACTED_MAC_007 |
+| net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | `<YOUR_SECURITY_HOST_MAC>` |
 
 ### VM 300 - ws-dc-1
 
@@ -368,7 +368,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 65 | 192.168.65.10/24 | 192.168.65.1 | disabled | REDACTED_MAC_012 |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.10/24 | 192.168.65.1 | disabled | `<YOUR_FIRST_DOMAIN_CONTROLLER_MAC>` |
 
 ### VM 301 - ws-dc-2
 
@@ -407,7 +407,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 65 | 192.168.65.45/24 | 192.168.65.1 | disabled | REDACTED_MAC_010 |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.45/24 | 192.168.65.1 | disabled | `<YOUR_SECOND_DOMAIN_CONTROLLER_MAC>` |
 
 ### VM 401 - alpha-prod-01
 
@@ -444,7 +444,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.118/24 | 192.168.80.1 | enabled | REDACTED_MAC_018 |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.118/24 | 192.168.80.1 | enabled | `<YOUR_TEAMSPEAK_HOST_MAC>` |
 
 ## Template Details
 
@@ -483,7 +483,7 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | none | none | enabled | REDACTED_MAC_011 |
+| net0 | virtio | vmbr0 | 40 | none | none | enabled | `<YOUR_DEBIAN_TEMPLATE_MAC>` |
 
 ### Template 9000 - ubuntu-cloud-template
 
@@ -521,4 +521,4 @@ This is my configuration inventory of the QEMU VMs and templates on the Galaxy c
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | none | none | disabled | REDACTED_MAC_005 |
+| net0 | virtio | vmbr0 | 80 | none | none | disabled | `<YOUR_UBUNTU_TEMPLATE_MAC>` |

@@ -13,4 +13,4 @@ I separate user-facing media workflows from download egress. Jellyfin, Seerr, So
 
 I run CT 842 unprivileged, starting with the Proxmox node, on local LVM storage on `red-server`. It receives `/dev/dri/renderD128` for Jellyfin Intel Quick Sync and `/dev/net/tun` for the VPN tunnel. The guest has 4 vCPU, 8 GiB memory, 1 GiB swap, and a 100 GiB root volume.
 
-Because the volume is node-local and the guest is not HA-managed, recovery depends on protected backups or restoration on `red-server`; automatic cross-node storage failover is not available.
+Because the volume is node-local and the guest isn't HA-managed, recovery depends on backups or restoration on `red-server`; automatic cross-node storage failover isn't available.

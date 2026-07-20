@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 This is my inventory of the workloads and services running on each Galaxy guest.
 
@@ -36,10 +36,10 @@ This is my inventory of the workloads and services running on each Galaxy guest.
 | GNOME desktop | Debian GNOME metapackages `gnome` and `gnome-core` 48; GNOME Shell 48.7-0+deb13u2 |
 | Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
 | Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
-| Desktop privilege policy | Polkit grants all actions without authentication to user `REDACTED_USER_001` only from an active local session; remote Polkit requests remain subject to normal policy |
-| Claude Desktop | 1.21459.0 from Anthropic's APT repository; GNOME Keyring/Secret Service supplies encrypted credential storage; fresh login verification pending after first-run collection creation |
-| Cowork virtualization | `/dev/kvm` available through AMD KVM; `REDACTED_USER_001` is a persistent member of group `kvm`; new-session activation pending |
-| Remote administration | SSH Manager target `debian_dev` (`REDACTED_USER_001@192.168.40.135`) using the Jedi-PC Ed25519 identity; compatibility alias `db_13_test` |
+| Desktop privilege policy | Polkit grants all actions without authentication to user `<YOUR_ADMIN_USERNAME>` only from an active local session; remote Polkit requests remain subject to normal policy |
+| Claude Desktop | 1.21459.0 from Anthropic's APT repository; fresh login verification pending after first-run GNOME Keyring collection creation |
+| Cowork virtualization | `/dev/kvm` available through AMD KVM; `<YOUR_ADMIN_USERNAME>` is a persistent member of group `kvm`; new-session activation pending |
+| Remote administration | SSH Manager target `debian_dev` (`<YOUR_ADMIN_USERNAME>@192.168.40.135`) using the Jedi-PC Ed25519 identity; compatibility alias `db_13_test` |
 | Rollback | Proxmox snapshot `pre-gnome-20260715` retained on VM 102; post-reboot validation passed |
 
 ## docker-main
@@ -48,7 +48,7 @@ This is my inventory of the workloads and services running on each Galaxy guest.
 | --- | --- |
 | Immich | Photo/video stack: server, Postgres, machine learning, Valkey |
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
-| Homelab Dashboard | `ghcr.io/REDACTED_REGISTRY_ACCOUNT/homelab-dashboard-aio:latest` |
+| Homelab Dashboard | `ghcr.io/<YOUR_GITHUB_USERNAME>/homelab-dashboard-aio:latest` |
 | Termix / Guacamole | Termix 2.5.0 (`ghcr.io/lukegus/termix:latest`, verified digest `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`); `guacamole/guacd:1.6.0` |
 | Portainer CE | `portainer/portainer-ce:latest` |
 
@@ -63,7 +63,7 @@ This is my inventory of the workloads and services running on each Galaxy guest.
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Version 0.74.4; dashboard and server containers deployed under `/opt/docker/netbird`; authenticated dashboard live at `https://REDACTED_CUSTOM_DOMAIN_016`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `REDACTED_PRIVATE_ORG_LABEL-Access` network `192.168.85.0/24` |
+| NetBird | Version 0.74.4; dashboard and server containers deployed under `/opt/docker/netbird`; authenticated dashboard live at `https://<YOUR_NETBIRD_DOMAIN>`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `<YOUR_ORG_NAME>-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Operational status | First peer/VPN path, non-interactive ACME renewal, and bounded logging verified; no further hardening tracked after the 2026-07-12 descope decision |
 

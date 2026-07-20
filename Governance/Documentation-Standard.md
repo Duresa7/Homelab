@@ -5,13 +5,41 @@
 
 ## Purpose
 
-This workspace models the responsibilities normally spread across enterprise knowledge bases, source repositories, CMDBs, ticketing systems, and evidence stores. Documentation depth scales with the system's maturity, complexity, and operational importance.
-
-This standard holds the rules I write my records to: documentation depth, content, evidence, incidents, voice, and file metadata. Workspace routing, component and platform layout, and backlog handling live in the working notes I keep outside this repository. Work-hierarchy terminology (project, plan, step) is defined in the root [glossary](../CONTEXT.md).
+This standard defines how I write change records, walkthroughs, incident reports, evidence references, and file metadata. Documentation depth scales with the system's maturity, complexity, and operational importance.
 
 ## Voice
 
-I write every document here in my own first person, not in the third person or behind a role title. Repository files carry no emoji, and I keep the prose plain: no filler or intensifiers, headings that name their content, and every claim ending on a concrete fact.
+I write in my own first person. I don't hide work behind terms such as "the operator," and I don't credit an AI as author, preparer, reviewer, or commit co-author.
+
+Every technical claim carries a checkable detail: a version, address, port, host, date, command result, file path, or measured count. Short sentences state the result. Longer sentences explain the mechanism & the check that proved it.
+
+I use contractions in normal prose, vary sentence length, & keep headings literal. Repository prose has no emoji, em dash characters, filler, intensifiers, generic transitions, dramatic headings, repeated conclusions, or claims that end without a fact.
+
+Examples use contextual angle-bracket placeholders such as `<YOUR_WAN_IP>`, `<YOUR_ADMIN_USERNAME>`, & `<YOUR_NETBIRD_DOMAIN>`. Markdown prose wraps each placeholder in backticks. Executable examples keep the raw placeholder when backticks would change the syntax.
+
+## Work Terms
+
+### Project
+
+A project is a bounded effort with a named outcome & a definable finish. The root [TODO](../TODO.md) lists active projects. A project can have one plan, numbered steps, a same-named evidence folder, & a dated change record.
+
+A platform TODO is an ongoing backlog, not a project. I cut a project from that backlog when I commit to a bounded piece of work.
+
+### Plan
+
+A plan records how I intend to complete one project: the approach, sequence, checks, rollback points, & stop conditions. It lives with the owning system under `Documentation/Change Plans/`.
+
+### Step
+
+A step is one unit of planned work. `Step N` names a phase; `Step N.M` records one instruction inside that phase. Evidence filenames use the same number with an `S` prefix, such as `S01`, `S03.2`, or `S05A`.
+
+### Change Record
+
+A change record is the dated account of work I completed or abandoned. It records the starting state, actions, observed results, verification, rollback points, & remaining work under `Documentation/Change Records/`.
+
+### Task
+
+Task is my informal name for a working session or errand. Plans contain steps, not tasks.
 
 ## Documentation Tiers
 
@@ -51,7 +79,7 @@ Raw `smartctl` output goes unchanged under `Operations/Diagnostics/SMART/`, foll
 
 I treat material implementation, migration, repair, & troubleshooting work as the sequence of steps laid out in the project's plan. I collect evidence as each step completes, not after the project is done.
 
-Plans number steps like a guide: `Step N` is a titled phase and `Step N.M` is a concrete instruction within it (see the [glossary](../CONTEXT.md)). Evidence filenames carry the step number as an `S` prefix: `S01`, `S03.2`, or `S05A` for work inserted between planned steps.
+Plans number steps like a guide: `Step N` is a titled phase and `Step N.M` is a concrete instruction within it. Evidence filenames carry the step number as an `S` prefix: `S01`, `S03.2`, or `S05A` for work inserted between planned steps.
 
 For a net-new deployment, I capture one screenshot after each material step has been validated. A fabricated before state adds no evidence & isn't required. For a modification to existing state, I retain paired before-and-after captures when both states are observable & useful.
 
@@ -77,7 +105,7 @@ Terminal screenshots may supplement a transcript, but they don't replace the exa
 
 The owning change record keeps evidence with each material walkthrough step, linking the screenshot, command transcript, or request export to its verification result. A separate step evidence table is optional when the walkthrough itself provides that mapping. If a capture is impossible or adds no information, I record the reason instead of silently omitting it.
 
-Passwords, API tokens, private keys, recovery codes, & other secrets never land in repository files, evidence transcripts, screenshots, or captured command output. I redact secret values while preserving the command or request structure, & I state that redaction occurred.
+When a public example requires a reader-supplied value, I use a contextual placeholder that names the value's role. I don't publish a live value or turn its omission into a separate explanation.
 
 ## Troubleshooting Records
 

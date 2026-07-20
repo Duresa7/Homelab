@@ -1,17 +1,17 @@
 # TeamSpeak Service Incident Report
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Document Control
 
 | Field | Value |
 |-------|-------|
-| Organization | REDACTED_PRIVATE_ORG_LABEL United |
+| Organization | `<YOUR_ORG_NAME>` United |
 | Environment | Production |
 | Asset | alpha-prod-01 |
 | Service | TeamSpeak 3 voice services |
-| Report Owner | REDACTED_USER_001 REDACTED_NAME_003 |
+| Report Owner | `<YOUR_ADMIN_USERNAME>` `<YOUR_RETIRED_NODE_NAME>` |
 | Report Date | 2026-04-24 |
 | Time Zone | America/New_York |
 | Classification | Internal Use |
@@ -22,7 +22,7 @@
 ## Executive Summary
 
 On 2026-04-24, users reported repeated TeamSpeak connection failures against the
-public Playit endpoints and Cloudflare DNS names for REDACTED_PRIVATE_ORG_LABEL United TeamSpeak
+public Playit endpoints and Cloudflare DNS names for `<YOUR_ORG_NAME>` United TeamSpeak
 services. I began triage with basic health checks, which showed TeamSpeak,
 Docker, DNS, and Playit all nominal. My deeper testing showed that UDP packets
 were reaching the TeamSpeak path, but the TeamSpeak client handshake was not
@@ -57,8 +57,8 @@ the Playit path.
 
 | Service | Public DNS | Playit Endpoint | Host Port |
 |---------|------------|-----------------|-----------|
-| TeamSpeak 1 | REDACTED_CUSTOM_DOMAIN_022 | REDACTED_CUSTOM_DOMAIN_009:6255 | 9987/udp |
-| TeamSpeak 2 | REDACTED_CUSTOM_DOMAIN_023 | REDACTED_CUSTOM_DOMAIN_015:53810 | 9988/udp |
+| TeamSpeak 1 | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
+| TeamSpeak 2 | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
 
 ---
 
@@ -67,15 +67,15 @@ the Playit path.
 Users observed repeated TeamSpeak client failures similar to:
 
 ```text
-Trying to resolve hostname REDACTED_CUSTOM_DOMAIN_022
-Trying to connect to server on REDACTED_CUSTOM_DOMAIN_022
+Trying to resolve hostname <YOUR_TEAMSPEAK_ONE_DOMAIN>
+Trying to connect to server on <YOUR_TEAMSPEAK_ONE_DOMAIN>
 Failed to connect to server
 ```
 
 My direct Playit IPv4 testing also failed before mitigation:
 
 ```text
-Trying to connect to server on REDACTED_IPV4_011:6255
+Trying to connect to server on <YOUR_RELAY_IP>:6255
 Failed to connect to server
 ```
 
@@ -177,11 +177,11 @@ secrets are included in this report.
 
 | Action | Owner | Priority | Status |
 |--------|-------|----------|--------|
-| Confirm multiple external users can join TS1 | REDACTED_PRIVATE_ORG_LABEL United | High | Pending |
-| Confirm multiple external users can join TS2 | REDACTED_PRIVATE_ORG_LABEL United | High | Pending |
-| Add Cloudflare aliases for `ts-valorant-01` and `ts-valorant-02` after Cloudflare API re-authentication | REDACTED_PRIVATE_ORG_LABEL United | Medium | Pending |
-| Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | REDACTED_PRIVATE_ORG_LABEL United | Medium | Open |
-| Keep TeamSpeak containers on host networking for future voice servers | REDACTED_PRIVATE_ORG_LABEL United | Medium | In Progress |
+| Confirm multiple external users can join TS1 | `<YOUR_ORG_NAME>` United | High | Pending |
+| Confirm multiple external users can join TS2 | `<YOUR_ORG_NAME>` United | High | Pending |
+| Add Cloudflare aliases for `ts-valorant-01` and `ts-valorant-02` after Cloudflare API re-authentication | `<YOUR_ORG_NAME>` United | Medium | Pending |
+| Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | `<YOUR_ORG_NAME>` United | Medium | Open |
+| Keep TeamSpeak containers on host networking for future voice servers | `<YOUR_ORG_NAME>` United | Medium | In Progress |
 
 ---
 

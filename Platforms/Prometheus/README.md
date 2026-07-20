@@ -1,7 +1,7 @@
 ﻿# Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 Prometheus provides infrastructure metrics for the homelab. The deployed server runs in Docker on `security-01` (`192.168.72.2`) and scrapes the security host, the DMZ edge host, all four Galaxy Proxmox nodes, and the Proxmox API exporter.
 
@@ -22,7 +22,7 @@ Prometheus provides infrastructure metrics for the homelab. The deployed server 
 | Item | Value |
 |---|---|
 | Prometheus UI | `http://192.168.72.2:9090/` |
-| Live host configuration | `/home/REDACTED_USER_001/monitoring/prometheus.yml` on `security-01` |
+| Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml` on `security-01` |
 | Container configuration | `/etc/prometheus/prometheus.yml` |
 | Versioned configuration | [prometheus.yml](Configuration/prometheus.yml) |
 | Scrape interval | 15 seconds |

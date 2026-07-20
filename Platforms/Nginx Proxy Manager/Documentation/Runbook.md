@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Scope
 
@@ -17,7 +17,7 @@ docker compose ps
 docker inspect -f 'status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}} ip={{(index .NetworkSettings.Networks "proxy").IPAddress}} restart={{.HostConfig.RestartPolicy.Name}}' nginx-proxy-manager
 curl -sS -o /dev/null -w 'admin_http=%{http_code}\n' http://127.0.0.1:81/
 curl -sS -o /dev/null -w 'http_entry=%{http_code}\n' http://127.0.0.1/
-curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://REDACTED_CUSTOM_DOMAIN_016/
+curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://<YOUR_NETBIRD_DOMAIN>/
 ```
 
 Expected baseline:
@@ -28,7 +28,7 @@ Expected baseline:
 - The administrator UI returns HTTP `200`.
 - The NetBird HTTPS host returns a successful application response and presents the certificate expiring `2026-10-08 23:49:46 UTC`.
 
-The UI is available internally at `http://192.168.85.2:81`. I use an approved credential from 1Password only after confirming it matches the current administrator account. The saved credential from an initial API-login attempt was stale and returned HTTP `400`; I do not rely on that record. Live administrator login works, and the stale password-manager record is outside this platform's scope. I never display or retain a password in evidence.
+The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. An early API-login attempt returned HTTP `400`, so I use the verified browser path for administrator changes.
 
 ## Logs
 
@@ -38,7 +38,7 @@ docker compose logs --no-color --tail=200
 docker compose logs --no-color --tail=200 nginx-proxy-manager
 ```
 
-I retain the exact command, complete output, timestamp, target, and exit code when logs are evidence for a change or problem, and I redact credentials, API tokens, cookies, and private-key content.
+I retain the exact command, complete output, timestamp, target, and exit code when logs support a change or problem.
 
 The NPM container uses bounded Docker `json-file` logging with `max-size=10m` and `max-file=3`, verified on 2026-07-12.
 
@@ -58,10 +58,10 @@ After a restart I wait for `healthy`, test port 81, and test every configured pr
 
 The current HTTPS proxy host is saved, Online, and validated. I use these settings to verify it or recreate it during recovery.
 
-1. Confirm internal DNS resolves `REDACTED_CUSTOM_DOMAIN_016` to `192.168.85.2`.
+1. Confirm internal DNS resolves `<YOUR_NETBIRD_DOMAIN>` to `192.168.85.2`.
 2. Confirm the Cloudflare DNS-01 wildcard/apex certificate exists in NPM and has not expired.
 3. Create a Proxy Host with:
-   - domain `REDACTED_CUSTOM_DOMAIN_016`;
+   - domain `<YOUR_NETBIRD_DOMAIN>`;
    - scheme `http`;
    - forward host `netbird-dashboard`;
    - forward port `80`;
@@ -76,16 +76,14 @@ The advanced configuration routes long-lived WebSocket, API/OAuth2, native signa
 
 ## Certificate Handling
 
-I use the least-privilege, zone-scoped Cloudflare DNS Write token stored in 1Password as `REDACTED_1PASSWORD_ITEM_TITLE_002`. I never place the token in Git, visible shell arguments, screenshots, or retained command output.
-
 I request one DNS-01 certificate covering:
 
 ```text
-*.REDACTED_CUSTOM_DOMAIN_001
-REDACTED_CUSTOM_DOMAIN_001
+*.<YOUR_BASE_DOMAIN>
+<YOUR_BASE_DOMAIN>
 ```
 
-The active certificate covers both names and expires `2026-10-08 23:49:46 UTC`. It is assigned to `REDACTED_CUSTOM_DOMAIN_016` with Force SSL and HTTP/2 enabled. I verified the non-interactive `dns-cloudflare` renewal path with a successful Let's Encrypt staging dry-run on 2026-07-12. NPM's Node backend initializes an hourly timer and checks immediately at startup for certificates within 30 days of expiry.
+The active certificate covers both names and expires `2026-10-08 23:49:46 UTC`. It is assigned to `<YOUR_NETBIRD_DOMAIN>` with Force SSL and HTTP/2 enabled. I verified the non-interactive `dns-cloudflare` renewal path with a successful Let's Encrypt staging dry-run on 2026-07-12. NPM's Node backend initializes an hourly timer and checks immediately at startup for certificates within 30 days of expiry.
 
 After issuance or renewal I:
 
@@ -126,7 +124,7 @@ I back up these live items together:
 - `/opt/docker/nginx-proxy-manager/data/`
 - `/opt/docker/nginx-proxy-manager/letsencrypt/`
 
-The data includes account information, host definitions, private keys, certificates, and ACME state. It is protected material and must not be committed or placed in unredacted evidence.
+Restore `data/` and `letsencrypt/` as a matched set because the database, certificates, & ACME state refer to one another.
 
 To restore I recover ownership and permissions, confirm `proxy` exists with subnet `172.31.85.0/24`, then run `docker compose up -d`. I validate health, `nginx -t`, administrator login, certificate inventory, renewal state, and each proxy host.
 

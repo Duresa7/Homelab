@@ -1,13 +1,13 @@
 # TNIO Librarian Product Overview
 
 **Created:** 2026-05-13  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-20
 
 ## Product Name
 
 **TNIO Librarian**
 
-Powered by REDACTED_PRIVATE_ORG_LABEL United *Alpha-Echo-TNIO-Lore Model*.
+Powered by `<YOUR_ORG_NAME>` United *Alpha-Echo-TNIO-Lore Model*.
 
 ## Short Description
 
@@ -27,7 +27,7 @@ Discord Librarian Bot
         | shows typing/status reactions
         | sends the question into the archive system
         v
-REDACTED_PRIVATE_ORG_LABEL United Alpha-Echo-TNIO-Lore Model
+<YOUR_ORG_NAME> United Alpha-Echo-TNIO-Lore Model
         |
         | understands the question
         | decides what kind of answer is needed
@@ -240,7 +240,7 @@ The intended product behavior is:
    The member-facing bot.
 
 2. Librarian Layer
-   The in-character assistant powered by REDACTED_PRIVATE_ORG_LABEL United Alpha-Echo-TNIO-Lore Model.
+   The in-character assistant powered by <YOUR_ORG_NAME> United Alpha-Echo-TNIO-Lore Model.
 
 3. Archive Layer
    The TNIO Google Drive documents and sheets.

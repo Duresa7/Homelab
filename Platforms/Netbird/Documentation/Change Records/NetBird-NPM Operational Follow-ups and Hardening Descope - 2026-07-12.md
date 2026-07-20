@@ -1,7 +1,7 @@
 # NetBird/NPM Operational Follow-ups and Hardening Descope
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Scope
 
@@ -15,9 +15,9 @@ The access stack was operational with HTTPS publication, authenticated administr
 
 ### 1. Automated Let's Encrypt renewal
 
-NPM's `npm-1` lineage covers `*.REDACTED_CUSTOM_DOMAIN_001` and `REDACTED_CUSTOM_DOMAIN_001` and expires `2026-10-08 23:49:46 UTC`. The renewal configuration uses `authenticator = dns-cloudflare` and a stored credentials-file path, proving that token re-entry is not required. I read no credential contents.
+NPM's `npm-1` lineage covers `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` and expires `2026-10-08 23:49:46 UTC`. The renewal configuration uses `authenticator = dns-cloudflare`. A Let's Encrypt staging run completed successfully for `/etc/letsencrypt/live/npm-1/fullchain.pem` with exit code `0`.
 
-NPM's running Node backend owns the observed schedule: `/app/internal/certificate.js` initializes a one-hour timer, checks immediately at startup, and processes Let's Encrypt certificates within 30 days of expiry. A Let's Encrypt staging run completed successfully for `/etc/letsencrypt/live/npm-1/fullchain.pem` with exit code `0`.
+NPM's running Node backend owns the observed schedule: `/app/internal/certificate.js` initializes a one-hour timer, checks immediately at startup, and processes Let's Encrypt certificates within 30 days of expiry.
 
 ### 2. Bounded Docker logging
 
@@ -31,7 +31,7 @@ Both Compose projects passed `docker compose config --quiet` before and after ap
 
 ### 3. Post-change upstream refresh
 
-My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting log](../Troubleshooting-Log.md#11-npm-retained-a-stale-netbird-upstream-address-after-recreation).
+My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting log](../Troubleshooting-Log.md#9-npm-retained-a-stale-netbird-upstream-address-after-recreation).
 
 ## Descope Decision
 
@@ -44,10 +44,9 @@ I kept log rotation and finished only the items I could take end to end in one s
 | Nested `.claude/settings.local.json` ignore rule | Completed | Narrow repository hygiene correction |
 | CT 107 reboot recovery | Descoped | Requires a disruptive maintenance window |
 | Restrict NPM administrative port 81 | Descoped | I need to confirm the approved management path first, and it carries lockout risk |
-| Reconcile stale saved NPM credential | Descoped | Live login works; the password-manager record needs account knowledge I hold personally |
-| Console-password recovery | Descoped | I completed `REDACTED_USER_001`; the remaining root work needs manual handling |
+| Console-password recovery | Descoped | I completed `<YOUR_ADMIN_USERNAME>`; the remaining root work needs manual handling |
 | Image pinning and version-review cadence | Declined | I chose to remain on `latest` |
-| Protected backups and restore testing | Declined | I chose not to implement them |
+| Backups and restore testing | Declined | I chose not to implement them |
 | Certificate-lifecycle, service, endpoint, and health monitoring | Declined | I chose not to implement monitoring |
 | External reachability / ingress-NAT decision | Resolved | The service is internal-only with no WAN ingress |
 | Tighten `Peers → Access-A` policy | Descoped | I have not yet defined the production source groups and ports |
@@ -64,7 +63,7 @@ Runbook recovery and update guidance remains as neutral reference material. I di
 ## Verification Performed
 
 - `certbot certificates` reported lineage `npm-1`, the intended wildcard/apex identifiers, and expiry `2026-10-08 23:49:46 UTC`.
-- Safe renewal-config inspection showed `dns-cloudflare` and the credential path without reading its contents.
+- Renewal configuration inspection showed `authenticator = dns-cloudflare`.
 - Source and process inspection showed NPM's live Node backend initializes an hourly renewal timer and checks certificates within 30 days of expiry.
 - `certbot renew --dry-run --no-random-sleep-on-renew` completed against Let's Encrypt staging with `Congratulations, all simulated renewals succeeded` and exit code `0`.
 - Both Compose projects passed configuration validation before and after application.
@@ -72,7 +71,7 @@ Runbook recovery and update guidance remains as neutral reference material. I di
 - NPM returned `healthy`; `nginx -t` succeeded.
 - Direct dashboard and identity-provider probes returned HTTP `200`.
 - NPM-to-NetBird dashboard and identity-provider probes returned HTTP `200`.
-- Internal DNS resolved `REDACTED_CUSTOM_DOMAIN_016` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
+- Internal DNS resolved `<YOUR_NETBIRD_DOMAIN>` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
 - After the upstream-address refresh, `netbird status` returned both `Management: Connected` and `Signal: Connected`, with the Access-A network still advertised.
 - I removed the temporary live Compose rollback copies after successful validation.
 

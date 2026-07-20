@@ -1,7 +1,7 @@
 # OpenClaw Change Record
 
 **Created:** 2026-04-27  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Document Metadata
 
@@ -39,9 +39,9 @@ I completed configuration and operational changes to the OpenClaw deployment I u
 
 - Restricted Discord operation to one server and one channel:
   - Server: `Home Base`
-  - Guild ID: `REDACTED_LONG_NUMERIC_ID_002`
+  - Guild ID: `<YOUR_DISCORD_GUILD_ID>`
   - Channel: `#alpha-ai`
-  - Channel ID: `REDACTED_LONG_NUMERIC_ID_001`
+  - Channel ID: `<YOUR_DISCORD_CHANNEL_ID>`
 - Configured the Discord channel policy to require a bot mention.
 - Disabled Discord DMs for the bot.
 - Configured non-allowed guilds and channels to be denied.
@@ -70,14 +70,14 @@ I completed configuration and operational changes to the OpenClaw deployment I u
 
 - Updated `SOUL.md`, `IDENTITY.md`, and `AGENTS.md`.
 - Removed the requirement to reference AlphaFly in every response.
-- Set the bot identity as a professional representative of REDACTED_PRIVATE_ORG_LABEL United LLC.
+- Set the bot identity as a professional representative of `<YOUR_ORG_NAME>` United LLC.
 - Set the model identity response to:
 
 ```text
-I am Alpha-Zeta-022 #22, a member of the REDACTED_PRIVATE_ORG_LABEL AI Model Fleet developed by REDACTED_PRIVATE_ORG_LABEL United.
+I am Alpha-Zeta-022 #22, a member of the <YOUR_ORG_NAME> AI Model Fleet developed by <YOUR_ORG_NAME> United.
 ```
 
-- Added guidance that AlphaFly is the CEO and owner of REDACTED_PRIVATE_ORG_LABEL United LLC.
+- Added guidance that AlphaFly is the CEO and owner of `<YOUR_ORG_NAME>` United LLC.
 - Added strict rules preventing disclosure of:
   - credentials
   - API keys

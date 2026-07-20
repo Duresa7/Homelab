@@ -1,7 +1,7 @@
 # Unifi Object-Oriented Networking (OON) Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## What is Object-Oriented Networking?
 
@@ -13,8 +13,8 @@ Because the rules are tied to objects rather than static addresses, they update 
 
 | Policy | Enabled | Target Type | Applies To | Action |
 |---|---|---|---|---|
-| Proton OON | Disabled | Clients | 3 MACs: `REDACTED_MAC_023`, `REDACTED_MAC_001`, `REDACTED_MAC_022` | Route all traffic → ProtonVPN (kill switch on) |
-| PC 1 | Disabled | Client | 1 MAC: `REDACTED_MAC_021` | QoS: prioritize all traffic (always) |
+| Proton OON | Disabled | Clients | 3 MACs: `<YOUR_VPN_CLIENT_MAC_C>`, `<YOUR_VPN_CLIENT_MAC_A>`, `<YOUR_VPN_CLIENT_MAC_B>` | Route all traffic → ProtonVPN (kill switch on) |
+| PC 1 | Disabled | Client | 1 MAC: `<YOUR_MEDIA_HOST_MAC>` | QoS: prioritize all traffic (always) |
 | isolate | Disabled | Network | DMZ (VLAN 30) | Route all traffic → ProtonVPN (kill switch on) |
 | QoS for D | Enabled | Group | D_devices (5 clients) | QoS: prioritize all traffic (always) |
 

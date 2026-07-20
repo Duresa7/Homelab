@@ -1,16 +1,16 @@
 # Network Segmentation TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-I've already built the zones (REDACTED_PRIVATE_ORG_LABEL-Access, REDACTED_PRIVATE_ORG_LABEL-Security, REDACTED_PRIVATE_ORG_LABEL-Cluster), the networks (Access-A/85, Security-A/72, Cluster-Net/71), and the Zone Matrix / firewall policies connecting them. Remaining work is below.
+I've already built the zones (`<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, `<YOUR_ORG_NAME>`-Cluster), the networks (Access-A/85, Security-A/72, Cluster-Net/71), and the Zone Matrix / firewall policies connecting them. Remaining work is below.
 
 ## Access-A Deployment
 
 - [x] Deploy network-access / connectivity tooling onto Access-A: Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 now run on LXC 107 `docker-network`
 - [x] Assign a static IP from the reserved range: `192.168.85.2/24` (DHCP pool starts at `.6`)
 - [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
-- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other REDACTED_PRIVATE_ORG_LABEL-Access-to-External IPv4 traffic
+- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `<YOUR_ORG_NAME>`-Access-to-External IPv4 traffic
 
 The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
@@ -21,7 +21,7 @@ I left the web and NTP destination addresses dynamic because Debian mirrors, con
 - [x] Move the security/monitoring tooling (SIEM, detection, log/metrics tooling) to Security-A
 - [x] Assign static IPs in the 192.168.72.2 – .5 reserved range (DHCP pool starts at .6): `security-01` = `192.168.72.2`, `splunk-siem` = `192.168.72.3`
 - [x] Add narrow inbound firewall policies from every zone that needs to ship logs/metrics in, pointing at the new Security-A IPs (mirror the existing Wazuh-ports pattern)
-- [x] Remove the old rules/references pointing at the previous MGMT-A (REDACTED_PRIVATE_SUBNET) addresses once the migration is confirmed working
+- [x] Remove the old rules/references pointing at the previous MGMT-A (`<YOUR_PREVIOUS_MANAGEMENT_SUBNET>`) addresses once the migration is confirmed working
 
 Completed 2026-07-12. The VM cutovers, replacement firewall paths, Security-A egress policy, Galaxy firewall changes, cleanup, rollback points, and verification are recorded in [Security-A Migration - 2026-07-12](../Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
 
@@ -38,7 +38,7 @@ The three completed follow-ups are recorded in [Security Monitoring Baseline Cle
 
 ## Next Bounded Change: MGMT-A Final Lockdown
 
-I've resolved the allowed-set decision: MGMT-A may be reached from Trusted (VLAN 10), Secure (VLAN 50), the existing WireGuard VPN zone, and future NetBird traffic arriving from REDACTED_PRIVATE_ORG_LABEL-Access through its routing peer. Next I implement and validate the final MGMT-A block policy; I kept it out of the Security-A migration's scope on purpose, and it stays a separate bounded change.
+I've resolved the allowed-set decision: MGMT-A may be reached from Trusted (VLAN 10), Secure (VLAN 50), the existing WireGuard VPN zone, and future NetBird traffic arriving from `<YOUR_ORG_NAME>`-Access through its routing peer. Next I implement and validate the final MGMT-A block policy; I kept it out of the Security-A migration's scope on purpose, and it stays a separate bounded change.
 
 ## Cluster-Net Corosync Link Addition
 

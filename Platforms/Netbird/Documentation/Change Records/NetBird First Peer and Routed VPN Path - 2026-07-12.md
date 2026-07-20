@@ -4,7 +4,7 @@
 **Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-12  
-**Status:** Complete; first peers enrolled, REDACTED_PRIVATE_ORG_LABEL-Access network published through a routing peer, and the VPN path into Access-A validated end to end
+**Status:** Complete; first peers enrolled, `<YOUR_ORG_NAME>`-Access network published through a routing peer, and the VPN path into Access-A validated end to end
 
 ## Scope
 
@@ -19,10 +19,6 @@ This closes the first item of the [network segmentation plan](../../../../Infras
 - No NetBird network route or resource existed; the dashboard's Network Routing section was empty.
 - Access-A (VLAN 85) contained a single host: CT 107 `docker-network` at `192.168.85.2`.
 
-## Public Evidence Boundary
-
-The exact command transcripts for this historical change remain in the local-only scrub quarantine because they weren't cleared for the public tree. I reproduced only commands already retained in the public record or visible in the published captures. The S01 through S15 screenshot identifiers remain unchanged & map directly to the walkthrough steps below.
-
 ## Walkthrough
 
 ### Step 1: Enroll the temporary Debian peer
@@ -33,7 +29,7 @@ The exact command transcripts for this historical change remain in the local-onl
 
 ```sh
 curl -fsSL https://pkgs.netbird.io/install.sh | sh
-netbird up --management-url https://REDACTED_CUSTOM_DOMAIN_016 --setup-key <SETUP_KEY>
+netbird up --management-url https://<YOUR_NETBIRD_DOMAIN> --setup-key <SETUP_KEY>
 ```
 
 **Observed result:** The peer connected as `debian` from VLAN 50 (`192.168.50.173`) with overlay address `100.121.231.114`.
@@ -64,7 +60,7 @@ netbird up --management-url https://REDACTED_CUSTOM_DOMAIN_016 --setup-key <SETU
 
 ```sh
 curl -fsSL https://pkgs.netbird.io/install.sh | sh
-netbird up --management-url https://REDACTED_CUSTOM_DOMAIN_016 --setup-key <SETUP_KEY>
+netbird up --management-url https://<YOUR_NETBIRD_DOMAIN> --setup-key <SETUP_KEY>
 ```
 
 **Observed result:** `docker-network` connected as a Server peer with overlay address `100.121.111.204`.
@@ -107,7 +103,7 @@ ip route get 192.168.85.2
 
 ### Step 6: Create the Access-A network resource
 
-**UI action:** In Network Routing > Networks, I created `REDACTED_PRIVATE_ORG_LABEL-Access` and added resource `Access-a-subnet` with address `192.168.85.0/24`.
+**UI action:** In Network Routing > Networks, I created `<YOUR_ORG_NAME>-Access` and added resource `Access-a-subnet` with address `192.168.85.0/24`.
 
 **Observed result:** The Add Resource dialog accepted the subnet as the network resource.
 
@@ -119,7 +115,7 @@ ip route get 192.168.85.2
 
 ### Step 7: Add the resource description and group
 
-**UI path and action:** In NetBird > Network Routing > Networks > `REDACTED_PRIVATE_ORG_LABEL-Access` > Add Resource > Optional Settings, I set the description to `Access-A zone (VLAN 85)` and assigned resource group `access-a`.
+**UI path and action:** In NetBird > Network Routing > Networks > `<YOUR_ORG_NAME>-Access` > Add Resource > Optional Settings, I set the description to `Access-A zone (VLAN 85)` and assigned resource group `access-a`.
 
 **Observed result:** The resource retained the zone description and group assignment.
 
@@ -131,7 +127,7 @@ ip route get 192.168.85.2
 
 ### Step 8: Create the validation access policy
 
-**UI path and action:** In NetBird > Network Routing > Networks > `REDACTED_PRIVATE_ORG_LABEL-Access` > Access Control > Add Policy, I created `Peers → Access-A (VLAN 85)` with source group `All`, the Access-A resource as destination, all protocols and ports, and the policy enabled.
+**UI path and action:** In NetBird > Network Routing > Networks > `<YOUR_ORG_NAME>-Access` > Access Control > Add Policy, I created `Peers → Access-A (VLAN 85)` with source group `All`, the Access-A resource as destination, all protocols and ports, and the policy enabled.
 
 **Observed result:** NetBird accepted the policy definition.
 
@@ -145,7 +141,7 @@ I kept this policy broad for the validation. Narrowing its source group and port
 
 ### Step 9: Verify the resource policy
 
-**UI path and action:** In NetBird > Network Routing > Networks > `REDACTED_PRIVATE_ORG_LABEL-Access` > Access Control, I reviewed the resource after saving the policy.
+**UI path and action:** In NetBird > Network Routing > Networks > `<YOUR_ORG_NAME>-Access` > Access Control, I reviewed the resource after saving the policy.
 
 **Observed result:** The tab showed the enabled `Peers → Access-A` policy with source group All and protocol/ports ALL.
 
@@ -157,7 +153,7 @@ I kept this policy broad for the validation. Narrowing its source group and port
 
 ### Step 10: Select the routing peer
 
-**UI path and action:** In NetBird > Network Routing > Networks > `REDACTED_PRIVATE_ORG_LABEL-Access` > Routing Peers > Add Routing Peer, I selected `docker-network` (`100.121.111.204`).
+**UI path and action:** In NetBird > Network Routing > Networks > `<YOUR_ORG_NAME>-Access` > Routing Peers > Add Routing Peer, I selected `docker-network` (`100.121.111.204`).
 
 **Observed result:** NetBird accepted CT 107 as the peer that would advertise Access-A.
 
@@ -183,7 +179,7 @@ I kept this policy broad for the validation. Narrowing its source group and port
 
 **UI path and action:** In NetBird > Network Routing > Networks, I reviewed the list after saving the routing peer.
 
-**Observed result:** `REDACTED_PRIVATE_ORG_LABEL-Access` showed one resource, one policy, and one routing peer.
+**Observed result:** `<YOUR_ORG_NAME>-Access` showed one resource, one policy, and one routing peer.
 
 **Verification:** The counts confirmed that every required network object existed before traffic testing.
 
@@ -243,9 +239,9 @@ curl -k -m5 -o /dev/null -w '%{http_code}\n' https://192.168.85.2
 **Command:**
 
 ```sh
-curl -k -m5 --resolve REDACTED_CUSTOM_DOMAIN_016:443:192.168.85.2 \
+curl -k -m5 --resolve <YOUR_NETBIRD_DOMAIN>:443:192.168.85.2 \
   -o /dev/null -w '%{http_code}\n' \
-  https://REDACTED_CUSTOM_DOMAIN_016
+  https://<YOUR_NETBIRD_DOMAIN>
 ```
 
 **Observed result:** The request returned HTTP `200` through the routed NetBird path.
@@ -254,19 +250,19 @@ curl -k -m5 --resolve REDACTED_CUSTOM_DOMAIN_016:443:192.168.85.2 \
 
 **Evidence:**
 
-![On the debian peer: curl with --resolve REDACTED_CUSTOM_DOMAIN_016:443:192.168.85.2 returns HTTP 200 through the tunnel](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S15-Debian-HTTPS-200-Through-Tunnel-2026-07-12.png)
+![On the debian peer: curl with --resolve `<YOUR_NETBIRD_DOMAIN>`:443:192.168.85.2 returns HTTP 200 through the tunnel](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S15-Debian-HTTPS-200-Through-Tunnel-2026-07-12.png)
 
 ## Firewall behavior
 
-No UniFi firewall change was required. The pre-existing zone matrix already permits `Internal → REDACTED_PRIVATE_ORG_LABEL-Access` and `VPN → REDACTED_PRIVATE_ORG_LABEL-Access`.
+No UniFi firewall change was required. The pre-existing zone matrix already permits `Internal → <YOUR_ORG_NAME>-Access` and `VPN → <YOUR_ORG_NAME>-Access`.
 
-Because the routing peer runs with Masquerade enabled, traffic that a remote NetBird peer sends into Access-A is source-NAT'd to the routing peer's own address (`192.168.85.2`) before it reaches another host. UniFi therefore sees the traffic originate **inside** the REDACTED_PRIVATE_ORG_LABEL-Access zone. The REDACTED_PRIVATE_ORG_LABEL-Access zone rules apply; the `Allow VPN to REDACTED_PRIVATE_ORG_LABEL-Access` policy covers UniFi-native remote-user-VPN clients, a separate path. No gateway rule change was needed.
+Because the routing peer runs with Masquerade enabled, traffic that a remote NetBird peer sends into Access-A is source-NAT'd to the routing peer's own address (`192.168.85.2`) before it reaches another host. UniFi therefore sees the traffic originate **inside** the `<YOUR_ORG_NAME>`-Access zone. The `<YOUR_ORG_NAME>`-Access zone rules apply; the `Allow VPN to <YOUR_ORG_NAME>-Access` policy covers UniFi-native remote-user-VPN clients, a separate path. No gateway rule change was needed.
 
 ## Scope and limitations
 
 - Access-A currently holds only CT 107, so the routed-path proof reaches the routing peer itself. Forwarding to a *second* Access-A host (true third-party forwarding) wasn't exercised because no such host exists yet; `ip_forward=1` confirms the peer is forwarding-capable when I add one.
 - The `debian` peer was on VLAN 50, which is in the `Internal` zone and can reach Access-A directly over the LAN. I therefore proved the overlay path by the routing-table change (`dev wt0`) and the overlay-only ping, not merely by reachability of `192.168.85.2`.
-- The `debian` peer was a temporary Hyper-V VM I used only for this validation and have since removed; it was never a permanent member of the network. The durable artifacts are the REDACTED_PRIVATE_ORG_LABEL-Access network and the `docker-network` routing peer.
+- The `debian` peer was a temporary Hyper-V VM I used only for this validation and have since removed; it was never a permanent member of the network. The durable artifacts are the `<YOUR_ORG_NAME>`-Access network and the `docker-network` routing peer.
 
 ## Completed follow-on records
 

@@ -1,11 +1,11 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Scope and Access
 
-I operate the LXC through the SSH Manager target `red_server`. The live Compose project is `/opt/media-stack` inside CT 842. I never print, copy, or commit the live `.env`, application XML files containing API keys, WireGuard configuration, or qBittorrent credentials.
+I operate the LXC through the SSH Manager target `red_server`. The live Compose project is `/opt/media-stack` inside CT 842, & Compose loads deployment-specific values from `/opt/media-stack/.env`.
 
 Enter a guest shell when interactive work is necessary:
 
@@ -82,7 +82,7 @@ If the port is stale after a reconnect, recreate Gluetun and qBittorrent togethe
 All images intentionally track `latest`. I treat every pull as a bounded change:
 
 1. Record current image IDs and application versions without capturing secrets.
-2. Confirm protected backups exist for `/opt/media-stack/config` and `/data`.
+2. Confirm current backups exist for `/opt/media-stack/config` and `/data`.
 3. Pull and recreate the stack.
 4. Verify container health, Jellyfin hardware acceleration, Proton exit, forwarded-port synchronization, management UIs, and Arr download-client tests.
 
@@ -107,20 +107,20 @@ Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and
 
 ## Backup and Restore
 
-Back up these paths through the approved protected backup mechanism:
+Back up these paths before changing the stack:
 
 - `/opt/media-stack/compose.yml`
 - `/opt/media-stack/.env`
 - `/opt/media-stack/config`
 - `/data`
 
-The `.env` and application configuration contain secrets. They must not enter Git, screenshots, ordinary evidence transcripts, or unencrypted general-purpose storage.
+Restore `.env` & application configuration with their original ownership and modes.
 
 Restore the files with their original ownership and modes, validate with `docker compose --profile vpn config --quiet`, and start the complete profile. Verify the kill switch and provider-side port before enabling acquisition.
 
-## Credential Recovery
+## qBittorrent Login
 
-Retrieve the qBittorrent login from approved secret storage. I never reset the credential by placing plaintext in Compose, shell arguments, documentation, or evidence.
+Use `<YOUR_QBITTORRENT_USERNAME>` & `<YOUR_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
 
 ## Escalation
 

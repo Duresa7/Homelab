@@ -23,7 +23,7 @@ Semaphore is not required. I can run every operation directly with `ansible-play
 |---|---|
 | `Source/ssh-key-automation/` | Versioned inventory, identity definitions, playbooks, tests, and Semaphore manifest |
 | `Configuration/semaphore.service` | Deployed systemd unit for Semaphore startup and recovery |
-| `Scripts/` | Native Python backup and secret-safe verification utilities |
+| `Scripts/` | Native Python backup and state-verification utilities |
 | `Documentation/Architecture.md` | How the system fits together |
 | `Documentation/Runbook.md` | Commands for audits, onboarding, and future rotations |
 | `Documentation/Troubleshooting-Log.md` | Chronological operational problems and fixes |

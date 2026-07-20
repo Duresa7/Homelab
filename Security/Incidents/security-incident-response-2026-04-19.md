@@ -1,7 +1,7 @@
 # Security Incident Response Record
 
 **Created:** 2026-04-19  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Document ID:** SIR-2026-04-19-01
 **Classification:** Internal / Confidential
@@ -13,7 +13,7 @@
 
 ## 1. Executive Summary
 
-In response to the publicly disclosed Vercel security incident of April 2026, I performed a credential rotation and access-control review across the hosting, backend, and identity components of the REDACTED_PRIVATE_ORG_LABEL application stack. I rotated all primary access credentials that were stored in or reachable from the affected platform, disabled legacy credentials, and verified related configuration. I observed no evidence of unauthorized access to this project during the review. I have identified and scoped residual follow-up items below.
+In response to the publicly disclosed Vercel security incident of April 2026, I performed a credential rotation and access-control review across the hosting, backend, and identity components of the `<YOUR_ORG_NAME>` application stack. I rotated all primary access credentials that were stored in or reachable from the affected platform, disabled legacy credentials, and verified related configuration. I observed no evidence of unauthorized access to this project during the review. I have identified and scoped residual follow-up items below.
 
 ---
 
@@ -35,8 +35,8 @@ In response to the publicly disclosed Vercel security incident of April 2026, I 
 ## 3. Scope of Review
 
 ### In-scope systems
-- **Hosting platform:** Vercel (primary deployment of the REDACTED_PRIVATE_ORG_LABEL web application)
-- **Backend-as-a-service:** Supabase (project `REDACTED_SUPABASE_PROJECT_REF`, organization `REDACTED_SUPABASE_ORGANIZATION_ID`)
+- **Hosting platform:** Vercel (primary deployment of the `<YOUR_ORG_NAME>` web application)
+- **Backend-as-a-service:** Supabase (project `<YOUR_SUPABASE_PROJECT_REF>`, organization `<YOUR_SUPABASE_ORGANIZATION_ID>`)
 - **Source control:** GitHub (auto-deploy integration to Vercel)
 - **Edge Functions:** Supabase `delete-account` function and its configured secrets
 
@@ -87,7 +87,7 @@ All actions performed on 2026-04-19.
 
 ### 5.5 GitHub integration refresh
 - I uninstalled the Vercel GitHub App from the connected GitHub account.
-- I reinstalled the Vercel GitHub App, restricting repository access to the REDACTED_PRIVATE_ORG_LABEL project repository only.
+- I reinstalled the Vercel GitHub App, restricting repository access to the `<YOUR_ORG_NAME>` project repository only.
 - I triggered a test deployment to confirm the auto-deploy pipeline was restored.
 
 ### 5.6 Code verification
@@ -123,7 +123,7 @@ All actions performed on 2026-04-19.
 
 | ID | Item | Priority | Notes |
 |---|---|---|---|
-| F-1 | Rotate `SUPABASE_ACCESS_TOKEN` (Supabase Personal Access Token, local `.env` only) | Medium | Not exposed via Vercel; rotating as hygiene. Generated via Supabase → Account → Access Tokens. |
+| F-1 | Rotate `SUPABASE_ACCESS_TOKEN` | Medium | Not present in the affected Vercel project; precautionary rotation remains open. |
 | F-2 | Mark secret Vercel environment variables as "Sensitive" | Medium | For any future secret environment variable added to Vercel, enable the Sensitive flag to prevent read-back after save. |
 | F-3 | Establish periodic rotation schedule | Low | Calendar reminder for annual rotation of Supabase keys and quarterly review of third-party integrations. |
 | F-4 | Evaluate rotation of Google OAuth client secret | Low | Rotate only if evidence of Supabase-side exposure emerges. Not indicated by the current incident. |
@@ -144,6 +144,5 @@ All actions performed on 2026-04-19.
 
 | Name | Role | Performed | Date |
 |---|---|---|---|
-| REDACTED_NAME_001 | Project Owner | Actions §5, verification §6 | 2026-04-19 |
+| Duresa7 | Project Owner | Actions §5, verification §6 | 2026-04-19 |
 
-I publish this record in redacted form, with identifiers replaced by stable placeholders.

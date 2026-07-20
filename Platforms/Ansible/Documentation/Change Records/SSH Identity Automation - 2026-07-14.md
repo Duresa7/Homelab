@@ -37,7 +37,7 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, and Termix. I re
 
 ## Actions and Observed Results
 
-1. Inventoried the controller, Ansible collections, legacy project, Semaphore process, SQLite configuration, project objects, and existing credential metadata without exposing secrets.
+1. Inventoried the controller, Ansible collections, legacy project, Semaphore process, SQLite configuration, project objects, & existing key records.
 2. Created recovery copies of the legacy Ansible directory and Semaphore project export.
 3. Built `/home/ansible/ssh-key-automation` with a YAML inventory, four identity files, a deliberately invalid new-device template, five playbooks, POSIX and Windows task implementations, a validator, and an 18-template Semaphore manifest.
 4. Added allowlist validation and non-selectable unknown targets. The retired `nas-family` name is rejected by the validator and absent from inventory.

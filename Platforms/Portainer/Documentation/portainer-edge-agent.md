@@ -1,14 +1,14 @@
 # Portainer Edge Agent Setup
 
 **Created:** 2026-04-14  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ---
 
 | Field | Details |
 |-------|---------|
-| **Author** | REDACTED_NAME_001 (REDACTED_USER_001) REDACTED_NAME_003 |
-| **Organization** | REDACTED_PRIVATE_ORG_LABEL United |
+| **Author** | Duresa7 (`<YOUR_ADMIN_USERNAME>`) `<YOUR_RETIRED_NODE_NAME>` |
+| **Organization** | `<YOUR_ORG_NAME>` United |
 | **Date** | 2026-04-14 |
 | **Version** | 1.0 |
 | **Status** | Completed |
@@ -22,14 +22,14 @@
 | Host | IP | VLAN | Role |
 |------|----|------|------|
 | docker-main | 192.168.40.35 | VLAN 40 (Personal-A) | Portainer Server |
-| alpha-prod-01 | 192.168.80.118 | VLAN 80 (REDACTED_PRIVATE_ORG_LABEL-Servers) | Edge Agent |
+| alpha-prod-01 | 192.168.80.118 | VLAN 80 (`<YOUR_ORG_NAME>`-Servers) | Edge Agent |
 
 ---
 
 ## Network Diagram
 
 ```
-VLAN 40 (Personal-A)          VLAN 80 (REDACTED_PRIVATE_ORG_LABEL-Servers)
+VLAN 40 (Personal-A)          VLAN 80 (<YOUR_ORG_NAME>-Servers)
 ┌─────────────────────┐        ┌──────────────────────┐
 │     docker-main     │        │    alpha-prod-01      │
 │   192.168.40.35     │        │   192.168.80.118      │
@@ -107,9 +107,9 @@ EDGE_KEY=<generated-per-vm>
 
 | Field | Value |
 |-------|-------|
-| Name | Allow REDACTED_PRIVATE_ORG_LABEL-Servers to Portainer Edge |
-| Description | Allow REDACTED_PRIVATE_ORG_LABEL-Servers VMs to reach Portainer Edge tunnel and API on docker-main |
-| Source Zone | REDACTED_PRIVATE_ORG_LABEL-Servers |
+| Name | Allow `<YOUR_ORG_NAME>`-Servers to Portainer Edge |
+| Description | Allow `<YOUR_ORG_NAME>`-Servers VMs to reach Portainer Edge tunnel and API on docker-main |
+| Source Zone | `<YOUR_ORG_NAME>`-Servers |
 | Source | Any |
 | Destination Zone | Internal |
 | Destination IP | 192.168.40.35 (docker-main) |

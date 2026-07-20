@@ -1,7 +1,7 @@
 ﻿# Security Monitoring Baseline Cleanup
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-13  
 **Status:** Complete  
@@ -27,7 +27,6 @@ I closed the monitoring gaps I had deliberately deferred from the Security-A mig
 - I corrected the local `security-01` target to `192.168.72.2` and removed `app-01` and `supabase-01` rather than presenting known-unavailable targets as monitoring coverage.
 - I removed only the two actual obsolete Wazuh registrations. I did not fabricate records for `supabase-01` or `alpha-prod-01`, which had no agent installed.
 - I prepared `app-01` and `edge-01` for fresh enrollment: retained their packages, repointed the manager address, cleared stale keys, and stopped/disabled the services. The enrollment itself was a separate follow-up I performed later.
-- I used protected mode-0600 credential staging through 1Password for sudo operations. Secret values were never printed or retained in repository evidence.
 
 ## Actions and Observed Results
 
@@ -90,12 +89,12 @@ My first host-path replacement plus SIGHUP did not change the running target set
 
 ## Rollback Points
 
-- Prometheus: `/home/REDACTED_USER_001/monitoring/prometheus.yml.bak.security-monitoring-cleanup-20260713` on `security-01`.
+- Prometheus: `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.security-monitoring-cleanup-20260713` on `security-01`.
 - Wazuh manager keys: `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713` on `security-01`, mode 0600.
 - Endpoint configs: `/var/ossec/etc/ossec.conf.bak.security-monitoring-cleanup-20260713` on `app-01` and `edge-01`, mode 0600.
 - The newly installed exporter packages can be removed with APT if rollback is required; no Proxmox networking or firewall state changed.
 
-The Wazuh key rollback contains sensitive enrollment material and must remain root-readable only. It is not stored in this repository.
+The Wazuh manager backup preserves the pre-change registration state. Restoring it would also restore the retired identities.
 
 ## Step Summary
 

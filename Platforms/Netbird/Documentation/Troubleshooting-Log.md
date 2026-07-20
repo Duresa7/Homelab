@@ -1,7 +1,7 @@
 # NetBird Troubleshooting Log
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 This is my chronological troubleshooting record for the combined `docker-network` access-stack deployment. Configuration stays owned by its platform or infrastructure system; I keep the combined deployment narrative here.
 
@@ -15,11 +15,9 @@ This is my chronological troubleshooting record for the combined `docker-network
 | 4 | S05A | UniFi rejected the first web-egress policy create | Set `create_allow_respond` to `false` and reapplied | Resolved |
 | 5 | S05A | Handcrafted NTP probe returned no conclusive response | Installed `ntpsec-ntpdig` and verified Cloudflare NTP | Resolved |
 | 6 | S07 | NPM Advanced gear dismissed the proxy-host modal | Saved the basic host first, then applied Advanced configuration | Resolved |
-| 7 | S07 | 1Password CLI session was signed out during token storage | Reauthenticated and stored the zone-scoped token in REDACTED_1PASSWORD_VAULT_002 | Resolved |
-| 8 | S07 | One-time token required secure recovery and staging cleanup | Used ephemeral staging, stored the item, and cleared the staging path | Resolved |
-| 9 | S09 | First post-restart screenshot was black | Re-rendered the authenticated dashboard and recaptured the step | Resolved |
-| 10 | Audit | Early step records contained summaries without every automation envelope | Recovered secret-free source records and documented upstream limits | Resolved with exceptions noted |
-| 11 | Operational follow-up | Routing peer Management channel returned HTTP `502` after sequential container recreation | Reloaded validated NPM configuration to refresh the changed NetBird upstream address | Resolved |
+| 7 | S09 | First post-restart screenshot was black | Re-rendered the authenticated dashboard and recaptured the step | Resolved |
+| 8 | Audit | Early step records contained summaries without every automation envelope | Recovered source records and documented upstream limits | Resolved with exceptions noted |
+| 9 | Operational follow-up | Routing peer Management channel returned HTTP `502` after sequential container recreation | Reloaded validated NPM configuration to refresh the changed NetBird upstream address | Resolved |
 
 ## 1. `pvestatd` Was Failed on `blue-server`
 
@@ -78,7 +76,7 @@ api.err.FirewallPolicyCreateRespondTrafficPolicyNotAllowed
 Firewall policy create respond traffic not allowed
 ```
 
-**Failed attempt:** My initial payload used the tool's default `create_allow_respond: true` for an REDACTED_PRIVATE_ORG_LABEL-Access-to-External policy. UniFi did not create the rule.
+**Failed attempt:** My initial payload used the tool's default `create_allow_respond: true` for an `<YOUR_ORG_NAME>`-Access-to-External policy. UniFi did not create the rule.
 
 **Hypothesis and test:** Respond-traffic generation is not allowed for this policy direction. I previewed the same payload again with `create_allow_respond: false`.
 
@@ -86,13 +84,13 @@ Firewall policy create respond traffic not allowed
 
 1. `Allow docker-network Web Egress`: TCP 80 and 443 from `192.168.85.2`.
 2. `Allow docker-network NTP Egress`: UDP 123 from `192.168.85.2`.
-3. `Block REDACTED_PRIVATE_ORG_LABEL-Access Other External Egress`: remaining IPv4 traffic.
+3. `Block <YOUR_ORG_NAME>-Access Other External Egress`: remaining IPv4 traffic.
 
 All three policies have logging enabled.
 
-**Verification:** UniFi returned the three policies at indexes 10000, 10001, and 10002. HTTP returned `200`, the Docker Registry HTTPS endpoint returned its expected unauthenticated `401`, and external TCP DNS to `REDACTED_IPV4_001:53` timed out as intended. The final ordered rules show the two Allow policies above the catch-all Block:
+**Verification:** UniFi returned the three policies at indexes 10000, 10001, and 10002. HTTP returned `200`, the Docker Registry HTTPS endpoint returned its expected unauthenticated `401`, and external TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as intended. The final ordered rules show the two Allow policies above the catch-all Block:
 
-![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block AlphaSec-Access All from the REDACTED_PRIVATE_ORG_LABEL-Access zone to External](../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
+![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block AlphaSec-Access All from the `<YOUR_ORG_NAME>`-Access zone to External](../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 
 ## 5. Handcrafted NTP Probe Was Inconclusive
 
@@ -105,7 +103,7 @@ All three policies have logging enabled.
 
 **Corrective action:** I installed `ntpsec-ntpdig` and its `python3-ntp` dependency from Debian. The purpose-built client queried `time.cloudflare.com` over IPv4 with a five-second timeout.
 
-**Verification:** `ntpdig` exited `0` and returned a valid response from `REDACTED_IPV4_012`, stratum 3, with measured delay. UDP 123 egress is therefore verified.
+**Verification:** `ntpdig` exited `0` and returned a valid response from `<YOUR_NTP_SERVER_IP>`, stratum 3, with measured delay. UDP 123 egress is therefore verified.
 
 ## 6. NPM Advanced Gear Dismissed the Proxy-Host Modal
 
@@ -123,39 +121,7 @@ All three policies have logging enabled.
 
 **Verification:** The proxy host reports Online, `nginx -t` succeeds, and a Host-header request through NPM returns the NetBird dashboard with HTTP `200`. The original modal issue is resolved. Later S07 work issued and assigned the Let's Encrypt certificate, enabled Force SSL and HTTP/2, and validated the HTTPS endpoint.
 
-## 7. 1Password CLI Session Was Signed Out During Token Storage
-
-**Date:** 2026-07-11  
-**Step:** S07  
-**Owner:** Credential storage
-
-**Symptom and exact error:** The 1Password CLI was no longer authenticated when I was ready to store the Cloudflare DNS token. `op whoami --format json` returned:
-
-```text
-[ERROR] 2026/07/11 02:15:05 account is not signed in
-```
-
-**Investigation:** I stopped the attempt before writing an incomplete item or printing the token. The non-secret `whoami` result confirmed that I needed to reauthenticate.
-
-**Corrective action:** I ran `op signin --account my.1password.com`, which exited `0`. I then created an API Credential item for the zone-scoped token in the REDACTED_1PASSWORD_VAULT_002 vault as `REDACTED_1PASSWORD_ITEM_TITLE`; I supplied the token value without placing it in a visible command, transcript, screenshot, or repository file.
-
-**Verification:** Non-secret item metadata confirmed that `REDACTED_1PASSWORD_ITEM_TITLE` exists in the REDACTED_1PASSWORD_VAULT_002 vault. Nginx Proxy Manager used the credential to complete DNS-01 issuance for the wildcard/apex certificate.
-
-## 8. Cloudflare Token Recovery and Staging Cleanup
-
-**Date:** 2026-07-11  
-**Step:** S07  
-**Owner:** Credential handling
-
-**Symptom:** The token was already present in Nginx Proxy Manager's local SQLite metadata, but the interrupted 1Password step required me to move it into protected storage without printing it or copying it into repository content or retained evidence.
-
-**Investigation:** I read the 53-byte value from Nginx Proxy Manager's local SQLite metadata and staged it in a mode-`0600` task temporary file without printing it. SSH Manager transferred it to a matching mode-`0600` local task temporary file.
-
-**Corrective action:** I piped the local staging file to `op item create --vault REDACTED_1PASSWORD_VAULT_002 - --format json`, creating `REDACTED_1PASSWORD_ITEM_TITLE`. I then shredded and removed the remote and local staging files. The live Nginx Proxy Manager credential remained outside Git as application data.
-
-**Verification:** Non-secret metadata confirmed the 1Password item, and follow-up checks verified that both staging paths were absent. Certificate issuance succeeded, and my retained documentation, screenshots, and repository configuration contain only the token's non-secret name and scope.
-
-## 9. First S09 Screenshot Was Black
+## 7. First S09 Screenshot Was Black
 
 **Date:** 2026-07-11  
 **Step:** S09
@@ -168,7 +134,7 @@ All three policies have logging enabled.
 
 **Verification:** The recaptured S09 screenshot shows the authenticated, healthy NetBird dashboard after both Compose projects restarted. Independent post-restart checks showed Nginx Proxy Manager healthy, both NetBird containers running, `nginx -t` successful, and HTTPS returning `200`.
 
-## 10. Pre-Commit Audit Found Summary-Only Early Evidence
+## 8. Pre-Commit Audit Found Summary-Only Early Evidence
 
 **Date:** 2026-07-11  
 **Steps:** S01, S03, S04, S05, S05A, S06, and S08
@@ -181,7 +147,7 @@ All three policies have logging enabled.
 
 **Verification:** All recovered files parse as JSON, every reference from the affected transcripts resolves, and secret-pattern checks remain clear. S04's truncated wrapper output is supplemented by its separately retained complete raw install log. S03, S05, and S08 preserve their exact upstream truncation markers plus complete exit results and independent post-change verification.
 
-## 11. NPM Retained a Stale NetBird Upstream Address After Recreation
+## 9. NPM Retained a Stale NetBird Upstream Address After Recreation
 
 **Date:** 2026-07-12  
 **Step:** Operational follow-up / bounded logging

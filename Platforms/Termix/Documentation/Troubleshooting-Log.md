@@ -1,7 +1,7 @@
 # Termix Troubleshooting Log
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 ## Quick Index
 
@@ -47,14 +47,14 @@ See [Termix SSH Host Onboarding - 2026-07-14](Change%20Records/Termix%20SSH%20Ho
 
 **Date:** 2026-07-13  
 **Target:** `docker-main`, container `termix`  
-**Impact:** The local user `REDACTED_USER_001` could initiate password recovery, but the six-digit code was unavailable through either location named by the application. The service otherwise remained healthy.
+**Impact:** The local user `<YOUR_ADMIN_USERNAME>` could initiate password recovery, but the six-digit code was unavailable through either location named by the application. The service otherwise remained healthy.
 
 ### Symptom
 
 Termix logged the successful reset request without the value:
 
 ```text
-[11:27:57 PM] [INFO] Password reset code generated for user REDACTED_USER_001 (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
+[11:27:57 PM] [INFO] Password reset code generated for user <YOUR_ADMIN_USERNAME> (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
 ```
 
 The API response also instructed the user to check Docker logs for a code that was not present.
@@ -65,12 +65,12 @@ I tested these hypotheses in order:
 
 | Rank | Hypothesis | Test | Result |
 |---:|---|---|---|
-| 1 | The deployed logger template never includes the generated value | Inspected the compiled reset route and ran the same secret-safe assertion twice against the observed event | Confirmed; both assertions reported `RED:code-absent` |
+| 1 | The deployed logger template never includes the generated value | Inspected the compiled reset route and ran the same static assertion twice against the observed event | Confirmed; both assertions reported `RED:code-absent` |
 | 2 | The admin UI provides the value instead | Searched the deployed `AdminSettings` asset and backend settings routes | Ruled out; no reset-code field or lookup exists in the admin bundle, and the settings routes are feature-specific |
 | 3 | The value failed to persist | Decrypted a separate in-memory copy of the persisted encrypted SQLite file and queried only for row existence | The persisted file contained no reset row; the route wrote to the live in-memory database without calling the save trigger |
 | 4 | Browser cache served an old frontend | Compared the deployed package and image with the registry's current manifest and upstream release source | Not causal to the missing log value; the backend itself was old and defective |
 
-The deployed compiled route creates `resetCode`, inserts it into `settings`, and then logs only the username and expiry. Because the insert completed before the log line, the reset row existed in the live process. The encrypted database file on disk had last been written on 2026-07-07 and did not contain `reset_code_REDACTED_USER_001`; that is why an offline database check could not recover it. Reset codes are short-lived process state in this path.
+The deployed compiled route creates `resetCode`, inserts it into `settings`, and then logs only the username and expiry. Because the insert completed before the log line, the reset row existed in the live process. The encrypted database file on disk had last been written on 2026-07-07 and did not contain `reset_code_<YOUR_ADMIN_USERNAME>`; that is why an offline database check could not recover it. Reset codes are short-lived process state in this path.
 
 The `AdminSettings` bundle contained one general password-reset status reference but zero `reset_code_`, `reset code`, or `resetCode` references. The only backend routes with `settings` in their path were the terminal-session and Guacamole feature settings; no generic admin settings-table reader was exposed.
 

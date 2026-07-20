@@ -1,9 +1,9 @@
 # TeamSpeak Service Incident Report
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
-**REDACTED_PRIVATE_ORG_LABEL United - Internal IT / Cybersecurity Operations**
+**`<YOUR_ORG_NAME>` United - Internal IT / Cybersecurity Operations**
 
 ---
 
@@ -15,13 +15,13 @@
 | Document Classification | Internal |
 | Report Date | 2026-04-24 |
 | Report Timezone | America/New_York |
-| Environment | REDACTED_PRIVATE_ORG_LABEL United Production |
+| Environment | `<YOUR_ORG_NAME>` United Production |
 | Service | TeamSpeak 3 Voice Services |
 | Primary Host | alpha-prod-01 |
 | Host IP | 192.168.80.118 |
 | VLAN | SERVERS-A (80) |
-| Report Owner | REDACTED_USER_001 REDACTED_NAME_003 / REDACTED_USER_001 |
-| Organization | REDACTED_PRIVATE_ORG_LABEL United |
+| Report Owner | `<YOUR_ADMIN_USERNAME>` `<YOUR_RETIRED_NODE_NAME>` / `<YOUR_ADMIN_USERNAME>` |
+| Organization | `<YOUR_ORG_NAME>` United |
 | Status | Resolved / Monitoring |
 | Severity | SEV-3 - Service Degradation |
 
@@ -29,14 +29,14 @@
 
 ## Executive Summary
 
-On 2026-04-24, REDACTED_PRIVATE_ORG_LABEL United observed intermittent TeamSpeak client connection
-failures against the community TeamSpeak endpoint `REDACTED_CUSTOM_DOMAIN_022`. I began
+On 2026-04-24, `<YOUR_ORG_NAME>` United observed intermittent TeamSpeak client connection
+failures against the community TeamSpeak endpoint `<YOUR_TEAMSPEAK_ONE_DOMAIN>`. I began
 triage with the service layer: the TeamSpeak server process, Docker containers,
 and Playit tunnel were all online. The connection fragility for end users and
 administrative tooling traced instead to DNS and management-plane configuration.
 
 I identified the primary issue as a non-compliant SRV DNS chain in Cloudflare.
-The TeamSpeak SRV record pointed to `REDACTED_CUSTOM_DOMAIN_022`, which was
+The TeamSpeak SRV record pointed to `<YOUR_TEAMSPEAK_ONE_DOMAIN>`, which was
 itself a CNAME. SRV targets should resolve directly to the service hostname, not
 to an alias. Some clients and resolvers tolerate this behavior, while others can
 fail resolution or connection setup.
@@ -74,9 +74,9 @@ ServerQuery allowlist.
 | ts-valorant-02 | TeamSpeak 3 container | Online |
 | playit-agent | Shared Playit tunnel agent | Online |
 | ts3-manager | Web-based TeamSpeak administration UI | Online after restart |
-| REDACTED_CUSTOM_DOMAIN_001 | Cloudflare-managed DNS zone | Active |
-| REDACTED_CUSTOM_DOMAIN_022 | Community connection endpoint | Active |
-| REDACTED_CUSTOM_DOMAIN_023 | Community connection endpoint | Active |
+| `<YOUR_BASE_DOMAIN>` | Cloudflare-managed DNS zone | Active |
+| `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | Community connection endpoint | Active |
+| `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | Community connection endpoint | Active |
 
 ---
 
@@ -87,9 +87,9 @@ ServerQuery allowlist.
 Previous DNS behavior:
 
 ```text
-_ts3._udp.REDACTED_CUSTOM_DOMAIN_022
-  -> REDACTED_CUSTOM_DOMAIN_022:6255
-  -> CNAME REDACTED_CUSTOM_DOMAIN_009
+_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
+  -> <YOUR_TEAMSPEAK_ONE_DOMAIN>:6255
+  -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
 This introduced resolver/client compatibility risk because the SRV target was an
@@ -98,17 +98,17 @@ alias. I corrected the record to point directly at the Playit hostname.
 Current DNS behavior:
 
 ```text
-_ts3._udp.REDACTED_CUSTOM_DOMAIN_022
-  -> REDACTED_CUSTOM_DOMAIN_009:6255
+_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
+  -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
 
-REDACTED_CUSTOM_DOMAIN_022
-  -> CNAME REDACTED_CUSTOM_DOMAIN_009
+<YOUR_TEAMSPEAK_ONE_DOMAIN>
+  -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
 End users still connect with:
 
 ```text
-REDACTED_CUSTOM_DOMAIN_022
+<YOUR_TEAMSPEAK_ONE_DOMAIN>
 ```
 
 ### Finding 2 - TS3 Manager Triggered ServerQuery Flood Protection
@@ -147,7 +147,7 @@ TS3 Manager must use the LAN ServerQuery endpoint:
 It should not use:
 
 ```text
-REDACTED_CUSTOM_DOMAIN_022
+<YOUR_TEAMSPEAK_ONE_DOMAIN>
 ```
 
 Playit forwards the public UDP voice service. It does not expose TeamSpeak
@@ -193,7 +193,7 @@ I checked the following and ruled each out as the primary cause:
 |--------|--------|-------|
 | Verified Docker service state | Complete | `ts-valorant-01`, `playit-agent`, and `ts3-manager` were checked. |
 | Verified TeamSpeak virtual server state | Complete | Virtual server reported `online`. |
-| Corrected Cloudflare SRV target | Complete | SRV now targets `REDACTED_CUSTOM_DOMAIN_009:6255`. |
+| Corrected Cloudflare SRV target | Complete | SRV now targets `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255`. |
 | Confirmed DNS propagation | Complete | Public resolvers returned corrected SRV target. |
 | Added TS3 Manager Docker gateway to ServerQuery allowlist | Complete | Added `172.18.0.1`. |
 | Confirmed allowlist reload | Complete | TeamSpeak logged updated allowlist with `172.18.0.1/32`. |
@@ -209,10 +209,10 @@ I checked the following and ruled each out as the primary cause:
 
 | Type | Name | Target | Port | Proxy |
 |------|------|--------|------|-------|
-| CNAME | ts01 | REDACTED_CUSTOM_DOMAIN_009 | N/A | DNS only |
-| SRV | _ts3._udp.ts01 | REDACTED_CUSTOM_DOMAIN_009 | 6255 | DNS only |
-| CNAME | ts02 | REDACTED_CUSTOM_DOMAIN_015 | N/A | DNS only |
-| SRV | _ts3._udp.ts02 | REDACTED_CUSTOM_DOMAIN_015 | 53810 | DNS only |
+| CNAME | ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | N/A | DNS only |
+| SRV | _ts3._udp.ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
+| CNAME | ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | N/A | DNS only |
+| SRV | _ts3._udp.ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
 
 ### Runtime Services
 
@@ -268,7 +268,7 @@ Effective allowed ServerQuery sources for `ts-valorant-02`:
 Observed state:
 
 ```text
-virtualserver_name=REDACTED_PRIVATE_ORG_LABEL x LYON
+virtualserver_name=<YOUR_ORG_NAME> x LYON
 virtualserver_status=online
 virtualserver_port=9987
 virtualserver_maxclients=32
@@ -281,7 +281,7 @@ virtualserver_weblist_enabled=0
 Observed state:
 
 ```text
-virtualserver_name=REDACTED_PRIVATE_ORG_LABEL United - Valorant Community
+virtualserver_name=<YOUR_ORG_NAME> United - Valorant Community
 virtualserver_status=online
 virtualserver_port=9987
 virtualserver_maxclients=32
@@ -305,13 +305,13 @@ tunnel running, 2 tunnels registered
 Observed SRV state:
 
 ```text
-_ts3._udp.REDACTED_CUSTOM_DOMAIN_022
-NameTarget: REDACTED_CUSTOM_DOMAIN_009
+_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
+NameTarget: <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 Port: 6255
 TTL: 300
 
-_ts3._udp.REDACTED_CUSTOM_DOMAIN_023
-NameTarget: REDACTED_CUSTOM_DOMAIN_015
+_ts3._udp.<YOUR_TEAMSPEAK_TWO_DOMAIN>
+NameTarget: <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
 Port: 53810
 TTL: 300
 ```
@@ -361,5 +361,5 @@ decoupled Playit into a shared standalone compose project, and updated the
 deployment documentation to reflect the known-good state.
 
 I am keeping the incident in monitoring status until external users confirm
-successful connection through `REDACTED_CUSTOM_DOMAIN_022` and
-`REDACTED_CUSTOM_DOMAIN_023`.
+successful connection through `<YOUR_TEAMSPEAK_ONE_DOMAIN>` and
+`<YOUR_TEAMSPEAK_TWO_DOMAIN>`.

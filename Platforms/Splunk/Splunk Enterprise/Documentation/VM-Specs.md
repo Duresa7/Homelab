@@ -1,7 +1,7 @@
 # Splunk SIEM: VM Specifications
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **VM name:** `splunk-siem`
 **VMID:** 109
@@ -50,9 +50,9 @@
 | Interface (Proxmox) | `net0` → virtio | |
 | Interface (guest) | `ens18` | Red Hat Virtio network device |
 | Bridge | `vmbr0` | |
-| VLAN tag | **72** (Security-A / REDACTED_PRIVATE_ORG_LABEL-Security) | Dedicated security and monitoring tier |
+| VLAN tag | **72** (Security-A / `<YOUR_ORG_NAME>`-Security) | Dedicated security and monitoring tier |
 | Subnet | 192.168.72.0/24 | Static workload range `.2`–`.5`; DHCP pool starts at `.6` |
-| MAC address | `REDACTED_MAC_016` | |
+| MAC address | `<YOUR_SPLUNK_VM_MAC>` | |
 | IP address | 192.168.72.3/24 | Static NetworkManager profile |
 | Default route | 192.168.72.1 | |
 | DNS | 192.168.72.1 | |

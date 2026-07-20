@@ -1,7 +1,7 @@
 # Media Stack Deployment
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
@@ -22,7 +22,7 @@ No dedicated media guest or platform record existed. I supplied an approved Prot
 3. **Route only qBittorrent through Proton.** Indexer and media services keep ordinary LAN egress, while qBittorrent shares Gluetun's network namespace and kill switch.
 4. **Enable Proton NAT-PMP, not router UPnP.** Proton assigns a port on the VPN endpoint. I keep qBittorrent's router-level UPnP/NAT-PMP disabled, and no UniFi inbound mapping is needed.
 5. **Track `latest` images.** I track `latest` intentionally; it is my preference and it creates an explicit requirement for bounded, verified updates.
-6. **Keep secrets outside Git.** The WireGuard key is present only in the protected live environment and my source file. The qBittorrent credential is stored in approved secret storage.
+6. **Keep deployment values in `.env`.** The reader-editable Compose reference uses placeholders, while the live project loads its WireGuard and qBittorrent values from `/opt/media-stack/.env`.
 
 ## Resulting Configuration
 
@@ -41,25 +41,25 @@ No dedicated media guest or platform record existed. I supplied an approved Prot
 | Step | Action | Observed result |
 | --- | --- | --- |
 | S01 | Created and configured the unprivileged LXC | Guest running on `red-server`; resource, VLAN, firewall, startup, and device settings matched the table above |
-| S02 | Applied the Linux host baseline | Approved-key SSH worked; root locked; root/password/keyboard-interactive SSH disabled; `REDACTED_USER_001` NOPASSWD sudo verified |
+| S02 | Applied the Linux host baseline | Approved-key SSH worked; root locked; root/password/keyboard-interactive SSH disabled; `<YOUR_ADMIN_USERNAME>` NOPASSWD sudo verified |
 | S03 | Installed Docker and deployed the core services | Six non-VPN services running; Jellyfin healthy; service HTTP checks returned successful or expected redirect responses |
 | S04 | Passed the Intel render device to Jellyfin | Intel iHD driver and H.264, HEVC Main 10, and VP9 hardware profiles observed in the container |
 | S05 | Configured Prowlarr, Sonarr, Radarr, and FlareSolverr | Prowlarr application links saved; media root paths present; tagged FlareSolverr proxy available but not yet tested against a real challenge |
 | S06 | Installed my Proton key and activated the VPN profile | Gluetun healthy; qBittorrent started only after Gluetun health; egress organization differed from the homelab ISP path |
 | S07 | Verified provider-side port forwarding and kill-switch topology | Proton-assigned port equaled qBittorrent `listen_port`; `random_port=false`; `upnp=false`; qBittorrent network mode referenced Gluetun's container namespace |
 | S08 | Linked qBittorrent to Sonarr and Radarr | Both download clients created and reachable using separate `sonarr` and `radarr` categories |
-| S09 | Established the qBittorrent Web UI login | Unique credential applied and stored in approved secret storage; I removed the temporary staging files locally, on the node, and in the guest |
+| S09 | Established the qBittorrent Web UI login | The new login worked, & the Sonarr and Radarr client tests passed |
 | S10 | Performed final runtime and baseline inspection | Eight containers running; Gluetun and Jellyfin healthy; root/data volume 9% used; protected `.env` mode `0600` |
 | S11 | Recreated Gluetun and qBittorrent with an empty torrent queue | Gluetun returned healthy, qBittorrent returned running in Gluetun's exact namespace, the provider port resynchronized, and both auth-bypass controls persisted |
 
-I provisioned entirely through CLI and API rather than any GUI, so no setup screenshots exist; the verified outcomes above are the record. I handled the Proton key and qBittorrent credential without writing any secret value into the repository, and I kept management addresses out of committed content.
+I provisioned through CLI & API rather than a graphical setup wizard. The table records the verified result from each step.
 
 ## Known Incomplete Items
 
 - Jellyfin and Jellyseerr require first-run UI onboarding.
 - Prowlarr has no indexers yet. Sonarr and Radarr therefore report expected RSS-sync errors and automatic-search warnings.
 - No end-to-end request, download, import, and playback test has been completed.
-- Protected backups and a restore test remain pending.
+- Backups and a restore test remain pending.
 
 ## Rollback
 

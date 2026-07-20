@@ -1,7 +1,7 @@
 # TNIO AI Bot
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 I keep TNIO as both an operated platform and an active development project.
 
@@ -19,7 +19,7 @@ I keep TNIO as both an operated platform and an active development project.
 - `Evidence/`: corpus audits and remote snapshots
 - `Artifacts/`: deployment bundles and retained agent worktrees/state
 
-The source refers to the deployed Linux path `/home/REDACTED_DEPLOYMENT_USER/lore-rag`. Those references describe the remote runtime, and I do not replace them with local Windows workspace paths.
+The source refers to the deployed Linux path `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. Those references describe the remote runtime, and I do not replace them with local Windows workspace paths.
 
 ## Key Records
 

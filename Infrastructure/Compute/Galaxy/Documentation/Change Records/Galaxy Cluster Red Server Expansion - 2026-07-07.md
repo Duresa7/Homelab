@@ -1,9 +1,9 @@
 # Galaxy Cluster Red Server Expansion
 
 **Created:** 2026-07-07  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-**Author:** REDACTED_NAME_001  
+**Author:** Duresa7  
 **Date:** 2026-07-07  
 **System:** Proxmox VE 9.2.2, Debian Trixie, cluster `Galaxy`
 
@@ -150,7 +150,7 @@ I ran a short SMART self-test on red's M.2 NVMe disk:
 | --- | --- |
 | Device | `/dev/nvme0n1` |
 | Model | `SAMSUNG MZVLB256HAHQ-000L7` |
-| Serial | `REDACTED_HARDWARE_SERIAL_001` |
+| Serial | `<YOUR_DRIVE_SERIAL>` |
 | SMART overall health | `PASSED` |
 | Short self-test | `Completed without error` |
 | Percentage used | `6%` |
@@ -161,7 +161,7 @@ I ran a short SMART self-test on red's M.2 NVMe disk:
 Saved result:
 
 ```text
-REDACTED_PRIVATE_DIAGNOSTIC_PATH
+<YOUR_SMART_REPORT_PATH>
 ```
 
 ## Backups And Rollback Points
@@ -196,6 +196,6 @@ red-server:/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.no-sub
 
 ## Notes
 
-`REDACTED_INTERNAL_FQDN_003`, `REDACTED_INTERNAL_FQDN_002`, and `REDACTED_INTERNAL_FQDN_001` do not
+`<YOUR_RETIRED_NODE_FQDN>`, `<YOUR_PURPLE_SERVER_FQDN>`, and `<YOUR_BLUE_SERVER_FQDN>` do not
 currently resolve from my Windows admin workstation. I use the management IPs or
 the SSH manager aliases until internal DNS is updated.

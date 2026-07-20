@@ -1,11 +1,11 @@
 # Platform Working Tree Reorganization
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Date:** 2026-07-09  
 **Status:** Complete  
-**Scope:** TNIO AI Bot and `REDACTED_INTERNAL_DOMAIN_003` Windows platform working trees
+**Scope:** TNIO AI Bot and `<YOUR_WINDOWS_DOMAIN>` Windows platform working trees
 
 ## Objective
 
@@ -27,9 +27,9 @@ I reorganized it into:
 - `Evidence/`: corpus audits, remote snapshots, and logs
 - `Artifacts/`: deployment bundles, caches, and retained worktrees and state
 
-I preserved references to the deployed path `/home/REDACTED_DEPLOYMENT_USER/lore-rag` because they describe the Linux runtime rather than the local Windows workspace.
+I preserved references to the deployed path `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` because they describe the Linux runtime rather than the local Windows workspace.
 
-## Windows REDACTED_INTERNAL_DOMAIN_003
+## Windows `<YOUR_WINDOWS_DOMAIN>`
 
 The Windows platform previously mixed architecture, policy inventories, reports, runbooks, evidence ZIP files, implementation scripts, logs, domain-join material, and temporary scratch files at one level.
 
@@ -44,7 +44,7 @@ I reorganized it into:
 - `Evidence/Archives/` and `Evidence/Logs/`: retained evidence packages and logs
 - `Artifacts/`: domain-join material and retained working state
 
-I removed the leftover temporary directories, including `REDACTED_NAME_002`, only after verifying each was empty following the artifact moves.
+I removed the leftover temporary directories, including `<YOUR_TEMP_DIRECTORY>`, only after verifying each was empty following the artifact moves.
 
 ## Placement Rules Recorded
 
@@ -69,4 +69,4 @@ I recorded the placement model in the Governance documentation standard and in t
 
 ## Development Impact
 
-The local directory paths changed. Tools or commands that assumed files sat directly beneath the TNIO or `Windows REDACTED_INTERNAL_DOMAIN_003` roots must use the new paths. This was a file-move migration only: I did not rewrite source contents, and I did not validate the code by running it. TNIO tests that assumed execution from `/home/REDACTED_DEPLOYMENT_USER/lore-rag` may need the deployed module path or an adjusted Python import path when run locally.
+The local directory paths changed. Tools or commands that assumed files sat directly beneath the TNIO or `Windows <YOUR_WINDOWS_DOMAIN>` roots must use the new paths. This was a file-move migration only: I did not rewrite source contents, and I did not validate the code by running it. TNIO tests that assumed execution from `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` may need the deployed module path or an adjusted Python import path when run locally.

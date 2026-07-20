@@ -1,7 +1,7 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 **Last verified:** 2026-07-14 after Termix SSH onboarding (live TCP/22 probes from `docker-main` and authenticated Termix sessions to all four nodes confirmed).
 
@@ -22,7 +22,7 @@ My datacenter firewall (`/etc/pve/firewall/cluster.fw`) enables the cluster fire
 
 | Address | Host |
 |---|---|
-| 192.168.10.27 | REDACTED_USER_001 Mac Air |
+| 192.168.10.27 | `<YOUR_ADMIN_USERNAME>` Mac Air |
 | 192.168.50.241 | Jedi PC |
 
 ### `pve_automation`: automation control node (GUI + SSH)

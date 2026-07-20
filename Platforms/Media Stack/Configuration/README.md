@@ -1,9 +1,9 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-I keep [`compose.example.yml`](compose.example.yml) as a secret-free structural reference for the live project at `/opt/media-stack/compose.yml`. It documents service relationships, mounts, ports, VPN isolation, and automatic Proton port synchronization without containing the live guest address, LAN subnet, WireGuard key, passwords, API keys, or provider endpoint.
+I keep [`compose.example.yml`](compose.example.yml) as a reader-editable reference for the live project at `/opt/media-stack/compose.yml`. It documents service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization with contextual placeholders for deployment-specific values.
 
 [`media-stack.env.example`](media-stack.env.example) lists the required variable names. Copying either reference directly to production is intentionally insufficient until the protected values are supplied through my approved secret workflow.
 

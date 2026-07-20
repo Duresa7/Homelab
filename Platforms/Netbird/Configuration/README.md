@@ -1,9 +1,9 @@
 # NetBird Configuration
 
 **Created:** 2026-07-10  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-The live deployment sits under `/opt/docker/netbird` on `docker-network`. The checked-in `docker-compose.yml` is a secret-free reference I copied from the official v0.74.3 installer output.
+The live deployment sits under `/opt/docker/netbird` on `docker-network`. The checked-in `docker-compose.yml` is a reader-editable reference based on the official v0.74.3 installer output.
 
 I exclude the live `config.yaml` and generated datastore because they contain the datastore encryption key and relay authentication secret. The live `reverseProxy.trustedHTTPProxies` value is `172.31.85.10/32`, matching Nginx Proxy Manager's fixed address on the external `proxy` network.
 

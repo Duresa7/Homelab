@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 These are the hardware specifications for my four Galaxy cluster nodes. I keep this sheet in sync with the live machines.
 
@@ -25,6 +25,6 @@ These are the hardware specifications for my four Galaxy cluster nodes. I keep t
 
 ## Memory Modules
 
-![Two SK hynix SO-DIMM memory modules with their part and serial labels redacted](Images/image-1776104321961.jpg)
+![Two SK hynix SO-DIMM memory modules](Images/image-1776104321961.jpg)
 
-Two SK hynix SO-DIMM memory modules from the node hardware; I redacted the part and serial labels in the photo.
+Two SK hynix SO-DIMM memory modules from the node hardware.

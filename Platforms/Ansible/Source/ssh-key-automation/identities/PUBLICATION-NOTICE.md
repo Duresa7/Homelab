@@ -5,4 +5,4 @@
 
 Live identity YAML files are intentionally not stored in this repository. They contain device-specific SSH public keys, fingerprints, identity labels, and approved target allowlists; I maintain them privately outside this repository.
 
-Use `_new-device-template.yml.example` to understand the schema without exposing or deploying a real identity.
+Use `_new-device-template.yml.example` to understand the schema before adding a live identity.

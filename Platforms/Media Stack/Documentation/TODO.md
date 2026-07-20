@@ -16,7 +16,7 @@ Completed items are recorded with evidence in the [application onboarding change
 
 ## Operations
 
-- [ ] Add protected backups for `/opt/media-stack/config` and `/data`; perform a restore test.
+- [ ] Add backups for `/opt/media-stack/config` and `/data`; perform a restore test.
 - [ ] Add capacity alerts before the 100 GiB local volume becomes constrained.
 - [ ] Define a maintenance cadence for the intentionally floating `latest` image tags.
 - [ ] Decide whether LAN management interfaces should move behind authenticated HTTPS ingress.

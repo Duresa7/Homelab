@@ -15,8 +15,8 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 
 - CTID 107 was unused, and no dedicated `docker-network` guest existed.
 - Access-A already existed as VLAN 85 with subnet `192.168.85.0/24`, gateway `192.168.85.1`, and reserved static range `.2` through `.5`.
-- The existing UniFi `Allow Internal to REDACTED_PRIVATE_ORG_LABEL-Access` and `Allow VPN to REDACTED_PRIVATE_ORG_LABEL-Access` policies provided the intended inbound zone paths.
-- There were no workload-specific REDACTED_PRIVATE_ORG_LABEL-Access-to-External egress rules and no internal DNS record for `REDACTED_CUSTOM_DOMAIN_016`.
+- The existing UniFi `Allow Internal to <YOUR_ORG_NAME>-Access` and `Allow VPN to <YOUR_ORG_NAME>-Access` policies provided the intended inbound zone paths.
+- There were no workload-specific `<YOUR_ORG_NAME>`-Access-to-External egress rules and no internal DNS record for `<YOUR_NETBIRD_DOMAIN>`.
 
 ## Completed Implementation
 
@@ -24,18 +24,18 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 2. I assigned 2 vCPU, 4 GiB memory, 1 GiB swap, and a 32 GiB `local-lvm` root disk.
 3. I enabled `nesting=1,keyctl=1`, guest firewall processing, automatic boot, and HA desired state `started`.
 4. I connected `eth0` to VLAN 85 through `vmbr0` with static address `192.168.85.2/24`; both gateway and DNS use `192.168.85.1`.
-5. I created the `REDACTED_USER_001` administrator, copied the three approved administrative public keys, granted NOPASSWD sudo, disabled root SSH, and disabled password and keyboard-interactive SSH authentication.
+5. I created the `<YOUR_ADMIN_USERNAME>` administrator, copied the three approved administrative public keys, granted NOPASSWD sudo, disabled root SSH, and disabled password and keyboard-interactive SSH authentication.
 6. I added the LXC to SSH Manager as `docker_network` and verified key-based access.
 7. I installed Docker Engine and Compose and deployed Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 under `/opt/docker`.
 8. I created the following order-sensitive UniFi policies with logging enabled and automatic respond-policy generation disabled:
 
    | Order | Policy | Source | Destination | Protocol / port | Result |
    |---:|---|---|---|---|---|
-   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, REDACTED_PRIVATE_ORG_LABEL-Access | External | TCP 80, 443 | Allow |
-   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, REDACTED_PRIVATE_ORG_LABEL-Access | External | UDP 123 | Allow |
-   | 10002 | `Block REDACTED_PRIVATE_ORG_LABEL-Access Other External Egress` | Any, REDACTED_PRIVATE_ORG_LABEL-Access | External | Any IPv4 | Block |
+   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | TCP 80, 443 | Allow |
+   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | UDP 123 | Allow |
+   | 10002 | `Block <YOUR_ORG_NAME>-Access Other External Egress` | Any, `<YOUR_ORG_NAME>`-Access | External | Any IPv4 | Block |
 
-9. I added the UniFi local DNS A record `REDACTED_CUSTOM_DOMAIN_016` to `192.168.85.2` with TTL 300 seconds.
+9. I added the UniFi local DNS A record `<YOUR_NETBIRD_DOMAIN>` to `192.168.85.2` with TTL 300 seconds.
 10. I issued and assigned the Cloudflare DNS-01 wildcard/apex certificate in Nginx Proxy Manager, enabled Force SSL and HTTP/2, verified the authenticated NetBird dashboard over HTTPS, and passed a controlled restart of both Compose projects.
 11. I removed the installer and temporary files left over from my deployment steps and restricted the NetBird secret configuration files and NPM database to owner-only mode 0600.
 
@@ -52,7 +52,7 @@ Provision a dedicated Debian 13 LXC on `blue-server` for network-access services
 | Boot / HA | `onboot=1`; HA state `started` |
 | Network | `eth0`, `vmbr0`, VLAN 85, firewall enabled |
 | Addressing | `192.168.85.2/24`; gateway and DNS `192.168.85.1` |
-| SSH | Public-key only as `REDACTED_USER_001`; root and password-based SSH disabled |
+| SSH | Public-key only as `<YOUR_ADMIN_USERNAME>`; root and password-based SSH disabled |
 | Hosted workloads | Nginx Proxy Manager 2.15.1; NetBird 0.74.3 |
 
 The HA resource is backed by node-local `local-lvm`. I accepted that this starts and monitors the guest but doesn't provide shared-storage failover to another node.
@@ -65,19 +65,15 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 ## Verification
 
 - The guest started, reported Debian 13.1, & reached `192.168.85.1` with 0% packet loss.
-- SSH Manager connected as `REDACTED_USER_001`; passwordless sudo returned exit code 0, the SSH service was active, & all three approved public-key fingerprints were present.
+- SSH Manager connected as `<YOUR_ADMIN_USERNAME>`; passwordless sudo returned exit code 0, the SSH service was active, & all three approved public-key fingerprints were present.
 - `ha-manager` reported `ct:107` on `blue-server` with state `started`.
 - HTTP to `deb.debian.org` returned 200, and HTTPS to the Docker registry returned the expected unauthenticated 401 response, proving TCP 80/443 egress.
 - `ntpdig` reached `time.cloudflare.com` and returned valid time data, proving UDP 123 egress.
-- A direct TCP DNS attempt to `REDACTED_IPV4_001:53` timed out as expected under the final block rule.
-- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `REDACTED_CUSTOM_DOMAIN_016`.
+- A direct TCP DNS attempt to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as expected under the final block rule.
+- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `<YOUR_NETBIRD_DOMAIN>`.
 - Nginx Proxy Manager, the NetBird dashboard, & the NetBird server containers were running; direct NPM administration and the NetBird identity endpoint returned HTTP 200.
-- The Let's Encrypt wildcard/apex certificate passed validation, `https://REDACTED_CUSTOM_DOMAIN_016` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
+- The Let's Encrypt wildcard/apex certificate passed validation, `https://<YOUR_NETBIRD_DOMAIN>` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
 - Both Compose projects restarted; readiness passed on the second check, NPM returned `healthy`, `nginx -t` passed, & direct/HTTPS probes returned 200.
-
-## Public Evidence Boundary
-
-The exact S01 through S10 command & request transcripts remain in the local-only scrub quarantine because they weren't cleared for the public tree. The public record doesn't contain the historical Nginx Proxy Manager or UniFi menu paths. I don't treat terminal screenshots as text transcripts or infer missing navigation. The walkthrough preserves the public-safe action, visible page, result, & verification for each legacy evidence ID, including the inserted S05A policy step.
 
 ## Walkthrough
 
@@ -107,7 +103,7 @@ The exact S01 through S10 command & request transcripts remain in the local-only
 
 ### Step 3: Harden SSH and add the guest to HA
 
-**Action:** I created the `REDACTED_USER_001` administrator, installed the three approved public keys, granted NOPASSWD sudo, disabled root & password-based SSH, added the guest to SSH Manager as `docker_network`, & set its HA desired state to `started`.
+**Action:** I created the `<YOUR_ADMIN_USERNAME>` administrator, installed the three approved public keys, granted NOPASSWD sudo, disabled root & password-based SSH, added the guest to SSH Manager as `docker_network`, & set its HA desired state to `started`.
 
 **Observed result:** Key-only SSH and passwordless sudo worked, while root, password, and keyboard-interactive authentication were disabled. Proxmox showed CT 107 running as an unprivileged container on `blue-server`, with HA desired state `started`.
 
@@ -164,7 +160,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Observed result:** UniFi saved the TCP 80/443 allow, UDP 123 allow, & catch-all IPv4 block in that order, with logging enabled on all three.
 
-**Verification:** HTTP returned 200, the Docker registry returned its expected unauthenticated 401, `ntpdig` returned valid time data, and direct TCP DNS to `REDACTED_IPV4_001:53` timed out under the block rule.
+**Verification:** HTTP returned 200, the Docker registry returned its expected unauthenticated 401, `ntpdig` returned valid time data, and direct TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out under the block rule.
 
 **Evidence:**
 
@@ -172,7 +168,7 @@ The capture showed the client & server versions, Compose version, active service
 
 ### Step 6: Add internal DNS
 
-**UI action:** I added the UniFi local A record `REDACTED_CUSTOM_DOMAIN_016` pointing to `192.168.85.2` with TTL 300 seconds.
+**UI action:** I added the UniFi local A record `<YOUR_NETBIRD_DOMAIN>` pointing to `192.168.85.2` with TTL 300 seconds.
 
 **Observed result:** The controller saved the enabled DNS record.
 
@@ -188,7 +184,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Observed result:** The certificate was issued and the NetBird proxy host reported Online.
 
-**Verification:** `nginx -t` passed & `https://REDACTED_CUSTOM_DOMAIN_016` returned HTTP 200.
+**Verification:** `nginx -t` passed & `https://<YOUR_NETBIRD_DOMAIN>` returned HTTP 200.
 
 **Evidence:**
 
@@ -233,8 +229,8 @@ The capture showed the client & server versions, Compose version, active service
 ## Rollback
 
 1. Stop the NetBird and Nginx Proxy Manager Compose projects before removing the guest.
-2. Remove UniFi policies `REDACTED_UNIFI_POLICY_ID_001`, `REDACTED_UNIFI_POLICY_ID_002`, and `REDACTED_UNIFI_POLICY_ID_003` in reverse order if the Access-A egress policy set must be reverted.
-3. Remove local DNS record `REDACTED_UNIFI_DNS_RECORD_ID_001` if the hostname is no longer served by this LXC.
+2. Remove UniFi policies `<YOUR_ACCESS_EGRESS_POLICY_ID_A>`, `<YOUR_ACCESS_EGRESS_POLICY_ID_B>`, and `<YOUR_ACCESS_EGRESS_POLICY_ID_C>` in reverse order if the Access-A egress policy set must be reverted.
+3. Remove local DNS record `<YOUR_NETBIRD_DNS_RECORD_ID>` if the hostname is no longer served by this LXC.
 4. Remove `ct:107` from HA before stopping or destroying the guest.
 5. Remove the `docker_network` SSH Manager entry if LXC 107 is retired.
 

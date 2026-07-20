@@ -1,7 +1,7 @@
 # NetBird
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 NetBird is my self-hosted overlay-network control plane. I run it alongside Nginx Proxy Manager in a dedicated Debian 13 `docker-network` LXC so that application routing, certificate handling, and the control plane share one isolated Docker host instead of landing in my existing `docker-blue` workload container.
 
@@ -16,15 +16,15 @@ NetBird is my self-hosted overlay-network control plane. I run it alongside Ngin
 | Live path | `/opt/docker/netbird` |
 | Containers | `netbird-dashboard`, `netbird-server` |
 | Direct bindings | Dashboard `127.0.0.1:8080`; server `127.0.0.1:8081`; STUN `3478/udp` |
-| Live URL | `https://REDACTED_CUSTOM_DOMAIN_016` |
-| Internal DNS | `REDACTED_CUSTOM_DOMAIN_016` resolves to `192.168.85.2` through UniFi |
+| Live URL | `https://<YOUR_NETBIRD_DOMAIN>` |
+| Internal DNS | `<YOUR_NETBIRD_DOMAIN>` resolves to `192.168.85.2` through UniFi |
 | Reverse proxy | Online Nginx Proxy Manager host through `172.31.85.10` on Docker network `proxy` |
-| Routing peer | `docker-network` (CT 107) is a NetBird peer (overlay `100.121.111.204`) advertising the `REDACTED_PRIVATE_ORG_LABEL-Access` network `192.168.85.0/24` with masquerade |
+| Routing peer | `docker-network` (CT 107) is a NetBird peer (overlay `100.121.111.204`) advertising the `<YOUR_ORG_NAME>-Access` network `192.168.85.0/24` with masquerade |
 | VPN path | Validated 2026-07-12; a remote peer reaches Access-A through the overlay via the routing peer (`ip route ... dev wt0`, HTTPS `200`) |
 
 The embedded identity provider and dashboard return HTTP `200` on their direct local checks. The saved Nginx Proxy Manager host is Online, its advanced routes pass `nginx -t`, and its Let's Encrypt wildcard/apex certificate was issued through Cloudflare DNS-01. Force SSL and HTTP/2 are enabled, the intended HTTPS URL returns `200`, and I confirmed the authenticated NetBird administrator dashboard in Chrome. My controlled restarts of both Compose projects finished with Nginx Proxy Manager healthy, both NetBird containers running, and HTTPS still returning `200`.
 
-I keep the zone-scoped Cloudflare token in the 1Password `REDACTED_1PASSWORD_VAULT` vault as `REDACTED_1PASSWORD_ITEM_TITLE`; its value is not retained in this repository or in evidence. Initial publication, first-peer enrollment, the routed VPN path into Access-A, the non-interactive DNS-01 renewal path, and bounded `json-file` logging (`10m` × `3`) are all verified. See the [VPN-path change record](Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) and the [operational follow-ups and descope record](Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+Initial publication, first-peer enrollment, the routed VPN path into Access-A, the non-interactive DNS-01 renewal path, and bounded `json-file` logging (`10m` × `3`) are verified. See the [VPN-path change record](Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) and the [operational follow-ups and descope record](Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 ## Records
 
@@ -35,20 +35,18 @@ I keep the zone-scoped Cloudflare token in the 1Password `REDACTED_1PASSWORD_VAU
 - [Troubleshooting log](Documentation/Troubleshooting-Log.md)
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
-- [REDACTED_PRIVATE_ORG_LABEL-Access network reference](Configuration/REDACTED_PRIVATE_ORG_LABEL-Access-Network.md)
+- [Access-A network reference](Configuration/Access-Network.md)
 - [Nginx Proxy Manager platform](../Nginx%20Proxy%20Manager/README.md)
 
 ## Layout
 
 - `Documentation/`: deployment history, operating procedure, troubleshooting, and remaining work
-- `Configuration/`: secret-free Compose reference and configuration notes
+- `Configuration/`: reader-editable Compose reference and configuration notes
 - `Evidence/`: step screenshots from bounded jobs
 
 ## Security Boundaries
 
-- The live `config.yaml`, generated datastore, encryption key, relay secret, credentials, and certificate API token stay out of this repository.
-- Live `config.yaml` and `dashboard.env` are owner-only mode `0600`; their values are never captured in evidence.
-- The zone-scoped `REDACTED_1PASSWORD_ITEM_TITLE_002` Cloudflare token lives in the 1Password `REDACTED_1PASSWORD_VAULT` vault; documentation records only its non-secret name and scope.
+- The Cloudflare DNS Write token is limited to the zone used for the wildcard and apex certificate.
 - NetBird trusts only Nginx Proxy Manager's fixed Docker address, `172.31.85.10/32`, as an HTTP proxy.
 - The LXC uses key-only SSH. Root login, password SSH, and keyboard-interactive SSH are disabled.
 - UniFi allows the LXC only the approved web and NTP egress before the catch-all Access-A external block.

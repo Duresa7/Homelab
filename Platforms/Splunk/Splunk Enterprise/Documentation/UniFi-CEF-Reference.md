@@ -1,7 +1,7 @@
 ﻿# UniFi System Logs / SIEM: CEF Reference
 
 **Created:** 2026-07-01  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 My reference notes for the UniFi → SC4S → Splunk pipeline (see [Build-Log.md](Build-Log.md) Step 6). Source: Ubiquiti Help, *UniFi System Logs & SIEM Integration*.
 
@@ -52,7 +52,7 @@ Restart SC4S after editing (`sudo systemctl restart sc4s`). If UniFi events ever
 **Admin Accessed UniFi Network**
 
 ```
-CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIsubCategory=Admin UNIFIhost=Office UDM Pro UNIFIaccessMethod=web UNIFIadmin=Craig src=REDACTED_IPV4_010 msg=Craig accessed UniFi Network using the web. Source IP: REDACTED_IPV4_010
+CEF:0|Ubiquiti|UniFi Network|9.3.33|544|Admin Accessed UniFi Network|1|UNIFIcategory=System UNIFIsubCategory=Admin UNIFIhost=Office UDM Pro UNIFIaccessMethod=web UNIFIadmin=Craig src=<YOUR_CLIENT_IP> msg=Craig accessed UniFi Network using the web. Source IP: <YOUR_CLIENT_IP>
 ```
 
 **WiFi Client Disconnected**

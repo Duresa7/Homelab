@@ -1,12 +1,12 @@
 # TNIO Lore Bot: Structural Fixes Report
 
 **Created:** 2026-05-11  
-**Last updated:** 2026-07-19
+**Last updated:** 2026-07-20
 
 - **Date:** 2026-05-11
 - **Filename:** `tnio-bot-fixes-report-2026-05-11.md`
-- **Host:** `REDACTED_OPERATIONAL_HOST` (192.168.40.38, user `REDACTED_DEPLOYMENT_USER`, Ubuntu Plucky LXC)
-- **Project root:** `/home/REDACTED_DEPLOYMENT_USER/lore-rag`
+- **Host:** `<YOUR_TNIO_HOST>` (192.168.40.38, user `<YOUR_DEPLOYMENT_USER>`, Ubuntu Plucky LXC)
+- **Project root:** `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`
 - **Backup stamp for everything touched:** `bak.structural-fix-20260511`
 
 ---
@@ -36,7 +36,7 @@ Discord  →  bot.js  ──HTTP POST /agent-answer──▶  lore_http_server.p
 
 - **LLM:** `openclaw infer model run --gateway --model openai-codex/gpt-5.4-mini` (verified working independently).
 - **Embedder:** Ollama `qwen3-embedding:4b` on `127.0.0.1:11434`.
-- **Vector store:** Chroma at `/home/REDACTED_DEPLOYMENT_USER/lore-rag/index/chroma`.
+- **Vector store:** Chroma at `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/index/chroma`.
 - **Drive sync:** `gws` CLI (`@googleworkspace/cli`) → `sync_lore.py --sync` on a 6-min systemd-user timer.
 - **services:** `lore-discord-bot.service`, `lore-search-http.service`, `lore-rag-sync.timer`, `openclaw-gateway.service`, `ollama.service`.
 
@@ -44,8 +44,8 @@ Discord  →  bot.js  ──HTTP POST /agent-answer──▶  lore_http_server.p
 
 ### Logs I mined
 
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/logs/agent-negative-feedback.jsonl`: 18 user-flagged bad answers
-- `/home/REDACTED_DEPLOYMENT_USER/lore-rag/logs/agent-requests.log`: 409 recent agent requests
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/logs/agent-negative-feedback.jsonl`: 18 user-flagged bad answers
+- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/logs/agent-requests.log`: 409 recent agent requests
 - `journalctl --user -u openclaw-gateway.service`: found `Context overflow: prompt too large for the model (precheck)` errors and `lane wait exceeded` diagnostics
 - `journalctl --user -u lore-rag-sync.service`: confirmed sync had been failing since 18:50 UTC today
 
@@ -126,18 +126,18 @@ Rewrote with these changes:
 
 ### 5.4 Re-auth Google Drive (gws)
 
-I port-forwarded the OAuth callback over SSH so the consent flow could complete from my PC against the headless LXC. Authentication succeeded for account `REDACTED_EMAIL_001` with the full default scope set (drive, sheets, gmail.modify, calendar, documents, presentations, tasks, pubsub, cloud-platform, openid, userinfo.email, userinfo.profile).
+I port-forwarded the OAuth callback over SSH so the consent flow could complete from my PC against the headless LXC. Authentication succeeded for account `<YOUR_GOOGLE_ACCOUNT>` with the full default scope set (drive, sheets, gmail.modify, calendar, documents, presentations, tasks, pubsub, cloud-platform, openid, userinfo.email, userinfo.profile).
 
 ## 6. Files touched on the server
 
 | File | Change | Backup |
 |---|---|---|
-| `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_agent.py` | Sift fallback, pool cap, excerpt size | `lore_agent.py.bak.structural-fix-20260511` |
-| `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_mcp_server.py` | Cache key v29, acceptance gate | `lore_mcp_server.py.bak.structural-fix-20260511` |
-| `/home/REDACTED_DEPLOYMENT_USER/lore-rag/sync_and_maybe_restart.sh` | Status file, auth-failure marker | `sync_and_maybe_restart.sh.bak.structural-fix-20260511` |
-| `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/agent_answer_cache.json` | Moved aside (poisoned) | `agent_answer_cache.json.bak.structural-fix-20260511` |
+| `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py` | Sift fallback, pool cap, excerpt size | `lore_agent.py.bak.structural-fix-20260511` |
+| `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_mcp_server.py` | Cache key v29, acceptance gate | `lore_mcp_server.py.bak.structural-fix-20260511` |
+| `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/sync_and_maybe_restart.sh` | Status file, auth-failure marker | `sync_and_maybe_restart.sh.bak.structural-fix-20260511` |
+| `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/agent_answer_cache.json` | Moved aside (poisoned) | `agent_answer_cache.json.bak.structural-fix-20260511` |
 
-New file (created by first wrapper run): `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/sync_status.json`.
+New file (created by first wrapper run): `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/sync_status.json`.
 
 ## 7. Verification
 
@@ -175,12 +175,12 @@ New corpus version: `9d37aea703538e3d8b67`. The 6-min sync timer continues unatt
 ## 8. Operational notes / follow-ups
 
 - **No action needed now:** `lore_agent.py.bak.*` and `lore_mcp_server.py.bak.*` files (~80 of them, from prior cherry-pick cycles) are still in the directory. Safe to prune older than today after confirming nothing references them; purely a tidying exercise, not a correctness issue.
-- **If you want to monitor sync health from elsewhere:** read `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/sync_status.json`: `consecutive_failures > 0` or `last_success_ts` older than ~1 hour means Drive content may be stale.
+- **If you want to monitor sync health from elsewhere:** read `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/sync_status.json`: `consecutive_failures > 0` or `last_success_ts` older than ~1 hour means Drive content may be stale.
 - **If `llm_error` rate stays high under load** (visible as `evidence.sift.skipped_reason: "llm_error"` in `agent-requests.log`), the next structural lever is the `openclaw-gateway` lane queue; `journalctl` shows `lane wait exceeded: waitedMs=17311 queueAhead=0` events. That's the agent serializing on a single Codex session lane. Increasing lane concurrency (or running planner/answerer/sift in distinct sessions) would let sift retry without starving the answer call. Out of scope for this round.
 - **Long-term memory snapshot** (`state/memory/long_term_memory.{json,md}`) is from 2026-05-06; refresh weekly via the existing `lore-memory-build.timer` (next fire 2026-05-20).
 - **Backup hygiene:** the `*.bak.structural-fix-20260511` files are the rollback target for everything in this change set. To revert a single file:
   ```
-  cp /home/REDACTED_DEPLOYMENT_USER/lore-rag/<file>.bak.structural-fix-20260511 /home/REDACTED_DEPLOYMENT_USER/lore-rag/<file>
+  cp /home/<YOUR_DEPLOYMENT_USER>/lore-rag/<file>.bak.structural-fix-20260511 /home/<YOUR_DEPLOYMENT_USER>/lore-rag/<file>
   systemctl --user restart lore-search-http.service lore-discord-bot.service
   ```
 
@@ -469,7 +469,7 @@ All cited via topic_index after the run:
 
 ## 25. Operational notes for Round 3
 
-- **Re-running enrichment manually**: `/usr/bin/python3 /home/REDACTED_DEPLOYMENT_USER/lore-rag/enrich_source_map.py`. Honors `ENRICH_MAX_DOCS=N` if you want to limit. Logs at `logs/enrich-run.log`.
+- **Re-running enrichment manually**: `/usr/bin/python3 /home/<YOUR_DEPLOYMENT_USER>/lore-rag/enrich_source_map.py`. Honors `ENRICH_MAX_DOCS=N` if you want to limit. Logs at `logs/enrich-run.log`.
 - **Inspecting the catalog**: every entry under `documents[*]` in `state/source_map.json` now has `description`, `topics_enriched`, `canonical_for`, `key_entities`. Top-level `topic_index` is the reverse lookup.
 - **What happens when a Drive doc changes**: 6-min sync timer pulls Drive → `build_source_map` rebuilds with prior enrichment preserved by file id → if corpus version changed, `sync_and_maybe_restart.sh` runs `enrich_source_map.py` (only touches docs whose hash changed) → restarts `lore-search-http.service` so the new map takes effect. End to end fully automatic.
 - **What happens when Drive auth fails**: the Round 1 visibility wrapper still fires (`::SYNC_AUTH_FAILURE::` in journal, `state/sync_status.json` updated). Enrichment is skipped because corpus didn't change.

@@ -1,7 +1,7 @@
 ﻿# Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 This is my configuration inventory of the LXC containers on the Galaxy cluster.
 
@@ -39,7 +39,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | REDACTED_MAC_015 |
+| eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<YOUR_ANSIBLE_CONTROLLER_MAC>` |
 
 ## LXC 104 - ai-alpha-01
 
@@ -63,7 +63,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.37/24 | 192.168.40.1 | enabled | REDACTED_MAC_008 |
+| eth0 | vmbr0 | 40 | 192.168.40.37/24 | 192.168.40.1 | enabled | `<YOUR_AI_ALPHA_MAC>` |
 
 ## LXC 105 - ai-bravo-02
 
@@ -98,7 +98,7 @@ This is my configuration inventory of the LXC containers on the Galaxy cluster.
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | REDACTED_MAC_004 |
+| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | `<YOUR_AI_BRAVO_MAC>` |
 
 ## LXC 107 - docker-network
 
@@ -126,13 +126,13 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 85 | 192.168.85.2/24 | 192.168.85.1 | enabled | REDACTED_MAC_013 |
+| eth0 | vmbr0 | 85 | 192.168.85.2/24 | 192.168.85.1 | enabled | `<YOUR_DOCKER_NETWORK_MAC>` |
 
 ### Administrative Access
 
-- SSH is public-key only as `REDACTED_USER_001`; I installed the three approved administrative keys.
-- `REDACTED_USER_001` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root and `REDACTED_USER_001` password records remain locked pending protected console entry; this does not affect key-based SSH.
+- SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the three approved administrative keys.
+- `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
+- Root and `<YOUR_ADMIN_USERNAME>` password records remain locked pending protected console entry; this does not affect key-based SSH.
 
 ## LXC 108 - docker-blue
 
@@ -156,7 +156,7 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.39/24 | 192.168.40.1 | enabled | REDACTED_MAC_002 |
+| eth0 | vmbr0 | 40 | 192.168.40.39/24 | 192.168.40.1 | enabled | `<YOUR_DOCKER_BLUE_MAC>` |
 
 ## LXC 110 - docker-main
 
@@ -182,7 +182,7 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | REDACTED_MAC_014 |
+| eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | `<YOUR_DOCKER_MAIN_MAC>` |
 
 ## LXC 842 - media-01
 
@@ -219,10 +219,10 @@ The HA resource uses node-local `local-lvm`; it does not have shared-storage fai
 
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.42 | 192.168.40.1 | enabled | REDACTED_MAC_021 |
+| eth0 | vmbr0 | 40 | 192.168.40.42 | 192.168.40.1 | enabled | `<YOUR_MEDIA_HOST_MAC>` |
 
 ### Administrative Access
 
-- SSH is public-key only as `REDACTED_USER_001`; I installed the approved administrative keys.
-- `REDACTED_USER_001` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
+- SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the approved administrative keys.
+- `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked. The administrative account retains a protected console password outside the repository.

@@ -1,9 +1,9 @@
 ﻿# Galaxy Cluster Setup Document
 
 **Created:** 2026-05-30  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-**Author:** REDACTED_NAME_001
+**Author:** Duresa7
 **Date:** 2026-05-30
 **System:** Proxmox VE 9.2.2 (kernel 7.0.2-6-pve, Debian Trixie)
 
@@ -223,16 +223,16 @@ Output ended with `successfully added node 'red-server' to cluster.`
 ## 8. Removing stale node directories
 
 `grey-server` had two phantom node folders under `/etc/pve/nodes/` left over from
-an earlier install: `Grey-Server` (capitalized) and `REDACTED_NAME_003`. Both were empty of
+an earlier install: `Grey-Server` (capitalized) and `<YOUR_RETIRED_NODE_NAME>`. Both were empty of
 guest configs and would otherwise appear as offline ghost nodes in the Datacenter
 view. I confirmed they held no guest configs and removed them.
 
 ```bash
 # On grey-server: confirm no guest configs first
 find /etc/pve/nodes/Grey-Server/qemu-server /etc/pve/nodes/Grey-Server/lxc \
-     /etc/pve/nodes/REDACTED_NAME_003/qemu-server /etc/pve/nodes/REDACTED_NAME_003/lxc -type f | wc -l   # expect 0
+     /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>/qemu-server /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>/lxc -type f | wc -l   # expect 0
 
-rm -rf /etc/pve/nodes/Grey-Server /etc/pve/nodes/REDACTED_NAME_003
+rm -rf /etc/pve/nodes/Grey-Server /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>
 ```
 
 After the May cleanup, `/etc/pve/nodes/` contained only `grey-server`,

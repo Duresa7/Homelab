@@ -1,7 +1,7 @@
 # OpenClaw Setup Overview
 
 **Created:** 2026-04-27  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Document Metadata
 
@@ -12,28 +12,28 @@
 | Time | 3:04 PM EDT |
 | Time Zone | America/New_York |
 | Environment | AI_Alpha_01 |
-| Purpose | Discord-accessible REDACTED_PRIVATE_ORG_LABEL United AI assistant |
+| Purpose | Discord-accessible `<YOUR_ORG_NAME>` United AI assistant |
 
 ## Overview
 
-I run this OpenClaw deployment as a Discord-accessible AI assistant that represents REDACTED_PRIVATE_ORG_LABEL United LLC. I configured it for professional public-channel use, limited it to a single Discord channel, and set strict privacy and confidentiality rules.
+I run this OpenClaw deployment as a Discord-accessible AI assistant that represents `<YOUR_ORG_NAME>` United LLC. I configured it for professional public-channel use, limited it to a single Discord channel, and set strict privacy and confidentiality rules.
 
 ## System Role
 
 The assistant is configured as:
 
-- Name: `REDACTED_PRIVATE_ORG_LABEL United AI`
+- Name: `<YOUR_ORG_NAME> United AI`
 - Model identity: `Alpha-Zeta-022 #22`
-- Organizational role: professional AI representative of REDACTED_PRIVATE_ORG_LABEL United LLC
+- Organizational role: professional AI representative of `<YOUR_ORG_NAME>` United LLC
 - Public-facing context: Discord channel assistant
 
 If asked about its model identity, it should respond with:
 
 ```text
-I am Alpha-Zeta-022 #22, a member of the REDACTED_PRIVATE_ORG_LABEL AI Model Fleet developed by REDACTED_PRIVATE_ORG_LABEL United.
+I am Alpha-Zeta-022 #22, a member of the <YOUR_ORG_NAME> AI Model Fleet developed by <YOUR_ORG_NAME> United.
 ```
 
-If asked about AlphaFly, it should state that AlphaFly is the CEO and owner of REDACTED_PRIVATE_ORG_LABEL United LLC.
+If asked about AlphaFly, it should state that AlphaFly is the CEO and owner of `<YOUR_ORG_NAME>` United LLC.
 
 ## Discord Scope
 
@@ -42,9 +42,9 @@ The bot is configured for one Discord server and channel only:
 | Item | Value |
 |---|---|
 | Discord Server | Home Base |
-| Guild ID | REDACTED_LONG_NUMERIC_ID_002 |
+| Guild ID | `<YOUR_DISCORD_GUILD_ID>` |
 | Allowed Channel | #alpha-ai |
-| Channel ID | REDACTED_LONG_NUMERIC_ID_001 |
+| Channel ID | `<YOUR_DISCORD_CHANNEL_ID>` |
 | Direct Messages | Disabled |
 | Channel Access | Allowlist |
 | Mention Required | Yes |
@@ -155,11 +155,8 @@ Expected behavior:
 - SSH manager MCP access remains available for authorized administrative work.
 - SSH manager details, command output, server aliases, and internal paths should not be exposed in Discord.
 - Administrative outcomes should be summarized safely when discussed in public channels.
-- The setup intentionally avoids documenting credentials or secret values.
 
-## Private Technical Appendix
-
-This section is intended for the owner or authorized administrators. It contains internal operational details but intentionally excludes passwords, tokens, API keys, and private key material.
+## Technical Reference
 
 | Item | Value |
 |---|---|
@@ -173,9 +170,9 @@ This section is intended for the owner or authorized administrators. It contains
 | Gateway Port | 18789 |
 | Gateway Bind | 127.0.0.1 / loopback |
 | Discord Server | Home Base |
-| Discord Guild ID | REDACTED_LONG_NUMERIC_ID_002 |
+| Discord Guild ID | `<YOUR_DISCORD_GUILD_ID>` |
 | Discord Channel | #alpha-ai |
-| Discord Channel ID | REDACTED_LONG_NUMERIC_ID_001 |
+| Discord Channel ID | `<YOUR_DISCORD_CHANNEL_ID>` |
 | OpenClaw Version | 2026.4.25 |
 | MCP SSH Manager Version | 3.2.2 |
 | Sandbox Container Image | openclaw-sandbox:bookworm-slim |
@@ -206,8 +203,6 @@ Important backup files created during configuration:
 /home/openclaw/.openclaw/workspace/AGENTS.md.bak.discord-mentions-2026-04-27T18-59-37-311Z
 /home/openclaw/.openclaw/workspace/HEARTBEAT.md.bak.discord-public-2026-04-27T18-56-39-393Z
 ```
-
-Security note: credentials, passwords, API tokens, private keys, and secret values should remain in the appropriate protected configuration files and should not be copied into documentation.
 
 ## Recommended Future Maintenance
 

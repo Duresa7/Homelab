@@ -1,9 +1,9 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-Nginx Proxy Manager (NPM) is my reverse-proxy and certificate-management service on the dedicated `docker-network` LXC. Its first consumer is NetBird, whose dashboard, API, WebSocket, and gRPC paths share the HTTPS host `REDACTED_CUSTOM_DOMAIN_016`.
+Nginx Proxy Manager (NPM) is my reverse-proxy and certificate-management service on the dedicated `docker-network` LXC. Its first consumer is NetBird, whose dashboard, API, WebSocket, and gRPC paths share the HTTPS host `<YOUR_NETBIRD_DOMAIN>`.
 
 ## Current State
 
@@ -36,14 +36,12 @@ The NPM health check is passing and the administrative UI returns HTTP `200` at 
 ## Layout
 
 - `Documentation/`: deployment history, operating procedure, troubleshooting, and remaining work
-- `Configuration/`: secret-free Compose reference and intended NetBird advanced routes
+- `Configuration/`: reader-editable Compose reference and intended NetBird advanced routes
 
 The combined deployment evidence stays with NetBird, the primary platform owner for this bounded job, rather than being copied into a second evidence tree.
 
-## Security Boundaries
+## Network Boundaries
 
-- The NPM database, account credential, private keys, ACME account data, and Cloudflare API token stay out of this repository.
-- The live NPM SQLite database is owner-only mode `0600`; its secret-bearing contents are never captured in evidence.
-- The zone-scoped Cloudflare DNS Write token lives in 1Password as `REDACTED_1PASSWORD_ITEM_TITLE_002`; only its non-secret name and scope are documented here.
-- I retrieve Cloudflare DNS credentials from 1Password and enter them without letting them appear in screenshots, transcripts, or visible shell arguments.
 - NPM holds fixed address `172.31.85.10`; NetBird trusts only `172.31.85.10/32` as its HTTP proxy.
+- TCP 80, 81, & 443 bind on `192.168.85.2`; no WAN ingress points at the guest.
+- The Cloudflare DNS Write token is limited to the zone used for the wildcard and apex certificate.

@@ -1,9 +1,9 @@
 # Galaxy Cluster Expansion: Node Preparation and Pre-Join Remediation
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
-**Author:** REDACTED_NAME_001  
+**Author:** Duresa7  
 **Date:** 2026-05-27  
 **Status:** In progress  
 **Classification:** Internal IT Documentation
@@ -70,9 +70,9 @@ Out of scope (tracked as future work in Section 9):
 
 | Node | Role | Management IP | FQDN |
 | --- | --- | --- | --- |
-| grey-server | Existing primary | 192.168.70.10 | REDACTED_INTERNAL_DOMAIN_002 |
-| purple-server | New node | 192.168.70.11 | REDACTED_INTERNAL_FQDN_002 |
-| blue-server | New node | 192.168.70.12 | REDACTED_INTERNAL_FQDN_001 |
+| grey-server | Existing primary | 192.168.70.10 | `<YOUR_INTERNAL_DOMAIN>` |
+| purple-server | New node | 192.168.70.11 | `<YOUR_PURPLE_SERVER_FQDN>` |
+| blue-server | New node | 192.168.70.12 | `<YOUR_BLUE_SERVER_FQDN>` |
 
 I targeted a three-node cluster because it provides an odd vote count, which satisfies corosync quorum requirements and lets the cluster remain operational if a single node is lost.
 
@@ -143,7 +143,7 @@ Verification:
 
 | Field | purple-server | blue-server |
 | --- | --- | --- |
-| Hostname / FQDN | REDACTED_INTERNAL_FQDN_002 | REDACTED_INTERNAL_FQDN_001 |
+| Hostname / FQDN | `<YOUR_PURPLE_SERVER_FQDN>` | `<YOUR_BLUE_SERVER_FQDN>` |
 | IP address | 192.168.70.11 | 192.168.70.12 |
 | Netmask | 255.255.255.0 (/24) | 255.255.255.0 (/24) |
 | Gateway | 192.168.70.1 | 192.168.70.1 |
@@ -204,7 +204,7 @@ The existing node demonstrates the following baseline, which the new nodes shoul
 | PermitEmptyPasswords | no |
 | Key exchange | Modern algorithms, including post-quantum mlkem768x25519-sha256 |
 
-Authorized keys present for root: mac-air3-REDACTED_USER_001, REDACTED_SSH_KEY_LABEL_001-nopass, ansible-control, and a legacy root@REDACTED_NAME_003 RSA key.
+Authorized keys present for root: mac-air3-`<YOUR_ADMIN_USERNAME>`, `<RETIRED_ROOT_KEY_LABEL>`-nopass, ansible-control, and a legacy root@`<YOUR_RETIRED_NODE_NAME>` RSA key.
 
 ### 8.2 Firewall posture
 
@@ -231,7 +231,7 @@ Authorized keys present for root: mac-air3-REDACTED_USER_001, REDACTED_SSH_KEY_L
 ## 10. Optional Cleanup Items (Non-Blocking)
 
 - Remove the stale truenas entry from /etc/hosts on grey-server.
-- Remove the empty node directories Grey-Server and REDACTED_NAME_003 under /etc/pve/nodes.
+- Remove the empty node directories Grey-Server and `<YOUR_RETIRED_NODE_NAME>` under /etc/pve/nodes.
 - Tighten bridge-vids on grey-server from 2-4094 to the in-use set (40, 60, 65, 70, 80, 90).
 - Align grey-server FQDN domain to .galaxy for consistency with the new nodes.
 

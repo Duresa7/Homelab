@@ -1,13 +1,13 @@
 # TNIO Bot Full Corpus Audit And Capability Upgrade - 2026-05-12
 
 **Created:** 2026-05-12  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 ## Summary
 
 I implemented the full-corpus audit and accuracy-routing upgrade for the TNIO Discord bot.
 
-Using the local Google Drive connector, I confirmed the TNIO folder holds 45 active Docs/Sheets. The bot manifest on `REDACTED_OPERATIONAL_HOST` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
+Using the local Google Drive connector, I confirmed the TNIO folder holds 45 active Docs/Sheets. The bot manifest on `<YOUR_TNIO_HOST>` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
 
 ## Local Audit Artifacts
 
@@ -21,7 +21,7 @@ Connector notes:
 
 ## Bot Artifacts Added
 
-I added these runtime artifacts to `/home/REDACTED_DEPLOYMENT_USER/lore-rag/state/`:
+I added these runtime artifacts to `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
 
 - `tnio_source_authority_map.json`
 - `tnio_policy_cards.json`
@@ -32,7 +32,7 @@ These tell the bot which archive shelf is authoritative for each kind of questio
 
 ## Bot Code Changes
 
-I updated `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_agent.py`:
+I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py`:
 
 - Added corpus-artifact loading.
 - Added source authority routing for policy, roster/current office, story, profile, ownership, progression, ability, combat, engineering, faction, and casual/persona questions.
@@ -42,15 +42,15 @@ I updated `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_agent.py`:
 - Added artifact hints from curated aliases like Ghost, Racer, Moon, Sharps, Beastarius, Rakkos, Erebus, Harik, Kujan, and Operation Bastion.
 - Added stronger direct source-backed answers for Sithspawn creation so it uses Sithspawn Alchemy plus the relevant Sith Alchemy 2/3 ability rows instead of random Force ability rows.
 
-I updated `/home/REDACTED_DEPLOYMENT_USER/lore-rag/lore_mcp_server.py`:
+I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_mcp_server.py`:
 
 - Bumped `/agent-answer` cache key from `v31` to `v32` so old wrong cached answers do not survive the routing upgrade.
 
-I added `/home/REDACTED_DEPLOYMENT_USER/lore-rag/test_corpus_accuracy.py`.
+I added `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/test_corpus_accuracy.py`.
 
 ## Verification
 
-Passed on `REDACTED_OPERATIONAL_HOST`:
+Passed on `<YOUR_TNIO_HOST>`:
 
 - `python3 -m py_compile lore_agent.py lore_mcp_server.py test_accuracy_policy.py test_corpus_accuracy.py`
 - `python3 test_accuracy_policy.py`

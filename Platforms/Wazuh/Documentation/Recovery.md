@@ -20,7 +20,7 @@ My 2026-07-13 clean-removal change intentionally deleted `/var/ossec` from `app-
 - Manager rollback point: `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713` on `security-01`.
 - Endpoint recovery: install a current supported agent, enroll a new exact-name identity against `192.168.72.2`, then enable/start and verify it active.
 
-The manager backup contains sensitive enrollment material. Keep it mode 0600 and never copy it into evidence or Git. It preserves the pre-reset manager registry only; restoring it would reintroduce obsolete identities without corresponding endpoint state and is not a valid rollback for the endpoint removal. Use fresh installation and enrollment instead.
+The manager backup preserves the pre-reset registry only. Restoring it would reintroduce obsolete identities without corresponding endpoint state, so it isn't a valid rollback for the endpoint removal. Use fresh installation and enrollment instead.
 
 ## VM Network Rollback
 

@@ -1,9 +1,9 @@
 ﻿# Immich Storage Migration: WD Red Plus to Toshiba (Proxmox Grey Server)
 
 **Created:** 2026-05-28  
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-20
 
-**Author:** REDACTED_NAME_001
+**Author:** Duresa7
 **Date:** 2026-05-28
 **System:** Proxmox node grey-server, Docker-Main LXC (ID 110), Immich v2.7.5
 **Status:** Completed successfully

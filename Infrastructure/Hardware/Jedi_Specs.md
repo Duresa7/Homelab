@@ -1,7 +1,7 @@
 # PC Specifications: Jedi PC
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-18
+**Last updated:** 2026-07-20
 
 Jedi PC is my primary Windows workstation, the machine I administer the homelab from.
 
@@ -10,8 +10,8 @@ Jedi PC is my primary Windows workstation, the machine I administer the homelab 
 | Property | Value |
 |---|---|
 | Nickname | Jedi PC |
-| Computer Name | REDACTED_WORKSTATION_001 |
-| User | REDACTED_USER_001 |
+| Computer Name | `<YOUR_WORKSTATION_NAME>` |
+| User | `<YOUR_ADMIN_USERNAME>` |
 | Manufacturer | ASUS |
 | Model | System Product Name (custom build) |
 | System Type | x64-based PC |
