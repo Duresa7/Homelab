@@ -12,6 +12,7 @@ _No untriaged items._
 ## Active Priorities
 
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
+- [ ] Build the isolated security lab (malware detonation & pentest practice) per the [isolated security lab plan](Architecture/Isolated-Security-Lab.md). Planning phase: VLAN, guests, & firewall rules not yet created.
 
 ## System Backlogs
 

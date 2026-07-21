@@ -9,5 +9,6 @@ Service-specific architecture stays with the service under `Platforms/<Service>/
 
 ## Contents
 
-- [Diagrams/](Diagrams/) - Excalidraw sources & exported SVGs for `homelab-overview` and `remote-dev-pattern`
+- [Isolated Security Lab](Isolated-Security-Lab.md) - my planning-phase design for a fenced malware-detonation & pentest VLAN with no route out
+- [Diagrams/](Diagrams/) - Excalidraw sources & exported SVGs for `homelab-overview`, `remote-dev-pattern`, & `isolated-security-lab`
 - [Persistent Remote Development: My Research](Remote-AI-Development-Research-2026-07-12.md) - my 2026-07-12 comparison and selected design for an always-on development VM
