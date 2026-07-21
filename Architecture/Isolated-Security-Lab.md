@@ -46,7 +46,7 @@ Config isn't proof; I test from inside a lab guest before anything live runs. Pi
 
 ![Isolated security lab concept](Diagrams/isolated-security-lab.svg)
 
-The dashed squares are logo slots. I'll drop the product logos in from the editable source at `Diagrams/isolated-security-lab.excalidraw` on the next pass, then re-export the SVG.
+Each component carries a drawn icon. The editable source is `Diagrams/isolated-security-lab.excalidraw`; swap in exact brand logos there if I want them, then re-export the SVG.
 
 ## Related records
 
