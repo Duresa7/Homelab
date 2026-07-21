@@ -52,4 +52,5 @@ The dashed squares are logo slots. I'll drop the product logos in from the edita
 
 - [UniFi network segmentation plan](../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md): where the lab VLAN gets assigned & the firewall zones are defined.
 - [Galaxy](../Infrastructure/Compute/Galaxy/README.md): the Proxmox cluster that hosts every lab guest.
+- [Agent Sandbox](../Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md): the on-demand sandbox my AI agents drive; its untrusted lane reuses this lab's no-egress containment rules.
 - Kasm gets its own `Platforms/Kasm/` home once I deploy it. Until then the doorway design lives here.
