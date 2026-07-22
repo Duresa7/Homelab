@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 This file is my central backlog and index. It holds one active priority plus links to ten system backlogs; the implementation steps stay in the owning system's TODO.
 
@@ -21,7 +21,7 @@ _No untriaged items._
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
-| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Remaining bounded end-to-end acquisition test plus the operations backlog |
+| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: backups and restore test, capacity alerts, update cadence, and the HTTPS ingress decision |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | SIEM domain name, then a reverse proxy with a CA-signed certificate in front of the web UI |
 | [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
@@ -32,6 +32,7 @@ _No untriaged items._
 
 ## Recently Completed
 
+- [x] 2026-07-21: [Media Stack end-to-end acquisition test](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). A requested movie was acquired through the stack and plays in the Jellyfin library, closing the application onboarding project; the acquisition capture is retained locally. The operations backlog (backups, capacity, update cadence, HTTPS ingress) continues in the [platform TODO](Platforms/Media%20Stack/Documentation/TODO.md).
 - [x] 2026-07-20: [Ansible fleet update automation](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md). Two playbooks on `ansible-01`: `os-update.yml` patches 10 Linux guests through apt or dnf with report-only reboots, & `docker-compose-update.yml` pulls and recreates the compose stacks on docker-main, docker-network, & alpha-prod-01. Proxmox nodes and Windows hosts excluded by design. Verified with no-change dry runs; an independent Codex review found and I fixed four reboot-path defects.
 - [x] 2026-07-17: [Media Stack application onboarding](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). Jellyfin libraries and Quick Sync transcoding, Sonarr/Radarr media management, first Prowlarr indexer, and confirmed Seerr connections, evidenced by 16 screenshots. The bounded end-to-end acquisition test remains in the platform TODO.
 - [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and matched five retained identities to their known public fingerprints.

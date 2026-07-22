@@ -1,7 +1,7 @@
 # Media Stack Application Onboarding Evidence
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 **Capture window:** 2026-07-17, 20:08–21:14 EDT  
 **Mechanism:** Walkthrough I performed in a workstation browser against the LAN management interfaces of CT 842 `media-01`
@@ -74,4 +74,4 @@ I performed the onboarding in each application's web UI. The 16 screenshots belo
 
 ![Seerr Discover populated](Screenshots/S17-Seerr-Discover-Populated-2026-07-17.png)
 
-This set does not cover the bounded end-to-end acquisition test: every qBittorrent capture shows an empty queue, and no request, grab, import, or playback capture exists. That test remains open in the [platform TODO](../../Documentation/TODO.md).
+This set does not cover the bounded end-to-end acquisition test. That test ran on 2026-07-21: a requested movie was acquired through the stack and plays in the Jellyfin Movies library. Because the capture shows an acquired title, it is retained locally under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` rather than published here. The remaining end-to-end checks are tracked in the [platform TODO](../../Documentation/TODO.md).

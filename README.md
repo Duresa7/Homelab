@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -61,6 +61,6 @@ The guides provide the reading path. Detailed records stay with the system that 
 Current priorities from my [central TODO](TODO.md):
 
 1. Lock down MGMT-A per the [network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
-2. Run the media stack's bounded end-to-end acquisition test, then its backup and capacity work.
+2. Finish the media stack's operations backlog: backups and a restore test, capacity alerts, an update cadence, and the HTTPS ingress decision. The end-to-end acquisition test passed on 2026-07-21.
 3. Give the SIEM a proper domain name and put a reverse proxy with a CA-signed certificate in front of Splunk Web.
 4. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.

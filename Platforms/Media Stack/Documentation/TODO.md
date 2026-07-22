@@ -1,7 +1,7 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 ## Acquisition Test
 
@@ -12,7 +12,8 @@ Completed items are recorded with evidence in the [application onboarding change
 - [x] 2026-07-17: Confirmed the migrated Seerr connections to Jellyfin, Sonarr, and Radarr through the completed setup wizard.
 - [x] 2026-07-17: Added the first indexer to Prowlarr with the Standard sync profile.
 - [x] 2026-07-17: Left the `flaresolverr` tag intentionally unapplied: the configured indexer needs no challenge handling; I apply it only when a compatible indexer does.
-- [ ] Run one bounded television and movie test through request, search, qBittorrent, import, and Jellyfin visibility; during this test also verify Sonarr hard-link import, decide the season-folder and release-group naming refinements from the settings research, and confirm GPU-active playback.
+- [x] 2026-07-21: Ran the bounded end-to-end acquisition test. A requested movie was acquired through the stack and plays in the Jellyfin Movies library, marked watched; the capture is retained locally in `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/`. The retained artifact is the Jellyfin library view; I kept no separate capture of the television hard-link import, GPU-active playback, or the qBittorrent payload-filter comparison.
+- [ ] Record the season-folder and release-group naming refinement decision from the [media settings research](Media%20Settings%20Research%20-%202026-07-17.md).
 
 ## Backups, Capacity & Updates
 

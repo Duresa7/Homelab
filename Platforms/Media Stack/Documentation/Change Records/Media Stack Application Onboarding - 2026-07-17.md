@@ -1,11 +1,11 @@
 # Media Stack Application Onboarding
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
-**Status:** Complete; the bounded end-to-end acquisition test remains open in the [platform TODO](../TODO.md)
+**Status:** Complete. The bounded end-to-end acquisition test ran on 2026-07-21 and the movie acquisition path is confirmed working; the retained capture is the Jellyfin movie library.
 
 ## Scope
 
@@ -226,9 +226,11 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
 - There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both health pages.
 
-## Pending Acquisition Test
+## End-to-End Acquisition Test
 
-The bounded end-to-end test remains open in the [platform TODO](../TODO.md): one television & one movie request through Seerr, Prowlarr search, qBittorrent transfer inside the VPN namespace, hard-link import, & Jellyfin playback with the GPU active. During the transfer I will compare qBittorrent's Content list with the payload filter. FlareSolverr validation remains pending until an indexer requires challenge handling.
+On 2026-07-21 I ran the bounded end-to-end test. A requested movie was acquired through the stack and played from the Jellyfin `Movies` library, marked watched; that capture is retained locally under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` because it shows an acquired title. The acquisition path is confirmed working end to end.
+
+The retained artifact is the Jellyfin library view. I kept no separate capture of the television request and Sonarr hard-link import, GPU-active playback, or the qBittorrent payload-filter comparison during a transfer, and the season-folder and release-group naming refinement from the [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) still needs a recorded decision. FlareSolverr validation stays pending until an indexer requires challenge handling.
 
 ## Rollback
 
