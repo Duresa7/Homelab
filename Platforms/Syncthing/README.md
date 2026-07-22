@@ -31,6 +31,6 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 ## Key Records
 
 - [Deployment and operations](Documentation/Deployment.md)
+- [Add another Windows, macOS, or Linux device](Documentation/Adding%20a%20Device.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform TODO](Documentation/TODO.md)
-

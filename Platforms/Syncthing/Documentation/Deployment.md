@@ -110,5 +110,5 @@ On Windows, remove folder `obsidian-the-vault` from Syncthing, remove the `docke
 
 ## Remaining Work
 
-- Pair the laptop after its operating system, local vault path, & network access are known.
+- Pair the laptop after its operating system, local vault path, & network access are known. The repeatable process is in [Adding a Device to the Obsidian Vault](Adding%20a%20Device.md).
 - Add a recurring backup that can recover data after a synchronized deletion or corrupted write.
