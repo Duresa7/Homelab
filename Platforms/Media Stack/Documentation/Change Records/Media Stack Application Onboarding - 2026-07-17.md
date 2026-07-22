@@ -224,13 +224,13 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 - The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. At the 2026-07-21 end-to-end test the episode imported and hard-linked correctly under the current scheme, so I declined that refinement and kept `Season {season}` without the release group.
 - Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I confirmed Sonarr hard-linking and GPU-active playback at the 2026-07-21 end-to-end test.
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
-- There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both health pages.
+- There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the 2026-07-21 acquisition test ran through both applications without a separate indexer-health capture.
 
 ## End-to-End Acquisition Test
 
 On 2026-07-21 I ran the bounded end-to-end test in full. I requested a television episode and a movie, watched both acquire through Prowlarr search and the qBittorrent client inside the VPN namespace, compared qBittorrent's Content list against the payload filter during the transfer, confirmed the Sonarr and Radarr hard-link imports, and confirmed GPU-active playback in Jellyfin. The acquisition path works end to end.
 
-The one retained capture is the Jellyfin `Movies` library, kept local under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` because it shows an acquired title. FlareSolverr validation stays pending until an indexer requires challenge handling.
+The one retained capture is the Jellyfin `Movies` library, kept local under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` because it shows an acquired title. FlareSolverr is validated in use: an indexer that requires Cloudflare challenge handling now runs through it.
 
 ## Rollback
 

@@ -1,11 +1,11 @@
 # Media Stack Deployment
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
-**Status:** Infrastructure operational; application onboarding completed 2026-07-17 ([onboarding record](Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md)); end-to-end acquisition test pending
+**Status:** Infrastructure operational; application onboarding completed 2026-07-17 ([onboarding record](Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md)); end-to-end acquisition test passed 2026-07-21
 
 ## Scope
 

@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -9,7 +9,7 @@ I run request management, media playback, release automation, indexer coordinati
 
 | Item | Current value |
 | --- | --- |
-| Deployment status | Applications onboarded 2026-07-17; bounded end-to-end acquisition test pending. Containers, Proton VPN tunnel, provider-side port forwarding, Sonarr/Radarr download-client links, Jellyfin libraries and QSV transcoding, first Prowlarr indexer, and Seerr connections verified |
+| Deployment status | Applications onboarded 2026-07-17; bounded end-to-end acquisition test passed 2026-07-21. Containers, Proton VPN tunnel, provider-side port forwarding, Sonarr/Radarr download-client links, Jellyfin libraries and QSV transcoding, Prowlarr indexers, and Seerr connections verified |
 | Compute | Galaxy CT 842 `media-01` on `red-server` |
 | Guest network | VLAN 40; address `192.168.40.42` |
 | Guest resources | 4 vCPU, 8 GiB memory, 1 GiB swap, 100 GiB local root volume |
@@ -27,7 +27,7 @@ I run request management, media playback, release automation, indexer coordinati
 | Sonarr | Television automation | 8989 |
 | Radarr | Movie automation | 7878 |
 | Prowlarr | Indexer coordination | 9696 |
-| FlareSolverr | Configured tagged challenge proxy for compatible indexers; real-indexer validation pending | Internal only |
+| FlareSolverr | Tagged challenge proxy; validated in use against an indexer that requires Cloudflare challenge handling | Internal only |
 | qBittorrent | Download client | 8080 through Gluetun |
 | Gluetun | Proton WireGuard tunnel, firewall kill switch, and provider-side port forwarding | Owns qBittorrent's network namespace |
 
