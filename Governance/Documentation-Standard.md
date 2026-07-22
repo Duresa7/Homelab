@@ -1,21 +1,11 @@
 # Documentation Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 ## Purpose
 
 I use this standard for change records, walkthroughs, incident reports, evidence links, filenames, & metadata. Small experiments need one operating record. A security platform needs dependencies, recovery steps, validation, resource specifications, & dated change records.
-
-## Voice
-
-I write in my own first person. "I changed the rule" names who did the work; "the operator changed the rule" doesn't. I don't credit an AI as author, preparer, reviewer, or commit co-author.
-
-Every technical claim carries something a reader can check: a version, address, port, host, date, command result, file path, or measured count. Short sentences state the result. Longer sentences explain the mechanism & the check that proved it.
-
-I use contractions in normal prose, vary sentence length, & keep headings literal. Repository prose has no emoji, em dash characters, filler, intensifiers, generic transitions, dramatic headings, repeated conclusions, or claims that end without a fact.
-
-Examples name the missing value with placeholders such as `<YOUR_WAN_IP>`, `<YOUR_ADMIN_USERNAME>`, & `<YOUR_NETBIRD_DOMAIN>`. Markdown prose wraps each placeholder in backticks. Executable examples keep the raw placeholder when backticks would change the syntax.
 
 ## Work Terms
 
@@ -79,8 +69,6 @@ Raw `smartctl` output goes unchanged under `Operations/Diagnostics/SMART/`, foll
 
 I collect evidence when each implementation, migration, repair, or troubleshooting step completes. Waiting until the end loses the command, failure, or UI state that explains the result.
 
-Plans number steps like a guide: `Step N` is a titled phase and `Step N.M` is a concrete instruction within it. Evidence filenames carry the step number as an `S` prefix: `S01`, `S03.2`, or `S05A` for work inserted between planned steps.
-
 For a new deployment, I capture the validated state after each material graphical step. A fabricated before state proves nothing. For a change to existing state, I retain a before-and-after pair when both states show a real difference.
 
 For each material step I:
@@ -105,7 +93,7 @@ Terminal screenshots may supplement a transcript, but they don't replace the exa
 
 The owning change record links each screenshot, command transcript, or request export to the verification it supports. A separate evidence table is optional when the walkthrough already maps every step. If a capture adds no information or can't be made, I record the reason in that step.
 
-When a public example requires a reader-supplied value, I use a contextual placeholder that names the value's role. I don't publish a live value or turn its omission into a separate explanation.
+When a public example requires a reader-supplied value, I use a contextual placeholder that names the value's role, such as `<YOUR_WAN_IP>`, `<YOUR_ADMIN_USERNAME>`, or `<YOUR_NETBIRD_DOMAIN>`. Markdown prose wraps each placeholder in backticks; executable examples keep the raw placeholder when backticks would change the syntax. I don't publish a live value or turn its omission into a separate explanation.
 
 ## Troubleshooting Records
 

@@ -1,7 +1,7 @@
 # Linux Host Baseline Standard
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-21
 
 Every Linux VM or LXC I provision gets this baseline before it carries a workload or enters the SSH Manager inventory. This file defines the required end state. Windows hosts are out of scope and follow their records under `Platforms/Windows Servers/`.
 
@@ -47,6 +47,6 @@ Confirm each result before declaring the host ready:
 
 ## Operating Decisions
 
-- NOPASSWD is the fleet default because SSH Manager & `ansible-control` run unattended privileged commands. I record a host-level exception with that host.
+- NOPASSWD is the fleet default because SSH Manager & `ansible-01` run unattended privileged commands. I record a host-level exception with that host.
 - `docker-network` LXC CTID 107 is the reference implementation for this baseline.
 - I still apply these controls per host. A future cloud-init snippet or Ansible playbook belongs under `Engineering/Automation/` and must use this file as its specification.
