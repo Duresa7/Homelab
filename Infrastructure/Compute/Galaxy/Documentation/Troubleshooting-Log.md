@@ -12,7 +12,7 @@ This is my chronological troubleshooting record for the Galaxy Proxmox cluster. 
 | 1 | 2026-07-13 | Proxmox reported `blue-server` as `unknown` while its guests remained online | `pvestatd` repeatedly crashes and does not restart; the deeper cause is not yet proven | Known issue; deferred |
 | 2 | 2026-07-15 | GNOME showed a question mark for wired networking on `debian-dev` although internet access worked | `ens18` was owned by legacy ifupdown/dhcpcd and therefore appeared unmanaged to NetworkManager | Resolved |
 | 3 | 2026-07-15 | `apt update` emitted repeated duplicate-target warnings for the 1Password repository | Equivalent legacy `.list` and maintained deb822 `.sources` entries were both active | Resolved |
-| 4 | 2026-07-15 | Claude Desktop would not persist sign-in and Cowork could not use `/dev/kvm` on `debian-dev` | Claude first created the login keyring after session authentication; `<YOUR_ADMIN_USERNAME>` was also absent from `kvm` | Repair applied; login cycle required |
+| 4 | 2026-07-15 | Claude Desktop would not persist sign-in and Cowork could not use `/dev/kvm` on `debian-dev` | A fresh GNOME login activated the login keyring & `kvm` group membership; Claude now saves sign-in & Cowork can use `/dev/kvm` | Resolved |
 | 5 | 2026-07-20 | CT 107 `docker-network` & CT 108 `docker-blue` down and stuck in HA `error` on purple-server; couldn't migrate back to blue | HA relocated the configs off blue on a shutdown, but the guests' `local-lvm` disks stayed on blue, so no node could start them | Resolved |
 | 6 | 2026-07-22 | HA reported `grey-server` with `old timestamp - dead?`, `watchdog standby`, & a 2025-08-22 LRM timestamp | Grey's `pve-ha-lrm` & `pve-ha-crm` units were disabled and hadn't started during the current boot | Resolved |
 
@@ -146,7 +146,8 @@ I copied the legacy file to root-only rollback path `/root/apt-source-backups/1p
 
 **Investigated:** 2026-07-15  
 **Owner:** Galaxy VM 102 / `debian-dev`  
-**Status:** Repair applied; final verification awaits a fresh GNOME login
+**Resolved:** 2026-07-22  
+**Status:** Resolved
 
 ### Reproduction
 
@@ -162,13 +163,13 @@ The virtualization problem was independent and direct: `/dev/kvm` was correctly 
 
 ### Corrective action
 
-I added `<YOUR_ADMIN_USERNAME>` to group `kvm`. I didn't change the keyring packages, PAM files, or keyring database. A blank unlock probe didn't export the new login collection, so the remaining test requires a normal GNOME sign-out and sign-in.
+I added `<YOUR_ADMIN_USERNAME>` to group `kvm`. I didn't change the keyring packages, PAM files, or keyring database. A blank unlock probe didn't export the new login collection, so I completed a normal GNOME sign-out & sign-in to create a session with the updated group list & an initialized login collection.
 
-### Verification state
+### Verification
 
-The account database reports `kvm:x:993:<YOUR_ADMIN_USERNAME>`, and the KVM device, CPU feature, and kernel modules all passed. The currently running GNOME Shell retains its old supplementary group list, so to activate both fixes I need to save my work, sign out, sign back in with the normal account password, and relaunch Claude.
+The account database reported `kvm:x:993:<YOUR_ADMIN_USERNAME>`, and the KVM device, CPU feature, & kernel modules passed before the session restart. After the fresh GNOME login on 2026-07-22, Claude retained sign-in & Cowork used `/dev/kvm` without the prior permission error.
 
-After that cycle, verification must show group 993 on the new GNOME process, an exported login Secret Service collection, no new Claude `isEncryptionAvailable=false` warning, and successful Cowork access to `/dev/kvm`.
+I retained no new terminal transcript or screenshot from the final interactive check. The closure evidence is the observed application behavior: the Claude sign-in survives relaunch & Cowork's KVM workflow opens without the original warning.
 
 ## 5. HA Local-Storage Stranding of CT 107 and CT 108 After a Blue-Server Shutdown
 
