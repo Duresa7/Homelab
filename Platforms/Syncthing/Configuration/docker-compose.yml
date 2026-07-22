@@ -1,0 +1,27 @@
+name: syncthing
+
+services:
+  syncthing:
+    image: syncthing/syncthing:2.1.2
+    container_name: syncthing
+    hostname: docker-main-syncthing
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      STGUIADDRESS: ""
+      TZ: America/New_York
+    volumes:
+      - /opt/docker/syncthing/config:/var/syncthing/config
+      - /data/syncthing:/var/syncthing/data
+    network_mode: host
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -q OK
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 20s

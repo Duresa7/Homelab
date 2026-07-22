@@ -45,6 +45,16 @@
 /Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/*
 !/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/Screenshots/
 
+# Syncthing deployment evidence records
+!/Platforms/Syncthing/Evidence/
+/Platforms/Syncthing/Evidence/*
+!/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/
+/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/*
+!/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Evidence-Index.md
+!/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Logs/
+/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Logs/*
+!/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Logs/Syncthing-Deployment-Verification-2026-07-22.txt
+
 # Media Stack evidence records (exact screenshot filenames are allowlisted per directory)
 !/Platforms/Media Stack/Evidence/
 /Platforms/Media Stack/Evidence/*

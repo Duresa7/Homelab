@@ -22,6 +22,7 @@ _No untriaged items._
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: configuration backup and restore test, NVMe/HDD capacity alerts, update cadence, & the HTTPS ingress decision |
+| [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | SIEM domain name, then a reverse proxy with a CA-signed certificate in front of the web UI |
 | [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
@@ -32,6 +33,7 @@ _No untriaged items._
 
 ## Recently Completed
 
+- [x] 2026-07-22: [Syncthing Obsidian vault deployment](Platforms/Syncthing/Documentation/Deployment.md). I deployed Syncthing 2.1.2 on `docker-main`, paired the Windows vault over direct TLS 1.3, matched a 14-file, 6,425,692-byte canonical manifest on both peers, proved both transfer directions, & retained a deleted test file through 90-day staggered versioning.
 - [x] 2026-07-22: [Media Stack HDD data migration](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md). I moved 10,615,586,954 logical bytes from CT 842's NVMe root to a 1 TB ext4 HDD, preserved all 19 file hashes & metadata, proved hard links and Quick Sync output on the new filesystem, blocked startup when the disk was absent, & reclaimed 9.9 GiB from NVMe.
 - [x] 2026-07-21: [Media Stack end-to-end acquisition test](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). A television episode and a movie were acquired through the stack, hard-link imported, and played from Jellyfin with the GPU active, closing the application onboarding project; the acquisition capture is retained locally. The operations backlog (backups, capacity, update cadence, HTTPS ingress) continues in the [platform TODO](Platforms/Media%20Stack/Documentation/TODO.md).
 - [x] 2026-07-20: [Ansible fleet update automation](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md). Two playbooks on `ansible-01`: `os-update.yml` patches 10 Linux guests through apt or dnf with report-only reboots, & `docker-compose-update.yml` pulls and recreates the compose stacks on docker-main, docker-network, & alpha-prod-01. Proxmox nodes and Windows hosts excluded by design. Verified with no-change dry runs; an independent Codex review found and I fixed four reboot-path defects.

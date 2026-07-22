@@ -1,0 +1,83 @@
+Captured: 2026-07-22 America/New_York
+Capture time: The exact wall-clock time wasn't retained by the local shell or SSH execution results.
+Targets: docker-main (192.168.40.35) and D:\Documents\Vault-DK\The Vault
+Evidence type: Historical verification summary followed by fresh exact command transcripts
+
+Historical verification summary
+
+I did not retain exact terminal or API transcripts for the initial inspection, deployment,
+pairing, round-trip file test, or restart test. The following values are observations recorded
+during that work, not reconstructed command output.
+
+Starting state
+- Vault files: 15
+- Vault directories: 6
+- Vault bytes: 6,430,745
+- docker-main root: 35 percent used, 62 GiB available
+- docker-main /data: 78 percent used, 398 GiB available
+- Conflicting Syncthing listeners on docker-main: 0
+
+Pre-sync backup
+- Path: D:\Documents\Vault-DK\Backups\The Vault - Pre-Syncthing - 2026-07-22.zip
+- Archive bytes: 3,162,663
+- Archive entries: 22
+- .obsidian present: true
+
+Round-trip and restart observations
+- A 48-byte server-created file reached Windows.
+- Verification SHA-256: cfadef558503607980c41560476df51c2bb1a3b005000ad1f6f9e00f8f30e097
+- Its Windows-side deletion reached the server.
+- Staggered versioning retained .syncthing-verification-20260722~20260722-035101.txt.
+- The Compose restart completed, the container returned healthy, and the peer reconnected directly.
+
+Correction made during fresh verification
+- The earlier summary called 15 files and 6,425,821 bytes the included dataset.
+- That count included the 129-byte .stfolder sentinel on docker-main.
+- The synchronized user/config dataset is 14 files and 6,425,692 bytes after excluding
+  .stfolder, .stignore, and the workspace ignore rules.
+
+Fresh Windows verification transcript
+
+Execution mechanism: Windows PowerShell through the local shell tool
+Shell: PowerShell
+Working directory: D:\Documents\Homelab
+Command:
+$vault = 'D:\Documents\Vault-DK\The Vault'; $files = Get-ChildItem -LiteralPath $vault -Recurse -File | Where-Object { $relative = $_.FullName.Substring($vault.Length + 1).Replace('\','/'); $relative -notin @('.stignore','.obsidian/workspace.json','.obsidian/workspace-mobile.json') -and $relative -notlike '.stfolder/*' } | Sort-Object { $_.FullName.Substring($vault.Length + 1).Replace('\','/') }; $manifest = (($files | ForEach-Object { $relative = $_.FullName.Substring($vault.Length + 1).Replace('\','/'); '{0}  {1}' -f (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant(), $relative }) -join "`n") + "`n"; $manifestHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($manifest))).ToLowerInvariant(); $zip = Get-Item -LiteralPath 'D:\Documents\Vault-DK\Backups\The Vault - Pre-Syncthing - 2026-07-22.zip'; Add-Type -AssemblyName System.IO.Compression.FileSystem; $archive = [IO.Compression.ZipFile]::OpenRead($zip.FullName); try { $zipEntries = $archive.Entries.Count; $hasObsidian = [bool]($archive.Entries | Where-Object FullName -like '*/.obsidian/*') } finally { $archive.Dispose() }; $connections = (& "$env:LOCALAPPDATA\Microsoft\WinGet\Links\syncthing.exe" cli show connections | ConvertFrom-Json).connections.PSObject.Properties.Value | Where-Object { $_.connected -and $_.address -like '192.168.40.35:*' } | Select-Object -First 1; [pscustomobject]@{IncludedFiles=$files.Count; IncludedBytes=($files | Measure-Object Length -Sum).Sum; ManifestSHA256=$manifestHash; BackupBytes=$zip.Length; BackupEntries=$zipEntries; BackupHasObsidian=$hasObsidian; ServerConnected=$connections.connected; ServerAddress=$connections.address; ServerVersion=$connections.clientVersion; Transport=$connections.crypto; ConnectionType=$connections.type} | Format-List
+
+stdout:
+IncludedFiles     : 14
+IncludedBytes     : 6425692
+ManifestSHA256    : b00c4ff828260190c624a27dc664c9e689044ca82360b5727582fb51e03e3edc
+BackupBytes       : 3162663
+BackupEntries     : 22
+BackupHasObsidian : True
+ServerConnected   : True
+ServerAddress     : 192.168.40.35:22000
+ServerVersion     : v2.1.2
+Transport         : TLS1.3-TLS_AES_128_GCM_SHA256
+ConnectionType    : tcp-client
+
+stderr: empty
+Exit code: 0
+
+Fresh docker-main verification transcript
+
+Execution mechanism: SSH Manager MCP ssh_execute
+Server: docker_main
+Shell: /bin/sh
+Working directory requested: /
+Command executed by SSH Manager:
+cd / && set -eu; cd /data/syncthing/vaults/the-vault; manifest=$(mktemp); trap 'rm -f "$manifest"' EXIT; LC_ALL=C find . -type f ! -path './.stfolder' ! -path './.stfolder/*' ! -path './.stignore' ! -path './.obsidian/workspace.json' ! -path './.obsidian/workspace-mobile.json' -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sed 's#  \./#  #' > "$manifest"; printf 'IncludedFiles: '; wc -l < "$manifest"; printf 'IncludedBytes: '; find . -type f ! -path './.stfolder' ! -path './.stfolder/*' ! -path './.stignore' ! -path './.obsidian/workspace.json' ! -path './.obsidian/workspace-mobile.json' -printf '%s\n' | awk '{s+=$1} END {print s}'; printf 'ManifestSHA256: '; sha256sum "$manifest" | awk '{print $1}'; printf 'ArchivedVersion: '; find /data/syncthing/versions/the-vault -type f -name '.syncthing-verification-*' -printf '%f\n'; printf 'ArchivedSHA256: '; find /data/syncthing/versions/the-vault -type f -name '.syncthing-verification-*' -exec sha256sum {} \; | awk '{print $1}'; cd /opt/docker/syncthing; docker compose config -q; printf 'ComposeConfig: valid\n'; docker inspect --format 'ContainerState: {{.State.Status}}; Health: {{.State.Health.Status}}; Restarts: {{.RestartCount}}; Image: {{.Config.Image}}' syncthing; printf 'ComposeSHA256: '; sha256sum docker-compose.yml | awk '{print $1}'
+
+stdout:
+IncludedFiles: 14
+IncludedBytes: 6425692
+ManifestSHA256: b00c4ff828260190c624a27dc664c9e689044ca82360b5727582fb51e03e3edc
+ArchivedVersion: .syncthing-verification-20260722~20260722-035101.txt
+ArchivedSHA256: cfadef558503607980c41560476df51c2bb1a3b005000ad1f6f9e00f8f30e097
+ComposeConfig: valid
+ContainerState: running; Health: healthy; Restarts: 0; Image: syncthing/syncthing:2.1.2
+ComposeSHA256: deedb6cec5e1d82c4add632857043cc99a9a2e38b1b494ba0ed8dbae19b5bce8
+
+stderr: empty
+Exit code: 0
