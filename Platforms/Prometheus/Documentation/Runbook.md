@@ -1,7 +1,7 @@
 ﻿# Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Health Check
 
@@ -34,6 +34,8 @@ Restore the latest validated host-side backup to `/home/<YOUR_ADMIN_USERNAME>/mo
 
 ## User Endpoints
 
-- Prometheus: `http://192.168.72.2:9090/`
-- Grafana: `http://192.168.72.2:3000/`
+- Prometheus: `https://prometheus.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.72.2:9090/`
+- Grafana: `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.72.2:3000/`
 - Node metrics are backend endpoints and should be queried through Prometheus except during diagnostics.
+
+Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM is the only approved cross-zone source to TCP 443, 3000, & 9090 on `security-01` for these interfaces.

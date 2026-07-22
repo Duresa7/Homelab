@@ -25,4 +25,4 @@ Completed items are recorded with evidence in the [application onboarding change
 - [ ] Add backups for `/opt/media-stack/config` & perform a restore test; `/data` holds replaceable media & remains excluded.
 - [ ] Add separate capacity alerts for the 100 GiB NVMe root & the HDD-backed `/data` filesystem.
 - [ ] Define a maintenance cadence for the intentionally floating `latest` image tags.
-- [ ] Decide whether LAN management interfaces should move behind authenticated HTTPS ingress.
+- [x] 2026-07-22: Published Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, & qBittorrent through internal HTTPS on NPM. Direct IP access remains available. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).

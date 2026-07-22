@@ -11,6 +11,7 @@ _No untriaged items._
 
 ## Active Priorities
 
+- [ ] Complete the authenticated application and VPN-client acceptance checks for [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). DNS, TLS, proxy routing, public NXDOMAIN, zero WAN port forwards, & restart recovery are already verified.
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Build the isolated security lab (malware detonation & pentest practice) per the [isolated security lab plan](Architecture/Isolated-Security-Lab.md). Planning phase: VLAN, guests, & firewall rules not yet created.
 
@@ -21,13 +22,13 @@ _No untriaged items._
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
-| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: configuration backup and restore test, NVMe/HDD capacity alerts, update cadence, & the HTTPS ingress decision |
+| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: configuration backup and restore test, NVMe/HDD capacity alerts, & update cadence; internal HTTPS completed 2026-07-22 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
-| [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | SIEM domain name, then a reverse proxy with a CA-signed certificate in front of the web UI |
+| [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
 | [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
-| [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
+| [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | Internal HTTPS infrastructure is live; authenticated application workflows and an actual VPN-client acceptance path remain open |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | No open baseline items; future monitoring changes land here first |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 

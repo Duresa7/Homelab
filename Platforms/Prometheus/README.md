@@ -21,7 +21,7 @@ I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the se
 
 | Item | Value |
 |---|---|
-| Prometheus UI | `http://192.168.72.2:9090/` |
+| Prometheus UI | `https://prometheus.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback `http://192.168.72.2:9090/` |
 | Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml` on `security-01` |
 | Container configuration | `/etc/prometheus/prometheus.yml` |
 | Versioned configuration | [prometheus.yml](Configuration/prometheus.yml) |
@@ -29,3 +29,5 @@ I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the se
 | Current targets | `security-01`, `edge-01`, four Galaxy Proxmox nodes, Proxmox API exporter |
 
 In the 2026-07-13 baseline cleanup I installed the three missing Proxmox exporters, removed stale scrape jobs, and confirmed all seven retained jobs `UP`. See [Security Monitoring Baseline Cleanup - 2026-07-13](Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
+
+On 2026-07-22 I set Prometheus's external URL to `https://prometheus.<YOUR_BASE_DOMAIN>` and published it through internal NPM. Grafana uses `https://grafana.<YOUR_BASE_DOMAIN>`. The route, certificate, firewall, & rollback details are in [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).

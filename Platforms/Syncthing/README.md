@@ -19,7 +19,7 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 | Windows vault | `D:\Documents\Vault-DK\The Vault` |
 | Folder ID | `obsidian-the-vault` |
 | Version retention | Staggered, 90 days |
-| GUI | `127.0.0.1:8384` on each peer |
+| GUI | Server: `https://syncthing.<YOUR_BASE_DOMAIN>` through NPM; Windows: `127.0.0.1:8384` |
 | Transfer listeners | TCP/UDP 22000; UDP 21027 discovery |
 
 ## Layout
@@ -34,3 +34,4 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 - [Add another Windows, macOS, or Linux device](Documentation/Adding%20a%20Device.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform TODO](Documentation/TODO.md)
+- [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

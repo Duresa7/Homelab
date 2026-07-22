@@ -18,6 +18,7 @@ docker inspect -f 'status={{.State.Status}} health={{if .State.Health}}{{.State.
 curl -sS -o /dev/null -w 'admin_http=%{http_code}\n' http://127.0.0.1:81/
 curl -sS -o /dev/null -w 'http_entry=%{http_code}\n' http://127.0.0.1/
 curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://<YOUR_NETBIRD_DOMAIN>/
+docker exec nginx-proxy-manager nginx -t
 ```
 
 Expected baseline:
@@ -27,6 +28,7 @@ Expected baseline:
 - Restart policy is `unless-stopped`.
 - The administrator UI returns HTTP `200`.
 - The NetBird HTTPS host returns a successful application response and presents the certificate expiring `2026-10-08 23:49:46 UTC`.
+- Each host in the [internal proxy inventory](../Configuration/internal-proxy-hosts.md) returns 200 or an expected application redirect. None returns 502 or 504.
 
 The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. An early API-login attempt returned HTTP `400`, so I use the verified browser path for administrator changes.
 
@@ -53,6 +55,14 @@ docker compose ps
 ```
 
 After a restart I wait for `healthy`, test port 81, and test every configured proxy host. For NetBird I validate certificate presentation, Force SSL, the authenticated dashboard, and the generated OAuth2, WebSocket, management, signal, and gRPC routes. I validate peer-dependent traffic after a peer is enrolled.
+
+For the internal application set I also verify that UniFi resolves every name to `192.168.85.2`, HTTP redirects to HTTPS, the wildcard certificate validates, & Cloudflare's public resolver returns NXDOMAIN. I keep the administrator UI at `http://192.168.85.2:81`.
+
+## Internal Application Hosts
+
+The [internal proxy-host inventory](../Configuration/internal-proxy-hosts.md) is the current mapping of names, schemes, upstreams, ports, & application-specific settings. When I add or change one host I update that inventory, the UniFi local-DNS record, & the narrow NPM-to-backend firewall policy together.
+
+I don't add database, Redis, exporter, agent, SSH, HEC, syslog, or synchronization ports to NPM. Direct IP-and-port access remains the rollback path.
 
 ## Recreate or Verify the NetBird Proxy Host
 

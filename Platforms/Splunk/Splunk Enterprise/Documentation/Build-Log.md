@@ -462,6 +462,12 @@ I changed the UniFi console's SIEM export destination to `192.168.72.3:1514`. A 
 
 The Security-A VM runs Splunk Enterprise 10.4.0. UniFi sends CEF to SC4S at `192.168.72.3:1514`; SC4S forwards through HEC, & Splunk stores the events in `netops`. Planned follow-ups are tracked in [TODO.md](TODO.md).
 
+## 2026-07-22: Internal HTTPS name
+
+I published Splunk Web at `https://splunk.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager. UniFi resolves the name only on the internal resolver and permits NPM at `192.168.85.2` only to the existing HTTPS listener on TCP 8000. NPM presents the Let's Encrypt wildcard certificate and forces HTTPS. Splunk's self-signed listener remains the upstream transport and direct rollback path.
+
+The change didn't publish HEC 8088, management 8089, SC4S 1514, or any data input. The new name returned the Splunk login page with HTTP 200, public DNS returned NXDOMAIN, & the route survived a controlled NPM restart. See [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
 ---
 
 ## References

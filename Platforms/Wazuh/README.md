@@ -23,12 +23,12 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 
 | Service | Endpoint | Use |
 |---|---|---|
-| Wazuh dashboard | `https://192.168.72.2/` | Human web interface |
+| Wazuh dashboard | `https://wazuh.<YOUR_BASE_DOMAIN>/`; direct fallback `https://192.168.72.2/` | Human web interface through internal NPM |
 | Wazuh API | `https://192.168.72.2:55000/` | Authenticated API |
 | Agent events | `192.168.72.2:1514/tcp` | Enrolled agent traffic |
 | Agent enrollment | `192.168.72.2:1515/tcp` | New agent registration |
 
-The dashboard uses its current self-signed certificate. An HTTP `302` from the dashboard and HTTP `401` from the unauthenticated API root are expected healthy responses.
+NPM presents the Let's Encrypt wildcard certificate to internal dashboard clients and connects to Wazuh's existing HTTPS 443 listener. The direct dashboard still uses its current self-signed certificate. An HTTP `302` from the dashboard and HTTP `401` from the unauthenticated API root are expected healthy responses. The API and agent ports aren't published through NPM. See [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 ## Current Agent State
 

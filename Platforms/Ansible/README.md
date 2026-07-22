@@ -11,7 +11,7 @@ I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-
 - Project: `/home/ansible/ssh-key-automation`
 - Execution account: `ansible`
 - Ansible: community package 14.2.0 with ansible-core 2.21.2
-- Semaphore: 2.18.27 at `http://192.168.40.36:3000`
+- Semaphore: 2.18.27 at `https://semaphore.<YOUR_BASE_DOMAIN>` through NPM; direct fallback `http://192.168.40.36:3000`
 - Boot behavior: Proxmox starts LXC 100 automatically; systemd starts Semaphore inside it
 - Source of truth: [SSH identity automation source](Source/ssh-key-automation/README.md)
 
@@ -40,3 +40,4 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 - [SSH identity automation implementation](Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
 - [Ansible and Semaphore upgrade](Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
 - [Fleet update automation](Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md)
+- [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

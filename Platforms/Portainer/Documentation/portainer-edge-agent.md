@@ -1,7 +1,7 @@
 # Portainer Edge Agent Setup
 
 **Created:** 2026-04-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 **Implementation date:** 2026-04-14  
 **Status:** Complete  
@@ -30,10 +30,12 @@ VLAN 40 (Personal-A)          VLAN 80 (<YOUR_ORG_NAME>-Servers)
          ▲
          │
     Browser access
-    https://192.168.40.35:9443
+    https://portainer.<YOUR_BASE_DOMAIN>
 ```
 
 ## Portainer Server (docker-main)
+
+The browser UI uses `https://portainer.<YOUR_BASE_DOMAIN>` through internal NPM. NPM connects to the existing HTTPS listener on `192.168.40.35:9443`; direct access remains the rollback path. This doesn't change the Edge Agent tunnel on TCP 8000. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 **Path:** `/opt/docker/portainer/docker-compose.yml`
 

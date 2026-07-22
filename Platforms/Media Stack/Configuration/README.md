@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -26,3 +26,9 @@ upnp=False
 Then I compare qBittorrent's listening port with Gluetun's `/gluetun/forwarded_port`. I do not weaken authentication for other source networks.
 
 The live qBittorrent configuration also enables `excluded_file_names_enabled` with the 100-pattern baseline documented in my [payload-filtering research](../Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). This setting belongs to qBittorrent rather than Compose because the Web API and WebUI serialize it.
+
+## Internal HTTPS
+
+Jellyfin advertises `JELLYFIN_PUBLISHED_SERVER_URL` as its internal HTTPS URL and trusts NPM at `192.168.85.2`. qBittorrent's persistent `WebUI\ServerDomains` list includes `qbittorrent.<YOUR_BASE_DOMAIN>`. UniFi resolves all six media UI names to NPM and permits NPM only to TCP 5055, 7878, 8080, 8096, 8989, & 9696 on `media-01`.
+
+The names, upstreams, verification, & rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
