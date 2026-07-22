@@ -1,7 +1,7 @@
 # PC Specifications: Jedi PC
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 Jedi PC is my Windows 11 Pro administration workstation. It has a 16-core Ryzen 9 9950X3D, 32 GB of DDR5, an RTX 5070 Ti, two 2 TB NVMe drives, & a 2.5 Gbps Ethernet adapter.
 
@@ -81,3 +81,7 @@ The modules are rated for 6000 MT/s (DDR5); they currently run at 4800 MT/s.
 | Adapter | Device Name | Link Speed |
 |---|---|---|
 | Ethernet | Realtek PCIe 2.5GbE Family Controller | 2.5 Gbps |
+
+## Power
+
+Jedi PC is connected to [UPS-01](Power.md), an APC Back-UPS Pro BR1500MS2 rated for 1500 VA / 900 W. `red-server` shares the reported UPS-01 load.
