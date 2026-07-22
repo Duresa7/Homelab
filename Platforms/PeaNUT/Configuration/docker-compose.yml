@@ -1,0 +1,32 @@
+name: peanut
+
+services:
+  peanut:
+    image: brandawg93/peanut:6.0.0@sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1
+    platform: linux/amd64
+    container_name: peanut
+    environment:
+      TZ: America/New_York
+      WEB_PORT: "8080"
+      WEB_USERNAME: ${WEB_USERNAME:?WEB_USERNAME must be injected from 1Password}
+      WEB_PASSWORD: ${WEB_PASSWORD:?WEB_PASSWORD must be injected from 1Password}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET must be injected from 1Password}
+    volumes:
+      - /opt/docker/peanut/config:/config
+    ports:
+      - 192.168.40.35:8090:8080
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8080/api/ping').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s

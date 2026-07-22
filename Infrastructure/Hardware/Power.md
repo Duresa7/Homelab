@@ -20,6 +20,15 @@ The 2026-07-22 connected-load statement lists `red-server` on both units. I reta
 
 I haven't recorded the physical location, purchase date, serial number, battery installation date, exact outlet, battery-backed versus surge-only bank, measured wattage, or runtime estimate for either unit. This inventory doesn't claim those details.
 
+## Monitoring
+
+| UPS | USB data owner | NUT endpoint | 2026-07-22 verified reading |
+| --- | --- | --- | --- |
+| UPS-01 | `red-server` | `ups01@192.168.70.13:3493` | Online; 100% charge; 58% load; 675-second estimated runtime |
+| UPS-02 | `grey-server` | `ups02@192.168.70.10:3493` | Online; 100% charge; 17% load; 2,895-second estimated runtime |
+
+PeaNUT 6.0.0 displays both feeds at `http://192.168.40.35:8090`. The [deployment record](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) records the configuration and verification. These readings are point-in-time values, not rated or guaranteed runtime.
+
 ## Product References
 
 - [APC BR1500MS2 product page](https://www.apc.com/us/en/product/BR1500MS2/)

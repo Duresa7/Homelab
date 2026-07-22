@@ -10,7 +10,7 @@ This inventory maps 11 Galaxy guests to their current workloads, versions, liste
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>SSH<br>cron |
 | debian-dev | VM 102 | grey-server | Development workstation | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Immich<br>Forgejo<br>Homelab Dashboard<br>Termix / Guacamole<br>Portainer<br>Syncthing |
+| docker-main | LXC 110 | grey-server | Docker apps | Immich<br>Forgejo<br>Homelab Dashboard<br>Termix / Guacamole<br>Portainer<br>Syncthing<br>PeaNUT |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer) |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.5 |
@@ -52,6 +52,7 @@ This inventory maps 11 Galaxy guests to their current workloads, versions, liste
 | Termix / Guacamole | Termix 2.5.0 (`ghcr.io/lukegus/termix:latest`, verified digest `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`); `guacamole/guacd:1.6.0` |
 | Portainer CE | `portainer/portainer-ce:latest` |
 | Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
+| PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard on `192.168.40.35:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 
 ## docker-blue
 
@@ -133,3 +134,10 @@ This inventory maps 11 Galaxy guests to their current workloads, versions, liste
 | purple-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.11:9100` | Enabled, active, Prometheus `UP` |
 | blue-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.12:9100` | Enabled, active, Prometheus `UP` |
 | red-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.13:9100` | Enabled, active, Prometheus `UP` |
+
+## Galaxy UPS telemetry
+
+| Node | NUT version | Device | Endpoint | State |
+| --- | --- | --- | --- | --- |
+| red-server | 2.8.1-5 | `ups01`, APC Back-UPS RS 1500MS2 | `192.168.70.13:3493` | Driver and server active; `nut-monitor` disabled |
+| grey-server | 2.8.1-5 | `ups02`, APC Back-UPS RS 1500MS2 | `192.168.70.10:3493` | Driver and server active; `nut-monitor` disabled |

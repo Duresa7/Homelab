@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
-**Last verified:** 2026-07-14 after Termix SSH onboarding (live TCP/22 probes from `docker-main` and authenticated Termix sessions to all four nodes confirmed).
+**Last verified:** 2026-07-22 after PeaNUT deployment (`pve-firewall compile` passed and live TCP/3493 connections from `docker-main` reached Red and Grey).
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -56,6 +56,8 @@
 | in | ACCEPT | tcp | +pve_automation | - | 22,8006 | nolog | ansible control node |
 | in | ACCEPT | tcp | +pve_svc_clients | - | 8006 | nolog | dashboards / API consumers |
 | in | ACCEPT | tcp | 192.168.72.2/32 | - | 9100 | nolog | security-01 Prometheus node_exporter |
+| in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.10/32 | 3493 | nolog | PeaNUT to Grey NUT |
+| in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.13/32 | 3493 | nolog | PeaNUT to Red NUT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.70.0/24 | - | nolog | WG VPN - MGMT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.80.0/24 | - | nolog | WG VPN - Server |
 | in | DROP | tcp | - | - | 22 | nolog | DROP SSH |
@@ -67,6 +69,7 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 
 ## History
 
+- On 2026-07-22 I added destination-specific TCP/3493 accepts from PeaNUT on `docker-main` to the NUT listeners on Red and Grey. The compiled rules and live connections passed; no other Proxmox node or port was added.
 - On 2026-07-14 I added `pve_termix` and its TCP/22-only allow for Termix on `docker-main`. UniFi already allowed the path; the Proxmox `DROP SSH` rule was the connection blocker. Live Termix SSH sessions to all four nodes passed after the change.
 - I renamed the prior `zero_access` security group to `pve_mgmt` and reorganized its flat host list into four purpose-named IPSets; `pve_termix` came later.
 - I removed the redundant `grey-server` `host.fw`. It applied the same group a second time (a duplicate `PVEFW-HOST-IN` jump) and held only two **disabled** Bezel rules (TCP `45876` from `192.168.40.32`, sport `8090`). All host protection now comes from the datacenter group, uniformly across nodes.
