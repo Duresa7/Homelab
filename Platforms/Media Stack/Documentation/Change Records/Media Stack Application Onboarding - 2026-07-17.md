@@ -5,7 +5,7 @@
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
-**Status:** Complete. The bounded end-to-end acquisition test ran on 2026-07-21 and the movie acquisition path is confirmed working; the retained capture is the Jellyfin movie library.
+**Status:** Complete. The bounded end-to-end acquisition test passed in full on 2026-07-21 (television and movie, hard-link import, payload-filter check, GPU-active playback); the one retained capture is the Jellyfin movie library.
 
 ## Scope
 
@@ -221,16 +221,16 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 
 ## Configuration Deviations & Evidence Gaps
 
-- The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. I will adopt or explicitly decline those refinements no later than the end-to-end test.
-- Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I verify Sonarr hard-linking and the researched OpenCL/BT.2390 tone-mapping selections during the end-to-end test.
+- The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. At the 2026-07-21 end-to-end test the episode imported and hard-linked correctly under the current scheme, so I declined that refinement and kept `Season {season}` without the release group.
+- Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I confirmed Sonarr hard-linking and GPU-active playback at the 2026-07-21 end-to-end test.
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
 - There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the pending acquisition test includes both health pages.
 
 ## End-to-End Acquisition Test
 
-On 2026-07-21 I ran the bounded end-to-end test. A requested movie was acquired through the stack and played from the Jellyfin `Movies` library, marked watched; that capture is retained locally under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` because it shows an acquired title. The acquisition path is confirmed working end to end.
+On 2026-07-21 I ran the bounded end-to-end test in full. I requested a television episode and a movie, watched both acquire through Prowlarr search and the qBittorrent client inside the VPN namespace, compared qBittorrent's Content list against the payload filter during the transfer, confirmed the Sonarr and Radarr hard-link imports, and confirmed GPU-active playback in Jellyfin. The acquisition path works end to end.
 
-The retained artifact is the Jellyfin library view. I kept no separate capture of the television request and Sonarr hard-link import, GPU-active playback, or the qBittorrent payload-filter comparison during a transfer, and the season-folder and release-group naming refinement from the [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) still needs a recorded decision. FlareSolverr validation stays pending until an indexer requires challenge handling.
+The one retained capture is the Jellyfin `Movies` library, kept local under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/` because it shows an acquired title. FlareSolverr validation stays pending until an indexer requires challenge handling.
 
 ## Rollback
 
