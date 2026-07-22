@@ -1,0 +1,40 @@
+---
+- name: Pull images and recreate docker compose stacks
+  hosts: "{{ target | default('docker_compose_targets') }}"
+  gather_facts: false
+  # The SSH user is either root or a member of the docker group, so no sudo is
+  # needed to talk to the docker socket.
+  become: false
+  serial: "{{ compose_serial | default('100%') }}"
+  tasks:
+    - name: Confirm compose projects are defined for this host
+      ansible.builtin.assert:
+        that:
+          - compose_projects is defined
+          - compose_projects | length > 0
+        fail_msg: "No compose_projects defined for {{ inventory_hostname }}."
+        quiet: true
+
+    # state: present with pull: always is docker compose pull followed by
+    # docker compose up -d. project_name pins the run to the already-running
+    # project so a directory that differs from the project name (immich) is
+    # updated in place rather than started as a second project.
+    - name: Pull images and recreate each stack
+      community.docker.docker_compose_v2:
+        project_src: "{{ item.project_src }}"
+        project_name: "{{ item.name }}"
+        files: "{{ item.files | default(omit) }}"
+        state: present
+        pull: "{{ compose_pull | default('always') }}"
+        remove_orphans: "{{ item.remove_orphans | default(false) }}"
+      loop: "{{ compose_projects }}"
+      loop_control:
+        label: "{{ inventory_hostname }}/{{ item.name }}"
+      register: compose_updates
+
+    - name: Report what changed per stack
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}/{{ item.item.name }}: changed={{ item.changed }}"
+      loop: "{{ compose_updates.results }}"
+      loop_control:
+        label: "{{ inventory_hostname }}/{{ item.item.name }}"

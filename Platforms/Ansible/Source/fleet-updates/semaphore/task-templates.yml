@@ -1,0 +1,61 @@
+---
+project:
+  name: Fleet-Updates
+  repository:
+    name: fleet-updates
+    path: /home/ansible/fleet-updates
+  inventory:
+    name: homelab-fleet-update-hosts
+    path: /home/ansible/fleet-updates/inventory/hosts.yml
+    credential: ansible-key
+  environment:
+    name: C UTF-8
+    variables:
+      LANG: C.utf8
+      LC_ALL: C.utf8
+
+views:
+  - All
+  - OS Updates
+  - Docker Compose
+
+templates:
+  - name: "OS Update: Whole Fleet (dry run)"
+    view: OS Updates
+    playbook: playbooks/os-update.yml
+    arguments: ["--check"]
+  - name: "OS Update: Whole Fleet"
+    view: OS Updates
+    playbook: playbooks/os-update.yml
+    arguments: []
+  - name: "OS Update: Single Host or Group"
+    view: OS Updates
+    playbook: playbooks/os-update.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host or group
+        description: Inventory host name such as splunk-siem, or a group name.
+        type: ""
+        required: true
+        values: []
+
+  - name: "Docker Compose: Update All Stacks (dry run)"
+    view: Docker Compose
+    playbook: playbooks/docker-compose-update.yml
+    arguments: ["--check"]
+  - name: "Docker Compose: Update All Stacks"
+    view: Docker Compose
+    playbook: playbooks/docker-compose-update.yml
+    arguments: []
+  - name: "Docker Compose: Single Host"
+    view: Docker Compose
+    playbook: playbooks/docker-compose-update.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host
+        description: Host that runs compose stacks (docker-main, docker-network, or alpha-prod-01).
+        type: ""
+        required: true
+        values: []

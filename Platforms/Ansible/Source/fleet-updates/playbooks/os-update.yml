@@ -1,0 +1,103 @@
+---
+- name: Update OS packages across the Linux fleet
+  hosts: "{{ target | default('os_update_targets') }}"
+  gather_facts: true
+  become: "{{ os_update_become | default(true) }}"
+  # When reboot=auto, default to one host at a time so several guests never
+  # reboot at once. A plain report-only run patches the whole fleet in parallel.
+  # os_update_serial overrides either default.
+  serial: "{{ os_update_serial | default('1' if (reboot | default('report')) == 'auto' else '100%') }}"
+  # DEBIAN_FRONTEND stops any package prompt from hanging the run.
+  # NEEDRESTART_MODE=l makes needrestart list services instead of restarting
+  # them, so an apt upgrade never bounces a service on its own. Reboots and
+  # restarts stay under the reboot_policy below.
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    NEEDRESTART_MODE: l
+  vars:
+    apt_upgrade_type: "{{ apt_upgrade | default('safe') }}"
+    reboot_policy: "{{ reboot | default('report') }}"
+  tasks:
+    - name: Confirm a supported package manager is present
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.pkg_mgr in ['apt', 'dnf', 'dnf5']
+        fail_msg: "Unsupported package manager '{{ ansible_facts.pkg_mgr }}' on {{ inventory_hostname }}."
+        quiet: true
+
+    - name: Update apt cache and upgrade packages (Debian and Ubuntu)
+      when: ansible_facts.pkg_mgr == 'apt'
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: "{{ apt_upgrade_type }}"
+        autoremove: "{{ apt_autoremove | default(true) }}"
+        autoclean: "{{ apt_autoclean | default(true) }}"
+      register: apt_update
+
+    - name: Upgrade all packages (Rocky and other RHEL family)
+      when: ansible_facts.pkg_mgr in ['dnf', 'dnf5']
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+      register: dnf_update
+
+    - name: Check for a pending reboot (Debian family)
+      when: ansible_facts.os_family == 'Debian'
+      become: false
+      ansible.builtin.stat:
+        path: /var/run/reboot-required
+      register: debian_reboot_flag
+
+    # This probe is read-only, so it runs even under --check and needs no sudo.
+    # dnf4 ships needs-restarting (from dnf-utils); dnf5 exposes it as a
+    # subcommand. Both return rc 1 when a reboot is advised and rc 0 when not.
+    # Any other rc (tool absent, unknown flag) is treated as inconclusive
+    # below, never as "no reboot needed".
+    - name: Check for a pending reboot (RHEL family)
+      when: ansible_facts.os_family == 'RedHat'
+      become: false
+      check_mode: false
+      changed_when: false
+      failed_when: false
+      ansible.builtin.shell: >
+        if command -v needs-restarting >/dev/null 2>&1; then needs-restarting -r; exit $?;
+        elif command -v dnf5 >/dev/null 2>&1; then dnf5 needs-restarting --reboothint; exit $?;
+        else exit 255; fi
+      register: rhel_reboot_check
+
+    - name: Record whether a reboot is required
+      ansible.builtin.set_fact:
+        reboot_required: >-
+          {{
+            (debian_reboot_flag.stat.exists | default(false))
+            or ((rhel_reboot_check.rc | default(0) | int) == 1)
+          }}
+        reboot_check_inconclusive: >-
+          {{
+            ansible_facts.os_family == 'RedHat'
+            and ((rhel_reboot_check.rc | default(255) | int) not in [0, 1])
+          }}
+
+    - name: Reboot the host when required and the policy allows it
+      when:
+        - reboot_policy == 'auto'
+        - reboot_required | bool
+      ansible.builtin.reboot:
+        reboot_timeout: "{{ reboot_timeout | default(600) | int }}"
+        msg: "Ansible fleet update: rebooting to finish package upgrades."
+      register: reboot_done
+
+    - name: Clear the pending-reboot state after a successful reboot
+      when: reboot_done.rebooted | default(false)
+      ansible.builtin.set_fact:
+        reboot_required: false
+
+    - name: Report the per-host result
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}:
+          pkg_mgr={{ ansible_facts.pkg_mgr }}
+          changed={{ (apt_update.changed | default(false)) or (dnf_update.changed | default(false)) }}
+          reboot_required={{ reboot_required | bool }}{{ ' (reboot check inconclusive, verify manually)' if (reboot_check_inconclusive | default(false)) else '' }}
+          reboot_policy={{ reboot_policy }}

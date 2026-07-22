@@ -19,7 +19,7 @@ _No untriaged items._
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open platform items |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Remaining bounded end-to-end acquisition test plus the operations backlog |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | SIEM domain name, then a reverse proxy with a CA-signed certificate in front of the web UI |
@@ -32,6 +32,7 @@ _No untriaged items._
 
 ## Recently Completed
 
+- [x] 2026-07-20: [Ansible fleet update automation](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md). Two playbooks on `ansible-01`: `os-update.yml` patches 10 Linux guests through apt or dnf with report-only reboots, & `docker-compose-update.yml` pulls and recreates the compose stacks on docker-main, docker-network, & alpha-prod-01. Proxmox nodes and Windows hosts excluded by design. Verified with no-change dry runs; an independent Codex review found and I fixed four reboot-path defects.
 - [x] 2026-07-17: [Media Stack application onboarding](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). Jellyfin libraries and Quick Sync transcoding, Sonarr/Radarr media management, first Prowlarr indexer, and confirmed Seerr connections, evidenced by 16 screenshots. The bounded end-to-end acquisition test remains in the platform TODO.
 - [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and matched five retained identities to their known public fingerprints.
 - [x] 2026-07-14: [Termix SSH host onboarding](Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md). One reusable Ed25519 identity, nine verified hosts, four folders, & a TCP/22-only Galaxy firewall path for the four Proxmox nodes.

@@ -1,0 +1,6 @@
+---
+# docker_compose_v2 lives in community.docker. Everything else the playbooks
+# use (apt, dnf, reboot, stat, command) ships with ansible-core.
+collections:
+  - name: community.docker
+    version: ">=5.0.0"
