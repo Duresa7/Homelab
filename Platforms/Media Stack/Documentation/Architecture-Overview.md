@@ -1,7 +1,7 @@
 # Media Stack Architecture Overview
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Traffic Split
 
@@ -11,6 +11,12 @@ Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, & FlareSolverr use the guest's VLAN 4
 
 ## Resource and Device Model
 
-I run CT 842 unprivileged, starting with the Proxmox node, on local LVM storage on `red-server`. It receives `/dev/dri/renderD128` for Jellyfin Intel Quick Sync and `/dev/net/tun` for the VPN tunnel. The guest has 4 vCPU, 8 GiB memory, 1 GiB swap, and a 100 GiB root volume.
+I run CT 842 as an unprivileged container on `red-server`, with startup enabled at the Proxmox node. It receives `/dev/dri/renderD128` for Jellyfin Intel Quick Sync & `/dev/net/tun` for the VPN tunnel. The guest has 4 vCPU, 8 GiB memory, 1 GiB swap, & a 100 GiB NVMe-backed root volume.
 
-Because the volume is node-local and the guest isn't HA-managed, recovery depends on backups or restoration on `red-server`; automatic cross-node storage failover isn't available.
+## Storage Model
+
+The NVMe root holds Debian, Docker, `/opt/media-stack`, container layers, application configuration, databases, & Jellyfin cache. A 1 TB Seagate ST1000LM035 supplies `/data` through the host ext4 mount `/mnt/bindmounts/media-01-hdd` and CT 842 `mp0`. Movies, television, downloads, & transcodes share that filesystem, so Sonarr and Radarr can hard-link completed downloads instead of copying them.
+
+The HDD filesystem has 916 GiB usable capacity & isn't included in `vzdump`; I treat its media as replaceable. Its fstab-generated automount points at UUID `289788f9-52a4-4e49-885b-000e8d565c8b`. The bind source uses a `data` child that exists only on the mounted filesystem, so CT 842 fails startup when the HDD isn't mounted.
+
+Both volumes are node-local, & the guest isn't HA-managed. CT 842 can't move to another Galaxy node without its NVMe root & HDD.

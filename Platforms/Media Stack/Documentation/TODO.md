@@ -1,7 +1,12 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
+
+## HDD Data Migration
+
+- [x] 2026-07-22: Moved 9.9 GiB from CT 842's 100 GiB NVMe root volume to the 1 TB Seagate HDD on `red-server`; the [change record](Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md) holds the copy & mount details.
+- [x] 2026-07-22: Verified ext4 persistence, fail-closed startup, eight containers, VPN isolation, hard links, an existing-media read, & Quick Sync output before deleting the 10,615,586,954-byte NVMe source.
 
 ## Acquisition Test
 
@@ -17,7 +22,7 @@ Completed items are recorded with evidence in the [application onboarding change
 
 ## Backups, Capacity & Updates
 
-- [ ] Add backups for `/opt/media-stack/config` and `/data`; perform a restore test.
-- [ ] Add capacity alerts before the 100 GiB local volume becomes constrained.
+- [ ] Add backups for `/opt/media-stack/config` & perform a restore test; `/data` holds replaceable media & remains excluded.
+- [ ] Add separate capacity alerts for the 100 GiB NVMe root & the HDD-backed `/data` filesystem.
 - [ ] Define a maintenance cadence for the intentionally floating `latest` image tags.
 - [ ] Decide whether LAN management interfaces should move behind authenticated HTTPS ingress.

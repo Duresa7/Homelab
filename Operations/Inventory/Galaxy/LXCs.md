@@ -1,7 +1,7 @@
 ﻿# Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 Galaxy currently has seven LXCs: five on grey or blue for automation, AI, Docker, & remote access, plus `media-01` on red. The tables record their guest IDs, resources, storage, interfaces, & host-device mappings.
 
@@ -207,6 +207,9 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Device | Mount | Storage | Volume | Size | Backup |
 | --- | --- | --- | --- | --- | --- |
 | rootfs | / | local-lvm | vm-842-disk-0 | 100G | default |
+| mp0 | /data | host ext4 bind mount | /mnt/bindmounts/media-01-hdd/data | 931.5G raw, 916G usable | disabled |
+
+The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd automount. The `data` child exists only on that filesystem; CT 842 refuses startup when the HDD isn't mounted.
 
 ### Host Devices
 

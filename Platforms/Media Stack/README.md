@@ -12,10 +12,10 @@ I run request management, media playback, release automation, indexer coordinati
 | Deployment status | Applications onboarded 2026-07-17; bounded end-to-end acquisition test passed 2026-07-21. Containers, Proton VPN tunnel, provider-side port forwarding, Sonarr/Radarr download-client links, Jellyfin libraries and QSV transcoding, Prowlarr indexers, and Seerr connections verified |
 | Compute | Galaxy CT 842 `media-01` on `red-server` |
 | Guest network | VLAN 40; address `192.168.40.42` |
-| Guest resources | 4 vCPU, 8 GiB memory, 1 GiB swap, 100 GiB local root volume |
+| Guest resources | 4 vCPU, 8 GiB memory, 1 GiB swap, 100 GiB NVMe root volume, 1 TB HDD mounted at `/data` |
 | Guest OS | Debian GNU/Linux 13 (trixie) |
 | Live project | `/opt/media-stack` |
-| Media paths | `/data/media/movies`, `/data/media/tv`, `/data/downloads` |
+| HDD data paths | `/data/media/movies`, `/data/media/tv`, `/data/downloads`, `/data/transcodes` |
 | Container policy | All application images intentionally track `latest`; updates are bounded and verified through the runbook |
 
 ## Services
@@ -41,6 +41,7 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 - [Deployment change record](Documentation/Change%20Records/Media%20Stack%20Deployment%20-%202026-07-17.md)
 - [Refresh and payload-filtering change record](Documentation/Change%20Records/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17.md)
 - [Application onboarding change record](Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md)
+- [HDD data migration change record](Documentation/Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Verified Jellyfin and Sonarr settings](Documentation/Media%20Settings%20Research%20-%202026-07-17.md)
 - [Download payload-filtering research](Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md)
@@ -48,6 +49,8 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
 
-## Remaining Acquisition Check
+## Verified Data Path
 
-I completed application onboarding on 2026-07-17: Jellyfin's guided setup, the Movies and TV Shows libraries, and Quick Sync transcoding; Sonarr and Radarr media management; the first Prowlarr indexer with the Standard sync profile; and the migrated Seerr connections. The [application onboarding change record](Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md) and its 16-screenshot evidence set hold the details. One bounded end-to-end test (request → search → qBittorrent through the VPN → hard-link import → Jellyfin playback) remains before I treat acquisition and import as fully validated, and the `flaresolverr` tag stays unused until an indexer requires challenge handling.
+I moved `/data` to the 1 TB HDD on 2026-07-22. The 100 GiB NVMe keeps `/opt/media-stack`, Docker, container layers, application configuration, databases, & Jellyfin cache. The HDD holds movies, television, downloads, & transcode scratch space through CT 842 `mp0`; Compose keeps the same guest paths.
+
+The migration test wrote through qBittorrent, created a hard link between the download and media trees, read an existing movie, & encoded 10 seconds with Jellyfin's `h264_qsv` path. With the HDD unmounted, CT 842 failed startup before any application could write into an empty host directory.

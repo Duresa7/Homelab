@@ -19,8 +19,10 @@ I prefer bounded commands through `pct exec 842 -- ...` for repeatable checks.
 
 ```sh
 pct status 842
+pct config 842 | grep '^mp0:'
+findmnt -T /mnt/bindmounts/media-01-hdd/data
 pct exec 842 -- sh -lc 'cd /opt/media-stack && docker compose --profile vpn ps'
-pct exec 842 -- sh -lc 'df -h / /data'
+pct exec 842 -- sh -lc 'findmnt -T /data && df -hT / /data'
 pct exec 842 -- sh -lc 'test "$(docker inspect -f "{{.State.Health.Status}}" gluetun)" = healthy'
 pct exec 842 -- sh -lc 'test "$(docker inspect -f "{{.State.Health.Status}}" jellyfin)" = healthy'
 ```
@@ -29,7 +31,8 @@ Expected baseline:
 
 - CT 842 is running.
 - Eight containers are running; Gluetun and Jellyfin report healthy.
-- The root/data filesystem has sufficient free space.
+- `/` is the 100 GiB NVMe-backed root; `/data` is the 916 GiB ext4 HDD filesystem.
+- CT 842 `mp0` maps `/mnt/bindmounts/media-01-hdd/data` to `/data` with `backup=0`.
 - qBittorrent's Docker network mode is `container:<gluetun-container-id>`.
 
 Service URLs use the guest address:
@@ -82,7 +85,7 @@ If the port is stale after a reconnect, recreate Gluetun and qBittorrent togethe
 All images intentionally track `latest`. I treat every pull as a bounded change:
 
 1. Record current image IDs and application versions.
-2. Confirm current backups exist for `/opt/media-stack/config` and `/data`.
+2. Confirm a current backup exists for `/opt/media-stack/config`; `/data` is replaceable media & isn't backed up.
 3. Pull and recreate the stack.
 4. Verify container health, Jellyfin hardware acceleration, Proton exit, forwarded-port synchronization, management UIs, and Arr download-client tests.
 
@@ -112,11 +115,28 @@ Back up these paths before changing the stack:
 - `/opt/media-stack/compose.yml`
 - `/opt/media-stack/.env`
 - `/opt/media-stack/config`
-- `/data`
 
-Restore `.env` & application configuration with their original ownership and modes.
+`/data` is a host bind mount with `backup=0`, so Proxmox `vzdump` doesn't include movies, television, downloads, or transcodes. I rebuild that filesystem on replacement storage & acquire the media again after a disk loss.
 
 Restore the files with their original ownership and modes, validate with `docker compose --profile vpn config --quiet`, and start the complete profile. Verify the kill switch and provider-side port before enabling acquisition.
+
+## HDD Mount Failure
+
+CT 842 refuses startup when `/mnt/bindmounts/media-01-hdd/data` is absent. Check the disk, UUID, ext4 state, mount units, & bind source before retrying:
+
+```sh
+MEDIA_DATA_DISK=/dev/disk/by-id/ata-ST1000LM035-1RK172_WCB0SRHK
+MEDIA_DATA_MOUNT=/mnt/bindmounts/media-01-hdd
+MEDIA_DATA_MOUNT_UNIT="$(systemd-escape --path --suffix=mount "$MEDIA_DATA_MOUNT")"
+MEDIA_DATA_AUTOMOUNT_UNIT="$(systemd-escape --path --suffix=automount "$MEDIA_DATA_MOUNT")"
+lsblk -f "$MEDIA_DATA_DISK"
+smartctl -H -A "$MEDIA_DATA_DISK"
+grep -F "$MEDIA_DATA_MOUNT" /etc/fstab
+findmnt -T "$MEDIA_DATA_MOUNT/data"
+systemctl status "$MEDIA_DATA_MOUNT_UNIT" "$MEDIA_DATA_AUTOMOUNT_UNIT"
+```
+
+Do not create `/mnt/bindmounts/media-01-hdd/data` on the NVMe-backed host directory. That child belongs on the mounted HDD; creating it underneath the absent mount defeats the startup guard.
 
 ## qBittorrent Login
 
