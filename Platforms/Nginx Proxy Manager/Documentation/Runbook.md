@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Scope
 
@@ -130,4 +130,4 @@ To restore I recover ownership and permissions, confirm `proxy` exists with subn
 
 ## Troubleshooting
 
-See [Troubleshooting-Log.md](Troubleshooting-Log.md). I record all new failures chronologically, including exact errors, unsuccessful attempts, root cause or current hypothesis, correction, and observed verification.
+See the [troubleshooting index](Troubleshooting/README.md). I create one dated Markdown record per new failure, include the exact error, unsuccessful attempts, root cause or current hypothesis, correction, & observed verification, then add the file to the index.

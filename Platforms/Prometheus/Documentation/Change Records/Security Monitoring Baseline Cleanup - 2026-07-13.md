@@ -1,7 +1,7 @@
 ﻿# Security Monitoring Baseline Cleanup
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 **Implementation date:** 2026-07-13  
 **Status:** Complete  
@@ -38,7 +38,7 @@ I installed `prometheus-node-exporter` 1.9.0-1+b4 and its collector package thro
 
 I stopped and disabled `app-01` and `edge-01`, changed their manager address from `192.168.70.20` to `192.168.72.2`, and cleared their stale client-key files to zero bytes with root/Wazuh ownership. I removed the manager registrations ID `002` `edge-01` and ID `003` `wp-01`. A fresh manager list contains only local ID `000` `wazuh-01`.
 
-The incorrect `wp-01` identity and retired manager address are recorded in the [Wazuh troubleshooting log](../../../Wazuh/Documentation/Troubleshooting-Log.md#1-incorrect-and-stale-endpoint-identities).
+The incorrect `wp-01` identity and retired manager address are recorded in the [Wazuh troubleshooting record](../../../Wazuh/Documentation/Troubleshooting/Incorrect%20and%20stale%20endpoint%20identities%20-%202026-07-13.md).
 
 I left `supabase-01` and `alpha-prod-01` unchanged because neither has the agent installed. Fresh install/enrollment is tracked in the [Wazuh TODO](../../../Wazuh/Documentation/TODO.md).
 
@@ -46,7 +46,7 @@ I left `supabase-01` and `alpha-prod-01` unchanged because neither has the agent
 
 The versioned and live configurations now contain seven jobs: `security-01`, `edge-01`, `grey-server`, `purple-server`, `blue-server`, `red-server`, and `proxmox`. I validated the candidate with `promtool` before applying it.
 
-My first host-path replacement plus SIGHUP did not change the running target set because Docker's single-file bind mount stayed attached to the old inode. A controlled Prometheus restart rebound the validated file. Prometheus returned ready, the in-container config passed `promtool`, the exact expected target set reported all seven jobs `UP`, and the retired `.70.20`, `app-01`, and `supabase-01` addresses were absent. See the [troubleshooting log](../Troubleshooting-Log.md#1-single-file-bind-mount-retained-the-old-inode).
+My first host-path replacement plus SIGHUP did not change the running target set because Docker's single-file bind mount stayed attached to the old inode. A controlled Prometheus restart rebound the validated file. Prometheus returned ready, the in-container config passed `promtool`, the exact expected target set reported all seven jobs `UP`, and the retired `.70.20`, `app-01`, and `supabase-01` addresses were absent. See the [troubleshooting record](../Troubleshooting/Single-File%20Bind%20Mount%20Retained%20the%20Old%20Inode%20-%202026-07-13.md).
 
 ## Resulting Configuration
 

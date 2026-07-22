@@ -94,4 +94,4 @@ The repair is complete. The 2025 actor can't be reconstructed from the retained 
 
 ## Related Record
 
-I added the chronological diagnosis & repair summary to the [Galaxy Troubleshooting Log](../Troubleshooting-Log.md#6-disabled-ha-daemons-on-grey-server).
+I added the chronological diagnosis & repair summary to the [Grey HA troubleshooting record](../Troubleshooting/Disabled%20HA%20Daemons%20on%20grey-server%20-%202026-07-22.md).

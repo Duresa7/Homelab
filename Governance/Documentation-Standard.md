@@ -1,7 +1,7 @@
 # Documentation Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
 
 ## Purpose
 
@@ -39,7 +39,7 @@ One deployment and operations document plus the scripts or configuration needed 
 
 ### Tier 2: Established Service
 
-An architecture or overview document, build/change log, runbook, troubleshooting log, TODO, relevant configuration, and evidence.
+An architecture or overview document, build/change log, runbook, troubleshooting records, TODO, relevant configuration, and evidence.
 
 ### Tier 3: Critical Infrastructure or Security Platform
 
@@ -97,7 +97,9 @@ When a public example requires a reader-supplied value, I use a contextual place
 
 ## Troubleshooting Records
 
-Operational problems go in the owning `Documentation/Troubleshooting-Log.md` in time order. Each entry records the symptom, exact error, failed attempts, hypotheses, tests, root cause when known, corrective action, & verification.
+Operational problems live under the owning `Documentation/Troubleshooting/` folder. Its undated `README.md` is the issue index; each problem gets one dated `<Issue Name> - YYYY-MM-DD.md` record, using the investigation date or first retained date when the investigation date is unknown.
+
+Each issue record contains the symptom, exact error, failed attempts, hypotheses, tests, root cause when known, corrective action, & verification. I add it to the folder index when I create it, and I link the issue file directly from a change record, TODO, incident, or runbook instead of linking an index anchor.
 
 ## Incident Reports
 
@@ -105,11 +107,11 @@ Incident reports live under `Security/Incidents/`, even when the affected servic
 
 Each report includes metadata, summary, impact, affected assets, symptoms, timeline when available, findings, root cause or current hypothesis, corrective actions, validation, lessons, follow-ups, & closure status.
 
-Routine troubleshooting belongs in the platform troubleshooting log. If it becomes an incident, I create the incident report and cross-link both records. When an incident has supporting files, it gets an incident-specific folder with `Evidence/` beneath it.
+Routine troubleshooting belongs in the platform's `Documentation/Troubleshooting/` folder. If it becomes an incident, I create the incident report and cross-link the issue file with the incident record. When an incident has supporting files, it gets an incident-specific folder with `Evidence/` beneath it.
 
 ## Filename Dates and Update Metadata
 
-Living documents that I maintain over time keep stable, undated filenames: indexes, TODOs, architecture overviews, runbooks, build logs, troubleshooting logs, and current configuration references.
+Living documents that I maintain over time keep stable, undated filenames: indexes, TODOs, architecture overviews, runbooks, build logs, troubleshooting folder indexes, and current configuration references.
 
 Files that represent an event or captured state keep dates in their filenames: incident reports, bounded change records, migrations, audits, assessments, evidence reports, and inventory snapshots.
 

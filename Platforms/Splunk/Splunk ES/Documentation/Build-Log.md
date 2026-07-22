@@ -1,7 +1,7 @@
 # Splunk Enterprise Security: Configuration Log
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 SIEM. The [Splunk Enterprise build log](../../Splunk%20Enterprise/Documentation/Build-Log.md) covers the VM, OS, base application, & UniFi ingestion path.
 
@@ -10,7 +10,7 @@ I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 
 | Document | Purpose |
 |---|---|
 | **Build-Log.md** (this file) | Chronological log of ES install and configuration steps |
-| **[Troubleshooting-Log.md](Troubleshooting-Log.md)** | Every problem hit, its cause, and the fix |
+| **[Troubleshooting index](Troubleshooting/README.md)** | Every issue record, its cause, & the fix |
 | **[TODO.md](TODO.md)** | Planned follow-up configuration work |
 
 | Field | Value |
@@ -45,7 +45,7 @@ I confirmed before installing: the Splunk nonprofit donation program grant alrea
 
 The index rebuild and CIM data-model acceleration stalled on the VM's original 4 vCPU. I left the SSD-backed storage unchanged and raised the VM to 6 vCPU; setup then completed.
 
-**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. Enterprise Security then loaded **Mission Control → Configure → All configurations** on 2026-07-02. The [troubleshooting log](Troubleshooting-Log.md#1-es-installsetup-slow-initially-looked-disk-io-bound-2026-07-02) records the failure, & [VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) records the 6-vCPU state. Remaining CIM, index, role, correlation-search, asset, identity, & risk work is in [TODO.md](TODO.md).
+**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. Enterprise Security then loaded **Mission Control → Configure → All configurations** on 2026-07-02. The [troubleshooting record](Troubleshooting/ES%20install-setup%20slow,%20initially%20looked%20disk%20I-O%20bound%20-%202026-07-02.md) records the failure, & [VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) records the 6-vCPU state. Remaining CIM, index, role, correlation-search, asset, identity, & risk work is in [TODO.md](TODO.md).
 
 ## References
 

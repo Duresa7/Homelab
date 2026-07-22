@@ -1,7 +1,7 @@
 # NetBird
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I run NetBird and Nginx Proxy Manager in Debian 13 LXC 107 `docker-network`. The control plane, reverse proxy, & certificate path share one VLAN 85 host instead of the existing `docker-blue` workload container.
 
@@ -32,7 +32,7 @@ Initial publication, first-peer enrollment, the routed VPN path into Access-A, t
 - [Change record: first peer and routed VPN path (2026-07-12)](Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md)
 - [Change record: operational follow-ups and hardening descope (2026-07-12)](Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
 - [Operations runbook](Documentation/Runbook.md)
-- [Troubleshooting log](Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
 - [Access-A network reference](Configuration/Access-Network.md)

@@ -1,17 +1,7 @@
-# Splunk ES: Troubleshooting Log
+# ES install/setup slow, initially looked disk I/O bound
 
-**Created:** 2026-07-02  
-**Last updated:** 2026-07-20
-
-I record Splunk Enterprise Security failures here with the cause, correction, & observed result. The [build log](Build-Log.md) holds the installation sequence.
-
-## Quick Index
-
-| # | Where | Symptom | Root cause | Fix |
-|:-:|---|---|---|---|
-| 1 | Step 1 | ES setup slow/stalled under load | VM undersized for ES (CPU-bound, not disk) | Increased vCPU 4 → 6 |
-
-## 1. ES install/setup slow, initially looked disk I/O bound (2026-07-02)
+**Created:** 2026-07-22  
+**Last updated:** 2026-07-22
 
 **Symptom:** during the ES install/post-install setup (index and data model rebuild), the VM couldn't keep up. It was CPU-starved on only 4 allocated cores, and disk I/O looked like the bottleneck, with Splunk generating write/search load faster than the backing SSD storage appeared to service it.
 

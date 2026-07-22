@@ -1,55 +1,13 @@
-# Termix Troubleshooting Log
+# Password Reset Code Was Not Shown
 
-**Created:** 2026-07-13  
-**Last updated:** 2026-07-20
-
-## Quick Index
-
-| # | Date | Symptom | Root cause | Status |
-|---:|---|---|---|---|
-| 1 | 2026-07-13 | Password-reset logs said a code was generated but showed no code | Deployed Termix 2.2.1 omitted the generated value from its logger template; upgraded to 2.5.0 | Resolved |
-| 2 | 2026-07-14 | Termix timed out connecting to all four Galaxy Proxmox nodes | Proxmox `pve_mgmt` permitted `docker-main` on TCP/8006 as a service client, then explicitly dropped its TCP/22 traffic | Resolved |
-
-## 2. Termix Timed Out on All Proxmox SSH Connections
-
-**Date:** 2026-07-14  
-**Targets:** Termix on `docker-main`; `grey-server`, `purple-server`, `blue-server`, and `red-server`  
-**Impact:** The four hosts were saved in Termix and had the correct public key, but Termix could not establish SSH sessions. Five non-Proxmox hosts connected successfully.
-
-### Symptom
-
-Termix's `/metrics/start/:id` endpoint timed out for host IDs 1 through 4. Independent TCP/22 probes from both the `docker-main` host and the Termix container also timed out against `192.168.70.10` through `192.168.70.13`.
-
-### Investigation
-
-| Hypothesis | Test | Result |
-|---|---|---|
-| Termix credential or username was wrong | Compared with five successful hosts using the same credential and inspected the public-key deployment result | Unlikely; the shared credential authenticated successfully elsewhere and the exact key was present on all four nodes |
-| Docker container routing was missing | Ran `ip route get 192.168.70.10` on `docker-main` and repeated probes from host and container | Route existed through `192.168.40.1`; both scopes timed out |
-| UniFi blocked Personal-A to MGMT-A | Inspected the matching user policies, Docker Main client MAC, and UniFi Traffic Flows | Ruled out; an existing Docker Main rule covered Proxmox admin ports, the MAC matched, and SSH flows were recorded as `allowed` |
-| Proxmox host firewall rejected the source | Read the cluster `pve_mgmt` group and its IPSets | Confirmed; Docker Main was in `pve_svc_clients`, whose allow covered TCP/8006 only, followed by an explicit TCP/22 drop |
-
-### Root Cause
-
-The Galaxy datacenter firewall applies `pve_mgmt` to every node. `docker-main` (`192.168.40.35`) was authorized as a dashboard/API client on TCP/8006, but no SSH allow matched it. The later `DROP SSH` rule silently discarded TCP/22 after UniFi had forwarded the traffic.
-
-### Corrective Action
-
-I backed up `/etc/pve/firewall/cluster.fw` to mode-0600 `/root/cluster.fw.pre-termix-2026-07-14` on `grey-server`. I created cluster IPSet `pve_termix` with the single member `192.168.40.35`, then added an inbound TCP/22 `ACCEPT` from `+pve_termix` to `pve_mgmt`. The new rule is evaluated before the existing SSH drop and does not grant TCP/8006 or any other port.
-
-### Verification
-
-Live TCP/22 probes from `docker-main` returned open for all four node addresses. Termix then returned HTTP 200 for each host, with final stages `Authenticating with SSH key`, `SSH connection established successfully`, and `Metrics session established`.
-
-See [Termix SSH Host Onboarding - 2026-07-14](Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md).
-
-## 1. Password Reset Code Was Not Shown
+**Created:** 2026-07-22  
+**Last updated:** 2026-07-22
 
 **Date:** 2026-07-13  
 **Target:** `docker-main`, container `termix`  
 **Impact:** The local user `<YOUR_ADMIN_USERNAME>` could initiate password recovery, but the six-digit code was unavailable through either location named by the application. The service otherwise remained healthy.
 
-### Symptom
+## Symptom
 
 Termix logged the successful reset request without the value:
 
@@ -59,7 +17,7 @@ Termix logged the successful reset request without the value:
 
 The API response also instructed the user to check Docker logs for a code that was not present.
 
-### Investigation
+## Investigation
 
 I tested these hypotheses in order:
 
@@ -71,19 +29,19 @@ I tested these hypotheses in order:
 
 The deployed route created `resetCode` but logged only the username and expiry. The `AdminSettings` bundle contained no reset-code field, so neither documented retrieval path exposed the value.
 
-### Root Cause
+## Root Cause
 
 `docker-main` was running Termix package version 2.2.1 from an image created on 2026-05-13. Although the mutable image tag was `latest`, the local repository digest was `sha256:577c0e7024fa7767ffbd00e19a1e0ce28fb0027aab37c3f7d49e2c18bc001210`. The registry's current `latest` index was `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`, so the running tag was stale.
 
 The defect is corrected in [Termix 2.5.0's password-reset route](https://github.com/Termix-SSH/Termix/blob/release-2.5.0-tag/src/backend/database/routes/user-password-reset-routes.ts), which includes the six-digit value in the Docker log message. [Termix 2.5.0](https://github.com/Termix-SSH/Termix/releases/tag/release-2.5.0-tag) was released on 2026-06-30.
 
-### Corrective Action
+## Corrective Action
 
 I chose a direct Compose upgrade and deliberately took no backup. From `/opt/docker/termix`, I upgraded the existing project with `docker compose pull`, `docker compose down`, and `docker compose up -d`. Both `termix` and `guacd` were recreated; the named `termix_termix-data` volume was retained. I changed no Compose file or environment setting.
 
 I didn't initiate a password-reset request during the upgrade. Verification inspected the corrected 2.5.0 logger template.
 
-### Verification
+## Verification
 
 Termix now reports package version 2.5.0 and repository digest `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`. Its health check is `healthy`, HTTP port 8080 returns `200`, restart count is zero, and the startup-error scan returned zero. The deployed logger template contains the reset-code variable.
 
@@ -91,4 +49,4 @@ Termix now reports package version 2.5.0 and repository digest `sha256:4d3371311
 
 The earlier 2026-07-13 reset code expired with the former process. A fresh reset remains the final functional test.
 
-The completed upgrade is recorded in [Termix Upgrade 2.2.1 to 2.5.0 - 2026-07-13](Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md).
+The completed upgrade is recorded in [Termix Upgrade 2.2.1 to 2.5.0 - 2026-07-13](../Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md).

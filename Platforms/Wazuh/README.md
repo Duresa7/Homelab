@@ -1,7 +1,7 @@
 ﻿# Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, dashboard, and API run on `security-01` / `wazuh-01` at `192.168.72.2` on Security-A/VLAN 72.
 
@@ -15,7 +15,7 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 - `Documentation/Dependencies.md`: network, host, and service dependencies.
 - `Documentation/Recovery.md`: manager and agent recovery procedures.
 - `Documentation/Resources.md`: verified VM and package specifications.
-- `Documentation/Troubleshooting-Log.md`: chronological operational problems and fixes.
+- `Documentation/Troubleshooting/`: issue index and one dated record per operational problem.
 - `Documentation/TODO.md`: agent enrollment backlog.
 - `Evidence/`: step-based verification transcripts for bounded changes.
 

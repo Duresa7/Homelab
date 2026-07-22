@@ -1,7 +1,7 @@
 # NetBird/NPM Operational Follow-ups and Hardening Descope
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Scope
 
@@ -31,7 +31,7 @@ Both Compose projects passed `docker compose config --quiet` before and after ap
 
 ### 3. Post-change upstream refresh
 
-My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting log](../Troubleshooting-Log.md#7-npm-retained-a-stale-netbird-upstream-address-after-recreation).
+My immediate verification found the host routing peer's Management channel returning HTTP `502` while direct HTTP, HTTPS, NPM health, and Signal checks passed. NPM had been recreated before NetBird and Nginx retained the pre-recreation `netbird-server` address, which had been reassigned to `netbird-dashboard`. After `nginx -t` succeeded, a non-disruptive Nginx reload refreshed service-name resolution. The original failure check then returned both Management and Signal connected. This sequencing issue is recorded in the [NetBird troubleshooting record](../Troubleshooting/NPM%20Retained%20a%20Stale%20NetBird%20Upstream%20Address%20After%20Recreation%20-%202026-07-12.md).
 
 ## Descope Decision
 

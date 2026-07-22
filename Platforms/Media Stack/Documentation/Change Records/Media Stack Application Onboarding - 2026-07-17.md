@@ -1,7 +1,7 @@
 # Media Stack Application Onboarding
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
 
 **Implementation date:** 2026-07-17  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
@@ -224,7 +224,7 @@ I performed the onboarding in each application's web UI between 20:08 & 21:14 ED
 - The Sonarr naming formats keep the season folder as `Season {season}` and omit the `{Release Group}` token; my [media settings research](../Media%20Settings%20Research%20-%202026-07-17.md) recommends `Season {season:00}` and retaining the release group. At the 2026-07-21 end-to-end test the episode imported and hard-linked correctly under the current scheme, so I declined that refinement and kept `Season {season}` without the release group.
 - Sonarr's advanced Importing section (hard-link toggle) and Jellyfin's tone-mapping selections sit below the captured viewports. Radarr's hard-link setting is confirmed enabled; I confirmed Sonarr hard-linking and GPU-active playback at the 2026-07-21 end-to-end test.
 - The Jellyfin library folder pickers are collapsed in S02–S03; the Arr root folders and the Seerr library sync corroborate the `/data/media` paths indirectly.
-- There is no post-sync Sonarr or Radarr indexer-health screenshot. My [troubleshooting log](../Troubleshooting-Log.md) records the pre-onboarding warnings; the 2026-07-21 acquisition test ran through both applications without a separate indexer-health capture.
+- There is no post-sync Sonarr or Radarr indexer-health screenshot. My [Arr indexer health record](../Troubleshooting/Arr%20Indexer%20Health%20Findings%20-%202026-07-17.md) records the pre-onboarding warnings; the 2026-07-21 acquisition test ran through both applications without a separate indexer-health capture.
 
 ## End-to-End Acquisition Test
 

@@ -1,7 +1,7 @@
 # Splunk SIEM Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## What This Guide Covers
 
@@ -105,5 +105,5 @@ Enterprise Security installation is recorded, but its broader configuration back
 - [Splunk Enterprise build log](../Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md)
 - [VM specifications](../Platforms/Splunk/Splunk%20Enterprise/Documentation/VM-Specs.md)
 - [UniFi CEF reference](../Platforms/Splunk/Splunk%20Enterprise/Documentation/UniFi-CEF-Reference.md)
-- [Splunk Enterprise troubleshooting](../Platforms/Splunk/Splunk%20Enterprise/Documentation/Troubleshooting-Log.md)
+- [Splunk Enterprise troubleshooting index](../Platforms/Splunk/Splunk%20Enterprise/Documentation/Troubleshooting/README.md)
 - [Enterprise Security build log](../Platforms/Splunk/Splunk%20ES/Documentation/Build-Log.md)

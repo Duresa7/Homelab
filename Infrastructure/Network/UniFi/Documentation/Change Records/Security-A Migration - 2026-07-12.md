@@ -1,7 +1,7 @@
 # Security-A Migration
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 **Implementation date:** 2026-07-12  
 **Status:** Complete  
@@ -71,7 +71,7 @@ Monitoring-path tests from `security-01` returned HTTP 200 from `edge-01:9100`, 
 
 I initially created the first replacement policies without automatic response policies and later updated them to request one. The forward policies showed the new flag, but the controller did not create the hidden reverse companions, so monitoring connections still timed out. Re-creating the four cross-zone policies with response generation enabled at creation materialized the return paths. I used a temporary single-port rule to isolate the behavior and removed it after the final combined rule passed.
 
-This behavior and the MCP deletion limitation are recorded in the [UniFi troubleshooting log](../Troubleshooting-Log.md).
+The [automatic-return rule recreation record](../Troubleshooting/Enabling%20create_allow_respond%20after%20policy%20creation%20did%20not%20create%20a%20return%20rule%20-%202026-07-12.md) and [management-tool deletion record](../Troubleshooting/The%20management%20tool%20blocked%20policy%20deletion%20-%202026-07-12.md) document both problems.
 
 ### 5. Remove obsolete state and update access inventories
 

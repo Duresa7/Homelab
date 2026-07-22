@@ -1,7 +1,7 @@
 # Termix
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I run Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The current inventory contains nine SSH hosts in four folders.
 
@@ -31,6 +31,6 @@ Ten additional SSH Manager entries were unreachable during the 2026-07-14 onboar
 
 ## Key Records
 
-- [Troubleshooting Log](Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Termix SSH Host Onboarding change record](Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
 - [Termix Upgrade 2.2.1 to 2.5.0 change record](Documentation/Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md)

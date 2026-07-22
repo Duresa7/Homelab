@@ -1,7 +1,7 @@
 # NetBird Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Scope
 
@@ -165,4 +165,4 @@ To restore, I recover the files with their original ownership and permissions, r
 
 ## Recording a Failure
 
-I use [Troubleshooting-Log.md](Troubleshooting-Log.md) for known deployment issues. For a new problem I capture the exact symptom and error first, then document failed attempts, hypotheses, tests, corrective action, and verification chronologically. I create a separate security incident record if availability or security impact becomes material.
+I use the [troubleshooting index](Troubleshooting/README.md) for known deployment issues. For a new problem I create one dated file, capture the exact symptom and error first, then document failed attempts, hypotheses, tests, corrective action, & verification. I create a separate security incident record if availability or security impact becomes material.

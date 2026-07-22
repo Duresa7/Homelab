@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I run Nginx Proxy Manager on the `docker-network` LXC. NetBird is its first consumer, with the dashboard, API, WebSocket, & gRPC paths sharing HTTPS host `<YOUR_NETBIRD_DOMAIN>`.
 
@@ -27,7 +27,7 @@ The NPM health check is passing and the administrative UI returns HTTP `200` at 
 
 - [Deployment record](Documentation/Deployment.md)
 - [Operations runbook](Documentation/Runbook.md)
-- [Troubleshooting log](Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
 - [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

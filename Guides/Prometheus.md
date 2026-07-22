@@ -1,7 +1,7 @@
 # Prometheus Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## What This Guide Covers
 
@@ -88,4 +88,4 @@ The baseline removes hosts that didn't have working exporters; it doesn't claim 
 - [Baseline cleanup](../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md)
 - [Versioned configuration](../Platforms/Prometheus/Configuration/prometheus.yml)
 - [Runbook](../Platforms/Prometheus/Documentation/Runbook.md)
-- [Troubleshooting log](../Platforms/Prometheus/Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](../Platforms/Prometheus/Documentation/Troubleshooting/README.md)

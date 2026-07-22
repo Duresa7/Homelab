@@ -1,7 +1,7 @@
 # Splunk SIEM Home Lab: Build Log
 
 **Created:** 2026-06-28  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I built a Splunk Enterprise 10.4.0 SIEM on Rocky Linux 10.2, then connected UniFi CEF through SC4S and HEC. The walkthrough retains the commands, failed attempts, search results, & screenshots from the 2026-06 build.
 
@@ -12,7 +12,7 @@ I built a Splunk Enterprise 10.4.0 SIEM on Rocky Linux 10.2, then connected UniF
 | **Build-Log.md** (this file) | Chronological build log with decisions and reasoning |
 | **[VM-Specs.md](VM-Specs.md)** | Full Proxmox VM configuration reference |
 | **[UniFi-CEF-Reference.md](UniFi-CEF-Reference.md)** | UniFi CEF format, keys, and SC4S index routing |
-| **[Troubleshooting-Log.md](Troubleshooting-Log.md)** | Every problem hit, its cause, and the fix |
+| **[Troubleshooting index](Troubleshooting/README.md)** | Every issue record, its cause, & the fix |
 | **[TODO.md](TODO.md)** | Planned follow-up work |
 
 | Field | Value |
@@ -235,7 +235,7 @@ sudo rpm -i /tmp/splunk-10.4.0-f798d4d49089.x86_64.rpm
 sudo chown -R splunk:splunk /opt/splunk
 ```
 
-> **RPM permission failure:** I ran the first `rpm -i` without `sudo`; it returned `can't create transaction lock ... Permission denied`, so nothing installed. The `Header V4 RSA/SHA256 ... NOKEY` warning means Splunk's GPG key isn't imported & the signature isn't verified. Full write-up: [Troubleshooting-Log.md](Troubleshooting-Log.md) (#1 & #2).
+> **RPM permission failure:** I ran the first `rpm -i` without `sudo`; it returned `can't create transaction lock ... Permission denied`, so nothing installed. The `Header V4 RSA/SHA256 ... NOKEY` warning means Splunk's GPG key isn't imported & the signature isn't verified. Full write-ups: [RPM permission failure](Troubleshooting/RPM%20install%20failed%20transaction%20lock%20permission%20denied%20-%202026-07-01.md) & [`splunk` command unavailable](Troubleshooting/splunk%20command%20not%20found%20after%20installing%20-%202026-07-01.md).
 
 I enabled boot-start as a **systemd-managed** service, running as the `splunk` user:
 
@@ -351,7 +351,7 @@ sudo firewall-cmd --permanent --add-port=1514/tcp
 sudo firewall-cmd --reload
 ```
 
-> **Port 1514 conflict:** SC4S crash-looped with `Error binding socket; 0.0.0.0:1514, Address in use (98)`. `sudo ss -lntup | grep 1514` showed `splunkd` holding 1514 through a leftover TCP data input from my earlier direct-ingest attempt. I deleted that input; SC4S then bound TCP & UDP 1514. Full write-up: [Troubleshooting-Log.md](Troubleshooting-Log.md) (#4).
+> **Port 1514 conflict:** SC4S crash-looped with `Error binding socket; 0.0.0.0:1514, Address in use (98)`. `sudo ss -lntup | grep 1514` showed `splunkd` holding 1514 through a leftover TCP data input from my earlier direct-ingest attempt. I deleted that input; SC4S then bound TCP & UDP 1514. Full write-up: [SC4S port 1514 conflict](Troubleshooting/SC4S%20crash-loop%20port%201514%20already%20in%20use%20-%202026-07-01.md).
 
 **Evidence: SC4S host and service setup**
 
@@ -434,7 +434,7 @@ The `main` search returned zero new CEF events. A product string without a routi
 
 ### Step 6.6: Confirm the extracted CEF field names
 
-I installed the `cefutils` (CEF Extraction Add-on) [10] on the search head. Because SC4S already parses CEF at ingest, this add-on is largely redundant for search here; its remaining value is CIM normalization for future dashboards and correlation. See [Troubleshooting-Log.md](Troubleshooting-Log.md) (#7) for the field-name investigation.
+I installed the `cefutils` (CEF Extraction Add-on) [10] on the search head. Because SC4S already parses CEF at ingest, this add-on is largely redundant for search here; its remaining value is CIM normalization for future dashboards and correlation. See the [CEF field-name troubleshooting record](Troubleshooting/CEF%20header%20fields%20came%20back%20blank%20-%202026-07-01.md).
 
 **Evidence: CEF field-name investigation**
 

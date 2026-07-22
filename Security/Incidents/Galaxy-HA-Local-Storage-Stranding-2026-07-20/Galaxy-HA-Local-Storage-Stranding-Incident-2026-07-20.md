@@ -1,7 +1,7 @@
 # Galaxy HA Local-Storage Stranding Incident - 2026-07-20
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Incident Metadata
 
@@ -129,7 +129,7 @@ Planned maintenance: I was moving blue, purple, red, & grey onto a UPS and shut 
 - Data corruption or loss: blue's disks were intact at 32 GiB & 15 GiB and mounted cleanly on start.
 - Fencing: blue shut its HA services down cleanly under `stopall` and was never fenced; no watchdog reset occurred.
 - Cluster quorum loss: Corosync reported all 4 nodes and quorate throughout.
-- blue-server instability: this was a deliberate power-down for the UPS move, unrelated to the [recurring `pvestatd` crashes](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting-Log.md#1-recurring-pvestatd-failure-on-blue-server) tracked separately.
+- blue-server instability: this was a deliberate power-down for the UPS move, unrelated to the [recurring `pvestatd` crashes](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md) tracked separately.
 - Stale disk copies as a blocker: the `stale volume copy on red-server` noted in the migrate log was already gone by the time I inspected red; only `vm-842-disk-0` remained there.
 
 ## Corrective Actions Completed
@@ -177,7 +177,7 @@ With the strict pin in place, a future blue shutdown or reboot leaves 107 & 108 
 
 ## Related Records
 
-- [Galaxy Troubleshooting Log, entry 5](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting-Log.md#5-ha-local-storage-stranding-of-ct-107-and-ct-108-after-a-blue-server-shutdown)
+- [Galaxy HA local-storage troubleshooting record](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md)
 - [Galaxy Docker-Network LXC Deployment](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
 - [Galaxy LXC inventory](../../../Operations/Inventory/Galaxy/LXCs.md)
 - [Evidence Index](Evidence/Evidence-Index.md)

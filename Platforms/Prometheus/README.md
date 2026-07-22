@@ -1,7 +1,7 @@
 ﻿# Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the security host, DMZ edge host, all four Galaxy Proxmox nodes, & the Proxmox API exporter.
 
@@ -13,7 +13,7 @@ I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the se
 - `Documentation/Change Records/`: dated implementation and repair records.
 - `Documentation/Runbook.md`: routine health checks, configuration changes, and rollback.
 - `Documentation/TODO.md`: current Prometheus backlog.
-- `Documentation/Troubleshooting-Log.md`: chronological operational problems and resolutions.
+- `Documentation/Troubleshooting/`: issue index and one dated record per operational problem.
 - `Evidence/`: step evidence for bounded monitoring changes.
 - `Tests/`: reusable validation scripts for the live target set.
 

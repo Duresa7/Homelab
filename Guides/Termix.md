@@ -1,7 +1,7 @@
 # Termix Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## What This Guide Covers
 
@@ -77,4 +77,4 @@ The ten targets that failed the initial reachability test remain outside Termix.
 
 - [Termix upgrade](../Platforms/Termix/Documentation/Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md)
 - [SSH host onboarding](../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
-- [Troubleshooting log](../Platforms/Termix/Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](../Platforms/Termix/Documentation/Troubleshooting/README.md)

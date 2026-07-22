@@ -1,7 +1,7 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 15 supported hosts, patches the Linux fleet through apt or dnf, & pulls new images to update the docker compose stacks. Semaphore provides an optional web interface over the same playbooks.
 
@@ -27,7 +27,7 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 | `Scripts/` | Native Python backup and state-verification utilities |
 | `Documentation/Architecture.md` | How the system fits together |
 | `Documentation/Runbook.md` | Commands for audits, onboarding, and future rotations |
-| `Documentation/Troubleshooting-Log.md` | Chronological operational problems and fixes |
+| `Documentation/Troubleshooting/` | Issue index and one dated record per operational problem |
 | `Documentation/TODO.md` | Platform-owned backlog |
 | `Documentation/Change Records/` | Dated implementation history |
 

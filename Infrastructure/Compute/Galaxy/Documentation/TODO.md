@@ -1,7 +1,7 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 This backlog contains one deferred Galaxy issue: recurring `pvestatd` crashes on `blue-server`. The root [TODO](../../../../TODO.md) links here without copying the six recovery steps.
 
@@ -9,7 +9,7 @@ This backlog contains one deferred Galaxy issue: recurring `pvestatd` crashes on
 
 **Status:** Deferred known issue  
 **Priority:** Schedule with a maintenance window  
-**Troubleshooting record:** [Recurring `pvestatd` failure on `blue-server`](Troubleshooting-Log.md#1-recurring-pvestatd-failure-on-blue-server)
+**Troubleshooting record:** [Recurring `pvestatd` failure on `blue-server`](Troubleshooting/Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md)
 
 - [ ] Recheck service, cluster, kernel, & package state before recovery; retain the failure window and a core dump if one becomes available.
 - [ ] Record the current Lenovo BIOS settings, confirm the M910q update and rollback procedure, & update BIOS from `M1AKT35A` during a maintenance window.

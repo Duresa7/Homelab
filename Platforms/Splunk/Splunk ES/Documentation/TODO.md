@@ -1,13 +1,13 @@
 # Splunk ES: To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
 ## Completed Foundation
 
-- [x] Resolved the app install/setup issue from 2026-07-02 (tracked in [Troubleshooting-Log.md](Troubleshooting-Log.md) #1): raising `splunk-siem` from 4 to 6 vCPU cleared the CPU-bound setup stall, and I verified the ES configuration UI.
+- [x] Resolved the [app install/setup issue from 2026-07-02](Troubleshooting/ES%20install-setup%20slow,%20initially%20looked%20disk%20I-O%20bound%20-%202026-07-02.md): raising `splunk-siem` from 4 to 6 vCPU cleared the CPU-bound setup stall, and I verified the ES configuration UI.
 - [x] Completed the ES post-install configuration step (index and data model rebuild): the Splunk Web install workflow finished after the CPU correction; follow-on CIM scoping remains separate below.
 
 ## Data Readiness

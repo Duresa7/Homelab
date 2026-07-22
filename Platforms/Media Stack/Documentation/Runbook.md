@@ -1,7 +1,7 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-22
 
 ## Scope and Access
 
@@ -124,4 +124,4 @@ Use `<YOUR_QBITTORRENT_USERNAME>` & `<YOUR_QBITTORRENT_PASSWORD>` when rebuildin
 
 ## Recording a Failure
 
-Record new operational faults chronologically in [Troubleshooting-Log.md](Troubleshooting-Log.md). Create a security incident under `Security/Incidents/` if VPN traffic leaks, credentials are exposed, or availability/security impact becomes material.
+Create one dated file per new operational fault under [Troubleshooting](Troubleshooting/README.md), then add it to the folder index. Create a security incident under `Security/Incidents/` if VPN traffic leaks, credentials are exposed, or availability/security impact becomes material.

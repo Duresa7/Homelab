@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -44,7 +44,7 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 - [Operations runbook](Documentation/Runbook.md)
 - [Verified Jellyfin and Sonarr settings](Documentation/Media%20Settings%20Research%20-%202026-07-17.md)
 - [Download payload-filtering research](Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md)
-- [Troubleshooting log](Documentation/Troubleshooting-Log.md)
+- [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
 
