@@ -10,4 +10,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | # | Date | Symptom | Resolution | Status |
 |---:|---|---|---|---|
 | <a id="1-single-file-bind-mount-retained-the-old-inode"></a>[1](Single-File%20Bind%20Mount%20Retained%20the%20Old%20Inode%20-%202026-07-13.md) | 2026-07-13 | A validated host-side configuration replacement and SIGHUP left the running container on the old target set | I restarted the Prometheus container so its single-file bind mount attached to the replacement inode; all seven intended targets then reported `UP` | Resolved |
-
+| <a id="2-grafana-bootstrap-administrator-credential"></a>[2](Grafana%20Bootstrap%20Administrator%20Credential%20-%202026-07-22.md) | 2026-07-22 | Grafana's one-time bootstrap administrator value remained in the live Compose file | I removed the variable, recreated Grafana, rotated the credential, & verified health and authenticated access | Resolved; [incident](../../../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md) closed |

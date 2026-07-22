@@ -28,7 +28,6 @@ Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent por
 - I kept HSTS disabled. Force SSL provides the required redirect without making rollback dependent on a cached HSTS policy.
 - I used HTTPS upstreams only for Portainer 9443, Wazuh 443, & Splunk 8000. All other NPM-to-application connections use HTTP on the internal network.
 - I left each application's own authentication in place. I added no NPM access list to Prometheus or the dashboard because the approved scope didn't call for one.
-- I stored the rotated Grafana administrator credential in 1Password item `the Grafana administrator entry`; no password is retained in this repository or evidence.
 
 ## Step 1: Capture Recovery Points
 
@@ -42,9 +41,11 @@ I captured the mutable NPM, Docker Main, Media Stack, Ansible, & security-monito
 | Ansible | `/var/lib/vz/dump/internal-https-2026-07-22-prechange/ansible-01-configs.tar.gz` | `85cd68768ed57f47c0d60fd0177e3a82d1590ccb66493baf24778c35d53dfb26` |
 | Security monitoring | `/home/<YOUR_ADMIN_USERNAME>/backups/internal-https-2026-07-22-prechange/security-monitoring-compose-sanitized.tar.gz` | Sanitized Compose backup; no password retained |
 
-I didn't change Splunk configuration, so I kept its current service state as the rollback baseline instead of bypassing permissions to archive unrelated files. The NPM recovery point includes the SQLite database, generated hosts, ACME state, & certificate files needed to restore the proxy layer.
+I didn't change Splunk configuration, so I kept its current service state as the rollback baseline instead of bypassing permissions to archive unrelated files. The NPM recovery point included the SQLite database, generated hosts, ACME state, & certificate files needed to restore the proxy layer.
 
 Evidence: [Step 1 recovery-point verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S01-Recovery-Points-2026-07-22.md). The exact creation commands weren't retained outside the task transcript; the log records the verified artifacts and the permission failures without reconstructing commands.
+
+I deleted all six project-created archives after implementation at the owner's request. The five named recovery points above and the 423-byte `security-ui-configs.tar.gz` archive are no longer available. [Step 6](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S06-Backup-Removal-2026-07-22.md) records the exact deletion commands and absence checks.
 
 ## Step 2: Apply Backend Compatibility Settings
 
@@ -57,11 +58,11 @@ I made only the application changes needed for the new names:
 - Grafana's domain and root URL use `https://grafana.<YOUR_BASE_DOMAIN>` while its container listener stays HTTP.
 - Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`.
 - Syncthing's server GUI now binds on `0.0.0.0:8384` so NPM can reach it. Its synchronization listeners and peer paths are unchanged.
-- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, stored it in 1Password, & verified an HTTP 200 login.
+- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, & verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md) records the exposure boundary and corrective actions without retaining the credential.
 
 Recreating the Media Stack pulled the current floating Gluetun and qBittorrent images because that Compose project intentionally uses `pull_policy: always`. Both containers returned running, Jellyfin returned `Healthy`, and qBittorrent's WebUI answered afterward.
 
-That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The pre-change configuration archive remains available, but the former floating image digests weren't recorded by Compose. I accepted the running replacements only after the media containers and proxy paths passed health checks.
+That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The former floating image digests weren't recorded by Compose, and the project-created pre-change archive was later deleted at the owner's request. I accepted the running replacements only after the media containers and proxy paths passed health checks.
 
 Evidence: [Step 2 backend compatibility verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S02-Backend-Compatibility-Verification-2026-07-22.md). The fresh readback records exact verification commands and outputs; the original edit commands remain only in the task transcript.
 
@@ -134,9 +135,9 @@ The local evidence index is [Evidence-Index.md](../../Evidence/Internal%20HTTPS%
 
 ## Rollback Points
 
-For one application, I can disable or delete only its NPM proxy host and UniFi A record, then keep using its direct IP-and-port path. If the application had a compatibility change, I restore its saved pre-change file and restart only that service.
+For one application, I can disable or delete only its NPM proxy host and UniFi A record, then keep using its direct IP-and-port path. Versioned reference configuration remains available for the backend compatibility settings.
 
-For the whole change, I disable the five new firewall policies, remove the 19 UniFi A records, restore the NPM archive as a matched database/data/certificate set, and recreate NPM. I then restore the backend configuration archives where needed. I don't delete the wildcard certificate while NetBird still uses it.
+For the whole change, I disable the five new firewall policies and remove the 19 UniFi A records. Direct IP-and-port paths remain available. The project-created NPM and backend archives were deleted on 2026-07-22, so rollback can't rely on those files. I don't delete the wildcard certificate while NetBird still uses it.
 
 ## Remaining Work
 

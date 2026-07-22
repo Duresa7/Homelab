@@ -31,3 +31,5 @@ I run Prometheus in Docker on `security-01` at `192.168.72.2`. It scrapes the se
 In the 2026-07-13 baseline cleanup I installed the three missing Proxmox exporters, removed stale scrape jobs, and confirmed all seven retained jobs `UP`. See [Security Monitoring Baseline Cleanup - 2026-07-13](Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 
 On 2026-07-22 I set Prometheus's external URL to `https://prometheus.<YOUR_BASE_DOMAIN>` and published it through internal NPM. Grafana uses `https://grafana.<YOUR_BASE_DOMAIN>`. The route, certificate, firewall, & rollback details are in [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+The same review found a Grafana bootstrap administrator value left in the live Compose file. I removed it, recreated Grafana, rotated the credential, & closed the [Grafana plaintext administrator credential incident](../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md) after health and authenticated-access checks passed.
