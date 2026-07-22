@@ -210,3 +210,4 @@ Platforms/Netbird/Configuration/dashboard.env
 Platforms/Netbird/Configuration/netbird_data/
 Platforms/Nginx Proxy Manager/Configuration/data/
 Platforms/Nginx Proxy Manager/Configuration/letsencrypt/
+Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
