@@ -9,6 +9,7 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 
 | Date | Issue |
 |---|---|
+| 2026-07-22 | [Jellyfin Orphaned Library Record Deletion](Jellyfin%20Orphaned%20Library%20Record%20Deletion%20-%202026-07-22.md) |
 | 2026-07-22 | [qBittorrent Host Validation Blocked Arr Clients](qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) |
 | 2026-07-22 | [Fail-Closed Verification `findmnt` Exit Handling](Fail-Closed%20Verification%20findmnt%20Exit%20Handling%20-%202026-07-22.md) |
 | 2026-07-18 | <a id="2026-07-18-jellyfin-access-from-another-device"></a>[Jellyfin Access from Another Device](Jellyfin%20Access%20from%20Another%20Device%20-%202026-07-18.md) |
