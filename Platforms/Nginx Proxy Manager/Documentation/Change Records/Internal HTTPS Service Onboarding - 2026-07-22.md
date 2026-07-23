@@ -52,7 +52,7 @@ I deleted all six project-created archives after implementation at the owner's r
 I made only the application changes needed for the new names:
 
 - Jellyfin now advertises `https://jellyfin.<YOUR_BASE_DOMAIN>` and trusts NPM address `192.168.85.2` as a proxy.
-- qBittorrent accepts `qbittorrent.<YOUR_BASE_DOMAIN>` as a WebUI server domain.
+- qBittorrent accepts `qbittorrent.<YOUR_BASE_DOMAIN>`, internal Docker hostname `gluetun`, & direct address `192.168.40.42` as WebUI server domains.
 - Semaphore's `web_host` uses `https://semaphore.<YOUR_BASE_DOMAIN>`.
 - Forgejo's `DOMAIN` and `ROOT_URL` use the new HTTPS host. `SSH_DOMAIN` remains `192.168.40.35`.
 - Grafana's domain and root URL use `https://grafana.<YOUR_BASE_DOMAIN>` while its container listener stays HTTP.
@@ -63,6 +63,8 @@ I made only the application changes needed for the new names:
 Recreating the Media Stack pulled the current floating Gluetun and qBittorrent images because that Compose project intentionally uses `pull_policy: always`. Both containers returned running, Jellyfin returned `Healthy`, and qBittorrent's WebUI answered afterward.
 
 That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The former floating image digests weren't recorded by Compose, and the project-created pre-change archive was later deleted at the owner's request. I accepted the running replacements only after the media containers and proxy paths passed health checks.
+
+The first qBittorrent domain value contained only the NPM hostname. That made the proxy route pass while qBittorrent rejected Sonarr and Radarr requests carrying `Host: gluetun:8080` with HTTP `401`. At 20:49 EDT I added `gluetun` and `192.168.40.42` without disabling Host-header validation. Both Arr saved-client tests then returned HTTP `200`; the [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) holds the reproduction, root cause, correction, & verification.
 
 Evidence: [Step 2 backend compatibility verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S02-Backend-Compatibility-Verification-2026-07-22.md). The fresh readback records exact verification commands and outputs; the original edit commands remain only in the task transcript.
 

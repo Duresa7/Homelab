@@ -14,7 +14,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `sonarr.<YOUR_BASE_DOMAIN>` | `192.168.40.42:8989` | HTTP | Direct IP access remains available. |
 | `radarr.<YOUR_BASE_DOMAIN>` | `192.168.40.42:7878` | HTTP | Direct IP access remains available. |
 | `prowlarr.<YOUR_BASE_DOMAIN>` | `192.168.40.42:9696` | HTTP | Direct IP access remains available. |
-| `qbittorrent.<YOUR_BASE_DOMAIN>` | `192.168.40.42:8080` | HTTP | The hostname is in qBittorrent's allowed WebUI server-domain list. |
+| `qbittorrent.<YOUR_BASE_DOMAIN>` | `192.168.40.42:8080` | HTTP | qBittorrent allows the NPM hostname, Arr hostname `gluetun`, & direct address `192.168.40.42` without disabling Host-header validation. |
 | `semaphore.<YOUR_BASE_DOMAIN>` | `192.168.40.36:3000` | HTTP | Semaphore advertises this HTTPS web host. |
 | `immich.<YOUR_BASE_DOMAIN>` | `192.168.40.35:2283` | HTTP | Request buffering is off; body limit is 50,000 MiB; proxy read, proxy send, & response-send timeouts are 600 seconds. |
 | `booklore.<YOUR_BASE_DOMAIN>` | `192.168.40.35:6060` | HTTP | Direct IP access remains available. |
