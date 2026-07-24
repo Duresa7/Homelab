@@ -1,7 +1,7 @@
 # PC Specifications: Jedi PC
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
 Jedi PC is my Windows 11 Pro administration workstation. It has a 16-core Ryzen 9 9950X3D, 32 GB of DDR5, an RTX 5070 Ti, two 2 TB NVMe drives, & a 2.5 Gbps Ethernet adapter.
 
@@ -68,6 +68,8 @@ The modules are rated for 6000 MT/s (DDR5); they currently run at 4800 MT/s.
 |---|---|---|---|---|
 | Samsung SSD 9100 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
 | Samsung SSD 990 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
+
+Both drives passed a SMART short self-test on 2026-07-24. Raw captures, wear, and power-on hours are in the [drive inventory](Components/Drives/README.md); the 9100 PRO reads 0% endurance used at 211 hours and the 990 PRO 4% at 6,934 hours.
 
 ### Logical Volumes
 

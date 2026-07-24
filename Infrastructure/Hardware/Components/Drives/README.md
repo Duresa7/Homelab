@@ -34,6 +34,17 @@ Neither drive has a completed short self-test on record yet, so I've got a retes
 
 The 2026-07-24 short self-test completed without error on six of the seven, all reporting overall health `PASSED`. Purple's boot NVMe is the only failure; its short test logged `Completed: failed segments`. It reports critical warning 0x04 (NVM subsystem reliability degraded) at 169% of rated write endurance across 49,373 power-on hours, with 0 media errors so far, so it's a wear-out, not sudden corruption. I track it in [Purple NVMe Reliability Failure - 2026-07-22](../../../Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md). Wear percentage is the drive's own SMART endurance counter for NVMe and SATA SSDs; spinning HDDs don't report it.
 
+## In-use drives (Jedi PC workstation)
+
+Jedi PC is my Windows 11 workstation, not a Galaxy node, so its drives are listed separately. See [Jedi PC specifications](../../Jedi_Specs.md) for the full machine. I ran the 2026-07-24 short self-test from an elevated shell, since Windows blocks the NVMe self-test command without administrator rights.
+
+| Machine | Volume | Model | Serial (last 4) | Capacity | Power-on hours | Wear used | Health | Raw log |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Jedi PC | C: (boot) | Samsung SSD 9100 PRO 2TB | 822D | 2 TB | 211 | 0% | PASSED | [log](NVMe/smartctl-a_Samsung-9100PRO-2TB_822D_2026-07-24.txt) |
+| Jedi PC | D: (Storage) | Samsung SSD 990 PRO 2TB | 618A | 2 TB | 6,934 | 4% | PASSED | [log](NVMe/smartctl-a_Samsung-990PRO-2TB_618A_2026-07-24.txt) |
+
+Both short tests completed without error. The 9100 PRO is nearly new at 211 power-on hours and 0% endurance used; the 990 PRO sits at 4% used across 6,934 hours. Neither reports a media or data-integrity error.
+
 ## Layout
 
 - `NVMe/` raw SMART captures for M.2 and U.2 NVMe drives
