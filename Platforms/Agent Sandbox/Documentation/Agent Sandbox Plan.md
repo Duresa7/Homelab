@@ -1,7 +1,7 @@
 # Agent Sandbox Plan
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-24
 
 I want my AI agents to spin up their own test machines & tear them down when they're done. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
 
@@ -39,7 +39,7 @@ The broker owns a scoped Proxmox API token whose role reaches only a dedicated `
 
 ## Network & isolation
 
-The sandboxes get their own VLAN in a new custom firewall zone, cut off from every Internal network: my workstations on Secure (VLAN 50) & Secure Client (VLAN 60), the domain controllers on AD-SERVERS (VLAN 65), the app & data servers on SERVERS-A (VLAN 80), & the Proxmox management plane on MGMT-A (VLAN 70). The firewall runs default-deny outward to anything internal & drops sandbox-to-8006 on the nodes & sandbox-to-gateway on the locked net. Sandboxes can't see each other unless a job explicitly needs a small attacker-victim network.
+The general agent sandboxes still need their own VLAN and custom firewall zone. They remain cut off from every Internal network: my workstations on Secure (VLAN 50) and Secure Client (VLAN 60), the domain controllers on AD-SERVERS (VLAN 65), the app and data servers on SERVERS-A (VLAN 80), and the Proxmox management plane on MGMT-A (VLAN 70). The Kasm security lab holds only VLANs 74, 77, and 79 as of 2026-07-23, so the Agent Sandbox must use a different unused VLAN; 73, 75, 76, and 78 came back into the free pool when I cut the lab down. The firewall runs default-deny outward to anything internal and drops sandbox-to-8006 on the nodes and sandbox-to-gateway on the locked net. Sandboxes can't see each other unless a job explicitly needs a small attacker-victim network.
 
 Internet egress splits by lane. The trusted lane gets normal outbound so apt, pip, & npm work, routed through my existing ProtonVPN egress so sandbox traffic doesn't leave on my real WAN IP. The locked lane gets no internet at all by default, so unvetted code can't phone home or leak; when a specific untrusted job legitimately needs to fetch something, I open a filtered, logged path scoped to that one box. The VLAN ID & subnet come from the [UniFi network segmentation plan](../../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md); I'll pull the live UniFi list & pick an unused pair.
 
@@ -90,7 +90,7 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 
 ## Open decisions
 
-- Sandbox VLAN ID & subnet: pull the live UniFi list & pick an unused pair that doesn't collide with the security lab's planned segment.
+- Sandbox VLAN ID and subnet: choose an unused pair that avoids the Kasm security lab's VLANs 74, 77, and 79. VLANs 73, 75, 76, and 78 are free again after the 2026-07-23 simplification.
 - Docker host shape: a dedicated container on purple versus a small VM, & whether nested-Docker-in-VM for the untrusted case is a standing template or built per job.
 - Concurrency ceilings: the exact per-node & per-agent limits above the 10 GiB purple budget.
 - purple disk: whether to add an SSD now to raise concurrency past a couple of Windows VMs, or live with 238 GB & lean on grey.
