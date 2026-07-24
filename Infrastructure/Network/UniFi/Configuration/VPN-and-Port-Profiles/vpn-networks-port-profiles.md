@@ -1,7 +1,7 @@
 # UniFi VPNs, Groups & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-23
 
 I track five WireGuard servers, one WireGuard client, five reusable firewall groups, & four switch port profiles here.
 
@@ -21,7 +21,15 @@ All servers are WireGuard, remote-user-VPN type, bound to the WAN interface.
 
 | Name | Type | Config File | Tunnel IP | Status |
 |---|---|---|---|---|
-| ProtonVPN | WireGuard Client | wg-US-GA-568.conf | 10.2.0.2/32 | Disabled |
+| ProtonVPN | WireGuard Client | wg-US-GA-568.conf | 10.2.0.2/32 | Enabled |
+
+## Traffic Routes
+
+| Name | Interface | Target networks | Destination | Kill switch | Status |
+| --- | --- | --- | --- | --- | --- |
+| KASM Lab Proton Egress | ProtonVPN | KASM-BROWSER | Any Internet destination | Enabled | Enabled |
+
+On 2026-07-23 I retargeted this route to KASM-BROWSER (VLAN 74) only, down from four VLANs, during the [Kasm lab network simplification](../../Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md). The two other Proton routes are unchanged.
 
 ## Network List (Firewall Groups)
 
@@ -42,4 +50,4 @@ Reusable port/address groups referenced by firewall policies.
 | Management | Uplink | Management | Allow All | All | Auto | On | Force Authorized | - | - |
 | Trusted | Edge | Trusted (VLAN 10) | - | - | Auto | On | Force Authorized | - | - |
 | IoT | Edge | IoT (VLAN 20) | - | - | Auto | On | Force Authorized | - | - |
-| Proxmox-Trunk | Uplink | None | Custom | Personal-A (40), Secure Client (60), AD-SERVERS (65), MGMT-A (70), Cluster-Net (71), Security-A (72), SERVERS-A (80), Access-A (85), DMZ-A (90) | Off | On (STP Uplink) | Force Authorized | On | On |
+| Proxmox-Trunk | Uplink | None | Custom | Personal-A (40), Secure Client (60), AD-SERVERS (65), MGMT-A (70), Cluster-Net (71), Security-A (72), KASM-BROWSER (74), MALWARE-OFFLINE (77), EVIDENCE-QUARANTINE (79), SERVERS-A (80), Access-A (85), DMZ-A (90) | Off | On (STP Uplink) | Force Authorized | On | On |

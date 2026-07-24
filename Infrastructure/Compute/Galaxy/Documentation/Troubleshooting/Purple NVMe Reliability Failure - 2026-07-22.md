@@ -5,7 +5,7 @@
 
 **Investigated:** 2026-07-22  
 **Owner:** Galaxy / `purple-server`  
-**Status:** Open; failed device retained. Purple is guest-free again after the 2026-07-23 Kasm teardown removed `kasm-agent-01` and `inetsim-01`.
+**Status:** Replacement underway. I powered Purple down on 2026-07-24 to swap the failed boot NVMe. It stays guest-free; the 2026-07-23 Kasm teardown removed `kasm-agent-01` and `inetsim-01`.
 
 ## Symptom and impact
 
@@ -52,6 +52,12 @@ The acceptance does not change the hardware result. A fresh `smartctl -H -A /dev
 On 2026-07-24 I ran a SMART short self-test (`smartctl -t short /dev/nvme0`) on Purple's boot NVMe. It logged `Completed: failed segments` at 49,373 power-on hours (NSID 1, segment 2). That is the first self-test failure recorded on the device; the 2026-07-22 captures logged no self-test at all. Overall health still reads `FAILED`, critical warning `0x04`, endurance 169% used, and zero media/data-integrity errors. The full transcript is the capture linked above.
 
 I ran the same short test on the other six physical drives in Galaxy the same day. Grey's Crucial CT1000P310SSD8 NVMe (2% used), Blue's Samsung MZVLW256HEHP-000L7 NVMe (9% used), Red's Samsung MZVLB256HAHQ-000L7 NVMe (7% used), Grey's Crucial BX500 SATA SSD, Grey's Toshiba DT01ACA200 HDD, and Red's Seagate ST1000LM035 HDD each completed without error and report overall health `PASSED`. The full sweep and per-drive transcripts are recorded in the [drive inventory](../../../../Hardware/Components/Drives/README.md). Purple remains the only failed device.
+
+## Replacement window opened 2026-07-24
+
+I took Purple offline on 2026-07-24 to replace the drive. `pvecm nodes` on Grey then listed three members (nodeids 1, 3, 4) & `pvesh get /cluster/resources` reported `purple-server offline`. Corosync showed nodeid 2 `disconnected` on `LINK ID 0` (`192.168.70.10`) and `LINK ID 1` (`192.168.71.10`), which matches a powered-down node rather than a broken link.
+
+Galaxy stayed quorate at three total votes against expected votes of four, with quorum needing three. That leaves no spare vote: taking Grey, Blue, or Red offline during this window would make the cluster inquorate. I deployed `kasm-01` on Grey during the same window, which added no node restarts.
 
 ## Required correction and verification
 

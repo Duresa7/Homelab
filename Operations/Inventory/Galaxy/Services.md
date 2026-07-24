@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
-This inventory maps 11 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
+This inventory maps 12 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
@@ -15,6 +15,7 @@ This inventory maps 11 Galaxy guests to their current workloads, versions, liste
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.5 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
+| kasm-01 | VM 122 | grey-server | Streamed disposable desktops (`192.168.80.30`, VLAN 80) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2 |
 | security-01 / wazuh-01 | VM 200 | grey-server | Security + monitoring (`192.168.72.2`, VLAN 72) | Wazuh<br>Prometheus<br>Grafana<br>Proxmox exporter |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
@@ -86,6 +87,17 @@ This inventory maps 11 Galaxy guests to their current workloads, versions, liste
 | cloudflared | Cloudflare Tunnel |
 | Wazuh agent | 4.14.5-1; enabled/active; fresh manager ID `005` as `edge-01`; connected to `192.168.72.2:1514` |
 | Containers | No Docker or Podman runtime detected |
+
+## kasm-01
+
+| Workload | Details |
+| --- | --- |
+| Kasm Workspaces | 1.19.0 Community Edition, `--role all` single-server install under `/opt/kasm/1.19.0`; eight containers (`kasm_api`, `kasm_db`, `kasm_manager`, `kasm_agent`, `kasm_guac`, `kasm_proxy`, `kasm_rdp_gateway`, `kasm_rdp_https_gateway`) reported healthy; HTTPS on TCP 443 with the installer's self-signed certificate; RDP gateway on TCP 3389 |
+| Docker | 29.6.2 with containerd 2.2.6, installed by the Kasm dependency script from `download.docker.com` |
+| Workspace images | Catalog seeded, nothing pulled; each image downloads on first launch |
+| Session isolation | Not wired yet; single NIC on VLAN 80, so no session lands in lab VLAN 74, 77, or 79 |
+| Swap | 4 GiB file at `/mnt/Kasm.swap`, required by Kasm's own guidance |
+| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80, <YOUR_ORG_NAME>-Servers firewall zone |
 
 ## security-01 / wazuh-01
 

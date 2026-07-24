@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-23
 
 ## Networks / VLANs
 
@@ -18,6 +18,9 @@
 | MGMT-A | 70 | 192.168.70.0/24 | 192.168.70.1 | .50 – .200 | Ahsoka Gateway |
 | Cluster-Net | 71 | 192.168.71.0/24 | 192.168.71.1 | none | Ahsoka Gateway |
 | Security-A | 72 | 192.168.72.0/24 | 192.168.72.1 | .6 – .254 | Ahsoka Gateway |
+| KASM-BROWSER | 74 | 192.168.74.0/24 | 192.168.74.1 | .100 – .199 | Ahsoka Gateway |
+| MALWARE-OFFLINE | 77 | 192.168.77.0/24 | 192.168.77.1 | .100 – .199 | Ahsoka Gateway |
+| EVIDENCE-QUARANTINE | 79 | 192.168.79.0/24 | 192.168.79.1 | .100 – .199 | Ahsoka Gateway |
 | SERVERS-A | 80 | 192.168.80.0/24 | 192.168.80.1 | .6 – .254 | Ahsoka Gateway |
 | Access-A | 85 | 192.168.85.0/24 | 192.168.85.1 | .6 – .254 | Ahsoka Gateway |
 | DMZ-A | 90 | 192.168.90.0/24 | 192.168.90.1 | .50 – .100 | Ahsoka Gateway |
@@ -39,6 +42,9 @@ I use this table when placing a new device or workload. The **Zone** column name
 | MGMT-A (70) | `<YOUR_ORG_NAME>`-Mgmt | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the cluster node mgmt IPs (grey/purple/blue/red = .10–.13), PVE GUI/API/SSH, Corosync link0. Out-of-band / IPMI belongs here. |
 | Cluster-Net (71) | `<YOUR_ORG_NAME>`-Cluster | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication (node IPs .10–.13). No DHCP and no general hosts; nothing else should join. |
 | Security-A (72) | `<YOUR_ORG_NAME>`-Security | Security & monitoring | Security, detection, and monitoring workloads: SIEM, log, and metrics servers (wazuh-01 = .2, splunk-siem = .3). Egress is default-deny except approved web/NTP. |
+| KASM-BROWSER (74) | KASM-BROWSER | Lab tools | The Kasm Agent, its browser containers, & attacker tooling. Proton egress with the kill switch on. Empty until I rebuild Kasm. |
+| MALWARE-OFFLINE (77) | MALWARE-OFFLINE | Detonation & targets | Disposable targets & malware detonation, offline only, no real Internet. Empty until I rebuild Kasm. |
+| EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review VMs, no real Internet, trusted-side initiated SFTP only. Empty until I rebuild Kasm. |
 | SERVERS-A (80) | `<YOUR_ORG_NAME>`-Servers | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers, databases (app-01 = .10, supabase-01 = .20, db-13-host = .228). |
 | Access-A (85) | `<YOUR_ORG_NAME>`-Access | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
 | DMZ-A (90) | Dmz | Internet-facing edge | `<YOUR_ORG_NAME>` public-facing edge workloads that accept inbound from the internet (edge-01 = .10), monitored from Security-A. Blocked from reaching Internal. |

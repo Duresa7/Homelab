@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -13,13 +13,13 @@ _No untriaged items._
 
 - [ ] Complete the authenticated application and VPN-client acceptance checks for [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). DNS, TLS, proxy routing, public NXDOMAIN, zero WAN port forwards, & restart recovery are already verified.
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
-- [ ] Build the isolated security lab (malware detonation & pentest practice) per the [isolated security lab plan](Architecture/Isolated-Security-Lab.md). Planning phase: VLAN, guests, & firewall rules not yet created.
+- [ ] Attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network, then confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before running live malware. Platform notes in [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
+- [ ] Replace `purple-server`'s failed boot NVMe and bring the node back to four votes. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
 
 ## System Backlogs
 
 | Backlog | Open items |
-|---|---|
-| [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
+|---|---|| [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: configuration backup and restore test, NVMe/HDD capacity alerts, & update cadence; internal HTTPS completed 2026-07-22 |
@@ -34,6 +34,8 @@ _No untriaged items._
 
 ## Recently Completed
 
+- [x] 2026-07-24: [Kasm Workspaces deployed on `kasm-01`](Platforms/Kasm%20Workspaces/Documentation/Deployment.md). I built VM 122 on `grey-server` from the Ubuntu 24.04.4 template, applied the Linux host baseline, & installed Kasm 1.19.0 Community Edition after matching the release tarball against Kasm's published SHA256. Eight containers healthy, HTTPS 200 on TCP 443, `/api/__healthcheck` returns `{"ok": true}`, & the administrator credential authenticates. Key-only SSH verified from Jedi PC with the `jedi-pc` identity. Session VLAN attachment is deliberately still open.
+- [x] 2026-07-23: Kasm lab torn down for a from-scratch rebuild. I collapsed the [UniFi lab network](Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) from seven VLANs to three and 53 firewall policies to 9, retargeted the Proton route to VLAN 74, and in the [Galaxy Proxmox teardown](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md) destroyed the ten Kasm VMs and removed the pool, provider identity, KASMLAB SDN, snippet storage, and host-firewall line. The cluster stayed quorate 4/4. I removed the Kasm build artifacts from the repository too and am rebuilding Kasm from scratch.
 - [x] 2026-07-22: [Grafana plaintext administrator credential incident](Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md). I removed the bootstrap value from Compose and the recreated container environment, rotated the credential, & verified Grafana 12.4.1 health and authenticated access. Current-container logs showed no failed-authentication matches; the pre-recreation log boundary wasn't retained.
 - [x] 2026-07-22: [PeaNUT UPS dashboard deployment](Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md). I deployed read-only NUT 2.8.1-5 telemetry on Red and Grey and an authenticated, digest-pinned PeaNUT 6.0.0 dashboard on `docker-main`; both UPS feeds and existing Docker workloads passed verification.
 - [x] 2026-07-22: [Syncthing Obsidian vault deployment](Platforms/Syncthing/Documentation/Deployment.md). I deployed Syncthing 2.1.2 on `docker-main`, paired the Windows vault over direct TLS 1.3, matched a 14-file, 6,425,692-byte canonical manifest on both peers, proved both transfer directions, & retained a deleted test file through 90-day staggered versioning.

@@ -1,9 +1,9 @@
 ﻿# Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-24
 
-Galaxy currently has 11 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 12 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -15,6 +15,7 @@ Galaxy currently has 11 QEMU VMs & two templates. This inventory records each gu
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 24 GiB | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
+| 122 | kasm-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.80.30/24 | 192.168.80.1 | 80 | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 300 | ws-dc-1 | grey-server | Windows Server 2025 | 4 | 12 GiB | 100G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 301 | ws-dc-2 | grey-server | Windows Server 2025 | 4 | 8 GiB | 100G | 192.168.65.45/24 | 192.168.65.1 | 65 | disabled |
@@ -293,6 +294,48 @@ Galaxy currently has 11 QEMU VMs & two templates. This inventory records each gu
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | `<YOUR_EDGE_HOST_MAC>` |
+
+### VM 122 - kasm-01
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| Guest hostname | kasm-01 |
+| Role | Kasm Workspaces 1.19.0 Community Edition control plane |
+| High availability | disabled |
+| Template | no |
+| OS family | Linux |
+| Guest OS | Ubuntu 24.04.4 LTS |
+| IPv4 | 192.168.80.30/24 |
+| Gateway | 192.168.80.1 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 8 GiB |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | disabled |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-122-disk-1 | 100G | disk | I/O thread, SSD emulation |
+| ide2 | ide | ssd-lvm1 | vm-122-cloudinit | 4M | cdrom | default |
+| efidisk0 | efidisk | ssd-lvm1 | vm-122-disk-0 | 4M | disk | default |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.30/24 | 192.168.80.1 | enabled | `<YOUR_KASM_HOST_MAC>` |
+
+Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. Lab VLAN NICs for 74, 77, & 79 are not attached yet.
 
 ### VM 200 - security-01
 
