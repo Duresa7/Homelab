@@ -1,7 +1,7 @@
 # Galaxy Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](../TODO.md).
 
@@ -17,4 +17,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | <a id="4-claude-desktop-keyring-and-kvm-access-on-debian-dev"></a>[4](Claude%20Desktop%20Keyring%20and%20KVM%20Access%20on%20debian-dev%20-%202026-07-15.md) | 2026-07-15 | Claude Desktop would not persist sign-in and Cowork could not use `/dev/kvm` on `debian-dev` | A fresh GNOME login activated the login keyring & `kvm` group membership; Claude now saves sign-in & Cowork can use `/dev/kvm` | Resolved |
 | <a id="5-ha-local-storage-stranding-of-ct-107-and-ct-108-after-a-blue-server-shutdown"></a>[5](HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md) | 2026-07-20 | CT 107 `docker-network` & CT 108 `docker-blue` down and stuck in HA `error` on purple-server; couldn't migrate back to blue | HA relocated the configs off blue on a shutdown, but the guests' `local-lvm` disks stayed on blue, so no node could start them | Resolved |
 | <a id="6-disabled-ha-daemons-on-grey-server"></a>[6](Disabled%20HA%20Daemons%20on%20grey-server%20-%202026-07-22.md) | 2026-07-22 | HA reported `grey-server` with `old timestamp - dead?`, `watchdog standby`, & a 2025-08-22 LRM timestamp | Grey's `pve-ha-lrm` & `pve-ha-crm` units were disabled and hadn't started during the current boot | Resolved |
-
+| <a id="8-purple-nvme-reliability-failure"></a>[8](Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md) | 2026-07-22 | Purple's boot log reported NVMe critical warning `0x04` after the Proxmox 9.2.5 canary reboot | The 256 GB boot NVMe reports overall health `FAILED` and 169% endurance used | Replacement underway; Purple offline since 2026-07-24 |
