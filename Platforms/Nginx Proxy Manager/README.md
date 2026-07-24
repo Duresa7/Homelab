@@ -1,9 +1,9 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
-I run Nginx Proxy Manager on the `docker-network` LXC. It provides internal HTTPS for NetBird and 19 application interfaces while keeping the administrator UI on its existing IP and port.
+I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 19 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
 ## Current State
 
