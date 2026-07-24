@@ -7,7 +7,7 @@ The gateway runs UniFi's zone-based V2 firewall. I maintain 39 custom policies; 
 
 ## Custom Policies
 
-All 39 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. I last checked the controller on 2026-07-22 after adding the NPM backend paths.
+All 39 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. I last checked the controller on 2026-07-22 after restricting the edge-01 path to app-01.
 
 | Policy | Enabled | Action | Index | Protocol | IP Ver | Source Zone | Source Match | Dest Zone | Dest Match | Dest Port | Conn State | Schedule | Logging | Description |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -29,7 +29,7 @@ All 39 user-defined policies are enabled, use connection state `ALL`, & run on t
 | Allow Security Workloads Web Egress | Yes | ALLOW | 10000 | TCP | IPv4 | `<YOUR_ORG_NAME>`-Security | IPs 192.168.72.2, 192.168.72.3 | External | Any | 80, 443 | All | Always | On | Permit package, image, certificate, and application HTTPS/HTTP egress from the two Security-A workloads |
 | Allow Security Workloads NTP Egress | Yes | ALLOW | 10001 | UDP | IPv4 | `<YOUR_ORG_NAME>`-Security | IPs 192.168.72.2, 192.168.72.3 | External | Any | 123 | All | Always | On | Permit time synchronization from the two Security-A workloads |
 | Block `<YOUR_ORG_NAME>`-Security Other External Egress | Yes | BLOCK | 10002 | All | IPv4 | `<YOUR_ORG_NAME>`-Security | Any | External | Any | Any | All | Always | On | Default-deny remaining Security-A Internet egress after the two workload-specific allows |
-| Allow DMZ to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | TCP | Both | Dmz | Client (1 MAC, edge-01) | `<YOUR_ORG_NAME>`-Servers | Network: SERVERS-A | Any | All | Always | On | edge-01 can reach app-01 (ports 8080/80 per notes) |
+| Allow edge-01 to app-01 Web | Yes | ALLOW | 10000 | TCP | Both | Dmz | Client (1 MAC, edge-01) | `<YOUR_ORG_NAME>`-Servers | IP 192.168.80.10 | Port group: App Access (80, 8000) | All | Always | On | edge-01 reaches only app-01 HTTP ingress and the Coolify interface |
 | Allow `<YOUR_ORG_NAME>`-Servers to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Servers | Any | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | Off | Agent access to the Wazuh manager on Security-A; automatic return policy enabled |
 | Allow DMZ to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | Dmz | Client (1 MAC, edge-01) | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | On | DMZ Wazuh-agent path to Security-A; automatic return policy enabled |
 | Allow Devices to Personal-A | Yes | ALLOW | 10001 | All | Both | Internal | Clients (9 MACs) | Internal | Network: Personal-A | Any | All | Always | On | Includes M1-Dev (`192.168.10.92`) |
@@ -74,3 +74,5 @@ The controller held 273 live policies on 2026-07-22: 39 user-defined and 234 con
 The 2026-07-12 Security-A additions and MGMT-A rule retirement are documented in [Security-A Migration - 2026-07-12](../../Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
 
 The five NPM backend policies and their route verification are documented in [Internal HTTPS Service Onboarding - 2026-07-22](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+The edge-01 restriction and Cloudflare Access change are documented in [Coolify Access Hardening - 2026-07-22](../../../Cloudflare/Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
