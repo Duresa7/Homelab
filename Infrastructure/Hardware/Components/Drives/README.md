@@ -15,10 +15,11 @@ Raw logs stay as verbatim smartctl output apart from that redaction; I keep a da
 | --- | --- | --- | --- | --- | --- | --- |
 | Samsung MZVLB256HAHQ-000L7 (M.2 NVMe) | 2909 | 256 GB | 54,357 | 13% | PASSED | [log](NVMe/smartctl-a_MZVLB256HAHQ_2909_2026-07-24.txt) |
 | Toshiba THNSF5256GPUK (M.2 NVMe) | TALT | 256 GB | 23,145 | 30% | PASSED | [log](NVMe/smartctl-a_THNSF5256GPUK_TALT_2026-07-24.txt) |
+| WDC PC SN720 SDAQNTW-512G (M.2 NVMe) | 0542 | 512 GB | 29,603 | 6% | PASSED | [log](NVMe/smartctl-a_WDC-SN720-512G_0542_2026-07-24.txt) |
 
-Both spares passed their overall SMART self-assessment with 0 media or integrity errors and 100% spare capacity. The Toshiba THNSF5256GPUK sits at 30% endurance used across 23,145 power-on hours; the Samsung MZVLB256HAHQ at 13% across 54,357 hours.
+All three spares passed their overall SMART self-assessment with 0 media or integrity errors and 100% spare capacity. The Toshiba THNSF5256GPUK sits at 30% endurance used across 23,145 power-on hours; the Samsung MZVLB256HAHQ at 13% across 54,357 hours; the WD SN720 at 6% across 29,603 hours, and at 512 GB it's the only spare larger than 256 GB.
 
-Neither drive has a completed short self-test on record yet, so I've got a retest planned on a direct NVMe connection to confirm one. The Samsung is the same model as purple's failing boot drive, which makes it a candidate replacement.
+The Samsung is the same model as purple's failing boot drive, which makes it the cleanest drop-in replacement. The Samsung and Toshiba captures are full `smartctl -a` reads without a completed self-test on record; the WD SN720 capture shows an extended self-test that completed without error at 29,234 power-on hours.
 
 ## In-use drives (slotted in Galaxy nodes)
 
