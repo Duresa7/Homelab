@@ -1,7 +1,7 @@
 # Documentation Standard
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-24
 
 ## Purpose
 
@@ -63,7 +63,7 @@ Historical work keeps the filenames & transcript boundary it had when I performe
 
 Filenames are descriptive and carry ISO dates (`YYYY-MM-DD`) when the capture date matters. The associated documentation explains what the evidence demonstrates.
 
-Raw `smartctl` output goes unchanged under `Operations/Diagnostics/SMART/`, following the existing lowercase, hyphenated naming convention.
+Raw `smartctl` output goes unchanged under `Infrastructure/Hardware/Components/Drives/`, sorted into `NVMe/`, `SSD/`, and `HDD/` and named `smartctl-a_<model>_<serial>_<date>.txt`. The [Drive Inventory](../Infrastructure/Hardware/Components/Drives/README.md) README is the quick-glance view over those logs. `Operations/Diagnostics/` is gitignored, so drive captures moved to the version-controlled component inventory on 2026-07-24.
 
 ### Step-Based Evidence
 

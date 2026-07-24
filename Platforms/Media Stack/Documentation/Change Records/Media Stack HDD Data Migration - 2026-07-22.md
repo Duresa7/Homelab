@@ -30,7 +30,7 @@ The target `/dev/disk/by-id/ata-ST1000LM035-1RK172_WCB0SRHK` resolved to `/dev/s
 
 **Observed result:** The by-id path matched the approved ST1000LM035 disk. The GPT was empty, every stop-condition SMART counter stayed at zero, CT 842 had no `mp0`, `/data` held 19 files in 9.9 GiB, & eight services were running.
 
-**Verification:** The preflight command exited `0`. The [S01 transcript](../../Evidence/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22/Logs/S01-Preflight-2026-07-22.md) records the command & result; the [raw SMART baseline](../../../../Operations/Diagnostics/SMART/red-server-seagate-1tb-st1000lm035-srhk.txt) preserves the full `smartctl -a` output beside the existing NVMe reports.
+**Verification:** The preflight command exited `0`. The [S01 transcript](../../Evidence/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22/Logs/S01-Preflight-2026-07-22.md) records the command & result; the [raw SMART baseline](../../../../Infrastructure/Hardware/Components/Drives/HDD/smartctl-a_ST1000LM035_SRHK_2026-07-22.txt) preserves the full `smartctl -a` output in the drive inventory.
 
 ## Step 2: Build the ext4 mount
 
