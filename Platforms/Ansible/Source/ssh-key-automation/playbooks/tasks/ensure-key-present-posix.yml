@@ -4,8 +4,9 @@
   become_user: root
   ansible.posix.authorized_key:
     user: "{{ ssh_effective_authorized_key_user }}"
+    path: "{{ ssh_effective_authorized_keys_path }}"
     key: "{{ ssh_public_key_to_manage }}"
     key_options: "{{ ssh_effective_authorized_key_options | default(omit, true) }}"
     state: present
     exclusive: false
-    manage_dir: true
+    manage_dir: false

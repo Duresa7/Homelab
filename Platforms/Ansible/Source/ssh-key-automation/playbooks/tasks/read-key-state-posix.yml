@@ -28,7 +28,11 @@
       }}
   loop: >-
     {{
-      (ssh_authorized_keys_slurp.content | b64decode).splitlines()
+      (
+        (ssh_authorized_keys_slurp.content | b64decode).splitlines()
+        | reject('match', '^\s*#')
+        | list
+      )
       if ssh_authorized_keys_stat.stat.exists
       else []
     }}

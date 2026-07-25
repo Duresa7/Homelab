@@ -10,6 +10,7 @@ playbooks that are present.
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import sys
 
 import yaml
@@ -29,11 +30,35 @@ EXPECTED_OS_HOSTS = {
     "splunk-siem",
 }
 EXPECTED_COMPOSE_PROJECTS = {
-    "docker-main": 6,
-    "docker-network": 2,
-    "docker-blue": 1,
-    "media-01": 1,
-    "alpha-prod-01": 6,
+    "docker-main": {
+        "booklore": ("/opt/docker/booklore", ()),
+        "forgejo": ("/opt/docker/forgejo", ()),
+        "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
+        "immich": ("/opt/docker/immich-app", ()),
+        "portainer": ("/opt/docker/portainer", ()),
+        "termix": ("/opt/docker/termix", ()),
+    },
+    "docker-network": {
+        "netbird": ("/opt/docker/netbird", ()),
+        "nginx-proxy-manager": ("/opt/docker/nginx-proxy-manager", ()),
+    },
+    "docker-blue": {
+        "rustdesk": ("/opt/docker/rustdesk", ()),
+    },
+    "media-01": {
+        "media-stack": ("/opt/media-stack", ("vpn",)),
+    },
+    "alpha-prod-01": {
+        "playit-agent": (
+            "/home/<YOUR_ADMIN_USERNAME>/playit-agent",
+            (),
+        ),
+        "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
+        "teamspeak": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak", ()),
+        "teamspeak-02": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-02", ()),
+        "teamspeak-03": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-03", ()),
+        "ts3-manager": ("/home/<YOUR_ADMIN_USERNAME>/ts3-manager", ()),
+    },
 }
 
 
@@ -47,6 +72,7 @@ def collect_hosts(group: dict) -> dict:
 
 def main() -> int:
     errors: list[str] = []
+    deployment_users: set[str] = set()
 
     inventory = yaml.safe_load((ROOT / "inventory" / "hosts.yml").read_text(encoding="utf-8"))
     children = inventory["all"]["children"]
@@ -73,15 +99,19 @@ def main() -> int:
         )
     if set(compose_hosts) - set(os_hosts):
         errors.append("every compose host must also be an OS-update host")
+    for host, host_vars in os_hosts.items():
+        if (host_vars or {}).get("ansible_user") != "ansible":
+            errors.append(f"{host}: ansible_user must be ansible")
 
     for host, host_vars in collect_hosts(compose_group).items():
         projects = (host_vars or {}).get("compose_projects")
         if not isinstance(projects, list) or not projects:
             errors.append(f"{host}: compose_projects must be a non-empty list")
             continue
-        if len(projects) != EXPECTED_COMPOSE_PROJECTS.get(host):
+        expected_projects = EXPECTED_COMPOSE_PROJECTS.get(host, {})
+        if len(projects) != len(expected_projects):
             errors.append(
-                f"{host}: expected {EXPECTED_COMPOSE_PROJECTS.get(host)} "
+                f"{host}: expected {len(expected_projects)} "
                 f"compose projects, found {len(projects)}"
             )
         seen: set[str] = set()
@@ -104,6 +134,43 @@ def main() -> int:
                 errors.append(
                     f"{host}/{name}: profiles must be a non-empty list of unique strings"
                 )
+            expected = expected_projects.get(name)
+            if expected is None:
+                errors.append(f"{host}: unexpected compose project {name}")
+                continue
+            expected_src, expected_profiles = expected
+            if "<YOUR_ADMIN_USERNAME>" in expected_src:
+                expected_pattern = re.escape(expected_src).replace(
+                    re.escape("<YOUR_ADMIN_USERNAME>"),
+                    r"([^/]+)",
+                )
+                match = re.fullmatch(expected_pattern, src)
+                if match:
+                    deployment_users.add(match.group(1))
+                else:
+                    errors.append(
+                        f"{host}/{name}: project_src does not match "
+                        f"{expected_src}"
+                    )
+            elif src != expected_src:
+                errors.append(
+                    f"{host}/{name}: expected project_src {expected_src}, found {src}"
+                )
+            if tuple(profiles or ()) != expected_profiles:
+                errors.append(
+                    f"{host}/{name}: expected profiles {list(expected_profiles)}, "
+                    f"found {profiles or []}"
+                )
+        missing_projects = set(expected_projects) - seen
+        if missing_projects:
+            errors.append(
+                f"{host}: missing compose projects {sorted(missing_projects)}"
+            )
+    if len(deployment_users) > 1:
+        errors.append(
+            "deployment-owned compose paths use inconsistent usernames: "
+            f"{sorted(deployment_users)}"
+        )
 
     for playbook in PLAYBOOKS:
         if not (ROOT / playbook).is_file():

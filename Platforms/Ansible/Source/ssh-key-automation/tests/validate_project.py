@@ -14,6 +14,13 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_IDENTITIES = {"mac", "ansible-control", "jedi-pc", "termix"}
 PUBLICATION_NOTICE = ROOT / "identities" / "PUBLICATION-NOTICE.md"
+PRESENT_TASK = (
+    ROOT / "playbooks" / "tasks" / "ensure-key-present-posix.yml"
+)
+ABSENT_TASK = (
+    ROOT / "playbooks" / "tasks" / "ensure-key-absent-posix.yml"
+)
+READ_TASK = ROOT / "playbooks" / "tasks" / "read-key-state-posix.yml"
 
 
 def fingerprint(public_key: str) -> str:
@@ -43,6 +50,21 @@ def main() -> int:
         errors.append(f"supported and unknown overlap: {sorted(supported & unknown)}")
     if "nas-family" in collect_hosts(inventory["all"]):
         errors.append("retired nas-family host is still present")
+
+    present_tasks = yaml.safe_load(PRESENT_TASK.read_text(encoding="utf-8"))
+    absent_tasks = yaml.safe_load(ABSENT_TASK.read_text(encoding="utf-8"))
+    present_args = present_tasks[0].get("ansible.posix.authorized_key", {})
+    absent_args = absent_tasks[0].get("ansible.posix.authorized_key", {})
+    expected_path = "{{ ssh_effective_authorized_keys_path }}"
+    if present_args.get("path") != expected_path:
+        errors.append("POSIX key onboarding must write to the resolved key path")
+    if absent_args.get("path") != expected_path:
+        errors.append("POSIX key retirement must write to the resolved key path")
+    if present_args.get("manage_dir") is not False:
+        errors.append("custom authorized-key paths must not change parent-directory modes")
+    read_task_text = READ_TASK.read_text(encoding="utf-8")
+    if "reject('match', '^\\s*#')" not in read_task_text:
+        errors.append("POSIX key reads must exclude commented authorized-key lines")
 
     identity_files = sorted((ROOT / "identities").glob("*.yml"))
     identities_omitted = PUBLICATION_NOTICE.is_file()
