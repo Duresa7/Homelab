@@ -15,13 +15,17 @@ _No untriaged items._
 - [ ] Attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network, then confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before running live malware. Platform notes in [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
 - [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
 
+## Scheduled
+
+- [ ] 2026-08-15: Delete stopped Galaxy LXC 105 `ai-bravo-02` and its root volume after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md). Its configuration and TNIO records are preserved in the [2026-07-25 archive record](Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md).
+
 ## System Backlogs
 
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open items; dedicated account rollout and active-fleet expansion completed 2026-07-25 |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 `ai-bravo-02` on 2026-08-15; also includes the deferred recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
