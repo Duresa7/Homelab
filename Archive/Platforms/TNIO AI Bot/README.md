@@ -1,9 +1,9 @@
 # TNIO AI Bot
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
-This platform contains the deployed TNIO lore-retrieval source snapshots, evaluation tests, runtime configuration, product description, & dated accuracy work.
+This archive preserves the TNIO lore-retrieval source snapshots, evaluation tests, runtime configuration, product description, & dated accuracy work formerly operated on `ai-bravo-02`. CT 105 was stopped and removed from active documentation on 2026-07-25; its [guest record](../../Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md) schedules deletion for 2026-08-15.
 
 ## Layout
 
@@ -19,7 +19,7 @@ This platform contains the deployed TNIO lore-retrieval source snapshots, evalua
 - `Evidence/`: corpus audits and remote snapshots
 - `Artifacts/`: deployment bundles and generated state
 
-Source files that reference `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` describe the deployed Linux runtime.
+Source files that reference `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` describe the former Linux runtime.
 
 ## Key Records
 

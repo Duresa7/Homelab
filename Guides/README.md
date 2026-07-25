@@ -35,12 +35,11 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [TeamSpeak](TeamSpeak.md) | Three servers, Playit tunnels, Cloudflare SRV records, TS3 Manager, boot recovery, & outage checks |
 | [Termix](Termix.md) | Upgrade, reusable Ed25519 identity, nine SSH hosts, folders, connection checks, & rollback |
-| [TNIO AI Bot](TNIO-AI-Bot.md) | Lore RAG source, remote runtime, retrieval fixes, corpus audits, tests, & service checks |
 | [Wazuh](Wazuh.md) | Endpoint removal, fresh enrollment, manager checks, dashboard state, & recovery |
 
 ## Retired Guides
 
-The [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md) preserves the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01`.
+The [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md) preserves the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01`. The [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md) preserves the lore-retrieval and Discord-bot workflow from stopped CT 105 `ai-bravo-02`.
 
 ## Status Language
 

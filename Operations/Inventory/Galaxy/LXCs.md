@@ -3,13 +3,12 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-25
 
-Galaxy currently has six defined LXCs: five on grey or blue for automation, AI, Docker, & remote access, plus `media-01` on red. The tables record their guest IDs, resources, storage, interfaces, & host-device mappings.
+Galaxy currently has five active LXCs on grey, blue, or red for automation, Docker, remote access, & media. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
-| 105 | ai-bravo-02 | grey-server | disabled | ubuntu | 6 | 23.81 GiB | 192.168.40.38/24 | 192.168.40.1 | 40 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
 | 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 10 | 23.44 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
@@ -39,41 +38,6 @@ Galaxy currently has six defined LXCs: five on grey or blue for automation, AI, 
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<YOUR_ANSIBLE_CONTROLLER_MAC>` |
-
-## LXC 105 - ai-bravo-02
-
-### Configuration
-| Setting | Value |
-| --- | --- |
-| Node | grey-server |
-| High availability | disabled |
-| OS | ubuntu |
-| vCPU | 6 |
-| Memory | 23.81 GiB |
-| Swap | 8 GiB |
-| Unprivileged | yes |
-| Features | nesting=1,keyctl=1,fuse=1 |
-
-### Storage
-| Device | Mount | Storage | Volume | Size | Backup |
-| --- | --- | --- | --- | --- | --- |
-| rootfs | / | ssd-lvm1 | vm-105-disk-0 | 100G | default |
-
-### Host Devices
-| Entry | Host device | Mode |
-| --- | --- | --- |
-| dev0 | /dev/nvidia0 | 0666 |
-| dev1 | /dev/nvidiactl | 0666 |
-| dev2 | /dev/nvidia-modeset | 0666 |
-| dev3 | /dev/nvidia-uvm | 0666 |
-| dev4 | /dev/nvidia-uvm-tools | 0666 |
-| dev5 | /dev/nvidia-caps/nvidia-cap1 | 0666 |
-| dev6 | /dev/nvidia-caps/nvidia-cap2 | 0666 |
-
-### Network
-| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | `<YOUR_AI_BRAVO_MAC>` |
 
 ## LXC 107 - docker-network
 
@@ -205,6 +169,8 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 - `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked; the administrative account uses the recorded public-key SSH path.
 
-## Retired LXCs
+## Archived and Retired LXCs
 
 CT 104 `ai-alpha-01` no longer exists in Galaxy. I preserved its last recorded configuration, OpenClaw deployment records, & retirement verification in the [2026-07-25 retired guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md).
+
+CT 105 `ai-bravo-02` remains defined but stopped on `grey-server`, with autostart disabled. I moved its TNIO source, tests, configuration, records, walkthrough, & live configuration snapshot into the [2026-07-25 archived guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md); deletion is scheduled for 2026-08-15.

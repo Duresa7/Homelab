@@ -1,15 +1,15 @@
 # TNIO AI Bot Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 ## What This Guide Covers
 
-I operate TNIO as a Discord bot backed by a lore retrieval service. This walkthrough shows how I compare the repository source with the deployed tree, update the corpus and source map, run policy and corpus tests, restart the services, & test the live answer endpoint.
+I operated TNIO as a Discord bot backed by a lore retrieval service on `ai-bravo-02`. I archived the stopped guest and this walkthrough on 2026-07-25; the steps below preserve how I compared the repository source with the deployed tree, updated the corpus and source map, ran policy and corpus tests, restarted the services, & tested the live answer endpoint.
 
 ## Current Status and Verified Versions
 
-The operated project path is `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. The repository contains primary, remote, experimental, & legacy source snapshots plus policy, corpus, and golden-evaluation tests. The records describe repeated live fixes and accuracy audits, but they don't contain a clean deployment from an empty host or one product version number.
+The former project path was `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. The archive contains primary, remote, experimental, & legacy source snapshots plus policy, corpus, and golden-evaluation tests. The records describe repeated live fixes and accuracy audits, but they don't contain a clean deployment from an empty host or one product version number.
 
 ## What You Need
 
