@@ -5,7 +5,7 @@
 
 **Implementation date:** 2026-07-25  
 **Systems:** `ansible-01` and nine running Linux workload guests  
-**Status:** Implementation complete; independent audit pending
+**Status:** Complete
 
 ## Scope
 
@@ -40,6 +40,7 @@ I left `kasm-01`, the four Proxmox nodes, Windows systems, stopped Supabase, sto
 | S04 | Expanded and deployed both automation projects | Validators report 9 OS hosts, 5 Compose hosts, 16 projects, 16 supported SSH hosts, 2 unknown hosts, & 4 valid live identities | [Automation verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md) |
 | S05 | Ran live identity, ping, privilege, & check-mode tests | All nine hosts passed identity audit, ping, root UID, OS check mode, & Compose check mode | [Automation verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md) |
 | S06 | Verified the new Compose targets and media VPN path | RustDesk has `hbbs` and `hbbr` running; media has eight running services, healthy Jellyfin and Gluetun, working endpoints, & qBittorrent in Gluetun's namespace | [Automation verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md) |
+| S07 | Ran two independent read-only reviews, fixed every confirmed finding, & repeated both reviews | The live implementation and repository hygiene reviews each reported no unresolved findings on the focused second pass | [Independent audit verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S07-Independent-Audit-Verification-2026-07-25.md) |
 
 ## Resulting Fleet
 
@@ -68,6 +69,8 @@ splunk-siem blocks Guest Agent command execution. I used its existing 1Password 
 - Compose check mode first failed on protected `.env` files. I changed the play to use the account's validated passwordless sudo, reran syntax and project checks, & completed all sixteen dry-run project checks.
 - The live `fedora-dev` identity contained placeholder public-key and fingerprint values. I preserved it under the controller's private `identities/Archive/` folder and left the four valid identities active.
 - The deployed project directories were mode `0777`. I removed group and other write permission, set both roots to `0755`, and kept live identity files at `0600` under a `0700` directory.
+- The repository review found that POSIX key writes didn't honor a selected custom authorized-key path and that commented key lines could pass the audit parser. I fixed both tasks, added regression checks, deployed the changes, & completed read-only onboarding checks against the nine-host account and Proxmox shared key store.
+- The same review found weak fleet assertions, one authorship-rule violation, an empty retired platform directory, & two broken incident links. I strengthened the validator and cleaned all four repository issues before the focused second pass.
 
 ## Verification Boundary
 

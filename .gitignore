@@ -65,6 +65,7 @@
 /Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/*
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S07-Independent-Audit-Verification-2026-07-25.md
 
 # Media Stack evidence records (exact screenshot filenames are allowlisted per directory)
 !/Platforms/Media Stack/Evidence/
