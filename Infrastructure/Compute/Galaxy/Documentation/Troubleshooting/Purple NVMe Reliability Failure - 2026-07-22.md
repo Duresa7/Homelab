@@ -1,11 +1,12 @@
 # Purple NVMe Reliability Failure
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
 **Investigated:** 2026-07-22  
+**Resolved:** 2026-07-25  
 **Owner:** Galaxy / `purple-server`  
-**Status:** Replacement underway. I powered Purple down on 2026-07-24 to swap the failed boot NVMe. It stays guest-free; the 2026-07-23 Kasm teardown removed `kasm-agent-01` and `inetsim-01`.
+**Status:** Resolved. I replaced the failed boot NVMe with a Toshiba THNSF5256GPUK on 2026-07-25, cloned from the failing drive with Clonezilla. The new device reports overall health `PASSED`, and Purple is back to a full four votes. The work is written up in [Purple Boot NVMe Replacement](../Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md).
 
 ## Symptom and impact
 
@@ -57,13 +58,21 @@ I ran the same short test on the other six physical drives in Galaxy the same da
 
 I took Purple offline on 2026-07-24 to replace the drive. `pvecm nodes` on Grey then listed three members (nodeids 1, 3, 4) & `pvesh get /cluster/resources` reported `purple-server offline`. Corosync showed nodeid 2 `disconnected` on `LINK ID 0` (`192.168.70.10`) and `LINK ID 1` (`192.168.71.10`), which matches a powered-down node rather than a broken link.
 
-Galaxy stayed quorate at three total votes against expected votes of four, with quorum needing three. That leaves no spare vote: taking Grey, Blue, or Red offline during this window would make the cluster inquorate. I deployed `kasm-01` on Grey during the same window, which added no node restarts.
+Galaxy stayed quorate at three total votes against expected votes of four, with quorum needing three. That left no spare vote: taking Grey, Blue, or Red offline during the window would have made the cluster inquorate. I deployed `kasm-01` on Grey during the same window, which added no node restarts.
 
-## Required correction and verification
+The window closed on 2026-07-25 at `07:19:56 EDT`. `last` records Purple as powered off for 19 hours 33 minutes, from `2026-07-24 11:46:33 EDT`. The swap and clone took about an hour of that; the rest is the node sitting down between the shutdown and the refit. No guest was affected, since Purple carried none.
 
-I still need to replace Purple's NVMe. A replacement must pass its full SMART health check before I recreate local storage or call the hardware issue resolved. I will then verify the installed Proxmox package set, kernel, bridges, storage, Corosync membership, HA heartbeat, and a controlled reboot.
+## Correction, 2026-07-25
 
-Until replacement, I will watch for an increase from zero media errors, NVMe controller resets, I/O errors, filesystem errors, or Corosync instability. Any of those findings stops new placement and returns the issue to a hard blocker.
+I replaced the drive. The failing Samsung came out, a Toshiba THNSF5256GPUK (`****TALT`) cloned from it with Clonezilla went in, and Purple booted off the clone at `2026-07-25 07:19:56 EDT`. I cloned rather than reinstalled, so the node kept its identity and needed no `pvecm add`, no reissued certificates, and no HA reconfiguration. Cluster config version stayed at 8. I added a Samsung SSD 850 EVO 250 GB on SATA during the same window; it has no role yet.
+
+The new device passes every check the correction called for. `smartctl -a /dev/nvme0` returns overall health `PASSED`, critical warning `0x00`, 30% endurance used, available spare 100%, 23,148 power-on hours, zero media and data-integrity errors, and zero error-log entries against the old drive's 2,462. A `smartctl -t short` run logged `Completed without error` at 23,148 hours, where the old drive had failed the same test at 49,373. The capture is stored at [smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt](../../../../Hardware/Components/Drives/NVMe/smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt).
+
+The rest of the node checks out too. Purple runs `pve-manager/9.2.5/20242970da7fbcef` on kernel `7.0.14-6-pve` with nothing pending from apt, both Corosync rings connected on `192.168.70.11` and `192.168.71.11`, all seven Proxmox and HA units active, `local` and `local-lvm` active with the cloned LVM layout intact, and `ha-manager status` reporting quorum OK with fencing armed. `pvecm status` reports Quorate Yes at four of four votes. The cold boot off the new drive logged no I/O error, controller reset, or filesystem repair. Full detail and evidence are in the [change record](../Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md).
+
+## What I'm still watching
+
+The Toshiba is a used spare, not a new drive: 30% endurance used, 23,148 power-on hours, 36.8 TB written. That buys years, not permanence. I'm watching its endurance counter along with media errors, controller resets, I/O errors, filesystem errors, and Corosync stability, the same signals I watched on the drive it replaced.
 
 ## Healthy canary state retained
 
@@ -73,6 +82,8 @@ The post-update verification captured the exact command, standard output, and ex
 
 ## Related records
 
+- [Purple Boot NVMe Replacement (2026-07-25)](../Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md), the change record that closes this issue
+- [Drive Inventory](../../../../Hardware/Components/Drives/README.md), which holds the retired Samsung and the new boot drive
 - [Kasm lab network simplification (2026-07-23)](../../../../Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 
 I removed the earlier Kasm preflight and deployment records from the repository on 2026-07-23 while rebuilding Kasm from scratch. The failed NVMe is a hardware issue independent of that work.

@@ -62,5 +62,5 @@ Current priorities from my [central TODO](TODO.md):
 
 1. Lock down MGMT-A per the [network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 2. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
-3. Replace `purple-server`'s failed boot NVMe and bring Galaxy back to four votes. Until it rejoins, the cluster holds quorum at three of three available votes, so no other node comes offline.
+3. Decide what the Samsung 850 EVO added to `purple-server` on 2026-07-25 is for, or pull it back out. Its [boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md) is done and Galaxy is back to four votes.
 4. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.

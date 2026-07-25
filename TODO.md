@@ -13,7 +13,7 @@ _No untriaged items._
 
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network, then confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before running live malware. Platform notes in [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
-- [ ] Replace `purple-server`'s failed boot NVMe and bring the node back to four votes. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+- [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
 
 ## System Backlogs
 
@@ -34,6 +34,7 @@ _No untriaged items._
 
 ## Recently Completed
 
+- [x] 2026-07-25: [Purple boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md). I cloned the worn-out Samsung MZVLB256HAHQ, which had hit 169% of rated endurance and failed its SMART health check, onto a Toshiba THNSF5256GPUK with Clonezilla and made that the boot device. The clone kept the node's identity, so no `pvecm add` and no HA changes: Purple booted at `07:19:56 EDT`, rejoined as nodeid 2, and Galaxy is back to four of four votes with all seven Proxmox and HA units active. The new drive reports health `PASSED`, 0 media errors, and 0 error-log entries against the old drive's 2,462, and it passed a short self-test. I added a Samsung 850 EVO on SATA during the same window; it has no role yet.
 - [x] 2026-07-25: Closed the [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md) acceptance checks. I ran the VPN-client DNS, HTTPS, & certificate test plus the seven authenticated application workflows from my own sessions. All passed; I retained no capture from the pass. Route health, public NXDOMAIN, zero WAN port forwards, & restart recovery were already verified on 2026-07-22.
 - [x] 2026-07-25: Closed the TeamSpeak credential remediation. The values exposed in the deployment record were redacted, moved to the the managed vault 1Password vault, & rotated on 2026-07-17; I confirmed the replacements authenticate & the superseded values don't. I'm not rewriting the private repository's Git history, since rotation already invalidated what it holds.
 - [x] 2026-07-24: [Kasm Workspaces deployed on `kasm-01`](Platforms/Kasm%20Workspaces/Documentation/Deployment.md). I built VM 122 on `grey-server` from the Ubuntu 24.04.4 template, applied the Linux host baseline, & installed Kasm 1.19.0 Community Edition after matching the release tarball against Kasm's published SHA256. Eight containers healthy, HTTPS 200 on TCP 443, `/api/__healthcheck` returns `{"ok": true}`, & the administrator credential authenticates. Key-only SSH verified from Jedi PC with the `jedi-pc` identity. Session VLAN attachment is deliberately still open.

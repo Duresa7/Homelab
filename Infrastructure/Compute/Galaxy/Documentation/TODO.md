@@ -1,21 +1,23 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
-This backlog contains Purple's failed boot NVMe, the deferred `pvestatd` issue, and the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog contains the follow-ups from Purple's boot NVMe replacement, the deferred `pvestatd` issue, and the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
-## `purple-server` Failed NVMe Health Assessment
+## `purple-server` Boot NVMe Replaced
 
-**Status:** Replacement underway. Purple went offline on 2026-07-24 for the planned NVMe swap, so Galaxy is running on three of four votes against an expected three.  
+**Status:** Hardware issue closed 2026-07-25. A Toshiba THNSF5256GPUK cloned from the failing Samsung is Purple's boot device, health `PASSED`, and Galaxy is back to four of four votes.  
+**Change record:** [Purple Boot NVMe Replacement](Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md)  
 **Troubleshooting record:** [Purple NVMe Reliability Failure](Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md)
 
 - [x] Choose whether the failed device blocks Kasm placement. Moot after the 2026-07-23 teardown removed the Kasm guests from Purple.
 - [x] Take Purple offline for the NVMe replacement. Done 2026-07-24. Corosync showed nodeid 2 `disconnected` on both links, consistent with a powered-down node.
-- [ ] Avoid taking Grey, Blue, or Red offline until Purple rejoins. With Purple down, quorum sits at exactly three of three available votes, so one more node leaves the cluster inquorate.
-- [ ] Monitor Purple for new media errors, filesystem errors, controller resets, or cluster instability once it returns.
+- [x] Avoid taking Grey, Blue, or Red offline until Purple rejoins. Held for the whole 19-hour-33-minute window; Purple rejoined at `07:19:56 EDT` on 2026-07-25 and the cluster is back to four votes.
 - [x] Reassess the remaining rolling reboot order after the failed-device risk is removed or explicitly accepted.
-- [ ] After replacement, verify storage, Proxmox VE 9.2.5, kernel, bridges, Corosync, HA, and a controlled reboot.
+- [x] After replacement, verify storage, Proxmox VE 9.2.5, kernel, bridges, Corosync, HA, and a controlled reboot. The cold boot off the cloned drive is the reboot check: `local` and `local-lvm` active, `pve-manager/9.2.5/20242970da7fbcef` on kernel `7.0.14-6-pve` with nothing pending, both rings connected, all seven units active, fencing armed.
+- [ ] Watch the Toshiba's endurance counter along with media errors, filesystem errors, controller resets, and cluster stability. It's a used spare at 30% endurance used and 23,148 power-on hours, not a new drive, so plan its own replacement rather than treating this as permanent.
+- [ ] Give the Samsung SSD 850 EVO 250 GB now sitting on Purple's SATA port a role or pull it back out. It has one empty 16 MiB partition, no filesystem, and no Proxmox storage entry; the disabled `ssd-lvm1` storage predates it. At 45,163 power-on hours and 1,800 wear-leveling cycles it suits scratch or secondary use, not sole-copy data.
 
 ## Cluster Maintenance Done During Kasm Prep
 

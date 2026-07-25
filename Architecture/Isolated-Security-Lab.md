@@ -1,7 +1,7 @@
 # Isolated Security Lab
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
 ## Purpose
 
@@ -36,7 +36,7 @@ Every lane is blocked from management, cluster, monitoring, server, trusted, and
 
 ## Compute Boundary
 
-As of 2026-07-24 every Kasm component runs on one host, `kasm-01` (VM 122) on Grey, installed with `--role all`. The earlier split across `kasm-agent-01`, `kasm-core`, and INetSim on Purple no longer exists; the 2026-07-23 teardown destroyed those guests. Purple is powered down for its NVMe replacement and carries nothing.
+As of 2026-07-24 every Kasm component runs on one host, `kasm-01` (VM 122) on Grey, installed with `--role all`. The earlier split across `kasm-agent-01`, `kasm-core`, and INetSim on Purple no longer exists; the 2026-07-23 teardown destroyed those guests. Purple is back in service as of 2026-07-25 on a replacement boot NVMe and carries nothing.
 
 Malware and untrusted full desktops will run as separate KVM guests on Grey, not inside `kasm-01`. The permanent Kali VM stays separate from malware storage.
 
