@@ -2,9 +2,10 @@
 - name: Pull images and recreate docker compose stacks
   hosts: "{{ target | default('docker_compose_targets') }}"
   gather_facts: false
-  # The SSH user is either root or a member of the docker group, so no sudo is
-  # needed to talk to the docker socket.
-  become: false
+  # Several projects keep their compose environment files readable only by
+  # root. The dedicated account has validated passwordless sudo, so the module
+  # can read those files without widening their permissions.
+  become: true
   serial: "{{ compose_serial | default('100%') }}"
   tasks:
     - name: Confirm compose projects are defined for this host

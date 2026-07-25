@@ -37,7 +37,7 @@ Every host connects through the dedicated `ansible` account. Its sudo rule is `N
 
 ## docker-compose-update.yml
 
-The play runs `docker compose pull` then `docker compose up -d` for each stack listed on the host. It uses `community.docker.docker_compose_v2` with `pull: always` & `state: present`, which pulls every image then recreates only the containers whose image or config changed. An optional `profiles` list passes deployed compose profiles such as media-01's `vpn` profile. No sudo runs here because `ansible` belongs to the `docker` group on all five compose hosts.
+The play runs `docker compose pull` then `docker compose up -d` for each stack listed on the host. It uses `community.docker.docker_compose_v2` with `pull: always` & `state: present`, which pulls every image then recreates only the containers whose image or config changed. An optional `profiles` list passes deployed compose profiles such as media-01's `vpn` profile. The module becomes root because several projects protect their `.env` files from non-owner reads. The `ansible` account also belongs to the `docker` group on all five hosts so health checks can inspect Docker without sudo.
 
 Each stack is pinned by `project_name` taken from `docker compose ls`, not from the directory name. immich runs as project `immich` out of `/opt/docker/immich-app`, so pinning the name keeps the update on the running project instead of starting a second one called `immich-app`.
 
