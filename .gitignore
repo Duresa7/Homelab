@@ -55,6 +55,17 @@
 /Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Logs/*
 !/Platforms/Syncthing/Evidence/Syncthing Deployment - 2026-07-22/Logs/Syncthing-Deployment-Verification-2026-07-22.txt
 
+# Ansible account and fleet expansion evidence records
+!/Platforms/Ansible/Evidence/
+/Platforms/Ansible/Evidence/*
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/
+/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/*
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Evidence-Index.md
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/
+/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/*
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md
+!/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md
+
 # Media Stack evidence records (exact screenshot filenames are allowlisted per directory)
 !/Platforms/Media Stack/Evidence/
 /Platforms/Media Stack/Evidence/*

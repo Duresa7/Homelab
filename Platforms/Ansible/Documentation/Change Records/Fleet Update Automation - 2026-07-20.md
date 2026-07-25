@@ -1,7 +1,7 @@
 # Fleet Update Automation
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 I built two Ansible playbooks on `ansible-01` to patch the Linux fleet & to update the docker compose stacks, then verified both with dry runs against live hosts without changing a single package or container. The work lives in a new self-contained project, `Platforms/Ansible/Source/fleet-updates`, deployed to `/home/ansible/fleet-updates` beside `ssh-key-automation`.
 
@@ -19,7 +19,7 @@ I probed the fleet read-only first. `docker compose ls --format json` returned t
 
 I authored the project files with sanitized usernames for the repository, built a real-valued copy, uploaded it to grey-server, & pushed it into LXC 100 with `pct push`. I extracted it to `/home/ansible/fleet-updates` owned by the `ansible` account. No collection install was needed because `community.docker` was already present.
 
-I ran an independent Codex review (gpt-5.6-sol) of both playbooks after the first verification. It found four defects, all in the RHEL & auto-reboot paths of `os-update.yml`: the reboot probe assumed dnf4 `needs-restarting` and would report a false negative on Rocky 10's dnf5; the probe was an `ansible.builtin.command` that `--check` skips, so a Rocky dry run defaulted to "no reboot"; `reboot=auto` kept `serial: 100%` and could reboot many guests at once; and the cached `reboot_required` fact stayed true in the final report after a successful reboot. I fixed all four, then re-verified.
+I ran an independent review of both playbooks after the first verification. It found four defects, all in the RHEL & auto-reboot paths of `os-update.yml`: the reboot probe assumed dnf4 `needs-restarting` and would report a false negative on Rocky 10's dnf5; the probe was an `ansible.builtin.command` that `--check` skips, so a Rocky dry run defaulted to "no reboot"; `reboot=auto` kept `serial: 100%` and could reboot many guests at once; and the cached `reboot_required` fact stayed true in the final report after a successful reboot. I fixed all four, then re-verified.
 
 ## Decisions
 
@@ -51,6 +51,6 @@ splunk-siem was powered off during this work (no route to 192.168.72.3 from the 
 
 The project is additive. Deleting `/home/ansible/fleet-updates` removes it with no effect on `ssh-key-automation`, the inventory it uses, or any target host. Because every live run was `--check`, there is nothing to roll back on the fleet.
 
-## Remaining work
+## 2026-07-25 Follow-up
 
-I still need to probe supabase-01 & the AI hosts with `docker compose ls` and add their stacks to `docker_compose_targets`. supabase-01 runs a database stack, so I add & test it deliberately rather than sweeping it in. I also need to settle how OS updates get a sudo password where the admin account lacks passwordless sudo: on 2026-07-20 docker-network had it but alpha-prod-01 & app-01 did not, so a fleet run needs `-K` or per-host `ansible_become_password` from Vault. The first real (non-check) fleet run is operator-initiated, since it recreates containers & may flag hosts for reboot.
+I closed the unattended privilege gap with one dedicated `ansible` account on the controller and nine running workload guests. The [2026-07-25 account and fleet expansion](Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md) records the new 9-host OS scope, 5-host and 16-project Compose scope, restricted controller key, passwordless sudo, & full check-mode verification. The first real fleet update remains operator-initiated because it can install packages, recreate containers, & identify reboot work.
