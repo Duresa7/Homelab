@@ -40,6 +40,12 @@ The guest configuration and disk still exist on `grey-server`. This record doesn
 - [SSH identity automation record](../../../../Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
 - [Termix SSH host onboarding record](../../../../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
 
+## Current-State Cleanup
+
+I removed `ai-bravo-02` from the active Galaxy LXC table, guide index, Ansible host inventory, Termix candidate group, three live identity allowlists, local SSH alias, & known-host files. I left the dated Ansible, Termix, TNIO, and governance records unchanged.
+
+The SSH Manager server definition remains available for deletion-day cleanup. CT 105 is stopped, so the record doesn't provide a live connection.
+
 ## Deletion Gate
 
 The [Galaxy backlog](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md) schedules deletion for 2026-08-15. Before deleting CT 105, I will confirm it is stopped, verify the archived record and TNIO tree are readable, identify any retained backup outside this repository, & capture the final `pct config 105` output without private data.
