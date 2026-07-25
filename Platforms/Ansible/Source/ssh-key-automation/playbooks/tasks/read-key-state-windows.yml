@@ -2,7 +2,7 @@
 - name: Read the Windows authorized-keys file
   ansible.windows.win_powershell:
     parameters:
-      Path: "{{ ssh_authorized_keys_path }}"
+      Path: "{{ ssh_effective_authorized_keys_path }}"
     script: |
       [CmdletBinding(SupportsShouldProcess)]
       param([string]$Path)

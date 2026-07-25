@@ -1,7 +1,7 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 ## Request Path
 
@@ -36,7 +36,9 @@ The removal gate stays closed unless all of these are true:
 
 ## Privilege Model
 
-The controller does not use sudo for this workflow. It logs in as the account that owns the key file (`root`, `<YOUR_ADMIN_USERNAME>`, `openclaw`, `<YOUR_DEPLOYMENT_USER>`, or Windows `Administrator`) and edits only that account's authorized-key store. I set it up this way to avoid interactive sudo passwords and to avoid adding another passwordless-sudo dependency solely for key rotation.
+The nine running Linux workload guests use the dedicated `ansible` account for controller access. That account has a validated `NOPASSWD: ALL` rule, so the controller can update packages and manage another account's authorized-key file without storing a sudo password in Ansible. Its own controller key is restricted to connections from `192.168.40.36` and disables agent forwarding, port forwarding, X11 forwarding, & PTY allocation.
+
+Each identity may override the POSIX account and authorized-keys path. `ansible-control` resolves to `/home/ansible/.ssh/authorized_keys`; Mac, Jedi PC, Termix, & the other human identities keep the original `root` or administrative-user key stores. Read, add, & remove operations become root only when the selected key store belongs to a different account than the SSH connection.
 
 The four Proxmox nodes share `/etc/pve/priv/authorized_keys`. `grey-server` is the sole writer; `purple-server`, `blue-server`, and `red-server` verify the cluster-backed result without performing duplicate writes.
 
@@ -54,4 +56,5 @@ This gives the web UI automatic recovery after a controller or Proxmox-node boot
 
 - `ws-dc-2-secondary` and `obi-pc` remain in `ssh_key_unknown`; the playbooks cannot select them.
 - `nas-family` is retired and is absent from the inventory and validator.
+- Stopped guests remain in the general SSH-key inventory only when an existing identity record still references them. They aren't targets of the active fleet update playbooks.
 - I generate replacements on the device that owns the identity. Ansible stages, checks, & retires the public-key entries.

@@ -1,17 +1,20 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
 ## Change Boundaries
 
 - Every identity has its own file and target allowlist under `identities/`.
+- An identity may select its own POSIX account, authorized-keys path, & OpenSSH restrictions. Other identities keep the host's default key store.
 - The public source includes the schema example and `identities/PUBLICATION-NOTICE.md` instead of the environment-specific identity files. The validator detects that layout.
 - Onboarding and staging use additive operations and never delete other keys.
 - Retirement requires a staged replacement, `operator_verified: true`, successful prechecks on every selected target, and the confirmation phrase `RETIRE <identity-id>`.
 - The four Proxmox nodes share one cluster-backed file. Only `grey-server` writes it; the other nodes independently verify the resulting state.
+- The nine running workload guests connect as `ansible`. Human identities still resolve to their original `root` or administrative-user key stores through passwordless privilege escalation.
+- `docker-blue` & `media-01` are supported Linux targets. Their identity allowlists remain explicit, like every other host.
 - `ws-dc-2-secondary` and `obi-pc` remain in the `ssh_key_unknown` inventory group and cannot be selected by these playbooks.
 
 ## Direct Ansible Commands
@@ -54,7 +57,7 @@ ansible-playbook playbooks/ssh-key-retire.yml \
 
 ## Adding a New SSH Device
 
-Copy `identities/_new-device-template.yml.example` to `identities/<device-id>.yml`. Replace its sample values with the public key, verified fingerprint, and approved target list, then run the project validator and `ssh-identity-onboard.yml` with that identity ID.
+Copy `identities/_new-device-template.yml.example` to `identities/<device-id>.yml`. Replace its sample values with the public key, verified fingerprint, and approved target list. Set `posix_account`, `authorized_keys_path`, & `authorized_key_options` only when that identity needs a different account or restrictions. Then run the project validator and `ssh-identity-onboard.yml` with that identity ID.
 
 The template is intentionally invalid until edited so an example key can never be deployed by accident.
 

@@ -1,3 +1,6 @@
 ---
+- name: Resolve the selected identity's key store
+  ansible.builtin.include_tasks: resolve-key-store.yml
+
 - name: Remove a public key for the host platform
   ansible.builtin.include_tasks: "ensure-key-absent-{{ ssh_key_platform }}.yml"

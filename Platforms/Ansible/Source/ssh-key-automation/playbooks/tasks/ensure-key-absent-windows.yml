@@ -2,7 +2,7 @@
 - name: Remove only the exact selected Windows public key
   ansible.windows.win_powershell:
     parameters:
-      Path: "{{ ssh_authorized_keys_path }}"
+      Path: "{{ ssh_effective_authorized_keys_path }}"
       PublicKey: "{{ ssh_public_key_to_manage }}"
     script: |
       [CmdletBinding(SupportsShouldProcess)]

@@ -1,7 +1,7 @@
 # Linux Host Baseline Standard
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-25
 
 Every Linux VM or LXC I provision gets this baseline before it carries a workload or enters the SSH Manager inventory. This file defines the required end state. Windows hosts are out of scope and follow their records under `Platforms/Windows Servers/`.
 
@@ -10,18 +10,19 @@ Work terms & evidence mechanics are defined in the [Documentation Standard](../.
 ## Required Baseline
 
 1. **Patch on first boot.** Run `apt update && apt upgrade -y` on Debian or Ubuntu, or the distribution's equivalent such as `dnf upgrade -y` on RHEL-family systems. A host doesn't enter service with pending security updates.
-2. **Administrative user `<YOUR_ADMIN_USERNAME>`.** Create the user, add it to the `sudo` group, and grant passwordless sudo through a validated `/etc/sudoers.d/90-<YOUR_ADMIN_USERNAME>` drop-in (`<YOUR_ADMIN_USERNAME> ALL=(ALL:ALL) NOPASSWD: ALL`). SSH Manager & Ansible need unattended privilege escalation, so an interactive sudo prompt would stop the fleet jobs.
+2. **Administrative user `<YOUR_ADMIN_USERNAME>`.** Create the user, add it to the `sudo` group, and apply the host's human-administration sudo policy. SSH Manager uses this account for direct maintenance.
 3. **Console recovery.** Set a console password for `<YOUR_ADMIN_USERNAME>` after creating the account. SSH remains key-only, so this path is available from the hypervisor console rather than TCP/22.
-4. **Authorized keys.** Install exactly these three public keys into `/home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` (file `0600`, dir `0700`, owned by `<YOUR_ADMIN_USERNAME>`):
+4. **Human authorized keys.** Install the approved human public keys into `/home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` (file `0600`, dir `0700`, owned by `<YOUR_ADMIN_USERNAME>`):
 
    ```text
    <YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>
    <YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>
-   <YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>
    ```
 
-   These keys represent my two administrative machines and the Ansible control node.
-5. **SSH hardening drop-in.** Write `/etc/ssh/sshd_config.d/99-hardening.conf` with:
+   The Ansible controller key doesn't belong in this file.
+5. **Dedicated automation account.** Create `ansible` with a home directory & `/bin/bash`, add it to the platform's administrative group, and write `/etc/sudoers.d/90-ansible` as `ansible ALL=(ALL:ALL) NOPASSWD: ALL`. Validate the file with `visudo -cf`. Set its shared console-recovery password, but never enable SSH password authentication.
+6. **Restricted controller key.** Put only the controller public key in `/home/ansible/.ssh/authorized_keys`, with directory mode `0700`, file mode `0600`, & ownership `ansible:ansible`. Prefix the key with `from="<CONTROLLER_ADDRESS>",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty`. Add `ansible` to the `docker` group only on hosts where Compose automation must reach the Docker socket.
+7. **SSH hardening drop-in.** Write `/etc/ssh/sshd_config.d/99-hardening.conf` with:
 
    ```text
    PermitRootLogin no
@@ -31,22 +32,26 @@ Work terms & evidence mechanics are defined in the [Documentation Standard](../.
    ```
 
    Validate with `sshd -t` before restarting the service. Key-only SSH removes password authentication from TCP/22, and `PermitRootLogin no` blocks direct root access.
-6. **Lock root.** Leave the `root` account password-locked. Administration runs through `<YOUR_ADMIN_USERNAME>` and sudo.
-7. **Locale and timezone.** Set the timezone to `America/New_York` and ensure `en_US.UTF-8` is generated and active. Matching timestamps let me compare events across hosts without converting time zones.
+8. **Lock root.** Leave the `root` account password-locked. Administration runs through `<YOUR_ADMIN_USERNAME>` or `ansible` and sudo.
+9. **Locale and timezone.** Set the timezone to `America/New_York` and ensure `en_US.UTF-8` is generated and active. Matching timestamps let me compare events across hosts without converting time zones.
 
 ## Verification Checklist
 
 Confirm each result before declaring the host ready:
 
-- `id <YOUR_ADMIN_USERNAME>` shows membership in `sudo`; `sudo -n true` succeeds (NOPASSWD works).
+- `id <YOUR_ADMIN_USERNAME>` shows the expected administrative-group membership.
+- `id ansible` shows the platform's administrative group; `sudo -n true` succeeds as `ansible`.
 - `sudo sshd -T` reports `permitrootlogin no`, `pubkeyauthentication yes`, `passwordauthentication no`, `kbdinteractiveauthentication no`.
-- `ssh-keygen -lf /home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` lists all three expected fingerprints.
+- `ssh-keygen -lf /home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` lists the approved human fingerprints without the controller key.
+- `ssh-keygen -lf /home/ansible/.ssh/authorized_keys` lists only the controller fingerprint, and the authorized-key line carries every required restriction.
 - `passwd -S root` shows the root password locked (`L`).
-- The host is reachable over SSH as `<YOUR_ADMIN_USERNAME>` using a key, and not with a password.
+- The host is reachable over SSH as `<YOUR_ADMIN_USERNAME>` and `ansible` using their assigned keys, and not with a password.
+- `docker info` succeeds as `ansible` only on approved Compose hosts.
 - Timezone and locale are correct.
 
 ## Operating Decisions
 
-- NOPASSWD is the fleet default because SSH Manager & `ansible-01` run unattended privileged commands. I record a host-level exception with that host.
-- `docker-network` LXC CTID 107 is the reference implementation for this baseline.
+- NOPASSWD is required for the dedicated `ansible` account because controller jobs run unattended. I keep human sudo policy separate from automation access.
+- The controller password exists for local or Proxmox console recovery. Ansible playbooks, inventory, logs, & repository files never contain it.
+- `docker-network` LXC CTID 107 is the first rollout host for this automation baseline.
 - I still apply these controls per host. A future cloud-init snippet or Ansible playbook belongs under `Engineering/Automation/` and must use this file as its specification.

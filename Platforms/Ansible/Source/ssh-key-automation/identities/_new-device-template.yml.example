@@ -6,6 +6,11 @@ ssh_identity:
   display_name: Travel Laptop
   fingerprint: SHA256:REPLACE_WITH_PUBLIC_KEY_FINGERPRINT
   current_public_key: ssh-ed25519 REPLACE_WITH_PUBLIC_KEY_DATA travel-laptop
+  # Set these three fields only when this identity uses a different POSIX
+  # account or needs OpenSSH restrictions on its authorized-key line.
+  # posix_account: ansible
+  # authorized_keys_path: /home/ansible/.ssh/authorized_keys
+  # authorized_key_options: 'from="192.0.2.10",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty'
   target_hosts:
     - docker-main
     - app-01

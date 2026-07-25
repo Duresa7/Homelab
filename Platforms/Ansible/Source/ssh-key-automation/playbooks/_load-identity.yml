@@ -48,6 +48,11 @@
           - ssh_identity_definition.target_hosts | length > 0
           - ssh_identity_definition.target_hosts | unique | list | length == ssh_identity_definition.target_hosts | length
           - ssh_identity_definition.target_hosts | difference(groups['ssh_key_supported']) | length == 0
+          - ssh_identity_definition.posix_account | default('') is string
+          - ssh_identity_definition.authorized_keys_path | default('') is string
+          - ssh_identity_definition.authorized_key_options | default('') is string
+          - (ssh_identity_definition.posix_account | default('') | length > 0) == (ssh_identity_definition.authorized_keys_path | default('') | length > 0)
+          - ssh_identity_definition.authorized_keys_path | default('/') is match('^/')
           - ssh_identity_definition.rotation is mapping
           - ssh_identity_definition.rotation.replacement_public_key is string
           - ssh_identity_definition.rotation.operator_verified is boolean
@@ -62,6 +67,7 @@
             if (ssh_identity_definition.rotation.replacement_public_key | length > 0)
             else ''
           }}
+        ssh_identity_authorized_key_options: "{{ ssh_identity_definition.authorized_key_options | default('') }}"
 
     - name: Validate replacement data for rotation operations
       ansible.builtin.assert:

@@ -88,6 +88,22 @@ def main() -> int:
             if extra_targets:
                 errors.append(f"{path.name}: unsupported targets {sorted(extra_targets)}")
 
+        posix_account = identity.get("posix_account", "")
+        authorized_keys_path = identity.get("authorized_keys_path", "")
+        authorized_key_options = identity.get("authorized_key_options", "")
+        if not isinstance(posix_account, str):
+            errors.append(f"{path.name}: posix_account must be a string")
+        if not isinstance(authorized_keys_path, str):
+            errors.append(f"{path.name}: authorized_keys_path must be a string")
+        if not isinstance(authorized_key_options, str):
+            errors.append(f"{path.name}: authorized_key_options must be a string")
+        if bool(posix_account) != bool(authorized_keys_path):
+            errors.append(
+                f"{path.name}: posix_account and authorized_keys_path must be set together"
+            )
+        if authorized_keys_path and not authorized_keys_path.startswith("/"):
+            errors.append(f"{path.name}: authorized_keys_path must be absolute")
+
         rotation = identity.get("rotation") or {}
         replacement = rotation.get("replacement_public_key", "")
         if replacement:
