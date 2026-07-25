@@ -24,6 +24,7 @@
         project_src: "{{ item.project_src }}"
         project_name: "{{ item.name }}"
         files: "{{ item.files | default(omit) }}"
+        profiles: "{{ item.profiles | default(omit) }}"
         state: present
         pull: "{{ compose_pull | default('always') }}"
         remove_orphans: "{{ item.remove_orphans | default(false) }}"

@@ -17,6 +17,24 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_GROUPS = ("os_update_targets", "docker_compose_targets")
 PLAYBOOKS = ("playbooks/os-update.yml", "playbooks/docker-compose-update.yml")
+EXPECTED_OS_HOSTS = {
+    "docker-main",
+    "docker-network",
+    "docker-blue",
+    "media-01",
+    "alpha-prod-01",
+    "app-01",
+    "edge-01",
+    "security-01",
+    "splunk-siem",
+}
+EXPECTED_COMPOSE_PROJECTS = {
+    "docker-main": 6,
+    "docker-network": 2,
+    "docker-blue": 1,
+    "media-01": 1,
+    "alpha-prod-01": 6,
+}
 
 
 def collect_hosts(group: dict) -> dict:
@@ -40,11 +58,32 @@ def main() -> int:
             errors.append(f"group {group} has no hosts")
 
     compose_group = children.get("docker_compose_targets", {})
+    os_hosts = collect_hosts(children.get("os_update_targets", {}))
+    compose_hosts = collect_hosts(compose_group)
+
+    if set(os_hosts) != EXPECTED_OS_HOSTS:
+        errors.append(
+            "OS-update host set differs from the approved nine-host fleet: "
+            f"{sorted(os_hosts)}"
+        )
+    if set(compose_hosts) != set(EXPECTED_COMPOSE_PROJECTS):
+        errors.append(
+            "compose host set differs from the approved five-host fleet: "
+            f"{sorted(compose_hosts)}"
+        )
+    if set(compose_hosts) - set(os_hosts):
+        errors.append("every compose host must also be an OS-update host")
+
     for host, host_vars in collect_hosts(compose_group).items():
         projects = (host_vars or {}).get("compose_projects")
         if not isinstance(projects, list) or not projects:
             errors.append(f"{host}: compose_projects must be a non-empty list")
             continue
+        if len(projects) != EXPECTED_COMPOSE_PROJECTS.get(host):
+            errors.append(
+                f"{host}: expected {EXPECTED_COMPOSE_PROJECTS.get(host)} "
+                f"compose projects, found {len(projects)}"
+            )
         seen: set[str] = set()
         for entry in projects:
             name = (entry or {}).get("name")
@@ -55,6 +94,16 @@ def main() -> int:
             if name in seen:
                 errors.append(f"{host}: duplicate compose project name {name}")
             seen.add(name)
+            profiles = (entry or {}).get("profiles")
+            if profiles is not None and (
+                not isinstance(profiles, list)
+                or not profiles
+                or any(not isinstance(profile, str) or not profile for profile in profiles)
+                or len(profiles) != len(set(profiles))
+            ):
+                errors.append(
+                    f"{host}/{name}: profiles must be a non-empty list of unique strings"
+                )
 
     for playbook in PLAYBOOKS:
         if not (ROOT / playbook).is_file():
@@ -77,17 +126,22 @@ def main() -> int:
     else:
         errors.append("Semaphore manifest semaphore/task-templates.yml is missing")
 
+    project_count = sum(
+        len((host_vars or {}).get("compose_projects") or [])
+        for host_vars in compose_hosts.values()
+    )
+    if project_count != 16:
+        errors.append(f"expected 16 compose projects, found {project_count}")
+
     if errors:
         print("fleet-updates validation failed:")
         for error in errors:
             print(f"- {error}")
         return 1
 
-    os_hosts = collect_hosts(children["os_update_targets"])
-    compose_hosts = collect_hosts(children["docker_compose_targets"])
     print(
         f"Validation passed: {len(os_hosts)} OS-update hosts, "
-        f"{len(compose_hosts)} compose hosts."
+        f"{len(compose_hosts)} compose hosts, {project_count} projects."
     )
     return 0
 

@@ -1,17 +1,17 @@
 # Fleet Updates
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 I run two playbooks from `ansible-01` to keep the Linux fleet current. `os-update.yml` patches packages through apt or dnf, and `docker-compose-update.yml` pulls new images & recreates the compose stacks. Both use the same `ansible` account, the same key, & the same inventory style as `ssh-key-automation` next door.
 
 ## Scope
 
-The inventory holds 10 Linux guests for OS updates & 3 hosts for compose. The four Proxmox nodes & every Windows host are absent on purpose. This automation patches guests, not hypervisors, and apt or dnf can't patch Windows. Keeping the Proxmox nodes out means a run here can never reboot a node that's holding the controller or another guest.
+The inventory holds 9 running Linux guests for OS updates & 5 hosts for compose. The four Proxmox nodes, stopped guests, `kasm-01`, & every Windows host are absent on purpose. This automation patches guests, not hypervisors, and apt or dnf can't patch Windows. Keeping the Proxmox nodes out means a run here can never reboot a node that's holding the controller or another guest.
 
-`os_update_targets` covers docker-main, docker-network, alpha-prod-01, app-01, supabase-01, ai-alpha-01, ai-bravo-02, edge-01, security-01, & splunk-siem. Nine run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager.
+`os_update_targets` covers docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, edge-01, security-01, & splunk-siem. Eight run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager.
 
-`docker_compose_targets` covers docker-main (6 stacks), docker-network (2 stacks), & alpha-prod-01 (6 stacks). app-01 is left out because Coolify owns its containers; a manual `docker compose up -d` would fight Coolify's own reconcile. supabase-01 & the AI hosts aren't in the compose group yet. I add a host only after I confirm its project paths with `docker compose ls`.
+`docker_compose_targets` covers docker-main (6 stacks), docker-network (2 stacks), docker-blue (1 stack), media-01 (1 stack), & alpha-prod-01 (6 stacks). The media project requests the `vpn` profile so the update matches its deployed eight-container topology. app-01 is left out because Coolify owns its containers; a manual `docker compose up -d` would fight Coolify's own reconcile.
 
 ## os-update.yml
 
@@ -24,20 +24,20 @@ cd /home/ansible/fleet-updates
 export LANG=C.utf8 LC_ALL=C.utf8
 
 # Preview the whole fleet, change nothing.
-ansible-playbook playbooks/os-update.yml --check -K
+ansible-playbook playbooks/os-update.yml --check
 
 # Patch the whole fleet, report reboots, reboot nothing.
-ansible-playbook playbooks/os-update.yml -K
+ansible-playbook playbooks/os-update.yml
 
 # Patch one host or group.
-ansible-playbook playbooks/os-update.yml -K -e target=splunk-siem
+ansible-playbook playbooks/os-update.yml -e target=splunk-siem
 ```
 
-The `-K` flag prompts for a sudo password. docker-main connects as `root` and needs no sudo, and docker-network has passwordless sudo, but alpha-prod-01 & app-01 don't, so a fleet run needs `-K`. If a host's sudo password differs from the one typed at the prompt, set that host's `ansible_become_password` from an Ansible Vault file instead of using `-K`. Override the upgrade type with `-e apt_upgrade=full` for a dist-upgrade when I actually want new dependencies pulled in.
+Every host connects through the dedicated `ansible` account. Its sudo rule is `NOPASSWD: ALL`, so scheduled runs don't carry a sudo password or stop at an interactive prompt. Override the upgrade type with `-e apt_upgrade=full` for a dist-upgrade when I actually want new dependencies pulled in.
 
 ## docker-compose-update.yml
 
-The play runs `docker compose pull` then `docker compose up -d` for each stack listed on the host. It uses `community.docker.docker_compose_v2` with `pull: always` & `state: present`, which pulls every image then recreates only the containers whose image or config changed. No sudo runs here: docker-main connects as `root`, and dkadi is in the `docker` group on docker-network & alpha-prod-01.
+The play runs `docker compose pull` then `docker compose up -d` for each stack listed on the host. It uses `community.docker.docker_compose_v2` with `pull: always` & `state: present`, which pulls every image then recreates only the containers whose image or config changed. An optional `profiles` list passes deployed compose profiles such as media-01's `vpn` profile. No sudo runs here because `ansible` belongs to the `docker` group on all five compose hosts.
 
 Each stack is pinned by `project_name` taken from `docker compose ls`, not from the directory name. immich runs as project `immich` out of `/opt/docker/immich-app`, so pinning the name keeps the update on the running project instead of starting a second one called `immich-app`.
 
@@ -59,12 +59,12 @@ A `--check` run reports `changed=true` for every stack because `pull: always` ca
 
 ## Adding a host
 
-For OS updates, add the host under `os_update_targets` with its `ansible_host` & `ansible_user`, then confirm the controller key already reaches it. For compose, add the host under `docker_compose_targets` and list its stacks under `compose_projects`, one entry per project with `name` & `project_src`. Get both from `docker compose ls --format json` on the host, using the `Name` field for `name` & the directory of `ConfigFiles` for `project_src`. Run `python3 tests/validate_project.py` and `ansible-playbook --syntax-check` before the first live run.
+For OS updates, add the host under `os_update_targets` with its `ansible_host` & `ansible_user`, then confirm the controller key already reaches it. For compose, add the host under `docker_compose_targets` and list its stacks under `compose_projects`, one entry per project with `name` & `project_src`. Add `profiles` only when the deployed project requires one or more compose profiles. Get the project name & path from `docker compose ls --format json`, using the `Name` field for `name` & the directory of `ConfigFiles` for `project_src`. Run `python3 tests/validate_project.py` and `ansible-playbook --syntax-check` before the first live run.
 
 ## Publication note
 
-The copy in this repository uses placeholder usernames: `<YOUR_ADMIN_USERNAME>` for the admin account & `<YOUR_DEPLOYMENT_USER>` for the ai-bravo-02 account. The copy deployed at `/home/ansible/fleet-updates` on `ansible-01` uses the real accounts.
+The copy in this repository uses `<YOUR_ADMIN_USERNAME>` only in alpha-prod-01's workload-owned compose paths. The copy deployed at `/home/ansible/fleet-updates` on `ansible-01` uses the account that owns those directories.
 
 ## Semaphore
 
-`semaphore/task-templates.yml` defines an optional web interface with an OS Updates view & a Docker Compose view, each carrying a dry-run template, a full-run template, & a single-target template. Semaphore isn't required; every operation runs from `ansible-playbook` directly. An OS-update run through Semaphore against a host that needs a sudo password requires that password stored as a Semaphore credential.
+`semaphore/task-templates.yml` defines an optional web interface with an OS Updates view & a Docker Compose view, each carrying a dry-run template, a full-run template, & a single-target template. Semaphore isn't required; every operation runs from `ansible-playbook` directly.
