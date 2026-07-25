@@ -1,15 +1,16 @@
 # OpenClaw Setup Overview
 
 **Created:** 2026-04-27  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 **Recorded:** 2026-04-27 15:04 EDT  
 **Environment:** `AI_Alpha_01`  
-**Role:** Discord-accessible `<YOUR_ORG_NAME>` United assistant
+**Role:** Discord-accessible `<YOUR_ORG_NAME>` United assistant  
+**Retired:** The guest was absent from Galaxy when I checked the cluster on 2026-07-25; the exact deletion date wasn't retained.
 
 ## Deployment Role
 
-I run this OpenClaw deployment as a Discord assistant for `<YOUR_ORG_NAME>` United LLC. It responds in one allowlisted channel, requires a mention, rejects direct messages, & resets idle group sessions after 60 minutes.
+This record preserves the OpenClaw deployment I ran as a Discord assistant for `<YOUR_ORG_NAME>` United LLC. The captured configuration responded in one allowlisted channel, required a mention, rejected direct messages, & reset idle group sessions after 60 minutes.
 
 ## System Role
 

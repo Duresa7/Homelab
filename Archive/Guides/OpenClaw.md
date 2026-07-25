@@ -1,13 +1,15 @@
 # OpenClaw Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
+
+This guide is archived. It preserves the recorded OpenClaw 2026.4.25 deployment on deleted CT 104 `ai-alpha-01`; I confirmed the guest was absent from Galaxy on 2026-07-25.
 
 ## What This Guide Covers
 
 I configured OpenClaw as a Discord assistant for one server and one channel. This guide covers the gateway service, channel allowlist, mention requirement, idle-session reset, public-channel rules, & member resolver.
 
-## Current Status and Verified Versions
+## Recorded Status and Verified Versions
 
 The recorded OpenClaw version is 2026.4.25. `openclaw-gateway.service` runs as a user service under `openclaw`, user linger is enabled, & the gateway binds only to `127.0.0.1:18789`. Discord access is limited to one guild and `#alpha-ai`; DMs are disabled and a mention is required.
 

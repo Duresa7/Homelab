@@ -1,15 +1,14 @@
 ﻿# Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-25
 
-Galaxy currently has seven LXCs: five on grey or blue for automation, AI, Docker, & remote access, plus `media-01` on red. The tables record their guest IDs, resources, storage, interfaces, & host-device mappings.
+Galaxy currently has six defined LXCs: five on grey or blue for automation, AI, Docker, & remote access, plus `media-01` on red. The tables record their guest IDs, resources, storage, interfaces, & host-device mappings.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
-| 104 | ai-alpha-01 | grey-server | disabled | debian | 2 | 4 GiB | 192.168.40.37/24 | 192.168.40.1 | 40 |
 | 105 | ai-bravo-02 | grey-server | disabled | ubuntu | 6 | 23.81 GiB | 192.168.40.38/24 | 192.168.40.1 | 40 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
@@ -40,30 +39,6 @@ Galaxy currently has seven LXCs: five on grey or blue for automation, AI, Docker
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<YOUR_ANSIBLE_CONTROLLER_MAC>` |
-
-## LXC 104 - ai-alpha-01
-
-### Configuration
-| Setting | Value |
-| --- | --- |
-| Node | grey-server |
-| High availability | disabled |
-| OS | debian |
-| vCPU | 2 |
-| Memory | 4 GiB |
-| Swap | 2 GiB |
-| Unprivileged | yes |
-| Features | nesting=1 |
-
-### Storage
-| Device | Mount | Storage | Volume | Size | Backup |
-| --- | --- | --- | --- | --- | --- |
-| rootfs | / | ssd-lvm1 | vm-104-disk-0 | 40G | default |
-
-### Network
-| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.37/24 | 192.168.40.1 | enabled | `<YOUR_AI_ALPHA_MAC>` |
 
 ## LXC 105 - ai-bravo-02
 
@@ -229,3 +204,7 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 - SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the approved administrative keys.
 - `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked; the administrative account uses the recorded public-key SSH path.
+
+## Retired LXCs
+
+CT 104 `ai-alpha-01` no longer exists in Galaxy. I preserved its last recorded configuration, OpenClaw deployment records, & retirement verification in the [2026-07-25 retired guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md).

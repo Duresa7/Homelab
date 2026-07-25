@@ -42,7 +42,7 @@ The guides provide the reading path. Detailed records stay with the system that 
 | [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | Currently empty by design |
 | [Operations](Operations/README.md) | Cross-system inventories and maintenance records | [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md) |
 | [Security](Security/README.md) | Incident reports, hardening standards, assessments | [Linux host baseline](Security/Hardening/Linux-Host-Baseline-Standard.md) |
-| [Archive](Archive/README.md) | Superseded records kept for history | Currently empty by design |
+| [Archive](Archive/README.md) | Superseded records kept for history | [Retired ai-alpha-01 record](Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md) |
 
 ## Build and Change Records
 

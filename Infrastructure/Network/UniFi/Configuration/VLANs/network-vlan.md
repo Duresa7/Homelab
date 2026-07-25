@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-23
+**Last updated:** 2026-07-25
 
 ## Networks / VLANs
 
@@ -35,7 +35,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Trusted (10) | Internal | Trusted personal | Personal devices I trust but that are not admin machines: household phones, tablets, laptops, watches, and personal streaming/voice devices (iPhones, Pixels, MacBooks, Galaxy Watch, personal Fire TV / Alexa). Blocked from reaching Personal-A. |
 | IoT (20) | Untrusted | Untrusted appliance | Smart-home and appliance-class gear with no admin need and no reason to reach the LAN: smart cameras (Wyze, Ring), thermostats (Nest), smart TVs and streamers (Samsung TV, Roku), smart appliances (Samsung FamilyHub), plugs and sensors. Isolated from Internal. |
 | DMZ (30) | Dmz | Internet-facing (legacy) | General internet-exposed / untrusted workloads kept off the LAN. Blocked from Internal; can be pinned to ProtonVPN egress via the `isolate` policy. I prefer DMZ-A for new `<YOUR_ORG_NAME>` edge hosts. |
-| Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (docker-main, docker-grey), automation (ansible-01), AI/experiment boxes (ai-alpha-01), and pentest/lab VMs (kali, debian-vm). Reachable only from a defined admin device allow-list. |
+| Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `debian-dev`). Reachable only from a defined admin device allow-list. |
 | Secure (50) | Internal | Primary admin workstation | The trusted workstation I administer the homelab from: my main management PC, Jedi PC. Part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | Secondary trusted workstation | Additional trusted desktops/workstations for specific users that need LAN trust but are not my primary admin box (Obi PC). |
 | AD-SERVERS (65) | Internal | Identity infrastructure | Active Directory and identity infrastructure plus domain-joined servers/test hosts: Windows domain controllers (WS-DC-1, WS-DC-02), identity/sync services, domain-joined test PCs. |

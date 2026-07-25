@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -30,7 +30,6 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & pending acquisition test |
 | [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [OpenClaw](OpenClaw.md) | Discord scope, mention behavior, session reset, systemd service, & resolver workflow |
 | [Portainer](Portainer.md) | Portainer server, Edge Agent Compose project, UniFi ports, & environment registration |
 | [Prometheus](Prometheus.md) | Node exporters, seven scrape jobs, config validation, reload behavior, & target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
@@ -38,6 +37,10 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Termix](Termix.md) | Upgrade, reusable Ed25519 identity, nine SSH hosts, folders, connection checks, & rollback |
 | [TNIO AI Bot](TNIO-AI-Bot.md) | Lore RAG source, remote runtime, retrieval fixes, corpus audits, tests, & service checks |
 | [Wazuh](Wazuh.md) | Endpoint removal, fresh enrollment, manager checks, dashboard state, & recovery |
+
+## Retired Guides
+
+The [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md) preserves the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01`.
 
 ## Status Language
 

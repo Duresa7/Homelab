@@ -1,12 +1,13 @@
 # OpenClaw Change Record
 
 **Created:** 2026-04-27  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-25
 
 **Change time:** 2026-04-27 15:04 EDT  
 **Environment:** `AI_Alpha_01`  
 **Service:** OpenClaw Gateway  
-**Status:** Running
+**Status at change time:** Running  
+**Archive status:** The guest was absent from Galaxy when I checked the cluster on 2026-07-25; the exact deletion date wasn't retained.
 
 ## Result
 
