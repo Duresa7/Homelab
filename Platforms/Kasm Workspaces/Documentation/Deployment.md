@@ -1,7 +1,7 @@
 # Kasm Workspaces Deployment
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
@@ -143,6 +143,24 @@ The installer generated passwords for `admin@kasm.local`, `user@kasm.local`, the
 ## Cluster state during the build
 
 Galaxy was quorate throughout. `purple-server` was offline for its planned boot NVMe replacement, which left 3 of 4 votes against an expected 3, so the cluster held quorum with no margin to spare. Corosync showed nodeid 2 `disconnected` on both `LINK ID 0` (`192.168.70.10`) & `LINK ID 1` (`192.168.71.10`), matching a powered-down node rather than a link fault. All work in this record happened on `grey-server`, so the offline node never touched it. The failed device is tracked in [Purple NVMe Reliability Failure](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md).
+
+## State on 2026-07-25
+
+I rechecked the host the morning after the build, from `grey-server` through `qm guest exec 122`, because I'd used it the night before.
+
+All 8 containers were still up, uptime 18h 08m, `GET https://127.0.0.1/` returned 200, & `/api/__healthcheck` returned `{"ok": true}`. The RDP gateway reported `Active Sessions: {}`, so nothing was running. Memory sat at 2.1 GiB of 7.7 GiB. Swap was barely touched at 768 KiB of 4 GiB.
+
+Disk moved from 13 GiB to 26 GiB of 96 GiB. That's three workspace images I pulled on 2026-07-24 by launching the workspaces to see how the product works:
+
+```text
+kasmweb/forensic-osint:1.19.0-rolling-daily   10.3GB
+kasmweb/vs-code:1.19.0-rolling-daily           6.42GB
+kasmweb/terminal:1.19.0-rolling-daily          4.83GB
+```
+
+These were test launches on VLAN 80 with no isolation in place, which is fine for a VS Code container & a terminal. I'm not running anything hostile until the lab NICs exist. The `forensic-osint` image is the one to be careful with, since OSINT work means live Internet from a session that currently egresses through SERVERS-A rather than through Proton on VLAN 74.
+
+`kasm_rdp_gateway` shows `RestartCount: 2` & restarted at 2026-07-25 02:49 EDT while the other seven containers held 18 hours. Its current log is clean: health checks return `{'ok': True}` & it's registering `['proxy', 'kasm-01']` as expected. I'm noting the restart rather than acting on it. If it climbs past 2 without a session to explain it, that's a real fault to chase.
 
 ## What I left for the next change
 
