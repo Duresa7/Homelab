@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -11,7 +11,6 @@ _No untriaged items._
 
 ## Active Priorities
 
-- [ ] Complete the authenticated application and VPN-client acceptance checks for [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). DNS, TLS, proxy routing, public NXDOMAIN, zero WAN port forwards, & restart recovery are already verified.
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network, then confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before running live malware. Platform notes in [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
 - [ ] Replace `purple-server`'s failed boot NVMe and bring the node back to four votes. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
@@ -19,28 +18,31 @@ _No untriaged items._
 ## System Backlogs
 
 | Backlog | Open items |
-|---|---|| [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
+|---|---|
+| [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Add supabase-01 & the AI hosts to fleet-update compose group; decide sudo-password handling for OS updates |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Includes the deferred recurring `pvestatd` failure on `blue-server` |
-| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Operations backlog: configuration backup and restore test, NVMe/HDD capacity alerts, & update cadence; internal HTTPS completed 2026-07-22 |
+| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
 | [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
-| [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | Internal HTTPS infrastructure is live; authenticated application workflows and an actual VPN-client acceptance path remain open |
+| [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | No open baseline items; future monitoring changes land here first |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed
 
+- [x] 2026-07-25: Closed the [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md) acceptance checks. I ran the VPN-client DNS, HTTPS, & certificate test plus the seven authenticated application workflows from my own sessions. All passed; I retained no capture from the pass. Route health, public NXDOMAIN, zero WAN port forwards, & restart recovery were already verified on 2026-07-22.
+- [x] 2026-07-25: Closed the TeamSpeak credential remediation. The values exposed in the deployment record were redacted, moved to the the managed vault 1Password vault, & rotated on 2026-07-17; I confirmed the replacements authenticate & the superseded values don't. I'm not rewriting the private repository's Git history, since rotation already invalidated what it holds.
 - [x] 2026-07-24: [Kasm Workspaces deployed on `kasm-01`](Platforms/Kasm%20Workspaces/Documentation/Deployment.md). I built VM 122 on `grey-server` from the Ubuntu 24.04.4 template, applied the Linux host baseline, & installed Kasm 1.19.0 Community Edition after matching the release tarball against Kasm's published SHA256. Eight containers healthy, HTTPS 200 on TCP 443, `/api/__healthcheck` returns `{"ok": true}`, & the administrator credential authenticates. Key-only SSH verified from Jedi PC with the `jedi-pc` identity. Session VLAN attachment is deliberately still open.
 - [x] 2026-07-23: Kasm lab torn down for a from-scratch rebuild. I collapsed the [UniFi lab network](Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) from seven VLANs to three and 53 firewall policies to 9, retargeted the Proton route to VLAN 74, and in the [Galaxy Proxmox teardown](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md) destroyed the ten Kasm VMs and removed the pool, provider identity, KASMLAB SDN, snippet storage, and host-firewall line. The cluster stayed quorate 4/4. I removed the Kasm build artifacts from the repository too and am rebuilding Kasm from scratch.
 - [x] 2026-07-22: [Grafana plaintext administrator credential incident](Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md). I removed the bootstrap value from Compose and the recreated container environment, rotated the credential, & verified Grafana 12.4.1 health and authenticated access. Current-container logs showed no failed-authentication matches; the pre-recreation log boundary wasn't retained.
 - [x] 2026-07-22: [PeaNUT UPS dashboard deployment](Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md). I deployed read-only NUT 2.8.1-5 telemetry on Red and Grey and an authenticated, digest-pinned PeaNUT 6.0.0 dashboard on `docker-main`; both UPS feeds and existing Docker workloads passed verification.
 - [x] 2026-07-22: [Syncthing Obsidian vault deployment](Platforms/Syncthing/Documentation/Deployment.md). I deployed Syncthing 2.1.2 on `docker-main`, paired the Windows vault over direct TLS 1.3, matched a 14-file, 6,425,692-byte canonical manifest on both peers, proved both transfer directions, & retained a deleted test file through 90-day staggered versioning.
 - [x] 2026-07-22: [Media Stack HDD data migration](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md). I moved 10,615,586,954 logical bytes from CT 842's NVMe root to a 1 TB ext4 HDD, preserved all 19 file hashes & metadata, proved hard links and Quick Sync output on the new filesystem, blocked startup when the disk was absent, & reclaimed 9.9 GiB from NVMe.
-- [x] 2026-07-21: [Media Stack end-to-end acquisition test](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). A television episode and a movie were acquired through the stack, hard-link imported, and played from Jellyfin with the GPU active, closing the application onboarding project; the acquisition capture is retained locally. The operations backlog (backups, capacity, update cadence, HTTPS ingress) continues in the [platform TODO](Platforms/Media%20Stack/Documentation/TODO.md).
+- [x] 2026-07-21: [Media Stack end-to-end acquisition test](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). A television episode and a movie were acquired through the stack, hard-link imported, and played from Jellyfin with the GPU active, closing the application onboarding project; the acquisition capture is retained locally. Internal HTTPS ingress followed on 2026-07-22, & I dropped the remaining backup, capacity, & update-cadence items on 2026-07-25, so the [platform TODO](Platforms/Media%20Stack/Documentation/TODO.md) is now clear.
 - [x] 2026-07-20: [Ansible fleet update automation](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md). Two playbooks on `ansible-01`: `os-update.yml` patches 10 Linux guests through apt or dnf with report-only reboots, & `docker-compose-update.yml` pulls and recreates the compose stacks on docker-main, docker-network, & alpha-prod-01. Proxmox nodes and Windows hosts excluded by design. Verified with no-change dry runs; an independent Codex review found and I fixed four reboot-path defects.
 - [x] 2026-07-17: [Media Stack application onboarding](Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md). Jellyfin libraries and Quick Sync transcoding, Sonarr/Radarr media management, first Prowlarr indexer, and confirmed Seerr connections, evidenced by 16 screenshots. The bounded end-to-end acquisition test remains in the platform TODO.
 - [x] 2026-07-14: [SSH authorized-key baseline cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md). I removed two retired keys across every readable scope, normalized 15 reachable targets to the three-key fleet baseline, and matched five retained identities to their known public fingerprints.

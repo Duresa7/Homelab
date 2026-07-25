@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-25
 
 This inventory maps 12 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
@@ -38,8 +38,8 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
 | Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
 | Desktop privilege policy | Polkit grants all actions without authentication to user `<YOUR_ADMIN_USERNAME>` only from an active local session; remote Polkit requests remain subject to normal policy |
-| Claude Desktop | 1.21459.0 from Anthropic's APT repository; fresh login verification pending after first-run GNOME Keyring collection creation |
-| Cowork virtualization | `/dev/kvm` available through AMD KVM; `<YOUR_ADMIN_USERNAME>` is a persistent member of group `kvm`; new-session activation pending |
+| Claude Desktop | 1.21459.0 from Anthropic's APT repository; sign-in persists through the GNOME Keyring login collection since the 2026-07-22 fresh session |
+| Cowork virtualization | `/dev/kvm` available through AMD KVM; `<YOUR_ADMIN_USERNAME>` is a persistent member of group `kvm`, active since the 2026-07-22 login |
 | Remote administration | SSH Manager target `debian_dev` (`<YOUR_ADMIN_USERNAME>@192.168.40.135`) using the Jedi-PC Ed25519 identity; compatibility alias `db_13_test` |
 | Rollback | Proxmox snapshot `pre-gnome-20260715` retained on VM 102; post-reboot validation passed |
 

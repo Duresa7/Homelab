@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-25
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -61,6 +61,6 @@ The guides provide the reading path. Detailed records stay with the system that 
 Current priorities from my [central TODO](TODO.md):
 
 1. Lock down MGMT-A per the [network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
-2. Finish the media stack's operations backlog: backups and a restore test, capacity alerts, an update cadence, and the HTTPS ingress decision. The end-to-end acquisition test passed on 2026-07-21.
-3. Give the SIEM a proper domain name and put a reverse proxy with a CA-signed certificate in front of Splunk Web.
+2. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
+3. Replace `purple-server`'s failed boot NVMe and bring Galaxy back to four votes. Until it rejoins, the cluster holds quorum at three of three available votes, so no other node comes offline.
 4. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.

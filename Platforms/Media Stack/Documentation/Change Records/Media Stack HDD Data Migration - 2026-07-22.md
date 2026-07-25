@@ -1,7 +1,7 @@
 # Media Stack HDD Data Migration
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-25
 
 **Implementation date:** 2026-07-22  
 **System:** Galaxy `red-server`, CT 842 `media-01`  
@@ -89,4 +89,4 @@ The copy-verification checkpoint provided local rollback until I deleted `/data.
 
 ## Remaining Work
 
-The migration has no remaining step. Configuration backup and restore testing, HDD capacity alerts, the `latest` image maintenance cadence, & the HTTPS ingress decision remain in the [Media Stack TODO](../TODO.md).
+The migration has no remaining step. HTTPS ingress landed on 2026-07-22, & on 2026-07-25 I dropped the configuration backup-and-restore test, the HDD capacity alerts, & the `latest` image maintenance cadence from the [Media Stack TODO](../TODO.md).

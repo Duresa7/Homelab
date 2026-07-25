@@ -1,7 +1,7 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-25
 
 ## HDD Data Migration
 
@@ -22,8 +22,6 @@ Completed items are recorded with evidence in the [application onboarding change
 
 ## Backups, Capacity & Updates
 
-- [ ] Add backups for `/opt/media-stack/config` & perform a restore test; `/data` holds replaceable media & remains excluded.
-- [ ] Add separate capacity alerts for the 100 GiB NVMe root & the HDD-backed `/data` filesystem.
-- [ ] Define a maintenance cadence for the intentionally floating `latest` image tags.
+- [x] 2026-07-25: Dropped the three open items I'd carried here: the `/opt/media-stack/config` backup-and-restore test, separate capacity alerts for the 100 GiB NVMe root & the 916 GiB HDD `/data` filesystem, & a defined refresh cadence for the floating `latest` tags. I decided they aren't worth tracking. The stack holds replaceable media and I refresh images when I'm already in the box, so nothing is open against Media Stack now.
 - [x] 2026-07-22: Published Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, & qBittorrent through internal HTTPS on NPM. Direct IP access remains available. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 - [x] 2026-07-22: Corrected qBittorrent Host-header validation after the HTTPS hostname excluded Sonarr and Radarr's `gluetun:8080` path. Both saved-client tests, both health APIs, direct access, NPM HTTPS, & Proton port matching passed. See [qBittorrent Host Validation Blocked Arr Clients](Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) and incident [ASU-QBIT-20260722-001](../../../Security/Incidents/qBittorrent/qBittorrent-Incident-Report-2026-07-22-Arr-Client-Outage.md).

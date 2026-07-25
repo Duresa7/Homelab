@@ -1,10 +1,10 @@
 # Internal HTTPS Service Onboarding
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-25
 
 **Date:** 2026-07-22  
-**Status:** Infrastructure implemented; authenticated application and VPN-client acceptance pending
+**Status:** Complete; authenticated application and VPN-client acceptance closed 2026-07-25
 
 ## Scope
 
@@ -118,9 +118,9 @@ I verified the complete route set from an Internal-zone Windows client:
 - NPM passed `nginx -t`. A controlled container restart reached `running healthy`; all 19 HTTPS routes still answered afterward.
 - NPM's recent proxy access logs contained zero 502 or 504 responses.
 
-I didn't use application credentials to create permanent test media, upload a photo, open an SSH terminal, run a Semaphore job, or execute a Splunk ES search. Existing application authentication remains the control for those actions. The plan's authenticated acceptance checks remain open instead of being inferred from route health.
+I didn't use application credentials to create permanent test media, upload a photo, open an SSH terminal, run a Semaphore job, or execute a Splunk ES search. Existing application authentication remains the control for those actions. The plan's authenticated acceptance checks stayed open after this session instead of being inferred from route health; I ran them on 2026-07-25.
 
-I also couldn't originate a test from an actual VPN client in this session. The UniFi VPN-to-Access and VPN-to-Internal policies are enabled, but policy state isn't a substitute for a client-path test.
+I also couldn't originate a test from an actual VPN client in this session. The UniFi VPN-to-Access and VPN-to-Internal policies are enabled, but policy state isn't a substitute for a client-path test. I ran that client test on 2026-07-25.
 
 Evidence: [Step 5 route and restart verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S05-Route-and-Restart-Verification-2026-07-22.md).
 
@@ -141,9 +141,9 @@ For one application, I can disable or delete only its NPM proxy host and UniFi A
 
 For the whole change, I disable the five new firewall policies and remove the 19 UniFi A records. Direct IP-and-port paths remain available. The project-created NPM and backend archives were deleted on 2026-07-22, so rollback can't rely on those files. I don't delete the wildcard certificate while NetBird still uses it.
 
-## Remaining Work
+## Acceptance Closed 2026-07-25
 
-The infrastructure work is complete. I still need to run these acceptance checks from the intended user sessions:
+The infrastructure work finished on 2026-07-22. I ran the remaining acceptance checks from my own authenticated sessions and a connected VPN client, and closed them on 2026-07-25:
 
 - from an actual VPN client, resolve one name in each backend zone, open HTTPS, & verify the wildcard certificate;
 - play media in Jellyfin;
@@ -154,4 +154,4 @@ The infrastructure work is complete. I still need to run these acceptance checks
 - confirm Syncthing remains connected and synchronized while using the HTTPS GUI;
 - run a read-only Splunk ES search.
 
-These checks need the owner's authenticated browser sessions and, for the VPN path, a connected remote client. They don't block use of the new names from the already verified Internal-zone client.
+All eight passed. I kept no screenshot or transcript from that pass, so the closure evidence is my confirmation of the observed behavior rather than a retained capture. Nothing on this change remains open.
