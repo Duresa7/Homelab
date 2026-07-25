@@ -44,6 +44,8 @@ I removed `ai-bravo-02` from the repository & deployed Ansible inventory, Termix
 
 I added the 2026-08-15 deletion date to the root TODO, Galaxy checklist, & Mission Control backlog. Commits `6decbfa` & `ef02f94` keep automation cleanup separate from deletion scheduling.
 
+I retained no separate Step 3 terminal transcript because the cleanup touched controller configuration & my per-user SSH client state. I kept those private files out of repository evidence. Commit `6decbfa` records the source inventory change; the read-only verification results below record the post-change state without copying the private files.
+
 ## Resulting Configuration
 
 CT 105 remains defined on `grey-server`, stopped, with `onboot: 0` & its 100 GiB root volume attached. The active repository has no TNIO platform directory, active TNIO walkthrough, or `ai-bravo-02` Ansible target.
