@@ -41,7 +41,7 @@ The project holds `ansible.cfg`, `requirements.yml`, `inventory/hosts.yml`, `pla
 
 `python3 tests/validate_project.py` reported `10 OS-update hosts, 3 compose hosts`. `ansible-playbook --syntax-check` passed for both playbooks. `--list-hosts` returned exactly 10 hosts for os-update & 3 for docker-compose-update, with no Proxmox node & no Windows host in either list.
 
-The os-update dry run against docker-main (`--check --limit docker-main`), re-run after the Codex fixes, gathered facts, passed the package-manager assertion, selected the apt task, skipped the dnf & RHEL-reboot tasks, and honored report-only. Recap: `ok=6 changed=1 unreachable=0 failed=0 skipped=4`. Report line: `docker-main: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report`.
+The os-update dry run against docker-main (`--check --limit docker-main`), re-run after the implementation fixes, gathered facts, passed the package-manager assertion, selected the apt task, skipped the dnf & RHEL-reboot tasks, and honored report-only. Recap: `ok=6 changed=1 unreachable=0 failed=0 skipped=4`. Report line: `docker-main: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report`.
 
 The compose dry run against docker-network (`--check --limit docker-network`) resolved both stacks & ran clean. Recap: `ok=3 changed=1 unreachable=0 failed=0`. The `changed=True` markers are check-mode "would change" reports: apt has real updates pending on docker-main's Debian 12, and `pull: always` always reports would-pull under `--check`. Neither dry run altered a target.
 

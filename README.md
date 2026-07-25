@@ -51,8 +51,8 @@ The guides provide the reading path. Detailed records stay with the system that 
 | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
 | [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | VLAN 72, the Security-A zone, address changes, firewall policy, service moves, & post-migration checks |
 | [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | VLAN 71 interfaces, Corosync `link1`, four-node rollout, quorum checks, & link-failure tests |
-| [April 2026 incident response](Security/Incidents/security-incident-response-2026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
-| [TeamSpeak UDP relay outage](Security/Incidents/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
+| [April 2026 incident response](Security/Incidents/Vercel/security-incident-response-2026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
+| [TeamSpeak UDP relay outage](Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
 | [NetBird routed VPN path](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) | First peer enrollment, routed resource, access policy, routing peer, masquerade, & HTTPS tunnel test |
 | [SSH authorized-key cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md) | Nineteen-host inventory, 15 reachable targets, fingerprint comparison, authorized-key cleanup, & final access checks |
 
