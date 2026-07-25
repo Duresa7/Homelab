@@ -3,7 +3,7 @@
 **Created:** 2026-07-14  
 **Last updated:** 2026-07-25
 
-This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's boot NVMe replacement, the deferred `pvestatd` issue, and the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's boot NVMe replacement, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
 ## `ai-bravo-02` Deletion Scheduled
 
@@ -11,12 +11,12 @@ This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's bo
 **Deletion date:** 2026-08-15  
 **Archive record:** [ai-bravo-02 Archived Guest](../../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md)
 
-- [ ] On 2026-08-15, confirm CT 105 is still stopped and `onboot` remains `0`.
-- [ ] Read the archived guest record, TNIO platform tree, walkthrough, and diagrams before deleting the guest.
-- [ ] Identify any guest backup retained outside this repository and record its location or record that no restorable backup exists.
-- [ ] Capture the final `pct config 105` output without private values, then delete CT 105 and its `ssd-lvm1:vm-105-disk-0` root volume.
-- [ ] Confirm guest ID 105 and hostname `ai-bravo-02` are absent from cluster resources, configuration, storage, DNS, DHCP, SSH Manager, local SSH state, & active automation.
-- [ ] Update the archive record from stopped and archived to deleted and retired, with the observed deletion result.
+- [ ] On 2026-08-15, confirm CT 105 is still stopped & `onboot` remains `0`.
+- [ ] Read the archived guest record, TNIO platform tree, walkthrough, & diagrams before deleting the guest.
+- [ ] Identify any guest backup retained outside this repository & record its location or record that no restorable backup exists.
+- [ ] Capture the final `pct config 105` output without private values, then delete CT 105 & its `ssd-lvm1:vm-105-disk-0` root volume.
+- [ ] Confirm guest ID 105 & hostname `ai-bravo-02` are absent from cluster resources, configuration, storage, DNS, DHCP, SSH Manager, local SSH state, & active automation.
+- [ ] Update the archive record from stopped & archived to deleted & retired, with the observed deletion result.
 
 ## `purple-server` Boot NVMe Replaced
 

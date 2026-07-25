@@ -8,30 +8,62 @@
 **Archive date:** 2026-07-25  
 **Status:** Stopped with autostart disabled; deletion scheduled for 2026-08-15
 
-## Verified Configuration
+## Archived Configuration
 
-I queried CT 105 through `grey-server` before archiving it. Proxmox reported the guest stopped. I changed `onboot` from `1` to `0`, then confirmed the guest remained stopped.
+I copied the former active inventory tables without dropping the storage, network, backup, high-availability, or NVIDIA device fields.
 
-| Setting | Verified value |
-|---|---|
-| Guest ID | LXC 105 |
-| Hostname | `ai-bravo-02` |
-| OS type | Ubuntu, amd64 |
+### Configuration
+
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| OS | ubuntu |
+| Architecture | amd64 |
 | vCPU | 6 |
-| Memory | 24,384 MiB |
-| Swap | 8,192 MiB |
+| Memory | 23.81 GiB |
+| Swap | 8 GiB |
 | Unprivileged | yes |
-| Features | nesting, keyctl, fuse |
-| Root volume | `ssd-lvm1:vm-105-disk-0`, 100 GiB |
-| Address | `192.168.40.38/24` on VLAN 40 |
-| Gateway | `192.168.40.1` |
-| Firewall | enabled |
-| Administrative account | `<YOUR_DEPLOYMENT_USER>` |
-| Workload | TNIO lore retrieval and Discord bot under `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` |
-| Host devices | Seven NVIDIA device mappings |
-| Autostart | disabled during archival |
+| Features | nesting=1,keyctl=1,fuse=1 |
+| On boot | disabled during archival |
 
-The guest configuration and disk still exist on `grey-server`. This record doesn't replace a guest backup.
+### Storage
+
+| Device | Mount | Storage | Volume | Size | Backup |
+| --- | --- | --- | --- | --- | --- |
+| rootfs | / | ssd-lvm1 | vm-105-disk-0 | 100G | default |
+
+### Host Devices
+
+| Entry | Host device | Mode |
+| --- | --- | --- |
+| dev0 | /dev/nvidia0 | 0666 |
+| dev1 | /dev/nvidiactl | 0666 |
+| dev2 | /dev/nvidia-modeset | 0666 |
+| dev3 | /dev/nvidia-uvm | 0666 |
+| dev4 | /dev/nvidia-uvm-tools | 0666 |
+| dev5 | /dev/nvidia-caps/nvidia-cap1 | 0666 |
+| dev6 | /dev/nvidia-caps/nvidia-cap2 | 0666 |
+
+### Network
+
+| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- |
+| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | `<YOUR_AI_BRAVO_MAC>` |
+
+### Account & Workload
+
+| Setting | Value |
+| --- | --- |
+| Administrative account | `<YOUR_DEPLOYMENT_USER>` |
+| Workload | TNIO lore retrieval & Discord bot |
+| Former project path | `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` |
+
+The guest configuration & disk still exist on `grey-server`. This record doesn't replace a guest backup.
+
+## Archival Verification
+
+I queried CT 105 through `grey-server` before archiving it. Proxmox reported the guest stopped. I changed `onboot` from `1` to `0`, then confirmed the guest remained stopped. The [Galaxy change record](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Archival%20and%20Autostart%20Disablement%20-%202026-07-25.md) records the command, result, decision, evidence, verification, rollback, & remaining work.
 
 ## Preserved Records
 
@@ -42,12 +74,12 @@ The guest configuration and disk still exist on `grey-server`. This record doesn
 
 ## Current-State Cleanup
 
-I removed `ai-bravo-02` from the active Galaxy LXC table, guide index, Ansible host inventory, Termix candidate group, three live identity allowlists, local SSH alias, & known-host files. I left the dated Ansible, Termix, TNIO, and governance records unchanged.
+I removed `ai-bravo-02` from the active Galaxy LXC table, guide index, Ansible host inventory, Termix candidate group, three live identity allowlists, local SSH alias, & known-host files. I left the dated Ansible, Termix, TNIO, & governance records unchanged.
 
 The SSH Manager server definition remains available for deletion-day cleanup. CT 105 is stopped, so the record doesn't provide a live connection.
 
 ## Deletion Gate
 
-The [Galaxy backlog](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md) schedules deletion for 2026-08-15. Before deleting CT 105, I will confirm it is stopped, verify the archived record and TNIO tree are readable, identify any retained backup outside this repository, & capture the final `pct config 105` output without private data.
+The [Galaxy backlog](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md) schedules deletion for 2026-08-15. Before deleting CT 105, I will confirm it is stopped, verify the archived record & TNIO tree are readable, identify any retained backup outside this repository, & capture the final `pct config 105` output without private data.
 
-After deletion I will confirm that guest ID 105, hostname `ai-bravo-02`, disk `vm-105-disk-0`, address `192.168.40.38`, and every active automation or SSH entry are absent. I will then update this record from archived to retired.
+After deletion I will confirm that guest ID 105, hostname `ai-bravo-02`, disk `vm-105-disk-0`, address `192.168.40.38`, & every active automation or SSH entry are absent. I will then update this record from archived to retired.

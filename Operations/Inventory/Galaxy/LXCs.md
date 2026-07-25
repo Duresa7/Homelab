@@ -169,7 +169,7 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 - `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked; the administrative account uses the recorded public-key SSH path.
 
-## Archived and Retired LXCs
+## Archived & Retired LXCs
 
 CT 104 `ai-alpha-01` no longer exists in Galaxy. I preserved its last recorded configuration, OpenClaw deployment records, & retirement verification in the [2026-07-25 retired guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md).
 

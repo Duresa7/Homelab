@@ -17,7 +17,7 @@ _No untriaged items._
 
 ## Scheduled
 
-- [ ] 2026-08-15: Delete stopped Galaxy LXC 105 `ai-bravo-02` and its root volume after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md). Its configuration and TNIO records are preserved in the [2026-07-25 archive record](Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md).
+- [ ] 2026-08-15: Delete stopped Galaxy LXC 105 `ai-bravo-02` & its root volume after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md). I preserved its configuration & TNIO records in the [2026-07-25 archive record](Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md).
 
 ## System Backlogs
 

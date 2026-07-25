@@ -1,0 +1,49 @@
+Capture date: 2026-07-25
+Configuration modification time: 2026-07-25 15:31:53 -0400
+Verification time: 2026-07-25T15:44:36-04:00
+Target: grey-server, Galaxy LXC 105 ai-bravo-02
+Mechanism: SSH Manager MCP ssh_execute
+Shell: Bash
+Working directory: SSH Manager default; no file path depended on it
+
+Step S01 change command:
+
+set -eu
+test "$(pct status 105 | awk '{print $2}')" = stopped
+pct set 105 --onboot 0
+test "$(pct config 105 | awk -F': ' '$1 == "onboot" {print $2}')" = 0
+test "$(pct status 105 | awk '{print $2}')" = stopped
+printf 'ct=105 status=stopped onboot=0\n'
+
+Standard output:
+
+ct=105 status=stopped onboot=0
+
+Standard error:
+
+(empty)
+
+Exit code: 0
+
+Step S01 follow-up verification command:
+
+set -eu
+date --iso-8601=seconds
+stat -c 'config_mtime=%y' /etc/pve/lxc/105.conf
+pct status 105
+pct config 105 | grep -E '^(hostname|onboot|rootfs):'
+
+Standard output:
+
+2026-07-25T15:44:36-04:00
+config_mtime=2026-07-25 15:31:53.000000000 -0400
+status: stopped
+hostname: ai-bravo-02
+onboot: 0
+rootfs: ssd-lvm1:vm-105-disk-0,size=100G
+
+Standard error:
+
+(empty)
+
+Exit code: 0
