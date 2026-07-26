@@ -36,9 +36,16 @@ EXPECTED_TARGETS = {
     "http://192.168.80.10:9100/metrics": ("node", "app-01"),
     "http://192.168.80.118:9100/metrics": ("node", "alpha-prod-01"),
     "http://192.168.85.2:9100/metrics": ("node", "docker-network"),
-    # cAdvisor, docker-main only. The other six Docker hosts use Docker 29's
-    # overlayfs storage driver, where cAdvisor registers no containers.
+    # cAdvisor, all 7 Docker hosts. This was docker-main alone until 2026-07-26,
+    # while v0.52.1 could not register containers under Docker 29's overlayfs
+    # driver. v0.60.5 handles the containerd snapshotter.
     "http://192.168.40.35:9101/metrics": ("cadvisor", "docker-main"),
+    "http://192.168.85.2:9101/metrics": ("cadvisor", "docker-network"),
+    "http://192.168.40.39:9101/metrics": ("cadvisor", "docker-blue"),
+    "http://192.168.40.42:9101/metrics": ("cadvisor", "media-01"),
+    "http://192.168.80.118:9101/metrics": ("cadvisor", "alpha-prod-01"),
+    "http://192.168.80.10:9101/metrics": ("cadvisor", "app-01"),
+    "http://192.168.72.2:9101/metrics": ("cadvisor", "security-01"),
     # Proxmox API exporter
     "http://pve-exporter:9221/pve?module=default&target=192.168.70.10": (
         "proxmox",
