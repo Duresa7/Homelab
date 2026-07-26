@@ -5,7 +5,7 @@
 
 ## Health Check
 
-Connect to `monitor_01` through SSH Manager. That target uses `ansible_01` as its proxy jump because the approved TCP 22 policy starts at 192.168.40.36; the workstation has no direct SSH path into `Org-Monitor`. The stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
+On `monitor-01`, the stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps

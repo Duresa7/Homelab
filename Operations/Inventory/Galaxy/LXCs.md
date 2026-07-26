@@ -74,7 +74,6 @@ The LXC keeps its address static in the Proxmox network configuration. UniFi DHC
 
 - SSH is public-key only as `<YOUR_ADMIN_USERNAME>` and `ansible`; I installed the approved keys.
 - Both accounts have their recorded recovery credentials. Root is locked.
-- SSH Manager target `monitor_01` uses `ansible_01` as its proxy jump. Its health check reaches the guest over the existing TCP 22 policy from 192.168.40.36, so I didn't add a workstation-to-`Org-Monitor` SSH policy.
 
 ### Workload
 

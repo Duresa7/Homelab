@@ -76,7 +76,6 @@ I deleted `/home/<YOUR_ADMIN_USERNAME>/monitoring`, the `monitoring_prometheus_d
 - I started with a fresh Prometheus TSDB and Grafana database. The old 15-day history and retired Grafana database are not recoverable after the wipe.
 - I kept the Prometheus and Grafana image tags floating as the existing configuration specifies. The deployed versions at completion were Prometheus 3.13.1 and Grafana 13.1.1.
 - I left Security-A web and NTP egress unchanged because Wazuh on `security-01` and Splunk on `splunk-siem` still need those paths.
-- I added SSH Manager target `monitor_01` to Claude's environment inventory & Codex's TOML inventory. Both set `ansible_01` as the proxy jump, using the existing TCP 22 policy from 192.168.40.36 instead of adding workstation SSH access. The SSH Manager health check passed.
 
 ## Resulting Configuration
 
