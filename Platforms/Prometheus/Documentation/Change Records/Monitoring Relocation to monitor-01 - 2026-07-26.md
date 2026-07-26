@@ -69,6 +69,8 @@ After the 46-target gate passed, I stopped only the old five-container monitorin
 
 I deleted `/home/<YOUR_ADMIN_USERNAME>/monitoring`, the `monitoring_prometheus_data` and `monitoring_grafana_data` volumes, and only the five retired monitoring images from `security-01`. I did not prune images. The separate cAdvisor project under `/opt/docker/cadvisor`, `node_exporter`, and all three Wazuh services remained in place.
 
+I later removed 50 task leftovers after checking their contents and confirming the live configuration no longer used them: 36 UniFi mutation snapshots, four temporary `cluster.fw` backup or candidate files, three Ansible `.bak` files, four remote assertion copies, the `hello-world:latest` test image, and two local Python bytecode files. The useful Python sources were already tracked at [Tests/assert_targets.py](../../Tests/assert_targets.py), [Tests/assert_dashboard_queries.py](../../Tests/assert_dashboard_queries.py), and [the Ansible project validator](../../../Ansible/Source/monitoring-exporters/tests/validate_project.py), so no source file needed to be moved. The older target assertion on `security-01` matched the file stored in Git commit `169d4ed75c02f62b1ce5a23e12baff32665f3e1c`.
+
 ## Decisions
 
 - I used an unprivileged Debian 13 LXC and Docker Compose because the repository already described the complete stack and Debian did not package the full current set.
@@ -107,6 +109,7 @@ I deleted `/home/<YOUR_ADMIN_USERNAME>/monitoring`, the `monitoring_prometheus_d
 | Proxmox firewall | `pve-firewall compile` passed; all four nodes held SHA256 `d706b11d2ada85c461568033eadfe2e46df3fa80fbea9240dce15e04d2d4d9b3`; TCP 22 and 8006 remained present |
 | UniFi final state | 59 user-defined policies, 16 zones, and five groups |
 | `security-01` cleanup | Retired directory, volumes, containers, and five images absent; cAdvisor healthy; `node_exporter` active; Wazuh manager, indexer, and dashboard active |
+| Task leftover cleanup | All 50 named files, snapshots, and the `hello-world:latest` image were absent; Prometheus remained ready with 46 of 46 targets `up`; Grafana 13.1.1 and the retained `security-01` services remained healthy |
 
 The plan's Phase 8 command expected six `name="..."` matches from cAdvisor after deleting the old five-container project. That expectation was wrong. The endpoint remains HTTP 200, but the only non-empty container name on `security-01` is now `cadvisor`, because the five retired containers no longer exist.
 
@@ -122,7 +125,7 @@ After the Phase 8 wipe, rollback means rebuilding rather than restoring local da
 4. Repoint the Grafana and Prometheus NPM hosts to 192.168.72.2.
 5. Run `promtool`, the exact target assertion, and the dashboard query assertion before removing `monitor-01`.
 
-The old Prometheus TSDB and Grafana SQLite database were deleted by design and cannot be restored from this project. The pre-change Proxmox firewall backup remains at `/root/cluster.fw.bak.monitor-relocation-2026-07-26` on `blue-server`.
+The old Prometheus TSDB and Grafana SQLite database were deleted by design and cannot be restored from this project. I removed the temporary Proxmox firewall backup and candidate files after the final checks. Restoring 192.168.72.2 now means reapplying the four documented entries rather than copying a retained backup.
 
 ## Remaining Work
 

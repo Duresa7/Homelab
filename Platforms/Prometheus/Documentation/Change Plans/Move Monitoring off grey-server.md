@@ -398,4 +398,4 @@ Commit in several small commits rather than one, matching the pattern used throu
 
 **After Phase 8.** The old stack is gone. Rebuild it from `Configuration/` in this repository, which is the same procedure Phase 5 used, so it is proven rather than theoretical. The TSDB and `grafana.db` are unrecoverable, which is acceptable because the new stack started empty by design.
 
-Keep a `cluster.fw` backup at `/root/cluster.fw.bak.monitor-relocation-<date>` on the node you edit from, as on 2026-07-26.
+Keep a `cluster.fw` backup on the node during the change. On 2026-07-26 I removed the temporary backup and candidate files after I requested cleanup; rollback now uses the four entries documented above.
