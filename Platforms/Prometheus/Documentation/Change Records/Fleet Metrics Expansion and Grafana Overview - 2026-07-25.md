@@ -227,7 +227,30 @@ I kept no export. Deliberate, and the trade is worth stating: both are public da
 
 The two entries in the overview's `links` block pointed at those UIDs and would have rendered as buttons landing on "Dashboard not found", so both came out. The block is now empty.
 
-**This leaves a real gap.** Homelab Overview aggregates by host on purpose and carries no per-host CPU, disk, network, or filesystem detail, because Node Exporter Full covered that and duplicating it would have been the noise the whole dashboard was built to avoid. Nothing covers it now. The fix, when it matters, is panels in the versioned dashboard rather than another import.
+**That left a real gap**, closed in the next section. Homelab Overview aggregates by host on purpose and carried no per-host CPU, disk, network, or filesystem detail, because Node Exporter Full covered that and duplicating it would have been the noise the whole dashboard was built to avoid.
+
+## 2026-07-26 Follow-Up: Per-Host Detail, Built Rather Than Imported
+
+Deleting Node Exporter Full cost the per-host drill-down, so I rebuilt it in the versioned dashboard. Re-importing was the other option and it was the worse one: 39 panels of somebody else's design, most of it detail this dashboard exists to filter out, and unversioned again the moment it landed.
+
+It sits in a **collapsed** row named `Per-host detail`, driven by a new `$host` variable. Collapsed matters: the row costs one grid line until someone expands it, so the overview stays a fleet summary and the drill-down is one click away rather than 40 panels of scrolling.
+
+Eight panels, each earning its place by showing something the fleet rows flatten:
+
+| Panel | What the fleet view cannot tell you |
+|---|---|
+| CPU by mode | The fleet CPU panel gives one busy percentage. This splits it, so `iowait` versus `steal` versus real work is visible |
+| Load average against core count | Load only means something next to core count, so the count is drawn as a threshold series |
+| Memory breakdown | Cached and buffers are reclaimable; a host that looks full is often fine |
+| Swap in use | Sustained swap is real pressure and appears nowhere else |
+| Every filesystem on this host | The fleet Storage panel shows root only. A full `/var/lib/docker` on an otherwise healthy host was invisible |
+| Network per interface | Fleet Network shows uplinks only, transmit drawn negative for direction |
+| Disk throughput by device | Per-device read and write |
+| Host facts | Kernel, architecture, core count, uptime, in one table |
+
+ZFS, SMART, and NVMe stay out, because they already sit under Drive health scoped to `role="hypervisor"` for the LXC bleed-through reason recorded above. The disk throughput panel is the one that had to be handled rather than excluded: `/proc/diskstats` is not namespaced either, so on an LXC guest it reports the hypervisor's physical devices. Its description says exactly that instead of pretending otherwise.
+
+Every expression matches with `host=~"$host"`, and `assert_dashboard_queries.py` resolves `$host` to `.*`, so the row is tested against all 14 hosts at once rather than whichever one happened to be selected. 65 queries now, 64 returning data, one allowed empty.
 
 ## Remaining Work
 

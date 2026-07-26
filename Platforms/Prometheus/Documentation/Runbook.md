@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 44 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 47 dashboard queries and fails on any that error or return no series. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 44 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -49,6 +49,8 @@ Adding a provisioning subdirectory means adding a placeholder file to it. The Co
 ## Rollback
 
 Restore the latest validated host-side backup to `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml`, restart the container, check readiness and `promtool`, then verify the intended target set.
+
+Grafana's SQLite database runs in write-ahead-logging mode since 2026-07-26, set by `GF_DATABASE_WAL=true` in the Compose file. Restoring `grafana.db` on its own is no longer complete: take `grafana.db-wal` and `grafana.db-shm` with it, or stop the container first so SQLite checkpoints the WAL back into the main file. Reason for the setting is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 To roll back Grafana, restore `grafana.db` into the `grafana_data` volume from `~/monitoring/backups/` and recreate the container. That reverts dashboards and the datasource together. To roll back only the provisioning layer, remove the two mounts from the Compose file and recreate Grafana; it then serves whatever the volume holds.
 

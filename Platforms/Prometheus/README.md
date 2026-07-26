@@ -66,7 +66,9 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 
 One dashboard, provisioned from this repository. On 2026-07-26 I deleted the two imported community dashboards, Node Exporter Full (`rYdddlPWk`, grafana.com 1860) and Proxmox via Prometheus (`Dp7Cd57Zza`, grafana.com 10347). They were the only unversioned dashboards left, so removing them makes the repository the complete record of what Grafana shows.
 
-That costs per-host drill-down. Homelab Overview aggregates by host on purpose and does not carry per-host CPU, disk, network, or filesystem detail, because Node Exporter Full covered it. Nothing replaces that today. Re-importing 1860 by ID takes about a minute if the gap bites; the better answer is to add the panels here and version them.
+That cost per-host drill-down, which Node Exporter Full had covered. Rather than re-import 39 panels of someone else's dashboard, I put the drill-down into the versioned one as a **collapsed `Per-host detail` row** driven by a `$host` variable: CPU by mode, load against core count, memory breakdown, swap, every filesystem rather than just root, network per interface, disk throughput, and a host facts table. Collapsed means it costs nothing until expanded, so the overview stays a fleet summary. 34 visible panels, 8 more inside the row, 65 queries in total.
+
+ZFS, SMART, and NVMe deliberately stay out of that row. They already sit under Drive health scoped to `role="hypervisor"`, for the reason below. The disk throughput panel is in the row with a description saying what it means on an LXC guest: `/proc/diskstats` isn't namespaced, so there it reports the hypervisor's physical devices.
 
 Rows are grouped by concern rather than by exporter, so temperature sits with the thing it measures: CPU package temperature under CPU, NVMe temperature under Drive health. Panels run mostly two-across at half width, with heights set from how many series each one draws. Click a row heading to collapse it.
 

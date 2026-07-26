@@ -11,6 +11,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Active Priorities
 
+- [ ] Confirm on 2026-07-27 that Grafana's WAL setting held: `docker logs --since 24h grafana 2>&1 | grep -c "level=error"` on `security-01`, against a baseline of 25 `database is locked` errors in 10 hours. Details in [issue 4](Platforms/Prometheus/Documentation/Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Move Kasm to `purple-server`, rebuild INetSim on VLAN 77, then attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network. The UniFi zone matrix audit gates the rest, and the acceptance checks gate the first live sample. Seven steps, rollback points, and stop conditions in [Kasm Relocation to Purple](Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
 - [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
@@ -33,7 +34,7 @@ This file is my central backlog and index. It holds active priorities plus links
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | 24-hour Grafana WAL check, moving monitoring off `grey-server`, alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed
