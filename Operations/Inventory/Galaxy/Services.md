@@ -63,7 +63,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | Prometheus | 3.13.1 on TCP 9090; 15-day retention; 46 of 46 targets `up` at relocation completion |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential stored in 1Password |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
-| blackbox exporter | `prom/blackbox-exporter:v0.27.0` on TCP 9115; probes 19 internal NPM names |
+| blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; six named containers |

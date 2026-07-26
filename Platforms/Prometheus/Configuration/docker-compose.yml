@@ -41,6 +41,14 @@ services:
       # mode a reader blocks the writer, and Grafana's own housekeeping runs enough
       # concurrent work to hit that on its own with a single user. WAL lets readers
       # and the writer proceed together.
+      #
+      # This line does nothing on Grafana 13.1.1. The setting is read and logged,
+      # but the database stays in rollback-journal mode under the
+      # modernc.org/sqlite driver: no -wal file, no -shm file, and header bytes 18
+      # and 19 read 1 rather than 2. It worked on 12.4.1. Kept only until the
+      # 2026-07-27 error count decides between removing it and setting the journal
+      # mode on the file directly, because a recreate to drop it now would reset
+      # the log that count reads. Detail in Troubleshooting issue 4.
       - GF_DATABASE_WAL=true
     volumes:
       - grafana_data:/var/lib/grafana
@@ -56,7 +64,7 @@ services:
     image: prompve/prometheus-pve-exporter:latest
     container_name: pve-exporter
     # Match the owner of the mode-0600 host credential file. The image's
-    # default nobody user cannot read a private bind mount owned by <YOUR_ADMIN_USERNAME>.
+    # default nobody user cannot read a bind mount owned by the admin account.
     user: "1000:1000"
     restart: unless-stopped
     volumes:
@@ -67,7 +75,7 @@ services:
   # Probes the 19 internal service names through NPM, which tests the real user
   # path: local DNS, the proxy, the certificate, and the backend behind it.
   blackbox-exporter:
-    image: prom/blackbox-exporter:v0.27.0
+    image: prom/blackbox-exporter:v0.28.0
     container_name: blackbox-exporter
     restart: unless-stopped
     command:
