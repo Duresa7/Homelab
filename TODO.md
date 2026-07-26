@@ -33,7 +33,7 @@ This file is my central backlog and index. It holds active priorities plus links
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Per-container metrics on the six `overlayfs` Docker hosts, `kasm-01` exporter, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Alert routing then rules, per-container metrics on the six `overlayfs` Docker hosts, `kasm-01` exporter, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed

@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-26
 
-Three items open. The UPS item closed on 2026-07-26 once the Proxmox cluster firewall permitted `192.168.72.2` to TCP 3493; both units now report and the dashboard carries a Power row. I record future monitoring changes here before promoting them to an active project.
+Four items open. The UPS item closed on 2026-07-26 once the Proxmox cluster firewall permitted `192.168.72.2` to TCP 3493; both units now report and the dashboard carries a Power row. I record future monitoring changes here before promoting them to an active project.
 
 ## Open
 
@@ -13,8 +13,8 @@ Three items open. The UPS item closed on 2026-07-26 once the Proxmox cluster fir
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential in 1Password and deserves its own change record rather than being folded into a dashboard task.
 
+**Decide where alerts go, then write rules.** There are no alert rules and no Alertmanager. I kept alerting out of the 2026-07-25 expansion deliberately, because rules that fire into nothing are worse than no rules, so this starts with picking a notification path rather than with writing conditions. The dashboard already encodes the thresholds worth alerting on: targets down, `probe_success == 0`, certificate expiry, ZFS pool state, `nvme_critical_warning`, NVMe spare below 10%, filesystem above 90%, and a UPS off mains.
+
 ## Known limits, not tracked as work
 
 Prometheus and Grafana both run floating `:latest` tags. The four exporters added on 2026-07-25 are pinned (`blackbox-exporter:v0.27.0`, `cadvisor:v0.52.1`, `prometheus-nut-exporter:1`, `node_exporter` 1.9.0), so the two unpinned images are the older ones.
-
-There are no alert rules and no Alertmanager. Rules that fire into nothing are worse than no rules, so this starts with choosing where notifications go, not with writing rules.
