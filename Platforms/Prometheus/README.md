@@ -25,13 +25,13 @@ I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. P
 | Homelab Overview dashboard | `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview` |
 | Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.27.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
+| Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
 ## Containers on monitor-01
 
-`prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `cadvisor` run from `~/monitoring/docker-compose.yml`. Ansible still owns the cAdvisor version and deployment pattern across the rest of the Docker fleet.
+Six containers run on the host, from two Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, and `nut-exporter` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other seven Docker hosts, so this host gets the identical pinned image & port without a special case.
 
 ## Scrape Jobs
 

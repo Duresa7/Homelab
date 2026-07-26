@@ -5,7 +5,7 @@
 
 ## Health Check
 
-On `monitor-01`, the stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
+On `monitor-01`, the stack is healthy when the Compose project's five containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is the sixth container on the host and belongs to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion.
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
@@ -50,7 +50,7 @@ Adding a provisioning subdirectory means adding a placeholder file to it. The Co
 
 The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, substituting the deployed domain and administrator name, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
 
-Grafana's SQLite database runs in write-ahead-logging mode since 2026-07-26, set by `GF_DATABASE_WAL=true` in the Compose file. Restoring `grafana.db` on its own is no longer complete: take `grafana.db-wal` and `grafana.db-shm` with it, or stop the container first so SQLite checkpoints the WAL back into the main file. Reason for the setting is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+`GF_DATABASE_WAL=true` sits in the Compose file but has no effect on Grafana 13.1.1, so `grafana.db` is the whole database and restoring it on its own is complete. Check before you rely on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or you stop the container first so SQLite checkpoints the log back into the main file. Why the setting stopped working is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 The old `grafana.db` and Prometheus TSDB were deleted by design during the relocation and have no project backup. Rebuilding starts with a fresh database and the provisioned datasource and dashboard from git. To roll back only the current provisioning layer, restore the prior versioned files and recreate Grafana.
 
