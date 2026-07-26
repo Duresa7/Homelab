@@ -15,7 +15,7 @@ import sys
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED_GROUPS = ("node_exporter_targets", "cadvisor_targets", "cadvisor_incompatible")
+REQUIRED_GROUPS = ("node_exporter_targets", "cadvisor_targets")
 PLAYBOOKS = ("playbooks/node-exporter.yml", "playbooks/cadvisor.yml")
 
 EXPECTED_NODE_EXPORTER_HOSTS = {
@@ -27,13 +27,12 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "splunk-siem",
     "ansible-01",
 }
-# docker-main is the only Docker host still on the legacy overlay2 storage
-# driver, and cAdvisor v0.52.1 cannot register containers under Docker 29's
-# default overlayfs driver.
+# All seven Docker hosts. The set was docker-main alone from 2026-07-25 to
+# 2026-07-26, while cAdvisor v0.52.1 could not register containers under the
+# containerd snapshotter; v0.60.5 handles it, so the storage driver no longer
+# decides membership. The cadvisor_incompatible group went away with it.
 EXPECTED_CADVISOR_HOSTS = {
     "docker-main",
-}
-EXPECTED_CADVISOR_INCOMPATIBLE = {
     "docker-network",
     "docker-blue",
     "media-01",
@@ -59,12 +58,10 @@ FORBIDDEN_NODE_EXPORTER_HOSTS = {
 FORBIDDEN_CADVISOR_HOSTS = {
     "splunk-siem": "runs Podman, not Docker",
     "ansible-01": "runs no containers",
-    "docker-network": "Docker 29 overlayfs driver, cAdvisor registers no containers",
-    "docker-blue": "Docker 29 overlayfs driver, cAdvisor registers no containers",
-    "media-01": "Docker 29 overlayfs driver, cAdvisor registers no containers",
-    "alpha-prod-01": "Docker 29 overlayfs driver, cAdvisor registers no containers",
-    "app-01": "Docker 29 overlayfs driver, cAdvisor registers no containers",
-    "security-01": "Docker 29 overlayfs driver, cAdvisor registers no containers",
+    "grey-server": "hypervisor, out of scope for this automation",
+    "purple-server": "hypervisor, out of scope for this automation",
+    "blue-server": "hypervisor, out of scope for this automation",
+    "red-server": "hypervisor, out of scope for this automation",
 }
 
 EXPECTED_IPS = {
@@ -102,7 +99,6 @@ def main() -> int:
 
     node_hosts = collect_hosts(children.get("node_exporter_targets", {}))
     cadvisor_hosts = collect_hosts(children.get("cadvisor_targets", {}))
-    incompatible_hosts = collect_hosts(children.get("cadvisor_incompatible", {}))
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
@@ -111,18 +107,14 @@ def main() -> int:
         )
     if set(cadvisor_hosts) != EXPECTED_CADVISOR_HOSTS:
         errors.append(
-            "cAdvisor host set differs from the approved overlay2-only set: "
+            "cAdvisor host set differs from the approved seven Docker hosts: "
             f"{sorted(cadvisor_hosts)}"
         )
-    if set(incompatible_hosts) != EXPECTED_CADVISOR_INCOMPATIBLE:
+    if "cadvisor_incompatible" in children:
         errors.append(
-            "cadvisor_incompatible host set differs from the recorded set: "
-            f"{sorted(incompatible_hosts)}"
-        )
-    if set(cadvisor_hosts) & set(incompatible_hosts):
-        errors.append(
-            "a host cannot be both a cAdvisor target and recorded incompatible: "
-            f"{sorted(set(cadvisor_hosts) & set(incompatible_hosts))}"
+            "cadvisor_incompatible is back in the inventory. It was removed on "
+            "2026-07-26 when v0.60.5 made the storage driver irrelevant; if a "
+            "host really is incompatible, record why rather than reviving the group"
         )
 
     for host, reason in FORBIDDEN_NODE_EXPORTER_HOSTS.items():
@@ -135,7 +127,6 @@ def main() -> int:
     for group_name, hosts in (
         ("node_exporter_targets", node_hosts),
         ("cadvisor_targets", cadvisor_hosts),
-        ("cadvisor_incompatible", incompatible_hosts),
     ):
         for host, host_vars in hosts.items():
             host_vars = host_vars or {}
@@ -166,8 +157,7 @@ def main() -> int:
 
     print(
         f"Validation passed: {len(node_hosts)} node_exporter hosts, "
-        f"{len(cadvisor_hosts)} cAdvisor hosts, "
-        f"{len(incompatible_hosts)} recorded incompatible."
+        f"{len(cadvisor_hosts)} cAdvisor hosts."
     )
     return 0
 

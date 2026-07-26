@@ -1,11 +1,21 @@
 ---
-# cAdvisor only works where Docker still uses the legacy overlay2 storage
-# driver. Under Docker 29's default `overlayfs` driver (the containerd
-# snapshotter), cAdvisor v0.52.1 cannot resolve a container's read-write layer
-# ID and abandons container registration entirely, so it emits only the root
-# cgroup. Verified on 2026-07-25 against v0.52.1, the newest release: adding
-# `disk` to disable_metrics, dropping --docker_only, and pointing the containerd
-# factory at the moby namespace all failed to recover it.
+# cAdvisor v0.52.1 could not register containers under Docker 29's default
+# `overlayfs` driver (the containerd snapshotter): it resolves each container's
+# read-write layer through the old graphdriver layerdb path, that path does not
+# exist under the snapshotter, and the lookup happens during registration rather
+# than during collection, so the whole container is abandoned and only the root
+# cgroup is emitted.
+#
+# v0.60.5 fixes it. I had recorded v0.52.1 as the newest release on 2026-07-25,
+# which was wrong: gcr.io only publishes up to v0.55.1 and never tagged
+# v0.53.0/v0.54.0/v0.55.0, so probing those tags made it look like there was
+# nothing newer. ghcr.io/google/cadvisor carries v0.60.5, and it reports named
+# containers under `overlayfs` with zero layer-ID errors. Verified 2026-07-26 on
+# security-01, which runs Docker 29.6.1 with the overlayfs driver.
+#
+# The driver is therefore no longer a gate. What guards this now is the
+# post-install check further down, which fails when cAdvisor registers no
+# containers on a host that has some, whatever the cause.
 #
 # Run with -e cadvisor_state=absent to remove it from a host cleanly.
 - name: Manage cAdvisor as a compose project on the Docker hosts
@@ -16,8 +26,9 @@
     # present or absent
     cadvisor_state: present
     # Pinned, not latest, so a silent upstream change cannot alter metric names
-    # under a dashboard that depends on them.
-    cadvisor_image: "gcr.io/cadvisor/cadvisor:v0.52.1"
+    # under a dashboard that depends on them. ghcr, not gcr: gcr's newest is
+    # v0.55.1 and only v0.60.5 handles the containerd snapshotter.
+    cadvisor_image: "ghcr.io/google/cadvisor:v0.60.5"
     # 8080 is taken by termix on docker-main and coolify-proxy on app-01, and
     # 8081 is taken by the NetBird server on docker-network. 9101 is free on all
     # seven hosts and sits next to node_exporter's 9100, so the fleet publishes
@@ -43,20 +54,9 @@
         argv: [docker, info, --format, "{{ '{{' }}.Driver{{ '}}' }}"]
       register: storage_driver
 
-    # Encodes the finding above so nobody re-deploys cAdvisor onto a host where
-    # it silently reports nothing useful. Override only to experiment.
-    - name: Refuse to install where the storage driver is known incompatible
-      when: cadvisor_state == 'present'
-      ansible.builtin.assert:
-        that:
-          - (storage_driver.stdout | trim) == 'overlay2' or (allow_incompatible_driver | default(false) | bool)
-        fail_msg: >-
-          {{ inventory_hostname }} uses the '{{ storage_driver.stdout | trim }}'
-          storage driver. cAdvisor {{ cadvisor_image }} only registers containers
-          under 'overlay2'; here it would emit the root cgroup and nothing else.
-          Leave it off this host, or pass -e allow_incompatible_driver=true to
-          install it anyway.
-        quiet: true
+    # The driver is recorded in the per-host report, not asserted on. v0.60.5
+    # handles both overlay2 and overlayfs; the check that matters runs after the
+    # install and counts what cAdvisor actually registered.
 
     # ------------------------------------------------------------- removal
     - name: Remove the cAdvisor project
@@ -211,13 +211,31 @@
               | grep -c 'container_last_seen{.*name="[^"]\+"' || true
           register: named_count
 
-        - name: Warn when cAdvisor registered no containers
-          when: (named_count.stdout | trim | int) == 0
-          ansible.builtin.debug:
-            msg: >-
-              WARNING {{ inventory_hostname }}: cAdvisor is running but registered
-              zero named containers. Check the storage driver
-              ({{ storage_driver.stdout | trim }}).
+        - name: Count the containers Docker itself reports running
+          changed_when: false
+          ansible.builtin.shell:
+            cmd: docker ps -q | wc -l
+          register: docker_running
+
+        # This is the real guard. A host answering on 9101 with zero named
+        # containers is the v0.52.1 failure, and it looks healthy from outside,
+        # so make it stop the play instead of printing a warning nobody reads.
+        - name: Fail when cAdvisor registered nothing on a host that has containers
+          ansible.builtin.assert:
+            that:
+              - >-
+                (named_count.stdout | trim | int) > 0
+                or (docker_running.stdout | trim | int) == 0
+            fail_msg: >-
+              {{ inventory_hostname }}: cAdvisor answers on
+              {{ cadvisor_host_port }} but registered
+              {{ named_count.stdout | trim }} named containers while Docker
+              reports {{ docker_running.stdout | trim }} running. That is the
+              failure v0.52.1 hit under the containerd snapshotter
+              (driver={{ storage_driver.stdout | trim }},
+              image={{ cadvisor_image }}). Check the container log for
+              'failed to identify the read-write layer ID'.
+            quiet: true
 
         - name: Report the per-host result
           ansible.builtin.debug:
@@ -227,3 +245,4 @@
               driver={{ storage_driver.stdout | trim }}
               port={{ cadvisor_host_port }}
               named_containers={{ named_count.stdout | trim }}
+              of {{ docker_running.stdout | trim }} running
