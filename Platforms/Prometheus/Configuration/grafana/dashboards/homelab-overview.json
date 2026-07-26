@@ -2749,7 +2749,7 @@
     },
     {
       "type": "row",
-      "title": "Containers on docker-main",
+      "title": "Containers",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -2776,13 +2776,13 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "Per-container CPU, memory and restarts. docker-main only, and the panels say why.\n\n---"
+        "content": "Per-container CPU, memory and restarts across all seven Docker hosts. 50 containers, including the seven cAdvisor containers themselves.\n\n---"
       }
     },
     {
       "type": "timeseries",
       "title": "Container CPU, top 10",
-      "description": "docker-main only. cAdvisor cannot register containers on the other six Docker hosts because they use Docker 29's overlayfs storage driver, so this row covers 14 of roughly 46 fleet containers.",
+      "description": "All seven Docker hosts, 50 containers. cAdvisor v0.52.1 could only do this on docker-main, because it cannot resolve a container's read-write layer under Docker 29's overlayfs driver; v0.60.5 handles the containerd snapshotter and covers the fleet. Grouped by host as well as name, since container names are only unique within a host.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2796,8 +2796,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(10, sum by (name) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\", name!=\"\"}[$__rate_interval])) * 100)",
-          "legendFormat": "{{name}}"
+          "expr": "topk(10, sum by (host, name) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\", name!=\"\"}[$__rate_interval])) * 100)",
+          "legendFormat": "{{host}} / {{name}}"
         }
       ],
       "fieldConfig": {
@@ -2836,7 +2836,7 @@
     {
       "type": "timeseries",
       "title": "Container memory, top 10",
-      "description": "Working set, which is the figure that matters for pressure rather than total RSS.",
+      "description": "Working set, which is the figure that matters for pressure rather than total RSS. All seven Docker hosts, grouped by host as well as name.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2850,8 +2850,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(10, sum by (name) (container_memory_working_set_bytes{job=\"cadvisor\", name!=\"\"}))",
-          "legendFormat": "{{name}}"
+          "expr": "topk(10, sum by (host, name) (container_memory_working_set_bytes{job=\"cadvisor\", name!=\"\"}))",
+          "legendFormat": "{{host}} / {{name}}"
         }
       ],
       "fieldConfig": {
@@ -2887,7 +2887,7 @@
     {
       "type": "table",
       "title": "Container restarts in the last 6 hours",
-      "description": "Counts changes to the container start time. A container quietly restart-looping shows up here and nowhere else on this dashboard.",
+      "description": "Counts changes to the container start time across all seven Docker hosts. A container quietly restart-looping shows up here and nowhere else on this dashboard.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2901,7 +2901,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (name) (changes(container_start_time_seconds{job=\"cadvisor\", name!=\"\"}[6h])) > 0",
+          "expr": "sum by (host, name) (changes(container_start_time_seconds{job=\"cadvisor\", name!=\"\"}[6h])) > 0",
           "instant": true,
           "format": "table"
         }
@@ -2917,10 +2917,15 @@
               "__name__": true
             },
             "renameByName": {
+              "host": "Host",
               "name": "Container",
               "Value": "Restarts"
             },
-            "indexByName": {}
+            "indexByName": {
+              "host": 0,
+              "name": 1,
+              "Value": 2
+            }
           }
         },
         {
