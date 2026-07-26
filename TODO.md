@@ -35,7 +35,7 @@ This file is my central backlog and index. It holds active priorities plus links
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | 24-hour Grafana lock baseline, two UniFi UI edits, `node_exporter` 1.9.0 versus 1.12.1, alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | 24-hour Grafana lock baseline, two UniFi UI edits, alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed
