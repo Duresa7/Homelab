@@ -1,0 +1,279 @@
+---
+- name: Install and enable node_exporter across the unmonitored fleet
+  hosts: "{{ target | default('node_exporter_targets') }}"
+  gather_facts: true
+  become: true
+  vars:
+    # One exporter version across the whole fleet. The four Proxmox nodes
+    # already run 1.9.0, and the dashboard depends on consistent metric names
+    # and label sets, so a host that cannot reach 1.9.0 through its package
+    # manager gets the upstream binary instead of an older packaged build.
+    node_exporter_version: "1.9.0"
+    node_exporter_apt_version: "1.9.0-1+b4"
+    node_exporter_port: 9100
+    node_exporter_staging: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+    # needrestart must not bounce services during an apt install on hosts that
+    # are carrying live workloads.
+    NEEDRESTART_MODE: l
+
+  tasks:
+    - name: Confirm a supported package manager is present
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.pkg_mgr in ['apt', 'dnf', 'dnf5']
+        fail_msg: "Unsupported package manager '{{ ansible_facts.pkg_mgr }}' on {{ inventory_hostname }}."
+        quiet: true
+
+    # ansible_facts.packages and ansible_facts.services are not part of the
+    # default fact set, and the guard clauses below depend on both.
+    - name: Gather installed package facts
+      ansible.builtin.package_facts:
+
+    - name: Gather service facts
+      ansible.builtin.service_facts:
+
+    - name: Refresh the apt cache before reading the candidate version
+      when: ansible_facts.pkg_mgr == 'apt'
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Read the apt candidate version
+      when: ansible_facts.pkg_mgr == 'apt'
+      changed_when: false
+      check_mode: false
+      ansible.builtin.shell:
+        cmd: >-
+          apt-cache policy prometheus-node-exporter
+          | awk '/Candidate:/ {print $2}'
+      register: apt_candidate
+
+    # Debian 13 trixie carries 1.9.0-1+b4 and stays APT-managed. Debian 12
+    # bookworm only offers 1.5.0-1+b6, and Rocky 10 carries no build at all, so
+    # both fall through to the pinned upstream release rather than dragging the
+    # fleet back to a 2022 exporter.
+    - name: Decide the install method for this host
+      ansible.builtin.set_fact:
+        install_method: >-
+          {{ 'apt'
+             if (ansible_facts.pkg_mgr == 'apt'
+                 and (apt_candidate.stdout | default('') | trim) == node_exporter_apt_version)
+             else 'binary' }}
+
+    - name: Record whether something already answers on the exporter port
+      become: false
+      check_mode: false
+      changed_when: false
+      failed_when: false
+      ansible.builtin.command:
+        argv:
+          - curl
+          - -s
+          - -o
+          - /dev/null
+          - -w
+          - "%{http_code}"
+          - -m
+          - "4"
+          - "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+      register: pre_existing_exporter
+
+    # A foreign listener on 9100 means some other exporter owns the port. Stop
+    # rather than fight it; app-01 is excluded from the inventory for exactly
+    # this reason, and any new occurrence deserves a look before replacement.
+    - name: Fail when an unmanaged exporter already owns the port
+      when:
+        - (pre_existing_exporter.stdout | default('000')) == '200'
+        - "'prometheus-node-exporter' not in ansible_facts.packages"
+        - "'node_exporter.service' not in ansible_facts.services"
+      ansible.builtin.assert:
+        that:
+          - allow_port_takeover | default(false) | bool
+        fail_msg: >-
+          {{ inventory_hostname }} already serves metrics on
+          {{ node_exporter_port }} but has neither the Debian package nor a
+          managed node_exporter.service. Inspect it, then re-run with
+          -e allow_port_takeover=true to proceed.
+        quiet: true
+
+    # -------------------------------------------------------- APT-managed path
+    - name: Install the pinned Debian node_exporter package
+      when: install_method == 'apt'
+      ansible.builtin.apt:
+        name: "prometheus-node-exporter={{ node_exporter_apt_version }}"
+        state: present
+      register: apt_install
+
+    - name: Enable and start the Debian exporter service
+      when: install_method == 'apt'
+      ansible.builtin.systemd_service:
+        name: prometheus-node-exporter
+        enabled: true
+        state: started
+
+    # ----------------------------------------------------- Upstream binary path
+    # The release is verified against the release's own sha256sums.txt, and
+    # grey-server already runs a manually installed 1.9.0, so this matches
+    # existing practice in this homelab rather than introducing a new one.
+    - name: Create the node_exporter system account
+      when: install_method == 'binary'
+      ansible.builtin.user:
+        name: node_exporter
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+        home: /nonexistent
+
+    - name: Download the upstream node_exporter release
+      when: install_method == 'binary'
+      ansible.builtin.get_url:
+        url: >-
+          https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version
+          }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+        dest: "{{ node_exporter_staging }}.tar.gz"
+        # Ansible fetches the release's checksum manifest and matches this
+        # filename inside it, so no hash is hardcoded here.
+        checksum: >-
+          sha256:https://github.com/prometheus/node_exporter/releases/download/v{{
+          node_exporter_version }}/sha256sums.txt
+        mode: "0640"
+        owner: root
+        group: root
+
+    - name: Unpack the release into a staging directory
+      when: install_method == 'binary'
+      ansible.builtin.unarchive:
+        src: "{{ node_exporter_staging }}.tar.gz"
+        dest: /tmp
+        remote_src: true
+        creates: "{{ node_exporter_staging }}/node_exporter"
+
+    - name: Install the binary
+      when: install_method == 'binary'
+      ansible.builtin.copy:
+        src: "{{ node_exporter_staging }}/node_exporter"
+        dest: /usr/local/bin/node_exporter
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0755"
+      notify: Restart the upstream exporter
+
+    - name: Install the systemd unit
+      when: install_method == 'binary'
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/node_exporter.service
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          # Managed by Ansible: monitoring-exporters/playbooks/node-exporter.yml
+          [Unit]
+          Description=Prometheus Node Exporter
+          Documentation=https://github.com/prometheus/node_exporter
+          After=network-online.target
+          Wants=network-online.target
+
+          [Service]
+          User=node_exporter
+          Group=node_exporter
+          Type=simple
+          ExecStart=/usr/local/bin/node_exporter --web.listen-address=:{{ node_exporter_port }}
+          Restart=on-failure
+          RestartSec=5
+          NoNewPrivileges=true
+          ProtectHome=true
+          ProtectSystem=strict
+          PrivateTmp=true
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: Restart the upstream exporter
+
+    - name: Enable and start the upstream exporter service
+      when: install_method == 'binary'
+      ansible.builtin.systemd_service:
+        name: node_exporter
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Open the exporter port when firewalld is running
+      when:
+        - ansible_facts.os_family == 'RedHat'
+        - "'firewalld.service' in ansible_facts.services"
+        - (ansible_facts.services['firewalld.service'].state | default('stopped')) == 'running'
+      ansible.posix.firewalld:
+        port: "{{ node_exporter_port }}/tcp"
+        permanent: true
+        immediate: true
+        state: enabled
+
+    - name: Remove the downloaded archive and staging directory
+      when: install_method == 'binary'
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ node_exporter_staging }}.tar.gz"
+        - "{{ node_exporter_staging }}"
+
+    # ---------------------------------------------------------- Verification
+    - name: Flush handlers before verifying
+      ansible.builtin.meta: flush_handlers
+
+    - name: Confirm the exporter answers locally
+      become: false
+      changed_when: false
+      ansible.builtin.uri:
+        url: "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+        return_content: false
+        status_code: 200
+      retries: 6
+      delay: 5
+      until: exporter_probe is succeeded
+      register: exporter_probe
+
+    # Extracted with sed rather than a Jinja regex: a YAML block scalar performs
+    # no backslash escaping, so regex metacharacters written here reach the
+    # filter mangled.
+    - name: Read the running exporter version
+      become: false
+      changed_when: false
+      ansible.builtin.shell:
+        cmd: >-
+          curl -s -m 10 http://127.0.0.1:{{ node_exporter_port }}/metrics
+          | sed -n 's/.*node_exporter_build_info{.*version="\([^"]*\)".*/\1/p'
+          | head -1
+      register: version_probe
+
+    - name: Record the running exporter version
+      ansible.builtin.set_fact:
+        reported_version: "{{ version_probe.stdout | trim | default('unknown', true) }}"
+
+    - name: Confirm the reported version matches the pinned fleet version
+      ansible.builtin.assert:
+        that:
+          - reported_version == node_exporter_version
+        fail_msg: >-
+          {{ inventory_hostname }} reports node_exporter {{ reported_version }},
+          expected {{ node_exporter_version }}.
+        quiet: true
+
+    - name: Report the per-host result
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}:
+          os={{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
+          method={{ install_method }}
+          version={{ reported_version }}
+          port={{ node_exporter_port }}
+
+  handlers:
+    - name: Restart the upstream exporter
+      ansible.builtin.systemd_service:
+        name: node_exporter
+        state: restarted
+        daemon_reload: true

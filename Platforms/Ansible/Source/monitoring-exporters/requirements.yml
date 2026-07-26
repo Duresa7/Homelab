@@ -1,0 +1,10 @@
+---
+# docker_compose_v2 lives in community.docker. Everything else the playbooks
+# use (apt, dnf, get_url, unarchive, systemd, user, file) ships with
+# ansible-core.
+collections:
+  - name: community.docker
+    version: ">=5.0.0"
+  # firewalld module, used only on the Rocky Linux host.
+  - name: ansible.posix
+    version: ">=1.5.0"

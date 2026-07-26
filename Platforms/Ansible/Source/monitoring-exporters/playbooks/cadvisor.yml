@@ -1,0 +1,229 @@
+---
+# cAdvisor only works where Docker still uses the legacy overlay2 storage
+# driver. Under Docker 29's default `overlayfs` driver (the containerd
+# snapshotter), cAdvisor v0.52.1 cannot resolve a container's read-write layer
+# ID and abandons container registration entirely, so it emits only the root
+# cgroup. Verified on 2026-07-25 against v0.52.1, the newest release: adding
+# `disk` to disable_metrics, dropping --docker_only, and pointing the containerd
+# factory at the moby namespace all failed to recover it.
+#
+# Run with -e cadvisor_state=absent to remove it from a host cleanly.
+- name: Manage cAdvisor as a compose project on the Docker hosts
+  hosts: "{{ target | default('cadvisor_targets') }}"
+  gather_facts: true
+  become: true
+  vars:
+    # present or absent
+    cadvisor_state: present
+    # Pinned, not latest, so a silent upstream change cannot alter metric names
+    # under a dashboard that depends on them.
+    cadvisor_image: "gcr.io/cadvisor/cadvisor:v0.52.1"
+    # 8080 is taken by termix on docker-main and coolify-proxy on app-01, and
+    # 8081 is taken by the NetBird server on docker-network. 9101 is free on all
+    # seven hosts and sits next to node_exporter's 9100, so the fleet publishes
+    # cAdvisor there for one consistent scrape port.
+    cadvisor_host_port: 9101
+    cadvisor_project_dir: /opt/docker/cadvisor
+    # Trimmed on purpose. The default metric set emits several thousand series
+    # per host; these exclusions hold it to roughly 300-600 while keeping
+    # per-container CPU, memory, network and restart detection intact.
+    cadvisor_disabled_metrics: >-
+      percpu,sched,tcp,udp,advtcp,process,hugetlb,referenced_memory,cpu_topology,resctrl,cpuset,memory_numa
+
+  tasks:
+    - name: Confirm Docker is present
+      ansible.builtin.command:
+        argv: [docker, version, --format, "{{ '{{' }}.Server.Version{{ '}}' }}"]
+      changed_when: false
+      register: docker_version
+
+    - name: Read the Docker storage driver
+      changed_when: false
+      ansible.builtin.command:
+        argv: [docker, info, --format, "{{ '{{' }}.Driver{{ '}}' }}"]
+      register: storage_driver
+
+    # Encodes the finding above so nobody re-deploys cAdvisor onto a host where
+    # it silently reports nothing useful. Override only to experiment.
+    - name: Refuse to install where the storage driver is known incompatible
+      when: cadvisor_state == 'present'
+      ansible.builtin.assert:
+        that:
+          - (storage_driver.stdout | trim) == 'overlay2' or (allow_incompatible_driver | default(false) | bool)
+        fail_msg: >-
+          {{ inventory_hostname }} uses the '{{ storage_driver.stdout | trim }}'
+          storage driver. cAdvisor {{ cadvisor_image }} only registers containers
+          under 'overlay2'; here it would emit the root cgroup and nothing else.
+          Leave it off this host, or pass -e allow_incompatible_driver=true to
+          install it anyway.
+        quiet: true
+
+    # ------------------------------------------------------------- removal
+    - name: Remove the cAdvisor project
+      when: cadvisor_state == 'absent'
+      block:
+        - name: Take the compose project down
+          community.docker.docker_compose_v2:
+            project_src: "{{ cadvisor_project_dir }}"
+            project_name: cadvisor
+            state: absent
+            remove_orphans: true
+          failed_when: false
+
+        - name: Remove any leftover container
+          community.docker.docker_container:
+            name: cadvisor
+            state: absent
+            force_kill: true
+
+        - name: Remove the project directory
+          ansible.builtin.file:
+            path: "{{ cadvisor_project_dir }}"
+            state: absent
+
+        - name: Confirm nothing answers on the published port
+          become: false
+          changed_when: false
+          failed_when: false
+          ansible.builtin.command:
+            argv:
+              - curl
+              - -s
+              - -o
+              - /dev/null
+              - -w
+              - "%{http_code}"
+              - -m
+              - "4"
+              - "http://127.0.0.1:{{ cadvisor_host_port }}/metrics"
+          register: removal_probe
+
+        - name: Report the removal
+          ansible.builtin.debug:
+            msg: >-
+              {{ inventory_hostname }}: cAdvisor removed
+              (driver={{ storage_driver.stdout | trim }},
+              port {{ cadvisor_host_port }} now returns
+              {{ removal_probe.stdout | default('000') }})
+
+    # --------------------------------------------------------- installation
+    - name: Install and verify the cAdvisor project
+      when: cadvisor_state == 'present'
+      block:
+        - name: Confirm the chosen host port is free or already ours
+          changed_when: false
+          failed_when: false
+          ansible.builtin.shell:
+            cmd: >-
+              ss -lntH 'sport = :{{ cadvisor_host_port }}' | grep -q . && echo busy || echo free
+          register: port_state
+
+        - name: Detect an existing cAdvisor container
+          changed_when: false
+          failed_when: false
+          ansible.builtin.command:
+            argv: [docker, ps, -a, --filter, name=^cadvisor$, --format, "{{ '{{' }}.Names{{ '}}' }}"]
+          register: existing_cadvisor
+
+        - name: Stop when the port is taken by something that is not cAdvisor
+          ansible.builtin.assert:
+            that:
+              - >-
+                port_state.stdout | trim == 'free'
+                or existing_cadvisor.stdout | trim == 'cadvisor'
+            fail_msg: >-
+              {{ inventory_hostname }} already has a listener on
+              {{ cadvisor_host_port }} that is not cAdvisor. Pick another port
+              with -e cadvisor_host_port=NNNN or free it first.
+            quiet: true
+
+        - name: Create the project directory
+          ansible.builtin.file:
+            path: "{{ cadvisor_project_dir }}"
+            state: directory
+            owner: root
+            group: root
+            mode: "0755"
+
+        - name: Write the compose file
+          ansible.builtin.copy:
+            dest: "{{ cadvisor_project_dir }}/docker-compose.yml"
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              # Managed by Ansible: monitoring-exporters/playbooks/cadvisor.yml
+              # Edit the playbook, not this file.
+              services:
+                cadvisor:
+                  image: {{ cadvisor_image }}
+                  container_name: cadvisor
+                  restart: unless-stopped
+                  # cAdvisor needs privileged access to read cgroup and device
+                  # state, and these hosts include LXC guests where the cgroup
+                  # mount is not otherwise reachable.
+                  privileged: true
+                  devices:
+                    - /dev/kmsg:/dev/kmsg
+                  command:
+                    - --docker_only=true
+                    - --store_container_labels=false
+                    - --whitelisted_container_labels=com.docker.compose.project,com.docker.compose.service
+                    - --disable_metrics={{ cadvisor_disabled_metrics }}
+                    - --housekeeping_interval=15s
+                  volumes:
+                    - /:/rootfs:ro
+                    - /var/run:/var/run:ro
+                    - /sys:/sys:ro
+                    - /var/lib/docker/:/var/lib/docker:ro
+                    - /dev/disk/:/dev/disk:ro
+                  ports:
+                    - "{{ cadvisor_host_port }}:8080"
+
+        - name: Bring the project up
+          community.docker.docker_compose_v2:
+            project_src: "{{ cadvisor_project_dir }}"
+            project_name: cadvisor
+            state: present
+            pull: missing
+
+        - name: Confirm cAdvisor answers on the published port
+          become: false
+          changed_when: false
+          ansible.builtin.uri:
+            url: "http://127.0.0.1:{{ cadvisor_host_port }}/metrics"
+            return_content: false
+            status_code: 200
+          retries: 10
+          delay: 6
+          until: cadvisor_probe is succeeded
+          register: cadvisor_probe
+
+        # A working host reports one series per container plus the root cgroup.
+        # A host that only reports the root cgroup is the incompatibility above,
+        # so count named containers rather than total series.
+        - name: Count the named containers cAdvisor actually reports
+          become: false
+          changed_when: false
+          ansible.builtin.shell:
+            cmd: >-
+              curl -s -m 20 http://127.0.0.1:{{ cadvisor_host_port }}/metrics
+              | grep -c 'container_last_seen{.*name="[^"]\+"' || true
+          register: named_count
+
+        - name: Warn when cAdvisor registered no containers
+          when: (named_count.stdout | trim | int) == 0
+          ansible.builtin.debug:
+            msg: >-
+              WARNING {{ inventory_hostname }}: cAdvisor is running but registered
+              zero named containers. Check the storage driver
+              ({{ storage_driver.stdout | trim }}).
+
+        - name: Report the per-host result
+          ansible.builtin.debug:
+            msg: >-
+              {{ inventory_hostname }}:
+              docker={{ docker_version.stdout | trim }}
+              driver={{ storage_driver.stdout | trim }}
+              port={{ cadvisor_host_port }}
+              named_containers={{ named_count.stdout | trim }}
