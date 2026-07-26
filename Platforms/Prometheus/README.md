@@ -1,9 +1,9 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
-I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometheus scrapes 36 targets: `node_exporter` on 14 Linux hosts, cAdvisor on `docker-main`, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, and itself.
+I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometheus scrapes 38 targets: `node_exporter` on 14 Linux hosts, cAdvisor on `docker-main`, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself.
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -27,7 +27,7 @@ I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometh
 | Versioned configuration | [Configuration/](Configuration/) |
 | Versions | Prometheus 3.10.0, Grafana 12.4.1, blackbox_exporter 0.27.0, cAdvisor 0.52.1, node_exporter 1.9.0 |
 | Retention | 15 days |
-| Scrape intervals | 15s default; 30s for cAdvisor, 60s for blackbox probes |
+| Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
 ## Containers on security-01
 
@@ -43,6 +43,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `cadvisor` | docker-main only, see below |
 | `proxmox` | PVE API exporter, covering all 21 guests and 10 storages |
 | `blackbox` | the 19 service names published through NPM |
+| `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
 | `prometheus` | self-scrape |
 
 `kasm-01` is the one running host with no exporter, held back until its move to `purple-server` settles its address.
@@ -61,11 +62,17 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 
 | Dashboard | UID | Purpose |
 |---|---|---|
-| Homelab Overview | `homelab-overview` | Fleet health in one screen: cluster quorum, guest inventory, service reachability, host vitals, node hardware, storage, containers, uplinks |
+| Homelab Overview | `homelab-overview` | 34 panels in 11 rows, one concern per row: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, monitoring health |
 | Node Exporter Full | `rYdddlPWk` | Per-host deep dive, imported |
 | Proxmox via Prometheus | `Dp7Cd57Zza` | Per-guest Proxmox detail, imported |
 
 Homelab Overview links to the other two rather than duplicating them.
+
+Rows are grouped by concern rather than by exporter, so temperature sits with the thing it measures: CPU package temperature under CPU, NVMe temperature under Drive health. Panels run mostly two-across at half width, with heights set from how many series each one draws. Click a row heading to collapse it.
+
+Under each row heading sits a transparent markdown panel with one line about what the section answers and a horizontal rule, because Grafana's row header alone is a thin grey bar that reads as no boundary at all. Those 11 bands are `text` panels with no queries, so `assert_dashboard_queries.py` skips them; the 34 figure above counts data panels only.
+
+Temperatures display in Fahrenheit. `node_hwmon_temp_celsius` reports Celsius, so the panel queries convert with `* 9 / 5 + 32` and their thresholds move with them; changing only the display unit would have labelled a Celsius number as Fahrenheit.
 
 Every hardware panel filters on `role="hypervisor"`. `node_exporter` inside an LXC reports the host's ZFS pools, NVMe SMART data, and disk statistics, because those read from `/sys` and `/proc` paths that aren't namespaced. Unfiltered, one physical ZFS pool appeared as four and four CPUs appeared as thirteen temperature series.
 
@@ -75,4 +82,4 @@ The 2026-07-13 baseline cleanup installed the three missing Proxmox exporters an
 
 On 2026-07-22 I published Prometheus and Grafana through internal NPM and closed the [Grafana plaintext administrator credential incident](../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md): [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
-The 2026-07-25 expansion took the target set from 7 to 36, added service and UPS exporters, and built the overview dashboard: [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).
+The 2026-07-25 expansion took the target set from 7 to 36 and built the overview dashboard, and the 2026-07-26 follow-up brought it to 38 by enabling UPS collection: [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).

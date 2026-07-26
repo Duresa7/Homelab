@@ -1,10 +1,10 @@
 # Fleet Metrics Expansion and Grafana Overview
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
-**Implementation date:** 2026-07-25  
-**Status:** Complete, with one firewall step outstanding  
+**Implementation date:** 2026-07-25, UPS follow-up 2026-07-26  
+**Status:** Complete  
 **Primary owner:** Prometheus infrastructure monitoring  
 **Affected systems:** `security-01`, `docker-main`, `docker-network`, `docker-blue`, `media-01`, `alpha-prod-01`, `app-01`, `splunk-siem`, `ansible-01`, UniFi gateway, Grafana
 
@@ -139,16 +139,48 @@ On `security-01`, all suffixed `.bak.fleet-metrics-expansion-20260725`: `docker-
 
 Removing the two provisioning mounts from the Compose file and recreating Grafana reverts to whatever the volume holds. Exporters come off with `apt remove prometheus-node-exporter` on the APT hosts, or by disabling `node_exporter.service` and deleting `/usr/local/bin/node_exporter` on the two binary hosts. cAdvisor comes off with `-e cadvisor_state=absent`. Each of the four UniFi policies deletes independently.
 
+## 2026-07-26 Follow-Up: UPS Metrics
+
+The NUT job was left disabled on 2026-07-25 because the Proxmox cluster firewall dropped the path even with the UniFi policy in place. I closed that the next day.
+
+Two `IN ACCEPT` lines went into the `pve_mgmt` group of `/etc/pve/firewall/cluster.fw`, inserted directly after the existing PeaNUT rules so they sit above the trailing `IN DROP` entries, which are order-sensitive. I built the candidate with `awk` into `/root`, checked it before installing rather than after (51 lines against 49, four references to 3493, both `DROP` rules and all five IPSets intact), then copied it over the pmxcfs path. `pve-firewall compile` passed with four compiled 3493 rules and SSH and GUI listeners stayed up. `cluster.fw` lives on pmxcfs, so it replicated to all four nodes without touching them individually.
+
+TCP 3493 to both `192.168.70.13` and `192.168.70.10` went from BLOCKED to OPEN, and the exporter returned HTTP 200 for both targets. I enabled the `nut` job through the runbook procedure, which brought the target count to 38, all `up`.
+
+First readings, which also confirm the exporter's units:
+
+| Metric | ups01 (red-server) | ups02 (grey-server) |
+|---|---|---|
+| `nut_ups_status{status="OL"}` | 1 | 1 |
+| `nut_battery_charge` | 1.0 | 1.0 |
+| `nut_load` | 0.27 | 0.16 |
+| `nut_battery_runtime_seconds` | 1,671 | 3,009 |
+| `nut_input_volts` | 122 | 126 |
+| `nut_real_power_nominal_watts` | 900 | 900 |
+
+`nut_battery_charge` and `nut_load` are ratios rather than percentages, so the panels multiply by 100. The load panel shows watts instead, computed as `nut_load * nut_real_power_nominal_watts`, because 900 W is the figure that decides whether another host fits on a unit.
+
+A Power row went onto the dashboard: mains status per unit, battery charge, load in watts, runtime remaining, and history for input voltage and load. Input voltage history is the reason this exporter earns its place over PeaNUT, which shows live values only and so cannot tell me about a sag that happened overnight. That took the dashboard to 33 panels across 9 rows, with the query assertion covering 46 expressions and 45 returning data.
+
+`ups01` reads 27% load and 1,671 seconds of runtime, against the 58% and 675 seconds recorded on 2026-07-22. The load moved because guests moved; the runtime figure tracks load rather than being a fixed property of the battery.
+
+## 2026-07-26 Follow-Up: Fahrenheit and Layout
+
+Temperatures now read in Fahrenheit. The conversion happens in the query, `* 9 / 5 + 32`, with the thresholds moved to match: 70C became 158F, 80C became 176F, 90C became 194F. Switching only the display unit would have printed a Celsius number labelled Fahrenheit, which is worse than leaving it in Celsius. Checked against the values the same panels showed before: grey-server's 48.9C reads 120.0F.
+
+I also regrouped the dashboard. The first cut had rows that mixed concerns: "Host vitals" carried CPU, memory and a filesystem panel, and "Node hardware health" carried temperatures next to drive health, so finding anything meant knowing which of two rows it happened to live in. It is now one concern per row across eleven rows: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, and the monitoring stack itself. Temperature sits with the thing it measures rather than in a hardware bucket.
+
+Panels also got room. The old layout packed six stats across at `w=4` and split a nineteen-row table into a fourteen-column panel; it now runs mostly two-across at half width, tables get full width, and panel heights come from how many series each one actually draws instead of a uniform guess. Rows collapse on click for anyone who wants it shorter.
+
+Grafana's only native divider is the row header, a thin grey bar with a title on it, and it reads as almost nothing between two dense panels. So each row heading is followed by a transparent markdown panel holding one line about what that section answers, then a horizontal rule. That gives the eye a boundary to land on and makes each section explain itself, at three grid rows of cost per section. Text panels carry no `targets`, so the query assertion walks straight past them.
+
+The dashboard now stands at 34 data panels plus 11 separator bands over 213 grid rows. Longer to scroll, easier to read.
+
+One rename for clarity, now that CPU load and UPS load appear on the same page: the power panels are "UPS load" and "UPS load over time" rather than "Load" and "Load over time".
+
+The query assertion was re-run after every change in this section. Final state: 47 queries, 46 returning data, one allowed empty (the container restart table, which is correct when nothing has restarted), none erroring, and no `level=error` lines in the Grafana log.
+
 ## Remaining Work
-
-**The NUT scrape job is disabled pending a Proxmox firewall rule.** The exporter is running and the UniFi policy is in place, but the cluster firewall still drops the path. Two lines are needed in the `pve_mgmt` group of `/etc/pve/firewall/cluster.fw`, matching the two that already exist for PeaNUT:
-
-```
-IN ACCEPT -source 192.168.72.2 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Grey NUT
-IN ACCEPT -source 192.168.72.2 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Red NUT
-```
-
-Then `pve-firewall compile` to validate, uncomment the `nut` job in `prometheus.yml`, and follow the target-change procedure in the runbook. The job is commented out rather than left enabled because two permanently down targets would misrepresent coverage, which is the same reasoning that removed `app-01` in 2026-07-13.
 
 **`kasm-01` has no exporter.** It sits outside the Ansible inventory and its move to `purple-server` is still an open plan, so its addressing may change. Adding it now would mean redoing the inventory entry and the firewall scope afterward.
 

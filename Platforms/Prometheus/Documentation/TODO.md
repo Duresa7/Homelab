@@ -1,13 +1,11 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
-Four items open after the 2026-07-25 fleet expansion. I record future monitoring changes here before promoting them to an active project.
+Three items open. The UPS item closed on 2026-07-26 once the Proxmox cluster firewall permitted `192.168.72.2` to TCP 3493; both units now report and the dashboard carries a Power row. I record future monitoring changes here before promoting them to an active project.
 
 ## Open
-
-**Add the two Proxmox firewall lines so the NUT job can run.** The `nut` scrape job sits commented out in [prometheus.yml](../Configuration/prometheus.yml) because `/etc/pve/firewall/cluster.fw` drops `192.168.72.2` to 3493. It already permits `192.168.40.35` for PeaNUT. The two lines to add, `pve-firewall compile` to validate, and the uncomment step are in the [change record](Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md#remaining-work). `prometheus-nut-exporter` is already running on 9995 and needs no credential.
 
 **Recover per-container metrics on the six `overlayfs` hosts.** cAdvisor covers `docker-main` alone, so the container row shows 14 of roughly 46 containers. Either wait for cAdvisor to support the containerd snapshotter layout and add the six hosts back to `cadvisor_targets`, or vet a Docker-API-based exporter that reads `/containers/<id>/stats` and sidesteps the storage driver. Details and the three fixes that already failed are in [the troubleshooting record](Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
