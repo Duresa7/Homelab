@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
 The gateway runs UniFi's zone-based V2 firewall. I maintain 43 custom policies; UniFi maintains the rest for zone defaults, connection state, return companions, & gateway services.
 
@@ -57,7 +57,7 @@ All 43 user-defined policies are enabled, use connection state `ALL`, & run on t
 
 The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). I created the eight cross-zone Security-A inbound/monitoring allows with automatic respond-policy generation enabled; setting that flag only after creation did not materialize a return companion on this controller.
 
-A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently, and the NUT path proved it on 2026-07-25: the UniFi policy above was in place and TCP 3493 stayed blocked, because `cluster.fw` permits 192.168.40.35 for PeaNUT and has no equivalent rule for 192.168.72.2. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
+A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently, and the NUT path proved it on 2026-07-25: the UniFi policy above was in place and TCP 3493 stayed blocked, because `cluster.fw` permitted 192.168.40.35 for PeaNUT and had no equivalent rule for 192.168.72.2. Adding the matching accepts there on 2026-07-26 opened the path. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
 
 ## UniFi-Generated Policies
 

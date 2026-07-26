@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
-**Last verified:** 2026-07-22 after PeaNUT deployment (`pve-firewall compile` passed and live TCP/3493 connections from `docker-main` reached Red and Grey).
+**Last verified:** 2026-07-26 after adding the security-01 NUT accepts (`pve-firewall compile` passed with 4 compiled TCP/3493 rules, and live connections from `192.168.72.2` reached Red and Grey).
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -58,6 +58,8 @@
 | in | ACCEPT | tcp | 192.168.72.2/32 | - | 9100 | nolog | security-01 Prometheus node_exporter |
 | in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.10/32 | 3493 | nolog | PeaNUT to Grey NUT |
 | in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.13/32 | 3493 | nolog | PeaNUT to Red NUT |
+| in | ACCEPT | tcp | 192.168.72.2/32 | 192.168.70.10/32 | 3493 | nolog | security-01 NUT exporter to Grey NUT |
+| in | ACCEPT | tcp | 192.168.72.2/32 | 192.168.70.13/32 | 3493 | nolog | security-01 NUT exporter to Red NUT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.70.0/24 | - | nolog | WG VPN - MGMT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.80.0/24 | - | nolog | WG VPN - Server |
 | in | DROP | tcp | - | - | 22 | nolog | DROP SSH |
@@ -68,6 +70,8 @@ I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, whic
 Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`, SPICE `3128`, migration `60000:60050`, SSH 22, & GUI 8006. The explicit `pve_mgmt` drops for 22 and 8006 run first, so they take precedence. I left the generated set unchanged.
 
 ## History
+
+- On 2026-07-26 I added the same destination-specific TCP/3493 accepts for `192.168.72.2`, so `prometheus-nut-exporter` on `security-01` can read both UPS units. This is the second firewall the path needed: the UniFi policy "Allow Security to Proxmox NUT" was already in place and 3493 stayed blocked, because this file is enforced independently on every node. Worth remembering when adding any future scrape target that lands on a node. The two new rules sit above the trailing `IN DROP` entries, which are order-sensitive.
 
 - On 2026-07-22 I added destination-specific TCP/3493 accepts from PeaNUT on `docker-main` to the NUT listeners on Red and Grey. The compiled rules and live connections passed; no other Proxmox node or port was added.
 - On 2026-07-14 I added `pve_termix` and its TCP/22-only allow for Termix on `docker-main`. UniFi already allowed the path; the Proxmox `DROP SSH` rule was the connection blocker. Live Termix SSH sessions to all four nodes passed after the change.

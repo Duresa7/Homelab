@@ -133,33 +133,29 @@ scrape_configs:
         labels: {host: security-01, role: security}
 
   # ------------------------------------------------------------------- nut
-  # DISABLED PENDING A FIREWALL RULE.
+  # Both APC Back-UPS Pro BR1500MS2 units, read over the NUT protocol on 3493.
+  # NUT needs no credential: upsd.users is empty on both hosts and anonymous
+  # reads are permitted.
   #
-  # The UniFi policy "Allow Security to Proxmox NUT" is in place, but the Proxmox
-  # cluster firewall at /etc/pve/firewall/cluster.fw is a second enforcement
-  # layer and still drops this path. It permits docker-main to 3493 for PeaNUT
-  # but not security-01. Until these two lines are added to the pve_mgmt group,
-  # this job would report two permanently down targets, and I do not present
-  # known-unavailable targets as monitoring coverage.
+  # Reaching this needed rules in two independent firewalls. The UniFi policy
+  # "Allow Security to Proxmox NUT" was not sufficient on its own; the Proxmox
+  # cluster firewall at /etc/pve/firewall/cluster.fw also had to permit
+  # 192.168.72.2, since it previously allowed only docker-main for PeaNUT.
   #
-  #   IN ACCEPT -source 192.168.72.2 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Grey NUT
-  #   IN ACCEPT -source 192.168.72.2 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Red NUT
-  #
-  # After adding them, run `pve-firewall compile` to validate, uncomment this
-  # job, and follow the target-change procedure in the runbook.
-  #
-  # - job_name: nut
-  #   scrape_interval: 30s
-  #   metrics_path: /nut
-  #   static_configs:
-  #     - targets: ["192.168.70.13:3493"]
-  #       labels: {host: red-server, ups: ups01}
-  #     - targets: ["192.168.70.10:3493"]
-  #       labels: {host: grey-server, ups: ups02}
-  #   relabel_configs:
-  #     - source_labels: [__address__]
-  #       target_label: __param_target
-  #     - source_labels: [__param_target]
-  #       target_label: instance
-  #     - target_label: __address__
-  #       replacement: nut-exporter:9995
+  # 30s because UPS state changes slowly, and a brownout lasting under 30
+  # seconds is not something this dashboard needs to resolve.
+  - job_name: nut
+    scrape_interval: 30s
+    metrics_path: /nut
+    static_configs:
+      - targets: ["192.168.70.13:3493"]
+        labels: {host: red-server, ups: ups01}
+      - targets: ["192.168.70.10:3493"]
+        labels: {host: grey-server, ups: ups02}
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: nut-exporter:9995
