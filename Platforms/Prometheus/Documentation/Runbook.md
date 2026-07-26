@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 38 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 47 dashboard queries and fails on any that error or return no series. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 44 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 47 dashboard queries and fails on any that error or return no series. Upload both temporarily and remove the remote copies afterward.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -68,7 +68,9 @@ ansible-playbook playbooks/node-exporter.yml
 ansible-playbook playbooks/cadvisor.yml
 ```
 
-Both playbooks are idempotent and verify what they installed rather than trusting the package manager: `node-exporter.yml` asserts the version the running exporter reports, and `cadvisor.yml` counts named containers and warns when it registered none. Pass `-e target=<host>` for a single host and `-e cadvisor_state=absent` to remove cAdvisor. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
+Both playbooks are idempotent and verify what they installed rather than trusting the package manager: `node-exporter.yml` asserts the version the running exporter reports, and `cadvisor.yml` compares the containers cAdvisor registered against the containers Docker reports running, failing on a mismatch. Pass `-e target=<host>` for a single host and `-e cadvisor_state=absent` to remove cAdvisor.
+
+cAdvisor is pinned to `ghcr.io/google/cadvisor:v0.60.5`. Do not move it back to `gcr.io/cadvisor/cadvisor`: that registry stops at v0.55.1, and anything before v0.60.5 registers zero containers on the six hosts using Docker's `overlayfs` driver. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
 
 ## User Endpoints
 

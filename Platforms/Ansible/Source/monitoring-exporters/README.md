@@ -1,9 +1,9 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
-I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on the Docker hosts where it actually works. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
+I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all seven Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
 
 ## Scope
 
@@ -11,7 +11,7 @@ I run two playbooks from `ansible-01` to keep Prometheus exporters installed acr
 
 `ansible-01` manages itself over `ansible_connection: local`, so the controller doesn't depend on its own key sitting in its own `authorized_keys`.
 
-`cadvisor_targets` holds docker-main alone. That's a limitation, not a preference: see below.
+`cadvisor_targets` holds all seven Docker hosts: the five above plus `app-01` and `security-01`, both of which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
 
 ## One exporter version, two install methods
 
@@ -25,11 +25,15 @@ The upstream download is verified against the release's own `sha256sums.txt`, so
 
 The `prometheus-node-exporter-collectors` package is deliberately absent. Its `smartmon` script finds no block devices inside an LXC or behind a virtio disk, which would pin `node_textfile_scrape_error` at 1 and report a fault that isn't real.
 
-## cAdvisor covers one host, and why
+## cAdvisor needs v0.60.5, not the image you'll find first
 
-cAdvisor v0.52.1 can't resolve a container's read-write layer ID under Docker 29's default `overlayfs` storage driver, so it abandons container registration and emits only the root cgroup. `docker-main` is the one Docker host still on the legacy `overlay2` driver, so it's the only one where cAdvisor reports real data: 14 containers, against roughly 46 fleet-wide.
+The pinned image is `ghcr.io/google/cadvisor:v0.60.5`, and both halves of that matter.
 
-The other six answered on 9101 with HTTP 200 and ~600 series each, all of it useless, so I removed them. The finding is in the tooling as well as in the [troubleshooting record](../../../Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md): the playbook reads `docker info --format {{.Driver}}` and refuses to install unless the driver is `overlay2`, and `tests/validate_project.py` fails if a `cadvisor_incompatible` host reappears as a target. Re-adding one by accident breaks loudly instead of silently collecting nothing.
+cAdvisor v0.52.1 can't resolve a container's read-write layer ID under Docker 29's default `overlayfs` driver, because it reads the old graphdriver `layerdb` path and the containerd snapshotter doesn't keep one. The lookup happens during registration rather than during collection, so the container is abandoned outright and only the root cgroup is emitted. From 2026-07-25 to 2026-07-26 this project ran cAdvisor on `docker-main` alone for that reason, since `docker-main` was the one host still on `overlay2`.
+
+v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/cadvisor/cadvisor` stops at v0.55.1 and never published v0.53.0, v0.54.0, or v0.55.0, which is how I convinced myself for a day that v0.52.1 was current. All seven hosts now report every container they run, 50 in total. Full account in the [troubleshooting record](../../../Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+
+The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
 cAdvisor publishes on 9101, not the usual 8080. 8080 is taken by termix on docker-main & coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all seven and sits next to `node_exporter`.
 
@@ -51,12 +55,12 @@ ansible-playbook playbooks/node-exporter.yml
 # One host.
 ansible-playbook playbooks/node-exporter.yml -e target=splunk-siem
 
-# cAdvisor, and removal.
+# cAdvisor across all seven Docker hosts, then removal from one.
 ansible-playbook playbooks/cadvisor.yml
-ansible-playbook playbooks/cadvisor.yml -e target=cadvisor_incompatible -e cadvisor_state=absent
+ansible-playbook playbooks/cadvisor.yml -e target=media-01 -e cadvisor_state=absent
 ```
 
-Both plays verify their own work. `node-exporter.yml` probes the exporter and asserts the version it reports matches the pinned one, so a silent drift fails the run rather than passing on the package manager's word. `cadvisor.yml` counts named containers and prints a warning when it registered none.
+Both plays verify their own work. `node-exporter.yml` probes the exporter and asserts the version it reports matches the pinned one, so a silent drift fails the run rather than passing on the package manager's word. `cadvisor.yml` compares the containers cAdvisor registered against the containers Docker reports running, and fails the play on a mismatch instead of warning.
 
 `node-exporter.yml` also refuses to overwrite an unmanaged listener. If something already answers on 9100 and neither the Debian package nor a managed `node_exporter.service` is present, the play stops and asks for `-e allow_port_takeover=true`. That guard exists because of `app-01`.
 
@@ -64,7 +68,7 @@ A `--check` run of `node-exporter.yml` fails its verification tasks on a host th
 
 ## Adding a host
 
-Add it under `node_exporter_targets` with its `ansible_host` & `ansible_user`, confirm the controller key already reaches it, then update `EXPECTED_NODE_EXPORTER_HOSTS` and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about the host set so an unreviewed addition fails rather than quietly widening scope.
+Add it under `node_exporter_targets` or `cadvisor_targets` with its `ansible_host` & `ansible_user`, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
 
 Scraping the new host also needs a UniFi policy from Security-A to its zone, and possibly a rule in the Proxmox cluster firewall. Test reachability from `security-01` before adding it to `prometheus.yml`.
 
@@ -72,4 +76,4 @@ Scraping the new host also needs a UniFi policy from Security-A to its zone, and
 
 Separate projects on purpose. `fleet-updates` patches packages & compose stacks on a schedule; this one installs and verifies exporters. They share the `ansible` account and inventory style but not their host sets: `fleet-updates` covers 9 hosts including `edge-01`, `security-01`, & `app-01`, which this project excludes because they already export.
 
-The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so it isn't picked up by automated image updates. Its image is pinned, so that's the intended behavior rather than an oversight.
+The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so it isn't picked up by automated image updates. Its image is pinned, so that's the intended behavior rather than an oversight. It does mean upgrades are a deliberate act here: bump `cadvisor_image` and re-run, which is exactly how v0.52.1 became v0.60.5.

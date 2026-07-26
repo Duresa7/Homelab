@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-26
 
-I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometheus scrapes 38 targets: `node_exporter` on 14 Linux hosts, cAdvisor on `docker-main`, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself.
+I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometheus scrapes 44 targets: `node_exporter` on 14 Linux hosts, cAdvisor on all 7 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself.
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -25,7 +25,7 @@ I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometh
 | Homelab Overview dashboard | `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview` |
 | Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/` on `security-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions | Prometheus 3.10.0, Grafana 12.4.1, blackbox_exporter 0.27.0, cAdvisor 0.52.1, node_exporter 1.9.0 |
+| Versions | Prometheus 3.10.0, Grafana 12.4.1, blackbox_exporter 0.27.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
@@ -40,7 +40,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | Job | Targets |
 |---|---|
 | `node` | grey-server, purple-server, blue-server, red-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network |
-| `cadvisor` | docker-main only, see below |
+| `cadvisor` | all 7 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01 |
 | `proxmox` | PVE API exporter, covering all 21 guests and 10 storages |
 | `blackbox` | the 19 service names published through NPM |
 | `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
@@ -48,7 +48,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 
 `kasm-01` is the one running host with no exporter, held back until its move to `purple-server` settles its address.
 
-cAdvisor covers `docker-main` alone because cAdvisor v0.52.1 registers no containers under Docker 29's `overlayfs` storage driver, and `docker-main` is the only Docker host still on `overlay2`. That limits per-container metrics to 14 of roughly 46 containers. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+cAdvisor covers 50 containers across those 7 hosts, 7 of which are the cAdvisor containers themselves. It covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Grafana Configuration Is Versioned
 
@@ -82,4 +82,4 @@ The 2026-07-13 baseline cleanup installed the three missing Proxmox exporters an
 
 On 2026-07-22 I published Prometheus and Grafana through internal NPM and closed the [Grafana plaintext administrator credential incident](../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md): [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
-The 2026-07-25 expansion took the target set from 7 to 36 and built the overview dashboard, and the 2026-07-26 follow-up brought it to 38 by enabling UPS collection: [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).
+The 2026-07-25 expansion took the target set from 7 to 36 and built the overview dashboard. Two follow-ups on 2026-07-26 brought it to 44: enabling UPS collection, then upgrading cAdvisor so the six `overlayfs` hosts report containers. All three are recorded in [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).
