@@ -217,6 +217,18 @@ The playbook stopped asserting on the storage driver. That pre-flight check refu
 
 The `cadvisor_incompatible` inventory group is gone, and the validator fails if it comes back. Six hosts listed as permanently incompatible were nothing of the kind.
 
+## 2026-07-26 Follow-Up: Deleted The Two Imported Dashboards
+
+Grafana now serves one dashboard. I deleted Node Exporter Full (`rYdddlPWk`, 39 panels) and Proxmox via Prometheus (`Dp7Cd57Zza`, 14 panels), both community dashboards imported from grafana.com before this project started and both `provisioned: false`, meaning they lived only in `grafana.db`. The search API returns a single dashboard now, `homelab-overview` in the `Homelab` folder, and the datasource is untouched: one entry, UID `bfgnkdi47u5tsa`, `readOnly: true`.
+
+They were the last unversioned thing Grafana was showing, so the repository is now the complete record of it.
+
+I kept no export. Deliberate, and the trade is worth stating: both are public dashboards recoverable by ID from grafana.com in about a minute, so the only thing lost is the datasource binding and variable selections a fresh import would ask for again. The 2026-07-25 `grafana.db` tarball also predates the deletion if a real restore is ever wanted.
+
+The two entries in the overview's `links` block pointed at those UIDs and would have rendered as buttons landing on "Dashboard not found", so both came out. The block is now empty.
+
+**This leaves a real gap.** Homelab Overview aggregates by host on purpose and carries no per-host CPU, disk, network, or filesystem detail, because Node Exporter Full covered that and duplicating it would have been the noise the whole dashboard was built to avoid. Nothing covers it now. The fix, when it matters, is panels in the versioned dashboard rather than another import.
+
 ## Remaining Work
 
 **`kasm-01` has no exporter.** It sits outside the Ansible inventory and its move to `purple-server` is still an open plan, so its addressing may change. Adding it now would mean redoing the inventory entry and the firewall scope afterward.

@@ -56,17 +56,17 @@ Until 2026-07-25 the datasource and both imported dashboards existed only inside
 
 `Configuration/grafana/` now holds the datasource definition, the dashboard provider, and the Homelab Overview JSON, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative: to iterate in the browser, use Save As for a scratch copy and fold the change back into the versioned JSON.
 
-The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose. Provisioning matches on name, so it adopts the entry that already existed instead of creating a duplicate, and the pinned UID keeps the two imported dashboards resolving.
+The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose. Provisioning matches on name, so it adopts the entry that already existed instead of creating a duplicate. The UID was pinned so the two imported dashboards kept resolving; they are gone now, but the pin stays because `homelab-overview.json` references that UID throughout.
 
 ## Dashboards
 
 | Dashboard | UID | Purpose |
 |---|---|---|
 | Homelab Overview | `homelab-overview` | 34 panels in 11 rows, one concern per row: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, monitoring health |
-| Node Exporter Full | `rYdddlPWk` | Per-host deep dive, imported |
-| Proxmox via Prometheus | `Dp7Cd57Zza` | Per-guest Proxmox detail, imported |
 
-Homelab Overview links to the other two rather than duplicating them.
+One dashboard, provisioned from this repository. On 2026-07-26 I deleted the two imported community dashboards, Node Exporter Full (`rYdddlPWk`, grafana.com 1860) and Proxmox via Prometheus (`Dp7Cd57Zza`, grafana.com 10347). They were the only unversioned dashboards left, so removing them makes the repository the complete record of what Grafana shows.
+
+That costs per-host drill-down. Homelab Overview aggregates by host on purpose and does not carry per-host CPU, disk, network, or filesystem detail, because Node Exporter Full covered it. Nothing replaces that today. Re-importing 1860 by ID takes about a minute if the gap bites; the better answer is to add the panels here and version them.
 
 Rows are grouped by concern rather than by exporter, so temperature sits with the thing it measures: CPU package temperature under CPU, NVMe temperature under Drive health. Panels run mostly two-across at half width, with heights set from how many series each one draws. Click a row heading to collapse it.
 
