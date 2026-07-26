@@ -4,12 +4,33 @@
 **Last updated:** 2026-07-26
 
 **Status:** Planned, not started  
+**Target:** CT 104 `monitor-01`, Debian 13 LXC on `blue-server`, VLAN 73 `MONITOR-A`, 192.168.73.2  
 **Owner:** Prometheus infrastructure monitoring  
-**Affected systems:** `security-01`, a new monitoring guest, UniFi firewall, Proxmox cluster firewall, Nginx Proxy Manager, all 44 scrape targets
+**Affected systems:** `security-01`, `blue-server`, UniFi gateway, Proxmox cluster firewall, all four Proxmox nodes, `ansible-01`, Nginx Proxy Manager, all 44 current scrape targets
+
+This replaces the first draft of this plan, written earlier on 2026-07-26 and wrong in four ways: it said VM rather than LXC, `purple-server` or `red-server` rather than `blue-server`, 6 GiB rather than 2 GiB, and six firewall rules rather than twenty-three. The design review that corrected it is summarised under [Decisions](#decisions).
+
+## Read This First
+
+You are executing this, not designing it. The decisions below are settled; do not re-litigate them mid-run.
+
+**Secrets.** Two secrets are handled here: the Grafana admin credential and a new Proxmox API token. Neither value may appear in a command line, a log, a file in this repository, a commit, or anything you print. Read the [1password-cli skill](../../../../.claude/skills/1password-cli/SKILL.md) before touching either. Pipe values, never echo them.
+
+**Proxmox shows an API token secret exactly once.** If you create the token and lose the value, you cannot retrieve it. Delete the token and create it again. Store it in 1Password in the same step that creates it, before doing anything else.
+
+**Stop conditions.** Stop, report, and change nothing further if any of these happen:
+
+- A firewall change is refused or blocked. Both a UniFi policy edit and an `/etc/pve` write were blocked earlier on 2026-07-26 and needed explicit operator permission. Phases 1 and 2 are additive precisely so that a block here leaves the running stack untouched.
+- `promtool check config` fails.
+- Any target is not `up` at the end of Phase 6. Do not proceed to cutover with a broken target set.
+- The Grafana credential rotation in Phase 5 does not verify.
+- Anything in Phase 8 would delete `cadvisor`, `node_exporter`, or a Wazuh component.
+
+**Order matters more than speed.** Phases 1 through 6 add things and change nothing. The commit point is Phase 7. Before it, rollback is deleting CT 104 and removing the rules you added. After it, rollback means restoring rules and rebuilding from git.
 
 ## Why
 
-Prometheus and Grafana run on `security-01`, which is a QEMU VM on `grey-server`. So do `app-01`, `docker-main`, and `splunk-siem`. Grey carries most of the fleet and 73% of its own memory:
+Prometheus and Grafana run on `security-01`, a VM on `grey-server`. So do `app-01`, `docker-main`, and `splunk-siem`. Measured 2026-07-26:
 
 ```
 grey-server      16 cpu   45.6 / 62.7 GiB used
@@ -18,71 +39,343 @@ purple-server     6 cpu    1.8 / 15.5 GiB used
 red-server        6 cpu    3.0 / 15.5 GiB used
 ```
 
-**If `grey-server` dies, monitoring dies with most of what it monitors, at the moment I would most want to look at it.** Purple's boot NVMe failed on 2026-07-25 and monitoring was unaffected, because monitoring is not on Purple. Grey failing is a different outcome: Prometheus, Grafana, Wazuh, Splunk, `app-01`, and `docker-main` all go at once and nothing is left to say what happened.
+If `grey-server` fails, monitoring fails with most of what it monitors, at the moment I would most want to look at it. Purple's boot NVMe failed on 2026-07-25 and monitoring was unaffected, because monitoring isn't on Purple. Grey is a different outcome.
 
-There is a smaller second reason. `security-01` uses 8 of its 12 GiB and almost all of that is Wazuh's indexer. Prometheus and Grafana are minor tenants on a VM dominated by a memory-hungry neighbour, so an OOM there does not necessarily kill the process I would choose.
+Second reason: `security-01` uses 8 of 12 GiB and nearly all of it is Wazuh's indexer. Prometheus and Grafana are minor tenants on a VM dominated by a memory-hungry neighbour.
 
-## Not docker-blue
+## Decisions
 
-The obvious "spare Docker host" is the worst option available. `docker-blue` is a 4 GiB LXC on `blue-server`, the smallest node in the cluster at 4 CPUs and 11.6 GiB, and it already runs three containers whose fate the monitoring stack would then share. 4 GiB fits Prometheus at today's 40,000 series and leaves little room for the UniFi metrics and any retention increase.
-
-## Target shape
-
-A dedicated guest, `monitor-01`, on `purple-server` or `red-server`. Both sit near idle with 15.5 GiB.
-
-| Property | Value |
-|---|---|
-| Node | `purple-server` or `red-server`, decided at step 1 |
-| Type | VM, not LXC, so `node_exporter` on it reports its own hardware rather than the hypervisor's |
-| Size | 2 vCPU, 6 GiB, 60 GiB disk |
-| VLAN | 72 Security-A, keeping the same zone so existing policies need a source change rather than a rewrite |
-| Workloads | `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, `cadvisor` |
-| Left on `security-01` | Wazuh manager, indexer, dashboard, and its own `node_exporter` and cAdvisor |
-
-Staying inside VLAN 72 is the single biggest cost saver. Every existing UniFi policy is scoped Security-A to somewhere, so a new address in the same zone means editing a source, not designing a new zone pair.
-
-## What is hard about this
-
-Not the containers. The whole monitoring stack is already Compose plus versioned configuration in this repository, so standing it up elsewhere is a clone and a `docker compose up`. What is hard is that **the collector's IP address is written by hand into six rules across two firewalls that enforce independently**, and a missed rule produces a silently dead target rather than an error.
-
-`192.168.72.2` currently appears in:
-
-| System | Rule | Covers |
+| # | Decision | Reason |
 |---|---|---|
-| UniFi | Security-A to Personal-A | 9100 and 9101 on docker-main, ansible-01, docker-blue, media-01 |
-| UniFi | Security-A to SERVERS-A | 9100 and 9101 on app-01, alpha-prod-01 |
-| UniFi | Security-A to Access-A | 9100, 9101, and 443 on docker-network |
-| UniFi | Security-A to MGMT-A | 3493 on grey-server and red-server, plus 8006 for the PVE exporter |
-| Proxmox `cluster.fw` | `IN ACCEPT` | 3493 on 192.168.70.10 |
-| Proxmox `cluster.fw` | `IN ACCEPT` | 3493 on 192.168.70.13 |
+| 1 | Docker Compose, reusing `Configuration/` unchanged | Debian 13 ships Prometheus 2.53.3 against the 3.10.0 in use, and has no package for Grafana, `prometheus-nut-exporter`, or cAdvisor. Native would mean a major downgrade, a third-party repo, two hand-built binaries, and a rewritten runbook |
+| 2 | CT 104 `monitor-01`, Debian 13, unprivileged, `nesting=1,keyctl=1` | Matches CT 107 `docker-network` exactly, which runs Docker on this node today |
+| 3 | 2 cores, 2048 MB memory, 1024 MB swap, 16G on `local-lvm` | Measured footprint is 371 MB RSS across all six containers and 5.5 GB of disk. `pct resize` grows the disk in seconds if it ever needs to |
+| 4 | New VLAN 73 `MONITOR-A`, 192.168.73.0/24, new custom zone `Org-Monitor` | Dedicated zone so the collector does not inherit Security-A's permissions. VLAN 73 is free since the 2026-07-23 lab simplification |
+| 5 | `--nameserver 192.168.73.1` | Split-horizon DNS is gateway-wide, verified against both `.72.1` and `.80.1`. A public resolver returns NXDOMAIN for internal names and silently kills all 19 blackbox probes and nothing else |
+| 6 | Inbound: NPM plus break-glass from Jedi PC | Daily access through the proxy with the wildcard certificate. The direct rule exists because NPM runs on `docker-network`, on this same node, and because you need browser access before NPM is re-pointed |
+| 7 | Fresh TSDB, retention stays 15d | Graphs restart empty and heal by 2026-08-10. Retention unchanged so no documentation numbers move |
+| 8 | Grafana: bootstrap default, rotate immediately with `grafana-cli` | The 2026-07-22 incident was a bootstrap value left in the Compose file. Nothing goes in Compose this time |
+| 9 | New `pve-exporter@pve!monitor01`, PVEAuditor on `/` | The existing credential is `local-dash@pve!readonly`, shared with `homelab-dashboard-aio` on `docker-main`. Revoking it breaks that app |
+| 10 | Agent performs all firewall changes | Operator decision. Phases are ordered so a block is survivable |
+| 11 | Additive first, roughly an hour of overlap, then cutover | The overlap exists only to prove the new path |
+| 12 | Full wipe of the monitoring stack on `security-01` | Everything on that host is either in git or deliberately replaced |
 
-The lesson from 2026-07-25 applies directly: the UniFi policy for NUT was correct and the path stayed blocked for a day because the Proxmox cluster firewall dropped it separately. Nothing surfaces that. The target just reads down.
+## Facts Already Verified, 2026-07-26
 
-## Steps
+Do not re-derive these. They were checked during the design review.
 
-1. **Pick the node.** Compare `purple-server` and `red-server` on current load, disk headroom on their storages, and what else they hold. Red holds `media-01` and `ups01`; Purple has the newer boot drive. Record the reason.
-2. **Build `monitor-01`** from template 9000 per the [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md). Remember `qm set --delete cicustom` after cloning or the cloud-init keys are overridden and you are locked out.
-3. **Add it to the exporter inventory** in [monitoring-exporters](../../../Ansible/Source/monitoring-exporters/README.md) under `node_exporter_targets` and `cadvisor_targets`, update `EXPECTED_IPS` and both expected host sets in the validator, and install.
-4. **Duplicate the firewall rules to the new source, do not move them.** Add `monitor-01` alongside `192.168.72.2` in all four UniFi policies and add two more `IN ACCEPT` lines to `cluster.fw`. Both collectors reachable at once is what makes the cutover reversible.
-5. **Prove reachability before moving anything.** From `monitor-01`, curl 9100 and 9101 on all 14 hosts, 3493 on both UPS units, 8006 on grey, and 443 on `docker-network`. Every one must answer before the stack moves. A failure here is a firewall problem; a failure after the move is a mystery.
-6. **Stand the stack up** from `Configuration/` in this repository, substituting the real base domain. Point it at the same targets. Run both collectors in parallel and let it fill.
-7. **Migrate Grafana.** The datasource and `homelab-overview` are file-provisioned, so they come across with the repository. `grafana.db` still holds users, preferences, and API keys, so copy the volume rather than starting fresh. Verify the dashboard provisions and all 65 queries return data.
-8. **Re-point NPM.** The `grafana.` and `prometheus.` proxy hosts in [Nginx Proxy Manager](../../../Nginx%20Proxy%20Manager/) point at `192.168.72.2`. Change both to `monitor-01` and confirm the certificate and the real user path still work.
-9. **Decommission the old stack.** Stop the six containers on `security-01`, leave Wazuh alone, confirm 44 targets still report from the new collector, then remove the old UniFi sources and the two old `cluster.fw` lines. Keep `security-01` itself as a scrape target and a cAdvisor host.
-10. **Update the records.** `prometheus.yml` self-scrape address, `assert_targets.py` expected URLs, both firewall inventories, `Operations/Inventory/Galaxy/` VMs and Services, this platform's README and runbook, and a change record for the move.
+| Fact | Value |
+|---|---|
+| Prometheus TSDB size | 1.7 GB at 39,944 head series, 15d retention |
+| Total RSS, six containers | 371 MB: prometheus 166, grafana 99, pve-exporter 53, cadvisor 34, blackbox 19, nut 1 |
+| Images on `security-01` | 8 images, 2.15 GB |
+| `blue-server` free memory | 8 GiB available of 11.6 |
+| `blue-server` storage | `local-lvm` lvmthin, 140 GB available of 148 |
+| Debian 13 LXC template | Already cached: `local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst` |
+| Next free cluster ID | 104 |
+| VLAN 73 trunking | Already in the `Proxmox-Trunk` port profile's tagged set. `vmbr0` is VLAN-aware with `bridge-vids 2-4094`. No switch or bridge change needed |
+| Proxmox guest firewall | No per-guest `.fw` files exist and there is no `host.fw` on blue. CT 107 receives 443 with no rule permitting it, so guest ingress is not filtered. `monitor-01` needs no `cluster.fw` work for its own inbound |
+| Existing PVE identity | `local-dash@pve` token `readonly`, `privsep=1`, ACL `/` role `PVEAuditor` propagate=1 |
+| 1Password | No item exists for the PVE credential. `pve.yml` on `security-01` is its only copy |
+
+## Firewall Scope
+
+Twenty-three changes across two systems that enforce independently. On 2026-07-25 a correct UniFi policy for NUT sat in place for a day while the path stayed blocked, because `cluster.fw` dropped it separately. Verify from the source host after every rule, not at the end.
+
+### Twelve new UniFi policies
+
+All egress policies take source zone `Org-Monitor`, source `IP 192.168.73.2`.
+
+| # | Name | Destination | Ports |
+|---|---|---|---|
+| 1 | Allow Monitor to Personal-A monitoring | `Internal`, IPs 192.168.40.35, .36, .39, .42 | 9100, 9101 |
+| 2 | Allow Monitor to A-Servers monitoring | `Org-Servers`, IPs 192.168.80.10, .118 | 9100, 9101 |
+| 3 | Allow Monitor to A-Access monitoring | `Org-Access`, IP 192.168.85.2 | 9100, 9101, 443 |
+| 4 | Allow Monitor to A-Security monitoring | `Org-Security`, IPs 192.168.72.2, .72.3 | 9100, 9101 |
+| 5 | Allow Monitor to DMZ monitoring | `Dmz`, IP 192.168.90.10 | 9100 |
+| 6 | Allow Monitor to Proxmox monitoring | `Org-Mgmt`, IPs 192.168.70.10 to .13 | 9100, 8006 |
+| 7 | Allow Monitor to Proxmox NUT | `Org-Mgmt`, IPs 192.168.70.10, .70.13 | 3493 |
+| 8 | Allow Monitor Web Egress | `External` | 80, 443 |
+| 9 | Allow Monitor NTP Egress | `External` | 123 |
+| 10 | Allow NPM to monitor-01 web UIs | source `Org-Access` IP 192.168.85.2, dest IP 192.168.73.2 | 3000, 9090 |
+| 11 | Allow Secure to monitor-01 break-glass | source `Internal` IP 192.168.50.241, dest IP 192.168.73.2 | 3000, 9090 |
+| 12 | Allow Automation to monitor-01 SSH | source `Internal` IP 192.168.40.36, dest IP 192.168.73.2 | 22 |
+
+Policy 4 is the one that catches people. `security-01` and `splunk-siem` are scraped from inside their own zone today, so no policy exists. It becomes cross-zone. Miss it and two hosts go down.
+
+Policy 12 is needed because `ansible-01` is on VLAN 40 and installs `node_exporter` and cAdvisor over SSH.
+
+Enable automatic respond-policy generation on policies 1 through 7 and 10 through 12, matching how the eight existing cross-zone monitoring allows were created. Policies 8 and 9 are egress-trio members: create them with `create_allow_respond=false` and index order 10000 then 10001, matching the Security-A and Access-A trios.
+
+Order-of-operations note: create the network and the zone first, or the policies have nothing to reference.
+
+### Seven changes to existing UniFi policies, Phase 7 only
+
+| Policy | Action |
+|---|---|
+| Allow Security to Personal-A monitoring | Delete |
+| Allow Security to A-Servers monitoring | Delete |
+| Allow Security to A-Access monitoring | Delete |
+| Allow Security to Proxmox monitoring | Delete |
+| Allow Security to DMZ monitoring | Delete |
+| Allow Security to Proxmox NUT | Delete |
+| Allow NPM to security-01 web UIs | Edit: remove ports 3000 and 9090, keep 443 for the Wazuh dashboard |
+
+**Do not touch `Allow Security Workloads Web Egress` or `Allow Security Workloads NTP Egress`.** Both list `192.168.72.2` and `192.168.72.3`. `security-01` still needs web and NTP egress for Wazuh updates and for pulling the cAdvisor image, and `splunk-siem` needs them regardless. Removing `.72.2` there would break a host you are not migrating.
+
+### Four `cluster.fw` changes
+
+The file lives on pmxcfs at `/etc/pve/firewall/cluster.fw` and replicates to all four nodes on its own. Build a candidate outside `/etc/pve`, check it before installing, then run `pve-firewall compile`. New accepts must sit above the trailing `IN DROP` entries.
+
+Phase 1, additive:
+
+```
+[IPSET pve_svc_clients]
+192.168.73.2 # monitor-01 (PVE exporter / Proxmox API)
+
+[group pve_mgmt]
+IN ACCEPT -source 192.168.73.2 -p tcp -dport 9100 -log nolog # monitor-01 Prometheus node_exporter
+IN ACCEPT -source 192.168.73.2 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # monitor-01 NUT exporter to Grey NUT
+IN ACCEPT -source 192.168.73.2 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # monitor-01 NUT exporter to Red NUT
+```
+
+Phase 7, removal: the matching four `192.168.72.2` entries, being the `pve_svc_clients` IPSET member and the three `IN ACCEPT` lines. Leave the two `192.168.40.35` PeaNUT rules alone.
+
+The `pve_svc_clients` IPSET line is the one that will be missed. It is not in the `[RULES]` section and it is how the PVE exporter reaches 8006. Without it the Proxmox job dies and takes all 21 guests and 10 storages with it, while the UniFi side looks perfectly correct.
+
+## Phase 0. Preflight
+
+```bash
+# On blue-server
+pvesh get /cluster/nextid                      # expect 104; if not, use what it returns and note it
+pveam list local | grep debian-13              # expect the cached trixie template
+pvesm status | grep local-lvm                  # expect active with room
+```
+
+Confirm the current stack is healthy before changing anything, so a later failure is attributable:
+
+```bash
+# On security-01
+curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
+```
+
+**Pass:** 44 targets, all `up`. If not, fix that first. Do not migrate a broken target set.
+
+## Phase 1. Network, zone, and firewall
+
+1. Create network `MONITOR-A`, VLAN 73, 192.168.73.0/24, gateway 192.168.73.1. No DHCP range is needed; `monitor-01` is static. Leave UPnP and IGMP snooping off.
+2. Create custom zone `Org-Monitor` containing only `MONITOR-A`.
+3. Create the twelve policies above.
+4. Make the four additive `cluster.fw` changes. Verify the candidate before installing: line count, that both `IN DROP` entries survive, that all five IPSETs survive, and that the file still contains the two PeaNUT rules. Then `pve-firewall compile`.
+
+**Pass:** `pve-firewall compile` succeeds on the node you edited from, SSH and GUI listeners stay up, and the twelve policies are enabled. Nothing is verifiable end to end yet because `monitor-01` does not exist. That is expected.
+
+## Phase 2. Proxmox API token
+
+Create a dedicated identity. Do not reuse or revoke `local-dash@pve!readonly`.
+
+```bash
+# On grey-server
+pveum user add pve-exporter@pve --comment "Prometheus PVE exporter on monitor-01"
+pveum acl modify / --users pve-exporter@pve --roles PVEAuditor
+pveum user token add pve-exporter@pve monitor01 --privsep 1
+pveum acl modify / --tokens 'pve-exporter@pve!monitor01' --roles PVEAuditor
+```
+
+The token value is printed once. Capture it and write it straight into 1Password in the `the managed vault` vault as `the Proxmox token entry`, with the token ID `pve-exporter@pve!monitor01` in a separate field. Do not print it, do not put it in a file yet, do not paste it into a commit.
+
+**Pass:** `pveum user token list pve-exporter@pve` shows `monitor01`, and `pvesh get /access/acl` shows `pve-exporter@pve!monitor01` with role `PVEAuditor` on `/`.
+
+## Phase 3. Build the LXC
+
+```bash
+# On blue-server
+pct create 104 local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst \
+  --hostname monitor-01 \
+  --cores 2 --memory 2048 --swap 1024 \
+  --rootfs local-lvm:16 \
+  --net0 name=eth0,bridge=vmbr0,tag=73,firewall=1,ip=192.168.73.2/24,gw=192.168.73.1 \
+  --nameserver 192.168.73.1 \
+  --unprivileged 1 \
+  --features nesting=1,keyctl=1 \
+  --ostype debian \
+  --onboot 1 \
+  --start 1
+```
+
+The `qm set --delete cicustom` trap does not apply here. That is a VM-clone problem with template 9000, and this is an LXC built from a distribution template.
+
+Then apply the [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) before the host carries a workload: admin user, keys installed, key-only SSH, root locked.
+
+Install Docker from Docker's own repository, matching the other Docker hosts.
+
+**Pass, and check DNS explicitly because it fails silently:**
+
+```bash
+# Inside monitor-01
+getent hosts jellyfin.<YOUR_BASE_DOMAIN>     # MUST return 192.168.85.2
+cat /etc/resolv.conf                          # MUST show 192.168.73.1, not 1.1.1.1
+docker run --rm hello-world                   # proves web egress and nesting
+timedatectl | grep -i synchronized            # proves NTP egress
+```
+
+If the internal name does not resolve, stop. Every blackbox probe depends on it and nothing else will look wrong.
+
+If `hello-world` cannot pull, policy 8 is wrong. If time is not synchronised, policy 9 is wrong. If DNS fails while the resolver is correct, you may need an `Org-Monitor` to `Gateway` allow on 53; that was not needed for existing zones, so treat it as a finding worth recording rather than an expected step.
+
+## Phase 4. Exporters through Ansible
+
+Edit the repository copies first, then deploy to the controller.
+
+1. Add `monitor-01` at 192.168.73.2 to both `node_exporter_targets` and `cadvisor_targets` in [inventory/hosts.yml](../../../Ansible/Source/monitoring-exporters/inventory/hosts.yml).
+2. Add it to `EXPECTED_NODE_EXPORTER_HOSTS`, `EXPECTED_CADVISOR_HOSTS`, and `EXPECTED_IPS` in [tests/validate_project.py](../../../Ansible/Source/monitoring-exporters/tests/validate_project.py). The validator is strict on purpose; it will fail until you do.
+3. Upload all three changed files to `/home/ansible/monitoring-exporters/` and run:
+
+```bash
+cd /home/ansible/monitoring-exporters
+export LANG=C.utf8 LC_ALL=C.utf8
+python3 tests/validate_project.py
+ansible-playbook playbooks/node-exporter.yml -e target=monitor-01
+ansible-playbook playbooks/cadvisor.yml -e target=monitor-01
+```
+
+Debian 13 carries `prometheus-node-exporter` 1.9.0-1+b4, so this takes the APT path and matches the fleet version with no binary install.
+
+**Pass:** validator reports 8 node_exporter hosts and 8 cAdvisor hosts. `node-exporter.yml` asserts the running version. `cadvisor.yml` reports `named_containers` equal to the number Docker says are running, and fails on a mismatch.
+
+## Phase 5. Stand up the stack
+
+1. Copy `Configuration/` from this repository to `/home/<admin>/monitoring/` on `monitor-01`: `docker-compose.yml`, `prometheus.yml`, `blackbox.yml`, and the whole `grafana/` tree.
+2. Substitute `<YOUR_BASE_DOMAIN>` and `<YOUR_ADMIN_USERNAME>` in the copies. The versioned files carry placeholders; the deployed ones cannot.
+3. Create `pve.yml` with the new token, mode 0600, owner the admin user. Write it with a heredoc fed from `op read`; never echo the value. Confirm afterwards that `pve.yml` is not tracked by git and never will be.
+4. `docker compose up -d`.
+5. Rotate the Grafana credential immediately:
+
+```bash
+docker exec -i grafana grafana-cli admin reset-admin-password --password-from-stdin
+```
+
+Feed it from `op read` on the existing `the Grafana administrator entry` item, then rename that item to `the Grafana administrator entry`. Do not add any admin password variable to the Compose file. That is exactly what caused the 2026-07-22 incident.
+
+**Pass:** six containers running, `curl -fsS http://127.0.0.1:9090/-/ready`, `curl -fsS http://127.0.0.1:3000/api/health` reporting `"database": "ok"`, `docker exec prometheus promtool check config /etc/prometheus/prometheus.yml` clean, and an authenticated Grafana API call succeeding with the rotated credential while the default one fails.
+
+## Phase 6. Verify before committing to anything
+
+This is the gate. Everything so far is reversible by deleting CT 104.
+
+Reachability from `monitor-01`, every path, before trusting Prometheus:
+
+```bash
+for h in 192.168.40.35 192.168.40.36 192.168.40.39 192.168.40.42 \
+         192.168.80.10 192.168.80.118 192.168.85.2 \
+         192.168.72.2 192.168.72.3 192.168.90.10 \
+         192.168.70.10 192.168.70.11 192.168.70.12 192.168.70.13; do
+  printf "%-16s 9100=%s 9101=%s\n" "$h" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -m 5 http://$h:9100/metrics)" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -m 5 http://$h:9101/metrics)"
+done
+curl -s -o /dev/null -w '8006=%{http_code}\n' -m 5 -k https://192.168.70.10:8006/
+for n in 192.168.70.10 192.168.70.13; do nc -z -w 4 $n 3493 && echo "3493 open $n"; done
+curl -s -o /dev/null -w '443 via NPM=%{http_code}\n' -m 8 -k https://192.168.85.2/
+```
+
+Expect 200 on 9100 for all fourteen, 200 on 9101 for the eight cAdvisor hosts, non-zero on 8006, both NUT ports open, and NPM answering. A `000` anywhere is a firewall problem; fix the rule before continuing.
+
+Then update the scrape config and both assertions in this repository:
+
+- `prometheus.yml`: add `192.168.73.2:9100` with `role: monitoring` to the `node` job, add `192.168.73.2:9101` to `cadvisor`, and change the self-scrape's `host` label from `security-01` to `monitor-01`. Everything else is unchanged.
+- `Tests/assert_targets.py`: add both new URLs, change the self-scrape host label, and keep `security-01`'s existing `node` and `cadvisor` entries. Expected total becomes **46**.
+
+Deploy per the [runbook](../Runbook.md) target-change procedure, then:
+
+```bash
+curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
+python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
+```
+
+**Pass, and this is the hard gate:** 46 targets, all `up`, and 65 dashboard queries with at most the container restart table empty. Anything less and you stop here with the old stack still running.
+
+Hand off to the operator for the NPM re-point. They own that step.
+
+## Phase 7. Cutover
+
+Only after Phase 6 passed.
+
+1. On `security-01`: `docker compose -f ~/monitoring/docker-compose.yml down`. This stops five containers. It does **not** stop `cadvisor`, which belongs to a separate project at `/opt/docker/cadvisor`. Confirm `cadvisor` is still running afterwards.
+2. Delete the six superseded UniFi policies and edit `Allow NPM to security-01 web UIs` down to port 443.
+3. Remove the four `192.168.72.2` entries from `cluster.fw`, same candidate-then-verify method as Phase 1. Leave the two PeaNUT rules.
+4. Re-run the target assertion from `monitor-01`. Still 46, still all up. `security-01` must still appear twice, as a `node` target and a `cadvisor` target.
+
+**Pass:** 46 up from `monitor-01`, `cadvisor` and `node_exporter` alive on `security-01`, Wazuh untouched and still reachable at `https://wazuh.<domain>`.
+
+## Phase 8. Wipe security-01
+
+```bash
+cd ~/monitoring
+docker compose down                       # already done in Phase 7, harmless to confirm
+docker volume rm monitoring_prometheus_data monitoring_grafana_data
+cd ~ && rm -rf ~/monitoring
+docker image rm prom/prometheus:latest grafana/grafana:latest \
+  prompve/prometheus-pve-exporter:latest prom/blackbox-exporter:v0.27.0 \
+  hon95/prometheus-nut-exporter:1
+```
+
+Remove images by name. **Never run `docker image prune -a` here**, because it would take `ghcr.io/google/cadvisor:v0.60.5` with it.
+
+This deletes the seven `.bak` files, `backups/grafana.db.bak.fleet-metrics-expansion-20260725`, and `pve.yml`. All of it is either in git or deliberately replaced. The grafana.db tarball is the last copy of the two dashboards deleted on 2026-07-26; that was a deliberate choice, not an accident.
+
+**Pass, verify explicitly rather than assuming:**
+
+```bash
+test ! -d ~/monitoring && echo "config gone"
+docker volume ls | grep -c monitoring_          # expect 0
+docker ps --format '{{.Names}}'                 # expect cadvisor plus the Wazuh set, nothing else from this stack
+systemctl is-active node_exporter               # expect active
+curl -fsS http://127.0.0.1:9100/metrics | head -1
+curl -fsS http://127.0.0.1:9101/metrics | grep -c 'name="'   # expect 6, cAdvisor still working
+```
+
+## Phase 9. Documentation
+
+Same task, per `CLAUDE.md`. First person, no emoji, ISO dates, written through the `no-ai-slop` and `rossmann-voice` skills.
+
+**New:** a change record at `Documentation/Change Records/Monitoring Relocation to monitor-01 - 2026-07-26.md`, or the real completion date. It must carry the twenty-three firewall changes, the DNS finding, the `pve_svc_clients` finding, and the measured before-and-after target counts.
+
+**Update:**
+
+| File | Change |
+|---|---|
+| [Prometheus README](../../README.md) | Host, address, 46 targets, `monitor-01` in the job table, containers-on section retitled |
+| [Runbook](../Runbook.md) | Every `security-01` reference for the monitoring stack, the new 46 and the rollback section, which currently names `.bak` files that no longer exist. Rollback becomes rebuild-from-git |
+| [Platform TODO](../TODO.md) | Close this item |
+| [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) | 43 policies becomes 49: twelve added, six deleted. Note the NPM policy edit |
+| [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/VLANs/) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
+| [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/Zones/zone.md) | Add custom zone `Org-Monitor` |
+| [Kasm Lab Network Simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
+| [Galaxy Data Center Firewall](../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) | The IPSET member swap and the three rule changes |
+| [Operations inventory](../../../../Operations/Inventory/Galaxy/) | CT 104 in the LXC inventory, `security-01`'s workload list in `Services.md`, the new exporter rows |
+| [monitoring-exporters README](../../../Ansible/Source/monitoring-exporters/README.md) | 8 hosts in both groups |
+| [Root TODO](../../../../TODO.md) | Move to Recently Completed |
+| `Mission Control/index.html` | New project or a new step, then `node harness.js` must pass |
+
+Do not move the retired lab-range records into `Archive/`. That was considered and rejected on 2026-07-26: the simplification change record is the only account of why VLAN 73 is free, and the 2026-07-22 firewall audit already carries a superseded banner. Reverse pointers, not relocation.
+
+Commit in several small commits rather than one, matching the pattern used through 2026-07-26. No AI author, preparer, reviewer, or co-author trailer anywhere.
 
 ## Rollback
 
-Steps 1 through 6 add things and change nothing, so rollback is deleting the new guest. The commit point is step 8, re-pointing NPM. Before that, the old stack is still running and still authoritative. After it, rollback means pointing NPM back and restarting the six containers on `security-01`, which stays possible until step 9 removes them.
+**Before Phase 7.** Nothing is broken. `pct stop 104 && pct destroy 104`, delete the twelve new policies, remove the four additive `cluster.fw` entries, revert the repository changes to `prometheus.yml`, `assert_targets.py`, and the Ansible inventory. The old stack never stopped.
 
-Keep the old `grafana_data` volume until the new stack has run clean for a week.
+**After Phase 7, before Phase 8.** Re-create the six deleted UniFi policies and restore port 3000 and 9090 on the NPM policy, re-add the four `192.168.72.2` `cluster.fw` entries, then `docker compose up -d` on `security-01`. The volumes and configs are still there, so this is minutes.
 
-## What this does not fix
+**After Phase 8.** The old stack is gone. Rebuild it from `Configuration/` in this repository, which is the same procedure Phase 5 used, so it is proven rather than theoretical. The TSDB and `grafana.db` are unrecoverable, which is acceptable because the new stack started empty by design.
 
-Correlated failure, only reduced. HA is disabled on every guest, so whichever node holds `monitor-01` still takes monitoring down when it fails. Real survivability needs HA, and HA needs shared storage that `ssd-lvm1` and a local ZFS pool do not provide. Worth checking what the cluster's storages actually support before assuming this is available.
+Keep a `cluster.fw` backup at `/root/cluster.fw.bak.monitor-relocation-<date>` on the node you edit from, as on 2026-07-26.
 
-Nothing here alerts. A perfectly placed collector that nobody is watching is worth less than a badly placed one that pages, which is why the [platform backlog](../TODO.md) puts alert routing ahead of this move.
+## What This Does Not Fix
 
-## Sequencing
+Correlated failure is reduced, not removed. HA is disabled on every guest, so `blue-server` failing still takes monitoring down. It also takes NPM and NetBird down, since `docker-network` lives on the same node, so a Blue failure costs the reverse proxy and the VPN as well as the dashboards. That is a different exposure profile from Grey, not a strictly smaller one, and it was accepted knowingly.
 
-After alerting. Alerting covers the many ordinary failures where the monitoring host is fine and something else broke; this covers one specific scenario. Doing it second also means the alert rules move with the stack instead of being written twice.
+Real survivability needs HA, and HA needs shared storage. `local-lvm` is node-local and `hddpool-1` and `ssd-lvm1` show as disabled on Blue, so check what the cluster's storage actually supports before assuming that path is open.
+
+Nothing here alerts. A well-placed collector nobody is watching is worth less than a badly placed one that pages, which is why [alert routing](../TODO.md) is sequenced ahead of this move.
