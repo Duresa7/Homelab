@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
 ## Networks / VLANs
 
@@ -18,6 +18,7 @@
 | MGMT-A | 70 | 192.168.70.0/24 | 192.168.70.1 | .50 – .200 | Ahsoka Gateway |
 | Cluster-Net | 71 | 192.168.71.0/24 | 192.168.71.1 | none | Ahsoka Gateway |
 | Security-A | 72 | 192.168.72.0/24 | 192.168.72.1 | .6 – .254 | Ahsoka Gateway |
+| MONITOR-A | 73 | 192.168.73.0/24 | 192.168.73.1 | .6 – .254 | Ahsoka Gateway |
 | KASM-BROWSER | 74 | 192.168.74.0/24 | 192.168.74.1 | .100 – .199 | Ahsoka Gateway |
 | MALWARE-OFFLINE | 77 | 192.168.77.0/24 | 192.168.77.1 | .100 – .199 | Ahsoka Gateway |
 | EVIDENCE-QUARANTINE | 79 | 192.168.79.0/24 | 192.168.79.1 | .100 – .199 | Ahsoka Gateway |
@@ -42,6 +43,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | MGMT-A (70) | `<YOUR_ORG_NAME>`-Mgmt | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the cluster node mgmt IPs (grey/purple/blue/red = .10–.13), PVE GUI/API/SSH, Corosync link0. Out-of-band / IPMI belongs here. |
 | Cluster-Net (71) | `<YOUR_ORG_NAME>`-Cluster | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication (node IPs .10–.13). No DHCP and no general hosts; nothing else should join. |
 | Security-A (72) | `<YOUR_ORG_NAME>`-Security | Security & monitoring | Security, detection, and monitoring workloads: SIEM, log, and metrics servers (wazuh-01 = .2, splunk-siem = .3). Egress is default-deny except approved web/NTP. |
+| MONITOR-A (73) | Org-Monitor | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. VLAN 73 was the retired CYBER-OPS segment before the 2026-07-23 Kasm simplification. |
 | KASM-BROWSER (74) | KASM-BROWSER | Lab tools | The Kasm Agent, its browser containers, & attacker tooling. Proton egress with the kill switch on. Empty until I rebuild Kasm. |
 | MALWARE-OFFLINE (77) | MALWARE-OFFLINE | Detonation & targets | Disposable targets & malware detonation, offline only, no real Internet. Empty until I rebuild Kasm. |
 | EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review VMs, no real Internet, trusted-side initiated SFTP only. Empty until I rebuild Kasm. |
@@ -56,7 +58,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Workstation I manage the lab from → **Secure (50)**; another user's trusted desktop → **Secure Client (60)**
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**
 - Internal application or database VM → **SERVERS-A (80)**
-- Security, logging, or monitoring tool → **Security-A (72)**
+- Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**
 - Reverse proxy, VPN, or remote-access ingress → **Access-A (85)**
 - Public / internet-facing service → **DMZ-A (90)** (legacy: **DMZ (30)**)
 - General lab, automation, or utility VM/container → **Personal-A (40)**

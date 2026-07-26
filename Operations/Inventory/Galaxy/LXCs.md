@@ -1,14 +1,15 @@
 ﻿# Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
-Galaxy currently has five active LXCs on grey, blue, or red for automation, Docker, remote access, & media. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
+Galaxy currently has six active LXCs on grey, blue, or red for automation, Docker, monitoring, remote access, & media. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
+| 104 | monitor-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.73.2/24 | 192.168.73.1 | 73 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
 | 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 10 | 23.44 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
@@ -38,6 +39,46 @@ Galaxy currently has five active LXCs on grey, blue, or red for automation, Dock
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<YOUR_ANSIBLE_CONTROLLER_MAC>` |
+
+## LXC 104 - monitor-01
+
+### Configuration
+
+| Setting | Value |
+| --- | --- |
+| Node | blue-server |
+| High availability | disabled |
+| OS | Debian GNU/Linux 13 (trixie) |
+| vCPU | 2 |
+| Memory | 2 GiB |
+| Swap | 1 GiB |
+| Unprivileged | yes |
+| Features | nesting=1,keyctl=1 |
+| On boot | yes |
+
+### Storage
+
+| Device | Mount | Storage | Volume | Size | Backup |
+| --- | --- | --- | --- | --- | --- |
+| rootfs | / | local-lvm | vm-104-disk-0 | 16G | default |
+
+### Network
+
+| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- |
+| eth0 | vmbr0 | 73 | 192.168.73.2/24 | 192.168.73.1 | enabled | `<YOUR_MONITOR_HOST_MAC>` |
+
+The LXC keeps its address static in the Proxmox network configuration. UniFi DHCP remains enabled for `MONITOR-A` from 192.168.73.6 through 192.168.73.254.
+
+### Administrative Access
+
+- SSH is public-key only as `<YOUR_ADMIN_USERNAME>` and `ansible`; I installed the approved keys.
+- Both accounts have their recorded recovery credentials. Root is locked.
+- SSH Manager has no direct `monitor-01` entry because its current interface exposes no add-server operation. I can reach the guest through CT 104 on `blue-server` or the approved Ansible path.
+
+### Workload
+
+Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, the NUT exporter, and cAdvisor run from `/home/<YOUR_ADMIN_USERNAME>/monitoring`. The build and verification are in [Monitoring Relocation to monitor-01 - 2026-07-26](../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 ## LXC 107 - docker-network
 

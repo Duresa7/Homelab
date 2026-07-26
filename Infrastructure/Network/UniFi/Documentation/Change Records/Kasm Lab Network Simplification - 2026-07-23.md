@@ -1,7 +1,7 @@
 # Kasm Lab Network Simplification
 
 **Created:** 2026-07-23  
-**Last updated:** 2026-07-23
+**Last updated:** 2026-07-26
 
 ## What I did
 
@@ -16,6 +16,8 @@ I kept three segments:
 | 79 | EVIDENCE-QUARANTINE | evidence review | none |
 
 I deleted VLANs 73 (CYBER-OPS), 75 (LAB-ATTACK), 76 (LAB-TARGET), & 78 (MALWARE-ONLINE) along with their four zones.
+
+I reused VLAN 73 on 2026-07-26 for `MONITOR-A`, the dedicated network for CT 104 `monitor-01`. This does not restore the retired CYBER-OPS lab segment: [Monitoring Relocation to monitor-01](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 ## Firewall changes
 

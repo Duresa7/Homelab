@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-26
 
-This inventory maps 12 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
+This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
@@ -11,12 +11,13 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>SSH<br>cron |
 | debian-dev | VM 102 | grey-server | Development workstation | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Immich<br>Forgejo<br>Homelab Dashboard<br>Termix / Guacamole<br>Portainer<br>Syncthing<br>PeaNUT |
+| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer) |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.5 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | kasm-01 | VM 122 | grey-server | Streamed disposable desktops (`192.168.80.30`, VLAN 80) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2 |
-| security-01 / wazuh-01 | VM 200 | grey-server | Security + monitoring (`192.168.72.2`, VLAN 72) | Wazuh<br>Prometheus<br>Grafana<br>Proxmox exporter |
+| security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; applications onboarded, end-to-end acquisition test pending | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN |
@@ -54,6 +55,19 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Portainer CE | `portainer/portainer-ce:latest` |
 | Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard on `192.168.40.35:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
+
+## monitor-01
+
+| Workload | Details |
+| --- | --- |
+| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 46 of 46 targets `up` at relocation completion |
+| Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential stored in 1Password |
+| Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
+| blackbox exporter | `prom/blackbox-exporter:v0.27.0` on TCP 9115; probes 19 internal NPM names |
+| NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
+| node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; six named containers |
+| Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; UniFi DHCP serves .6 through .254 |
 
 ## docker-blue
 
@@ -104,13 +118,8 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Wazuh | Manager, indexer, dashboard |
-| Prometheus | `prom/prometheus:latest` 3.10.0; 44 targets `UP` across six jobs: `node` (14 hosts), `cadvisor` (7 Docker hosts), `proxmox`, `blackbox` (19 service names), `nut` (both UPS units), and a self-scrape. 15-day retention |
-| Grafana | `grafana/grafana:latest` 12.4.1; datasource & dashboards provisioned from files under `~/monitoring/grafana/`, versioned in the repository |
-| Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on 9221 |
-| blackbox exporter | `prom/blackbox-exporter:v0.27.0` on 9115; probes the 19 internal names through NPM, including certificate expiry |
-| NUT exporter | `hon95/prometheus-nut-exporter:1` on 9995; scraping `ups01` at `192.168.70.13:3493` and `ups02` at `192.168.70.10:3493` since 2026-07-26 |
 | node_exporter | 1.9.0 on 9100 |
-| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on 9101 from `/opt/docker/cadvisor`; 6 containers. v0.52.1 reported none here under the `overlayfs` driver |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on 9101 from `/opt/docker/cadvisor`; one named container after the monitoring stack moved |
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |
 
 ## alpha-prod-01
@@ -165,11 +174,12 @@ Added 2026-07-25. Every running Linux guest except `kasm-01` now exports on 9100
 | ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
+| monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 6 containers, `overlayfs` |
 | kasm-01 | Not installed | n/a | n/a | Not installed |
 
-`security-01` also carries cAdvisor on 9101 with 6 containers; its row is in the guest table above.
+`security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
 
-`app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter, so all seven Docker hosts report: 50 containers, seven of which are the cAdvisor containers. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+`app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. All eight Docker hosts now report 51 containers, eight of which are the cAdvisor containers. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Galaxy UPS telemetry
 

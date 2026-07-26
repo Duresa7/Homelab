@@ -1,9 +1,9 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-23
+**Last updated:** 2026-07-26
 
-I track 15 firewall zones and their assigned networks here.
+I track 16 firewall zones and their assigned networks here.
 
 ## Zone Membership
 
@@ -19,6 +19,7 @@ I track 15 firewall zones and their assigned networks here.
 | `<YOUR_ORG_NAME>`-Servers | Custom | SERVERS-A (VLAN 80) |
 | `<YOUR_ORG_NAME>`-Mgmt | Custom | MGMT-A (VLAN 70) |
 | `<YOUR_ORG_NAME>`-Security | Custom | Security-A (VLAN 72) |
+| Org-Monitor | Custom | MONITOR-A (VLAN 73) |
 | `<YOUR_ORG_NAME>`-Access | Custom | Access-A (VLAN 85) |
 | `<YOUR_ORG_NAME>`-Cluster | Custom | Cluster-Net (VLAN 71) |
 | KASM-BROWSER | Custom | KASM-BROWSER (VLAN 74) |
