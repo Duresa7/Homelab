@@ -3,7 +3,7 @@
 **Created:** 2026-07-25  
 **Last updated:** 2026-07-26
 
-**Implementation date:** 2026-07-25, UPS follow-up 2026-07-26  
+**Implementation date:** 2026-07-25, with UPS and cAdvisor follow-ups on 2026-07-26  
 **Status:** Complete  
 **Primary owner:** Prometheus infrastructure monitoring  
 **Affected systems:** `security-01`, `docker-main`, `docker-network`, `docker-blue`, `media-01`, `alpha-prod-01`, `app-01`, `splunk-siem`, `ansible-01`, UniFi gateway, Grafana
@@ -72,7 +72,7 @@ I deliberately left the `prometheus-node-exporter-collectors` package off these 
 
 The guard caught a genuine conflict on the first run: `docker-network` already had the NetBird server on 8081. I moved the fleet to 9101, which is free on all seven hosts and sits next to `node_exporter`.
 
-Deployment then succeeded everywhere, and six of the seven reported no containers. `docker-main` is the only Docker host still on the `overlay2` storage driver; the other six use Docker 29's `overlayfs` driver, where cAdvisor v0.52.1 can't resolve a container's read-write layer ID and abandons registration entirely. I removed it from those six rather than leave 3,600 series of root-cgroup data and a log line every minute. The full diagnosis, the three fixes that didn't work, and the two ways out are in [cAdvisor Registers No Containers Under the Docker 29 overlayfs Driver](../Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+Deployment then succeeded everywhere, and six of the seven reported no containers. `docker-main` is the only Docker host still on the `overlay2` storage driver; the other six use Docker 29's `overlayfs` driver, where cAdvisor v0.52.1 can't resolve a container's read-write layer ID and abandons registration entirely. I removed it from those six rather than leave 3,600 series of root-cgroup data and a log line every minute. That held for one day; the follow-up below fixed it properly. The full diagnosis is in [cAdvisor Registers No Containers Under the Docker 29 overlayfs Driver](../Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 Container health on the touched hosts was unaffected: `docker-main` 14 containers, `media-01` 9, `alpha-prod-01` 7, `docker-network` 4, `docker-blue` 3, zero unhealthy and zero restarting throughout. Coolify on `app-01` kept answering 302 on 8000.
 
@@ -179,6 +179,43 @@ The dashboard now stands at 34 data panels plus 11 separator bands over 213 grid
 One rename for clarity, now that CPU load and UPS load appear on the same page: the power panels are "UPS load" and "UPS load over time" rather than "Load" and "Load over time".
 
 The query assertion was re-run after every change in this section. Final state: 47 queries, 46 returning data, one allowed empty (the container restart table, which is correct when nothing has restarted), none erroring, and no `level=error` lines in the Grafana log.
+
+## 2026-07-26 Follow-Up: Per-Container Metrics On All Seven Docker Hosts
+
+The 2026-07-25 work left cAdvisor on `docker-main` alone, covering 14 containers of roughly 46, because v0.52.1 registers none under Docker 29's `overlayfs` driver. I recorded that as a limitation with no fix available. It had a fix available.
+
+My version check was wrong. I probed `v0.53.0`, `v0.54.0` and `v0.55.0` on `gcr.io/cadvisor/cadvisor`, got no manifest for any of them, and read that as "v0.52.1 is current". Resolving `latest` instead:
+
+```
+gcr.io/cadvisor/cadvisor:latest   v0.55.1
+ghcr.io/google/cadvisor:latest    v0.60.5
+```
+
+Eight releases past the one I deployed, on a registry I never checked. v0.60.5 handles the containerd snapshotter.
+
+I tested it on `security-01` first, since that host runs `overlayfs` and carries the monitoring stack rather than anyone's workload: 6 named containers of 6 running, zero `read-write layer` errors, 959 series. Then rolled it through the playbook to all seven hosts.
+
+| Host | Docker | Driver | Registered |
+|---|---|---|---|
+| docker-main | 29.6.1 | overlay2 | 14 of 14 |
+| media-01 | 29.6.2 | overlayfs | 9 of 9 |
+| alpha-prod-01 | 29.6.1 | overlayfs | 7 of 7 |
+| app-01 | 29.6.1 | overlayfs | 7 of 7 |
+| security-01 | 29.6.1 | overlayfs | 6 of 6 |
+| docker-network | 29.6.1 | overlayfs | 4 of 4 |
+| docker-blue | 29.5.3 | overlayfs | 3 of 3 |
+
+`ok=14 changed=3` per host, nothing failed, nothing unreachable. No firewall work was needed: the 2026-07-25 policies already permitted 9101 from `192.168.72.2` into every zone involved, and all seven answered 200 from `security-01` on the first try.
+
+The `cadvisor` scrape job went from 1 target to 7, taking Prometheus from 38 to 44, all `up`. `count by (host) (container_last_seen{name!=""})` reports 50 containers, seven of which are the cAdvisor containers.
+
+Three things changed beyond the image tag:
+
+The container panels went fleet-wide and now group by `host` as well as `name`. A container name is only unique within a host, so aggregating on name alone would have merged two hosts running the same image into one series and shown a number that belongs to neither. The row is titled "Containers" instead of "Containers on docker-main", and the descriptions no longer carry the scope warning. All 47 dashboard queries return data.
+
+The playbook stopped asserting on the storage driver. That pre-flight check refused to install unless the driver was `overlay2`, which encoded one cause and would have blocked this fix. It now counts what cAdvisor registered after installing and fails when a host with running containers reports none, which catches the same failure without pretending to know why it happened.
+
+The `cadvisor_incompatible` inventory group is gone, and the validator fails if it comes back. Six hosts listed as permanently incompatible were nothing of the kind.
 
 ## Remaining Work
 
