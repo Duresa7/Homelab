@@ -1,9 +1,11 @@
 ﻿# Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-26
 
-Galaxy currently has 12 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 13 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+
+VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -12,6 +14,7 @@ Galaxy currently has 12 QEMU VMs & two templates. This inventory records each gu
 | 103 | W11-Test-1 | grey-server | Windows 11 Pro | 4 | 8 GiB | 80G | 192.168.65.112/24 | 192.168.65.1 | 65 | disabled |
 | 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
+| 111 | fedora-dev | grey-server | Fedora (l26 ostype; release not captured while stopped) | 6 | 8 GiB | 80G | none recorded, stopped since 2026-07-15 | 192.168.40.1 | 40 | disabled |
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 24 GiB | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
@@ -182,6 +185,51 @@ Galaxy currently has 12 QEMU VMs & two templates. This inventory records each gu
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | `<YOUR_SPLUNK_VM_MAC>` |
+
+### VM 111 - fedora-dev
+
+Recorded on 2026-07-26 after the PVE API surfaced it and this inventory did not. Created 2026-07-14 16:42:59 UTC, first booted successfully at 16:47:09 the same day after two failed starts that ended `QEMU exited with code 1`, and last started 2026-07-15 13:22:07 UTC. Stopped since.
+
+No `onboot` flag, so it does not come up with the node. The IPv4 address is unrecorded because the QEMU agent only reports one while the guest runs, and I did not start it to find out. Its 80 GiB disk is 4.2% of `ssd-lvm1`, which sits at 18.99% used, so it costs capacity but nothing urgent.
+
+Purpose isn't documented anywhere, and I'm not inferring one from the name. It's a candidate for the same archive-then-delete treatment as CT 105 `ai-bravo-02` if it turns out to be a leftover experiment; that decision is in the [root TODO](../../../TODO.md).
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | no |
+| OS family | Linux |
+| Guest OS | `ostype: l26`; Fedora per the guest name, release not captured while stopped |
+| IPv4 | none recorded |
+| Gateway | 192.168.40.1 |
+| Power state | stopped since 2026-07-15 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 6 |
+| CPU type | host |
+| Memory | 8 GiB |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | virtio |
+| QEMU agent | enabled |
+| TPM | disabled |
+| Created by | QEMU 11.0.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-111-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-111-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys, ms-cert 2023k |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 40 | none recorded | 192.168.40.1 | enabled | `<YOUR_FEDORA_DEV_MAC>` |
 
 ### VM 116 - app-01
 
