@@ -34,6 +34,14 @@ services:
       - GF_SERVER_DOMAIN=grafana.<YOUR_BASE_DOMAIN>
       - GF_SERVER_ROOT_URL=https://grafana.<YOUR_BASE_DOMAIN>
       - GF_SERVER_PROTOCOL=http
+      # Write-ahead logging on the SQLite database. Added 2026-07-26 after 25
+      # `database is locked` errors in 10 hours, spread across background jobs:
+      # provisioning re-walks, alert rule saves, remote-cache GC, token and login
+      # cleanup, SSO settings, snapshot expiry. In SQLite's default rollback-journal
+      # mode a reader blocks the writer, and Grafana's own housekeeping runs enough
+      # concurrent work to hit that on its own with a single user. WAL lets readers
+      # and the writer proceed together.
+      - GF_DATABASE_WAL=true
     volumes:
       - grafana_data:/var/lib/grafana
       # Directory mounts, not single-file mounts, so the inode problem above
