@@ -62,7 +62,7 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 
 | Dashboard | UID | Purpose |
 |---|---|---|
-| Homelab Overview | `homelab-overview` | 34 panels in 11 rows, one concern per row: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, monitoring health |
+| Homelab Overview | `homelab-overview` | 34 visible panels across 11 concern rows: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, monitoring health. A twelfth row, `Per-host detail`, stays collapsed and holds 8 more |
 
 One dashboard, provisioned from this repository. On 2026-07-26 I deleted the two imported community dashboards, Node Exporter Full (`rYdddlPWk`, grafana.com 1860) and Proxmox via Prometheus (`Dp7Cd57Zza`, grafana.com 10347). They were the only unversioned dashboards left, so removing them makes the repository the complete record of what Grafana shows.
 
