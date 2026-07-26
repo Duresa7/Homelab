@@ -3,10 +3,10 @@
 **Created:** 2026-07-26  
 **Last updated:** 2026-07-26
 
-**Status:** Planned, not started  
+**Status:** Complete on 2026-07-26  
 **Target:** CT 104 `monitor-01`, Debian 13 LXC on `blue-server`, VLAN 73 `MONITOR-A`, 192.168.73.2  
 **Owner:** Prometheus infrastructure monitoring  
-**Affected systems:** `security-01`, `blue-server`, UniFi gateway, Proxmox cluster firewall, all four Proxmox nodes, `ansible-01`, Nginx Proxy Manager, all 44 current scrape targets
+**Affected systems:** `security-01`, `blue-server`, UniFi gateway, Proxmox cluster firewall, all four Proxmox nodes, `ansible-01`, Nginx Proxy Manager, and the final 46-target scrape set
 
 This replaces the first draft of this plan, written earlier on 2026-07-26 and wrong in four ways: it said VM rather than LXC, `purple-server` or `red-server` rather than `blue-server`, 6 GiB rather than 2 GiB, and six firewall rules rather than twenty-three. The design review that corrected it is summarised under [Decisions](#decisions).
 
@@ -27,6 +27,34 @@ You are executing this, not designing it. The decisions below are settled; do no
 - Anything in Phase 8 would delete `cadvisor`, `node_exporter`, or a Wazuh component.
 
 **Order matters more than speed.** Phases 1 through 6 add things and change nothing. The commit point is Phase 7. Before it, rollback is deleting CT 104 and removing the rules you added. After it, rollback means restoring rules and rebuilding from git.
+
+## Execution State, 2026-07-26
+
+I passed Phase 0 with 44 of 44 targets up. `blue-server` still reported CTID 104 free, the Debian 13 template cached, & about 140 GB free on `local-lvm`.
+
+I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24. DHCP serves 192.168.73.6 through 192.168.73.254, leaving the static `monitor-01` address at 192.168.73.2 outside the pool. UPnP & mDNS remain disabled.
+
+Phase 1 is complete. `Org-Monitor` contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, & the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
+
+Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled & `PVEAuditor` on `/`. I stored its one-time secret and token ID in the `the managed vault` vault, then removed both staging files.
+
+Phase 3 is complete. CT 104 runs Debian 13 on `blue-server` with two cores, 2 GiB memory, 1 GiB swap, a 16 GiB disk, & static address 192.168.73.2. The Linux host baseline passed: both administrative accounts have their approved keys and recovery passwords, SSH is key-only, root is locked, the locale is `en_US.UTF-8`, the timezone is `America/New_York`, & no package upgrades remain. Docker 29.6.2 and Compose 5.3.1 run inside the unprivileged LXC, and the controller reached the `ansible` account with its restricted key.
+
+The first DNS check exposed two missing network details. UniFi had automatically excluded `MONITOR-A` from the shared `Proxmox-Trunk` profile, so VLAN 73 could not reach the gateway. I added only `MONITOR-A` to that profile and verified its network ID disappeared from the excluded set. DNS still needed the anticipated `Allow Monitor DNS to Gateway` policy on TCP and UDP 53. After both fixes, the guest reached 192.168.73.1, resolved public names, & resolved `jellyfin.<YOUR_BASE_DOMAIN>` to 192.168.85.2.
+
+Phase 4 is complete. The Ansible project now holds eight hosts in both exporter groups. The node exporter play installed version 1.9.0 on `monitor-01`, and the cAdvisor play started version 0.60.5 on port 9101. Both endpoints return HTTP 200.
+
+Phase 5 is complete. Six containers run from `/home/<YOUR_ADMIN_USERNAME>/monitoring`, and the deployed files contain the real domain and administrator name rather than repository placeholders. I created `pve.yml` as a mode 0600 untracked file, removed every secret staging file, and verified `pve_up 1` for the cluster and all four nodes. The current Grafana image uses `/usr/share/grafana/bin/grafana cli` rather than the plan's removed `grafana-cli` executable. I used that supported path to rotate the saved credential through stdin, renamed the 1Password item to `the Grafana administrator entry`, verified the `<YOUR_ADMIN_USERNAME>` login, and confirmed the default `admin:admin` login fails. `promtool check config` passed.
+
+Phase 6 passed. All 15 node exporters and all eight cAdvisor endpoints return HTTP 200 from `monitor-01`; Proxmox answers on 8006; both NUT servers accept TCP 3493 and return live UPS metrics; and both local web interfaces answer. The direct `https://192.168.85.2/` check returns curl code `000` because NPM rejects a TLS handshake without an SNI hostname, not because TCP 443 is blocked. A TCP probe reaches 443, and `https://jellyfin.<YOUR_BASE_DOMAIN>/` returns HTTP 302 through the same address. The exact target assertion reports 46 of 46 up with no stale addresses. All 65 dashboard queries pass, with only the allowed container restart table empty.
+
+The Phase 6 NPM handoff is complete. The operator changed proxy-host ID 18 for Grafana to `192.168.73.2:3000` & ID 19 for Prometheus to `192.168.73.2:9090`. A read-only database query confirmed both saved values. Both HTTPS names return HTTP 302, & both direct replacement endpoints return HTTP 200 from `docker-network`.
+
+Phase 7 is complete. I reran the assertion at the commit point and got 46 of 46 targets up, then stopped the old five-container Compose project on `security-01`. cAdvisor remained the only running Docker container there; `node_exporter`, `wazuh-manager`, `wazuh-indexer`, & `wazuh-dashboard` remained active. I enabled only `UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE` for the UniFi MCP, previewed and deleted the six superseded policies one at a time, and narrowed `Allow NPM to security-01 web UIs` to port 443. Each structural diff showed only the intended change. I replaced the four old 192.168.72.2 `cluster.fw` entries with the four 192.168.73.2 entries, compiled the result, and verified the same final SHA256 on all four nodes.
+
+Phase 8 is complete. I proved the removal scope before deleting anything, then removed only `/home/<YOUR_ADMIN_USERNAME>/monitoring`, its two named volumes, and the five retired monitoring images from `security-01`. cAdvisor still returns HTTP 200, `node_exporter` is active, and the three Wazuh services plus the Wazuh HTTPS route remain healthy. The plan's expected six non-empty cAdvisor names was wrong after the wipe: only `cadvisor` remains because the five retired containers no longer exist.
+
+The live UniFi policy count started at 52, not the 43 recorded in the firewall inventory. Nine Kasm policies account for the difference. The 12 planned additive policies brought the live count to 64, the required DNS policy brought it to 65, and the six deletions left 59. Editing the NPM policy did not change the count. Phase 9 corrected the inventory and recorded the complete result in [Monitoring Relocation to monitor-01 - 2026-07-26](../Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 ## Why
 
@@ -54,7 +82,7 @@ Second reason: `security-01` uses 8 of 12 GiB and nearly all of it is Wazuh's in
 | 5 | `--nameserver 192.168.73.1` | Split-horizon DNS is gateway-wide, verified against both `.72.1` and `.80.1`. A public resolver returns NXDOMAIN for internal names and silently kills all 19 blackbox probes and nothing else |
 | 6 | Inbound: NPM plus break-glass from Jedi PC | Daily access through the proxy with the wildcard certificate. The direct rule exists because NPM runs on `docker-network`, on this same node, and because you need browser access before NPM is re-pointed |
 | 7 | Fresh TSDB, retention stays 15d | Graphs restart empty and heal by 2026-08-10. Retention unchanged so no documentation numbers move |
-| 8 | Grafana: bootstrap default, rotate immediately with `grafana-cli` | The 2026-07-22 incident was a bootstrap value left in the Compose file. Nothing goes in Compose this time |
+| 8 | Grafana: bootstrap default, rotate immediately with the supported Grafana CLI | The 2026-07-22 incident was a bootstrap value left in the Compose file. Nothing goes in Compose this time. Grafana 13 uses `/usr/share/grafana/bin/grafana cli`; the old `grafana-cli` executable is gone |
 | 9 | New `pve-exporter@pve!monitor01`, PVEAuditor on `/` | The existing credential is `local-dash@pve!readonly`, shared with `homelab-dashboard-aio` on `docker-main`. Revoking it breaks that app |
 | 10 | Agent performs all firewall changes | Operator decision. Phases are ordered so a block is survivable |
 | 11 | Additive first, roughly an hour of overlap, then cutover | The overlap exists only to prove the new path |
@@ -73,7 +101,7 @@ Do not re-derive these. They were checked during the design review.
 | `blue-server` storage | `local-lvm` lvmthin, 140 GB available of 148 |
 | Debian 13 LXC template | Already cached: `local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst` |
 | Next free cluster ID | 104 |
-| VLAN 73 trunking | Already in the `Proxmox-Trunk` port profile's tagged set. `vmbr0` is VLAN-aware with `bridge-vids 2-4094`. No switch or bridge change needed |
+| VLAN 73 trunking | `vmbr0` is VLAN-aware with `bridge-vids 2-4094`. UniFi initially excluded the newly created network from `Proxmox-Trunk`; I added only `MONITOR-A` to the profile during execution |
 | Proxmox guest firewall | No per-guest `.fw` files exist and there is no `host.fw` on blue. CT 107 receives 443 with no rule permitting it, so guest ingress is not filtered. `monitor-01` needs no `cluster.fw` work for its own inbound |
 | Existing PVE identity | `local-dash@pve` token `readonly`, `privsep=1`, ACL `/` role `PVEAuditor` propagate=1 |
 | 1Password | No item exists for the PVE credential. `pve.yml` on `security-01` is its only copy |
@@ -163,7 +191,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 
 ## Phase 1. Network, zone, and firewall
 
-1. Create network `MONITOR-A`, VLAN 73, 192.168.73.0/24, gateway 192.168.73.1. No DHCP range is needed; `monitor-01` is static. Leave UPnP and IGMP snooping off.
+1. Create network `MONITOR-A`, VLAN 73, 192.168.73.0/24, gateway 192.168.73.1. Enable DHCP from 192.168.73.6 through 192.168.73.254. Keep `monitor-01` static at 192.168.73.2 in its LXC network configuration. Leave UPnP and IGMP snooping off.
 2. Create custom zone `Org-Monitor` containing only `MONITOR-A`.
 3. Create the twelve policies above.
 4. Make the four additive `cluster.fw` changes. Verify the candidate before installing: line count, that both `IN DROP` entries survive, that all five IPSETs survive, and that the file still contains the two PeaNUT rules. Then `pve-firewall compile`.
@@ -332,7 +360,7 @@ docker volume ls | grep -c monitoring_          # expect 0
 docker ps --format '{{.Names}}'                 # expect cadvisor plus the Wazuh set, nothing else from this stack
 systemctl is-active node_exporter               # expect active
 curl -fsS http://127.0.0.1:9100/metrics | head -1
-curl -fsS http://127.0.0.1:9101/metrics | grep -c 'name="'   # expect 6, cAdvisor still working
+curl -fsS http://127.0.0.1:9101/metrics | grep -c 'name="'   # expect 1 after the wipe: cadvisor itself
 ```
 
 ## Phase 9. Documentation
@@ -348,7 +376,7 @@ Same task, per `CLAUDE.md`. First person, no emoji, ISO dates, written through t
 | [Prometheus README](../../README.md) | Host, address, 46 targets, `monitor-01` in the job table, containers-on section retitled |
 | [Runbook](../Runbook.md) | Every `security-01` reference for the monitoring stack, the new 46 and the rollback section, which currently names `.bak` files that no longer exist. Rollback becomes rebuild-from-git |
 | [Platform TODO](../TODO.md) | Close this item |
-| [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) | 43 policies becomes 49: twelve added, six deleted. Note the NPM policy edit |
+| [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) | Correct the stale 43-policy inventory to the 52-policy starting state, then record 59 after thirteen additions and six deletions. Note the DNS finding and NPM policy edit |
 | [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/VLANs/) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
 | [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/Zones/zone.md) | Add custom zone `Org-Monitor` |
 | [Kasm Lab Network Simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
@@ -364,7 +392,7 @@ Commit in several small commits rather than one, matching the pattern used throu
 
 ## Rollback
 
-**Before Phase 7.** Nothing is broken. `pct stop 104 && pct destroy 104`, delete the twelve new policies, remove the four additive `cluster.fw` entries, revert the repository changes to `prometheus.yml`, `assert_targets.py`, and the Ansible inventory. The old stack never stopped.
+**Before Phase 7.** Nothing is broken. `pct stop 104 && pct destroy 104`, delete the thirteen new policies, remove `MONITOR-A` from the `Proxmox-Trunk` tagged set, remove the four additive `cluster.fw` entries, revert the repository changes to `prometheus.yml`, `assert_targets.py`, and the Ansible inventory. The old stack never stopped.
 
 **After Phase 7, before Phase 8.** Re-create the six deleted UniFi policies and restore port 3000 and 9090 on the NPM policy, re-add the four `192.168.72.2` `cluster.fw` entries, then `docker compose up -d` on `security-01`. The volumes and configs are still there, so this is minutes.
 

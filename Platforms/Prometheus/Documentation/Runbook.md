@@ -5,7 +5,7 @@
 
 ## Health Check
 
-Connect to `security_01` through SSH Manager. The stack is healthy when all five containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
+Connect to CT 104 through `blue_server` in SSH Manager, or use the approved Ansible path to `monitor-01`. SSH Manager does not yet carry a direct `monitor-01` target. The stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 44 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 46 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -33,12 +33,12 @@ Do not treat a successful file copy or a HUP signal as proof of reload. Verify t
 
 Step 6 matters. `prometheus.yml` is a single-file bind mount, and `mv` replaces the inode while the container stays attached to the old one, which is what cost the 2026-07-13 change a reload. Redirecting into the existing file keeps the inode and removes the failure mode. Restart anyway, because Prometheus still has to re-read the file.
 
-Adding a target on another VLAN needs a UniFi policy from Security-A to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Test reachability from `security-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
+Adding a target on another VLAN needs a UniFi policy from `Org-Monitor` to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
 
 ## Change a Dashboard
 
 1. Edit the JSON under [Configuration/grafana/dashboards/](../Configuration/grafana/dashboards/).
-2. Validate it parses, then upload it to `~/monitoring/grafana/dashboards/` on `security-01`.
+2. Validate it parses, then upload it to `~/monitoring/grafana/dashboards/` on `monitor-01`.
 3. Wait 30 seconds. Grafana re-reads the provisioning directory on its own interval, so no restart is needed.
 4. Run `assert_dashboard_queries.py` against the new file.
 
@@ -48,13 +48,13 @@ Adding a provisioning subdirectory means adding a placeholder file to it. The Co
 
 ## Rollback
 
-Restore the latest validated host-side backup to `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml`, restart the container, check readiness and `promtool`, then verify the intended target set.
+The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, substituting the deployed domain and administrator name, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
 
 Grafana's SQLite database runs in write-ahead-logging mode since 2026-07-26, set by `GF_DATABASE_WAL=true` in the Compose file. Restoring `grafana.db` on its own is no longer complete: take `grafana.db-wal` and `grafana.db-shm` with it, or stop the container first so SQLite checkpoints the WAL back into the main file. Reason for the setting is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
-To roll back Grafana, restore `grafana.db` into the `grafana_data` volume from `~/monitoring/backups/` and recreate the container. That reverts dashboards and the datasource together. To roll back only the provisioning layer, remove the two mounts from the Compose file and recreate Grafana; it then serves whatever the volume holds.
+The old `grafana.db` and Prometheus TSDB were deleted by design during the relocation and have no project backup. Rebuilding starts with a fresh database and the provisioned datasource and dashboard from git. To roll back only the current provisioning layer, restore the prior versioned files and recreate Grafana.
 
-The 2026-07-25 backups are suffixed `.bak.fleet-metrics-expansion-20260725`. The 2026-07-13 rollback file is documented in its [change record](Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md#rollback-points).
+The complete relocation and rebuild rollback are in [Monitoring Relocation to monitor-01 - 2026-07-26](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md#rollback).
 
 ## Exporter Rollout
 
@@ -77,11 +77,11 @@ cAdvisor is pinned to `ghcr.io/google/cadvisor:v0.60.5`. Do not move it back to 
 ## User Endpoints
 
 - Homelab Overview: `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview`
-- Prometheus: `https://prometheus.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.72.2:9090/`
-- Grafana: `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.72.2:3000/`
+- Prometheus: `https://prometheus.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:9090/`
+- Grafana: `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:3000/`
 
-Exporter endpoints on 9100, 9101, 9115, and 9995 are backend services. Query them through Prometheus except during diagnostics.
+Exporter endpoints on 9100, 9101, 9115, 9221, and 9995 are backend services. Query them through Prometheus except during diagnostics.
 
-Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM is the only approved cross-zone source to TCP 443, 3000, & 9090 on `security-01`.
+Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
 
 The Grafana administrator credential is stored in 1Password as `the Grafana administrator entry` in the `the managed vault` vault. Retrieve it through the `1password-cli` skill; Prometheus itself has no authentication.

@@ -1,7 +1,7 @@
 # Prometheus Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I installed the missing node exporters, removed stale scrape jobs, validated the
 
 ## Current Status and Verified Versions
 
-Prometheus runs on `security-01` at `192.168.72.2:9090` with a 15-second scrape interval. It scrapes `security-01`, `edge-01`, all four Galaxy nodes, & the Proxmox API exporter. Purple, blue, & red run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
+Prometheus now runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. The original seven-target baseline described below has grown to 46 targets: 15 node exporters, eight cAdvisor endpoints, the Proxmox API exporter, 19 blackbox probes, both NUT sources, and a self-scrape. Purple, blue, and red run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
 
 ## What You Need
 
@@ -80,12 +80,13 @@ If a valid host-side file doesn't change the running target set after SIGHUP, co
 
 ## Known Limits
 
-The baseline removes hosts that didn't have working exporters; it doesn't claim monitoring coverage for them. Alert rules and dashboard coverage are outside this recorded change.
+This walkthrough records the original baseline procedure. The current target list, dashboard checks, and recovery procedure live in the platform README and runbook. Alert rules remain open.
 
 ## Source Records
 
 - [Prometheus overview](../Platforms/Prometheus/README.md)
 - [Baseline cleanup](../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md)
+- [Relocation to monitor-01](../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md)
 - [Versioned configuration](../Platforms/Prometheus/Configuration/prometheus.yml)
 - [Runbook](../Platforms/Prometheus/Documentation/Runbook.md)
 - [Troubleshooting index](../Platforms/Prometheus/Documentation/Troubleshooting/README.md)

@@ -7,6 +7,8 @@
 **Status:** Mitigated, verification pending 2026-07-27  
 **Affected systems:** `security-01`, Grafana 12.4.1
 
+I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` remains in the versioned Compose file. The 2026-07-27 verification now runs against Grafana 13.1.1 on `monitor-01`; it cannot prove the deleted database was repaired, but it can prove the mitigation remains clean on the replacement.
+
 ## Symptom
 
 Grafana logged 25 `level=error` lines in 10 hours, every one of them ending in `database is locked`. It kept happening with nobody using Grafana, so it isn't load.
@@ -68,7 +70,7 @@ Before the change there was no `-wal` file. `api/health` reports `"database": "o
 docker logs --since 24h grafana 2>&1 | grep -c "level=error"
 ```
 
-Baseline to beat: 25 in 10 hours. Run it on 2026-07-27. If it is at or near zero, this is closed. If it is not, the diagnosis was wrong and the next step is an external database rather than more tuning.
+Baseline to beat: 25 in 10 hours. Run it on `monitor-01` on 2026-07-27. If it is at or near zero, this is closed. If it is not, the diagnosis was wrong and the next step is an external database rather than more tuning.
 
 ## Why Not Postgres
 

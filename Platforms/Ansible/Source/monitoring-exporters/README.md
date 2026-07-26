@@ -3,15 +3,15 @@
 **Created:** 2026-07-25  
 **Last updated:** 2026-07-26
 
-I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all seven Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
+I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all eight Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
 
 ## Scope
 
-`node_exporter_targets` holds 7 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, & ansible-01. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` & `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
+`node_exporter_targets` holds 8 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, ansible-01, & monitor-01. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` & `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
 
 `ansible-01` manages itself over `ansible_connection: local`, so the controller doesn't depend on its own key sitting in its own `authorized_keys`.
 
-`cadvisor_targets` holds all seven Docker hosts: the five above plus `app-01` and `security-01`, both of which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
+`cadvisor_targets` holds all eight Docker hosts: the six shared targets above plus `app-01` and `security-01`, both of which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
 
 ## One exporter version, two install methods
 
@@ -31,11 +31,11 @@ The pinned image is `ghcr.io/google/cadvisor:v0.60.5`, and both halves of that m
 
 cAdvisor v0.52.1 can't resolve a container's read-write layer ID under Docker 29's default `overlayfs` driver, because it reads the old graphdriver `layerdb` path and the containerd snapshotter doesn't keep one. The lookup happens during registration rather than during collection, so the container is abandoned outright and only the root cgroup is emitted. From 2026-07-25 to 2026-07-26 this project ran cAdvisor on `docker-main` alone for that reason, since `docker-main` was the one host still on `overlay2`.
 
-v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/cadvisor/cadvisor` stops at v0.55.1 and never published v0.53.0, v0.54.0, or v0.55.0, which is how I convinced myself for a day that v0.52.1 was current. All seven hosts now report every container they run, 50 in total. Full account in the [troubleshooting record](../../../Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/cadvisor/cadvisor` stops at v0.55.1 and never published v0.53.0, v0.54.0, or v0.55.0, which is how I convinced myself for a day that v0.52.1 was current. The original seven hosts reported all 50 containers they ran before I added `monitor-01` as the eighth target. After I moved the five-container monitoring project off `security-01` and started the six-container stack on `monitor-01`, the eight targets reported 51 named containers. Full account in the [troubleshooting record](../../../Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101, not the usual 8080. 8080 is taken by termix on docker-main & coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all seven and sits next to `node_exporter`.
+cAdvisor publishes on 9101, not the usual 8080. 8080 is taken by termix on docker-main & coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all eight and sits next to `node_exporter`.
 
 ## Running the playbooks
 
@@ -55,7 +55,7 @@ ansible-playbook playbooks/node-exporter.yml
 # One host.
 ansible-playbook playbooks/node-exporter.yml -e target=splunk-siem
 
-# cAdvisor across all seven Docker hosts, then removal from one.
+# cAdvisor across all eight Docker hosts, then removal from one.
 ansible-playbook playbooks/cadvisor.yml
 ansible-playbook playbooks/cadvisor.yml -e target=media-01 -e cadvisor_state=absent
 ```
@@ -70,7 +70,7 @@ A `--check` run of `node-exporter.yml` fails its verification tasks on a host th
 
 Add it under `node_exporter_targets` or `cadvisor_targets` with its `ansible_host` & `ansible_user`, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
 
-Scraping the new host also needs a UniFi policy from Security-A to its zone, and possibly a rule in the Proxmox cluster firewall. Test reachability from `security-01` before adding it to `prometheus.yml`.
+Scraping the new host also needs a UniFi policy from the collector's zone to the target, and possibly a rule in the Proxmox cluster firewall. Test reachability from the active Prometheus host before adding it to `prometheus.yml`.
 
 ## Relationship to fleet-updates
 

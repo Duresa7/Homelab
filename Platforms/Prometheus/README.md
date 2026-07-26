@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-26
 
-I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometheus scrapes 44 targets: `node_exporter` on 14 Linux hosts, cAdvisor on all 7 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself.
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 46 targets: `node_exporter` on 15 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself.
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -20,18 +20,18 @@ I run Prometheus & Grafana in Docker on `security-01` at `192.168.72.2`. Prometh
 
 | Item | Value |
 |---|---|
-| Prometheus UI | `https://prometheus.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback `http://192.168.72.2:9090/` |
-| Grafana UI | `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.72.2:3000/` |
+| Prometheus UI | `https://prometheus.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback `http://192.168.73.2:9090/` |
+| Grafana UI | `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:3000/` |
 | Homelab Overview dashboard | `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview` |
-| Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/` on `security-01` |
+| Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions | Prometheus 3.10.0, Grafana 12.4.1, blackbox_exporter 0.27.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
+| Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.27.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
-## Containers on security-01
+## Containers on monitor-01
 
-`prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, and `nut-exporter` run from `~/monitoring/docker-compose.yml`. `cadvisor` runs there too but from its own project at `/opt/docker/cadvisor`, because Ansible owns it across every Docker host identically.
+`prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `cadvisor` run from `~/monitoring/docker-compose.yml`. Ansible still owns the cAdvisor version and deployment pattern across the rest of the Docker fleet.
 
 ## Scrape Jobs
 
@@ -39,16 +39,16 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 
 | Job | Targets |
 |---|---|
-| `node` | grey-server, purple-server, blue-server, red-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network |
-| `cadvisor` | all 7 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01 |
-| `proxmox` | PVE API exporter, covering all 21 guests and 10 storages |
+| `node` | grey-server, purple-server, blue-server, red-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01 |
+| `cadvisor` | all 8 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01 |
+| `proxmox` | PVE API exporter, covering all 22 guests and 10 storages |
 | `blackbox` | the 19 service names published through NPM |
 | `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
 | `prometheus` | self-scrape |
 
 `kasm-01` is the one running host with no exporter, held back until its move to `purple-server` settles its address.
 
-cAdvisor covers 50 containers across those 7 hosts, 7 of which are the cAdvisor containers themselves. It covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+cAdvisor covers 51 containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. It covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Grafana Configuration Is Versioned
 
@@ -85,3 +85,5 @@ The 2026-07-13 baseline cleanup installed the three missing Proxmox exporters an
 On 2026-07-22 I published Prometheus and Grafana through internal NPM and closed the [Grafana plaintext administrator credential incident](../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md): [Internal HTTPS Service Onboarding - 2026-07-22](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 The 2026-07-25 expansion took the target set from 7 to 36 and built the overview dashboard. Two follow-ups on 2026-07-26 brought it to 44: enabling UPS collection, then upgrading cAdvisor so the six `overlayfs` hosts report containers. All three are recorded in [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).
+
+On 2026-07-26 I moved the stack from `security-01` on `grey-server` to CT 104 `monitor-01` on `blue-server`, added the new host's two exporters, and retired the old monitoring files and volumes. The final target set is 46 of 46 `up`: [Monitoring Relocation to monitor-01 - 2026-07-26](Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
