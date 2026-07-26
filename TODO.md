@@ -7,13 +7,14 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-_No untriaged items._
+- [ ] Document or remove Galaxy VM 111 `fedora-dev`. The PVE API reports it on `grey-server` in a stopped state, but it appears in no file under [Operations/Inventory/Galaxy/](Operations/Inventory/Galaxy/). I found it in `pve_guest_info` while building the guest-inventory panel on 2026-07-25, so the dashboard now shows a guest the inventory doesn't.
 
 ## Active Priorities
 
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
-- [ ] Attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network, then confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before running live malware. Platform notes in [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
+- [ ] Move Kasm to `purple-server`, rebuild INetSim on VLAN 77, then attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network. The UniFi zone matrix audit gates the rest, and the acceptance checks gate the first live sample. Seven steps, rollback points, and stop conditions in [Kasm Relocation to Purple](Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
 - [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+- [ ] Add two lines to `/etc/pve/firewall/cluster.fw` so `192.168.72.2` can reach TCP 3493 on `grey-server` and `red-server`, then uncomment the `nut` job in `prometheus.yml`. The exporter and the UniFi policy are already in place; the Proxmox cluster firewall is the only thing still blocking UPS history. Exact lines in the [Prometheus backlog](Platforms/Prometheus/Documentation/TODO.md).
 
 ## Scheduled
 
@@ -24,7 +25,7 @@ _No untriaged items._
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open items; dedicated account rollout and active-fleet expansion completed 2026-07-25 |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open items; dedicated account rollout & active-fleet expansion completed 2026-07-25, monitoring-exporters project added the same day |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 `ai-bravo-02` on 2026-08-15; also includes the deferred recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
@@ -33,11 +34,12 @@ _No untriaged items._
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | No open baseline items; future monitoring changes land here first |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Proxmox firewall lines for the NUT job, per-container metrics on the six `overlayfs` Docker hosts, `kasm-01` exporter, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed
 
+- [x] 2026-07-25: [Fleet metrics expansion and Grafana overview](Platforms/Prometheus/Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Prometheus went from 7 targets to 36: `node_exporter` 1.9.0 on 7 more hosts through a new Ansible project, cAdvisor, `blackbox_exporter` probes of all 19 proxied service names, and a self-scrape. Four UniFi policies opened the paths; all 36 targets report `up`. I built a 27-panel Homelab Overview dashboard and put the whole Grafana configuration into git for the first time, since the datasource and both imported dashboards had existed only inside the Docker volume. Every dashboard query is checked by a new assertion script: 39 of 40 return data and the fortieth is an empty restart table. Two findings shaped the work: `node_exporter` inside an LXC reports the host's ZFS and NVMe devices, so hardware panels filter on `role="hypervisor"`; and cAdvisor registers no containers under Docker 29's `overlayfs` driver, so per-container metrics cover `docker-main` alone. The UPS job is written and disabled pending a Proxmox firewall rule.
 - [x] 2026-07-25: [Dedicated Ansible account and fleet expansion](Platforms/Ansible/Documentation/Change%20Records/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md). I created the dedicated account on `ansible-01` and nine running Linux guests, stored one console-recovery credential in 1Password, restricted the controller key to its source address, validated passwordless sudo, & moved the controller key out of the former root or admin key stores. The live validators report 9 OS hosts, 5 Compose hosts, & 16 projects; fleet ping, root UID, both check-mode playbooks, RustDesk, and the eight-service media/VPN path passed without installing a package or recreating a container.
 - [x] 2026-07-25: [Purple boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md). I cloned the worn-out Samsung MZVLB256HAHQ, which had hit 169% of rated endurance and failed its SMART health check, onto a Toshiba THNSF5256GPUK with Clonezilla and made that the boot device. The clone kept the node's identity, so no `pvecm add` and no HA changes: Purple booted at `07:19:56 EDT`, rejoined as nodeid 2, and Galaxy is back to four of four votes with all seven Proxmox and HA units active. The new drive reports health `PASSED`, 0 media errors, and 0 error-log entries against the old drive's 2,462, and it passed a short self-test. I added a Samsung 850 EVO on SATA during the same window; it has no role yet.
 - [x] 2026-07-25: Closed the [Internal HTTPS Service Onboarding](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md) acceptance checks. I ran the VPN-client DNS, HTTPS, & certificate test plus the seven authenticated application workflows from my own sessions. All passed; I retained no capture from the pass. Route health, public NXDOMAIN, zero WAN port forwards, & restart recovery were already verified on 2026-07-22.

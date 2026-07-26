@@ -104,9 +104,13 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Wazuh | Manager, indexer, dashboard |
-| Prometheus | `prom/prometheus:latest`; seven jobs `UP`: security host, edge host, four Galaxy nodes, and PVE exporter |
-| Grafana | `grafana/grafana:latest` |
-| Proxmox exporter | `prompve/prometheus-pve-exporter:latest` |
+| Prometheus | `prom/prometheus:latest` 3.10.0; 36 targets `UP` across five jobs: `node` (14 hosts), `cadvisor` (docker-main), `proxmox`, `blackbox` (19 service names), and a self-scrape. 15-day retention |
+| Grafana | `grafana/grafana:latest` 12.4.1; datasource & dashboards provisioned from files under `~/monitoring/grafana/`, versioned in the repository |
+| Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on 9221 |
+| blackbox exporter | `prom/blackbox-exporter:v0.27.0` on 9115; probes the 19 internal names through NPM, including certificate expiry |
+| NUT exporter | `hon95/prometheus-nut-exporter:1` on 9995; running, but its scrape job is disabled until `cluster.fw` permits `192.168.72.2` to TCP 3493 |
+| node_exporter | 1.9.0 on 9100 |
+| cAdvisor | `gcr.io/cadvisor/cadvisor:v0.52.1` on 9101 from `/opt/docker/cadvisor`; running but reports no containers here, because Docker 29's `overlayfs` driver defeats it |
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |
 
 ## alpha-prod-01
@@ -146,6 +150,24 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | purple-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.11:9100` | Enabled, active, Prometheus `UP` |
 | blue-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.12:9100` | Enabled, active, Prometheus `UP` |
 | red-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.13:9100` | Enabled, active, Prometheus `UP` |
+
+## Guest exporter coverage
+
+Added 2026-07-25. Every running Linux guest except `kasm-01` now exports on 9100, all at `node_exporter` 1.9.0. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
+
+| Guest | Install method | Service | Endpoint | cAdvisor |
+|---|---|---|---|---|
+| docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 14 containers, `overlay2` |
+| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | Removed, `overlayfs` |
+| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | Removed, `overlayfs` |
+| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | Removed, `overlayfs` |
+| alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | Removed, `overlayfs` |
+| ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
+| splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
+| app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | Removed, `overlayfs` |
+| kasm-01 | Not installed | n/a | n/a | Not installed |
+
+`app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covers `docker-main` alone because cAdvisor v0.52.1 registers no containers under Docker 29's `overlayfs` storage driver; `docker-main` is the only Docker host still on `overlay2`. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Galaxy UPS telemetry
 

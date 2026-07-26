@@ -1,13 +1,13 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-25
 
-The gateway runs UniFi's zone-based V2 firewall. I maintain 39 custom policies; UniFi maintains the other 234 for zone defaults, connection state, return companions, & gateway services.
+The gateway runs UniFi's zone-based V2 firewall. I maintain 43 custom policies; UniFi maintains the rest for zone defaults, connection state, return companions, & gateway services.
 
 ## Custom Policies
 
-All 39 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. I last checked the controller on 2026-07-22 after restricting the edge-01 path to app-01.
+All 43 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. I added the last four on 2026-07-25 for the Prometheus fleet expansion.
 
 | Policy | Enabled | Action | Index | Protocol | IP Ver | Source Zone | Source Match | Dest Zone | Dest Match | Dest Port | Conn State | Schedule | Logging | Description |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -50,8 +50,14 @@ All 39 user-defined policies are enabled, use connection state `ALL`, & run on t
 | Allow NPM to docker-main web UIs | Yes | ALLOW | 10002 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | Internal | IP 192.168.40.35 | 2283, 3000, 3001, 6060, 8080, 8090, 8384, 9443 | All | Always | On | NPM reaches only the eight approved Docker Main web interfaces |
 | Allow NPM to security-01 web UIs | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | 443, 3000, 9090 | All | Always | On | NPM reaches Wazuh, Grafana, & Prometheus only |
 | Allow NPM to splunk-siem web UI | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.3 | 8000 | All | Always | On | NPM reaches Splunk Web only |
+| Allow Security to Personal-A monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | Internal | IPs 192.168.40.35, .36, .39, .42 | 9100, 9101 | All | Always | On | Prometheus scrapes node_exporter & cAdvisor on docker-main, ansible-01, docker-blue, & media-01; automatic return policy enabled |
+| Allow Security to A-Servers monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | `<YOUR_ORG_NAME>`-Servers | IPs 192.168.80.10, 192.168.80.118 | 9100, 9101 | All | Always | On | Prometheus scrapes node_exporter & cAdvisor on app-01 & alpha-prod-01; automatic return policy enabled |
+| Allow Security to A-Access monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | 9100, 9101, 443 | All | Always | On | Prometheus scrapes docker-network, & blackbox_exporter probes the NPM HTTPS front door; automatic return policy enabled |
+| Allow Security to Proxmox NUT | Yes | ALLOW | 10002 | TCP | Both | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | `<YOUR_ORG_NAME>`-Mgmt | IPs 192.168.70.10, 192.168.70.13 | 3493 | All | Always | On | prometheus-nut-exporter reads the NUT servers on red-server (ups01) & grey-server (ups02); scoped to the two nodes with a UPS attached; automatic return policy enabled |
 
-The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). I created the four cross-zone Security-A inbound/monitoring allows with automatic respond-policy generation enabled; setting that flag only after creation did not materialize a return companion on this controller.
+The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). I created the eight cross-zone Security-A inbound/monitoring allows with automatic respond-policy generation enabled; setting that flag only after creation did not materialize a return companion on this controller.
+
+A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently, and the NUT path proved it on 2026-07-25: the UniFi policy above was in place and TCP 3493 stayed blocked, because `cluster.fw` permits 192.168.40.35 for PeaNUT and has no equivalent rule for 192.168.72.2. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
 
 ## UniFi-Generated Policies
 
