@@ -5,7 +5,7 @@
 
 ## Health Check
 
-Connect to CT 104 through `blue_server` in SSH Manager, or use the approved Ansible path to `monitor-01`. SSH Manager does not yet carry a direct `monitor-01` target. The stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
+Connect to `monitor_01` through SSH Manager. That target uses `ansible_01` as its proxy jump because the approved TCP 22 policy starts at 192.168.40.36; the workstation has no direct SSH path into `Org-Monitor`. The stack is healthy when all six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero:
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
