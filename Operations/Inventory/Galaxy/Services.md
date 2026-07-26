@@ -104,13 +104,13 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Wazuh | Manager, indexer, dashboard |
-| Prometheus | `prom/prometheus:latest` 3.10.0; 38 targets `UP` across six jobs: `node` (14 hosts), `cadvisor` (docker-main), `proxmox`, `blackbox` (19 service names), `nut` (both UPS units), and a self-scrape. 15-day retention |
+| Prometheus | `prom/prometheus:latest` 3.10.0; 44 targets `UP` across six jobs: `node` (14 hosts), `cadvisor` (7 Docker hosts), `proxmox`, `blackbox` (19 service names), `nut` (both UPS units), and a self-scrape. 15-day retention |
 | Grafana | `grafana/grafana:latest` 12.4.1; datasource & dashboards provisioned from files under `~/monitoring/grafana/`, versioned in the repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on 9221 |
 | blackbox exporter | `prom/blackbox-exporter:v0.27.0` on 9115; probes the 19 internal names through NPM, including certificate expiry |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on 9995; scraping `ups01` at `192.168.70.13:3493` and `ups02` at `192.168.70.10:3493` since 2026-07-26 |
 | node_exporter | 1.9.0 on 9100 |
-| cAdvisor | `gcr.io/cadvisor/cadvisor:v0.52.1` on 9101 from `/opt/docker/cadvisor`; running but reports no containers here, because Docker 29's `overlayfs` driver defeats it |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on 9101 from `/opt/docker/cadvisor`; 6 containers. v0.52.1 reported none here under the `overlayfs` driver |
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |
 
 ## alpha-prod-01
@@ -158,16 +158,18 @@ Added 2026-07-25. Every running Linux guest except `kasm-01` now exports on 9100
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
 | docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 14 containers, `overlay2` |
-| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | Removed, `overlayfs` |
-| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | Removed, `overlayfs` |
-| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | Removed, `overlayfs` |
-| alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | Removed, `overlayfs` |
+| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 4 containers, `overlayfs` |
+| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 3 containers, `overlayfs` |
+| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 9 containers, `overlayfs` |
+| alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | 9101, 7 containers, `overlayfs` |
 | ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
-| app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | Removed, `overlayfs` |
+| app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | kasm-01 | Not installed | n/a | n/a | Not installed |
 
-`app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covers `docker-main` alone because cAdvisor v0.52.1 registers no containers under Docker 29's `overlayfs` storage driver; `docker-main` is the only Docker host still on `overlay2`. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+`security-01` also carries cAdvisor on 9101 with 6 containers; its row is in the guest table above.
+
+`app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter, so all seven Docker hosts report: 50 containers, seven of which are the cAdvisor containers. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Galaxy UPS telemetry
 
