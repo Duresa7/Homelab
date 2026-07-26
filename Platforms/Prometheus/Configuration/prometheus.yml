@@ -1,34 +1,81 @@
-﻿global:
+# Prometheus scrape configuration, deployed at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml on security-01.
+#
+# Job naming: one job per exporter type, with the hostname carried in a `host`
+# label. The earlier layout used one job per host, which made `job` double as a
+# hostname. That stopped scaling at 14 node_exporter targets across five
+# exporter types. Changing it breaks graph continuity for series that existed
+# before the switch; with 15-day retention that discontinuity ages out.
+#
+# Publication note: the blackbox target list carries a redaction placeholder in
+# the repository copy and the real internal base domain in the deployed copy.
+global:
   scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'security-01'
+  # ------------------------------------------------------------------ node
+  # Every running Linux host that carries a workload. kasm-01 is absent until
+  # its pending move to purple-server settles its addressing.
+  - job_name: node
     static_configs:
-      - targets: ['192.168.72.2:9100']
+      - targets: ["192.168.70.10:9100"]
+        labels: {host: grey-server, role: hypervisor}
+      - targets: ["192.168.70.11:9100"]
+        labels: {host: purple-server, role: hypervisor}
+      - targets: ["192.168.70.12:9100"]
+        labels: {host: blue-server, role: hypervisor}
+      - targets: ["192.168.70.13:9100"]
+        labels: {host: red-server, role: hypervisor}
+      - targets: ["192.168.72.2:9100"]
+        labels: {host: security-01, role: security}
+      - targets: ["192.168.72.3:9100"]
+        labels: {host: splunk-siem, role: security}
+      - targets: ["192.168.90.10:9100"]
+        labels: {host: edge-01, role: edge}
+      - targets: ["192.168.40.35:9100"]
+        labels: {host: docker-main, role: docker}
+      - targets: ["192.168.40.36:9100"]
+        labels: {host: ansible-01, role: automation}
+      - targets: ["192.168.40.39:9100"]
+        labels: {host: docker-blue, role: docker}
+      - targets: ["192.168.40.42:9100"]
+        labels: {host: media-01, role: docker}
+      - targets: ["192.168.80.10:9100"]
+        labels: {host: app-01, role: app}
+      - targets: ["192.168.80.118:9100"]
+        labels: {host: alpha-prod-01, role: app}
+      - targets: ["192.168.85.2:9100"]
+        labels: {host: docker-network, role: docker}
 
-  - job_name: 'edge-01'
+  # -------------------------------------------------------------- cadvisor
+  # Per-container CPU, memory and restart detection. docker-main only, and that
+  # is a limitation rather than a choice.
+  #
+  # cAdvisor v0.52.1 (the newest release as of 2026-07-25) cannot resolve a
+  # container's read-write layer ID under Docker 29's default `overlayfs`
+  # storage driver, so it abandons container registration and reports only the
+  # root cgroup. docker-main is the one Docker host still on the legacy
+  # `overlay2` driver, so it is the only host where cAdvisor returns real
+  # per-container data: 14 containers against roughly 46 fleet-wide.
+  #
+  # The other six Docker hosts had cAdvisor removed rather than left running to
+  # emit ~600 series of root-cgroup noise each. See the troubleshooting record
+  # "cAdvisor reports no containers under the Docker 29 overlayfs driver".
+  #
+  # 30s rather than 15s: container detail does not need 15-second resolution.
+  - job_name: cadvisor
+    scrape_interval: 30s
     static_configs:
-      - targets: ['192.168.90.10:9100']
+      - targets: ["192.168.40.35:9101"]
+        labels: {host: docker-main, role: docker}
 
-  - job_name: 'grey-server'
+  # --------------------------------------------------------------- proxmox
+  # The PVE API exporter. This one job covers the whole cluster: every guest's
+  # CPU, memory, disk and running state, all ten storages, node status and
+  # quorum. Unchanged from the previous configuration.
+  - job_name: proxmox
     static_configs:
-      - targets: ['192.168.70.10:9100']
-
-  - job_name: 'purple-server'
-    static_configs:
-      - targets: ['192.168.70.11:9100']
-
-  - job_name: 'blue-server'
-    static_configs:
-      - targets: ['192.168.70.12:9100']
-
-  - job_name: 'red-server'
-    static_configs:
-      - targets: ['192.168.70.13:9100']
-
-  - job_name: 'proxmox'
-    static_configs:
-      - targets: ['192.168.70.10']
+      - targets: ["192.168.70.10"]
     metrics_path: /pve
     params:
       module: [default]
@@ -37,3 +84,82 @@ scrape_configs:
         target_label: __param_target
       - target_label: __address__
         replacement: pve-exporter:9221
+
+  # -------------------------------------------------------------- blackbox
+  # Probes each internal service name through NPM, so a failure means the path a
+  # person actually uses is broken: local DNS, the proxy, the certificate, or the
+  # backend. 60s because uptime does not need 15-second resolution, and it keeps
+  # the probe load on NPM to 19 requests a minute.
+  - job_name: blackbox
+    scrape_interval: 60s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://jellyfin.<YOUR_BASE_DOMAIN>/
+          - https://seerr.<YOUR_BASE_DOMAIN>/
+          - https://sonarr.<YOUR_BASE_DOMAIN>/
+          - https://radarr.<YOUR_BASE_DOMAIN>/
+          - https://prowlarr.<YOUR_BASE_DOMAIN>/
+          - https://qbittorrent.<YOUR_BASE_DOMAIN>/
+          - https://semaphore.<YOUR_BASE_DOMAIN>/
+          - https://immich.<YOUR_BASE_DOMAIN>/
+          - https://booklore.<YOUR_BASE_DOMAIN>/
+          - https://termix.<YOUR_BASE_DOMAIN>/
+          - https://dashboard.<YOUR_BASE_DOMAIN>/
+          - https://forgejo.<YOUR_BASE_DOMAIN>/
+          - https://portainer.<YOUR_BASE_DOMAIN>/
+          - https://peanut.<YOUR_BASE_DOMAIN>/
+          - https://syncthing.<YOUR_BASE_DOMAIN>/
+          - https://wazuh.<YOUR_BASE_DOMAIN>/
+          - https://grafana.<YOUR_BASE_DOMAIN>/
+          - https://prometheus.<YOUR_BASE_DOMAIN>/
+          - https://splunk.<YOUR_BASE_DOMAIN>/
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
+
+  # ------------------------------------------------------------ prometheus
+  # Self-scrape, so target health, scrape duration and TSDB growth are queryable
+  # from the dashboard rather than only from the Prometheus UI.
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+        labels: {host: security-01, role: security}
+
+  # ------------------------------------------------------------------- nut
+  # DISABLED PENDING A FIREWALL RULE.
+  #
+  # The UniFi policy "Allow Security to Proxmox NUT" is in place, but the Proxmox
+  # cluster firewall at /etc/pve/firewall/cluster.fw is a second enforcement
+  # layer and still drops this path. It permits docker-main to 3493 for PeaNUT
+  # but not security-01. Until these two lines are added to the pve_mgmt group,
+  # this job would report two permanently down targets, and I do not present
+  # known-unavailable targets as monitoring coverage.
+  #
+  #   IN ACCEPT -source 192.168.72.2 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Grey NUT
+  #   IN ACCEPT -source 192.168.72.2 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # security-01 NUT exporter to Red NUT
+  #
+  # After adding them, run `pve-firewall compile` to validate, uncomment this
+  # job, and follow the target-change procedure in the runbook.
+  #
+  # - job_name: nut
+  #   scrape_interval: 30s
+  #   metrics_path: /nut
+  #   static_configs:
+  #     - targets: ["192.168.70.13:3493"]
+  #       labels: {host: red-server, ups: ups01}
+  #     - targets: ["192.168.70.10:3493"]
+  #       labels: {host: grey-server, ups: ups02}
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: nut-exporter:9995

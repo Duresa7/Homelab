@@ -1,0 +1,83 @@
+# Monitoring stack on security-01, deployed at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml
+#
+# Publication note: the three URL values below carry a redaction placeholder in
+# the repository copy and the real internal base domain in the deployed copy at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/. Same convention as the Ansible
+# fleet-updates inventory.
+#
+# cAdvisor is deliberately absent here. Ansible owns it as its own compose
+# project at /opt/docker/cadvisor so one playbook covers all seven Docker hosts
+# identically, including this one.
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>
+    volumes:
+      # Single-file bind mount. Replacing the host file requires a container
+      # restart, not a SIGHUP: see the 2026-07-13 inode troubleshooting record.
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SERVER_DOMAIN=grafana.<YOUR_BASE_DOMAIN>
+      - GF_SERVER_ROOT_URL=https://grafana.<YOUR_BASE_DOMAIN>
+      - GF_SERVER_PROTOCOL=http
+    volumes:
+      - grafana_data:/var/lib/grafana
+      # Directory mounts, not single-file mounts, so the inode problem above
+      # does not apply. Grafana re-reads dashboard files on its own interval, so
+      # editing a dashboard JSON needs no restart after the first deploy.
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+    ports:
+      - "3000:3000"
+
+  pve-exporter:
+    image: prompve/prometheus-pve-exporter:latest
+    container_name: pve-exporter
+    restart: unless-stopped
+    volumes:
+      - ./pve.yml:/etc/prometheus/pve.yml
+    ports:
+      - "9221:9221"
+
+  # Probes the 19 internal service names through NPM, which tests the real user
+  # path: local DNS, the proxy, the certificate, and the backend behind it.
+  blackbox-exporter:
+    image: prom/blackbox-exporter:v0.27.0
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/blackbox_exporter/config.yml
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml:ro
+    ports:
+      - "9115:9115"
+
+  # Reads the NUT servers on red-server (ups01) and grey-server (ups02) over the
+  # NUT protocol on 3493. NUT needs no credential here: upsd.users is empty on
+  # both hosts and anonymous reads are permitted.
+  nut-exporter:
+    image: hon95/prometheus-nut-exporter:1
+    container_name: nut-exporter
+    restart: unless-stopped
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "9995:9995"
+
+volumes:
+  prometheus_data:
+  grafana_data:

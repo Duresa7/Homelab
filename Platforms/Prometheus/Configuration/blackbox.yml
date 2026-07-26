@@ -1,0 +1,51 @@
+# blackbox_exporter modules, deployed at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/blackbox.yml on security-01.
+#
+# The probe target list lives in prometheus.yml, not here. This file only
+# defines how a probe behaves.
+modules:
+  # Default module for the internal service names published through NPM. NPM
+  # serves a real Let's Encrypt wildcard certificate, so TLS is verified rather
+  # than skipped, which is what makes probe_ssl_earliest_cert_expiry meaningful.
+  #
+  # The accepted status codes answer "is the service responding", not "is it
+  # returning content I like". Several of these services legitimately answer a
+  # redirect or a 401 at the root path when unauthenticated, and treating that
+  # as an outage would make the panel lie.
+  http_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      valid_http_versions: [HTTP/1.1, HTTP/2.0]
+      valid_status_codes: [200, 204, 301, 302, 303, 307, 308, 401, 403]
+      method: GET
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      tls_config:
+        insecure_skip_verify: false
+
+  # For backends reached directly on their own HTTPS listener with a self-signed
+  # certificate, where verification would always fail and tell me nothing.
+  # Certificate expiry is still reported.
+  http_2xx_selfsigned:
+    prober: http
+    timeout: 10s
+    http:
+      valid_http_versions: [HTTP/1.1, HTTP/2.0]
+      valid_status_codes: [200, 204, 301, 302, 303, 307, 308, 401, 403]
+      method: GET
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
+      tls_config:
+        insecure_skip_verify: true
+
+  # For services that speak something other than HTTP and only need a liveness
+  # answer, such as a database or a syslog listener.
+  tcp_connect:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: false
