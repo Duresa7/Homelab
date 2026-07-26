@@ -1,7 +1,7 @@
 # Security Incident Response Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-26
 
 ## What This Guide Covers
 
@@ -65,7 +65,7 @@ This guide doesn't replace provider-specific incident procedures. A disclosure i
 
 ## Source Records
 
-- [Application-stack incident response](../Security/Incidents/security-incident-response-2026-04-19.md)
-- [TeamSpeak service incident](../Security/Incidents/TeamSpeak-Incident-Report-2026-04-24.md)
-- [TeamSpeak UDP relay outage](../Security/Incidents/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md)
+- [Application-stack incident response](../Security/Incidents/Vercel/security-incident-response-2026-04-19.md)
+- [TeamSpeak service incident](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24.md)
+- [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md)
 - [Documentation Standard](../Governance/Documentation-Standard.md#incident-reports)

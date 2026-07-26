@@ -1,7 +1,7 @@
 # TeamSpeak UDP Relay Outage - 2026-04-24
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-26
 
 ## Incident Summary
 
@@ -143,7 +143,7 @@ confirmed security breach.
 
 ## Linked Records
 
-- [TeamSpeak deployment](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)
+- [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)
 - Host: `alpha-prod-01`
 - TS3 Manager: `http://192.168.80.118:9000`
 

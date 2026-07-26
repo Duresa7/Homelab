@@ -1,7 +1,7 @@
 # TeamSpeak DNS and ServerQuery Incident - 2026-04-24
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-26
 
 ## Incident Metadata
 
@@ -180,7 +180,7 @@ I checked the following and ruled each out as the primary cause:
 | Confirmed allowlist reload | Complete | TeamSpeak logged updated allowlist with `172.18.0.1/32`. |
 | Restarted TS3 Manager container only | Complete | Manager was stopped and was started. |
 | Verified ServerQuery burst from manager path | Complete | Returned `error id=0 msg=ok`; no flood error observed. |
-| Updated deployment record | Complete | [TeamSpeak deployment](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md) now matches the running layout. |
+| Updated deployment record | Complete | [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md) now matches the running layout. |
 
 ## Current Known-Good Configuration
 
