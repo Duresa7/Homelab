@@ -4,10 +4,10 @@
 **Last updated:** 2026-07-26
 
 **Issue date:** 2026-07-26  
-**Status:** Mitigated, verification pending 2026-07-27  
-**Affected systems:** `security-01`, Grafana 12.4.1
+**Status:** Open. The mitigation worked on Grafana 12.4.1 and does not apply on 13.1.1  
+**Affected systems:** `security-01` Grafana 12.4.1, retired; `monitor-01` Grafana 13.1.1
 
-I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` remains in the versioned Compose file. The 2026-07-27 verification now runs against Grafana 13.1.1 on `monitor-01`; it cannot prove the deleted database was repaired, but it can prove the mitigation remains clean on the replacement.
+I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` came across in the Compose file but stopped taking effect. See [The Mitigation Did Not Survive the Version Change](#the-mitigation-did-not-survive-the-version-change) for the evidence.
 
 ## Symptom
 
@@ -52,7 +52,7 @@ Write-ahead logging, added to the Grafana service in [docker-compose.yml](../../
 
 In WAL mode a reader no longer blocks the writer, so the housekeeping jobs stop queueing behind each other. It needs a container recreate, not a restart, because it is an environment variable.
 
-Confirmed active by the files SQLite only creates in WAL mode:
+On Grafana 12.4.1 this worked. SQLite created the two files it only creates in WAL mode:
 
 ```
 grafana.db       3665920
@@ -60,17 +60,44 @@ grafana.db-shm     32768
 grafana.db-wal     94792
 ```
 
-Before the change there was no `-wal` file. `api/health` reports `"database": "ok"`, the provisioned dashboard came back at version 8 with all 12 rows, and 44 Prometheus targets stayed up through the recreate.
+`api/health` reported `"database": "ok"`, the provisioned dashboard came back at version 8 with all 12 rows, and 44 Prometheus targets stayed up through the recreate.
+
+## The Mitigation Did Not Survive the Version Change
+
+The relocation put Grafana 13.1.1 on `monitor-01`, and the setting stopped doing anything. I found this on 2026-07-26 while reviewing the completed relocation, not from a failure.
+
+Grafana still reads the variable. It logs `Config overridden from Environment variable var="GF_DATABASE_WAL=true"` at container start, and `docker exec grafana env` shows it. What changed is underneath:
+
+```
+logger=sqlstore level=info msg="Using SQLite driver" driver=modernc.org/sqlite
+```
+
+12.4.1 produced `-wal` & `-shm` files; 13.1.1 doesn't. Three checks on the running container:
+
+- `/var/lib/grafana/` holds `grafana.db` alone. No `-wal`, no `-shm`. SQLite creates both the moment a WAL database is opened, and Grafana holds four descriptors on the file.
+- Bytes 18 and 19 of the file header read `1 1`. That's the rollback journal. A WAL database reads `2 2`, & the value is written into the file, so it isn't a timing artifact.
+- `SQLITE_BUSY` came back at `19:29:06Z`, sixteen minutes after start: `Database locked, sleeping then retrying ... retry=0 sleep=9.963223ms`.
+
+The driver switch is the likely cause. Journal mode is passed as a DSN parameter, and the pure-Go `modernc.org/sqlite` driver doesn't use the same parameter syntax as the cgo driver it replaced, so an unrecognised parameter gets dropped without an error. I haven't read Grafana's source to confirm that, so treat the mechanism as probable and the three observations above as fact.
 
 ## Verification Still Owed
 
-**The error count proves nothing yet.** The recreate reset the container log, so the current zero covers about one minute of runtime, and the original bursts were hours apart. The honest test is the same count over a full day:
+Run the count on `monitor-01` on 2026-07-27:
 
 ```bash
 docker logs --since 24h grafana 2>&1 | grep -c "level=error"
 ```
 
-Baseline to beat: 25 in 10 hours. Run it on `monitor-01` on 2026-07-27. If it is at or near zero, this is closed. If it is not, the diagnosis was wrong and the next step is an external database rather than more tuning.
+Read the result as a baseline for an unmitigated Grafana 13.1.1, not as proof that WAL works. It measures a fresh database with one dashboard, no alert rules, and one user, against an old baseline of 25 errors in 10 hours on a loaded 12.4.1 database. A clean number is expected and proves little.
+
+The first three hours and twenty minutes gave zero `level=error` lines and the one retry above, which succeeded. That's already better than the old host, and none of it is because of WAL.
+
+The decision the count drives:
+
+- Near zero: drop `GF_DATABASE_WAL=true` from the Compose file at the next recreate, since carrying a setting that does nothing is what made three documents claim a mitigation that wasn't there.
+- Not near zero: turn WAL on the way 13.1.1 will accept. `journal_mode` is a persistent property of the database file, so stopping Grafana, setting `PRAGMA journal_mode=WAL` on `grafana.db`, and starting it again holds across restarts without the driver's help. That adds a manual step to any rebuild from `Configuration/`, which is the cost of doing it that way. Postgres is the alternative and the reasoning below still stands.
+
+I left the container alone rather than fixing this on the spot. Recreating it to change one variable resets the log, which destroys the 24-hour window the check needs.
 
 ## Why Not Postgres
 
