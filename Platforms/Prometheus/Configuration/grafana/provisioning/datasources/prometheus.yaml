@@ -4,9 +4,13 @@
 #
 # This adopts the datasource that already existed in the grafana_data volume
 # rather than creating a second one. Grafana matches a provisioned datasource on
-# name within the org, so `name: prometheus` updates the existing entry in place,
-# and pinning the existing `uid` keeps the two imported dashboards (Node Exporter
-# Full rYdddlPWk, Proxmox via Prometheus Dp7Cd57Zza) resolving to it.
+# name within the org, so `name: prometheus` updates the existing entry in place.
+#
+# The `uid` is pinned because two imported dashboards referenced it by UID and
+# would have broken had provisioning created a second datasource. Those two were
+# deleted on 2026-07-26, so that reason is spent, but the pin stays: homelab-
+# overview.json now references this UID throughout, and changing it here would
+# break the one dashboard left for no gain.
 #
 # Before this file existed, the datasource lived only inside the Docker volume.
 # Losing the volume meant rebuilding it by hand.

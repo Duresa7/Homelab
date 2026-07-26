@@ -15,32 +15,7 @@
     "from": "now-6h",
     "to": "now"
   },
-  "links": [
-    {
-      "title": "Node Exporter Full",
-      "type": "link",
-      "url": "/d/rYdddlPWk",
-      "icon": "external link",
-      "tooltip": "Per-host deep dive",
-      "targetBlank": false,
-      "asDropdown": false,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": []
-    },
-    {
-      "title": "Proxmox via Prometheus",
-      "type": "link",
-      "url": "/d/Dp7Cd57Zza",
-      "icon": "external link",
-      "tooltip": "Per-guest Proxmox detail",
-      "targetBlank": false,
-      "asDropdown": false,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": []
-    }
-  ],
+  "links": [],
   "templating": {
     "list": [
       {
