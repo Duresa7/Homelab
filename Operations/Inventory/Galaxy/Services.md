@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-26
 
 This inventory maps 12 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
@@ -104,11 +104,11 @@ This inventory maps 12 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Wazuh | Manager, indexer, dashboard |
-| Prometheus | `prom/prometheus:latest` 3.10.0; 36 targets `UP` across five jobs: `node` (14 hosts), `cadvisor` (docker-main), `proxmox`, `blackbox` (19 service names), and a self-scrape. 15-day retention |
+| Prometheus | `prom/prometheus:latest` 3.10.0; 38 targets `UP` across six jobs: `node` (14 hosts), `cadvisor` (docker-main), `proxmox`, `blackbox` (19 service names), `nut` (both UPS units), and a self-scrape. 15-day retention |
 | Grafana | `grafana/grafana:latest` 12.4.1; datasource & dashboards provisioned from files under `~/monitoring/grafana/`, versioned in the repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on 9221 |
 | blackbox exporter | `prom/blackbox-exporter:v0.27.0` on 9115; probes the 19 internal names through NPM, including certificate expiry |
-| NUT exporter | `hon95/prometheus-nut-exporter:1` on 9995; running, but its scrape job is disabled until `cluster.fw` permits `192.168.72.2` to TCP 3493 |
+| NUT exporter | `hon95/prometheus-nut-exporter:1` on 9995; scraping `ups01` at `192.168.70.13:3493` and `ups02` at `192.168.70.10:3493` since 2026-07-26 |
 | node_exporter | 1.9.0 on 9100 |
 | cAdvisor | `gcr.io/cadvisor/cadvisor:v0.52.1` on 9101 from `/opt/docker/cadvisor`; running but reports no containers here, because Docker 29's `overlayfs` driver defeats it |
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |
