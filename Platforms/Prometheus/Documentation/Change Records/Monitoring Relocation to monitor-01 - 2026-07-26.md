@@ -127,6 +127,20 @@ After the Phase 8 wipe, rollback means rebuilding rather than restoring local da
 
 The old Prometheus TSDB and Grafana SQLite database were deleted by design and cannot be restored from this project. I removed the temporary Proxmox firewall backup and candidate files after the final checks. Restoring 192.168.72.2 now means reapplying the four documented entries rather than copying a retained backup.
 
+## Post-Completion Review
+
+I reviewed the finished work against the live systems later on 2026-07-26 rather than against these notes. Most of it held. Ten things were checked independently and passed: 46 of 46 targets `up`, the deployed dashboard byte-identical to the repository copy at SHA256 `04e80a1ac8b64552afa1164e393dfd3032dea0367e05dd8795f2ba7f0f51f85a`, all 65 dashboard queries re-run with 64 returning data and one allowed empty, CT 104 matching the planned shape exactly, four 192.168.73.2 entries and no 192.168.72.2 monitoring entries in `cluster.fw` with no leftover backup in `/root`, 59 UniFi policies and 16 zones, `security-01` genuinely stripped, the Ansible validator passing 8 and 8 with no `.bak` or `__pycache__` behind it, `pve.yml` at mode 0600 and absent from every commit, and 51 containers counted from Prometheus itself.
+
+Eight things were wrong. The largest: `GF_DATABASE_WAL=true` does nothing on Grafana 13.1.1, so the mitigation this repository claimed in three places wasn't there. Evidence and the driver change behind it are in [issue 4](../Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md). I corrected the documents and left the container running, because recreating it to drop one dead variable would reset the log the 2026-07-27 count reads.
+
+Both the platform README and the runbook said all six containers come from `~/monitoring/docker-compose.yml`. Five do. `cadvisor` comes from `/opt/docker/cadvisor`, which the Compose file's own header says, so the health check as written returned five and read as a fault. Both Grafana provisioning files still named `security-01` in their header comments. The repository's Compose file had drifted from the host copy by two reworded comment lines and spelled the administrator account literally where every other line uses the placeholder. All five configuration files now hash identically between repository and host once the domain and account placeholders are substituted.
+
+Seven hosts still carried `gcr.io/cadvisor/cadvisor:v0.52.1` from the 2026-07-25 diagnosis, and `security-01` also held `gcr.io/cadvisor/cadvisor:latest` plus a redundant `ghcr.io/google/cadvisor:latest` tag. I removed them by exact tag on all seven, never with `prune`, recovering about 880 MB. Every one of the eight cAdvisor containers stayed healthy and answered HTTP 200 on 9101 afterward.
+
+I also checked every component against its upstream release. Prometheus 3.13.1, Grafana 13.1.1, and cAdvisor v0.60.5 are current. `hon95/prometheus-nut-exporter:1` resolves to v1.2.1 from 2022-08-03, which is still the newest release. `blackbox-exporter` was one release behind, so I moved the pin from v0.27.0 to v0.28.0 and recreated that container alone: `probe_success` returned 1 for all 19 names, certificate expiry still collects for all 19, and the target set stayed at 46 of 46.
+
+Two corrections need the UniFi controller UI, because the plugin has no zone-rename operation and drops `description` on a policy update. The zone is named `Org-Monitor` where its four siblings are `<YOUR_ORG_NAME>-`, and policy `6a60fd2c2d027bb05525a876` is scoped to TCP 443 alone but still describes Grafana and Prometheus.
+
 ## Remaining Work
 
-The relocation has no open implementation step. Alert routing, the `kasm-01` exporter, UniFi device metrics, and the 24-hour Grafana WAL check remain separate backlog items in the [Prometheus TODO](../TODO.md).
+The relocation has no open implementation step. The three UI corrections above, alert routing, the `kasm-01` exporter, UniFi device metrics, the `node_exporter` 1.9.0 decision, and the 2026-07-27 Grafana lock count are separate backlog items in the [Prometheus TODO](../TODO.md).

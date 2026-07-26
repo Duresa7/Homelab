@@ -11,7 +11,8 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Active Priorities
 
-- [ ] Confirm on 2026-07-27 that Grafana's WAL setting held: `docker logs --since 24h grafana 2>&1 | grep -c "level=error"` on `monitor-01`, against the old `security-01` baseline of 25 `database is locked` errors in 10 hours. Details in [issue 4](Platforms/Prometheus/Documentation/Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+- [ ] Count Grafana's lock errors on 2026-07-27: `docker logs --since 24h grafana 2>&1 | grep -c "level=error"` on `monitor-01`. `GF_DATABASE_WAL=true` has no effect on Grafana 13.1.1, so this is a baseline for an unmitigated database, not proof of a fix. The old `security-01` figure was 25 in 10 hours. Details in [issue 4](Platforms/Prometheus/Documentation/Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+- [ ] Rename the UniFi zone `Org-Monitor` to `<YOUR_ORG_NAME>-Monitor` and correct the description on the NPM-to-`security-01` policy, both in the controller UI. The plugin exposes no zone-rename operation and drops `description` on a policy update. Tracked in the [Prometheus backlog](Platforms/Prometheus/Documentation/TODO.md).
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Move Kasm to `purple-server`, rebuild INetSim on VLAN 77, then attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network. The UniFi zone matrix audit gates the rest, and the acceptance checks gate the first live sample. Seven steps, rollback points, and stop conditions in [Kasm Relocation to Purple](Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
 - [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
@@ -34,7 +35,7 @@ This file is my central backlog and index. It holds active priorities plus links
 | [UniFi network segmentation](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) | Segmentation plan and MGMT-A lockdown |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; internal HTTPS acceptance closed 2026-07-25 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | 24-hour Grafana WAL check, alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | 24-hour Grafana lock baseline, two UniFi UI edits, `node_exporter` 1.9.0 versus 1.12.1, alert routing then rules, `kasm-01` exporter, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
 
 ## Recently Completed
