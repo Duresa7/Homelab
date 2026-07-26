@@ -7,8 +7,8 @@
 
 | Check | Observed result |
 |---|---|
-| Vault | `the managed vault` |
-| Item | `the console login entry` |
+| Vault | Held in 1Password; name not published |
+| Item | Held in 1Password; name not published |
 | Category and username | Login; `ansible` |
 | Recipe | 32 characters with letters, digits, & symbols |
 | Password disclosure | None; only length and recipe booleans were printed |

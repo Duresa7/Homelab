@@ -23,9 +23,9 @@ I checked the USB devices, operating-system and container-runtime versions, list
 
 ### Step 2: Prepare configuration and recovery points
 
-I pinned PeaNUT 6.0.0 to Linux AMD64 digest `sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1`. I stored the administrator login and authentication secret in the 1Password item `PeaNUT Dashboard - docker-main`. I also saved the pre-change Galaxy firewall as `/root/cluster.fw.bak.peanut-20260722` and created SSH Manager backups of `/etc/nut` on Red and Grey.
+I pinned PeaNUT 6.0.0 to Linux AMD64 digest `sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1`. I stored the administrator login and authentication secret in 1Password. I also saved the pre-change Galaxy firewall as `/root/cluster.fw.bak.peanut-20260722` and created SSH Manager backups of `/etc/nut` on Red and Grey.
 
-I created the 1Password item through `op item create` with the `AI Agent Account` vault selected. SSH Manager returned backup IDs `files_pre-peanut-nut-config-red-20260722_2026-07-22T12-11-39-539Z_247180ed` and `files_pre-peanut-nut-config-grey-20260722_2026-07-22T12-11-39-797Z_5c3b0ebc`. I retained no separate Step 2 transcript because it would add identifiers without exposing a useful state check. No secret or UPS serial number is present in the repository or evidence.
+I created the 1Password item through `op item create` with the intended vault selected. SSH Manager returned backup IDs `files_pre-peanut-nut-config-red-20260722_2026-07-22T12-11-39-539Z_247180ed` and `files_pre-peanut-nut-config-grey-20260722_2026-07-22T12-11-39-797Z_5c3b0ebc`. I retained no separate Step 2 transcript because it would add identifiers without exposing a useful state check. No secret or UPS serial number is present in the repository or evidence.
 
 ### Step 3: Install and configure NUT
 

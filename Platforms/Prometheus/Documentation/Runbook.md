@@ -84,4 +84,4 @@ Exporter endpoints on 9100, 9101, 9115, 9221, and 9995 are backend services. Que
 
 Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
 
-The Grafana administrator credential is stored in 1Password as `the Grafana administrator entry` in the `the managed vault` vault. Retrieve it through the `1password-cli` skill; Prometheus itself has no authentication.
+The Grafana administrator credential is stored in 1Password. Retrieve it through the `1password-cli` skill; Prometheus itself has no authentication.

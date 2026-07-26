@@ -13,7 +13,7 @@ I use PeaNUT as the browser interface for the two APC Back-UPS Pro BR1500MS2 uni
 | NUT `ups02` | `grey-server` | Reads `UPS-02` through USB & publishes telemetry on `192.168.70.10:3493` |
 | PeaNUT 6.0.0 | `docker-main` | Displays both NUT endpoints at `https://peanut.<YOUR_BASE_DOMAIN>`; direct fallback `http://192.168.40.35:8090` |
 
-The dashboard login is stored in 1Password as `the dashboard entry`. The versioned configuration contains no password, UPS serial number, or command-capable NUT account.
+The dashboard login is stored in 1Password. The versioned configuration contains no password, UPS serial number, or command-capable NUT account.
 
 ## Records
 
@@ -26,4 +26,4 @@ The dashboard login is stored in 1Password as `the dashboard entry`. The version
 
 ## Operations
 
-I open `https://peanut.<YOUR_BASE_DOMAIN>` and use the `the dashboard entry` login from 1Password. The container runs from `/opt/docker/peanut`; its `.env` stays mode `0600` and isn't versioned. NUT exposes telemetry only. `nut-monitor.service` is disabled on Red and Grey, so this deployment doesn't shut down either Proxmox host.
+I open `https://peanut.<YOUR_BASE_DOMAIN>` and use the dashboard login from 1Password. The container runs from `/opt/docker/peanut`; its `.env` stays mode `0600` and isn't versioned. NUT exposes telemetry only. `nut-monitor.service` is disabled on Red and Grey, so this deployment doesn't shut down either Proxmox host.
