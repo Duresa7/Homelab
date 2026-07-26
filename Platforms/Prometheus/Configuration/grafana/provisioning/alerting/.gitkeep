@@ -1,0 +1,9 @@
+# Intentionally empty.
+#
+# The compose file mounts this whole provisioning directory read-only over
+# /etc/grafana/provisioning, which replaces the empty subdirectories the Grafana
+# image ships. Without these placeholders Grafana logs an error on every start
+# for each missing subdirectory, which is log noise that looks like a fault.
+#
+# Alert rules are deliberately out of scope until a contact point exists;
+# rules that fire into nothing are worse than no rules.

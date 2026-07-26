@@ -1,0 +1,31 @@
+# Grafana datasource provisioning, deployed at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/provisioning/datasources/ on
+# security-01.
+#
+# This adopts the datasource that already existed in the grafana_data volume
+# rather than creating a second one. Grafana matches a provisioned datasource on
+# name within the org, so `name: prometheus` updates the existing entry in place,
+# and pinning the existing `uid` keeps the two imported dashboards (Node Exporter
+# Full rYdddlPWk, Proxmox via Prometheus Dp7Cd57Zza) resolving to it.
+#
+# Before this file existed, the datasource lived only inside the Docker volume.
+# Losing the volume meant rebuilding it by hand.
+#
+# editable: false is intentional. The file is the source of truth; changing the
+# datasource means changing this file.
+apiVersion: 1
+
+datasources:
+  - name: prometheus
+    uid: bfgnkdi47u5tsa
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      # POST keeps long PromQL out of the URL, which matters for the guest table
+      # and the container panels.
+      httpMethod: POST
+      # Matches global scrape_interval, so $__rate_interval resolves sensibly.
+      timeInterval: 15s

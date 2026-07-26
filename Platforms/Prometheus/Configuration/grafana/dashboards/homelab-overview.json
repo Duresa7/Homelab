@@ -1,0 +1,1035 @@
+{
+  "uid": "homelab-overview",
+  "title": "Homelab Overview",
+  "description": "Fleet-wide health for the Galaxy cluster, its guests, the services behind NPM, and node hardware. Per-host deep dives live in Node Exporter Full; per-guest Proxmox detail lives in Proxmox via Prometheus. Both are linked at the top right.",
+  "tags": ["homelab", "overview"],
+  "timezone": "browser",
+  "editable": false,
+  "graphTooltip": 1,
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "time": { "from": "now-6h", "to": "now" },
+  "links": [
+    {
+      "title": "Node Exporter Full",
+      "type": "link",
+      "url": "/d/rYdddlPWk",
+      "icon": "external link",
+      "tooltip": "Per-host deep dive",
+      "targetBlank": false,
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": true,
+      "tags": []
+    },
+    {
+      "title": "Proxmox via Prometheus",
+      "type": "link",
+      "url": "/d/Dp7Cd57Zza",
+      "icon": "external link",
+      "tooltip": "Per-guest Proxmox detail",
+      "targetBlank": false,
+      "asDropdown": false,
+      "includeVars": false,
+      "keepTime": true,
+      "tags": []
+    }
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "role",
+        "label": "Role",
+        "type": "query",
+        "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+        "query": { "query": "label_values(node_uname_info, role)", "refId": "role" },
+        "refresh": 1,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": true,
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "sort": 1
+      }
+    ]
+  },
+  "panels": [
+    {
+      "type": "row",
+      "title": "Fleet status",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "Cluster quorum",
+      "description": "pve_up for the Galaxy cluster object. Down means the PVE API reports the cluster as not quorate.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
+      "targets": [
+        { "refId": "A", "expr": "pve_up{id=\"cluster/Galaxy\"}", "instant": true, "legendFormat": "quorum" }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "NOT QUORATE", "color": "red", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "QUORATE", "color": "green", "index": 1 } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] },
+          "noValue": "no data"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Nodes online",
+      "description": "Proxmox nodes reporting online, out of four.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
+      "targets": [
+        { "refId": "A", "expr": "sum(pve_up{id=~\"node/.*\"})", "instant": true, "legendFormat": "nodes" }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "max": 4,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 3 }, { "color": "green", "value": 4 }]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Guests running",
+      "description": "Guests with pve_up == 1. Templates report 0 and are excluded automatically.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
+      "targets": [
+        { "refId": "A", "expr": "count(pve_up{id=~\"(qemu|lxc)/.*\"} == 1)", "instant": true, "legendFormat": "running" }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Services reachable",
+      "description": "blackbox_exporter probes of the internal service names through NPM. Counts the full path: local DNS, the proxy, the certificate, and the backend.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
+      "targets": [
+        { "refId": "A", "expr": "sum(probe_success)", "instant": true, "legendFormat": "reachable" },
+        { "refId": "B", "expr": "count(probe_success)", "instant": true, "legendFormat": "total", "hide": false }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "none", "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "reachable" },
+            "properties": [
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 18 }, { "color": "green", "value": 19 }] }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Scrape targets down",
+      "description": "Any Prometheus target failing to scrape. Should be zero.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
+      "targets": [
+        { "refId": "A", "expr": "count(up == 0) or vector(0)", "instant": true, "legendFormat": "down" }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Hottest CPU package",
+      "description": "Warmest CPU package across the four Proxmox nodes. k10temp on grey-server (Ryzen), coretemp on the three Intel nodes.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max(node_hwmon_temp_celsius{role=\"hypervisor\", chip=\"platform_coretemp_0\", sensor=\"temp1\"} or node_hwmon_temp_celsius{role=\"hypervisor\", chip=\"pci0000:00_0000:00:18_3\", sensor=\"temp1\"})",
+          "instant": true,
+          "legendFormat": "hottest"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "area",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Service reachability",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "table",
+      "title": "Internal services through NPM",
+      "description": "One row per proxied service name. Status is the HTTP code NPM returned; a 401 or 302 still counts as reachable because several of these answer that at the root path when unauthenticated.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 11, "w": 14, "x": 0, "y": 6 },
+      "targets": [
+        { "refId": "A", "expr": "probe_success", "instant": true, "format": "table" },
+        { "refId": "B", "expr": "probe_http_status_code", "instant": true, "format": "table" },
+        { "refId": "C", "expr": "probe_duration_seconds", "instant": true, "format": "table" },
+        { "refId": "D", "expr": "(probe_ssl_earliest_cert_expiry - time()) / 86400", "instant": true, "format": "table" }
+      ],
+      "transformations": [
+        { "id": "joinByField", "options": { "byField": "instance", "mode": "outer" } },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true, "Time 1": true, "Time 2": true, "Time 3": true, "Time 4": true,
+              "job": true, "job 1": true, "job 2": true, "job 3": true, "job 4": true,
+              "__name__": true, "__name__ 1": true, "__name__ 2": true, "__name__ 3": true, "__name__ 4": true
+            },
+            "renameByName": {
+              "instance": "Service",
+              "Value #A": "Reachable",
+              "Value #B": "HTTP",
+              "Value #C": "Latency",
+              "Value #D": "Cert days"
+            },
+            "indexByName": {}
+          }
+        },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "field": "Reachable", "desc": false }] } }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto", "filterable": true } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Reachable" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "0": { "text": "DOWN", "color": "red", "index": 0 } } },
+                  { "type": "value", "options": { "1": { "text": "UP", "color": "green", "index": 1 } } }
+                ]
+              },
+              { "id": "custom.width", "value": 110 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Latency" },
+            "properties": [{ "id": "unit", "value": "s" }, { "id": "decimals", "value": 3 }, { "id": "custom.width", "value": 100 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "HTTP" },
+            "properties": [{ "id": "unit", "value": "none" }, { "id": "decimals", "value": 0 }, { "id": "custom.width", "value": 80 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Cert days" },
+            "properties": [
+              { "id": "unit", "value": "d" },
+              { "id": "decimals", "value": 0 },
+              { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 14 }, { "color": "yellow", "value": 30 }, { "color": "green", "value": 45 }] }
+              },
+              { "id": "custom.width", "value": 110 }
+            ]
+          }
+        ]
+      },
+      "options": { "showHeader": true, "footer": { "show": false, "reducer": ["sum"], "fields": "" } }
+    },
+    {
+      "type": "timeseries",
+      "title": "Probe latency through NPM",
+      "description": "Round trip for each service probe. A slow climb here usually means the backend, not the proxy.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 11, "w": 10, "x": 14, "y": 6 },
+      "targets": [
+        { "refId": "A", "expr": "probe_duration_seconds", "legendFormat": "{{instance}}" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Guest inventory",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 17 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "table",
+      "title": "Every guest in the cluster",
+      "description": "From the PVE API, so it covers guests with no exporter of their own. Templates are excluded. Disk usage reads 0 for QEMU guests without the guest agent, which is a reporting limit rather than an empty disk.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 18 },
+      "targets": [
+        { "refId": "A", "expr": "pve_guest_info{template=\"0\"}", "instant": true, "format": "table" },
+        { "refId": "B", "expr": "pve_up{id=~\"(qemu|lxc)/.*\"}", "instant": true, "format": "table" },
+        { "refId": "C", "expr": "pve_cpu_usage_ratio{id=~\"(qemu|lxc)/.*\"} * 100", "instant": true, "format": "table" },
+        { "refId": "D", "expr": "pve_memory_usage_bytes{id=~\"(qemu|lxc)/.*\"} / pve_memory_size_bytes{id=~\"(qemu|lxc)/.*\"} * 100", "instant": true, "format": "table" },
+        { "refId": "E", "expr": "pve_memory_size_bytes{id=~\"(qemu|lxc)/.*\"}", "instant": true, "format": "table" },
+        { "refId": "F", "expr": "pve_uptime_seconds{id=~\"(qemu|lxc)/.*\"}", "instant": true, "format": "table" }
+      ],
+      "transformations": [
+        { "id": "joinByField", "options": { "byField": "id", "mode": "outer" } },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true, "Time 1": true, "Time 2": true, "Time 3": true, "Time 4": true, "Time 5": true, "Time 6": true,
+              "job": true, "job 1": true, "job 2": true, "job 3": true, "job 4": true, "job 5": true, "job 6": true,
+              "instance": true, "instance 1": true, "instance 2": true, "instance 3": true, "instance 4": true, "instance 5": true, "instance 6": true,
+              "__name__": true, "__name__ 1": true, "__name__ 2": true, "__name__ 3": true, "__name__ 4": true, "__name__ 5": true, "__name__ 6": true,
+              "template": true, "Value #A": true
+            },
+            "renameByName": {
+              "id": "ID",
+              "name": "Name",
+              "node": "Node",
+              "type": "Type",
+              "Value #B": "State",
+              "Value #C": "CPU",
+              "Value #D": "Memory",
+              "Value #E": "RAM size",
+              "Value #F": "Uptime"
+            },
+            "indexByName": {
+              "id": 0, "name": 1, "node": 2, "type": 3,
+              "Value #B": 4, "Value #C": 5, "Value #D": 6, "Value #E": 7, "Value #F": 8
+            }
+          }
+        },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "field": "State", "desc": true }] } }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto", "filterable": true } },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "State" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              {
+                "id": "mappings",
+                "value": [
+                  { "type": "value", "options": { "0": { "text": "stopped", "color": "text", "index": 0 } } },
+                  { "type": "value", "options": { "1": { "text": "running", "color": "green", "index": 1 } } }
+                ]
+              },
+              { "id": "custom.width", "value": 95 }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "CPU" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "decimals", "value": 1 },
+              { "id": "custom.cellOptions", "value": { "type": "gauge", "mode": "gradient" } },
+              { "id": "max", "value": 100 },
+              { "id": "min", "value": 0 },
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "red", "value": 90 }] }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Memory" },
+            "properties": [
+              { "id": "unit", "value": "percent" },
+              { "id": "decimals", "value": 1 },
+              { "id": "custom.cellOptions", "value": { "type": "gauge", "mode": "gradient" } },
+              { "id": "max", "value": 100 },
+              { "id": "min", "value": 0 },
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 80 }, { "color": "red", "value": 92 }] }
+              }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "RAM size" },
+            "properties": [{ "id": "unit", "value": "bytes" }, { "id": "decimals", "value": 1 }, { "id": "custom.width", "value": 110 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Uptime" },
+            "properties": [{ "id": "unit", "value": "s" }, { "id": "decimals", "value": 0 }, { "id": "custom.width", "value": 130 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Type" },
+            "properties": [{ "id": "custom.width", "value": 80 }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "ID" },
+            "properties": [{ "id": "custom.width", "value": 110 }]
+          }
+        ]
+      },
+      "options": { "showHeader": true, "footer": { "show": false, "reducer": ["sum"], "fields": "" } }
+    },
+    {
+      "type": "row",
+      "title": "Host vitals",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 30 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU busy",
+      "description": "100 minus the idle rate, averaged across cores. Filterable by role.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\", role=~\"$role\"}[$__rate_interval])) * 100)",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 80 }, { "color": "red", "value": 95 }] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory used",
+      "description": "Share of MemTotal not available. On LXC guests this comes from lxcfs, so it reflects the container's limit rather than the host's RAM.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 31 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "(1 - node_memory_MemAvailable_bytes{role=~\"$role\"} / node_memory_MemTotal_bytes{role=~\"$role\"}) * 100",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 8, "showPoints": "never", "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 85 }, { "color": "red", "value": 95 }] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "Root filesystem used",
+      "description": "The / mount on every scraped host. This is the panel that catches a disk filling before something breaks.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 39 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 - (node_filesystem_avail_bytes{mountpoint=\"/\", fstype!~\"tmpfs|ramfs\", role=~\"$role\"} / node_filesystem_size_bytes{mountpoint=\"/\", fstype!~\"tmpfs|ramfs\", role=~\"$role\"} * 100)",
+          "instant": true,
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "minVizWidth": 8,
+        "minVizHeight": 16,
+        "valueMode": "color"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 75 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 92 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Load per core",
+      "description": "node_load5 divided by core count, so hosts of different sizes compare directly. Above 1 means the run queue is longer than the CPU can drain.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 39 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_load5{role=~\"$role\"} / on(host) group_left() count by (host) (node_cpu_seconds_total{mode=\"idle\", role=~\"$role\"})",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "min": 0,
+          "decimals": 2,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 2 }] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Node hardware health",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 48 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU package temperature",
+      "description": "Hypervisors only. k10temp exposes grey-server's Ryzen as pci0000:00_0000:00:18_3; the three Intel nodes use platform_coretemp_0.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 49 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_hwmon_temp_celsius{role=\"hypervisor\", chip=\"platform_coretemp_0\", sensor=\"temp1\"} or node_hwmon_temp_celsius{role=\"hypervisor\", chip=\"pci0000:00_0000:00:18_3\", sensor=\"temp1\"}",
+          "legendFormat": "{{host}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 70 }, { "color": "orange", "value": 80 }, { "color": "red", "value": 90 }] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "NVMe temperature",
+      "description": "Hypervisors only. LXC guests see the host's sensors through /sys, so leaving them in would double-count the same physical drive.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 49 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_hwmon_temp_celsius{role=\"hypervisor\", chip=~\"nvme_nvme.*\", sensor=\"temp1\"}",
+          "legendFormat": "{{host}} {{chip}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "decimals": 1,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true },
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 60 }, { "color": "orange", "value": 70 }, { "color": "red", "value": 80 }] }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "ZFS pool state",
+      "description": "hddpool-1 on grey-server, the only ZFS pool in the cluster. Anything other than ONLINE needs attention.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 5, "x": 0, "y": 57 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_zfs_zpool_state{role=\"hypervisor\", state=\"online\"}",
+          "instant": true,
+          "legendFormat": "{{zpool}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "NOT ONLINE", "color": "red", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "ONLINE", "color": "green", "index": 1 } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] },
+          "noValue": "no pool"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "NVMe critical warning",
+      "description": "The drive's own critical-warning bitfield. Non-zero means the controller is reporting a fault such as degraded reliability or exhausted spare capacity.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 5, "x": 5, "y": 57 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "nvme_critical_warning{role=\"hypervisor\"}",
+          "instant": true,
+          "legendFormat": "{{host}} {{device}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [{ "type": "value", "options": { "0": { "text": "OK", "color": "green", "index": 0 } } }],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "bargauge",
+      "title": "NVMe spare capacity remaining",
+      "description": "Available spare blocks as a share of the drive's original spare pool. purple-server's boot NVMe is a used spare, so this is the number to watch there.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 7, "x": 10, "y": 57 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "nvme_available_spare_ratio{role=\"hypervisor\"} * 100",
+          "instant": true,
+          "legendFormat": "{{host}} {{device}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "displayMode": "lcd",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "minVizWidth": 8,
+        "minVizHeight": 16,
+        "valueMode": "color"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 0,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 10 }, { "color": "yellow", "value": 30 }, { "color": "green", "value": 50 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "SMART overall health",
+      "description": "From the smartmon textfile collector, which is present on red-server and purple-server only. The other two nodes report NVMe health through the critical-warning panel instead.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 7, "x": 17, "y": 57 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "smartmon_device_smart_healthy{role=\"hypervisor\"}",
+          "instant": true,
+          "legendFormat": "{{host}} {{disk}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "FAILED", "color": "red", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "PASSED", "color": "green", "index": 1 } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] },
+          "noValue": "not collected"
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Storage capacity",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 63 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "bargauge",
+      "title": "Proxmox storage used",
+      "description": "All ten storages the PVE API reports, across every node.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 10, "w": 12, "x": 0, "y": 64 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100",
+          "instant": true,
+          "legendFormat": "{{id}}"
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "showUnfilled": true,
+        "minVizWidth": 8,
+        "minVizHeight": 14,
+        "valueMode": "color"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "decimals": 1,
+          "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 75 }, { "color": "orange", "value": 85 }, { "color": "red", "value": 92 }] }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "table",
+      "title": "Storage headroom",
+      "description": "Free space in bytes alongside total size, because a percentage alone hides how much room is actually left on a 2 TB volume.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 10, "w": 12, "x": 12, "y": 64 },
+      "targets": [
+        { "refId": "A", "expr": "pve_disk_size_bytes{id=~\"storage/.*\"} - pve_disk_usage_bytes{id=~\"storage/.*\"}", "instant": true, "format": "table" },
+        { "refId": "B", "expr": "pve_disk_size_bytes{id=~\"storage/.*\"}", "instant": true, "format": "table" }
+      ],
+      "transformations": [
+        { "id": "joinByField", "options": { "byField": "id", "mode": "outer" } },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true, "Time 1": true, "Time 2": true,
+              "job": true, "job 1": true, "job 2": true,
+              "instance": true, "instance 1": true, "instance 2": true,
+              "__name__": true, "__name__ 1": true, "__name__ 2": true
+            },
+            "renameByName": { "id": "Storage", "Value #A": "Free", "Value #B": "Total" },
+            "indexByName": { "id": 0, "Value #A": 1, "Value #B": 2 }
+          }
+        },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "field": "Free", "desc": false }] } }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto", "filterable": true }, "unit": "bytes", "decimals": 1 },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Free" },
+            "properties": [
+              { "id": "custom.cellOptions", "value": { "type": "color-text" } },
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "orange", "value": 21474836480 }, { "color": "green", "value": 107374182400 }] }
+              }
+            ]
+          }
+        ]
+      },
+      "options": { "showHeader": true, "footer": { "show": false, "reducer": ["sum"], "fields": "" } }
+    },
+    {
+      "type": "row",
+      "title": "Containers on docker-main",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 74 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Container CPU, top 10",
+      "description": "docker-main only. cAdvisor cannot register containers on the other six Docker hosts because they use Docker 29's overlayfs storage driver, so this row covers 14 of roughly 46 fleet containers.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 75 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(10, sum by (name) (rate(container_cpu_usage_seconds_total{job=\"cadvisor\", name!=\"\"}[$__rate_interval])) * 100)",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true, "stacking": { "mode": "none" } }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Container memory, top 10",
+      "description": "Working set, which is the figure that matters for pressure rather than total RSS.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 75 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(10, sum by (name) (container_memory_working_set_bytes{job=\"cadvisor\", name!=\"\"}))",
+          "legendFormat": "{{name}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes",
+          "min": 0,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 10, "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "table",
+      "title": "Container restarts in the last 6 hours",
+      "description": "Counts changes to the container start time. A container quietly restart-looping shows up here and nowhere else on this dashboard.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 84 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (name) (changes(container_start_time_seconds{job=\"cadvisor\", name!=\"\"}[6h])) > 0",
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": { "Time": true, "job": true, "instance": true, "__name__": true },
+            "renameByName": { "name": "Container", "Value": "Restarts" },
+            "indexByName": {}
+          }
+        },
+        { "id": "sortBy", "options": { "fields": {}, "sort": [{ "field": "Restarts", "desc": true }] } }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "align": "auto", "filterable": true }, "noValue": "no restarts in the window" },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Restarts" },
+            "properties": [
+              { "id": "unit", "value": "none" },
+              { "id": "decimals", "value": 0 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background" } },
+              {
+                "id": "thresholds",
+                "value": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 4 }] }
+              },
+              { "id": "custom.width", "value": 120 }
+            ]
+          }
+        ]
+      },
+      "options": { "showHeader": true, "footer": { "show": false, "reducer": ["sum"], "fields": "" } }
+    },
+    {
+      "type": "row",
+      "title": "Network and monitoring health",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 92 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Uplink throughput",
+      "description": "Physical uplinks and the Proxmox bridge only. The nodes each expose 40-plus fwbr, fwln, fwpr, veth and tap interfaces that would bury the real traffic.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 93 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "rate(node_network_receive_bytes_total{device=~\"vmbr0|enp42s0|nic0|ens18|enp6s18|eth0\"}[$__rate_interval]) * 8",
+          "legendFormat": "{{host}} {{device}} in"
+        },
+        {
+          "refId": "B",
+          "expr": "-rate(node_network_transmit_bytes_total{device=~\"vmbr0|enp42s0|nic0|ens18|enp6s18|eth0\"}[$__rate_interval]) * 8",
+          "legendFormat": "{{host}} {{device}} out"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bps",
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 6, "showPoints": "never", "spanNulls": true, "axisCenteredZero": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": false },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Scrape duration by job",
+      "description": "How long Prometheus spends collecting each job. A rising line here is usually an exporter under load, not a network problem.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 7, "x": 12, "y": 93 },
+      "targets": [
+        { "refId": "A", "expr": "max by (job) (scrape_duration_seconds)", "legendFormat": "{{job}}" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "decimals": 3,
+          "custom": { "drawStyle": "line", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": { "displayMode": "table", "placement": "bottom", "showLegend": true, "calcs": ["lastNotNull", "max"] },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Monitoring self-health",
+      "description": "Active series in the TSDB head and the number of targets Prometheus is scraping. Retention is 15 days.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 9, "w": 5, "x": 19, "y": 93 },
+      "targets": [
+        { "refId": "A", "expr": "prometheus_tsdb_head_series", "instant": true, "legendFormat": "head series" },
+        { "refId": "B", "expr": "count(up)", "instant": true, "legendFormat": "targets" },
+        { "refId": "C", "expr": "sum(up)", "instant": true, "legendFormat": "targets up" }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "colorMode": "none",
+        "graphMode": "area",
+        "textMode": "value_and_name",
+        "orientation": "vertical"
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "none", "decimals": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "text", "value": null }] } },
+        "overrides": []
+      }
+    }
+  ]
+}

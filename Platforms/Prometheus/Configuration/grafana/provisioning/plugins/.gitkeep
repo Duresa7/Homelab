@@ -1,0 +1,3 @@
+# Intentionally empty. See the note in ../alerting/.gitkeep: this placeholder
+# only exists so the read-only provisioning mount does not hide the directory
+# Grafana expects to find.

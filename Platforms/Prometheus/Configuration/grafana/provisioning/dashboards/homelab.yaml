@@ -1,0 +1,26 @@
+# Grafana dashboard provisioning, deployed at
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/provisioning/dashboards/ on
+# security-01.
+#
+# Dashboards under /etc/grafana/dashboards are read from a read-only bind mount
+# of the versioned repository copy. Grafana re-reads that directory every
+# updateIntervalSeconds, so editing a dashboard JSON on the host takes effect
+# without recreating the container.
+#
+# allowUiUpdates: false keeps the repository authoritative. To iterate in the
+# browser, use Save As to make a scratch copy, then fold the change back into the
+# versioned JSON. Without this, a UI edit would silently diverge from git.
+apiVersion: 1
+
+providers:
+  - name: homelab
+    orgId: 1
+    folder: Homelab
+    folderUid: homelab
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/dashboards
+      foldersFromFilesStructure: false
