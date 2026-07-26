@@ -44,6 +44,29 @@
           ]
         },
         "sort": 1
+      },
+      {
+        "name": "host",
+        "label": "Host (detail row)",
+        "description": "Only the Per-host detail row uses this. Every other panel covers the fleet.",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "bfgnkdi47u5tsa"
+        },
+        "query": {
+          "query": "label_values(node_uname_info, host)",
+          "refId": "host"
+        },
+        "refresh": 1,
+        "includeAll": false,
+        "multi": false,
+        "current": {
+          "selected": true,
+          "text": "grey-server",
+          "value": "grey-server"
+        },
+        "sort": 1
       }
     ]
   },
@@ -3215,6 +3238,564 @@
         },
         "overrides": []
       }
+    },
+    {
+      "type": "row",
+      "title": "Per-host detail",
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 213
+      },
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "CPU by mode",
+          "description": "Everything except idle, as a share of this host's cores. iowait means waiting on disk, steal means the hypervisor gave the CPU to someone else. The fleet CPU panel shows one busy number; this says why.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 1
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "sum by (mode) (rate(node_cpu_seconds_total{host=~\"$host\", mode!=\"idle\"}[$__rate_interval])) / on() group_left() count(count by (cpu) (node_cpu_seconds_total{host=~\"$host\"})) * 100",
+              "legendFormat": "{{mode}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 25,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "normal"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Load average against core count",
+          "description": "Load crossing the core line means work is queueing. Below it, the host is keeping up. The cores series is the threshold, not a measurement.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 1
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "node_load1{host=~\"$host\"}",
+              "legendFormat": "1m"
+            },
+            {
+              "refId": "B",
+              "expr": "node_load5{host=~\"$host\"}",
+              "legendFormat": "5m"
+            },
+            {
+              "refId": "C",
+              "expr": "node_load15{host=~\"$host\"}",
+              "legendFormat": "15m"
+            },
+            {
+              "refId": "D",
+              "expr": "count(count by (cpu) (node_cpu_seconds_total{host=~\"$host\"}))",
+              "legendFormat": "cores"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "none"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Memory breakdown",
+          "description": "Cached and buffers are reclaimable, so a host that looks full is often fine. The fleet Memory panel counts only the used slice; this shows where the rest went.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 10
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "node_memory_MemTotal_bytes{host=~\"$host\"} - node_memory_MemFree_bytes{host=~\"$host\"} - node_memory_Cached_bytes{host=~\"$host\"} - node_memory_Buffers_bytes{host=~\"$host\"}",
+              "legendFormat": "used"
+            },
+            {
+              "refId": "B",
+              "expr": "node_memory_Cached_bytes{host=~\"$host\"}",
+              "legendFormat": "cached"
+            },
+            {
+              "refId": "C",
+              "expr": "node_memory_Buffers_bytes{host=~\"$host\"}",
+              "legendFormat": "buffers"
+            },
+            {
+              "refId": "D",
+              "expr": "node_memory_MemFree_bytes{host=~\"$host\"}",
+              "legendFormat": "free"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 25,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "normal"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Swap in use",
+          "description": "Flat at zero is healthy. Sustained swap on a monitoring or database host means real memory pressure, and it is invisible on the fleet Memory panel.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 10
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "node_memory_SwapTotal_bytes{host=~\"$host\"} - node_memory_SwapFree_bytes{host=~\"$host\"}",
+              "legendFormat": "swap used"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "min": 0,
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "none"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "bargauge",
+          "title": "Every filesystem on this host",
+          "description": "The fleet Storage panel shows root only. This shows every real mount, so a full /var/lib/docker on an otherwise healthy host is visible.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 19
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "100 - (node_filesystem_avail_bytes{host=~\"$host\", fstype!~\"tmpfs|devtmpfs|overlay|squashfs|ramfs\"} / node_filesystem_size_bytes{host=~\"$host\", fstype!~\"tmpfs|devtmpfs|overlay|squashfs|ramfs\"} * 100)",
+              "legendFormat": "{{mountpoint}}",
+              "instant": true
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "decimals": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 80
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "horizontal",
+            "showUnfilled": true,
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Network per interface",
+          "description": "Every real interface on this host, not just the uplink the fleet Network panel shows. Transmit is drawn negative so direction is readable at a glance.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 19
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "rate(node_network_receive_bytes_total{host=~\"$host\", device!~\"lo|veth.*|fw.*|tap.*|docker.*|br-.*\"}[$__rate_interval]) * 8",
+              "legendFormat": "in {{device}}"
+            },
+            {
+              "refId": "B",
+              "expr": "-rate(node_network_transmit_bytes_total{host=~\"$host\", device!~\"lo|veth.*|fw.*|tap.*|docker.*|br-.*\"}[$__rate_interval]) * 8",
+              "legendFormat": "out {{device}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bps",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "none"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "timeseries",
+          "title": "Disk throughput by device",
+          "description": "Read the host caveat: /proc/diskstats is not namespaced, so on an LXC guest this reports the hypervisor's physical devices rather than the container's own I/O. Trust it on the four hypervisors; treat it as the node's disks elsewhere.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 0,
+            "y": 28
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "rate(node_disk_read_bytes_total{host=~\"$host\", device!~\"loop.*|dm-.*|zd.*\"}[$__rate_interval])",
+              "legendFormat": "read {{device}}"
+            },
+            {
+              "refId": "B",
+              "expr": "-rate(node_disk_written_bytes_total{host=~\"$host\", device!~\"loop.*|dm-.*|zd.*\"}[$__rate_interval])",
+              "legendFormat": "write {{device}}"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "unit": "Bps",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 1,
+                "fillOpacity": 10,
+                "showPoints": "never",
+                "spanNulls": true,
+                "stacking": {
+                  "mode": "none"
+                }
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ]
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          }
+        },
+        {
+          "type": "table",
+          "title": "Host facts",
+          "description": "Kernel, exporter version, core count and uptime for the selected host. The first thing worth checking when a host is behaving oddly.",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "bfgnkdi47u5tsa"
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 12,
+            "x": 12,
+            "y": 28
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "expr": "node_uname_info{host=~\"$host\"}",
+              "instant": true,
+              "format": "table"
+            },
+            {
+              "refId": "B",
+              "expr": "time() - node_boot_time_seconds{host=~\"$host\"}",
+              "instant": true,
+              "format": "table"
+            },
+            {
+              "refId": "C",
+              "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=~\"$host\"}))",
+              "instant": true,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "joinByField",
+              "options": {
+                "byField": "host",
+                "mode": "outer"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Time": true,
+                  "Time 1": true,
+                  "Time 2": true,
+                  "Time 3": true,
+                  "__name__": true,
+                  "job": true,
+                  "instance": true,
+                  "domainname": true,
+                  "nodename": true,
+                  "sysname": true,
+                  "version": true
+                },
+                "renameByName": {
+                  "host": "Host",
+                  "role": "Role",
+                  "release": "Kernel",
+                  "machine": "Arch",
+                  "Value #B": "Uptime",
+                  "Value #C": "Cores"
+                },
+                "indexByName": {}
+              }
+            }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "custom": {
+                "align": "auto",
+                "filterable": true
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Uptime"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "s"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cores"
+                },
+                "properties": [
+                  {
+                    "id": "unit",
+                    "value": "none"
+                  },
+                  {
+                    "id": "decimals",
+                    "value": 0
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showHeader": true,
+            "footer": {
+              "show": false,
+              "reducer": [
+                "sum"
+              ],
+              "fields": ""
+            }
+          }
+        }
+      ]
     }
   ]
 }

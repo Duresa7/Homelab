@@ -33,10 +33,14 @@ import urllib.request
 # Grafana interpolates these before sending a query. The substitutions below
 # mirror what the dashboard's own defaults resolve to, so the assertion tests
 # the same expression Grafana would send.
+# `$host` resolves to `.*` here rather than to one hostname, so the per-host
+# detail row is tested against every host at once. Every panel there matches with
+# `host=~"$host"` for exactly that reason.
 VARIABLE_SUBSTITUTIONS = {
     "$__rate_interval": "5m",
     "$__interval": "1m",
     "$role": ".*",
+    "$host": ".*",
 }
 
 # Panels that are correct when empty. A restart table with no rows means nothing
