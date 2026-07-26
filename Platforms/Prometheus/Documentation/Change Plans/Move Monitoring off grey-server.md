@@ -371,11 +371,3 @@ Commit in several small commits rather than one, matching the pattern used throu
 **After Phase 8.** The old stack is gone. Rebuild it from `Configuration/` in this repository, which is the same procedure Phase 5 used, so it is proven rather than theoretical. The TSDB and `grafana.db` are unrecoverable, which is acceptable because the new stack started empty by design.
 
 Keep a `cluster.fw` backup at `/root/cluster.fw.bak.monitor-relocation-<date>` on the node you edit from, as on 2026-07-26.
-
-## What This Does Not Fix
-
-Correlated failure is reduced, not removed. HA is disabled on every guest, so `blue-server` failing still takes monitoring down. It also takes NPM and NetBird down, since `docker-network` lives on the same node, so a Blue failure costs the reverse proxy and the VPN as well as the dashboards. That is a different exposure profile from Grey, not a strictly smaller one, and it was accepted knowingly.
-
-Real survivability needs HA, and HA needs shared storage. `local-lvm` is node-local and `hddpool-1` and `ssd-lvm1` show as disabled on Blue, so check what the cluster's storage actually supports before assuming that path is open.
-
-Nothing here alerts. A well-placed collector nobody is watching is worth less than a badly placed one that pages, which is why [alert routing](../TODO.md) is sequenced ahead of this move.
