@@ -1,6 +1,6 @@
 # Grafana datasource provisioning, deployed at
 # /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/provisioning/datasources/ on
-# security-01.
+# monitor-01.
 #
 # This adopts the datasource that already existed in the grafana_data volume
 # rather than creating a second one. Grafana matches a provisioned datasource on
