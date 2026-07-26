@@ -26,8 +26,9 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "alpha-prod-01",
     "splunk-siem",
     "ansible-01",
+    "monitor-01",
 }
-# All seven Docker hosts. The set was docker-main alone from 2026-07-25 to
+# All eight Docker hosts. The set was docker-main alone from 2026-07-25 to
 # 2026-07-26, while cAdvisor v0.52.1 could not register containers under the
 # containerd snapshotter; v0.60.5 handles it, so the storage driver no longer
 # decides membership. The cadvisor_incompatible group went away with it.
@@ -39,6 +40,7 @@ EXPECTED_CADVISOR_HOSTS = {
     "alpha-prod-01",
     "app-01",
     "security-01",
+    "monitor-01",
 }
 
 # Hosts that must never appear under node_exporter_targets, with the reason.
@@ -74,6 +76,7 @@ EXPECTED_IPS = {
     "security-01": "192.168.72.2",
     "splunk-siem": "192.168.72.3",
     "ansible-01": "192.168.40.36",
+    "monitor-01": "192.168.73.2",
 }
 
 
@@ -102,12 +105,12 @@ def main() -> int:
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
-            "node_exporter host set differs from the approved seven-host set: "
+            "node_exporter host set differs from the approved eight-host set: "
             f"{sorted(node_hosts)}"
         )
     if set(cadvisor_hosts) != EXPECTED_CADVISOR_HOSTS:
         errors.append(
-            "cAdvisor host set differs from the approved seven Docker hosts: "
+            "cAdvisor host set differs from the approved eight Docker hosts: "
             f"{sorted(cadvisor_hosts)}"
         )
     if "cadvisor_incompatible" in children:

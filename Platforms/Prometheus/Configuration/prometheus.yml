@@ -1,5 +1,5 @@
 # Prometheus scrape configuration, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml on security-01.
+# /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml on monitor-01.
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
@@ -46,10 +46,12 @@ scrape_configs:
         labels: {host: alpha-prod-01, role: app}
       - targets: ["192.168.85.2:9100"]
         labels: {host: docker-network, role: docker}
+      - targets: ["192.168.73.2:9100"]
+        labels: {host: monitor-01, role: monitoring}
 
   # -------------------------------------------------------------- cadvisor
-  # Per-container CPU, memory and restart detection across all seven Docker
-  # hosts: 50 containers, of which seven are the cAdvisor containers themselves.
+  # Per-container CPU, memory and restart detection across all eight Docker
+  # hosts.
   #
   # This job listed docker-main alone from 2026-07-25 to 2026-07-26. cAdvisor
   # v0.52.1 resolves a container's read-write layer through the old graphdriver
@@ -79,6 +81,8 @@ scrape_configs:
         labels: {host: app-01, role: app}
       - targets: ["192.168.72.2:9101"]
         labels: {host: security-01, role: security}
+      - targets: ["192.168.73.2:9101"]
+        labels: {host: monitor-01, role: monitoring}
 
   # --------------------------------------------------------------- proxmox
   # The PVE API exporter. This one job covers the whole cluster: every guest's
@@ -141,7 +145,7 @@ scrape_configs:
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
-        labels: {host: security-01, role: security}
+        labels: {host: monitor-01, role: monitoring}
 
   # ------------------------------------------------------------------- nut
   # Both APC Back-UPS Pro BR1500MS2 units, read over the NUT protocol on 3493.
@@ -151,7 +155,7 @@ scrape_configs:
   # Reaching this needed rules in two independent firewalls. The UniFi policy
   # "Allow Security to Proxmox NUT" was not sufficient on its own; the Proxmox
   # cluster firewall at /etc/pve/firewall/cluster.fw also had to permit
-  # 192.168.72.2, since it previously allowed only docker-main for PeaNUT.
+  # 192.168.73.2, since it previously allowed only docker-main for PeaNUT.
   #
   # 30s because UPS state changes slowly, and a brownout lasting under 30
   # seconds is not something this dashboard needs to resolve.

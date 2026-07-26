@@ -21,7 +21,7 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 14 hosts
+    # node_exporter, 15 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
@@ -36,7 +36,8 @@ EXPECTED_TARGETS = {
     "http://192.168.80.10:9100/metrics": ("node", "app-01"),
     "http://192.168.80.118:9100/metrics": ("node", "alpha-prod-01"),
     "http://192.168.85.2:9100/metrics": ("node", "docker-network"),
-    # cAdvisor, all 7 Docker hosts. This was docker-main alone until 2026-07-26,
+    "http://192.168.73.2:9100/metrics": ("node", "monitor-01"),
+    # cAdvisor, all 8 Docker hosts. This was docker-main alone until 2026-07-26,
     # while v0.52.1 could not register containers under Docker 29's overlayfs
     # driver. v0.60.5 handles the containerd snapshotter.
     "http://192.168.40.35:9101/metrics": ("cadvisor", "docker-main"),
@@ -46,13 +47,14 @@ EXPECTED_TARGETS = {
     "http://192.168.80.118:9101/metrics": ("cadvisor", "alpha-prod-01"),
     "http://192.168.80.10:9101/metrics": ("cadvisor", "app-01"),
     "http://192.168.72.2:9101/metrics": ("cadvisor", "security-01"),
+    "http://192.168.73.2:9101/metrics": ("cadvisor", "monitor-01"),
     # Proxmox API exporter
     "http://pve-exporter:9221/pve?module=default&target=192.168.70.10": (
         "proxmox",
         None,
     ),
     # Prometheus self-scrape
-    "http://localhost:9090/metrics": ("prometheus", "security-01"),
+    "http://localhost:9090/metrics": ("prometheus", "monitor-01"),
     # NUT, one target per UPS. Reaching these needed rules in both the UniFi
     # firewall and the Proxmox cluster firewall.
     "http://nut-exporter:9995/nut?target=192.168.70.13%3A3493": ("nut", "red-server"),

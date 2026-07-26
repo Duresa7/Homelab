@@ -1,4 +1,4 @@
-# Monitoring stack on security-01, deployed at
+# Monitoring stack on monitor-01, deployed at
 # /home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml
 #
 # Publication note: the three URL values below carry a redaction placeholder in
@@ -7,7 +7,7 @@
 # fleet-updates inventory.
 #
 # cAdvisor is deliberately absent here. Ansible owns it as its own compose
-# project at /opt/docker/cadvisor so one playbook covers all seven Docker hosts
+# project at /opt/docker/cadvisor so one playbook covers all eight Docker hosts
 # identically, including this one.
 services:
   prometheus:
@@ -55,6 +55,9 @@ services:
   pve-exporter:
     image: prompve/prometheus-pve-exporter:latest
     container_name: pve-exporter
+    # Match the owner of the mode-0600 host credential file. The image's
+    # default nobody user cannot read a private bind mount owned by <YOUR_ADMIN_USERNAME>.
+    user: "1000:1000"
     restart: unless-stopped
     volumes:
       - ./pve.yml:/etc/prometheus/pve.yml
