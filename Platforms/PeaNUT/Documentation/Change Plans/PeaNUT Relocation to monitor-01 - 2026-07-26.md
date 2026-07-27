@@ -56,7 +56,7 @@ The Prometheus blackbox job needs no change either. It probes `https://peanut.<Y
 
 ### Step 3: Build the Compose project on monitor-01
 
-Use `/opt/docker/peanut`, matching both the fleet convention and the existing `/opt/docker/cadvisor` project already on this host. The monitoring stack at `/home/dkadi/monitoring` stays a separate Compose project; PeaNUT isn't part of it and isn't scraped by it.
+Use `/opt/docker/peanut`, matching both the fleet convention and the existing `/opt/docker/cadvisor` project already on this host. The monitoring stack at `/home/<YOUR_ADMIN_USERNAME>/monitoring` stays a separate Compose project; PeaNUT isn't part of it and isn't scraped by it.
 
 Create `/opt/docker/peanut/docker-compose.yml`:
 
@@ -157,7 +157,7 @@ Two of the five changes are additions that must land before cutover. All UniFi m
 
 3. Create a new policy, `Allow VPN Management Access to PeaNUT`. Source zone `Vpn` (`68b788c0e9f08f1e1b2a228b`), targeting the `Management Access` WireGuard network by network object; look up its `network_id` with `unifi_list_networks`. That server is WireGuard on UDP 51822 with subnet `10.6.0.1/24`. Destination zone `<YOUR_ORG_NAME>`-Monitor (`6a665585052792cd214057cb`), IP `192.168.73.2`, TCP 8090. Enable the automatic return policy, matching every sibling. Scope it to 8090 only; widening it to 3000 and 9090 later is a one-field edit.
 
-4. Create a new policy, `Allow dkadi MacBook Air M3 to PeaNUT`, source IP `192.168.10.27`, destination `192.168.73.2` TCP 8090. The machine is `dkadi-mb-air3`, controller name `dkadi-MBA-MAIN`. I confirmed on the controller on 2026-07-26 that it holds a fixed IP: `use_fixedip` is true and `fixed_ip` is `192.168.10.27`, so the policy can be pinned to that address safely.
+4. Create a new policy, `Allow <YOUR_ADMIN_USERNAME> MacBook Air M3 to PeaNUT`, source IP `192.168.10.27`, destination `192.168.73.2` TCP 8090. The machine is `<YOUR_ADMIN_USERNAME>-mb-air3`, controller name `<YOUR_ADMIN_USERNAME>-MBA-MAIN`. I confirmed on the controller on 2026-07-26 that it holds a fixed IP: `use_fixedip` is true and `fixed_ip` is `192.168.10.27`, so the policy can be pinned to that address safely.
 
 **The Mac's source zone is the one thing left to resolve.** It sits on VLAN 10 Trusted (`network_id 68b78940e9f08f1e1b2a232b`), and my two inventory files disagree about which zone that is. `network-vlan.md` line 36 puts Trusted (10) in the Internal zone. `zone.md` line 12 lists the Internal zone as Management, Personal-A (40), Secure (50), Secure Client (60), and AD-SERVERS (65), with no VLAN 10. The V2 zone API returns empty `networks` arrays, so it can't settle this. Read the actual zone membership in the UniFi UI before creating the policy, use whatever the controller really says, and fix whichever repository file is wrong as part of Step 8.
 
