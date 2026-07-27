@@ -25,5 +25,3 @@ I track 16 firewall zones and their assigned networks here.
 | KASM-BROWSER | Custom | KASM-BROWSER (VLAN 74) |
 | MALWARE-OFFLINE | Custom | MALWARE-OFFLINE (VLAN 77) |
 | EVIDENCE-QUARANTINE | Custom | EVIDENCE-QUARANTINE (VLAN 79) |
-
-The monitoring zone spent its first hours named `Org-Monitor`, because I took this repository's redaction placeholder at face value while creating it on 2026-07-26. I renamed it the same day. Policies bind to `zone_id`, so all 13 kept their binding through the rename and the target set stayed at 46 of 46.

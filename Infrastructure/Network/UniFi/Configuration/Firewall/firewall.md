@@ -73,7 +73,7 @@ All 59 user-defined policies are enabled, use connection state `ALL`, & run on t
 
 The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). The `<YOUR_ORG_NAME>`-Monitor web and NTP egress pair follows the same order without a terminal zone-wide block because the zone defaults already deny unmatched traffic. I enabled automatic response policies for the cross-zone monitoring, NPM, break-glass, and SSH paths.
 
-The table matches the controller. Two entries needed a UI edit on 2026-07-26 to get there, because the plugin exposes no zone-rename operation and silently drops `description` on a policy update. `Allow NPM to security-01 Wazuh` had kept its pre-relocation name and a description naming Grafana and Prometheus, long after its destination port dropped to 443 alone. The monitoring zone was named `Org-Monitor`.
+Zone names and policy descriptions have to be edited in the controller UI. The management plugin exposes no zone-rename operation, and it silently drops `description` from a policy update rather than failing, so a change that looks applied may not be.
 
 A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently. The NUT path proved that on 2026-07-25, and the monitoring relocation also required the `pve_svc_clients` IPSet member outside the main rule section. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
 
