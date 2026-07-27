@@ -15,6 +15,7 @@ This file is my central backlog and index. It holds active priorities plus links
 - [ ] Plan the bounded MGMT-A lockdown in the [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
 - [ ] Move Kasm to `purple-server`, rebuild INetSim on VLAN 77, then attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network. The UniFi zone matrix audit gates the rest, and the acceptance checks gate the first live sample. Seven steps, rollback points, and stop conditions in [Kasm Relocation to Purple](Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
 - [ ] Decide what the Samsung 850 EVO now on `purple-server`'s SATA port is for, or pull it back out. It has no filesystem and no Proxmox storage entry. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+- [ ] Decide whether the pre-scrub git history bundles and the redaction value map belong inside `D:\Documents\Homelab` at all. They're 13,510,522 bytes of history plus a 310-row file that maps every public placeholder back to its real value, and a 90-line local server briefly published them to the Internal and Vpn zones on 2026-07-25. Moving them outside the working tree removes the class instead of patching one tool. Scope and validation in the [preview server incident report](Security/Incidents/Preview%20Server/Preview-Server-Incident-Report-2026-07-25-LAN-Exposed-Repository-Root.md).
 
 ## Scheduled
 
