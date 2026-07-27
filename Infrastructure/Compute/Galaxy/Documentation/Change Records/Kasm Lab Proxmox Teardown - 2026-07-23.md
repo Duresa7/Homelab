@@ -1,7 +1,7 @@
 # Kasm Lab Proxmox Teardown
 
 **Created:** 2026-07-23  
-**Last updated:** 2026-07-23
+**Last updated:** 2026-07-26
 
 ## What I did
 
@@ -14,7 +14,7 @@ I removed every agent-built Kasm object from the Galaxy cluster after deciding t
 - **Pool:** `KASM-AUTOSCALE`.
 - **SDN:** vnets `KASM75` through `KASM79` and the `KASMLAB` vlan zone, followed by a config apply.
 - **Storage:** the `kasm-snippets` dir storage and `/var/lib/vz/kasm-snippets`, which held the `kasm_guest_hook.sh` snippet.
-- **Host firewall:** the `192.168.85.3 # kasm-core Proxmox API` line in `/etc/pve/firewall/cluster.fw`. I saved the prior file to `/root/cluster.fw.bak-20260723` on grey.
+- **Host firewall:** the `192.168.85.3 # kasm-core Proxmox API` line in `/etc/pve/firewall/cluster.fw`. I saved the prior file to `/root/cluster.fw.bak-20260723` on grey. That snapshot was deleted on 2026-07-26; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md).
 - **Node files:** `/root/kasm-preflight-20260722/` on all four nodes, which held the staged control scripts and the pre-maintenance `/etc` config archives.
 
 ## Verification

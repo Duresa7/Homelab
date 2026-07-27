@@ -1,7 +1,7 @@
 # Security-A Migration
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
 **Implementation date:** 2026-07-12  
 **Status:** Complete  
@@ -118,7 +118,7 @@ At `2026-07-12 22:40:27 EDT`, SC4S recorded one 317-byte CEF source event and pr
 
 - VM 109 NetworkManager backup: `/root/security-a-migration-20260712-213903`.
 - VM 200 netplan backup: `/root/security-a-migration-20260713-014435`.
-- Galaxy firewall backups: `/root/cluster.fw.bak.security-a-20260712-213729` and `/root/cluster.fw.bak.security-a-cleanup-20260712-215806`.
+- Galaxy firewall backups: `/root/cluster.fw.bak.security-a-20260712-213729` and `/root/cluster.fw.bak.security-a-cleanup-20260712-215806`. Both were deleted on 2026-07-26; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md).
 - Ansible inventory backup: `/home/ansible/ansible/inventory/hosts.ini.bak.security-a-20260712-215740`.
 - A guest rollback consists of restoring its saved in-guest configuration, retagging its NIC to VLAN 70 with the original MAC/bridge/firewall fields, and restoring the relevant old UniFi/Galaxy rules before reboot and verification.
 

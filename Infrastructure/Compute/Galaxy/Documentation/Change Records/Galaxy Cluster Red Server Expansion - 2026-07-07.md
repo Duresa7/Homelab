@@ -1,7 +1,7 @@
 # Galaxy Cluster Red Server Expansion
 
 **Created:** 2026-07-07  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-26
 
 **Author:** Duresa7  
 **Date:** 2026-07-07  
@@ -162,6 +162,8 @@ Saved result:
 ```
 
 ## Recovery Files
+
+**All five paths below were deleted on 2026-07-26**; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md). The firewall state is reconstructable from [Galaxy Data Center Firewall](../../Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md), the SSH and APT baselines from the [Linux Host Baseline Standard](../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), and the stock `proxmoxlib.js` from `apt install --reinstall proxmox-widget-toolkit`. If SSH ever refuses on Red, the way back in is the Proxmox console, not a file.
 
 Firewall backup on `grey-server`:
 

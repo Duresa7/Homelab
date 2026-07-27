@@ -1,7 +1,7 @@
 # PeaNUT UPS Dashboard Deployment
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
 ## Date
 
@@ -83,6 +83,8 @@ NUT returned model, load, charge, runtime, input voltage, and `OL` status from b
 ## Rollback Points
 
 I can stop and remove `/opt/docker/peanut` without changing either NUT server. The pre-change NUT directories are retained in SSH Manager backups named `pre-peanut-nut-config-red-20260722` and `pre-peanut-nut-config-grey-20260722` for 30 days. The pre-change Galaxy firewall is `/root/cluster.fw.bak.peanut-20260722` on Grey. Before restoring it, I must confirm no later firewall change depends on the current file.
+
+**Superseded on 2026-07-26.** All three artifacts are deleted; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md). Restoring `cluster.fw.bak.peanut-20260722` had already become the wrong move: it predates the `192.168.73.2` NUT rules, so it would have cut off `prometheus-nut-exporter`. PeaNUT itself moved to `monitor-01` the same day, which the [relocation record](PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md) covers.
 
 ## Remaining Work
 
