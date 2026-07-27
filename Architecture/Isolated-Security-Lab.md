@@ -13,6 +13,10 @@ On 2026-07-24 I brought the platform back up as a single host: Kasm 1.19.0 Commu
 
 The tradeoff that choice buys and costs: a compromised session stays in its lane, but a full container escape that takes over `kasm-01` itself lands on SERVERS-A. For live malware I run the detonation guest with a lab-VLAN NIC only and no management interface, reaching it through the Proxmox console instead of SSH.
 
+On 2026-07-25 I decided to move the lab off Grey and onto `purple-server`, which carries no guests. Grey holds `app-01` at 24 GiB, `splunk-siem`, `security-01`, and `alpha-prod-01`, and detonation work doesn't belong beside them. The sequence is in [Kasm Relocation to Purple](../Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md). Nothing has moved yet.
+
+Purple stays in the Galaxy cluster, and I'm recording what that costs rather than implying the move seals the boundary. Cluster members hold each other's root keys in `/etc/pve/priv/authorized_keys` along with the cluster CA private key at `/etc/pve/priv/pve-root-ca.key`, so `ssh 192.168.70.10` from Purple returns a root shell on Grey today. A sample that escapes its container and then escapes QEMU reaches Grey from either node. I chose the four-node console over closing a path that needs a QEMU vulnerability to walk, which puts the real defense at the guest boundary: current `pve-qemu-kvm`, detonation guests built with no guest agent, no USB, no audio, no SPICE, and no serial, and a snapshot before every run.
+
 ## Boundary Model
 
 Four controls have different jobs:
@@ -38,9 +42,11 @@ Every lane is blocked from management, cluster, monitoring, server, trusted, and
 
 As of 2026-07-24 every Kasm component runs on one host, `kasm-01` (VM 122) on Grey, installed with `--role all`. The earlier split across `kasm-agent-01`, `kasm-core`, and INetSim on Purple no longer exists; the 2026-07-23 teardown destroyed those guests. Purple is back in service as of 2026-07-25 on a replacement boot NVMe and carries nothing.
 
-Malware and untrusted full desktops will run as separate KVM guests on Grey, not inside `kasm-01`. The permanent Kali VM stays separate from malware storage.
+Malware and untrusted full desktops run as separate KVM guests beside `kasm-01`, never inside it. After the relocation those guests live on Purple. The permanent Kali VM stays separate from malware storage, and it stays on Grey: `kali-pen` (VM 106) and `W11-Test-1` (VM 103) predate this lab and are not part of it.
 
-Grey also carries production workloads. VLAN separation does not protect those workloads from a hypervisor escape. I do not run samples that target QEMU, Proxmox, firmware, storage, or uncontrolled worm propagation on this shared cluster.
+Purple has 15 GiB of RAM and an i5-8500T at 6 cores. The budget is 8 GiB for `kasm-01`, 1 GiB for the INetSim LXC, 4 GiB for one detonation guest, and 1.5 GiB for PVE, which is 14.5 of 15. That allows one detonation guest at a time. Going to 32 GiB would allow a victim, a target, and a monitor together.
+
+Grey carries production and stops carrying lab work once the move completes. VLAN separation does not protect those workloads from a hypervisor escape, and neither does the node split while Purple remains a cluster member. I do not run samples that target QEMU, Proxmox, firmware, storage, or uncontrolled worm propagation on this cluster.
 
 ## Disposable Lifecycle
 

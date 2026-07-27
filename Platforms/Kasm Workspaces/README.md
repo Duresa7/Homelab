@@ -7,6 +7,8 @@ Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.
 
 Community Edition caps me at 5 concurrent sessions & one named user. That cap drove every sizing decision here.
 
+On 2026-07-25 I decided to move the whole lab off Grey & onto `purple-server`, which carries no guests. Grey runs `app-01`, `splunk-siem`, `security-01`, & `alpha-prod-01`, & malware detonation doesn't belong beside them. The sequence, resource budget, & rollback points are in [Kasm Relocation to Purple](Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md). Nothing has moved yet.
+
 ## What's built & what isn't
 
 The platform itself is live: 8 containers healthy, HTTPS on TCP 443, admin login verified. Nothing else is wired up yet. The isolated lab VLANs exist on the UniFi side but `kasm-01` has a single NIC on SERVERS-A, so no session currently lands in an isolated segment.
@@ -25,6 +27,7 @@ Deliberately not done yet:
 | Path | Contents |
 |---|---|
 | `Documentation/Deployment.md` | The 2026-07-24 build: VM spec, baseline, install commands, verification output |
+| `Documentation/Change Plans/Kasm Relocation to Purple.md` | The planned move to `purple-server`, storage & RAM budget, & the lab VLAN work that follows it |
 
 ## Access
 
