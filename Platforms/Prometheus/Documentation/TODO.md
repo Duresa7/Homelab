@@ -3,13 +3,11 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-26
 
-Five items remain open. Three closed on 2026-07-26: UPS collection, per-container metrics on the six original `overlayfs` hosts, and the relocation of the monitoring stack to CT 104 `monitor-01` on `blue-server`. I record future monitoring changes here before promoting them to an active project.
+Four items remain open. Four closed on 2026-07-26: UPS collection, per-container metrics on the six original `overlayfs` hosts, the relocation of the monitoring stack to CT 104 `monitor-01` on `blue-server`, and the two UniFi entries the API couldn't write. I record future monitoring changes here before promoting them to an active project.
 
 ## Open
 
 **Baseline the Grafana lock errors on 2026-07-27, then decide what to do about WAL.** Run `docker logs --since 24h grafana 2>&1 | grep -c "level=error"` on `monitor-01`. `GF_DATABASE_WAL=true` does nothing on Grafana 13.1.1, so this measures an unmitigated database rather than proving a fix: header bytes 18 and 19 of `grafana.db` read `1 1`, and no `-wal` file exists. Near zero means dropping the dead setting at the next recreate. Anything else means setting `PRAGMA journal_mode=WAL` on the file, which persists but adds a manual step to every rebuild, or moving to Postgres. Reasoning & evidence in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md). Do this before writing alert rules, because saving rules was one of the failing jobs on 12.4.1.
-
-**Fix two UniFi entries that the API can't reach.** Both need the controller UI. The custom zone for VLAN 73 is named `Org-Monitor`, which came from reading this repository's `<YOUR_ORG_NAME>` redaction placeholder literally; every sibling zone is `<YOUR_ORG_NAME>-Servers`, `<YOUR_ORG_NAME>-Mgmt`, `<YOUR_ORG_NAME>-Security`, `<YOUR_ORG_NAME>-Access`, or `<YOUR_ORG_NAME>-Cluster`, so it should be `<YOUR_ORG_NAME>-Monitor`. Separately, policy `6a60fd2c2d027bb05525a876` is now scoped to TCP 443 alone but still describes itself as reaching "Wazuh, Grafana, and Prometheus on security-01"; the name should lose the plural too. Renaming a zone doesn't touch policy bindings, which reference it by `zone_id`.
 
 **Scrape `kasm-01`.** It's the one running host with no `node_exporter`. It sits outside the Ansible inventory, and the move to `purple-server` in [Kasm Relocation to Purple](../../Kasm%20Workspaces/Documentation/Change%20Plans/) is still open, so its address may change. Adding it now means redoing the inventory entry and the firewall scope afterward.
 
@@ -27,4 +25,4 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 
 ## Completed
 
-- 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `Org-Monitor`, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.
+- 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `<YOUR_ORG_NAME>`-Monitor, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.

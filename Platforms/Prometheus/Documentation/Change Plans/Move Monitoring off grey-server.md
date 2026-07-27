@@ -34,7 +34,7 @@ I passed Phase 0 with 44 of 44 targets up. `blue-server` still reported CTID 104
 
 I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24. DHCP serves 192.168.73.6 through 192.168.73.254, leaving the static `monitor-01` address at 192.168.73.2 outside the pool. UPnP & mDNS remain disabled.
 
-Phase 1 is complete. `Org-Monitor` contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, & the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
+Phase 1 is complete. `<YOUR_ORG_NAME>`-Monitor contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, & the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
 
 Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled & `PVEAuditor` on `/`. I stored its one-time secret and token ID in 1Password, then removed both staging files.
 
@@ -78,7 +78,7 @@ Second reason: `security-01` uses 8 of 12 GiB and nearly all of it is Wazuh's in
 | 1 | Docker Compose, reusing `Configuration/` unchanged | Debian 13 ships Prometheus 2.53.3 against the 3.10.0 in use, and has no package for Grafana, `prometheus-nut-exporter`, or cAdvisor. Native would mean a major downgrade, a third-party repo, two hand-built binaries, and a rewritten runbook |
 | 2 | CT 104 `monitor-01`, Debian 13, unprivileged, `nesting=1,keyctl=1` | Matches CT 107 `docker-network` exactly, which runs Docker on this node today |
 | 3 | 2 cores, 2048 MB memory, 1024 MB swap, 16G on `local-lvm` | Measured footprint is 371 MB RSS across all six containers and 5.5 GB of disk. `pct resize` grows the disk in seconds if it ever needs to |
-| 4 | New VLAN 73 `MONITOR-A`, 192.168.73.0/24, new custom zone `Org-Monitor` | Dedicated zone so the collector does not inherit Security-A's permissions. VLAN 73 is free since the 2026-07-23 lab simplification |
+| 4 | New VLAN 73 `MONITOR-A`, 192.168.73.0/24, new custom zone `<YOUR_ORG_NAME>`-Monitor | Dedicated zone so the collector does not inherit Security-A's permissions. VLAN 73 is free since the 2026-07-23 lab simplification |
 | 5 | `--nameserver 192.168.73.1` | Split-horizon DNS is gateway-wide, verified against both `.72.1` and `.80.1`. A public resolver returns NXDOMAIN for internal names and silently kills all 19 blackbox probes and nothing else |
 | 6 | Inbound: NPM plus break-glass from Jedi PC | Daily access through the proxy with the wildcard certificate. The direct rule exists because NPM runs on `docker-network`, on this same node, and because you need browser access before NPM is re-pointed |
 | 7 | Fresh TSDB, retention stays 15d | Graphs restart empty and heal by 2026-08-10. Retention unchanged so no documentation numbers move |
@@ -112,7 +112,7 @@ Twenty-three changes across two systems that enforce independently. On 2026-07-2
 
 ### Twelve new UniFi policies
 
-All egress policies take source zone `Org-Monitor`, source `IP 192.168.73.2`.
+All egress policies take source zone `<YOUR_ORG_NAME>`-Monitor, source `IP 192.168.73.2`.
 
 | # | Name | Destination | Ports |
 |---|---|---|---|
@@ -192,7 +192,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 ## Phase 1. Network, zone, and firewall
 
 1. Create network `MONITOR-A`, VLAN 73, 192.168.73.0/24, gateway 192.168.73.1. Enable DHCP from 192.168.73.6 through 192.168.73.254. Keep `monitor-01` static at 192.168.73.2 in its LXC network configuration. Leave UPnP and IGMP snooping off.
-2. Create custom zone `Org-Monitor` containing only `MONITOR-A`.
+2. Create custom zone `<YOUR_ORG_NAME>`-Monitor containing only `MONITOR-A`.
 3. Create the twelve policies above.
 4. Make the four additive `cluster.fw` changes. Verify the candidate before installing: line count, that both `IN DROP` entries survive, that all five IPSETs survive, and that the file still contains the two PeaNUT rules. Then `pve-firewall compile`.
 
@@ -249,7 +249,7 @@ timedatectl | grep -i synchronized            # proves NTP egress
 
 If the internal name does not resolve, stop. Every blackbox probe depends on it and nothing else will look wrong.
 
-If `hello-world` cannot pull, policy 8 is wrong. If time is not synchronised, policy 9 is wrong. If DNS fails while the resolver is correct, you may need an `Org-Monitor` to `Gateway` allow on 53; that was not needed for existing zones, so treat it as a finding worth recording rather than an expected step.
+If `hello-world` cannot pull, policy 8 is wrong. If time is not synchronised, policy 9 is wrong. If DNS fails while the resolver is correct, you may need an `<YOUR_ORG_NAME>`-Monitor to `Gateway` allow on 53; that was not needed for existing zones, so treat it as a finding worth recording rather than an expected step.
 
 ## Phase 4. Exporters through Ansible
 
@@ -378,7 +378,7 @@ Same task, per `CLAUDE.md`. First person, no emoji, ISO dates, written through t
 | [Platform TODO](../TODO.md) | Close this item |
 | [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) | Correct the stale 43-policy inventory to the 52-policy starting state, then record 59 after thirteen additions and six deletions. Note the DNS finding and NPM policy edit |
 | [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/VLANs/) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
-| [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/Zones/zone.md) | Add custom zone `Org-Monitor` |
+| [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/Zones/zone.md) | Add custom zone `<YOUR_ORG_NAME>`-Monitor |
 | [Kasm Lab Network Simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
 | [Galaxy Data Center Firewall](../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) | The IPSET member swap and the three rule changes |
 | [Operations inventory](../../../../Operations/Inventory/Galaxy/) | CT 104 in the LXC inventory, `security-01`'s workload list in `Services.md`, the new exporter rows |

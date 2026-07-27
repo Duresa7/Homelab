@@ -12,7 +12,7 @@
 
 I moved Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, and the NUT exporter from `security-01` on `grey-server` to CT 104 `monitor-01` on `blue-server`. I kept `node_exporter`, cAdvisor, and Wazuh on `security-01`.
 
-The change added VLAN 73 `MONITOR-A`, custom firewall zone `Org-Monitor`, a dedicated Proxmox API identity, and the firewall paths required by a collector at 192.168.73.2. I also repointed the existing Nginx Proxy Manager hosts for Grafana and Prometheus.
+The change added VLAN 73 `MONITOR-A`, custom firewall zone `<YOUR_ORG_NAME>`-Monitor, a dedicated Proxmox API identity, and the firewall paths required by a collector at 192.168.73.2. I also repointed the existing Nginx Proxy Manager hosts for Grafana and Prometheus.
 
 ## Starting State
 
@@ -27,7 +27,7 @@ The change added VLAN 73 `MONITOR-A`, custom firewall zone `Org-Monitor`, a dedi
 
 ### 1. Network and firewall foundation
 
-I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24 with DHCP from 192.168.73.6 through 192.168.73.254. CT 104 keeps 192.168.73.2 as a static address in its Proxmox network configuration, outside that pool. I created `Org-Monitor` with only `MONITOR-A`.
+I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24 with DHCP from 192.168.73.6 through 192.168.73.254. CT 104 keeps 192.168.73.2 as a static address in its Proxmox network configuration, outside that pool. I created `<YOUR_ORG_NAME>`-Monitor with only `MONITOR-A`.
 
 UniFi initially excluded the new network from the shared `Proxmox-Trunk` port profile. I added only `MONITOR-A` to that trunk. The guest could then reach its gateway.
 
@@ -86,7 +86,7 @@ I later removed 50 task leftovers after checking their contents and confirming t
 | Host | CT 104 `monitor-01` on `blue-server` |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; gateway and DNS 192.168.73.1 |
 | DHCP | Enabled at 192.168.73.6 through 192.168.73.254 |
-| Firewall zone | `Org-Monitor`, containing only `MONITOR-A` |
+| Firewall zone | `<YOUR_ORG_NAME>`-Monitor, containing only `MONITOR-A` |
 | UniFi user-defined policies | 59: started at 52, added 13, deleted 6 |
 | Proxmox API identity | `pve-exporter@pve!monitor01`, `PVEAuditor` on `/` |
 | Stack path | `/home/<YOUR_ADMIN_USERNAME>/monitoring` on `monitor-01` |
@@ -139,7 +139,7 @@ Seven hosts still carried `gcr.io/cadvisor/cadvisor:v0.52.1` from the 2026-07-25
 
 I also checked every component against its upstream release. Prometheus 3.13.1, Grafana 13.1.1, and cAdvisor v0.60.5 are current. `hon95/prometheus-nut-exporter:1` resolves to v1.2.1 from 2022-08-03, which is still the newest release. `blackbox-exporter` was one release behind, so I moved the pin from v0.27.0 to v0.28.0 and recreated that container alone: `probe_success` returned 1 for all 19 names, certificate expiry still collects for all 19, and the target set stayed at 46 of 46. The upgrade left v0.27.0 behind on `monitor-01`, which is the same leftover I had just cleared off seven other hosts, so that came off too. Every host now holds one image per running service and no dangling layers.
 
-Two corrections need the UniFi controller UI, because the plugin has no zone-rename operation and drops `description` on a policy update. The zone is named `Org-Monitor` where its four siblings are `<YOUR_ORG_NAME>-`, and policy `6a60fd2c2d027bb05525a876` is scoped to TCP 443 alone but still describes Grafana and Prometheus.
+Two corrections needed the UniFi controller UI, because the plugin has no zone-rename operation and silently drops `description` on a policy update. The zone was created as `Org-Monitor`, which is what reading this repository's `<YOUR_ORG_NAME>` placeholder literally produces, and policy `6a60fd2c2d027bb05525a876` was scoped to TCP 443 alone while still describing Grafana and Prometheus. I made both edits in the browser on 2026-07-26 and confirmed them through the API rather than the interface: the zone reads `<YOUR_ORG_NAME>`-Monitor under the same `zone_id`, so all 13 monitoring policies kept their binding, and the policy reads `Allow NPM to security-01 Wazuh` with a description naming only the Wazuh dashboard and port 443 untouched. The target set stayed at 46 of 46 and all 19 probes kept succeeding through both changes.
 
 ## Remaining Work
 
