@@ -1,7 +1,7 @@
 # Purple Boot NVMe Replacement
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 **Implemented:** 2026-07-25  
 **Node:** `purple-server` (192.168.70.11, nodeid 2)
@@ -69,7 +69,7 @@ The failed Samsung `****5659` is intact and still bootable. It reports `FAILED` 
 
 The Toshiba is used stock, not a new drive. It sits at 30% endurance used across 23,148 power-on hours and 36.8 TB written, so it buys years rather than settling the question forever. I'll watch its endurance counter alongside the media-error count.
 
-The 850 EVO needs a decision: either give it a Proxmox storage role or take it back out. Purple's per-sandbox concurrency budget in the [Agent Sandbox plan](../../../../../Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) was capped partly on memory and partly on having one 256 GB boot device to work from, and this drive is the answer to the open question of whether to add an SSD to Purple.
+On 2026-07-27 I decided to keep the 850 EVO installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. The physical installation is complete; creating the storage layout, adding the Proxmox storage entry, and testing guest-disk creation remain in the [Galaxy backlog](../TODO.md).
 
 Purple is still guest-free and can now take a workload again. Both open items are tracked in the [Galaxy TODO](../TODO.md).
 

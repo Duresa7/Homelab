@@ -1,7 +1,7 @@
 # Agent Sandbox Plan
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-27
 
 I want my AI agents to spin up their own test machines & tear them down when they're done. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
 
@@ -27,7 +27,7 @@ I dropped LXC on purpose. An LXC or a Docker container shares the Proxmox node's
 
 ## Where it runs
 
-purple-server is the default home. It's an Intel i5-8500T with 6 cores, 15.46 GiB of memory, & a single 238 GB NVMe, & it runs nothing else today, so a sandbox that misbehaves there hits an empty machine instead of production. grey-server absorbs the heavy boxes: it's a Ryzen 7 3700X with 62.72 GiB of memory, a 1.82 TiB SSD pool, a 1.82 TiB ZFS disk, & the GTX 1080 Ti, so anything that needs bulk disk, more memory, or the GPU lands there. A Windows VM's 80 GB won't fit purple's small drive next to templates, so Windows & other disk-heavy boxes route to grey automatically, while genuinely hostile code is forced back to purple's isolation even when it wants grey's disk.
+purple-server is the default home. It's an Intel i5-8500T with 6 cores, 15.46 GiB of memory, a 238 GB boot NVMe, & a permanently installed 250 GB Samsung 850 EVO assigned to general VM and LXC storage. It runs nothing else today, so a sandbox that misbehaves there hits an empty machine instead of production. grey-server absorbs the heavy boxes: it's a Ryzen 7 3700X with 62.72 GiB of memory, a 1.82 TiB SSD pool, a 1.82 TiB ZFS disk, & the GTX 1080 Ti, so anything that needs bulk disk, more memory, or the GPU lands there. Disk-heavy boxes can still route to grey under the broker's capacity limits, while genuinely hostile code is forced back to purple's isolation even when it wants grey's disk.
 
 I keep sandboxes off grey by default because grey carries every production VM & is already overcommitted. There's no shared storage on this cluster; each node runs off its own NVMe, & only grey has bulk disk. A sandbox is pinned to whatever node holds its disk, which is fine because these boxes are throwaway & never migrate. Templates live on both purple & grey so the broker can clone locally on either.
 
@@ -59,7 +59,7 @@ Every sandbox gets a hard cap, & the broker refuses to exceed it. The defaults:
 | Linux VM | 2 | 4 GiB | 40 GB |
 | Windows VM | 4 | 8 GiB | 80 GB |
 
-purple carries at most about 10 GiB of sandbox memory at once, which leaves headroom on its 15.46 GiB, so roughly a couple of Linux VMs or a pile of containers concurrently. When purple's budget is full or a bigger box is asked for, the broker spills to grey under its own budget cap so agent boxes can't starve production. purple's single 238 GB drive is the real ceiling on how many boxes run there; the cheapest fix later is adding an SSD to purple.
+purple carries at most about 10 GiB of sandbox memory at once, which leaves headroom on its 15.46 GiB, so roughly a couple of Linux VMs or a pile of containers concurrently. When purple's budget is full or a bigger box is asked for, the broker spills to grey under its own budget cap so agent boxes can't starve production. The 250 GB Samsung 850 EVO is permanently assigned to general guest storage, so memory is Purple's first fixed concurrency limit once that storage pool is configured.
 
 ## Secrets & access
 
@@ -93,7 +93,6 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 - Sandbox VLAN ID and subnet: choose an unused pair that avoids the Kasm security lab's VLANs 74, 77, and 79. VLANs 73, 75, 76, and 78 are free again after the 2026-07-23 simplification.
 - Docker host shape: a dedicated container on purple versus a small VM, & whether nested-Docker-in-VM for the untrusted case is a standing template or built per job.
 - Concurrency ceilings: the exact per-node & per-agent limits above the 10 GiB purple budget.
-- purple disk: whether to add an SSD now to raise concurrency past a couple of Windows VMs, or live with 238 GB & lean on grey.
 - Broker stack & host: Python or Node, & which host runs the broker itself.
 - GPU sandboxes on grey: out of scope for the first version; revisit if an agent needs CUDA.
 

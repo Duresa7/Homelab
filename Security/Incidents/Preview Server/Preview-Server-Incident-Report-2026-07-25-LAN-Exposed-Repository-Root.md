@@ -1,7 +1,7 @@
 # Preview Server LAN-Exposed Repository Root Incident
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
 ## Incident Metadata
 
@@ -11,7 +11,7 @@
 | Occurred | 2026-07-25; start not retained |
 | Detected | 2026-07-25, while rewriting the preview server; exact minute not retained |
 | Mitigated | 2026-07-25 15:11:28 EDT, when the replacement `serve.js` was written |
-| Status | Closed, with one open follow-up |
+| Status | Closed |
 | Severity | SEV-3 |
 | Impact type | Potential disclosure of unpublished repository content; no confirmed access |
 | Affected service | Local preview static file server on `jedi-pc`, TCP 8123 |
@@ -120,9 +120,9 @@ A public `.gitignore` is a directory of the private paths. It's the right way to
 | Restrict serving to an explicit allow list | Complete |
 | Reject dotfiles and paths that escape an allowed folder | Complete |
 | Verify the LAN address refuses and sensitive paths 404 | Complete |
-| Decide whether the pre-scrub history bundles and the redaction value map belong inside the working tree at all | Open |
+| Move the pre-scrub history bundles and the redaction value map outside the working tree | Complete |
 
-The open item is the durable fix. Both defects were in one 90-line script, and the next tool I point at this directory starts from the same root. Moving the 13,510,522 bytes of history bundles and the value map outside `D:\Documents\Homelab` removes the whole class rather than patching one server. I have not decided whether anything in those bundles warrants rotation; the exposure was Internal and VPN only, and unlogged.
+I completed the durable fix on 2026-07-27. I moved the three history bundles and the private redaction value map to `D:\Documents\Redaction Map`, outside the Homelab working tree. The four files total 13,536,299 bytes. I compared SHA256 values before and after the move: all four matched, no source copy remained, and there were zero mismatches. I chose a normal local folder without encryption.
 
 ## Linked Records
 

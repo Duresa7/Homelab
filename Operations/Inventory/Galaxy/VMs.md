@@ -1,11 +1,11 @@
 ﻿# Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
 Galaxy currently has 13 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
-VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`.
+VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`. I decided to keep it on 2026-07-27.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -192,7 +192,7 @@ Recorded on 2026-07-26 after the PVE API surfaced it and this inventory did not.
 
 No `onboot` flag, so it does not come up with the node. The IPv4 address is unrecorded because the QEMU agent only reports one while the guest runs, and I did not start it to find out. Its 80 GiB disk is 4.2% of `ssd-lvm1`, which sits at 18.99% used, so it costs capacity but nothing urgent.
 
-Purpose isn't documented anywhere, and I'm not inferring one from the name. It's a candidate for the same archive-then-delete treatment as CT 105 `ai-bravo-02` if it turns out to be a leftover experiment; that decision is in the [root TODO](../../../TODO.md).
+I decided to retain this VM on 2026-07-27. Its exact development workload still isn't documented, so I left the technical inventory unchanged instead of inventing a role from its name.
 
 #### Identity
 | Setting | Value |
@@ -205,6 +205,7 @@ Purpose isn't documented anywhere, and I'm not inferring one from the name. It's
 | IPv4 | none recorded |
 | Gateway | 192.168.40.1 |
 | Power state | stopped since 2026-07-15 |
+| Retention decision | Keep; confirmed 2026-07-27 |
 
 #### Hardware
 | Setting | Value |

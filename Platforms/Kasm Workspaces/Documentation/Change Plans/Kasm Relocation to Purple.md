@@ -1,7 +1,7 @@
 # Kasm Relocation to Purple
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 ## Outcome
 
@@ -41,10 +41,10 @@ That fits with 500 MiB spare & no room for a second detonation guest. 32 GiB of 
 
 | Pool | Device | Size | Holds |
 | --- | --- | --- | --- |
-| new thin pool | Samsung 850 EVO, `sda` | 232.9 GB | `kasm-01`'s 100 GiB disk, detonation VM disks, evidence volumes |
+| general guest thin pool | Samsung 850 EVO, `sda` | 232.9 GB | VM disks and LXC root volumes, including Kasm guests |
 | `local-lvm` | Toshiba THNSF5256GPUK boot NVMe | 140.87 GiB, 0% used | INetSim LXC, spare |
 
-The 850 EVO reports 15 of 100 on wear leveling & 332 TB written against a 75 TBW rating, with zero reallocated sectors. I know. Everything I'm putting there is reproducible or scheduled for destruction, so a failure costs me a rebuild & no data.
+I assigned the 850 EVO a permanent role as ordinary Proxmox guest storage on 2026-07-27. Kasm can use that pool, but the pool isn't dedicated to Kasm.
 
 ## Step 1: Audit the UniFi zone matrix
 
@@ -56,12 +56,12 @@ Read-only. Nothing else starts until this passes, because every later step assum
 
 Custom zones default to Block All, but that change deleted 44 policies & I want the current matrix confirmed rather than assumed.
 
-## Step 2: Build the thin pool on the 850 EVO
+## Step 2: Build the general guest thin pool on the 850 EVO
 
 `sda` currently holds one leftover 16 MiB partition & nothing else.
 
 - [ ] Wipe `sda`, create the VG & thin pool
-- [ ] Add it as PVE storage with `nodes purple-server` so Grey can't place guests there
+- [ ] Add it as PVE storage with `nodes purple-server` and enable VM image plus LXC root-directory content
 - [ ] Confirm with `pvesm status` on Purple
 
 ## Step 3: Move `kasm-01` to Purple

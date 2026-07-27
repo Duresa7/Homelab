@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -60,7 +60,6 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Lock down MGMT-A per the [network segmentation plan](Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md).
-2. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
-3. Decide what the Samsung 850 EVO added to `purple-server` on 2026-07-25 is for, or pull it back out. Its [boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md) is done and Galaxy is back to four votes.
-4. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.
+1. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
+2. Configure the permanently installed Samsung 850 EVO on `purple-server` as ordinary Proxmox storage for VM disks and LXC root volumes. Its [boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md) is done and Galaxy is back to four votes.
+3. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.

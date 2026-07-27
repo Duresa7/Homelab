@@ -1,7 +1,7 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's boot NVMe replacement, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
@@ -30,7 +30,8 @@ This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's bo
 - [x] Reassess the remaining rolling reboot order after the failed-device risk is removed or explicitly accepted.
 - [x] After replacement, verify storage, Proxmox VE 9.2.5, kernel, bridges, Corosync, HA, and a controlled reboot. The cold boot off the cloned drive is the reboot check: `local` and `local-lvm` active, `pve-manager/9.2.5/20242970da7fbcef` on kernel `7.0.14-6-pve` with nothing pending, both rings connected, all seven units active, fencing armed.
 - [ ] Watch the Toshiba's endurance counter along with media errors, filesystem errors, controller resets, and cluster stability. It's a used spare at 30% endurance used and 23,148 power-on hours, not a new drive, so plan its own replacement rather than treating this as permanent.
-- [ ] Give the Samsung SSD 850 EVO 250 GB now sitting on Purple's SATA port a role or pull it back out. It has one empty 16 MiB partition, no filesystem, and no Proxmox storage entry; the disabled `ssd-lvm1` storage predates it. At 45,163 power-on hours and 1,800 wear-leveling cycles it suits scratch or secondary use, not sole-copy data.
+- [x] Keep the Samsung SSD 850 EVO 250 GB installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. I made that role decision on 2026-07-27.
+- [ ] Wipe the empty 16 MiB partition, create the storage layout, add it to Proxmox with VM image and LXC root-directory content enabled, and verify a test guest disk can be created and removed. The disabled `ssd-lvm1` entry predates this drive and must not be reused without confirming its backing device.
 
 ## Cluster Maintenance Done During Kasm Prep
 

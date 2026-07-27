@@ -1,7 +1,7 @@
 # Drive Inventory
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 I track every physical drive I own here, whether it's slotted in a node, sitting on the shelf as a spare, or retired and kept for a rollback. Each drive's raw SMART capture goes in a type subfolder (`NVMe/`, `SSD/`, `HDD/`), and this README is the quick-glance view: model, last-4 serial, capacity, power-on hours, wear, and health. For which drive does what job in which node, see [Galaxy node specifications](../../Nodes.md).
 
@@ -28,7 +28,7 @@ The third spare left the shelf on 2026-07-25. The Toshiba THNSF5256GPUK (`****TA
 | grey | /dev/sda | SSD | Crucial CT2000BX500SSD1 | B600 | 2 TB | 8,023 | 2% | PASSED | LVM | [log](SSD/smartctl-a_CT2000BX500SSD1_B600_2026-07-24.txt) |
 | grey | /dev/sdb | HDD | Toshiba DT01ACA200 | JVTS | 2 TB | 45,831 | n/a (HDD) | PASSED | ZFS | [log](HDD/smartctl-a_DT01ACA200_JVTS_2026-07-24.txt) |
 | purple | /dev/nvme0n1 | NVMe | Toshiba THNSF5256GPUK | TALT | 256 GB | 23,148 | 30% | PASSED | BIOS boot | [log](NVMe/smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt) |
-| purple | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 252T | 250 GB | 45,165 | see note | PASSED | Unassigned | [log](SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-25.txt) |
+| purple | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 252T | 250 GB | 45,165 | see note | PASSED | Permanent general VM and LXC storage; configuration pending | [log](SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-25.txt) |
 | blue | /dev/nvme0n1 | NVMe | Samsung MZVLW256HEHP-000L7 | 1210 | 256 GB | 48,293 | 9% | PASSED | BIOS boot | [log](NVMe/smartctl-a_MZVLW256HEHP_1210_2026-07-24.txt) |
 | red | /dev/nvme0n1 | NVMe | Samsung MZVLB256HAHQ-000L7 | 5609 | 256 GB | 25,783 | 7% | PASSED | BIOS boot | [log](NVMe/smartctl-a_MZVLB256HAHQ_5609_2026-07-24.txt) |
 | red | /dev/sda | HDD | Seagate ST1000LM035-1RK172 | SRHK | 1 TB | 24,007 | n/a (HDD) | PASSED | CT 842 `/data` bind mount | [log](HDD/smartctl-a_ST1000LM035_SRHK_2026-07-24.txt) |

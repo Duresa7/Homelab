@@ -1,7 +1,7 @@
 # Termix SSH Host Onboarding
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
 **Implementation date:** 2026-07-14  
 **Status:** Complete for every SSH Manager target reachable during implementation  
@@ -106,3 +106,7 @@ Remove the `+pve_termix` rule from `pve_mgmt`, remove member `192.168.40.35`, th
 ## Remaining Work
 
 - Reassess the ten unreachable SSH Manager entries when they are online or SSH is enabled. They are not present in Termix today because working authentication could not be deployed or verified.
+
+## 2026-07-27 Follow-Up
+
+I retired Termix's Proxmox SSH path during the [MGMT-A Final Lockdown](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md). The historical onboarding results above remain accurate for 2026-07-14, but the four Proxmox records no longer have a working TCP 22 path from `docker-main`. The final probes blocked all four as intended.

@@ -1,13 +1,13 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
-The gateway runs UniFi's zone-based V2 firewall. I maintain 61 custom policies; UniFi maintains the rest for zone defaults, connection state, return companions, & gateway services.
+The gateway runs UniFi's zone-based V2 firewall. I maintain 61 custom policies; 60 are enabled and the retired broad Internal-to-MGMT policy is disabled. UniFi maintains the rest for zone defaults, connection state, return companions, & gateway services.
 
 ## Custom Policies
 
-All 61 user-defined policies are enabled, use connection state `ALL`, & run on the `Always` schedule. The live controller held 52 before the 2026-07-26 monitoring relocation, not the 43 this inventory previously claimed. The missing nine were the retained Kasm policies. I added 13 policies for `monitor-01`, including the DNS policy found during execution, deleted six superseded Security-A monitoring policies, and narrowed the retained NPM-to-`security-01` policy to port 443. Moving PeaNUT to `monitor-01` later the same day added the two 8090 policies at the end of the table and dropped 8090 from the docker-main entry.
+All 61 user-defined policies use connection state `ALL` and the `Always` schedule. Sixty are enabled. I disabled the broad Internal-to-MGMT policy during the 2026-07-27 lockdown and left it as a rollback reference.
 
 | Policy | Enabled | Action | Index | Protocol | IP Ver | Source Zone | Source Match | Dest Zone | Dest Match | Dest Port | Conn State | Schedule | Logging | Description |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -17,7 +17,7 @@ All 61 user-defined policies are enabled, use connection state `ALL`, & run on t
 | Allow VPN to `<YOUR_ORG_NAME>`-Mgmt | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Mgmt | Any | Any | All | Always | Off | - |
 | Allow VPN to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | Off | - |
 | Allow `<YOUR_ORG_NAME>`-Mgmt to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | `<YOUR_ORG_NAME>`-Mgmt | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | Off | - |
-| Allow Internal to `<YOUR_ORG_NAME>`-Mgmt | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Mgmt | Any | Any | All | Always | On | - |
+| Allow Internal to `<YOUR_ORG_NAME>`-Mgmt | No | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Mgmt | Any | Any | All | Always | On | Disabled 2026-07-27; explicit device and service policies replace it |
 | Allow Internal to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | On | - |
 | Allow Internal to `<YOUR_ORG_NAME>`-Access | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Access | Any | Any | All | Always | On | LAN access to network access / connectivity services (reverse proxy, remote-access mesh, and similar ingress tooling) |
 | Allow VPN to `<YOUR_ORG_NAME>`-Access | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Access | Any | Any | All | Always | Off | Remote VPN clients reach network access / connectivity services for off-LAN administration |
@@ -39,7 +39,7 @@ All 61 user-defined policies are enabled, use connection state `ALL`, & run on t
 | Allow Identity Sync Service Connection | Yes | ALLOW | 10000 | All | Both | External | Any | Gateway | Any | Port group: Identity Sync 9543 | All | Always | Off | - |
 | VPN: Temp Ban | Yes | BLOCK | 10000 | All | Both | Vpn | Network: Temp | Internal | Networks: Personal-A, Secure, Secure Client, AD-SERVERS, Management | Any | All | Always | On | - |
 | VPN: Temp #2 | Yes | BLOCK | 10001 | All | Both | Vpn | Network: Temp | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | On | - |
-| Docker-main Allowed -> Server | Yes | ALLOW | 10002 | All | IPv4 | Internal | Client (1 MAC, docker-main) | `<YOUR_ORG_NAME>`-Mgmt | Network: MGMT-A | Port group: Proxmox-Admin-Ports | All | Always | Off | - |
+| Docker-main Allowed -> Server | Yes | ALLOW | 10002 | TCP | IPv4 | Internal | Client (1 MAC, docker-main) | `<YOUR_ORG_NAME>`-Mgmt | Network: MGMT-A | 8006 | All | Always | Off | Read-only dashboard API; SSH removed 2026-07-27 |
 | Docker -> Jedi PC | Yes | ALLOW | 10003 | All | Both | Internal | Client (1 MAC, docker-main) | Internal | Network: Secure | Any | All | Always | Off | - |
 | Allow VPN --> Internal Zone | Yes | ALLOW | 10001 | All | Both | Vpn | Network: `<YOUR_VPN_NETWORK>` | Internal | Any | Any | All | Always | On | Approved VPN network reaches Internal-zone services |
 | Allow Device --> media-01 | Yes | ALLOW | 10004 | All | Both | Internal | Clients (2 MACs) | Internal | Network: Personal-A | Any | All | Always | On | Two approved devices reach media-01 |
@@ -106,3 +106,5 @@ The edge-01 restriction and Cloudflare Access change are documented in [Coolify 
 The VLAN 73 collector policies, DNS finding, six Security-A policy deletions, and retained Wazuh port are documented in [Monitoring Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 The two 8090 policies, the 8090 additions to the NPM and break-glass entries, and the 8090 removal from docker-main are documented in [PeaNUT Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+
+The disabled broad management policy, narrowed `docker-main` API path, retained WireGuard access, and four-device administrative set are documented in [MGMT-A Final Lockdown - 2026-07-27](../../Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).

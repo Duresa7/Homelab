@@ -1,7 +1,7 @@
 # Purple NVMe Reliability Failure
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 **Investigated:** 2026-07-22  
 **Resolved:** 2026-07-25  
@@ -64,7 +64,7 @@ The window closed on 2026-07-25 at `07:19:56 EDT`. `last` records Purple as powe
 
 ## Correction, 2026-07-25
 
-I replaced the drive. The failing Samsung came out, a Toshiba THNSF5256GPUK (`****TALT`) cloned from it with Clonezilla went in, and Purple booted off the clone at `2026-07-25 07:19:56 EDT`. I cloned rather than reinstalled, so the node kept its identity and needed no `pvecm add`, no reissued certificates, and no HA reconfiguration. Cluster config version stayed at 8. I added a Samsung SSD 850 EVO 250 GB on SATA during the same window; it has no role yet.
+I replaced the drive. The failing Samsung came out, a Toshiba THNSF5256GPUK (`****TALT`) cloned from it with Clonezilla went in, and Purple booted off the clone at `2026-07-25 07:19:56 EDT`. I cloned rather than reinstalled, so the node kept its identity and needed no `pvecm add`, no reissued certificates, and no HA reconfiguration. Cluster config version stayed at 8. I added a Samsung SSD 850 EVO 250 GB on SATA during the same window. On 2026-07-27 I assigned it a permanent role as general Proxmox VM and LXC storage; pool configuration remains open.
 
 The new device passes every check the correction called for. `smartctl -a /dev/nvme0` returns overall health `PASSED`, critical warning `0x00`, 30% endurance used, available spare 100%, 23,148 power-on hours, zero media and data-integrity errors, and zero error-log entries against the old drive's 2,462. A `smartctl -t short` run logged `Completed without error` at 23,148 hours, where the old drive had failed the same test at 49,373. The capture is stored at [smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt](../../../../Hardware/Components/Drives/NVMe/smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt).
 

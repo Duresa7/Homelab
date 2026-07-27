@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
-**Last verified:** 2026-07-26 after removing the two `docker-main` NUT rules that PeaNUT no longer needs. `pve-firewall compile` passed, all four nodes held SHA256 `6847426ae1a940607714f89bae45763341ad7aa6c96f6f007f6364e845c60341`, and live connections from 192.168.73.2 reached the API, node exporters, and both NUT listeners.
+**Last verified:** 2026-07-27 after removing the Termix SSH exception. `pve-firewall compile` passed, the live file held SHA256 `e26a6380cdd19f742dfdb5ec9ddd3c03f5202a894acdf751118dec22d5983735`, and all four nodes reported the firewall enabled and running.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -23,6 +23,7 @@
 | Address | Host |
 |---|---|
 | 192.168.10.27 | `<YOUR_ADMIN_USERNAME>` Mac Air |
+| 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
 
 ### `pve_automation`: automation control node (GUI + SSH)
@@ -38,19 +39,12 @@
 | 192.168.73.2 | monitor-01 (PVE exporter / Proxmox API) |
 | 192.168.40.35 | docker-main dashboard |
 
-### `pve_termix`: Termix SSH source (SSH only)
-
-| Address | Host |
-|---|---|
-| 192.168.40.35 | Termix on docker-main |
-
 ## Security Group: `pve_mgmt`
 
 **Comment:** Proxmox SSH/GUI management access. Applied via `GROUP pve_mgmt` in `cluster.fw [RULES]`; attaches to every node's `PVEFW-HOST-IN`.
 
 | Type | Action | Protocol | Source | Destination | Dest. Port | Log Level | Comment |
 |------|--------|----------|--------|-------------|------------|-----------|---------|
-| in | ACCEPT | tcp | +pve_termix | - | 22 | inherited default | Termix SSH management |
 | in | ACCEPT | tcp | +pve_cluster | - | 22,8006 | nolog | inter-node SSH + GUI proxy |
 | in | ACCEPT | tcp | +pve_admins | - | 22,8006 | nolog | personal admin devices |
 | in | ACCEPT | tcp | +pve_automation | - | 22,8006 | nolog | ansible control node |
@@ -69,6 +63,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 
 ## History
 
+- On 2026-07-27 I removed `pve_termix` and its TCP 22 accept. `docker-main` remains in `pve_svc_clients` for the dashboard's TCP 8006 API use, but it failed all four post-change SSH probes. Jedi PC and `ansible-01` passed SSH and TCP 8006 to all four nodes. Monitoring passed its API, node-exporter, and NUT checks. The complete record is [MGMT-A Final Lockdown - 2026-07-27](../../../../Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
+
 - On 2026-07-26 I moved PeaNUT to `monitor-01` and deleted the two `192.168.40.35` TCP/3493 accepts, taking the file from 51 lines to 49. The two `192.168.73.2` accepts now carry both readers: `prometheus-nut-exporter` and PeaNUT. I diffed the candidate before writing it, so the only change was those two lines, and both terminal `IN DROP` entries stayed last. After the reload, live iptables held exactly two 3493 accepts and Prometheus still scraped `ups01` and `ups02`. The complete record is [PeaNUT Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 - On 2026-07-26 I moved the monitoring source from 192.168.72.2 to 192.168.73.2. The additive candidate first placed both sources in `pve_svc_clients` and kept both node-exporter and NUT rule sets during the verification window. At cutover I removed the four old entries. The final file contains the new IPSet member plus three matching rules, retains both PeaNUT rules and both terminal drops, and has no 192.168.72.2 entry. The `pve_svc_clients` member is outside `[RULES]`; missing it would leave the Proxmox job down even if all three group rules were correct. The complete record is [Monitoring Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
@@ -76,8 +72,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 - On 2026-07-26 I added the same destination-specific TCP/3493 accepts for `192.168.72.2`, so `prometheus-nut-exporter` on `security-01` can read both UPS units. This is the second firewall the path needed: the UniFi policy "Allow Security to Proxmox NUT" was already in place and 3493 stayed blocked, because this file is enforced independently on every node. Worth remembering when adding any future scrape target that lands on a node. The two new rules sit above the trailing `IN DROP` entries, which are order-sensitive.
 
 - On 2026-07-22 I added destination-specific TCP/3493 accepts from PeaNUT on `docker-main` to the NUT listeners on Red and Grey. The compiled rules and live connections passed; no other Proxmox node or port was added.
-- On 2026-07-14 I added `pve_termix` and its TCP/22-only allow for Termix on `docker-main`. UniFi already allowed the path; the Proxmox `DROP SSH` rule was the connection blocker. Live Termix SSH sessions to all four nodes passed after the change.
-- I renamed the prior `zero_access` security group to `pve_mgmt` and reorganized its flat host list into four purpose-named IPSets; `pve_termix` came later.
+- On 2026-07-14 I added `pve_termix` and its TCP/22-only allow for Termix on `docker-main`. UniFi already allowed the path; the Proxmox `DROP SSH` rule was the connection blocker. Live Termix SSH sessions to all four nodes passed after the change. I retired that exception on 2026-07-27.
+- I renamed the prior `zero_access` security group to `pve_mgmt` and reorganized its flat host list into purpose-named IPSets.
 - I removed the redundant `grey-server` `host.fw`. It applied the same group a second time (a duplicate `PVEFW-HOST-IN` jump) and held only two **disabled** Bezel rules (TCP `45876` from `192.168.40.32`, sport `8090`). All host protection now comes from the datacenter group, uniformly across nodes.
 - The former TCP 9100 accept from all of `192.168.70.0/24` was removed during the Security-A migration; the `192.168.72.2/32` accept replaced it.
 

@@ -1,7 +1,9 @@
 # Syncthing TODO
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-27
+
+The [2026-07-27 sync comparison](Obsidian%20Sync%20Alternatives%20-%202026-07-27.md) recommends keeping Syncthing for a desktop-first vault. Every free or self-hosted alternative still needs a client or Obsidian plug-in on each device. Self-hosted LiveSync with CouchDB becomes the first alternative to test if iPhone or iPad editing becomes a normal requirement.
 
 ## Open Items
 

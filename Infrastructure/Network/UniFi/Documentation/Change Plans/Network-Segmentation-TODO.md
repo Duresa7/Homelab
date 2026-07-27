@@ -1,9 +1,9 @@
 # Network Segmentation TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-27
 
-I've built the `<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, & `<YOUR_ORG_NAME>`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. The remaining unchecked item is the MGMT-A TCP 8006 rule review.
+I've built the `<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, & `<YOUR_ORG_NAME>`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. I completed the final MGMT-A rule review and lockdown on 2026-07-27.
 
 ## Access-A Deployment
 
@@ -32,13 +32,15 @@ I updated the UniFi console SIEM/syslog destination to `192.168.72.3:1514` on 20
 - [x] Audit and reset the old Wazuh agents: I removed the disconnected `edge-01` and incorrect `wp-01` registrations and repointed/cleared `app-01` and `edge-01` so I can re-enroll them. `supabase-01` and `alpha-prod-01` have no agent installed; fresh enrollment is tracked in the [Wazuh TODO](../../../../../Platforms/Wazuh/Documentation/TODO.md).
 - [x] Install and configure `node_exporter` on `purple-server`, `blue-server`, and `red-server`; all three targets report `UP`.
 - [x] Reconcile stale Prometheus targets: corrected `security-01`, removed unavailable `app-01`/`supabase-01`, and verified exactly seven retained jobs `UP`.
-- [ ] Review whether the retained Galaxy firewall accept for TCP 8006 from `192.168.70.0/24` can be narrowed in the MGMT-A lockdown change.
+- [x] Review the Galaxy TCP 8006 access. The old subnet-wide rule had already been replaced with purpose-specific IPSets. I retained the four-node cluster, dashboard, and monitoring API consumers and removed the separate Termix SSH exception.
 
 The three completed follow-ups are recorded in [Security Monitoring Baseline Cleanup - 2026-07-13](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 
 ## MGMT-A Final Lockdown
 
-MGMT-A may be reached from Trusted VLAN 10, Secure VLAN 50, the WireGuard VPN zone, & future NetBird traffic arriving from `<YOUR_ORG_NAME>`-Access through its routing peer. The final block policy remains a separate change from the Security-A migration.
+Completed 2026-07-27. Jedi PC, Pixel, MacBook Air, and `ansible-01` are the approved devices for Proxmox SSH and TCP 8006. The broad WireGuard VPN path remains. I did not add a NetBird management path.
+
+I disabled the broad Internal-to-MGMT policy, narrowed `docker-main` to TCP 8006 for the read-only dashboard, and removed Termix SSH from the Galaxy firewall. Jedi PC and `ansible-01` passed all eight SSH and web probes. `docker-main` failed all four SSH probes while all four API probes and the dashboard stayed healthy. Monitoring passed every retained port check. The implementation and rollback details are in [MGMT-A Final Lockdown - 2026-07-27](../Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
 
 ## Cluster-Net Corosync Link Addition
 

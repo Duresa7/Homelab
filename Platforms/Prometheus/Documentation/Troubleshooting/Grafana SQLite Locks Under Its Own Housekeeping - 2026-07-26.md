@@ -1,10 +1,10 @@
 # Grafana SQLite Locks Under Its Own Housekeeping
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
 **Issue date:** 2026-07-26  
-**Status:** Open. The mitigation worked on Grafana 12.4.1 and does not apply on 13.1.1  
+**Status:** Monitoring. The 24-hour baseline found one successful retry and no terminal error lines on Grafana 13.1.1  
 **Affected systems:** `security-01` Grafana 12.4.1, retired; `monitor-01` Grafana 13.1.1
 
 I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` came across in the Compose file but stopped taking effect. See [The Mitigation Did Not Survive the Version Change](#the-mitigation-did-not-survive-the-version-change) for the evidence.
@@ -80,24 +80,29 @@ logger=sqlstore level=info msg="Using SQLite driver" driver=modernc.org/sqlite
 
 The driver switch is the likely cause. Journal mode is passed as a DSN parameter, and the pure-Go `modernc.org/sqlite` driver doesn't use the same parameter syntax as the cgo driver it replaced, so an unrecognised parameter gets dropped without an error. I haven't read Grafana's source to confirm that, so treat the mechanism as probable and the three observations above as fact.
 
-## Verification Still Owed
+## 24-Hour Baseline
 
-Run the count on `monitor-01` on 2026-07-27:
+I captured the 24-hour window on `monitor-01` at 2026-07-27 12:37:59 UTC. Grafana 13.1.1 was running. The original planned command returned zero:
 
 ```bash
 docker logs --since 24h grafana 2>&1 | grep -c "level=error"
 ```
 
-Read the result as a baseline for an unmitigated Grafana 13.1.1, not as proof that WAL works. It measures a fresh database with one dashboard, no alert rules, and one user, against an old baseline of 25 errors in 10 hours on a loaded 12.4.1 database. A clean number is expected and proves little.
+That zero isn't the lock count. The one SQLite lock line uses `level=info`, so the exact `level=error` filter misses it:
 
-The first three hours and twenty minutes gave zero `level=error` lines and the one retry above, which succeeded. That's already better than the old host, and none of it is because of WAL.
+```text
+logger=sqlstore.transactions t=2026-07-26T19:29:06.909342016Z level=info msg="Database locked, sleeping then retrying" error="database is locked (5) (SQLITE_BUSY)" retry=0 sleep=9.963223ms
+```
 
-The decision the count drives:
+The corrected result is one `database is locked` event, one `SQLITE_BUSY` event, and zero `level=error` lines. Grafana retried after 9.963223 milliseconds. No job exhausted its retry budget.
 
-- Near zero: drop `GF_DATABASE_WAL=true` from the Compose file at the next recreate, since carrying a setting that does nothing is what made three documents claim a mitigation that wasn't there.
-- Not near zero: turn WAL on the way 13.1.1 will accept. `journal_mode` is a persistent property of the database file, so stopping Grafana, setting `PRAGMA journal_mode=WAL` on `grafana.db`, and starting it again holds across restarts without the driver's help. That adds a manual step to any rebuild from `Configuration/`, which is the cost of doing it that way. Postgres is the alternative and the reasoning below still stands.
+This measures a fresh database with one dashboard, no alert rules, and one user, against the old 12.4.1 baseline of 25 failed jobs in 10 hours. It does not prove WAL works. The database remains in rollback-journal mode.
 
-I left the container alone rather than fixing this on the spot. Recreating it to change one variable resets the log, which destroys the 24-hour window the check needs.
+## Next Action
+
+I will remove `GF_DATABASE_WAL=true` at the next Grafana recreate because 13.1.1 reads the variable without changing the journal mode. One successful 9.963223-millisecond retry does not justify a manual `PRAGMA journal_mode=WAL` cutover or a PostgreSQL deployment.
+
+I left the running container alone. Recreating it to remove an inactive variable would reset the log for no current service benefit. I will repeat the corrected `database is locked` count after alert rules add database writes.
 
 ## Why Not Postgres
 

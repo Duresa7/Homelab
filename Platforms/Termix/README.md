@@ -1,9 +1,9 @@
 # Termix
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-27
 
-I run Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The current inventory contains nine SSH hosts in four folders.
+I run Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The current inventory contains nine configured SSH hosts in four folders. Five non-Proxmox hosts retain a working path. The four Proxmox records remain configured, but the 2026-07-27 MGMT-A lockdown blocks Termix from reaching their SSH ports.
 
 ## Deployment
 
@@ -22,7 +22,9 @@ I run Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The
 
 ## Managed SSH Inventory
 
-Termix currently has nine verified SSH hosts organized into `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, & `Homelab/Proxmox`. The inventory contains the four Galaxy Proxmox nodes, `docker-main`, `alpha-prod-01`, `app-01`, `edge-01`, & `docker-network`. All use the `Termix Homelab SSH` Ed25519 identity with per-host username overrides.
+Termix has nine configured SSH hosts organized into `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, & `Homelab/Proxmox`. The inventory contains the four Galaxy Proxmox nodes, `docker-main`, `alpha-prod-01`, `app-01`, `edge-01`, & `docker-network`. All use the `Termix Homelab SSH` Ed25519 identity with per-host username overrides.
+
+The Proxmox entries are historical inventory, not an approved management path. Jedi PC, Pixel, MacBook Air, and `ansible-01` are the four approved devices. The [MGMT-A lockdown record](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md) explains the boundary and the tests.
 
 Ten additional SSH Manager entries were unreachable during the 2026-07-14 onboarding, and I intentionally did not save them as unverified Termix hosts. Their error states and the onboarding procedure are recorded in the change record below.
 

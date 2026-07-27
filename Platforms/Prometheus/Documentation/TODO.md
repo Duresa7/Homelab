@@ -1,13 +1,13 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
-Four items remain open. Four closed on 2026-07-26: UPS collection, per-container metrics on the six original `overlayfs` hosts, the relocation of the monitoring stack to CT 104 `monitor-01` on `blue-server`, and the two UniFi entries the API couldn't write. I record future monitoring changes here before promoting them to an active project.
+Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines; removing the inactive WAL setting at the next recreate replaces that measurement task.
 
 ## Open
 
-**Baseline the Grafana lock errors on 2026-07-27, then decide what to do about WAL.** Run `docker logs --since 24h grafana 2>&1 | grep -c "level=error"` on `monitor-01`. `GF_DATABASE_WAL=true` does nothing on Grafana 13.1.1, so this measures an unmitigated database rather than proving a fix: header bytes 18 and 19 of `grafana.db` read `1 1`, and no `-wal` file exists. Near zero means dropping the dead setting at the next recreate. Anything else means setting `PRAGMA journal_mode=WAL` on the file, which persists but adds a manual step to every rebuild, or moving to Postgres. Reasoning & evidence in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md). Do this before writing alert rules, because saving rules was one of the failing jobs on 12.4.1.
+**Remove `GF_DATABASE_WAL=true` at the next Grafana recreate.** Grafana 13.1.1 reads the variable but leaves SQLite in rollback-journal mode. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. I left the running container alone because removing an inactive variable provides no service benefit until another recreate is required. Repeat the corrected lock count after alert rules add writes. Reasoning & evidence in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 **Scrape `kasm-01`.** It's the one running host with no `node_exporter`. It sits outside the Ansible inventory, and the move to `purple-server` in [Kasm Relocation to Purple](../../Kasm%20Workspaces/Documentation/Change%20Plans/) is still open, so its address may change. Adding it now means redoing the inventory entry and the firewall scope afterward.
 

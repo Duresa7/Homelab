@@ -1,7 +1,7 @@
 # Syncthing
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-27
 
 I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vault. The Windows working copy stays at `D:\Documents\Vault-DK\The Vault`; `docker-main` stores the synchronized copy under `/data/syncthing/vaults/the-vault`.
 
@@ -32,6 +32,7 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 
 - [Deployment and operations](Documentation/Deployment.md)
 - [Add another Windows, macOS, or Linux device](Documentation/Adding%20a%20Device.md)
+- [Obsidian sync alternatives research](Documentation/Obsidian%20Sync%20Alternatives%20-%202026-07-27.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform TODO](Documentation/TODO.md)
 - [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
