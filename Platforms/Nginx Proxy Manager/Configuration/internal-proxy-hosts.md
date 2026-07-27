@@ -22,7 +22,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `dashboard.<YOUR_BASE_DOMAIN>` | `192.168.40.35:3001` | HTTP | No added NPM authentication. |
 | `forgejo.<YOUR_BASE_DOMAIN>` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | `portainer.<YOUR_BASE_DOMAIN>` | `192.168.40.35:9443` | HTTPS | NPM connects to Portainer's existing HTTPS listener. |
-| `peanut.<YOUR_BASE_DOMAIN>` | `192.168.40.35:8090` | HTTP | Existing application authentication remains in place. |
+| `peanut.<YOUR_BASE_DOMAIN>` | `192.168.73.2:8090` | HTTP | Existing application authentication remains in place. |
 | `syncthing.<YOUR_BASE_DOMAIN>` | `192.168.40.35:8384` | HTTP | The server GUI binds on `0.0.0.0:8384`; synchronization stays on TCP/UDP 22000. |
 | `wazuh.<YOUR_BASE_DOMAIN>` | `192.168.72.2:443` | HTTPS | NPM connects to Wazuh's existing HTTPS listener. |
 | `grafana.<YOUR_BASE_DOMAIN>` | `192.168.73.2:3000` | HTTP | Grafana's domain & root URL use the HTTPS name. |

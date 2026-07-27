@@ -10,8 +10,8 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>SSH<br>cron |
 | debian-dev | VM 102 | grey-server | Development workstation | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Immich<br>Forgejo<br>Homelab Dashboard<br>Termix / Guacamole<br>Portainer<br>Syncthing<br>PeaNUT |
-| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor |
+| docker-main | LXC 110 | grey-server | Docker apps | Immich<br>Forgejo<br>Homelab Dashboard<br>Termix / Guacamole<br>Portainer<br>Syncthing |
+| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer) |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.5 |
@@ -54,7 +54,6 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | Termix / Guacamole | Termix 2.5.0 (`ghcr.io/lukegus/termix:latest`, verified digest `sha256:4d3371311087d6757aa9d1c94117e854d749b1c5e8fd07bd36e7a99e0686d26c`); `guacamole/guacd:1.6.0` |
 | Portainer CE | `portainer/portainer-ce:latest` |
 | Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
-| PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard on `192.168.40.35:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 
 ## monitor-01
 
@@ -66,7 +65,8 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
-| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; six named containers |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; seven named containers |
+| PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; UniFi DHCP serves .6 through .254 |
 
 ## docker-blue

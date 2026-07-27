@@ -3,7 +3,7 @@
 **Created:** 2026-07-04  
 **Last updated:** 2026-07-26
 
-**Last verified:** 2026-07-26 after moving the monitoring entries to `monitor-01`. `pve-firewall compile` passed, all four nodes held SHA256 `d706b11d2ada85c461568033eadfe2e46df3fa80fbea9240dce15e04d2d4d9b3`, and live connections from 192.168.73.2 reached the API, node exporters, and both NUT listeners.
+**Last verified:** 2026-07-26 after removing the two `docker-main` NUT rules that PeaNUT no longer needs. `pve-firewall compile` passed, all four nodes held SHA256 `6847426ae1a940607714f89bae45763341ad7aa6c96f6f007f6364e845c60341`, and live connections from 192.168.73.2 reached the API, node exporters, and both NUT listeners.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -56,8 +56,6 @@
 | in | ACCEPT | tcp | +pve_automation | - | 22,8006 | nolog | ansible control node |
 | in | ACCEPT | tcp | +pve_svc_clients | - | 8006 | nolog | dashboards / API consumers |
 | in | ACCEPT | tcp | 192.168.73.2/32 | - | 9100 | nolog | monitor-01 Prometheus node_exporter |
-| in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.10/32 | 3493 | nolog | PeaNUT to Grey NUT |
-| in | ACCEPT | tcp | 192.168.40.35/32 | 192.168.70.13/32 | 3493 | nolog | PeaNUT to Red NUT |
 | in | ACCEPT | tcp | 192.168.73.2/32 | 192.168.70.10/32 | 3493 | nolog | monitor-01 NUT exporter to Grey NUT |
 | in | ACCEPT | tcp | 192.168.73.2/32 | 192.168.70.13/32 | 3493 | nolog | monitor-01 NUT exporter to Red NUT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.70.0/24 | - | nolog | WG VPN - MGMT |
@@ -70,6 +68,8 @@ I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, whic
 Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`, SPICE `3128`, migration `60000:60050`, SSH 22, & GUI 8006. The explicit `pve_mgmt` drops for 22 and 8006 run first, so they take precedence. I left the generated set unchanged.
 
 ## History
+
+- On 2026-07-26 I moved PeaNUT to `monitor-01` and deleted the two `192.168.40.35` TCP/3493 accepts, taking the file from 51 lines to 49. The two `192.168.73.2` accepts now carry both readers: `prometheus-nut-exporter` and PeaNUT. I diffed the candidate before writing it, so the only change was those two lines, and both terminal `IN DROP` entries stayed last. After the reload, live iptables held exactly two 3493 accepts and Prometheus still scraped `ups01` and `ups02`. The complete record is [PeaNUT Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 - On 2026-07-26 I moved the monitoring source from 192.168.72.2 to 192.168.73.2. The additive candidate first placed both sources in `pve_svc_clients` and kept both node-exporter and NUT rule sets during the verification window. At cutover I removed the four old entries. The final file contains the new IPSet member plus three matching rules, retains both PeaNUT rules and both terminal drops, and has no 192.168.72.2 entry. The `pve_svc_clients` member is outside `[RULES]`; missing it would leave the Proxmox job down even if all three group rules were correct. The complete record is [Monitoring Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 

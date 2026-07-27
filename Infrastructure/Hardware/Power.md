@@ -1,7 +1,7 @@
 # Power Equipment Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-26
 
 I use two APC Back-UPS Pro BR1500MS2 units for the workstation, Galaxy nodes, UniFi core, & Verizon fiber handoff. Each unit is rated for 1500 VA / 900 W at 120 V and provides 10 NEMA 5-15R outlets.
 
@@ -27,7 +27,7 @@ I haven't recorded the physical location, purchase date, serial number, battery 
 | UPS-01 | `red-server` | `ups01@192.168.70.13:3493` | Online; 100% charge; 58% load; 675-second estimated runtime |
 | UPS-02 | `grey-server` | `ups02@192.168.70.10:3493` | Online; 100% charge; 17% load; 2,895-second estimated runtime |
 
-PeaNUT 6.0.0 displays both feeds at `http://192.168.40.35:8090`. The [deployment record](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) records the configuration and verification. These readings are point-in-time values, not rated or guaranteed runtime.
+PeaNUT 6.0.0 displays both feeds at `http://192.168.73.2:8090`. The [deployment record](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) records the original configuration and verification, and the [relocation record](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md) covers the move to `monitor-01`. These readings are point-in-time values, not rated or guaranteed runtime.
 
 ## Product References
 

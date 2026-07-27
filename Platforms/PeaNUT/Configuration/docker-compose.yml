@@ -14,7 +14,7 @@ services:
     volumes:
       - /opt/docker/peanut/config:/config
     ports:
-      - 192.168.40.35:8090:8080
+      - 192.168.73.2:8090:8080
     restart: unless-stopped
     cap_drop:
       - ALL

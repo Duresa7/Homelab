@@ -9,7 +9,7 @@ I track 16 firewall zones and their assigned networks here.
 
 | Zone | Type | Networks (interfaces) in zone |
 |---|---|---|
-| Internal | Built-in | Management, Personal-A (VLAN 40), Secure (VLAN 50), Secure Client (VLAN 60), AD-SERVERS (VLAN 65) |
+| Internal | Built-in | Management, Trusted (VLAN 10), Personal-A (VLAN 40), Secure (VLAN 50), Secure Client (VLAN 60), AD-SERVERS (VLAN 65) |
 | Untrusted | Built-in | IoT (VLAN 20) |
 | Dmz | Built-in | DMZ (VLAN 30), DMZ-A (VLAN 90) |
 | External | Built-in | Internet 1 (WAN), Internet 2 (WAN), ProtonVPN (VPN client) |
