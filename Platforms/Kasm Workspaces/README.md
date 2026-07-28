@@ -5,7 +5,7 @@
 
 Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
-Community Edition caps the deployment at five concurrent sessions and one named user. The current 4-vCPU, 8 GiB VM is sized for a small lab, not a shared desktop service.
+Community Edition caps the deployment at five concurrent sessions and one named user. The current VM has four vCPUs, 8 GiB of memory, and a 150 GiB disk. It is sized for a small lab, not a shared desktop service.
 
 ## Current State
 

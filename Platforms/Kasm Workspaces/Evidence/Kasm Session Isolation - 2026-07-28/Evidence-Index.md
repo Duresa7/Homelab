@@ -16,6 +16,7 @@ I retained the exact final verification commands, structured requests, complete 
 | [S06 Containment and Cleanup Verification](Logs/S06%20Containment%20and%20Cleanup%20Verification%20-%202026-07-28.md) | Exact lane, DNS, Internet, protected-target, and post-test cleanup results |
 | [S06 Host and Direct-IP Acceptance Verification](Logs/S06%20Host%20and%20Direct-IP%20Acceptance%20Verification%20-%202026-07-28.md) | Host pull and protected-target checks, direct-IP lane egress, and cleanup |
 | [S07 Documentation and Local Access Verification](Logs/S07%20Documentation%20and%20Local%20Access%20Verification%20-%202026-07-28.md) | Mission Control harness, SSH alias, local links, and secret-output non-retention |
+| [S08 Kasm Disk Expansion Verification](Logs/S08%20Kasm%20Disk%20Expansion%20Verification%20-%202026-07-28.md) | Proxmox disk size, guest partition and filesystem size, Kasm storage paths, container health, and API health |
 | [Implementation Results](Logs/Implementation%20Results.md) | Migration, service health, network state, containment, Proton failure, and cleanup results |
 | [Purple 850 EVO SMART Baseline](Logs/Purple%20850%20EVO%20SMART%20Baseline.md) | Before and after storage-health counters |
 

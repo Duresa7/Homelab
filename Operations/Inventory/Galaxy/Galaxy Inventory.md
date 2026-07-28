@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-28
 
-This index links the latest complete Galaxy snapshot set. I rolled it forward on 2026-07-28 after creating `ssd-lvm2` on Purple and moving Kasm VM 122 off Grey.
+This index links the latest complete Galaxy snapshot set. I rolled it forward on 2026-07-28 after creating `ssd-lvm2` on Purple, moving Kasm VM 122 off Grey, and expanding its disk from 100G to 150G.
 
 | File | Contents |
 | --- | --- |

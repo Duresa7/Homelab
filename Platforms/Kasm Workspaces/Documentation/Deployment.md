@@ -10,7 +10,7 @@
 
 ## Current State on 2026-07-28
 
-I moved VM 122 to `purple-server` and its 100 GiB disk to the `ssd-lvm2` thin pool on the Samsung 850 EVO. The control plane now uses LAB-MGMT VLAN 78 at `192.168.78.10/24`.
+I moved VM 122 to `purple-server` and the `ssd-lvm2` thin pool on the Samsung 850 EVO. I expanded its disk from 100 GiB to 150 GiB on 2026-07-28. The guest exposes a 149 GiB root partition and a 145 GiB ext4 filesystem, so Kasm and Docker use the added capacity without another mount or storage path. The control plane uses LAB-MGMT VLAN 78 at `192.168.78.10/24`.
 
 Three addressless guest NICs carry VLANs 74, 77, and 79. Docker macvlan networks `lab74`, `lab77`, and `lab79` place sessions into their matching UniFi zones. A persistent systemd unit creates the host shims before Docker. All eight Kasm containers, the three networks, their shim routes, the agent network report, the health endpoint, and administrator authentication survived a full reboot.
 

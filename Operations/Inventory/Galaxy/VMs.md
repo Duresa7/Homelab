@@ -5,7 +5,7 @@
 
 Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
-I captured the live cluster after moving VM 122 to Purple on 2026-07-28. The cluster resource API listed 10 QEMU VMs and two templates.
+I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 150G later that day. The cluster resource API listed 10 QEMU VMs and two templates.
 
 VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`. I decided to keep it on 2026-07-27.
 
@@ -19,7 +19,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 24 GiB | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
-| 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/77/79 sessions | disabled |
+| 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 150G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/77/79 sessions | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
@@ -335,7 +335,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm2 | vm-122-disk-1 | 100G | disk | I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm2 | vm-122-disk-1 | 150G | disk | I/O thread, SSD emulation |
 | ide2 | ide | ssd-lvm2 | vm-122-cloudinit | 4M | cdrom | default |
 | efidisk0 | efidisk | ssd-lvm2 | vm-122-disk-0 | 4M | disk | default |
 
@@ -347,7 +347,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 | net2 | virtio | vmbr0 | 77 | none | none | disabled | BC:24:11:C5:EE:3D |
 | net3 | virtio | vmbr0 | 79 | none | none | disabled | BC:24:11:0F:77:1B |
 
-Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. I moved it to Purple and attached the three session NICs on 2026-07-28. The parents carry no host address; Docker networks `lab74`, `lab77`, and `lab79` own the session ranges.
+Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. I moved it to Purple, attached the three session NICs, and expanded `scsi0` from 100G to 150G on 2026-07-28. The guest reports a 149G root partition and a 145G ext4 filesystem. The parents carry no host address; Docker networks `lab74`, `lab77`, and `lab79` own the session ranges.
 
 ### VM 200 - security-01
 

@@ -4,7 +4,7 @@
 **Last updated:** 2026-07-28  
 **Snapshot date:** 2026-07-28
 
-I captured this Galaxy inventory set after creating `ssd-lvm2` on Purple and moving Kasm VM 122 from Grey. The live cluster remained quorate with four of four votes and listed 10 QEMU VMs, two QEMU templates, and seven LXC definitions.
+I captured this Galaxy inventory set after creating `ssd-lvm2` on Purple, moving Kasm VM 122 from Grey, and expanding its disk from 100G to 150G. The live cluster remained quorate with four of four votes and listed 10 QEMU VMs, two QEMU templates, and seven LXC definitions.
 
 | File | Contents |
 | --- | --- |

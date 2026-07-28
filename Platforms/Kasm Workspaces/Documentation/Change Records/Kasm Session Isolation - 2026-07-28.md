@@ -20,7 +20,7 @@ I did not create a VM snapshot or `vzdump` archive for this implementation. I ch
 | Layer | Final state |
 | --- | --- |
 | Proxmox node | `purple-server` |
-| Guest storage | `ssd-lvm2`, LVM-thin on Purple `/dev/sda` |
+| Guest storage | 150 GiB `scsi0` on `ssd-lvm2`, LVM-thin on Purple `/dev/sda` |
 | Kasm control plane | LAB-MGMT VLAN 78, `192.168.78.10/24`, gateway `192.168.78.1` |
 | Session lane 74 | `lab74`, `192.168.74.208/28`, parent `enp6s19` |
 | Session lane 77 | `lab77`, `192.168.77.208/28`, parent `enp6s20` |
@@ -82,6 +82,12 @@ I removed all temporary containers, test images, temporary interfaces, test fire
 ### Step 7: Update records and local access
 
 I updated the architecture, platform records, UniFi inventories, Galaxy storage configuration, complete dated guest inventories, TODOs, Mission Control, the stored dashboard URLs, and Jedi PC's SSH alias. [S07 Documentation and Local Access Verification](../../Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/S07%20Documentation%20and%20Local%20Access%20Verification%20-%202026-07-28.md) retains the 1,080-check Mission Control pass, resolved SSH alias, 192 valid local links, and the reason I did not retain secret-store or authentication output.
+
+### Step 8: Verify the 150 GiB disk expansion
+
+I found VM 122's `scsi0` disk already expanded from 100 GiB to 150 GiB. The guest had also grown `/dev/sda1` to 149 GiB and its ext4 filesystem to 145 GiB, so I did not run `growpart`, `parted`, or `resize2fs`.
+
+Kasm uses `/opt/kasm` and Docker uses `/var/lib/docker`; both resolve to `/dev/sda1`. The filesystem reported about 42 GiB available during verification. All eight Kasm containers were running, seven reported healthy as designed, and `/api/__healthcheck` returned `{"ok": true}`. I retained the exact checks in [S08 Kasm Disk Expansion Verification](../../Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/S08%20Kasm%20Disk%20Expansion%20Verification%20-%202026-07-28.md).
 
 ## Storage and Migration
 
@@ -256,6 +262,7 @@ The exact final commands, structured requests, outputs, curated phase results, a
 - Phase 3 rollback removes the 38 policies added for this change after the session containers stop.
 - Phase 4 rollback re-enables the old VLAN 77 DHCP DNS value and removes the Kasm Proton route.
 - Phase 5 rollback removes the `Lab Sessions` group after its member is reassigned.
+- The 100 GiB to 150 GiB disk expansion has no in-place shrink rollback. Returning to 100 GiB requires a new smaller virtual disk and a filesystem-level migration because ext4 cannot shrink while mounted.
 
 ## Remaining Work
 
