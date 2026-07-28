@@ -1,7 +1,6 @@
 {
   "uid": "homelab-overview",
   "title": "Homelab Overview",
-  "description": "Fleet-wide health for the Galaxy cluster, grouped one concern per row: services, guests, CPU, memory, storage, drives, power, containers, network, and the monitoring stack itself. Per-host deep dives live in Node Exporter Full; per-guest Proxmox detail lives in Proxmox via Prometheus. Both are linked at the top right. Click any row heading to collapse it.",
   "tags": [
     "homelab",
     "overview"
@@ -48,7 +47,6 @@
       {
         "name": "host",
         "label": "Host (detail row)",
-        "description": "Only the Per-host detail row uses this. Every other panel covers the fleet.",
         "type": "query",
         "datasource": {
           "type": "prometheus",
@@ -106,7 +104,6 @@
     {
       "type": "stat",
       "title": "Cluster quorum",
-      "description": "pve_up for the Galaxy cluster object. Down means the PVE API reports the cluster as not quorate.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -183,7 +180,6 @@
     {
       "type": "stat",
       "title": "Nodes online",
-      "description": "Proxmox nodes reporting online, out of four.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -243,7 +239,6 @@
     {
       "type": "stat",
       "title": "Guests running",
-      "description": "Guests with pve_up == 1. Templates report 0 and are excluded automatically.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -293,7 +288,6 @@
     {
       "type": "stat",
       "title": "Services reachable",
-      "description": "blackbox_exporter probes of the internal service names through NPM. Counts the full path: local DNS, the proxy, the certificate, and the backend.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -379,7 +373,6 @@
     {
       "type": "stat",
       "title": "Scrape targets down",
-      "description": "Any Prometheus target failing to scrape. Should be zero.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -433,7 +426,6 @@
     {
       "type": "stat",
       "title": "Hottest CPU package",
-      "description": "Warmest CPU package across the four Proxmox nodes. k10temp on grey-server (Ryzen), coretemp on the three Intel nodes.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -528,7 +520,6 @@
     {
       "type": "table",
       "title": "Internal services through NPM",
-      "description": "One row per proxied service name. Status is the HTTP code NPM returned; a 401 or 302 still counts as reachable because several of these answer that at the root path when unauthenticated.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -773,7 +764,6 @@
     {
       "type": "timeseries",
       "title": "Probe latency through NPM",
-      "description": "Round trip for each service probe. A slow climb here usually means the backend, not the proxy.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -851,7 +841,6 @@
     {
       "type": "table",
       "title": "Every guest in the cluster",
-      "description": "From the PVE API, so it covers guests with no exporter of their own. Templates are excluded. Disk usage reads 0 for QEMU guests without the guest agent, which is a reporting limit rather than an empty disk.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1245,7 +1234,6 @@
     {
       "type": "timeseries",
       "title": "CPU busy",
-      "description": "100 minus the idle rate, averaged across cores. Filterable by role.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1314,7 +1302,6 @@
     {
       "type": "timeseries",
       "title": "Load per core",
-      "description": "node_load5 divided by core count, so hosts of different sizes compare directly. Above 1 means the run queue is longer than the CPU can drain.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1383,7 +1370,6 @@
     {
       "type": "timeseries",
       "title": "CPU package temperature",
-      "description": "Hypervisors only. k10temp exposes grey-server's Ryzen as pci0000:00_0000:00:18_3; the three Intel nodes use platform_coretemp_0.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1487,7 +1473,6 @@
     {
       "type": "timeseries",
       "title": "Memory used",
-      "description": "Share of MemTotal not available. On LXC guests this comes from lxcfs, so it reflects the container's limit rather than the host's RAM.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1556,7 +1541,6 @@
     {
       "type": "bargauge",
       "title": "Memory used now",
-      "description": "Current memory pressure per host, so the tightest host is obvious without reading a legend. The trend beside it answers whether it is climbing.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1652,7 +1636,6 @@
     {
       "type": "bargauge",
       "title": "Root filesystem used",
-      "description": "The / mount on every scraped host. This is the panel that catches a disk filling before something breaks.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1720,7 +1703,6 @@
     {
       "type": "bargauge",
       "title": "Proxmox storage used",
-      "description": "All ten storages the PVE API reports, across every node.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1788,7 +1770,6 @@
     {
       "type": "table",
       "title": "Storage headroom",
-      "description": "Free space in bytes alongside total size, because a percentage alone hides how much room is actually left on a 2 TB volume.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1955,7 +1936,6 @@
     {
       "type": "stat",
       "title": "ZFS pool state",
-      "description": "hddpool-1 on grey-server, the only ZFS pool in the cluster. Anything other than ONLINE needs attention.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2031,7 +2011,6 @@
     {
       "type": "stat",
       "title": "NVMe critical warning",
-      "description": "The drive's own critical-warning bitfield. Non-zero means the controller is reporting a fault such as degraded reliability or exhausted spare capacity.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2097,7 +2076,6 @@
     {
       "type": "stat",
       "title": "SMART overall health",
-      "description": "From the smartmon textfile collector, which is present on red-server and purple-server only. The other two nodes report NVMe health through the critical-warning panel instead.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2173,7 +2151,6 @@
     {
       "type": "bargauge",
       "title": "NVMe spare capacity remaining",
-      "description": "Available spare blocks as a share of the drive's original spare pool. purple-server's boot NVMe is a used spare, so this is the number to watch there.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2241,7 +2218,6 @@
     {
       "type": "timeseries",
       "title": "NVMe temperature",
-      "description": "Hypervisors only. LXC guests see the host's sensors through /sys, so leaving them in would double-count the same physical drive.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2345,7 +2321,6 @@
     {
       "type": "stat",
       "title": "Mains power",
-      "description": "NUT's OL flag per unit. ON BATTERY means the unit is carrying the load from its own cells, which is the one state on this dashboard that is urgent on its own.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2422,7 +2397,6 @@
     {
       "type": "stat",
       "title": "Runtime remaining",
-      "description": "How long each unit expects to hold its current load on battery. This falls as load rises, so it is the honest capacity figure rather than charge percentage.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2486,7 +2460,6 @@
     {
       "type": "bargauge",
       "title": "Battery charge",
-      "description": "Charge per unit. Only meaningful once a unit is on battery, but a slow decline while on mains means a cell going bad.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2554,7 +2527,6 @@
     {
       "type": "bargauge",
       "title": "UPS load",
-      "description": "Draw in watts against each unit's 900 W nominal output, computed from nut_load. Watts rather than percent because 900 W is the number that decides whether another host fits.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2622,7 +2594,6 @@
     {
       "type": "timeseries",
       "title": "Input voltage",
-      "description": "Mains voltage at each unit. This is the panel PeaNUT cannot replace: it shows the sag or spike that happened overnight, not just the value right now. The transfer thresholds sit at 88 V and 139 V, so a dip toward either is the warning before a switch to battery.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2695,7 +2666,6 @@
     {
       "type": "timeseries",
       "title": "UPS load over time",
-      "description": "Watts drawn from each unit. A step up that never comes back down is a workload someone added and forgot about.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2780,7 +2750,6 @@
     {
       "type": "timeseries",
       "title": "Container CPU, top 10",
-      "description": "All seven Docker hosts, 50 containers. cAdvisor v0.52.1 could only do this on docker-main, because it cannot resolve a container's read-write layer under Docker 29's overlayfs driver; v0.60.5 handles the containerd snapshotter and covers the fleet. Grouped by host as well as name, since container names are only unique within a host.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2834,7 +2803,6 @@
     {
       "type": "timeseries",
       "title": "Container memory, top 10",
-      "description": "Working set, which is the figure that matters for pressure rather than total RSS. All seven Docker hosts, grouped by host as well as name.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2885,7 +2853,6 @@
     {
       "type": "table",
       "title": "Container restarts in the last 6 hours",
-      "description": "Counts changes to the container start time across all seven Docker hosts. A container quietly restart-looping shows up here and nowhere else on this dashboard.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -3042,7 +3009,6 @@
     {
       "type": "timeseries",
       "title": "Uplink throughput",
-      "description": "Physical uplinks and the Proxmox bridge only. The nodes each expose 40-plus fwbr, fwln, fwpr, veth and tap interfaces that would bury the real traffic.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -3126,7 +3092,6 @@
     {
       "type": "timeseries",
       "title": "Scrape duration by job",
-      "description": "How long Prometheus spends collecting each job. A rising line here is usually an exporter under load, not a network problem.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -3178,7 +3143,6 @@
     {
       "type": "stat",
       "title": "Monitoring self-health",
-      "description": "Active series in the TSDB head and the number of targets Prometheus is scraping. Retention is 15 days.",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -3253,7 +3217,6 @@
         {
           "type": "timeseries",
           "title": "CPU by mode",
-          "description": "Everything except idle, as a share of this host's cores. iowait means waiting on disk, steal means the hypervisor gave the CPU to someone else. The fleet CPU panel shows one busy number; this says why.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3307,7 +3270,6 @@
         {
           "type": "timeseries",
           "title": "Load average against core count",
-          "description": "Load crossing the core line means work is queueing. Below it, the host is keeping up. The cores series is the threshold, not a measurement.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3375,7 +3337,6 @@
         {
           "type": "timeseries",
           "title": "Memory breakdown",
-          "description": "Cached and buffers are reclaimable, so a host that looks full is often fine. The fleet Memory panel counts only the used slice; this shows where the rest went.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3444,7 +3405,6 @@
         {
           "type": "timeseries",
           "title": "Swap in use",
-          "description": "Flat at zero is healthy. Sustained swap on a monitoring or database host means real memory pressure, and it is invisible on the fleet Memory panel.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3498,7 +3458,6 @@
         {
           "type": "bargauge",
           "title": "Every filesystem on this host",
-          "description": "The fleet Storage panel shows root only. This shows every real mount, so a full /var/lib/docker on an otherwise healthy host is visible.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3559,7 +3518,6 @@
         {
           "type": "timeseries",
           "title": "Network per interface",
-          "description": "Every real interface on this host, not just the uplink the fleet Network panel shows. Transmit is drawn negative so direction is readable at a glance.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3617,7 +3575,6 @@
         {
           "type": "timeseries",
           "title": "Disk throughput by device",
-          "description": "Read the host caveat: /proc/diskstats is not namespaced, so on an LXC guest this reports the hypervisor's physical devices rather than the container's own I/O. Trust it on the four hypervisors; treat it as the node's disks elsewhere.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3675,7 +3632,6 @@
         {
           "type": "table",
           "title": "Host facts",
-          "description": "Kernel, exporter version, core count and uptime for the selected host. The first thing worth checking when a host is behaving oddly.",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
