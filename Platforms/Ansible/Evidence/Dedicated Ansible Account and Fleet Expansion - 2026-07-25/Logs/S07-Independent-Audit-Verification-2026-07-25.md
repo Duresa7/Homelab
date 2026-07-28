@@ -1,7 +1,7 @@
 # Independent Audit Verification
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 I required two independent read-only reviews after the rollout: one compared the live controller and nine hosts with the approved plan, and one inspected the repository, archives, documentation, tests, commits, & worktree.
 
@@ -33,4 +33,4 @@ The same two independent reviews repeated their checks after remediation.
 - The live review reported no unresolved finding across the controller, nine accounts, restricted key, key-only SSH, sudo, Docker access, deployed projects, RustDesk, the media stack, endpoints, & qBittorrent's Gluetun path.
 - The repository review reported no unresolved finding across all six remediations, archive completeness, active inventories, links, secrets, documentation standards, tests, commit grouping, Mission Control, & separation of unrelated worktree changes.
 
-No package, image, container, guest power state, 1Password value, or unrelated user file changed during either review.
+No package, image, container, guest power state, stored credential, or unrelated user file changed during either review.

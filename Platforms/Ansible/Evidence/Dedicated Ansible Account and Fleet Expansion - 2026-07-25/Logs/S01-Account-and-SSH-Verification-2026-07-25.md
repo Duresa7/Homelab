@@ -1,14 +1,14 @@
 # S01 Account and SSH Verification
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 ## Credential Record
 
 | Check | Observed result |
 |---|---|
-| Vault | Held in 1Password; name not published |
-| Item | Held in 1Password; name not published |
+| Vault | Not published |
+| Item | Not published |
 | Category and username | Login; `ansible` |
 | Recipe | 32 characters with letters, digits, & symbols |
 | Password disclosure | None; only length and recipe booleans were printed |

@@ -1,7 +1,7 @@
 # PeaNUT Relocation to monitor-01
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 ## Date
 
@@ -21,9 +21,9 @@ I moved PeaNUT 6.0.0 off `docker-main` and onto `monitor-01`, so the UPS dashboa
 
 `blue-server` had 8,643 MB available, so I ran `pct set 104 -memory 3072`. LXC memory is a cgroup limit, so `free -m` inside the container reported 3072 MB total without a restart. All 6 containers kept their existing uptimes.
 
-### Step 2: Read the secrets from 1Password
+### Step 2: Read the stored secrets
 
-The three values came from the 1Password item `PeaNUT Dashboard - docker-main` through `op read`, using the service account that sees one vault. I reused all three verbatim, including `AUTH_SECRET`, so existing session cookies stayed valid.
+I read the three values from their stored copy and reused all three verbatim, including `AUTH_SECRET`, so existing session cookies stayed valid.
 
 The old `.env` turned out to be CRLF, not LF. Its 130 bytes were 127 bytes of content plus 3 carriage returns. Docker Compose strips a trailing `\r` when it parses `.env`, which I confirmed by reading the running container's environment: `WEB_USERNAME` was 5 characters, `WEB_PASSWORD` 17, & `AUTH_SECRET` 64, none with a trailing CR. I wrote the replacement file LF-only at 127 bytes so the parsed values would be byte-identical. Had I copied the CRLF file blindly onto a host where Compose behaved differently, the password & the cookie-signing secret would both have gained a stray character.
 
@@ -57,7 +57,7 @@ That policy points an admin laptop on a personal-device VLAN at a monitoring hos
 
 `docker compose up -d` pulled the pinned digest & started the container. It reached `healthy` rather than merely `Up`, and `curl http://192.168.73.2:8090/api/ping` returned 200 with a body of `"pong"`. `127.0.0.1:8090` refused the connection, which is correct for a host-address bind & matched the old host's behavior. `ss -ltn` showed the listener on `192.168.73.2:8090` only.
 
-The device API returned both units over HTTP Basic auth: `ups01` on `red-server` & `ups02` on `grey-server`, each reporting model, serial, load, charge, runtime, input voltage, & `OL` line state. A NextAuth login with the 1Password credential issued a session for user `<YOUR_ADMIN_USERNAME>`. The container log held 6 lines with no NUT connection errors. The one line matching an error grep is a Node `DEP0169` deprecation warning about `url.parse()`, which carries the word "errors" in its text & comes from the image, not this deployment.
+The device API returned both units over HTTP Basic auth: `ups01` on `red-server` & `ups02` on `grey-server`, each reporting model, serial, load, charge, runtime, input voltage, & `OL` line state. A NextAuth login with the stored credential issued a session for user `<YOUR_ADMIN_USERNAME>`. The container log held 6 lines with no NUT connection errors. The one line matching an error grep is a Node `DEP0169` deprecation warning about `url.parse()`, which carries the word "errors" in its text & comes from the image, not this deployment.
 
 ### Step 6: Repoint Nginx Proxy Manager
 
@@ -90,7 +90,7 @@ For `cluster.fw` I copied the live file to `/root/cluster.fw.bak.peanut-relocati
 | PeaNUT | 6.0.0 pinned by digest; healthy on `192.168.73.2:8090`; Compose under `/opt/docker/peanut` on `monitor-01` |
 | monitor-01 memory | 3072 MB, raised live from 2048 MB |
 | Persistent state | `settings.yml`, 554 bytes, SHA256 `69bd5eb2...`, owned `<YOUR_ADMIN_USERNAME>:<YOUR_ADMIN_USERNAME>` |
-| Secrets | `.env` mode `0600` root-owned, 127 bytes, LF endings, unchanged values from 1Password |
+| Secrets | `.env` mode `0600` root-owned, 127 bytes, LF endings, values unchanged from the stored copy |
 | Public route | `peanut.<YOUR_BASE_DOMAIN>` through NPM proxy host 15 to `192.168.73.2:8090` |
 | UniFi policies | 61 custom policies; 8090 added to two monitor-01 entries, removed from the docker-main entry, two new 8090 policies |
 | Galaxy firewall | 49 lines, SHA256 `6847426a...` on all four nodes; two TCP/3493 accepts, both from `192.168.73.2` |
@@ -112,4 +112,4 @@ The four UniFi changes reverse independently. None of them affect Grafana, Prome
 
 ## Remaining Work
 
-The 1Password item is still titled `PeaNUT Dashboard - docker-main`, which now names the wrong host. The credential works & the plan called for no 1Password edit, so I left the rename as a separate decision.
+The stored credential is still titled for the old host. It works & the plan called for no edit to it, so I left the rename as a separate decision.

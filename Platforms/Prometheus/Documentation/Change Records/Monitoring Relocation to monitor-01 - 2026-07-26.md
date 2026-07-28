@@ -1,7 +1,7 @@
 # Monitoring Relocation to monitor-01
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 **Change date:** 2026-07-26  
 **Status:** Complete  
@@ -47,7 +47,7 @@ I built each `cluster.fw` candidate outside `/etc/pve`, kept all five IPSets, bo
 
 ### 2. Dedicated exporter identity
 
-I created `pve-exporter@pve!monitor01` with privilege separation enabled and `PVEAuditor` on `/`. I stored the one-time token in 1Password. I did not change the existing `local-dash@pve!readonly` token used by the dashboard on `docker-main`.
+I created `pve-exporter@pve!monitor01` with privilege separation enabled and `PVEAuditor` on `/`. I stored the one-time token outside this repository. I did not change the existing `local-dash@pve!readonly` token used by the dashboard on `docker-main`.
 
 ### 3. CT 104 and exporter rollout
 
@@ -59,7 +59,7 @@ Docker 29.6.2 and Compose 5.3.1 run inside the LXC. The Ansible monitoring-expor
 
 I deployed the versioned Compose, Prometheus, blackbox, and Grafana files under `/home/<YOUR_ADMIN_USERNAME>/monitoring`. The untracked `pve.yml` is mode 0600 and owned by `<YOUR_ADMIN_USERNAME>`; `pve-exporter` runs as UID 1000 so it can read that file.
 
-The six running containers are Prometheus 3.13.1, Grafana 13.1.1, `pve-exporter`, `blackbox-exporter` 0.27.0, NUT exporter 1, and cAdvisor 0.60.5. Grafana 13 uses `/usr/share/grafana/bin/grafana cli`, so I used that supported path instead of the removed `grafana-cli` executable. I rotated the saved administrator credential through stdin, renamed the 1Password item for the new host, confirmed the saved login succeeds, and confirmed `admin:admin` fails.
+The six running containers are Prometheus 3.13.1, Grafana 13.1.1, `pve-exporter`, `blackbox-exporter` 0.27.0, NUT exporter 1, and cAdvisor 0.60.5. Grafana 13 uses `/usr/share/grafana/bin/grafana cli`, so I used that supported path instead of the removed `grafana-cli` executable. I rotated the saved administrator credential through stdin, renamed the stored credential for the new host, confirmed the saved login succeeds, and confirmed `admin:admin` fails.
 
 ### 5. Cutover and cleanup
 

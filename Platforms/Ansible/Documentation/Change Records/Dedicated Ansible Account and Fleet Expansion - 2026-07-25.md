@@ -1,7 +1,7 @@
 # Dedicated Ansible Account and Fleet Expansion
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 **Implementation date:** 2026-07-25  
 **Systems:** `ansible-01` and nine running Linux workload guests  
@@ -34,7 +34,7 @@ I left `kasm-01`, the four Proxmox nodes, Windows systems, stopped Supabase, sto
 
 | Step | Action | Observed result | Evidence |
 |---|---|---|---|
-| S01 | Created the console credential in 1Password | The login item exists in the intended vault; the concealed value passed the 32-character letters, digits, & symbols recipe | [Account and SSH verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md) |
+| S01 | Created the console credential | The login item exists; the concealed value passed the 32-character letters, digits, & symbols recipe | [Account and SSH verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md) |
 | S02 | Bootstrapped the controller and nine guests one at a time | Every account has an active password, restricted controller key, validated sudo rule, key-only SSH, & the expected administrative group; the five Compose hosts also have Docker access | [Account and SSH verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md) |
 | S03 | Removed the controller key from former root or admin files after each new login passed | Exact old-key match count is zero on all nine guests; the restricted key remains present under `ansible` | [Account and SSH verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S01-Account-and-SSH-Verification-2026-07-25.md) |
 | S04 | Expanded and deployed both automation projects | Validators report 9 OS hosts, 5 Compose hosts, 16 projects, 16 supported SSH hosts, 2 unknown hosts, & 4 valid live identities | [Automation verification](../../Evidence/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md) |
@@ -58,9 +58,9 @@ I left `kasm-01`, the four Proxmox nodes, Windows systems, stopped Supabase, sto
 
 ## Credential Handling
 
-I retrieved the generated value only through the 1Password CLI. I wrote it to a one-user ACL staging file, transferred it without putting the value in a command, applied it through `chpasswd`, & removed each remote copy before moving to the next host. I overwrote and deleted the local staging file after the final controller check.
+I retrieved the generated value only through the credential CLI. I wrote it to a one-user ACL staging file, transferred it without putting the value in a command, applied it through `chpasswd`, & removed each remote copy before moving to the next host. I overwrote and deleted the local staging file after the final controller check.
 
-splunk-siem blocks Guest Agent command execution. I used its existing 1Password sudo credential through a separate restricted staging file, completed the same root-owned setup over SSH, & shredded both remote credential files. No password value entered a transcript, repository file, evidence record, or shell command.
+splunk-siem blocks Guest Agent command execution. I used its existing stored sudo credential through a separate restricted staging file, completed the same root-owned setup over SSH, & shredded both remote credential files. No password value entered a transcript, repository file, evidence record, or shell command.
 
 ## Findings During Rollout
 
@@ -81,5 +81,5 @@ The OS and Compose playbooks ran with `--check`. Their `changed=True` results me
 1. Restore the controller key to the former root or administrative-user authorized-keys file and test that path before removing an `ansible` key or account.
 2. Restore the previous inventory from Git if a host must leave the active fleet.
 3. Remove `/etc/sudoers.d/90-ansible`, the account, & its home only after another verified administration path exists.
-4. Keep the 1Password item until every account using the shared console password is disabled or rotated.
+4. Keep the stored credential until every account using the shared console password is disabled or rotated.
 5. Re-run the identity audit, fleet ping, root UID check, & both check-mode playbooks after any rollback.

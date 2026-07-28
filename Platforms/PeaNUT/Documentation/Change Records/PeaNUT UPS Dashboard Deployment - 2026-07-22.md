@@ -1,7 +1,7 @@
 # PeaNUT UPS Dashboard Deployment
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 ## Date
 
@@ -23,9 +23,9 @@ I checked the USB devices, operating-system and container-runtime versions, list
 
 ### Step 2: Prepare configuration and recovery points
 
-I pinned PeaNUT 6.0.0 to Linux AMD64 digest `sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1`. I stored the administrator login and authentication secret in 1Password. I also saved the pre-change Galaxy firewall as `/root/cluster.fw.bak.peanut-20260722` and created SSH Manager backups of `/etc/nut` on Red and Grey.
+I pinned PeaNUT 6.0.0 to Linux AMD64 digest `sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1`. I stored the administrator login and authentication secret outside this repository. I also saved the pre-change Galaxy firewall as `/root/cluster.fw.bak.peanut-20260722` and created SSH Manager backups of `/etc/nut` on Red and Grey.
 
-I created the 1Password item through `op item create` with the intended vault selected. SSH Manager returned backup IDs `files_pre-peanut-nut-config-red-20260722_2026-07-22T12-11-39-539Z_247180ed` and `files_pre-peanut-nut-config-grey-20260722_2026-07-22T12-11-39-797Z_5c3b0ebc`. I retained no separate Step 2 transcript because it would add identifiers without exposing a useful state check. No secret or UPS serial number is present in the repository or evidence.
+I created the stored credential without exposing its value. SSH Manager returned backup IDs `files_pre-peanut-nut-config-red-20260722_2026-07-22T12-11-39-539Z_247180ed` and `files_pre-peanut-nut-config-grey-20260722_2026-07-22T12-11-39-797Z_5c3b0ebc`. I retained no separate Step 2 transcript because it would add identifiers without exposing a useful state check. No secret or UPS serial number is present in the repository or evidence.
 
 ### Step 3: Install and configure NUT
 
@@ -55,7 +55,7 @@ The [Red verification transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Depl
 
 The [Red guest-continuity transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-Guest-Continuity-red-server.txt) shows the running Red guest had been up for 19,296 seconds against 1,573 seconds of elapsed deployment time. The [Grey guest-continuity transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-Guest-Continuity-grey-server.txt) shows all six running Grey guests had uptimes greater than 122,000 seconds against 1,574 seconds of elapsed deployment time. No running guest started or restarted during this work.
 
-The [dashboard verification transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-Dashboard-Verification.txt) shows the pinned container running and healthy, TCP/8090 listening, `/api/ping` returning `pong`, direct NUT reachability from the container, and every pre-existing `docker-main` container still running. I then opened the dashboard from this workstation, signed in with the 1Password credential, and observed PeaNUT's device table showing `ups01` and `ups02` online with live charge and load values. The [dashboard capture](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png) retains that UI state.
+The [dashboard verification transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-Dashboard-Verification.txt) shows the pinned container running and healthy, TCP/8090 listening, `/api/ping` returning `pong`, direct NUT reachability from the container, and every pre-existing `docker-main` container still running. I then opened the dashboard from this workstation, signed in with the stored credential, and observed PeaNUT's device table showing `ups01` and `ups02` online with live charge and load values. The [dashboard capture](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png) retains that UI state.
 
 ## Decisions
 
@@ -73,7 +73,7 @@ The [dashboard verification transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%
 | Grey NUT | `ups02`; APC `usbhid-ups`; `192.168.70.10:3493`; driver and server active |
 | Shutdown monitor | Disabled on both Proxmox hosts |
 | PeaNUT | 6.0.0 pinned by digest; healthy on `192.168.40.35:8090` |
-| Dashboard authentication | Administrator login and authentication secret in 1Password |
+| Dashboard authentication | Administrator login and authentication secret held outside this repository |
 | Galaxy firewall | `192.168.40.35` to `192.168.70.10/32` and `192.168.70.13/32`, TCP/3493 only |
 
 ## Verification

@@ -1,7 +1,7 @@
 # PeaNUT UPS Dashboard Deployment Plan
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 **Status:** Completed on 2026-07-22. See the [deployment record](../Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md).
 
@@ -20,7 +20,7 @@ I will expose live load, charge, runtime, voltage, & state from both BR1500MS2 u
 ### Step 2: Prepare configuration & recovery points
 
 - Pin PeaNUT 6.0.0 by the Linux AMD64 manifest digest.
-- Store the dashboard login in 1Password and keep the value out of Git & evidence.
+- Keep the dashboard login out of Git & evidence.
 - Save the pre-change Galaxy firewall file before adding TCP/3493 access.
 
 ### Step 3: Deploy NUT telemetry

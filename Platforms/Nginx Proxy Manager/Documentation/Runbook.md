@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 ## Scope
 
@@ -30,7 +30,7 @@ Expected baseline:
 - The NetBird HTTPS host returns a successful application response and presents the certificate expiring `2026-10-08 23:49:46 UTC`.
 - Each host in the [internal proxy inventory](../Configuration/internal-proxy-hosts.md) returns 200 or an expected application redirect. None returns 502 or 504.
 
-The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. An early API-login attempt returned HTTP `400`, so I use the verified browser path for administrator changes.
+The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. An early API-login attempt returned HTTP `400`, but `POST /api/tokens` with the stored administrator email & password worked on 2026-07-28 and returned a bearer token I used to list and delete a proxy host. The API is a supported path for scripted changes; the browser stays the path for certificate work.
 
 ## Logs
 

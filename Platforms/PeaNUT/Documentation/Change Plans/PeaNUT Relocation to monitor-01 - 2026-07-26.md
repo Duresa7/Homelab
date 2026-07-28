@@ -1,7 +1,7 @@
 # PeaNUT Relocation to monitor-01 Plan
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 **Status:** Completed on 2026-07-26. The observed results are in [PeaNUT Relocation to monitor-01 - 2026-07-26](../Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
@@ -11,7 +11,7 @@ I executed every step including the Nginx Proxy Manager cutover in Step 6, which
 
 I'm moving PeaNUT off `docker-main` and onto `monitor-01`, so every UPS-facing component lives on one host. `monitor-01` already runs `prometheus-nut-exporter` against the same two NUT endpoints, so the dashboard and the metrics collector stop being split across two LXCs on two different nodes.
 
-This is a clean rebuild, not a migration. No backup, no data copy, no export. PeaNUT's entire persistent state is a 554-byte `settings.yml` holding two NUT server entries and display preferences, with no secret in it. That file's exact contents are recorded in Step 3 below, so it gets retyped on the new host rather than moved. The three environment secrets come from the existing 1Password item and are reused verbatim, so the login doesn't change and 1Password needs no edit.
+This is a clean rebuild, not a migration. No backup, no data copy, no export. PeaNUT's entire persistent state is a 554-byte `settings.yml` holding two NUT server entries and display preferences, with no secret in it. That file's exact contents are recorded in Step 3 below, so it gets retyped on the new host rather than moved. The three environment secrets are reused verbatim from the stored copy, so the login doesn't change and the stored copy needs no edit.
 
 `docker-main` gets the container, image, directory, and both of its firewall openings removed once the new one is verified.
 
@@ -28,7 +28,7 @@ I checked all of this live before writing the plan. The executing agent should r
 | Image | `brandawg93/peanut:6.0.0@sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1` |
 | Container memory in use | 154.8 MiB |
 | Persistent state | `/opt/docker/peanut/config/settings.yml`, 554 bytes, no secret |
-| Secrets | `WEB_USERNAME`, `WEB_PASSWORD`, `AUTH_SECRET` in `/opt/docker/peanut/.env`, mode 0600, sourced from 1Password |
+| Secrets | `WEB_USERNAME`, `WEB_PASSWORD`, `AUTH_SECRET` in `/opt/docker/peanut/.env`, mode 0600, sourced from the stored copy |
 | NUT reachability from `monitor-01` | `192.168.70.13:3493` OPEN, `192.168.70.10:3493` OPEN, tested by TCP connect |
 | `monitor-01` capacity | 2 cores, 2048 MB RAM (503 MB used), 16 GB rootfs at 27 percent, Docker 29.6.2, Compose v5.3.1 |
 | `blue-server` headroom | 8 GB RAM available of 11 GB |
@@ -48,9 +48,9 @@ The Prometheus blackbox job needs no change either. It probes `https://peanut.<Y
 - Confirm with `pct config 104 | grep memory` and `free -m` inside the container.
 - Leave the 16 GB rootfs alone. Docker holds 2.0 GB total and 11 GB is free; the PeaNUT image adds roughly 500 MB. If rootfs use passes 70 percent at any point, grow it with `pct resize 104 rootfs +8G`.
 
-### Step 2: Read the secrets from 1Password
+### Step 2: Read the stored secrets
 
-- Use the `1password-cli` skill for the mechanics. Do not improvise the CLI invocation.
+- Use the credential-retrieval skill for the mechanics. Do not improvise the CLI invocation.
 - Retrieve the three existing values for `WEB_USERNAME`, `WEB_PASSWORD`, and `AUTH_SECRET`. Reuse them as-is. Reusing `AUTH_SECRET` is deliberate: it signs session cookies, so keeping it means no forced re-login.
 - These values never enter a repository file, a plan, a change record, an evidence file, or captured terminal output.
 
@@ -71,9 +71,9 @@ services:
     environment:
       TZ: America/New_York
       WEB_PORT: "8080"
-      WEB_USERNAME: ${WEB_USERNAME:?WEB_USERNAME must be injected from 1Password}
-      WEB_PASSWORD: ${WEB_PASSWORD:?WEB_PASSWORD must be injected from 1Password}
-      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET must be injected from 1Password}
+      WEB_USERNAME: ${WEB_USERNAME:?WEB_USERNAME must be injected}
+      WEB_PASSWORD: ${WEB_PASSWORD:?WEB_PASSWORD must be injected}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET must be injected}
     volumes:
       - /opt/docker/peanut/config:/config
     ports:
@@ -183,7 +183,7 @@ Run `docker compose up -d` from `/opt/docker/peanut`. Then confirm, in order:
 - `docker ps` shows `peanut` as `healthy`, not merely `Up`. Allow the 30-second `start_period` plus one 30-second interval before judging.
 - `curl -fsS -o /dev/null -w '%{http_code}' http://192.168.73.2:8090/api/ping` returns 200 from the host. Note that `127.0.0.1:8090` will refuse the connection because of the host-address bind, exactly as it did on `docker-main`. That refusal is correct behavior and is not a fault.
 - The web UI enumerates both `red-server` and `grey-server`, and each returns identity, load, charge, runtime, voltage, and line state. One UPS appearing is a partial failure, not a success.
-- Login with the 1Password credentials works.
+- Login with the stored credentials works.
 - The temperature-unit save test from Step 3a persisted across a container restart.
 - `docker logs peanut` holds no repeated connection errors against either NUT endpoint.
 

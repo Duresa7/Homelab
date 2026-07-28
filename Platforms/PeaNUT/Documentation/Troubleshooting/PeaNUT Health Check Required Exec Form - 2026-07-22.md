@@ -1,7 +1,7 @@
 # PeaNUT Health Check Required Exec Form
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 ## Symptom
 
@@ -29,7 +29,7 @@ Compose implements `CMD-SHELL` through `/bin/sh`. PeaNUT 6.0.0's image doesn't c
 
 ## Corrective Action
 
-I changed the health check to exec-form `CMD` with `node`, `-e`, and the probe script as separate arguments. I also rotated the authentication secret that the first startup printed and stored the replacement in 1Password before recreating the container.
+I changed the health check to exec-form `CMD` with `node`, `-e`, and the probe script as separate arguments. I also rotated the authentication secret that the first startup printed before recreating the container.
 
 ## Verification
 

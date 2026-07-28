@@ -1,7 +1,7 @@
 # Move Monitoring off grey-server
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 **Status:** Complete on 2026-07-26  
 **Target:** CT 104 `monitor-01`, Debian 13 LXC on `blue-server`, VLAN 73 `MONITOR-A`, 192.168.73.2  
@@ -14,9 +14,9 @@ This replaces the first draft of this plan, written earlier on 2026-07-26 and wr
 
 You are executing this, not designing it. The decisions below are settled; do not re-litigate them mid-run.
 
-**Secrets.** Two secrets are handled here: the Grafana admin credential and a new Proxmox API token. Neither value may appear in a command line, a log, a file in this repository, a commit, or anything you print. Read the [1password-cli skill](../../../../.claude/skills/1password-cli/SKILL.md) before touching either. Pipe values, never echo them.
+**Secrets.** Two secrets are handled here: the Grafana admin credential and a new Proxmox API token. Neither value may appear in a command line, a log, a file in this repository, a commit, or anything you print. Read the credential-retrieval skill before touching either. Pipe values, never echo them.
 
-**Proxmox shows an API token secret exactly once.** If you create the token and lose the value, you cannot retrieve it. Delete the token and create it again. Store it in 1Password in the same step that creates it, before doing anything else.
+**Proxmox shows an API token secret exactly once.** If you create the token and lose the value, you cannot retrieve it. Delete the token and create it again. Store it in the same step that creates it, before doing anything else.
 
 **Stop conditions.** Stop, report, and change nothing further if any of these happen:
 
@@ -36,7 +36,7 @@ I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24. DHCP serves 192.168.73.6 th
 
 Phase 1 is complete. `<YOUR_ORG_NAME>`-Monitor contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, & the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
 
-Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled & `PVEAuditor` on `/`. I stored its one-time secret and token ID in 1Password, then removed both staging files.
+Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled & `PVEAuditor` on `/`. I stored its one-time secret and token ID outside this repository, then removed both staging files.
 
 Phase 3 is complete. CT 104 runs Debian 13 on `blue-server` with two cores, 2 GiB memory, 1 GiB swap, a 16 GiB disk, & static address 192.168.73.2. The Linux host baseline passed: both administrative accounts have their approved keys and recovery passwords, SSH is key-only, root is locked, the locale is `en_US.UTF-8`, the timezone is `America/New_York`, & no package upgrades remain. Docker 29.6.2 and Compose 5.3.1 run inside the unprivileged LXC, and the controller reached the `ansible` account with its restricted key.
 
@@ -44,7 +44,7 @@ The first DNS check exposed two missing network details. UniFi had automatically
 
 Phase 4 is complete. The Ansible project now holds eight hosts in both exporter groups. The node exporter play installed version 1.9.0 on `monitor-01`, and the cAdvisor play started version 0.60.5 on port 9101. Both endpoints return HTTP 200.
 
-Phase 5 is complete. Six containers run from `/home/<YOUR_ADMIN_USERNAME>/monitoring`, and the deployed files contain the real domain and administrator name rather than repository placeholders. I created `pve.yml` as a mode 0600 untracked file, removed every secret staging file, and verified `pve_up 1` for the cluster and all four nodes. The current Grafana image uses `/usr/share/grafana/bin/grafana cli` rather than the plan's removed `grafana-cli` executable. I used that supported path to rotate the saved credential through stdin, renamed the 1Password item for the new host, verified the `<YOUR_ADMIN_USERNAME>` login, and confirmed the default `admin:admin` login fails. `promtool check config` passed.
+Phase 5 is complete. Six containers run from `/home/<YOUR_ADMIN_USERNAME>/monitoring`, and the deployed files contain the real domain and administrator name rather than repository placeholders. I created `pve.yml` as a mode 0600 untracked file, removed every secret staging file, and verified `pve_up 1` for the cluster and all four nodes. The current Grafana image uses `/usr/share/grafana/bin/grafana cli` rather than the plan's removed `grafana-cli` executable. I used that supported path to rotate the saved credential through stdin, renamed the stored credential for the new host, verified the `<YOUR_ADMIN_USERNAME>` login, and confirmed the default `admin:admin` login fails. `promtool check config` passed.
 
 Phase 6 passed. All 15 node exporters and all eight cAdvisor endpoints return HTTP 200 from `monitor-01`; Proxmox answers on 8006; both NUT servers accept TCP 3493 and return live UPS metrics; and both local web interfaces answer. The direct `https://192.168.85.2/` check returns curl code `000` because NPM rejects a TLS handshake without an SNI hostname, not because TCP 443 is blocked. A TCP probe reaches 443, and `https://jellyfin.<YOUR_BASE_DOMAIN>/` returns HTTP 302 through the same address. The exact target assertion reports 46 of 46 up with no stale addresses. All 65 dashboard queries pass, with only the allowed container restart table empty.
 
@@ -104,7 +104,7 @@ Do not re-derive these. They were checked during the design review.
 | VLAN 73 trunking | `vmbr0` is VLAN-aware with `bridge-vids 2-4094`. UniFi initially excluded the newly created network from `Proxmox-Trunk`; I added only `MONITOR-A` to the profile during execution |
 | Proxmox guest firewall | No per-guest `.fw` files exist and there is no `host.fw` on blue. CT 107 receives 443 with no rule permitting it, so guest ingress is not filtered. `monitor-01` needs no `cluster.fw` work for its own inbound |
 | Existing PVE identity | `local-dash@pve` token `readonly`, `privsep=1`, ACL `/` role `PVEAuditor` propagate=1 |
-| 1Password | No item exists for the PVE credential. `pve.yml` on `security-01` is its only copy |
+| Stored credentials | No stored copy exists for the PVE credential. `pve.yml` on `security-01` is its only copy |
 
 ## Firewall Scope
 
@@ -210,7 +210,7 @@ pveum user token add pve-exporter@pve monitor01 --privsep 1
 pveum acl modify / --tokens 'pve-exporter@pve!monitor01' --roles PVEAuditor
 ```
 
-The token value is printed once. Capture it and write it straight into 1Password, with the token ID `pve-exporter@pve!monitor01` in a separate field. Do not print it, do not put it in a file yet, do not paste it into a commit.
+The token value is printed once. Capture it and write it straight into the credential store, with the token ID `pve-exporter@pve!monitor01` in a separate field. Do not print it, do not put it in a file yet, do not paste it into a commit.
 
 **Pass:** `pveum user token list pve-exporter@pve` shows `monitor01`, and `pvesh get /access/acl` shows `pve-exporter@pve!monitor01` with role `PVEAuditor` on `/`.
 
