@@ -1,0 +1,376 @@
+{
+  "uid": "teamspeak",
+  "title": "TeamSpeak",
+  "tags": ["homelab", "teamspeak"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "editable": true,
+  "graphTooltip": 1,
+  "refresh": "1m",
+  "time": { "from": "now-24h", "to": "now" },
+  "templating": { "list": [] },
+  "annotations": { "list": [] },
+  "panels": [
+    {
+      "type": "row",
+      "title": "What my users see",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "Public address reachable",
+      "description": "A TeamSpeak Init1 handshake sent to the public address a user types, through the Playit relay. Up means the voice service answered across the whole path: DNS, relay, tunnel, and server.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_public_up",
+          "legendFormat": "{{address}}",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "UP", "color": "green", "index": 1 } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Public availability over time",
+      "description": "1 is reachable from the internet side. Use this for the uptime question: what percentage of the window were my users able to connect.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 1 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_public_up",
+          "legendFormat": "{{server}}"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "max": 1,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 2,
+            "fillOpacity": 20,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Uptime, public path (window)",
+      "description": "Average of teamspeak_public_up across the selected time range, per server.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 6 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "avg_over_time(teamspeak_public_up[$__range])",
+          "legendFormat": "{{server}}",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "decimals": 3,
+          "min": 0,
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "orange", "value": 0.95 },
+              { "color": "green", "value": 0.999 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Public round trip",
+      "description": "Handshake round trip through the Playit relay. A rising trend means the relay path is degrading even while the light stays green.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 16, "x": 8, "y": 6 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_public_rtt_seconds > 0",
+          "legendFormat": "{{server}} via {{relay}}"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "showPoints": "never",
+            "spanNulls": false
+          },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Is it me or is it the tunnel",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 10 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "stat",
+      "title": "Fault location",
+      "description": "Server fault means the local TeamSpeak process is not answering on this host. Tunnel fault means TeamSpeak is fine locally but the public address is not reachable, so blame Playit or DNS. Both zero means healthy.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 5, "w": 12, "x": 0, "y": 11 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_server_fault",
+          "legendFormat": "{{server}} server",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_tunnel_fault",
+          "legendFormat": "{{server}} tunnel",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "OK", "color": "green", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "FAULT", "color": "red", "index": 1 } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Local voice and DNS",
+      "description": "Local is the TeamSpeak process on alpha-prod-01 answering on its own UDP port. DNS is the _ts3._udp SRV record resolving. If DNS is down, clients cannot find the relay even when everything else works.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 5, "w": 12, "x": 12, "y": 11 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_local_up",
+          "legendFormat": "{{server}} local",
+          "instant": true
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_dns_srv_up",
+          "legendFormat": "{{server}} SRV",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red", "index": 0 } } },
+            { "type": "value", "options": { "1": { "text": "UP", "color": "green", "index": 1 } } }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 1 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "row",
+      "title": "Server stats (needs ServerQuery credentials)",
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 16 },
+      "collapsed": false,
+      "panels": []
+    },
+    {
+      "type": "timeseries",
+      "title": "Clients online",
+      "description": "From ServerQuery. Stays empty until TS_QUERY_USER and TS_QUERY_PASS are set in /home/dkadi/teamspeak-monitor/.env on alpha-prod-01.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 17 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_clients_online",
+          "legendFormat": "{{server}}"
+        }
+      ],
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "none" }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "min": 0,
+          "decimals": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 2,
+            "fillOpacity": 15,
+            "showPoints": "never"
+          },
+          "color": { "mode": "palette-classic" }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Virtual server uptime",
+      "description": "From ServerQuery. How long each virtual server has been running since its last restart.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 6, "w": 12, "x": 12, "y": 17 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "teamspeak_uptime_seconds",
+          "legendFormat": "{{server}}",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value_and_name",
+        "colorMode": "none",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": { "unit": "s", "decimals": 0 },
+        "overrides": []
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Collector freshness",
+      "description": "Seconds since the collector last completed a cycle. It runs every 60 seconds, so a value climbing past a few minutes means the teamspeak-monitor container is stuck and the lights above are stale.",
+      "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 23 },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "prometheus", "uid": "bfgnkdi47u5tsa" },
+          "expr": "time() - teamspeak_last_probe_timestamp_seconds",
+          "legendFormat": "age",
+          "instant": true
+        }
+      ],
+      "options": {
+        "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false },
+        "orientation": "horizontal",
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 180 },
+              { "color": "red", "value": 600 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}
