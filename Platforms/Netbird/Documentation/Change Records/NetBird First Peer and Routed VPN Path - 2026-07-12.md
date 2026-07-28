@@ -111,7 +111,7 @@ ip route get 192.168.85.2
 
 **Evidence:**
 
-![The Add Resource dialog for AlphaSec-Access with name Access-a-subnet and address 192.168.85.0/24](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S06-Add-Resource-Initial-2026-07-12.png)
+![The Add Resource dialog for the `<YOUR_ORG_NAME>`-Access network with name Access-a-subnet and address 192.168.85.0/24](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S06-Add-Resource-Initial-2026-07-12.png)
 
 ### Step 7: Add the resource description and group
 
@@ -185,7 +185,7 @@ I kept this policy broad for the validation. Narrowing its source group and port
 
 **Evidence:**
 
-![The Networks list showing AlphaSec-Access with 1 resource, 1 policy, and 1 routing peer](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S12-Network-Complete-AlphaSec-Access-2026-07-12.png)
+![The Networks list showing `<YOUR_ORG_NAME>`-Access with 1 resource, 1 policy, and 1 routing peer](../../Evidence/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12/Screenshots/S12-Network-Complete-Access-2026-07-12.png)
 
 I used the current Networks model instead of legacy Routes because Networks grants no access until a policy permits it, matching the zone-based firewall design. Legacy Routes are reserved for exit-node scenarios and do not apply here.
 

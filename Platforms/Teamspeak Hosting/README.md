@@ -33,9 +33,9 @@ Each server is a separate Compose project with its own named volume, which is wh
 
 | Server | Virtual server name | Compose project | Data volume |
 |---|---|---|---|
-| `ts-valorant-01` | AlphaSec x LYON | `teamspeak` | `teamspeak_ts-data` |
-| `ts-valorant-02` | AlphaSec United x HomeBase | `teamspeak-02` | `teamspeak-02_ts-data` |
-| `ts-valorant-03` | AlphaSec United x Valorant 03 | `teamspeak-03` | `teamspeak-03_ts-data` |
+| `ts-valorant-01` | `<YOUR_ORG_NAME>` x LYON | `teamspeak` | `teamspeak_ts-data` |
+| `ts-valorant-02` | `<YOUR_ORG_NAME>` United x HomeBase | `teamspeak-02` | `teamspeak-02_ts-data` |
+| `ts-valorant-03` | `<YOUR_ORG_NAME>` United x Valorant 03 | `teamspeak-03` | `teamspeak-03_ts-data` |
 
 ## Monitoring
 
