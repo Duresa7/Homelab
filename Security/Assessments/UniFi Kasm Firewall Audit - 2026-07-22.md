@@ -1,7 +1,7 @@
 # UniFi Kasm Firewall Audit
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-27
 
 > Superseded as a description of live state. This is the retained 2026-07-22 baseline of the original seven-VLAN Kasm build. On 2026-07-23 I cut the lab to three VLANs (74, 77, 79) and nine firewall policies, deleted VLANs 73, 75, 76, and 78 with their zones, removed the `MALWARE-ONLINE` zone entirely, and retargeted the Proton route to VLAN 74 alone. The numbers below describe the configuration as measured on 2026-07-22 and are kept as the first retained score, not as current fact. See the [Kasm lab network simplification](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) and the [Kasm Workspaces deployment](../../Platforms/Kasm%20Workspaces/Documentation/Deployment.md).
 
@@ -35,7 +35,7 @@ I did not enable a lab client or run malware during this assessment.
 
 ## Material Finding
 
-The existing Internal-to-management and VPN-to-management policies permit broad paths into MGMT-A. That does not come from the Kasm change, but it conflicts with the benchmark's admin-only management requirement. The bounded [MGMT-A lockdown plan](../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) remains the owner of this correction.
+The existing Internal-to-management and VPN-to-management policies permitted broad paths into MGMT-A. That did not come from the Kasm change, but it conflicted with the benchmark's admin-only management requirement. I completed the correction in [MGMT-A Final Lockdown - 2026-07-27](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
 
 ## Kasm Interpretation
 

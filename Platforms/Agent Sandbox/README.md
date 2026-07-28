@@ -1,7 +1,7 @@
 # Agent Sandbox
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-27
 
 My AI agents need throwaway machines to test on. This platform is the plan for one tool that spins up a Docker container or a full VM on demand, hands the agent a way in, then destroys it when the task ends so the memory & disk come back. Nothing is built yet as of 2026-07-20: no broker, no sandbox VLAN, & no templates past the two Linux ones already sitting on grey-server.
 
@@ -23,5 +23,5 @@ Planning. The locked design, the phased build, & the decisions I still owe live 
 ## Related records
 
 - [Galaxy cluster](../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes that host the sandboxes, purple-server by default & grey-server for the heavy ones.
-- [UniFi network segmentation plan](../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md): where the sandbox VLAN & its firewall zone get assigned.
+- [UniFi network and zone inventories](../../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md): the live state I use to choose the sandbox VLAN and firewall zone.
 - [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md): the malware-detonation range whose no-egress containment model the untrusted lane reuses.

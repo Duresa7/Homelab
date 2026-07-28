@@ -13,6 +13,7 @@
 /Mission Control/
 /Platforms/Windows Servers/*
 !/Platforms/Windows Servers/README.md
+/Archive/Platforms/Windows Servers/*
 
 # Raw evidence, artifacts, and diagnostics
 **/Artifacts/

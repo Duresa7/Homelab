@@ -3,108 +3,107 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-27
 
-The gateway runs UniFi's zone-based V2 firewall. I maintain 61 custom policies; 60 are enabled and the retired broad Internal-to-MGMT policy is disabled. UniFi maintains the rest for zone defaults, connection state, return companions, & gateway services.
+I verified this inventory against the live controller after the [zone and object consolidation](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) on 2026-07-27.
 
-## Custom Policies
+The gateway runs UniFi's zone-based V2 firewall. It holds 361 policies: 59 custom and 302 controller-generated. Fifty-eight custom policies are enabled. `Allow Internal to <YOUR_ORG_NAME>-Mgmt` remains disabled as the rollback reference for the 2026-07-27 management lockdown.
 
-All 61 user-defined policies use connection state `ALL` and the `Always` schedule. Sixty are enabled. I disabled the broad Internal-to-MGMT policy during the 2026-07-27 lockdown and left it as a rollback reference.
+## Custom Policy Inventory
 
-| Policy | Enabled | Action | Index | Protocol | IP Ver | Source Zone | Source Match | Dest Zone | Dest Match | Dest Port | Conn State | Schedule | Logging | Description |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Block DMZ to Internal | Yes | BLOCK | 40000 | All | Both | Dmz | Any | Internal | Any | Any | All | Always | On | Prevent DMZ workloads from laterally accessing Internal networks |
-| DMZ Allow List | Yes | ALLOW | 10001 | All | Both | Internal | Clients (3 MACs) | Dmz | Any | Any | All | Always | On | Whitelisted admin devices into DMZ |
-| Block DMZ to LAN | Yes | BLOCK | 40001 | All | Both | Dmz | Any | Internal | Any | Any | All | Always | On | - |
-| Allow VPN to `<YOUR_ORG_NAME>`-Mgmt | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Mgmt | Any | Any | All | Always | Off | - |
-| Allow VPN to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | Off | - |
-| Allow `<YOUR_ORG_NAME>`-Mgmt to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | `<YOUR_ORG_NAME>`-Mgmt | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | Off | - |
-| Allow Internal to `<YOUR_ORG_NAME>`-Mgmt | No | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Mgmt | Any | Any | All | Always | On | Disabled 2026-07-27; explicit device and service policies replace it |
-| Allow Internal to `<YOUR_ORG_NAME>`-Servers | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | On | - |
-| Allow Internal to `<YOUR_ORG_NAME>`-Access | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Access | Any | Any | All | Always | On | LAN access to network access / connectivity services (reverse proxy, remote-access mesh, and similar ingress tooling) |
-| Allow VPN to `<YOUR_ORG_NAME>`-Access | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Access | Any | Any | All | Always | Off | Remote VPN clients reach network access / connectivity services for off-LAN administration |
-| Allow docker-network Web Egress | Yes | ALLOW | 10000 | TCP | IPv4 | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | External | Any | 80, 443 | All | Always | On | Permit package, image, certificate, and application HTTPS/HTTP egress from `docker-network` |
-| Allow docker-network NTP Egress | Yes | ALLOW | 10001 | UDP | IPv4 | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | External | Any | 123 | All | Always | On | Permit time synchronization from `docker-network` |
-| Block `<YOUR_ORG_NAME>`-Access Other External Egress | Yes | BLOCK | 10002 | All | IPv4 | `<YOUR_ORG_NAME>`-Access | Any | External | Any | Any | All | Always | On | Default-deny remaining `<YOUR_ORG_NAME>`-Access Internet egress after the two workload-specific allows |
-| Allow Internal to `<YOUR_ORG_NAME>`-Security | Yes | ALLOW | 10000 | All | Both | Internal | Any | `<YOUR_ORG_NAME>`-Security | Any | Any | All | Always | On | LAN access to security and monitoring services (SIEM, detection, log/metrics tooling) |
-| Allow VPN to `<YOUR_ORG_NAME>`-Security | Yes | ALLOW | 10000 | All | Both | Vpn | Any | `<YOUR_ORG_NAME>`-Security | Any | Any | All | Always | Off | Remote VPN clients reach security and monitoring services for off-LAN administration |
-| Allow Security Workloads Web Egress | Yes | ALLOW | 10000 | TCP | IPv4 | `<YOUR_ORG_NAME>`-Security | IPs 192.168.72.2, 192.168.72.3 | External | Any | 80, 443 | All | Always | On | Permit package, image, certificate, and application HTTPS/HTTP egress from the two Security-A workloads |
-| Allow Security Workloads NTP Egress | Yes | ALLOW | 10001 | UDP | IPv4 | `<YOUR_ORG_NAME>`-Security | IPs 192.168.72.2, 192.168.72.3 | External | Any | 123 | All | Always | On | Permit time synchronization from the two Security-A workloads |
-| Block `<YOUR_ORG_NAME>`-Security Other External Egress | Yes | BLOCK | 10002 | All | IPv4 | `<YOUR_ORG_NAME>`-Security | Any | External | Any | Any | All | Always | On | Default-deny remaining Security-A Internet egress after the two workload-specific allows |
-| Allow edge-01 to app-01 Web | Yes | ALLOW | 10000 | TCP | Both | Dmz | Client (1 MAC, edge-01) | `<YOUR_ORG_NAME>`-Servers | IP 192.168.80.10 | Port group: App Access (80, 8000) | All | Always | On | edge-01 reaches only app-01 HTTP ingress and the Coolify interface |
-| Allow `<YOUR_ORG_NAME>`-Servers to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Servers | Any | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | Off | Agent access to the Wazuh manager on Security-A; automatic return policy enabled |
-| Allow DMZ to Wazuh - Security-A | Yes | ALLOW | 10001 | TCP | Both | Dmz | Client (1 MAC, edge-01) | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | Port group: Wazuh Ports | All | Always | On | DMZ Wazuh-agent path to Security-A; automatic return policy enabled |
-| Allow Devices to Personal-A | Yes | ALLOW | 10001 | All | Both | Internal | Clients (9 MACs) | Internal | Network: Personal-A | Any | All | Always | On | Includes M1-Dev (`192.168.10.92`) |
-| Block Trusted to Personal-A | Yes | BLOCK | 10002 | All | Both | Internal | Network: Trusted | Internal | Network: Personal-A | Any | All | Always | Off | - |
-| Device Access to Proxmox | Yes | ALLOW | 10001 | All | Both | Internal | Clients (4 MACs) | `<YOUR_ORG_NAME>`-Mgmt | Any | Port group: Proxmox-Admin-Ports | All | Always | Off | Access to Proxmox GUI / SSH |
-| Allow A-Servers to Portainer Edge | Yes | ALLOW | 10000 | All | Both | `<YOUR_ORG_NAME>`-Servers | Any | Internal | IP 192.168.40.35 | Port group: Portainer Edge Agents | All | Always | On | `<YOUR_ORG_NAME>`-Servers VMs reach Portainer Edge tunnel/API on docker-main |
-| Allow Identity Sync Service Connection | Yes | ALLOW | 10000 | All | Both | External | Any | Gateway | Any | Port group: Identity Sync 9543 | All | Always | Off | - |
-| VPN: Temp Ban | Yes | BLOCK | 10000 | All | Both | Vpn | Network: Temp | Internal | Networks: Personal-A, Secure, Secure Client, AD-SERVERS, Management | Any | All | Always | On | - |
-| VPN: Temp #2 | Yes | BLOCK | 10001 | All | Both | Vpn | Network: Temp | `<YOUR_ORG_NAME>`-Servers | Any | Any | All | Always | On | - |
-| Docker-main Allowed -> Server | Yes | ALLOW | 10002 | TCP | IPv4 | Internal | Client (1 MAC, docker-main) | `<YOUR_ORG_NAME>`-Mgmt | Network: MGMT-A | 8006 | All | Always | Off | Read-only dashboard API; SSH removed 2026-07-27 |
-| Docker -> Jedi PC | Yes | ALLOW | 10003 | All | Both | Internal | Client (1 MAC, docker-main) | Internal | Network: Secure | Any | All | Always | Off | - |
-| Allow VPN --> Internal Zone | Yes | ALLOW | 10001 | All | Both | Vpn | Network: `<YOUR_VPN_NETWORK>` | Internal | Any | Any | All | Always | On | Approved VPN network reaches Internal-zone services |
-| Allow Device --> media-01 | Yes | ALLOW | 10004 | All | Both | Internal | Clients (2 MACs) | Internal | Network: Personal-A | Any | All | Always | On | Two approved devices reach media-01 |
-| Allow NPM to media-01 web UIs | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | Internal | IP 192.168.40.42 | 5055, 7878, 8080, 8096, 8989, 9696 | All | Always | On | NPM reaches only the six approved media web interfaces |
-| Allow NPM to ansible-01 Semaphore | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | Internal | IP 192.168.40.36 | 3000 | All | Always | On | NPM reaches Semaphore only |
-| Allow NPM to docker-main web UIs | Yes | ALLOW | 10002 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | Internal | IP 192.168.40.35 | 2283, 3000, 3001, 6060, 8080, 8384, 9443 | All | Always | On | NPM reaches only the seven approved Docker Main web interfaces |
-| Allow NPM to security-01 Wazuh | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.2 | 443 | All | Always | On | NPM reaches the Wazuh dashboard only |
-| Allow NPM to splunk-siem web UI | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | `<YOUR_ORG_NAME>`-Security | IP 192.168.72.3 | 8000 | All | Always | On | NPM reaches Splunk Web only |
-| KASM Allow KASM-BROWSER DHCP to Gateway | Yes | ALLOW | 10000 | UDP | IPv4 | KASM-BROWSER | Any, source port 68 | Gateway | Any | 67 | All | Always | On | Permit DHCP for the browser segment |
-| KASM Allow KASM-BROWSER NTP to Gateway | Yes | ALLOW | 10002 | UDP | IPv4 | KASM-BROWSER | Any | Gateway | Any | 123 | All | Always | On | Permit gateway NTP for the browser segment |
-| KASM Block KASM-BROWSER Other Gateway | Yes | BLOCK | 10003 | All | IPv4 | KASM-BROWSER | Any | Gateway | Any | Any | All | Always | On | Deny other gateway services from the browser segment |
-| KASM Allow MALWARE-OFFLINE DHCP to Gateway | Yes | ALLOW | 10000 | UDP | IPv4 | MALWARE-OFFLINE | Any, source port 68 | Gateway | Any | 67 | All | Always | On | Permit DHCP for the offline malware segment |
-| KASM Block MALWARE-OFFLINE Other Gateway | Yes | BLOCK | 10001 | All | IPv4 | MALWARE-OFFLINE | Any | Gateway | Any | Any | All | Always | On | Deny other gateway services from the offline malware segment |
-| KASM Allow EVIDENCE-QUARANTINE DHCP to Gateway | Yes | ALLOW | 10000 | UDP | IPv4 | EVIDENCE-QUARANTINE | Any, source port 68 | Gateway | Any | 67 | All | Always | On | Permit DHCP for the evidence segment |
-| KASM Block EVIDENCE-QUARANTINE Other Gateway | Yes | BLOCK | 10001 | All | IPv4 | EVIDENCE-QUARANTINE | Any | Gateway | Any | Any | All | Always | On | Deny other gateway services from the evidence segment |
-| KASM Block MALWARE-OFFLINE External | Yes | BLOCK | 10000 | All | IPv4 | MALWARE-OFFLINE | Any | External | Any | Any | All | Always | On | Keep the offline malware segment off the Internet |
-| KASM Block EVIDENCE-QUARANTINE External | Yes | BLOCK | 10000 | All | IPv4 | EVIDENCE-QUARANTINE | Any | External | Any | Any | All | Always | On | Keep the evidence segment off the Internet |
-| Allow Monitor to Personal-A monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | Internal | IPs 192.168.40.35, .36, .39, .42 | 9100, 9101 | All | Always | On | Prometheus scrapes node_exporter and cAdvisor on docker-main, ansible-01, docker-blue, and media-01; automatic return policy enabled |
-| Allow Monitor to A-Servers monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | `<YOUR_ORG_NAME>`-Servers | IPs 192.168.80.10, 192.168.80.118 | 9100, 9101 | All | Always | On | Prometheus scrapes node_exporter and cAdvisor on app-01 and alpha-prod-01; automatic return policy enabled |
-| Allow Monitor to A-Access monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | 9100, 9101, 443 | All | Always | On | Prometheus scrapes docker-network and probes the NPM HTTPS front door; automatic return policy enabled |
-| Allow Monitor to A-Security monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | `<YOUR_ORG_NAME>`-Security | IPs 192.168.72.2, 192.168.72.3 | 9100, 9101 | All | Always | On | Prometheus scrapes security-01 and splunk-siem; automatic return policy enabled |
-| Allow Monitor to DMZ monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | Dmz | IP 192.168.90.10 | 9100 | All | Always | On | Prometheus scrapes node_exporter on edge-01; automatic return policy enabled |
-| Allow Monitor to Proxmox monitoring | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | `<YOUR_ORG_NAME>`-Mgmt | IPs 192.168.70.10–.13 | 9100, 8006 | All | Always | On | Prometheus and the PVE exporter reach the Proxmox monitoring and API endpoints; automatic return policy enabled |
-| Allow Monitor to Proxmox NUT | Yes | ALLOW | 10001 | TCP | Both | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | `<YOUR_ORG_NAME>`-Mgmt | IPs 192.168.70.10, 192.168.70.13 | 3493 | All | Always | On | The NUT exporter and PeaNUT both read `ups01` and `ups02`; automatic return policy enabled |
-| Allow Monitor Web Egress | Yes | ALLOW | 10000 | TCP | IPv4 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | External | Any | 80, 443 | All | Always | On | Permit package, image, certificate, and application web egress from monitor-01 |
-| Allow Monitor NTP Egress | Yes | ALLOW | 10001 | UDP | IPv4 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | External | Any | 123 | All | Always | On | Permit time synchronization from monitor-01 |
-| Allow NPM to monitor-01 web UIs | Yes | ALLOW | 10000 | TCP | Both | `<YOUR_ORG_NAME>`-Access | IP 192.168.85.2 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | 3000, 8090, 9090 | All | Always | On | NPM reaches Grafana, PeaNUT, and Prometheus; automatic return policy enabled |
-| Allow Secure to monitor-01 break-glass | Yes | ALLOW | 10000 | TCP | Both | Internal | IP 192.168.50.241 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | 3000, 8090, 9090 | All | Always | On | Jedi PC can reach the three web interfaces directly; automatic return policy enabled |
-| Allow Automation to monitor-01 SSH | Yes | ALLOW | 10001 | TCP | Both | Internal | IP 192.168.40.36 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | 22 | All | Always | On | ansible-01 reaches the restricted SSH account; automatic return policy enabled |
-| Allow Monitor DNS to Gateway | Yes | ALLOW | 10000 | All | IPv4 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | Gateway | Any | 53 | All | Always | On | Permit gateway DNS over TCP and UDP after the initial split-horizon lookup failed |
-| Allow VPN Management Access to PeaNUT | Yes | ALLOW | 10000 | TCP | Both | Vpn | Network: `<YOUR_VPN_NETWORK>` | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | 8090 | All | Always | On | Remote VPN clients reach the UPS dashboard only; automatic return policy enabled |
-| Allow <YOUR_ADMIN_USERNAME> MacBook Air M3 to PeaNUT | Yes | ALLOW | 10002 | TCP | Both | Internal | IP 192.168.10.27 | `<YOUR_ORG_NAME>`-Monitor | IP 192.168.73.2 | 8090 | All | Always | On | One fixed-IP laptop on Trusted reaches the UPS dashboard only; automatic return policy enabled |
+Every custom policy uses connection state `ALL` and the `Always` schedule. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
 
-The `<YOUR_ORG_NAME>`-Access and `<YOUR_ORG_NAME>`-Security egress trios are order-sensitive and use index order 10000, 10001, then 10002. I disabled UniFi automatic respond-policy generation on all six egress entries (`create_allow_respond=false`). The `<YOUR_ORG_NAME>`-Monitor web and NTP egress pair follows the same order without a terminal zone-wide block because the zone defaults already deny unmatched traffic. I enabled automatic response policies for the cross-zone monitoring, NPM, break-glass, and SSH paths.
+| Policy | Enabled | Action | Index | Protocol | Source | Destination |
+|---|---|---|---:|---|---|---|
+| `Block DMZ to Internal` | Yes | BLOCK | 40000 | All | Dmz / Any | Internal / Any |
+| `DMZ Allow List` | Yes | ALLOW | 10001 | All | Internal / 3 MACs | Dmz / Any |
+| `Block DMZ to LAN` | Yes | BLOCK | 40001 | All | Dmz / Any | Internal / Any |
+| `Allow VPN to <YOUR_ORG_NAME>-Mgmt` | Yes | ALLOW | 10000 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `Allow VPN to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `Allow <YOUR_ORG_NAME>-Mgmt to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | `<YOUR_ORG_NAME>`-Mgmt / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `Allow Internal to <YOUR_ORG_NAME>-Mgmt` | No | ALLOW | 10000 | All | Internal / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `Allow Internal to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | Internal / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `Allow edge-01 to app-01 Web` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `<YOUR_ORG_NAME>`-Servers / 192.168.80.10 / `App Access` |
+| `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 9 MACs | Internal / Personal-A |
+| `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
+| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 4 MACs | `<YOUR_ORG_NAME>`-Mgmt / `Proxmox-Admin-Ports` |
+| `Allow <YOUR_ORG_NAME>-Servers to Portainer Edge` | Yes | ALLOW | 10000 | All | `<YOUR_ORG_NAME>`-Servers / Any | Internal / 192.168.40.35 / `Portainer Edge Agents` |
+| `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
+| `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
+| `VPN: Temp #2` | Yes | BLOCK | 10001 | All | Vpn / Temp | `<YOUR_ORG_NAME>`-Servers / Any |
+| `Docker-main Allowed -> Server` | Yes | ALLOW | 10002 | TCP | Internal / `docker-main` MAC | `<YOUR_ORG_NAME>`-Mgmt / MGMT-A / 8006 |
+| `Docker -> Jedi PC` | Yes | ALLOW | 10003 | All | Internal / `docker-main` MAC | Internal / Secure |
+| `Allow Internal to <YOUR_ORG_NAME>-Access` | Yes | ALLOW | 10000 | All | Internal / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `Allow VPN to <YOUR_ORG_NAME>-Access` | Yes | ALLOW | 10000 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `Allow Internal to <YOUR_ORG_NAME>-Security` | Yes | ALLOW | 10003 | All | Internal / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `Allow VPN to <YOUR_ORG_NAME>-Security` | Yes | ALLOW | 10001 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `Allow Access Services Web Egress` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / .2, .3, .6 | External / `PG-Egress-Web` |
+| `Allow Access Services NTP Egress` | Yes | ALLOW | 10001 | UDP | `<YOUR_ORG_NAME>`-Access / .2, .3, .6 | External / `PG-NTP` |
+| `Block <YOUR_ORG_NAME>-Access Other External Egress` | Yes | BLOCK | 10002 | All | `<YOUR_ORG_NAME>`-Access / Any | External / Any |
+| `Block Observability Other External Egress` | Yes | BLOCK | 10002 | All | `<YOUR_ORG_NAME>`-Observability / `OBJ-Observability-Hosts` | External / Any |
+| `Allow <YOUR_ORG_NAME>-Servers to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Servers / Any | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow DMZ to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow VPN --> Internal Zone` | Yes | ALLOW | 10001 | All | Vpn / Management Access | Internal / Any |
+| `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
+| `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
+| `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 8080, 8384, 9443 |
+| `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / 443 |
+| `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.3 / 8000 |
+| `KASM Allow KASM-BROWSER DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | KASM-BROWSER / 68 | Gateway / 67 |
+| `KASM Allow KASM-BROWSER NTP to Gateway` | Yes | ALLOW | 10002 | UDP | KASM-BROWSER / Any | Gateway / 123 |
+| `KASM Block KASM-BROWSER Other Gateway` | Yes | BLOCK | 10003 | All | KASM-BROWSER / Any | Gateway / Any |
+| `KASM Allow MALWARE-OFFLINE DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | MALWARE-OFFLINE / 68 | Gateway / 67 |
+| `KASM Block MALWARE-OFFLINE Other Gateway` | Yes | BLOCK | 10001 | All | MALWARE-OFFLINE / Any | Gateway / Any |
+| `KASM Allow EVIDENCE-QUARANTINE DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | EVIDENCE-QUARANTINE / 68 | Gateway / 67 |
+| `KASM Block EVIDENCE-QUARANTINE Other Gateway` | Yes | BLOCK | 10001 | All | EVIDENCE-QUARANTINE / Any | Gateway / Any |
+| `KASM Block MALWARE-OFFLINE External` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | External / Any |
+| `KASM Block EVIDENCE-QUARANTINE External` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | External / Any |
+| `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42 / `PG-Node-Exporter` |
+| `Allow Monitor to <YOUR_ORG_NAME>-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Servers / .10, .118 / `PG-Node-Exporter` |
+| `Allow Monitor to <YOUR_ORG_NAME>-Access monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
+| `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | Dmz / 192.168.90.10 / 9100 |
+| `Allow Monitor to Proxmox monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Mgmt / `OBJ-Proxmox-Nodes` / 9100, 8006 |
+| `Allow Monitor to Proxmox NUT` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Mgmt / .10, .13 / 3493 |
+| `Allow Observability Web Egress` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Observability-Hosts` | External / `PG-Egress-Web` |
+| `Allow Observability NTP Egress` | Yes | ALLOW | 10001 | UDP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Observability-Hosts` | External / `PG-NTP` |
+| `Allow NPM to monitor-01 web UIs` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` / 3000, 8090, 9090 |
+| `Allow Secure to monitor-01 break-glass` | Yes | ALLOW | 10000 | TCP | Internal / 192.168.50.241 | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` / 3000, 8090, 9090 |
+| `Allow Automation to monitor-01 SSH` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.40.36 | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` / 22 |
+| `Allow Monitor DNS to Gateway` | Yes | ALLOW | 10000 | All | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | Gateway / 53 |
+| `Allow VPN Management Access to PeaNUT` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` / 8090 |
+| `Allow <YOUR_ADMIN_USERNAME> MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27 | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` / 8090 |
+| `Allow Monitor to Security monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Observability / `OBJ-Security-Stack` / `PG-Node-Exporter` |
 
-Zone names and policy descriptions have to be edited in the controller UI. The management plugin exposes no zone-rename operation, and it silently drops `description` from a policy update rather than failing, so a change that looks applied may not be.
+## Order-Sensitive Policy Sets
 
-A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently. The NUT path proved that on 2026-07-25, and the monitoring relocation also required the `pve_svc_clients` IPSet member outside the main rule section. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
+The Access-to-External trio and Observability-to-External trio use indexes 10000, 10001, and 10002:
 
-## UniFi-Generated Policies
+1. Allow approved web egress.
+2. Allow NTP.
+3. Block every other IPv4 destination.
 
-The controller creates these for the zone matrix, state tracking, & gateway services. I don't edit them by hand.
+Automatic respond-policy generation is disabled for all six. The observability trio uses `OBJ-Observability-Hosts`, `PG-Egress-Web`, and `PG-NTP`. The final controller ordering readback matched those indexes.
 
-| Category | Count | Purpose |
-|---|---|---|
-| Block All Traffic | 106 | Default-deny catch-all for each zone pair (lowest priority) |
-| Allow All Traffic | 37 | Default-allow for permitted / intra-zone pairs (lowest priority) |
-| Block Invalid Traffic | 22 | Drops packets in an invalid conntrack state |
-| Allow Return Traffic | 18 | Stateful return path for established/related connections |
-| Auto "(Return)" companions | 27 | Auto-created reverse rule for custom policies that request a response path |
-| Isolated Networks | 9 | Blocks generated by per-network isolation toggle |
-| Allow mDNS | 2 | Multicast DNS / service discovery |
-| Allow DHCPv6 | 2 | DHCPv6 leasing |
-| Other controller service policies | 11 | WireGuard, gateway services, IPv6 discovery/autoconfiguration, and controller-managed special cases |
+The monitoring, NPM, break-glass, Wazuh, and automation paths retain response companions where required. A policy update can drop its description without failing, so I verify selectors, action, enabled state, index, protocol, and response behavior rather than treating a description as enforcement.
 
-The controller held 273 live policies on 2026-07-22: 39 user-defined and 234 controller-maintained. The five NPM policies produced five enabled return companions.
+## Controller-Generated Policies
 
-The 2026-07-12 Security-A additions and MGMT-A rule retirement are documented in [Security-A Migration - 2026-07-12](../../Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
+The controller generates 302 policies for zone defaults, state tracking, return companions, gateway services, and isolation. The pre-change count was 370. The project reduced the generated set by 68 and the total set by 70:
 
-The five NPM backend policies and their route verification are documented in [Internal HTTPS Service Onboarding - 2026-07-22](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+| Measure | Before | After | Change |
+|---|---:|---:|---:|
+| Total policies | 431 | 361 | -70 |
+| Custom policies | 61 | 59 | -2 |
+| Controller-generated policies | 370 | 302 | -68 |
+| Firewall zones | 16 | 14 | -2 |
 
-The edge-01 restriction and Cloudflare Access change are documented in [Coolify Access Hardening - 2026-07-22](../../../Cloudflare/Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
+The plan estimated 13 zones. The controller result is 14 because two zones were deleted: the empty cluster zone and one observability predecessor. The seven built-in zones remained.
 
-The VLAN 73 collector policies, DNS finding, six Security-A policy deletions, and retained Wazuh port are documented in [Monitoring Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+## Enforcement Boundaries
 
-The two 8090 policies, the 8090 additions to the NPM and break-glass entries, and the 8090 removal from docker-main are documented in [PeaNUT Relocation to monitor-01 - 2026-07-26](../../../../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+A UniFi policy is not sufficient for traffic landing on a Proxmox node. The [Galaxy Datacenter firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently. I test from the source host after changing a path.
 
-The disabled broad management policy, narrowed `docker-main` API path, retained WireGuard access, and four-device administrative set are documented in [MGMT-A Final Lockdown - 2026-07-27](../../Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
+The UniFi zone endpoint still returns no network membership. I read `firewall_zone_id` from each network instead, as recorded in [UniFi zone membership is absent from the zone-matrix endpoint](../../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
+
+The exact policy bodies, per-step diffs, rollback exports, and final service gate are indexed in the [consolidation evidence](../../Evidence/Zone%20and%20Object%20Consolidation%20-%202026-07-27/Evidence-Index.md).
+
+The retired 61-policy inventory is archived at [Firewall Policies - Pre-Consolidation - 2026-07-27](../../../../../Archive/Infrastructure/Network/UniFi/Configuration/Firewall/Firewall%20Policies%20-%20Pre-Consolidation%20-%202026-07-27.md).

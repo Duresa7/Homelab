@@ -1,15 +1,17 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-27
 
-I track 16 firewall zones and their assigned networks here.
+I track 14 firewall zones and their assigned networks here.
+
+I verified every LAN row against the controller on 2026-07-27 by reading `firewall_zone_id` from all 17 routed LAN networks. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
 ## Zone Membership
 
 | Zone | Type | Networks (interfaces) in zone |
 |---|---|---|
-| Internal | Built-in | Management, Trusted (VLAN 10), Personal-A (VLAN 40), Secure (VLAN 50), Secure Client (VLAN 60), AD-SERVERS (VLAN 65) |
+| Internal | Built-in | Management, Trusted (VLAN 10), Personal-A (VLAN 40), Secure (VLAN 50), Secure Client (VLAN 60) |
 | Untrusted | Built-in | IoT (VLAN 20) |
 | Dmz | Built-in | DMZ (VLAN 30), DMZ-A (VLAN 90) |
 | External | Built-in | Internet 1 (WAN), Internet 2 (WAN), ProtonVPN (VPN client) |
@@ -17,11 +19,19 @@ I track 16 firewall zones and their assigned networks here.
 | Gateway | Built-in | *(none)* |
 | Hotspot | Built-in | *(none)* |
 | `<YOUR_ORG_NAME>`-Servers | Custom | SERVERS-A (VLAN 80) |
-| `<YOUR_ORG_NAME>`-Mgmt | Custom | MGMT-A (VLAN 70) |
-| `<YOUR_ORG_NAME>`-Security | Custom | Security-A (VLAN 72) |
-| `<YOUR_ORG_NAME>`-Monitor | Custom | MONITOR-A (VLAN 73) |
+| `<YOUR_ORG_NAME>`-Mgmt | Custom | MGMT-A (VLAN 70), Cluster-Net (VLAN 71) |
+| `<YOUR_ORG_NAME>`-Observability | Custom | Security-A (VLAN 72), MONITOR-A (VLAN 73) |
 | `<YOUR_ORG_NAME>`-Access | Custom | Access-A (VLAN 85) |
-| `<YOUR_ORG_NAME>`-Cluster | Custom | Cluster-Net (VLAN 71) |
 | KASM-BROWSER | Custom | KASM-BROWSER (VLAN 74) |
 | MALWARE-OFFLINE | Custom | MALWARE-OFFLINE (VLAN 77) |
 | EVIDENCE-QUARANTINE | Custom | EVIDENCE-QUARANTINE (VLAN 79) |
+
+The controller has seven built-in and seven custom zones. The custom set is `<YOUR_ORG_NAME>`-Servers, `<YOUR_ORG_NAME>`-Mgmt, `<YOUR_ORG_NAME>`-Observability, `<YOUR_ORG_NAME>`-Access, KASM-BROWSER, MALWARE-OFFLINE, and EVIDENCE-QUARANTINE.
+
+## Consolidation Result
+
+I moved Cluster-Net into `<YOUR_ORG_NAME>`-Mgmt and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `<YOUR_ORG_NAME>`-Observability. The two shortened organisation prefixes were corrected before either merge. The three Kasm zones stayed unchanged because their mutual unreachability is the design.
+
+The planning estimate said the total would fall from 16 to 13. The live result is 14 because the work removed two zones, not three: one cluster zone and one of the two observability predecessors. The controller now generates 302 policies against 370 before the change.
+
+`Allow Monitor to Security monitoring` explicitly limits the collector to `OBJ-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).

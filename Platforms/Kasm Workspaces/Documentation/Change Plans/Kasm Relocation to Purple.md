@@ -7,7 +7,7 @@
 
 Kasm & everything Kasm spawns runs on `purple-server`. Grey goes back to production only. The lab VLANs 74, 77, & 79 reach Kasm sessions, INetSim answers on 77, & the acceptance checks in the [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md) pass before I detonate anything real.
 
-Out of scope: `kali-pen` (VM 106) & `W11-Test-1` (VM 103) stay on Grey. They predate Kasm & aren't part of this lab.
+Out of scope: `kali-pen` (VM 106) stays on Grey. It predates Kasm and isn't part of this lab. I destroyed the unrelated Windows test VM 103 during the Active Directory decommission on 2026-07-27.
 
 ## Why Purple
 
@@ -102,7 +102,7 @@ One VLAN at a time. VLAN 74 first, because Proton egress is the piece with a tes
 
 - [ ] Add `net1` to VM 122 with `tag=74`, static `192.168.74.10/24`, outside the `.100` to `.199` DHCP pool
 - [ ] Create the Docker network on `kasm-01` bound to that interface & map one workspace to it
-- [ ] Test with the `terminal` image: confirm the egress address is Proton's, & confirm it can't reach `192.168.80.10`, `192.168.70.10`, or `192.168.65.10`
+- [ ] Test with the `terminal` image: confirm the egress address is Proton's, & confirm it can't reach `192.168.80.10`, `192.168.70.10`, or `192.168.72.2`
 - [ ] Repeat for 77 & 79 once 74 proves out
 
 Confirm against the Kasm 1.19 networking documentation whether the agent expects a macvlan against the new interface or a bridge. I haven't verified which.

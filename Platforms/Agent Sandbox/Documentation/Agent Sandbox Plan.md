@@ -39,9 +39,9 @@ The broker owns a scoped Proxmox API token whose role reaches only a dedicated `
 
 ## Network & isolation
 
-The general agent sandboxes still need their own VLAN and custom firewall zone. They remain cut off from every Internal network: my workstations on Secure (VLAN 50) and Secure Client (VLAN 60), the domain controllers on AD-SERVERS (VLAN 65), the app and data servers on SERVERS-A (VLAN 80), and the Proxmox management plane on MGMT-A (VLAN 70). The Kasm security lab holds only VLANs 74, 77, and 79 as of 2026-07-23, so the Agent Sandbox must use a different unused VLAN; 73, 75, 76, and 78 came back into the free pool when I cut the lab down. The firewall runs default-deny outward to anything internal and drops sandbox-to-8006 on the nodes and sandbox-to-gateway on the locked net. Sandboxes can't see each other unless a job explicitly needs a small attacker-victim network.
+The general agent sandboxes still need their own VLAN and custom firewall zone. They remain cut off from every Internal network: my workstations on Secure (VLAN 50) and Secure Client (VLAN 60), the app and data servers on SERVERS-A (VLAN 80), and the Proxmox management plane on MGMT-A (VLAN 70). AD-SERVERS/VLAN 65 and its domain controllers were retired on 2026-07-27. The Kasm security lab holds VLANs 74, 77, and 79, while MONITOR-A uses VLAN 73, so the Agent Sandbox must use another unused VLAN such as 75, 76, or 78. The firewall runs default-deny outward to anything internal and drops sandbox-to-8006 on the nodes and sandbox-to-gateway on the locked net. Sandboxes can't see each other unless a job explicitly needs a small attacker-victim network.
 
-Internet egress splits by lane. The trusted lane gets normal outbound so apt, pip, & npm work, routed through my existing ProtonVPN egress so sandbox traffic doesn't leave on my real WAN IP. The locked lane gets no internet at all by default, so unvetted code can't phone home or leak; when a specific untrusted job legitimately needs to fetch something, I open a filtered, logged path scoped to that one box. The VLAN ID & subnet come from the [UniFi network segmentation plan](../../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md); I'll pull the live UniFi list & pick an unused pair.
+Internet egress splits by lane. The trusted lane gets normal outbound so apt, pip, & npm work, routed through my existing ProtonVPN egress so sandbox traffic doesn't leave on my real WAN IP. The locked lane gets no internet at all by default, so unvetted code can't phone home or leak; when a specific untrusted job legitimately needs to fetch something, I open a filtered, logged path scoped to that one box. I choose the VLAN ID and subnet from the live [UniFi network inventory](../../../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md).
 
 ## Lifetime & cleanup
 
@@ -90,7 +90,7 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 
 ## Open decisions
 
-- Sandbox VLAN ID and subnet: choose an unused pair that avoids the Kasm security lab's VLANs 74, 77, and 79. VLANs 73, 75, 76, and 78 are free again after the 2026-07-23 simplification.
+- Sandbox VLAN ID and subnet: choose an unused pair that avoids MONITOR-A/73 and the Kasm security lab's VLANs 74, 77, and 79. VLANs 75, 76, and 78 are current candidates.
 - Docker host shape: a dedicated container on purple versus a small VM, & whether nested-Docker-in-VM for the untrusted case is a standing template or built per job.
 - Concurrency ceilings: the exact per-node & per-agent limits above the 10 GiB purple budget.
 - Broker stack & host: Python or Node, & which host runs the broker itself.
@@ -99,6 +99,6 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 ## Related records
 
 - [Galaxy cluster](../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes, storage, & templates the sandboxes clone from.
-- [UniFi network segmentation plan](../../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md): where the sandbox VLAN & firewall zone are assigned.
+- [UniFi network and zone inventories](../../../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md): the live state used to assign the sandbox VLAN and firewall zone.
 - [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
 - [Galaxy HA local-storage stranding incident](../../../Security/Incidents/Galaxy-HA-Local-Storage-Stranding-2026-07-20/Galaxy-HA-Local-Storage-Stranding-Incident-2026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.

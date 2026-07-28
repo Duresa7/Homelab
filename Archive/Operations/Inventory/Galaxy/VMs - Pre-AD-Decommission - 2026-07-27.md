@@ -1,11 +1,10 @@
-# Galaxy VMs
+# Galaxy VMs Pre-AD-Decommission Snapshot
 
 **Created:** 2026-07-08  
 **Last updated:** 2026-07-27  
+**Snapshot date:** 2026-07-27
 
-Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
-
-I captured the live cluster after destroying VMs 103, 300, & 301. The cluster resource API listed 10 QEMU VMs and two templates, with no entry for any retired VMID.
+Galaxy had 13 QEMU VMs & two templates before I destroyed VMs 103, 300, and 301. This inventory preserves their final recorded CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`. I decided to keep it on 2026-07-27.
 
@@ -13,6 +12,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | db-13-dev | grey-server | Debian GNU/Linux 13.6 (trixie), GNOME 48 | 4 | 4 GiB | 60G | 192.168.40.135/24 | 192.168.40.1 | 40 | disabled |
+| 103 | W11-Test-1 | grey-server | Windows 11 Pro | 4 | 8 GiB | 80G | 192.168.65.112/24 | 192.168.65.1 | 65 | disabled |
 | 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 111 | fedora-dev | grey-server | Fedora (l26 ostype; release not captured while stopped) | 6 | 8 GiB | 80G | none recorded, stopped since 2026-07-15 | 192.168.40.1 | 40 | disabled |
@@ -21,6 +21,8 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
 | 122 | kasm-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.80.30/24 | 192.168.80.1 | 80 | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 300 | ws-dc-1 | grey-server | Windows Server 2025 | 4 | 12 GiB | 100G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
+| 301 | ws-dc-2 | grey-server | Windows Server 2025 | 4 | 8 GiB | 100G | 192.168.65.45/24 | 192.168.65.1 | 65 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
@@ -69,6 +71,45 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 40 | 192.168.40.135/24 | 192.168.40.1 | enabled | `<YOUR_DEBIAN_DEV_MAC>` |
+
+### VM 103 - W11-Test-1
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows 11 Pro |
+| IPv4 | 192.168.65.112/24 |
+| Gateway | 192.168.65.1 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 8 GiB |
+| BIOS | ovmf |
+| Machine | pc-q35-10.1 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled (ssd-lvm1, v2.0) |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-103-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| ide0 | ide | local | iso/virtio-win-0.1.285.iso | 771138K | cdrom | default |
+| efidisk0 | efidisk | ssd-lvm1 | vm-103-disk-0 | 4M | disk | default |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-103-disk-2 | 4M | disk | default |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.112/24 | 192.168.65.1 | enabled | `<YOUR_WINDOWS_TEST_VM_MAC>` |
 
 ### VM 106 - kali-pen
 
@@ -382,6 +423,84 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | `<YOUR_SECURITY_HOST_MAC>` |
+
+### VM 300 - ws-dc-1
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 |
+| IPv4 | 192.168.65.10/24 |
+| Gateway | 192.168.65.1 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 12 GiB |
+| BIOS | ovmf |
+| Machine | pc-q35-10.1 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled (ssd-lvm1, v2.0) |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-300-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
+| ide0 | ide | local | iso/virtio-win-0.1.285.iso | 771138K | cdrom | default |
+| efidisk0 | efidisk | ssd-lvm1 | vm-300-disk-0 | 4M | disk | default |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-300-disk-2 | 4M | disk | default |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.10/24 | 192.168.65.1 | disabled | `<YOUR_FIRST_DOMAIN_CONTROLLER_MAC>` |
+
+### VM 301 - ws-dc-2
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 |
+| IPv4 | 192.168.65.45/24 |
+| Gateway | 192.168.65.1 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 8 GiB |
+| BIOS | ovmf |
+| Machine | pc-q35-10.1 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled (ssd-lvm1, v2.0) |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-301-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
+| ide0 | ide | local | iso/virtio-win-0.1.285.iso | 771138K | cdrom | default |
+| efidisk0 | efidisk | ssd-lvm1 | vm-301-disk-0 | 4M | disk | default |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-301-disk-2 | 4M | disk | default |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.45/24 | 192.168.65.1 | disabled | `<YOUR_SECOND_DOMAIN_CONTROLLER_MAC>` |
 
 ### VM 401 - alpha-prod-01
 

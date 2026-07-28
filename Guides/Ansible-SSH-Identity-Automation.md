@@ -1,7 +1,7 @@
 # Ansible SSH Identity Automation Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-27
 
 ## What This Guide Covers
 
@@ -101,7 +101,7 @@ If a playbook loses access, stop the run and recover the affected account from i
 
 ## Known Limits
 
-The public project omits live identity files. `ws-dc-2-secondary` and `obi-pc` remain in `ssh_key_unknown`, so the automation intentionally leaves them alone.
+The public project omits live identity files. I removed the retired domain controllers and `obi-pc` from the deployed inventory on 2026-07-27, so no Windows target remains in this automation.
 
 ## Source Records
 

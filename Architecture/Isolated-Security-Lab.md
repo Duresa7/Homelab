@@ -1,7 +1,7 @@
 # Isolated Security Lab
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 ## Purpose
 
@@ -42,7 +42,7 @@ Every lane is blocked from management, cluster, monitoring, server, trusted, and
 
 As of 2026-07-24 every Kasm component runs on one host, `kasm-01` (VM 122) on Grey, installed with `--role all`. The earlier split across `kasm-agent-01`, `kasm-core`, and INetSim on Purple no longer exists; the 2026-07-23 teardown destroyed those guests. Purple is back in service as of 2026-07-25 on a replacement boot NVMe and carries nothing.
 
-Malware and untrusted full desktops run as separate KVM guests beside `kasm-01`, never inside it. After the relocation those guests live on Purple. The permanent Kali VM stays separate from malware storage, and it stays on Grey: `kali-pen` (VM 106) and `W11-Test-1` (VM 103) predate this lab and are not part of it.
+Malware and untrusted full desktops run as separate KVM guests beside `kasm-01`, never inside it. After the relocation those guests live on Purple. The permanent Kali VM stays separate from malware storage and remains on Grey as `kali-pen` (VM 106). I destroyed the unrelated Windows test VM 103 during the Active Directory decommission on 2026-07-27.
 
 Purple has 15 GiB of RAM and an i5-8500T at 6 cores. The budget is 8 GiB for `kasm-01`, 1 GiB for the INetSim LXC, 4 GiB for one detonation guest, and 1.5 GiB for PVE, which is 14.5 of 15. That allows one detonation guest at a time. Going to 32 GiB would allow a victim, a target, and a monitor together.
 

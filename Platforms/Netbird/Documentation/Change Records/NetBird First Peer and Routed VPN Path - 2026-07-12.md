@@ -1,7 +1,7 @@
 # NetBird First Peer and Routed VPN Path
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-27
 
 **Implementation date:** 2026-07-12  
 **Status:** Complete; first peers enrolled, `<YOUR_ORG_NAME>`-Access network published through a routing peer, and the VPN path into Access-A validated end to end
@@ -10,7 +10,7 @@
 
 I enrolled the first two peers, exercised the WireGuard data path, & routed one peer into Access-A through CT 107. The checks covered the overlay tunnel, route selection, HTTPS service path, and UniFi firewall behavior.
 
-This closes the first item of the [network segmentation plan](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md) ("confirm reachability from both Internal and VPN") and the "First Peer and VPN Path" section of the platform [TODO](../TODO.md).
+This closed the Internal-and-VPN reachability item in the completed network segmentation work and the "First Peer and VPN Path" section of the platform [TODO](../TODO.md). The current network result is indexed from the [UniFi configuration record](../../../../Infrastructure/Network/UniFi/README.md).
 
 ## Starting state
 

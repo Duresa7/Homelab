@@ -1,7 +1,7 @@
 # UniFi Network Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-27
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ This guide follows the network work that supports Galaxy & the hosted platforms:
 
 ## Current Status and Verified Versions
 
-The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 80 for servers, VLAN 85 for Access-A, & VLAN 90 for the DMZ. The `docker-network` guest uses `192.168.85.2`; Security-A services use `192.168.72.2` & `192.168.72.3`.
+The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, VLAN 85 for Access-A, and VLAN 90 for the DMZ. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone.
 
 ## What You Need
 
@@ -40,11 +40,13 @@ I moved Wazuh, Prometheus, Grafana, Splunk, HEC, & SC4S from the earlier managem
 
 ### Step 4: Add Ordered Access-A Egress
 
-I created three rules for `docker-network` in this order:
+I created three Access-to-External rules in this order:
 
-1. Allow TCP 80 & 443 from `192.168.85.2`.
-2. Allow UDP 123 from `192.168.85.2`.
+1. Allow TCP 80 and 443 from the approved Access-A service addresses.
+2. Allow UDP 123 from those same addresses.
 3. Block the remaining Access-A traffic to External.
+
+The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is represented by `OBJ-Reverse-Proxy` in its cross-zone policies.
 
 ![Access-A egress rules after deployment](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 
@@ -70,11 +72,11 @@ Rule order matters. If the catch-all block sits above the two allows, HTTPS & NT
 
 ## Known Limits
 
-The broader segmentation plan still contains deferred networks & source-group tightening. The guide covers the completed Security-A, Cluster-Net, & Access-A work.
+This guide covers the completed Security-A, Cluster-Net, Access-A, and consolidation work. The three Kasm zones remain separate by design.
 
 ## Source Records
 
 - [UniFi configuration index](../Infrastructure/Network/UniFi/README.md)
 - [Security-A migration](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md)
-- [Segmentation plan](../Infrastructure/Network/UniFi/Documentation/Change%20Plans/Network-Segmentation-TODO.md)
+- [Zone and object consolidation](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
 - [Access-A deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
