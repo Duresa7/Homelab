@@ -46,6 +46,8 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 8080, 8384, 9443 |
+| `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
+| `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | `<YOUR_ORG_NAME>`-Servers / 192.168.80.118 / 9000 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.3 / 8000 |
 | `KASM Allow KASM-BROWSER DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | KASM-BROWSER / 68 | Gateway / 67 |

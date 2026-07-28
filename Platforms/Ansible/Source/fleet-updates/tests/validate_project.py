@@ -40,12 +40,15 @@ EXPECTED_COMPOSE_PROJECTS = {
     "docker-network": {
         "netbird": ("/opt/docker/netbird", ()),
         "nginx-proxy-manager": ("/opt/docker/nginx-proxy-manager", ()),
+        "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
     },
     "docker-blue": {
+        "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
         "rustdesk": ("/opt/docker/rustdesk", ()),
     },
     "media-01": {
         "media-stack": ("/opt/media-stack", ("vpn",)),
+        "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
     },
     "alpha-prod-01": {
         "playit-agent": (
@@ -196,8 +199,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 15:
-        errors.append(f"expected 15 compose projects, found {project_count}")
+    if project_count != 18:
+        errors.append(f"expected 18 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

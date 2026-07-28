@@ -1,7 +1,7 @@
 # Fleet Updates
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 I run two playbooks from `ansible-01` to keep the Linux fleet current. `os-update.yml` patches packages through apt or dnf, and `docker-compose-update.yml` pulls new images & recreates the compose stacks. Both use the same `ansible` account, the same key, & the same inventory style as `ssh-key-automation` next door.
 
@@ -11,7 +11,7 @@ The inventory holds 9 running Linux guests for OS updates & 5 hosts for compose.
 
 `os_update_targets` covers docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, edge-01, security-01, & splunk-siem. Eight run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager.
 
-`docker_compose_targets` covers docker-main (6 stacks), docker-network (2 stacks), docker-blue (1 stack), media-01 (1 stack), & alpha-prod-01 (6 stacks). The media project requests the `vpn` profile so the update matches its deployed eight-container topology. app-01 is left out because Coolify owns its containers; a manual `docker compose up -d` would fight Coolify's own reconcile.
+`docker_compose_targets` covers docker-main (5 managed stacks), docker-network (3), docker-blue (2), media-01 (2), & alpha-prod-01 (6). The three 2026-07-28 Portainer Edge Agent projects use `/opt/docker/portainer-edge-agent`. The media project requests the `vpn` profile so the update matches its deployed eight-container topology. cAdvisor stays under the separate monitoring-exporters project, so those compose stacks aren't duplicated here. app-01 is left out because Coolify owns its containers; a manual `docker compose up -d` would fight Coolify's own reconcile.
 
 ## os-update.yml
 
