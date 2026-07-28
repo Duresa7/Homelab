@@ -228,6 +228,22 @@ The independent residue review then found eight dangling, untagged Kasm image ID
 
 UniFi has no policy whose name begins with `TEST `. VM 122 has no snapshot, and no backup archive was created.
 
+## Follow-up later on 2026-07-28
+
+Three things came out of reviewing the finished work.
+
+**Jedi PC could not reach the Kasm UI.** The two allow rules covered the Trusted and Personal-A networks, but Jedi PC sits at `192.168.50.241` on the Secure VLAN, and the containment matrix above recorded that lane as blocked. My own acceptance table proved the block and I read it as a pass. I added `LABMGMT Allow Jedi PC to kasm-01` for that single address on TCP 22 and 443. The controller assigned it index 10002, one place below the `LABMGMT Block Other Internal to LAB-MGMT` catchall at 10001, so the block would have matched first and the allow would never have fired. The update endpoint refuses to move an index, so I used the ordering API to place the two allows above the catchall, which renumbered them to 10000, 10001, and 10002. Verified from Jedi PC itself: `/api/__healthcheck` returns `{"ok": true}`, the UI returns HTTP 200, and TCP 22 opens. `ansible-01` on Personal-A still returns `{"ok": true}`, so the reorder cost nothing.
+
+**`kasm-01` now runs `node_exporter` 1.9.0.** It binds `192.168.78.10:9100` alone rather than every interface, because this host carries macvlan shim addresses at `192.168.74.201`, `192.168.77.201`, and `192.168.79.201`, and a session container on any of those subnets reaches the shim without the gateway seeing the packet. Confirmed with `ss -lntp`: one listener on the control-plane address, and all three shim addresses plus loopback refuse the connection. The fleet playbook now takes the bind address as an inventory override, since a play-level variable outranks an inventory host variable and the first run ignored the override and bound 0.0.0.0.
+
+`LABMGMT Allow monitor-01 to kasm-01 node_exporter` permits `192.168.73.2` to that one port. The scrape still failed until I narrowed `LABMGMT Block to <YOUR_ORG_NAME>-Observability` from all connection states to `NEW, INVALID`; blocking every state also dropped the replies to a scrape monitor-01 had started. `kasm-01` still cannot initiate toward `192.168.73.2` on 9090, 3000, or 22. Prometheus reports 47 targets, all up, and the repository's target assertion passes.
+
+**The exporter needed a managed account, and that account is smaller than the fleet's.** The monitoring-exporters validator requires `ansible_user: ansible` on every host, and it failed my first attempt because I had pointed the inventory at `dkadi`. The check earned its keep, so I provisioned the standard account instead of relaxing it: user `ansible`, the controller's key carrying `from="192.168.40.36"` with pty and all forwarding disabled, and a mode-0440 `90-ansible` sudoers drop-in.
+
+I then cut it below the fleet pattern. It holds no supplementary groups, so neither `sudo` nor `docker`, and its drop-in reads `ansible ALL=(root) NOPASSWD: ALL` rather than `(ALL:ALL)`. `docker` membership is root-equivalent by itself through a host bind mount, and the exporter play never touches Docker. What I could not do is allowlist commands: Ansible escalates through `sudo -u root /bin/sh -c '<token>; python3'` and feeds the module on stdin, so any grant that lets the play run is equivalent to root. The real constraints on this account are the source-address restriction on its key and the empty group list. The play runs clean afterwards and still reports `listen=192.168.78.10:9100`.
+
+**Purple needed no node firewall.** I had recorded that item as outstanding. The Datacenter firewall is enabled and its `pve_mgmt` group already restricts TCP 22 and 8006 on every node to the four cluster addresses, three named admin devices, `ansible-01`, and two API consumers, with an explicit drop on both ports after them. There is no per-node `host.fw` because the rules are cluster-wide, which is tighter than the per-node file I had planned.
+
 ## Evidence
 
 The exact final commands, structured requests, outputs, curated phase results, and storage baseline are indexed in [Evidence-Index.md](../../Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Evidence-Index.md).

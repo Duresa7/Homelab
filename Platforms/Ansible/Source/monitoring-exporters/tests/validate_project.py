@@ -27,6 +27,10 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
+    # Added 2026-07-28. Its exporter binds one address instead of 0.0.0.0,
+    # because the host holds macvlan shim addresses inside three sealed lab
+    # lanes; see the inventory comment.
+    "kasm-01",
 }
 # All eight Docker hosts. The set was docker-main alone from 2026-07-25 to
 # 2026-07-26, while cAdvisor v0.52.1 could not register containers under the
@@ -77,6 +81,7 @@ EXPECTED_IPS = {
     "splunk-siem": "192.168.72.3",
     "ansible-01": "192.168.40.36",
     "monitor-01": "192.168.73.2",
+    "kasm-01": "192.168.78.10",
 }
 
 

@@ -21,7 +21,7 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 15 hosts
+    # node_exporter, 16 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
@@ -37,6 +37,9 @@ EXPECTED_TARGETS = {
     "http://192.168.80.118:9100/metrics": ("node", "alpha-prod-01"),
     "http://192.168.85.2:9100/metrics": ("node", "docker-network"),
     "http://192.168.73.2:9100/metrics": ("node", "monitor-01"),
+    # kasm-01 answers on its control-plane address only, never 0.0.0.0, so this
+    # URL is the sole way to reach its exporter.
+    "http://192.168.78.10:9100/metrics": ("node", "kasm-01"),
     # cAdvisor, all 8 Docker hosts. This was docker-main alone until 2026-07-26,
     # while v0.52.1 could not register containers under Docker 29's overlayfs
     # driver. v0.60.5 handles the containerd snapshotter.

@@ -1,6 +1,12 @@
 # Prometheus scrape configuration, deployed at
 # /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml on monitor-01.
 #
+# DO NOT COPY THIS FILE ONTO monitor-01 AS-IS. This is the scrubbed reference
+# copy: the 19 blackbox probe targets here read `<YOUR_BASE_DOMAIN>`, which
+# resolves to nothing. Uploading it verbatim on 2026-07-28 took all 19 probes
+# down until the real domain was substituted back in. Edit the deployed file in
+# place, or substitute the real base domain before copying.
+#
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
 # hostname. That stopped scaling at 14 node_exporter targets across five
@@ -14,8 +20,11 @@ global:
 
 scrape_configs:
   # ------------------------------------------------------------------ node
-  # Every running Linux host that carries a workload. kasm-01 is absent until
-  # node_exporter and its exact monitoring path are added at 192.168.78.10.
+  # Every running Linux host that carries a workload. kasm-01 joined on
+  # 2026-07-28; its exporter binds 192.168.78.10 alone rather than 0.0.0.0,
+  # because that host also holds macvlan shim addresses inside three sealed lab
+  # lanes and a session container on one of those subnets would otherwise read
+  # host metrics with no gateway in the path.
   - job_name: node
     static_configs:
       - targets: ["192.168.70.10:9100"]
@@ -48,6 +57,8 @@ scrape_configs:
         labels: {host: docker-network, role: docker}
       - targets: ["192.168.73.2:9100"]
         labels: {host: monitor-01, role: monitoring}
+      - targets: ["192.168.78.10:9100"]
+        labels: {host: kasm-01, role: lab}
 
   # -------------------------------------------------------------- cadvisor
   # Per-container CPU, memory and restart detection across all eight Docker

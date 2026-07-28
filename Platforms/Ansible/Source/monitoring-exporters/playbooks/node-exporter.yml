@@ -12,6 +12,20 @@
     node_exporter_apt_version: "1.9.0-1+b4"
     node_exporter_port: 9100
     node_exporter_staging: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
+    # Every host listens on all interfaces, which is what the fleet has always
+    # done. kasm-01 overrides both of these in the inventory: it carries macvlan
+    # shim addresses inside three sealed lab lanes, and an exporter bound to
+    # 0.0.0.0 would answer a session container on the same subnet, where the
+    # gateway has no say. Binding it to the control-plane address alone keeps
+    # host metrics out of the lab. A host that overrides the listen address must
+    # override the probe host to match, or verification checks an address the
+    # exporter no longer answers on.
+    # These read an optional inventory override rather than being set directly.
+    # A play-level var outranks an inventory host var in Ansible's precedence,
+    # so setting these literally here would silently ignore the host that needs
+    # them.
+    node_exporter_listen_address: "{{ node_exporter_listen_override | default(':' ~ node_exporter_port, true) }}"
+    node_exporter_probe_host: "{{ node_exporter_probe_override | default('127.0.0.1', true) }}"
   environment:
     DEBIAN_FRONTEND: noninteractive
     # needrestart must not bounce services during an apt install on hosts that
@@ -77,7 +91,7 @@
           - "%{http_code}"
           - -m
           - "4"
-          - "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+          - "http://{{ node_exporter_probe_host }}:{{ node_exporter_port }}/metrics"
       register: pre_existing_exporter
 
     # A foreign listener on 9100 means some other exporter owns the port. Stop
@@ -180,7 +194,7 @@
           User=node_exporter
           Group=node_exporter
           Type=simple
-          ExecStart=/usr/local/bin/node_exporter --web.listen-address=:{{ node_exporter_port }}
+          ExecStart=/usr/local/bin/node_exporter --web.listen-address={{ node_exporter_listen_address }}
           Restart=on-failure
           RestartSec=5
           NoNewPrivileges=true
@@ -228,7 +242,7 @@
       become: false
       changed_when: false
       ansible.builtin.uri:
-        url: "http://127.0.0.1:{{ node_exporter_port }}/metrics"
+        url: "http://{{ node_exporter_probe_host }}:{{ node_exporter_port }}/metrics"
         return_content: false
         status_code: 200
       retries: 6
@@ -244,7 +258,7 @@
       changed_when: false
       ansible.builtin.shell:
         cmd: >-
-          curl -s -m 10 http://127.0.0.1:{{ node_exporter_port }}/metrics
+          curl -s -m 10 http://{{ node_exporter_probe_host }}:{{ node_exporter_port }}/metrics
           | sed -n 's/.*node_exporter_build_info{.*version="\([^"]*\)".*/\1/p'
           | head -1
       register: version_probe
@@ -269,7 +283,7 @@
           os={{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
           method={{ install_method }}
           version={{ reported_version }}
-          port={{ node_exporter_port }}
+          listen={{ node_exporter_listen_address }}
 
   handlers:
     - name: Restart the upstream exporter

@@ -165,7 +165,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 
 ## Guest exporter coverage
 
-Added 2026-07-25. Every running Linux guest except `kasm-01` now exports on 9100, all at `node_exporter` 1.9.0. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
+Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on 9100, all at `node_exporter` 1.9.0. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
 
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
@@ -178,9 +178,11 @@ Added 2026-07-25. Every running Linux guest except `kasm-01` now exports on 9100
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
-| kasm-01 | Not installed | n/a | n/a | Not installed |
+| kasm-01 | Upstream binary (Ubuntu 24.04) | `node_exporter.service` | `192.168.78.10:9100`, bound to that address only | Not installed, deliberately |
 
 `security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
+
+`kasm-01` is the one host whose exporter binds a single address instead of every interface. It holds macvlan shim addresses in VLANs 74, 77, and 79, so an exporter on 0.0.0.0 would answer a lab session container on the same subnet with no gateway in the path. cAdvisor stays off that host for the same reason: a second listener is a second way into the lane holding the sessions.
 
 `app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. A Prometheus query on 2026-07-28 returned 53 named containers across all eight Docker hosts; eight are the cAdvisor containers. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 

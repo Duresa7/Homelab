@@ -103,7 +103,7 @@ The name follows the fleet convention. `grey-server` carries `lvmthin: ssd-lvm1`
 
 Every phase after this one runs on `purple-server`. Use the `purple_server` SSH profile & `qm guest exec 122` there.
 
-VLAN tags live in the guest's NIC config & the macvlan parents are guest interface names, so both survive a migration. `vmbr0` on `grey-server` & `purple-server` are each `bridge-vlan-aware yes` with `bridge-vids 2-4094`. If `kasm-01` ever moves again, none of the isolation work needs redoing. The reasoning for choosing purple, & the cluster tradeoff it carries, stays in [Kasm Relocation to Purple](Kasm%20Relocation%20to%20Purple.md).
+VLAN tags live in the guest's NIC config & the macvlan parents are guest interface names, so both survive a migration. `vmbr0` on `grey-server` & `purple-server` are each `bridge-vlan-aware yes` with `bridge-vids 2-4094`. If `kasm-01` ever moves again, none of the isolation work needs redoing. The reasoning for choosing purple, & the cluster tradeoff it carries, stays in [Kasm Relocation to Purple](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
 
 ## Phase 1: Move the control plane to VLAN 78
 
@@ -286,7 +286,7 @@ Stop & reassess if any of these happen:
 - Change record under `Platforms/Kasm Workspaces/Documentation/Change Records/` with the Phase 6 output as evidence
 - Update [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md): containers only, VLAN 78 control plane, VLAN 77 offline with no INetSim, & the lane-to-lane rules
 - Update the UniFi inventories under `Infrastructure/Network/UniFi/Configuration/` for the new network, zone, & policies
-- Update [Kasm Relocation to Purple](Kasm%20Relocation%20to%20Purple.md) so its INetSim & NIC steps point here
+- Update [Kasm Relocation to Purple](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md) so its INetSim & NIC steps point here
 - Update the root [TODO](../../../../TODO.md) entry, the [Galaxy backlog](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md) item for the 850 EVO, & the [deployment record](../Deployment.md) state section
 - Roll the `Operations/Inventory/Galaxy/` guest inventory forward, since VM 122 changes node, storage, & address
 - Record the new `ssd-lvm2` storage entry in the Galaxy configuration exports, & file the SMART baseline for `sda` under `Operations/Diagnostics/`
@@ -294,7 +294,7 @@ Stop & reassess if any of these happen:
 ## Related records
 
 - [Kasm Workspaces deployment](../Deployment.md)
-- [Kasm Relocation to Purple](Kasm%20Relocation%20to%20Purple.md)
+- [Kasm Relocation to Purple](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md)
 - [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md)
 - [Kasm lab network simplification (2026-07-23)](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 - [Zone and object consolidation (2026-07-27)](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)

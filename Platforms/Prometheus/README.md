@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-28
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 46 targets: `node_exporter` on 15 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself. The count returned to 46 on 2026-07-28 when I added the TS3 Manager HTTPS probe after retiring Termix earlier that day. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 47 targets: `node_exporter` on 16 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself. The count reached 46 on 2026-07-28 when I added the TS3 Manager HTTPS probe after retiring Termix earlier that day, then 47 when `kasm-01` gained an exporter later the same day. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -46,7 +46,9 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
 | `prometheus` | self-scrape |
 
-`kasm-01` is the one running host with no exporter. Its move is complete and its stable control-plane address is `192.168.78.10`, so the remaining work is the exporter, scrape target, and exact monitoring firewall path.
+`kasm-01` gained `node_exporter` 1.9.0 on 2026-07-28 and is the one host whose exporter binds a single address, `192.168.78.10:9100`, instead of every interface. It holds macvlan shim addresses inside the three sealed lab lanes, and an exporter on 0.0.0.0 would answer a session container sharing one of those subnets, where the gateway never sees the packets. One policy lets `192.168.73.2` reach that port and nothing else. The LAB-MGMT-to-observability block had to narrow to `NEW, INVALID` for the scrape to work, because a block matching all states also dropped the replies.
+
+Every other host still exports on all interfaces, which is why the playbook's bind address is an inventory override rather than a fleet default.
 
 cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. A 2026-07-28 Prometheus query returned 11 on `docker-main`, 5 on `docker-network`, 4 on `docker-blue`, 10 on `media-01`, 8 on `alpha-prod-01`, 7 on `app-01`, 1 on `security-01`, & 7 on `monitor-01`. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 

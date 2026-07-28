@@ -9,7 +9,7 @@ Community Edition caps the deployment at five concurrent sessions and one named 
 
 ## Current State
 
-The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443. The Management Access VPN policy permits the same ports, but its live client-path test remains open. Other Internal networks and all service zones are blocked from the UI.
+The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443, as does Jedi PC at `192.168.50.241`, which needed its own rule because the Secure VLAN was never in the allow list. The Management Access VPN policy permits the same ports, but its live client-path test remains open. Every other Internal network and all service zones are blocked from the UI, and the two allows are ordered above the catchall block that enforces that.
 
 Session containers join one of three Docker macvlan networks:
 
@@ -48,6 +48,10 @@ A workspace with no override uses `kasm_default_network` and ordinary management
 Snapshot VM 122 first, then roll back to that snapshot when the session ends. The host is the disposable part of this design, and the snapshot is what makes that true instead of aspirational. Rolling back reverts Kasm's database too, so take a fresh snapshot after any workspace or settings change and the rollback then costs only the session just run.
 
 Sessions are not serialised. A sample can run beside another workspace, and a container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time, not adding a rule.
+
+## Monitoring
+
+`node_exporter` 1.9.0 runs here bound to `192.168.78.10:9100` and nothing else. Every other host in the fleet exports on all interfaces; this one cannot, because a session container sharing a lab subnet would reach the macvlan shim address directly and the gateway would never see the request. One policy lets `192.168.73.2` scrape that port. cAdvisor is deliberately absent, since a second listener is a second way into the lane holding the sessions.
 
 ## Access
 

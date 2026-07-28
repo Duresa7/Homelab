@@ -61,13 +61,15 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `KASM Block EVIDENCE-QUARANTINE External` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | External / Any |
 | `LABMGMT Allow Trusted and Personal-A to kasm-01` | Yes | ALLOW | 10000 | TCP | Internal / Trusted, Personal-A | LAB-MGMT / 192.168.78.10 / 22, 443 |
 | `LABMGMT Allow Management Access to kasm-01` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | LAB-MGMT / 192.168.78.10 / 22, 443 |
-| `LABMGMT Block Other Internal to LAB-MGMT` | Yes | BLOCK | 10001 | All | Internal / Any | LAB-MGMT / Any |
+| `LABMGMT Allow Jedi PC to kasm-01` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.50.241 | LAB-MGMT / 192.168.78.10 / 22, 443 |
+| `LABMGMT Allow monitor-01 to kasm-01 node_exporter` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / 192.168.73.2 | LAB-MGMT / 192.168.78.10 / 9100 |
+| `LABMGMT Block Other Internal to LAB-MGMT` | Yes | BLOCK | 10002 | All | Internal / Any | LAB-MGMT / Any |
 | `LABMGMT Block Other VPN to LAB-MGMT` | Yes | BLOCK | 10001 | All | Vpn / Any | LAB-MGMT / Any |
 | `LABMGMT Block to Internal` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | Internal / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
 | `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |
 | `LABMGMT Block to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | MALWARE-OFFLINE / Any |
