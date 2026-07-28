@@ -1,7 +1,7 @@
 # UniFi Rejected the First Web-Egress Policy Create
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 **Date:** 2026-07-11  
 **Step:** S05A  
@@ -28,4 +28,4 @@ All three policies have logging enabled.
 
 **Verification:** UniFi returned the three policies at indexes 10000, 10001, and 10002. HTTP returned `200`, the Docker Registry HTTPS endpoint returned its expected unauthenticated `401`, and external TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as intended. The final ordered rules show the two Allow policies above the catch-all Block:
 
-![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block AlphaSec-Access All from the `<YOUR_ORG_NAME>`-Access zone to External](../../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
+![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block <YOUR_ORG_NAME>-Access All from the `<YOUR_ORG_NAME>`-Access zone to External](../../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)

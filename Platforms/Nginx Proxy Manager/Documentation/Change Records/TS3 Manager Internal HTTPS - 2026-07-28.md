@@ -52,7 +52,7 @@ Evidence: [UniFi preview, application, and readback](../../Evidence/TS3%20Manage
 
 ## Step 3: Create the NPM Proxy Host
 
-I retrieved the NPM administrator fields through 1Password references and passed them directly to `POST /api/tokens`. The password and bearer token stayed in process variables; neither value appeared in output, a file, or this repository.
+I retrieved the NPM administrator fields through stored credential references and passed them directly to `POST /api/tokens`. The password and bearer token stayed in process variables; neither value appeared in output, a file, or this repository.
 
 I created proxy host ID `22` with:
 

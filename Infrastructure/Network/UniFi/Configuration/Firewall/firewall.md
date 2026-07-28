@@ -64,10 +64,10 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `LABMGMT Block Other Internal to LAB-MGMT` | Yes | BLOCK | 10001 | All | Internal / Any | LAB-MGMT / Any |
 | `LABMGMT Block Other VPN to LAB-MGMT` | Yes | BLOCK | 10001 | All | Vpn / Any | LAB-MGMT / Any |
 | `LABMGMT Block to Internal` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | Internal / Any |
-| `LABMGMT Block to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
-| `LABMGMT Block to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
-| `LABMGMT Block to AlphaSec-Access` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `LABMGMT Block to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
 | `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |
 | `LABMGMT Block to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | MALWARE-OFFLINE / Any |
@@ -81,22 +81,22 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `KASM Block EVIDENCE-QUARANTINE to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | MALWARE-OFFLINE / Any |
 | `KASM Block KASM-BROWSER to LAB-MGMT` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | LAB-MGMT / Any |
 | `KASM Block KASM-BROWSER to Internal` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | Internal / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Servers / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Access` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `KASM Block KASM-BROWSER to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block KASM-BROWSER to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block KASM-BROWSER to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block KASM-BROWSER to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `KASM Block MALWARE-OFFLINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | LAB-MGMT / Any |
 | `KASM Block MALWARE-OFFLINE to Internal` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | Internal / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `KASM Block MALWARE-OFFLINE to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block MALWARE-OFFLINE to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block MALWARE-OFFLINE to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block MALWARE-OFFLINE to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `KASM Block EVIDENCE-QUARANTINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | LAB-MGMT / Any |
 | `KASM Block EVIDENCE-QUARANTINE to Internal` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | Internal / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `KASM Block EVIDENCE-QUARANTINE to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block EVIDENCE-QUARANTINE to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block EVIDENCE-QUARANTINE to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block EVIDENCE-QUARANTINE to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42 / `PG-Node-Exporter` |
 | `Allow Monitor to <YOUR_ORG_NAME>-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Servers / .10, .118 / `PG-Node-Exporter` |
 | `Allow Monitor to <YOUR_ORG_NAME>-Access monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
