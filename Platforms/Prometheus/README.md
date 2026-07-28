@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-28
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 45 targets: `node_exporter` on 15 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 18 internal service names, both APC UPS units over NUT, and itself. The count dropped from 46 on 2026-07-28 when I retired the Termix probe with the platform. TeamSpeak reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so it adds series without adding a target: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 46 targets: `node_exporter` on 15 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself. The count returned to 46 on 2026-07-28 when I added the TS3 Manager HTTPS probe after retiring Termix earlier that day. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 **Owner:** Homelab infrastructure monitoring
 

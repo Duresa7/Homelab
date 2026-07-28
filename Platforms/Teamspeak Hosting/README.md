@@ -12,7 +12,7 @@ I run three TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN
 | Host | `alpha-prod-01` (`192.168.80.118`), Debian 13 |
 | Voice containers | `ts-valorant-01`, `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`) |
 | Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:0.17`), four registered tunnels |
-| Administration | `ts3-manager` (`joni1802/ts3-manager`) on host port 9000 |
+| Administration | `https://ts3-manager.<YOUR_BASE_DOMAIN>` through internal NPM; direct fallback `http://192.168.80.118:9000` |
 | Networking | Host networking, so each container needs a unique port set |
 
 ## Port and Name Map

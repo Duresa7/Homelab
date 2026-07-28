@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-07-28
 
 I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 19 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
@@ -21,7 +21,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 | Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
 | Shared TLS policy | Certificate assigned; Force SSL and HTTP/2 enabled; HSTS disabled |
 
-The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and the 19 internal application hosts added on 2026-07-22 report Online. Every new host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS returns NXDOMAIN for the new names.
+The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 19 internal application hosts report Online. Eighteen remain from the 2026-07-22 onboarding after I retired Termix; TS3 Manager replaced that route count on 2026-07-28. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS returns NXDOMAIN for the application names.
 
 ## Records
 

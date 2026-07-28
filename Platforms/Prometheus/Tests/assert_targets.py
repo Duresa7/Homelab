@@ -82,6 +82,7 @@ EXPECTED_BLACKBOX_SERVICES = {
     "grafana",
     "prometheus",
     "splunk",
+    "ts3-manager",
 }
 
 # Retired addresses that must never reappear. 192.168.70.20 is the pre-migration

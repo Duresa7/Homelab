@@ -1,7 +1,7 @@
 # Nginx Proxy Manager TODO
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS host, automated renewal path, and bounded logging are verified. This record preserves the completed publication and readiness work; I track no further hardening after my 2026-07-12 descope decision. Completed deployment details are recorded in [Deployment.md](Deployment.md).
 
@@ -32,3 +32,10 @@ Operational status is complete. I intentionally descoped further hardening on 20
 - [x] 2026-07-25: Ran the authenticated Jellyfin playback, Immich upload, Termix session, Semaphore live-output, Grafana Live, Syncthing synchronization, & Splunk ES search acceptance checks. I kept no capture from this pass, so the closure evidence is my own confirmation that each workflow worked.
 
 Internal HTTPS onboarding is closed. NPM now has no open items.
+
+## TS3 Manager Internal HTTPS
+
+- [x] 2026-07-28: Added one TTL-300 UniFi A record for `ts3-manager.<YOUR_BASE_DOMAIN>` pointing to `192.168.85.2`.
+- [x] 2026-07-28: Added one logged policy permitting only NPM at `192.168.85.2` to reach `alpha-prod-01` at `192.168.80.118:9000`.
+- [x] 2026-07-28: Added NPM proxy host ID 22 with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
+- [x] 2026-07-28: Completed restart recovery, 46-target blackbox monitoring, documentation, final route validation, & deletion of every backup and temporary deployment file created by the change.

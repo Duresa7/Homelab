@@ -104,7 +104,7 @@ scrape_configs:
   # Probes each internal service name through NPM, so a failure means the path a
   # person actually uses is broken: local DNS, the proxy, the certificate, or the
   # backend. 60s because uptime does not need 15-second resolution, and it keeps
-  # the probe load on NPM to 18 requests a minute.
+  # the probe load on NPM to 19 requests a minute.
   - job_name: blackbox
     scrape_interval: 60s
     metrics_path: /probe
@@ -130,6 +130,7 @@ scrape_configs:
           - https://grafana.<YOUR_BASE_DOMAIN>/
           - https://prometheus.<YOUR_BASE_DOMAIN>/
           - https://splunk.<YOUR_BASE_DOMAIN>/
+          - https://ts3-manager.<YOUR_BASE_DOMAIN>/
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

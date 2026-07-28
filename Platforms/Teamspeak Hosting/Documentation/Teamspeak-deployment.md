@@ -1,7 +1,7 @@
 # TeamSpeak Hosting on alpha-prod-01
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-28
 
 I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, & Compose projects.
 
@@ -201,7 +201,7 @@ fail to connect when an SRV record points at a CNAME.
 - **Image**: `joni1802/ts3-manager`
 - **Host port**: `9000`
 - **Container port**: `8080`
-- **Access**: `http://192.168.80.118:9000`
+- **Access**: `https://ts3-manager.<YOUR_BASE_DOMAIN>` through internal NPM; direct fallback `http://192.168.80.118:9000`
 - **Location**: `~/ts3-manager/docker-compose.yml`
 - **ServerQuery targets**: use LAN/internal host ports, not public Playit DNS.
   - TeamSpeak 1: `192.168.80.118:10011`
@@ -351,7 +351,7 @@ services:
 ## Behavior and Constraints
 - Playit is intentionally decoupled from `~/teamspeak/docker-compose.yml`; running `docker compose down` in `~/teamspeak` will stop TeamSpeak 1 but will not stop `playit-agent`
 - Playit tunnels TeamSpeak UDP voice only; TCP services such as ServerQuery and file transfer stay LAN/internal only
-- ts3-manager is not exposed through Playit; I access it from the local network at `http://192.168.80.118:9000`
+- ts3-manager is not exposed through Playit or public DNS. I access it through internal NPM at `https://ts3-manager.<YOUR_BASE_DOMAIN>` or use `http://192.168.80.118:9000` as the direct fallback.
 - To add future TeamSpeak servers to ts3-manager, connect via the host VLAN 80 IP and that server's unique ServerQuery host port
 - Future TeamSpeak servers must use unique host ports. TeamSpeak 2 currently uses `9988/udp`, `10012/tcp`, and `30034/tcp`; TeamSpeak 3 uses `9989/udp`, `10013/tcp`, and `30035/tcp`
 - Use normal/raw ServerQuery in TS3 Manager, not SSH

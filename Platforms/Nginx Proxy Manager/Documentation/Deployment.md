@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Deployment
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 **Implementation started:** 2026-07-10  
 **Status:** Operational; NPM runtime, shared certificate, NetBird, 19 internal application hosts, restart validation, & bounded logging are complete
@@ -104,5 +104,7 @@ These results verify the runtime, inter-container path, saved host, certificate 
 ## Operational Status
 
 On 2026-07-22 I added 19 internal application proxy hosts without changing the NetBird host or NPM administrator path. UniFi resolves each name to `192.168.85.2`; five narrow firewall policies permit NPM to the approved web listeners. Every host uses the existing wildcard certificate with Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. The full mapping, compatibility changes, verification, backup disposition, & rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+On 2026-07-28 I added TS3 Manager at `ts3-manager.<YOUR_BASE_DOMAIN>` with one exact NPM-to-backend TCP 9000 policy and one local A record. Termix had been retired earlier that day, so NPM returned to 20 total hosts rather than growing past its earlier count. The [TS3 Manager Internal HTTPS record](Change%20Records/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28.md) holds the saved IDs, restart check, 46-target monitoring result, & rollback commands. No backup from that change remains.
 
 No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material.

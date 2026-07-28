@@ -1,7 +1,7 @@
 # TeamSpeak Hosting Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-28
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I run three TeamSpeak servers on one Debian host, publish their UDP voice ports 
 
 ## Current Status and Verified Versions
 
-`alpha-prod-01` runs Debian 13 at `192.168.80.118` on VLAN 80. The three TeamSpeak containers use UDP 9987, 9988, & 9989; ServerQuery uses TCP 10011, 10012, & 10013; file transfer uses TCP 30033, 30034, & 30035. TS3 Manager listens on host port 9000. The shared Playit image is `ghcr.io/playit-cloud/playit-agent:0.17`.
+`alpha-prod-01` runs Debian 13 at `192.168.80.118` on VLAN 80. The three TeamSpeak containers use UDP 9987, 9988, & 9989; ServerQuery uses TCP 10011, 10012, & 10013; file transfer uses TCP 30033, 30034, & 30035. TS3 Manager listens on host port 9000 and is available internally at `https://ts3-manager.<YOUR_BASE_DOMAIN>` through NPM. The shared Playit image is `ghcr.io/playit-cloud/playit-agent:0.17`.
 
 ## What You Need
 
@@ -17,7 +17,7 @@ I run three TeamSpeak servers on one Debian host, publish their UDP voice ports 
 - One Playit tunnel per public TeamSpeak voice endpoint.
 - A DNS zone where you can create CNAME and SRV records.
 - One directory and named data volume per TeamSpeak server.
-- Local browser access to TS3 Manager if you want the recorded admin path.
+- Internal DNS access to `https://ts3-manager.<YOUR_BASE_DOMAIN>`, or direct browser access to `http://192.168.80.118:9000`.
 
 ## How the Pieces Fit Together
 
