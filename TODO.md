@@ -11,8 +11,7 @@ None.
 
 ## Active Priorities
 
-- [ ] Move Kasm to `purple-server`, rebuild INetSim on VLAN 77, then attach the lab VLAN NICs (74, 77, 79) to `kasm-01` and map each workspace type to its network. The UniFi zone matrix audit gates the rest, and the acceptance checks gate the first live sample. Seven steps, rollback points, and stop conditions in [Kasm Relocation to Purple](Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md).
-- [ ] Configure the permanently installed Samsung 850 EVO on `purple-server` as ordinary Proxmox storage for VM disks and LXC root volumes. It has no filesystem or Proxmox storage entry yet. Tracked in the [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+- [ ] Close the last [Kasm Session Isolation](Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) acceptance check from a real remote Management Access VPN client. Open `https://192.168.78.10/`; the controller allow is present above the catchall VPN block, but I did not have an active client for the end-to-end request.
 
 ## Scheduled
 

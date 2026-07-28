@@ -15,7 +15,7 @@ global:
 scrape_configs:
   # ------------------------------------------------------------------ node
   # Every running Linux host that carries a workload. kasm-01 is absent until
-  # its pending move to purple-server settles its addressing.
+  # node_exporter and its exact monitoring path are added at 192.168.78.10.
   - job_name: node
     static_configs:
       - targets: ["192.168.70.10:9100"]

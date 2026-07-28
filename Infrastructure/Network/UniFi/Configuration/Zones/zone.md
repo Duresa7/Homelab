@@ -1,11 +1,11 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-28
 
-I track 14 firewall zones and their assigned networks here.
+I track 15 firewall zones and their assigned networks here.
 
-I verified every LAN row against the controller on 2026-07-27 by reading `firewall_zone_id` from all 17 routed LAN networks. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
+I verified every LAN row against the controller on 2026-07-28 by reading `firewall_zone_id` from all 18 routed LAN networks. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
 ## Zone Membership
 
@@ -24,14 +24,17 @@ I verified every LAN row against the controller on 2026-07-27 by reading `firewa
 | `<YOUR_ORG_NAME>`-Access | Custom | Access-A (VLAN 85) |
 | KASM-BROWSER | Custom | KASM-BROWSER (VLAN 74) |
 | MALWARE-OFFLINE | Custom | MALWARE-OFFLINE (VLAN 77) |
+| LAB-MGMT | Custom | LAB-MGMT (VLAN 78) |
 | EVIDENCE-QUARANTINE | Custom | EVIDENCE-QUARANTINE (VLAN 79) |
 
-The controller has seven built-in and seven custom zones. The custom set is `<YOUR_ORG_NAME>`-Servers, `<YOUR_ORG_NAME>`-Mgmt, `<YOUR_ORG_NAME>`-Observability, `<YOUR_ORG_NAME>`-Access, KASM-BROWSER, MALWARE-OFFLINE, and EVIDENCE-QUARANTINE.
+The controller has seven built-in and eight custom zones. The custom set is `<YOUR_ORG_NAME>`-Servers, `<YOUR_ORG_NAME>`-Mgmt, `<YOUR_ORG_NAME>`-Observability, `<YOUR_ORG_NAME>`-Access, KASM-BROWSER, MALWARE-OFFLINE, LAB-MGMT, and EVIDENCE-QUARANTINE.
 
 ## Consolidation Result
 
 I moved Cluster-Net into `<YOUR_ORG_NAME>`-Mgmt and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `<YOUR_ORG_NAME>`-Observability. The two shortened organisation prefixes were corrected before either merge. The three Kasm zones stayed unchanged because their mutual unreachability is the design.
 
-The planning estimate said the total would fall from 16 to 13. The live result is 14 because the work removed two zones, not three: one cluster zone and one of the two observability predecessors. The controller now generates 302 policies against 370 before the change.
+The 2026-07-27 consolidation reduced the live result to 14. I added LAB-MGMT on 2026-07-28 so a Kasm container escape no longer lands on SERVERS-A beside application workloads. The controller now has 15 zones.
 
 `Allow Monitor to Security monitoring` explicitly limits the collector to `OBJ-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
+
+The LAB-MGMT creation and its tested path restrictions are recorded in [Kasm Session Isolation](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).

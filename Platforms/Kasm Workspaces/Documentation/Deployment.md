@@ -1,18 +1,30 @@
 # Kasm Workspaces Deployment
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
-**Host:** `kasm-01`, VM 122 on `grey-server`, `192.168.80.30`  
-**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition installed & verified. Session VLAN attachment is a separate future change.
+**Host:** `kasm-01`, VM 122 on `purple-server`, `192.168.78.10`  
+**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition and session isolation are verified except for one pending Management Access VPN client-path test.
+
+## Current State on 2026-07-28
+
+I moved VM 122 to `purple-server` and its 100 GiB disk to the `ssd-lvm2` thin pool on the Samsung 850 EVO. The control plane now uses LAB-MGMT VLAN 78 at `192.168.78.10/24`.
+
+Three addressless guest NICs carry VLANs 74, 77, and 79. Docker macvlan networks `lab74`, `lab77`, and `lab79` place sessions into their matching UniFi zones. A persistent systemd unit creates the host shims before Docker. All eight Kasm containers, the three networks, their shim routes, the agent network report, the health endpoint, and administrator authentication survived a full reboot.
+
+I created the `Lab Sessions` group with a 3,600-second session limit, upload enabled, and download, clipboard, seamless clipboard, and persistent profiles disabled. Every lab workspace needs a Docker Run Config Override that declares both its network and resolver. The completed layout, exact recipes, containment results, and Proton operating rule are in [Kasm Session Isolation](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
+
+I updated the existing `Host kasm-01` entry in Jedi PC's SSH configuration to `192.168.78.10` and confirmed `ssh -G kasm-01` resolves that address with user `<YOUR_ADMIN_USERNAME>`.
+
+The original build history below records the 2026-07-24 deployment on Grey and VLAN 80. Those values explain the starting point and are not the current address or placement.
 
 ## Scope
 
 I deployed the Kasm platform & nothing else. No lab VLAN NICs, no workspace images, no reverse proxy, no session policies. I wanted a working control plane on a baselined host before adding the isolation plumbing, because the previous build failed by doing all of it at once.
 
-This replaces the lab I tore down on 2026-07-23. That teardown destroyed ten VMs & every Proxmox object the earlier agent-built version had created.
+This replaces the lab I tore down on 2026-07-23. That teardown destroyed ten VMs and every Proxmox object the earlier version had created.
 
 ## Why Ubuntu 24.04 rather than Debian 13
 
@@ -97,7 +109,7 @@ tar -xf kasm_release_1.19.0-latest.tar.gz
 sudo bash kasm_release/install.sh --role all --accept-eula --swap-size 4096 --ignore-dep-failures
 ```
 
-Flag choices: `--role all` puts every component on one host, which is what Community Edition's 5-session cap justifies. `--swap-size 4096` creates the swap file the docs ask for, since the Ubuntu cloud image ships with none. `--ignore-dep-failures` is what Kasm's own help text recommends for non-interactive installs that may hit missing optional dependencies such as rclone, WireGuard, v4l2loopback, or fuse. I accepted the EULA only after confirming that with the owner.
+Flag choices: `--role all` puts every component on one host, which is what Community Edition's 5-session cap justifies. `--swap-size 4096` creates the swap file the docs ask for, since the Ubuntu cloud image ships with none. `--ignore-dep-failures` is what Kasm's own help text recommends for non-interactive installs that may hit missing optional dependencies such as rclone, WireGuard, v4l2loopback, or fuse. I accepted the EULA after confirming the instruction.
 
 I did not pass `--default-images`, so no workspace images downloaded. The catalog is seeded & each image pulls the first time I launch it.
 
@@ -126,7 +138,7 @@ Service checks:
 - Swap active: `/mnt/Kasm.swap`, 4 GiB, in `swapon --show`.
 - Disk after install: 13 GiB used of 96 GiB.
 
-SSH proven from the owner's workstation, not only from the jump host:
+I proved SSH from my workstation, not only from the jump host:
 
 ```text
 $ ssh kasm-01
@@ -138,7 +150,7 @@ That connection used the `jedi-pc` Ed25519 identity at `SHA256:pcjlugUJER60Yblfo
 
 ## Credentials
 
-The installer generated passwords for `admin@kasm.local`, `user@kasm.local`, the `kasmapp` database account, the manager token, & the service registration token. None of those values are recorded in this repository. I handed them to the owner directly at install time; rotating the administrator password & storing it is the owner's step.
+The installer generated passwords for `admin@kasm.local`, `user@kasm.local`, the `kasmapp` database account, the manager token, and the service registration token. None of those values are recorded in this repository. I retained them outside the repository. Administrator password rotation and storage remain my responsibility.
 
 ## Cluster state during the build
 
@@ -162,10 +174,10 @@ These were test launches on VLAN 80 with no isolation in place, which is fine fo
 
 `kasm_rdp_gateway` shows `RestartCount: 2` & restarted at 2026-07-25 02:49 EDT while the other seven containers held 18 hours. Its current log is clean: health checks return `{'ok': True}` & it's registering `['proxy', 'kasm-01']` as expected. I'm noting the restart rather than acting on it. If it climbs past 2 without a session to explain it, that's a real fault to chase.
 
-## What I left for the next change
+## Follow-up State
 
-- Attach NICs for VLANs 74, 77, & 79, then map each workspace type to the matching network inside Kasm. `vmbr0` on `grey-server` is `bridge-vlan-aware yes` with `bridge-vids 2-4094`, so the tags need no bridge work.
-- Confirm the UniFi zone matrix blocks the three lab zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs in VLAN 77.
+- I completed the VLAN 74, 77, and 79 NICs, macvlan networks, shim routes, and explicit UniFi containment rules on 2026-07-28.
+- I completed the harmless-container acceptance matrix before allowing a live sample.
 - Decide whether `kasm.<YOUR_BASE_DOMAIN>` goes through Nginx Proxy Manager at `192.168.85.2`, which would replace the self-signed certificate warning with the wildcard certificate.
-- Clear or repoint the stale DHCP DNS server `192.168.77.10` on VLAN 77. It pointed at the deleted INetSim host.
+- I disabled the stale VLAN 77 DHCP DNS option on 2026-07-28. UniFi retains `192.168.77.10` as an inactive value, so the network no longer advertises it.
 - Register `kasm-01` in the SSH Manager inventory. The MCP exposes no add-server tool & I couldn't locate its inventory file, so this stays manual.

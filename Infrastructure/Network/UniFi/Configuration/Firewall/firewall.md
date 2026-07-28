@@ -1,15 +1,15 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-28
 
-I verified this inventory against the live controller after the [zone and object consolidation](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) on 2026-07-27.
+I verified this inventory against the live controller after the [Kasm session isolation change](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) on 2026-07-28.
 
-The gateway runs UniFi's zone-based V2 firewall. It holds 361 policies: 59 custom and 302 controller-generated. Fifty-eight custom policies are enabled. `Allow Internal to <YOUR_ORG_NAME>-Mgmt` remains disabled as the rollback reference for the 2026-07-27 management lockdown.
+The gateway runs UniFi's zone-based V2 firewall. It has 99 user-defined policies after the Kasm session-isolation and Portainer changes on 2026-07-28. The list below contains the durable custom policy inventory, including the 38 LAB-MGMT and Kasm isolation policies added for this change.
 
-## Custom Policy Inventory
+## Recorded Custom Policy Inventory
 
-Every custom policy uses connection state `ALL` and the `Always` schedule. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
+Every custom policy uses the `Always` schedule. Two stateful isolation blocks use `NEW, INVALID`; the rest use connection state `ALL`. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
 
 | Policy | Enabled | Action | Index | Protocol | Source | Destination |
 |---|---|---|---:|---|---|---|
@@ -57,6 +57,44 @@ Every custom policy uses connection state `ALL` and the `Always` schedule. The s
 | `KASM Block EVIDENCE-QUARANTINE Other Gateway` | Yes | BLOCK | 10001 | All | EVIDENCE-QUARANTINE / Any | Gateway / Any |
 | `KASM Block MALWARE-OFFLINE External` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | External / Any |
 | `KASM Block EVIDENCE-QUARANTINE External` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | External / Any |
+| `LABMGMT Allow Trusted and Personal-A to kasm-01` | Yes | ALLOW | 10000 | TCP | Internal / Trusted, Personal-A | LAB-MGMT / 192.168.78.10 / 22, 443 |
+| `LABMGMT Allow Management Access to kasm-01` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | LAB-MGMT / 192.168.78.10 / 22, 443 |
+| `LABMGMT Block Other Internal to LAB-MGMT` | Yes | BLOCK | 10001 | All | Internal / Any | LAB-MGMT / Any |
+| `LABMGMT Block Other VPN to LAB-MGMT` | Yes | BLOCK | 10001 | All | Vpn / Any | LAB-MGMT / Any |
+| `LABMGMT Block to Internal` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | Internal / Any |
+| `LABMGMT Block to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `LABMGMT Block to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `LABMGMT Block to AlphaSec-Access` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `LABMGMT Block to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
+| `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |
+| `LABMGMT Block to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | MALWARE-OFFLINE / Any |
+| `LABMGMT Block to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | EVIDENCE-QUARANTINE / Any |
+| `LABMGMT Allow to External` | Yes | ALLOW | 10000 | All | LAB-MGMT / Any | External / Any |
+| `KASM Allow KASM-BROWSER to MALWARE-OFFLINE` | Yes | ALLOW | 10000 | All | KASM-BROWSER / Any | MALWARE-OFFLINE / Any |
+| `KASM Block MALWARE-OFFLINE to KASM-BROWSER` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | MALWARE-OFFLINE / Any | KASM-BROWSER / Any |
+| `KASM Block KASM-BROWSER to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | EVIDENCE-QUARANTINE / Any |
+| `KASM Block MALWARE-OFFLINE to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | EVIDENCE-QUARANTINE / Any |
+| `KASM Block EVIDENCE-QUARANTINE to KASM-BROWSER` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | KASM-BROWSER / Any |
+| `KASM Block EVIDENCE-QUARANTINE to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | MALWARE-OFFLINE / Any |
+| `KASM Block KASM-BROWSER to LAB-MGMT` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | LAB-MGMT / Any |
+| `KASM Block KASM-BROWSER to Internal` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | Internal / Any |
+| `KASM Block KASM-BROWSER to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block KASM-BROWSER to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block KASM-BROWSER to AlphaSec-Access` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block KASM-BROWSER to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `KASM Block MALWARE-OFFLINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | LAB-MGMT / Any |
+| `KASM Block MALWARE-OFFLINE to Internal` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | Internal / Any |
+| `KASM Block MALWARE-OFFLINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block MALWARE-OFFLINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block MALWARE-OFFLINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block MALWARE-OFFLINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `KASM Block EVIDENCE-QUARANTINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | LAB-MGMT / Any |
+| `KASM Block EVIDENCE-QUARANTINE to Internal` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | Internal / Any |
+| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Servers / Any |
+| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
+| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42 / `PG-Node-Exporter` |
 | `Allow Monitor to <YOUR_ORG_NAME>-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Servers / .10, .118 / `PG-Node-Exporter` |
 | `Allow Monitor to <YOUR_ORG_NAME>-Access monitoring` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Observability / `OBJ-Monitor-Collector` | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
@@ -85,9 +123,11 @@ Automatic respond-policy generation is disabled for all six. The observability t
 
 The monitoring, NPM, break-glass, Wazuh, and automation paths retain response companions where required. A policy update can drop its description without failing, so I verify selectors, action, enabled state, index, protocol, and response behavior rather than treating a description as enforcement.
 
-## Controller-Generated Policies
+The two LAB-MGMT inbound allow rules precede their zone-wide catchall blocks. The LAB-MGMT-to-Internal and MALWARE-OFFLINE-to-KASM-BROWSER blocks match only new and invalid connections so established replies to an allowed inbound connection survive. The live source tests and order-sensitive state choices are retained in [Kasm Session Isolation](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
 
-The controller generates 302 policies for zone defaults, state tracking, return companions, gateway services, and isolation. The pre-change count was 370. The project reduced the generated set by 68 and the total set by 70:
+## Post-Consolidation Baseline
+
+The controller generated 302 policies for zone defaults, state tracking, return companions, gateway services, & isolation immediately after the 2026-07-27 consolidation. The pre-change count was 370. That project reduced the generated set by 68 & the total set by 70:
 
 | Measure | Before | After | Change |
 |---|---:|---:|---:|

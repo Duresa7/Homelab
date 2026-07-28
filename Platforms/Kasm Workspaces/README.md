@@ -1,43 +1,67 @@
 # Kasm Workspaces
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
-Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.80.30`, on `grey-server`. It streams throwaway containerized desktops & browsers to a browser tab. I rebuilt it from scratch on 2026-07-24 after tearing down an earlier over-built version.
+Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
-Community Edition caps me at 5 concurrent sessions & one named user. That cap drove every sizing decision here.
+Community Edition caps the deployment at five concurrent sessions and one named user. The current 4-vCPU, 8 GiB VM is sized for a small lab, not a shared desktop service.
 
-On 2026-07-25 I decided to move the whole lab off Grey & onto `purple-server`, which carries no guests. Grey runs `app-01`, `splunk-siem`, `security-01`, & `alpha-prod-01`, & malware detonation doesn't belong beside them. The sequence, resource budget, & rollback points are in [Kasm Relocation to Purple](Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md). Nothing has moved yet.
+## Current State
 
-## What's built & what isn't
+The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443. The Management Access VPN policy permits the same ports, but its live client-path test remains open. Other Internal networks and all service zones are blocked from the UI.
 
-The platform itself is live: 8 containers healthy, HTTPS on TCP 443, admin login verified. Nothing else is wired up yet. The isolated lab VLANs exist on the UniFi side but `kasm-01` has a single NIC on SERVERS-A, so no session currently lands in an isolated segment.
+Session containers join one of three Docker macvlan networks:
 
-On 2026-07-24 I launched three workspaces to see how Kasm behaves, which pulled their images: `forensic-osint` at 10.3 GB, `vs-code` at 6.42 GB, & `terminal` at 4.83 GB. That was me testing the product, not a catalog decision. Disk went from 13 GiB to 26 GiB of 96 GiB because of it. No session was running when I checked at 2026-07-25 07:49 EDT.
+| Network | VLAN | Purpose | Internet |
+| --- | ---: | --- | --- |
+| `lab74` | 74 KASM-BROWSER | Browser sessions and pentest tooling | Proton only |
+| `lab77` | 77 MALWARE-OFFLINE | Linux samples and disposable targets | None |
+| `lab79` | 79 EVIDENCE-QUARANTINE | Artifact review | None |
 
-Deliberately not done yet:
+VLAN 74 may initiate toward VLAN 77. VLAN 77 cannot initiate back. Neither lane reaches VLAN 79. Every session lane is explicitly blocked from LAB-MGMT, Internal, Servers, Management, Access, Observability, and the gateway UI.
 
-- No second or third NIC for the lab VLANs 74, 77, & 79.
-- No workspace catalog chosen. Every image other than the three test pulls above still downloads on first launch.
-- No reverse-proxy entry, so no `kasm.<YOUR_BASE_DOMAIN>` hostname. Reach it by IP.
-- Self-signed certificate from the installer, so browsers warn on first visit.
+The `Lab Sessions` group permits browser-mediated upload and enforces a one-hour session limit. Download, clipboard in both directions, seamless clipboard, persistent profiles, and host shares remain disabled.
 
-## Layout
+## Workspace Network Overrides
 
-| Path | Contents |
-|---|---|
-| `Documentation/Deployment.md` | The 2026-07-24 build: VM spec, baseline, install commands, verification output |
-| `Documentation/Change Plans/Kasm Relocation to Purple.md` | The planned move to `purple-server`, storage & RAM budget, & the lab VLAN work that follows it |
+Each lab workspace needs an explicit network and resolver in its Docker Run Config Override:
+
+```json
+{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}
+```
+
+```json
+{"network":"lab77","dns":["192.168.77.10"]}
+```
+
+```json
+{"network":"lab79","dns":["192.168.79.10"]}
+```
+
+Nothing listens at the VLAN 77 or VLAN 79 resolver address. Those lanes therefore fail DNS locally. Omitting the `dns` member lets Docker's embedded resolver forward through the management host, so a network-only override does not meet the offline requirement.
+
+A workspace with no override uses `kasm_default_network` and ordinary management-plane egress. I treat that as a failed lab workspace definition.
+
+## Running a malware session
+
+Snapshot VM 122 first, then roll back to that snapshot when the session ends. The host is the disposable part of this design, and the snapshot is what makes that true instead of aspirational. Rolling back reverts Kasm's database too, so take a fresh snapshot after any workspace or settings change and the rollback then costs only the session just run.
+
+Sessions are not serialised. A sample can run beside another workspace, and a container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time, not adding a rule.
 
 ## Access
 
-SSH as `<YOUR_ADMIN_USERNAME>@192.168.80.30` with any of the four fleet keys, or `ssh kasm-01` from Jedi PC. The web UI is `https://192.168.80.30/`. Administrator credentials came from the installer & are not stored in this repository.
+SSH uses `<YOUR_ADMIN_USERNAME>@192.168.78.10`. The web UI is `https://192.168.78.10/`. The administrator credential and current URLs live outside this repository; nothing here holds a secret.
 
-`kasm-01` sits on VLAN 80 SERVERS-A, inside the <YOUR_ORG_NAME>-Servers firewall zone. The existing "Allow Internal to <YOUR_ORG_NAME>-Servers" & "Allow VPN to <YOUR_ORG_NAME>-Servers" policies already cover it, so I added no firewall rules for this deployment.
+The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session runs. An enabled but failed tunnel is kill-switched. Administratively disabling the VPN object causes UniFi to use the normal WAN.
 
-## Related records
+## Records
 
-- [Isolated Security Lab architecture](../../Architecture/Isolated-Security-Lab.md)
-- [Kasm lab network simplification (2026-07-23)](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
-- [Kasm lab Proxmox teardown (2026-07-23)](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md)
-- [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md)
+| Record | Purpose |
+| --- | --- |
+| [Deployment](Documentation/Deployment.md) | Original Kasm 1.19.0 build and current-state note |
+| [Kasm Session Isolation](Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) | Migration, storage, network, policy, tests, exceptions, and cleanup |
+| [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
+| [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md) | Cross-system boundary model |
+
+I add workspace registries, images, and individual workspace definitions separately. The isolation plumbing is ready for them.

@@ -1,11 +1,21 @@
 # Kasm Relocation to Purple
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-28
+
+**Status:** Superseded and implemented 2026-07-28
+
+> [Kasm Session Isolation](Kasm%20Session%20Isolation.md) superseded this plan and was implemented on 2026-07-28. It built `ssd-lvm2`, moved VM 122 to Purple, dropped INetSim and KVM guests from scope, moved the control plane to VLAN 78, attached the three macvlan session lanes, and completed the containment gate. This record remains for the placement reasoning and cluster-trust tradeoff.
+
+## Execution Result
+
+The completed change is recorded in [Kasm Session Isolation - 2026-07-28](../Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). `kasm-01` now runs on `purple-server` from `ssd-lvm2`; the LAB-MGMT control plane and VLAN 74, 77, and 79 session networks survived a reboot and passed the harmless-container acceptance matrix.
+
+I chose to proceed without a `vzdump` archive or VM snapshot, so neither rollback artifact was created. The live VM and final storage state were healthy after the migration.
 
 ## Outcome
 
-Kasm & everything Kasm spawns runs on `purple-server`. Grey goes back to production only. The lab VLANs 74, 77, & 79 reach Kasm sessions, INetSim answers on 77, & the acceptance checks in the [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md) pass before I detonate anything real.
+Kasm and everything Kasm spawns runs on `purple-server`. Grey is back to production only. The lab VLANs 74, 77, and 79 reach their Kasm session networks, VLAN 77 stays offline with no INetSim, and the acceptance checks in the [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md) passed before any real sample.
 
 Out of scope: `kali-pen` (VM 106) stays on Grey. It predates Kasm and isn't part of this lab. I destroyed the unrelated Windows test VM 103 during the Active Directory decommission on 2026-07-27.
 

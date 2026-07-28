@@ -9,7 +9,7 @@ Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 w
 
 **Remove `GF_DATABASE_WAL=true` at the next Grafana recreate.** Grafana 13.1.1 reads the variable but leaves SQLite in rollback-journal mode. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. I left the running container alone because removing an inactive variable provides no service benefit until another recreate is required. Repeat the corrected lock count after alert rules add writes. Reasoning & evidence in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
-**Scrape `kasm-01`.** It's the one running host with no `node_exporter`. It sits outside the Ansible inventory, and the move to `purple-server` in [Kasm Relocation to Purple](../../Kasm%20Workspaces/Documentation/Change%20Plans/) is still open, so its address may change. Adding it now means redoing the inventory entry and the firewall scope afterward.
+**Scrape `kasm-01`.** It's the one running host with no `node_exporter`. Its move to `purple-server` completed on 2026-07-28 and its stable address is `192.168.78.10` on LAB-MGMT. Add the exporter, scrape target, and an exact monitoring firewall path as one bounded change.
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 

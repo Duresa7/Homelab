@@ -82,6 +82,16 @@
 !/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Screenshots/
 !/Platforms/Media Stack/Evidence/Media Stack Refresh and Payload Filtering - 2026-07-17/
 
+# Kasm session isolation evidence records
+!/Platforms/Kasm Workspaces/Evidence/
+/Platforms/Kasm Workspaces/Evidence/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/
+/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Evidence-Index.md
+!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/
+/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*.md
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db

@@ -1,80 +1,134 @@
 # Isolated Security Lab
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-28
 
 ## Purpose
 
-I am building a fenced security lab for suspicious browsing, pentest practice, and malware analysis. On 2026-07-23 I simplified the network to three lab VLANs (74 KASM-BROWSER, 77 MALWARE-OFFLINE, 79 EVIDENCE-QUARANTINE), three zones, and nine firewall policies, down from seven VLANs and 53 policies, and I am rebuilding Kasm itself from scratch. The [Kasm lab network simplification](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) records that change.
+I run a fenced Kasm lab for suspicious browsing, Linux sample analysis, pentest practice, and artifact review. Kasm 1.19.0 Community Edition provides disposable Linux containers. Windows analysis and full detonation VMs are separate projects.
 
-I removed the earlier Kasm platform records and the over-built design they described on 2026-07-23. The sections below hold the cross-system boundary model I'm keeping; the detailed service design (disposable lifecycle, evidence workflow, and the autoscale guards) describes the removed build and will be redefined during the rebuild. This record explains the boundary shared by Kasm, Galaxy, UniFi, Proton VPN, and WireGuard.
+The lab has one control plane and three session lanes. The control plane is reachable from the two approved trusted networks. Its Management Access VPN policy permits the same path, but I still need one live remote client test. Session containers never join that management network.
 
-On 2026-07-24 I brought the platform back up as a single host: Kasm 1.19.0 Community Edition on `kasm-01`, VM 122 on Grey, at `192.168.80.30` on VLAN 80 SERVERS-A. That address is deliberately outside every lab lane below. The management interface needs to stay reachable by SSH and HTTPS, and a sealed lane can't offer that, so the control plane sits on the server VLAN while sessions get placed into the lanes. No lab-VLAN NIC is attached yet, so at present no session is isolated. [Deployment record](../Platforms/Kasm%20Workspaces/Documentation/Deployment.md).
+## Current Topology
 
-The tradeoff that choice buys and costs: a compromised session stays in its lane, but a full container escape that takes over `kasm-01` itself lands on SERVERS-A. For live malware I run the detonation guest with a lab-VLAN NIC only and no management interface, reaching it through the Proxmox console instead of SSH.
+`kasm-01` is VM 122 on `purple-server`. Its 100 GiB disk lives on `ssd-lvm2`, the LVM-thin pool backed by Purple's Samsung 850 EVO. The control plane listens at `192.168.78.10` on LAB-MGMT VLAN 78.
 
-On 2026-07-25 I decided to move the lab off Grey and onto `purple-server`, which carries no guests. Grey holds `app-01` at 24 GiB, `splunk-siem`, `security-01`, and `alpha-prod-01`, and detonation work doesn't belong beside them. The sequence is in [Kasm Relocation to Purple](../Platforms/Kasm%20Workspaces/Documentation/Change%20Plans/Kasm%20Relocation%20to%20Purple.md). Nothing has moved yet.
+VM 122 has three additional VLAN NICs with no host address:
 
-Purple stays in the Galaxy cluster, and I'm recording what that costs rather than implying the move seals the boundary. Cluster members hold each other's root keys in `/etc/pve/priv/authorized_keys` along with the cluster CA private key at `/etc/pve/priv/pve-root-ca.key`, so `ssh 192.168.70.10` from Purple returns a root shell on Grey today. A sample that escapes its container and then escapes QEMU reaches Grey from either node. I chose the four-node console over closing a path that needs a QEMU vulnerability to walk, which puts the real defense at the guest boundary: current `pve-qemu-kvm`, detonation guests built with no guest agent, no USB, no audio, no SPICE, and no serial, and a snapshot before every run.
+| VLAN | Docker network | Container range | Purpose | Internet |
+| ---: | --- | --- | --- | --- |
+| 74 KASM-BROWSER | `lab74` | `192.168.74.208/28` | Browser sessions and pentest tooling | Proton only |
+| 77 MALWARE-OFFLINE | `lab77` | `192.168.77.208/28` | Linux samples and disposable targets | None |
+| 79 EVIDENCE-QUARANTINE | `lab79` | `192.168.79.208/28` | Artifact review | None |
+
+Docker macvlan puts each session directly on its UniFi VLAN. Host shims at `.201/32` let the Kasm agent and proxy reach their own macvlan children without giving the parent NIC an address. The shim service starts before Docker and survived a full guest reboot.
+
+```mermaid
+flowchart LR
+    T["Trusted / Personal-A"] -->|"TCP 22, 443"| M["LAB-MGMT 78<br/>kasm-01 192.168.78.10"]
+    V["Management Access VPN"] -->|"TCP 22, 443"| M
+    M -->|"Docker API + local shims"| B["lab74<br/>KASM-BROWSER"]
+    M -->|"Docker API + local shims"| D["lab77<br/>MALWARE-OFFLINE"]
+    M -->|"Docker API + local shims"| E["lab79<br/>EVIDENCE-QUARANTINE"]
+    B -->|"Proton, kill-switched"| I["Internet"]
+    B -->|"initiated connections"| D
+    D -. blocked .-> B
+    B -. blocked .-> E
+    D -. blocked .-> E
+    E -. blocked .-> B
+    E -. blocked .-> D
+```
 
 ## Boundary Model
 
-Four controls have different jobs:
+The controls have separate jobs:
 
-1. UniFi WireGuard carries an approved remote user into the homelab.
-2. Kasm authenticates the user, presents the workspace catalog, and controls session lifetime.
-3. UniFi VLANs, zones, and firewall policies contain each workload.
-4. Proton VPN handles selected outbound Internet traffic and fails closed. It does not make malware safe.
+1. Kasm authenticates the user, enforces the session lifetime, and controls browser-mediated upload.
+2. Docker macvlan assigns the selected session lane.
+3. UniFi zones and explicit firewall rules contain every routed path.
+4. Proton carries VLAN 74 Internet traffic while the VPN object remains enabled.
+5. Proxmox keeps the whole lab workload on Purple and its replaceable SATA SSD.
 
-NetBird is not part of this lab path. I am not removing it from unrelated services.
+A full container escape reaches `kasm-01`, so I treat the host as expendable. What makes that real rather than aspirational is the snapshot I take before a malware session and roll back to when it ends. Moving the control plane from SERVERS-A to LAB-MGMT keeps that escape away from production systems at the network layer. Purple remains a Galaxy cluster member, so a separate QEMU or Proxmox escape would still cross the cluster trust boundary. Current hypervisor patching and a narrow guest device surface remain necessary.
 
-## Network Lanes
+## Allowed Paths
 
-| VLAN | Lane | Use | Internet |
-| ---: | --- | --- | --- |
-| 74 | Lab tools | Kasm Agent, browser containers, and attacker tooling | Proton only, fails closed |
-| 77 | Detonation and targets | Targets and offline malware | None; fake services only |
-| 79 | Evidence quarantine | Disposable review systems | None |
+Only these routed paths are intentional:
 
-Every lane is blocked from management, cluster, monitoring, server, trusted, and unrelated lab networks unless an exact workflow rule allows the path. Offline malware sees INetSim instead of the real Internet. Evidence review cannot initiate toward a trusted system. The current firewall keeps only the DHCP, NTP, gateway-block, and External-block baseline; I removed the Kasm control-plane and attacker-to-target allows and will re-add them against real host IPs during the rebuild.
+| Source | Destination | Scope |
+| --- | --- | --- |
+| Trusted and Personal-A | `192.168.78.10` | TCP 22 and 443 |
+| Management Access VPN | `192.168.78.10` | TCP 22 and 443 allowed by policy; client test pending |
+| LAB-MGMT | External | Resolver and image-pull traffic |
+| KASM-BROWSER | External | Through `KASM Lab Proton Egress` |
+| KASM-BROWSER | MALWARE-OFFLINE | Tooling may initiate toward a target |
 
-## Compute Boundary
+MALWARE-OFFLINE cannot initiate back toward KASM-BROWSER. Neither active lane reaches EVIDENCE-QUARANTINE. Every session lane has an explicit block toward LAB-MGMT, Internal, Servers, Management, Access, and Observability.
 
-As of 2026-07-24 every Kasm component runs on one host, `kasm-01` (VM 122) on Grey, installed with `--role all`. The earlier split across `kasm-agent-01`, `kasm-core`, and INetSim on Purple no longer exists; the 2026-07-23 teardown destroyed those guests. Purple is back in service as of 2026-07-25 on a replacement boot NVMe and carries nothing.
+The reverse-direction block from MALWARE-OFFLINE to KASM-BROWSER matches new and invalid connections. Established replies remain valid, so a tool on VLAN 74 can complete a connection it initiated to VLAN 77.
 
-Malware and untrusted full desktops run as separate KVM guests beside `kasm-01`, never inside it. After the relocation those guests live on Purple. The permanent Kali VM stays separate from malware storage and remains on Grey as `kali-pen` (VM 106). I destroyed the unrelated Windows test VM 103 during the Active Directory decommission on 2026-07-27.
+## DNS and Internet
 
-Purple has 15 GiB of RAM and an i5-8500T at 6 cores. The budget is 8 GiB for `kasm-01`, 1 GiB for the INetSim LXC, 4 GiB for one detonation guest, and 1.5 GiB for PVE, which is 14.5 of 15. That allows one detonation guest at a time. Going to 32 GiB would allow a victim, a target, and a monitor together.
+The network selection and resolver selection are one configuration unit. Each Kasm workspace needs an explicit Docker Run Config Override:
 
-Grey carries production and stops carrying lab work once the move completes. VLAN separation does not protect those workloads from a hypervisor escape, and neither does the node split while Purple remains a cluster member. I do not run samples that target QEMU, Proxmox, firmware, storage, or uncontrolled worm propagation on this cluster.
+```json
+{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}
+```
 
-## Disposable Lifecycle
+```json
+{"network":"lab77","dns":["192.168.77.10"]}
+```
 
-Kasm Community Edition may run five concurrent sessions. My normal group is limited to three sessions, and the Proxmox pre-start guard permits at most two disposable full VMs and 10 GiB of their configured memory. Disposable Kasm pools use one user and one session per VM, zero warm systems, `Reusable=false`, and a five-minute downscale delay.
+```json
+{"network":"lab79","dns":["192.168.79.10"]}
+```
 
-The orphan sweeper considers only marked VMs in the reserved `6200` through `6299` range. It waits 30 minutes, reads active Kasm sessions, and repeats that API check before applied deletion. A Kasm API failure stops cleanup.
+Nothing listens at `.77.10` or `.79.10`. Those choices make name resolution fail inside the sealed lane. Without the `dns` member, Docker injects its embedded `127.0.0.11` resolver and can forward lookups through LAB-MGMT, which breaks the offline promise.
 
-## Evidence Boundary
+VLAN 77 no longer advertises its stale DNS server through DHCP. INetSim is not part of the current design.
 
-Each malware VM writes artifacts and a SHA-256 manifest to a separate evidence disk. When the VM stops, a Proxmox hook snapshots that disk under a reserved `6300`-series owner before Kasm destroys the disposable VM. A VLAN 79 review VM attaches the retained volume read-only and mounts it `ro,nodev,nosuid,noexec`.
+The Proton traffic route targets only KASM-BROWSER and has its kill switch enabled. I tested failure by leaving the VPN enabled and replacing its live endpoint with an unreachable TEST-NET address. VLAN 74 lost Internet while the Kasm host retained ordinary WAN. Administratively disabling the UniFi VPN object causes normal WAN fallback, so I keep the object enabled whenever a VLAN 74 session may run.
 
-The trusted side initiates SFTP and pulls only reviewed reports or encrypted archives. Raw samples remain encrypted and are not extracted on the permanent Kali VM or a normal workstation. LVM-thin deletion is logical disposal, not a claim that SSD blocks were physically wiped.
+## Kasm Session Policy
+
+The `Lab Sessions` group has a one-hour session limit. Browser-mediated uploads are enabled. Downloads, clipboard in both directions, seamless clipboard, and persistent profiles are disabled.
+
+The persistent profile path stays empty. A lab workspace must not mount a host share. A workspace with no Docker network override runs on `kasm_default_network` and gains control-plane egress, so I treat a missing override as a failed workspace definition.
+
+## Evidence Handling
+
+Evidence review happens in a disposable VLAN 79 workspace. No other session lane can initiate toward it. Download to the user's workstation remains disabled at the group level.
+
+This implementation does not include a retained evidence disk, automated hashing pipeline, shared filesystem, or KVM lifecycle. I will define those in a separate change if I need durable evidence handling.
 
 ## Acceptance Boundary
 
-No live sample runs until harmless test guests prove:
+I completed the harmless-container acceptance run on 2026-07-28:
 
-- Kasm is reachable locally and through WireGuard but not from the public Internet.
-- Proton-routed lanes show the Proton address and lose Internet access when Proton stops.
-- target, offline-malware, and evidence lanes cannot reach the real Internet.
-- every lab lane fails toward management, Proxmox, cluster, trusted, server, and unrelated lab destinations.
-- clipboard and file transfer match the workspace policy.
-- disposable VMs, credentials, disks, and Kasm registrations disappear after session end.
-- retained evidence survives source destruction and returns the original SHA-256 manifest.
+- VLAN 74 used Proton exit `185.98.168.20`.
+- An enabled but failed Proton tunnel removed VLAN 74 Internet access.
+- VLAN 77 and VLAN 79 had no working DNS or Internet.
+- VLAN 74 could initiate toward VLAN 77, while VLAN 77 could not initiate back.
+- No session lane reached LAB-MGMT, the trusted LAN, Proxmox management, cluster networking, application servers, access services, observability services, or the gateway UI.
+- Trusted access to the Kasm health endpoint succeeded.
+- Secure and service-zone access to Kasm TCP 443 failed.
+- A reboot restored all NICs, shims, routes, and Docker networks. All eight Kasm service containers ran; seven reported Docker health `healthy`, `kasm_proxy` had no Docker health check, and the API health endpoint passed.
+- Temporary containers, images, firewall rules, and test interfaces were absent after cleanup.
+
+The exact targets and observed results are in the [2026-07-28 change record](../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
+
+## Operating Rules
+
+- I keep the Proton VPN object enabled before and during VLAN 74 sessions.
+- I publish no lab workspace without both the network and DNS override.
+- I use browser-mediated upload only. I leave download, clipboard, persistent profiles, and host mounts disabled.
+- I run no real sample until the current containment test still passes.
+- I stop using the 850 EVO if its normalized wear indicator falls below 10 or any reallocated-sector, CRC, or uncorrectable-error counter becomes nonzero.
 
 ## Related Records
 
-- [Kasm lab network simplification (2026-07-23)](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
+- [Kasm Session Isolation change](../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md)
+- [Kasm Workspaces deployment](../Platforms/Kasm%20Workspaces/Documentation/Deployment.md)
 - [UniFi networks and VLANs](../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md)
 - [UniFi firewall zones](../Infrastructure/Network/UniFi/Configuration/Zones/zone.md)
-- [Agent Sandbox](../Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md)
+- [UniFi firewall policies](../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md)
