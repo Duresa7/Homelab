@@ -55,7 +55,9 @@ I used Docker rather than a systemd timer because `dkadi` can't `sudo` without a
 | `teamspeak_server_fault` | Local down. Blame the TeamSpeak server. |
 | `teamspeak_last_probe_timestamp_seconds` | Freshness, so a stuck collector is visible instead of silently showing stale green. |
 
-`teamspeak_clients_online`, `teamspeak_channels_online`, `teamspeak_uptime_seconds`, and `teamspeak_max_clients` come from ServerQuery and appear only when `TS_QUERY_USER` and `TS_QUERY_PASS` are present in `/home/dkadi/teamspeak-monitor/.env`. I left that file out for now, so those four are absent.
+`teamspeak_query_up`, `teamspeak_clients_online`, `teamspeak_channels_online`, `teamspeak_uptime_seconds`, and `teamspeak_max_clients` come from ServerQuery. These are live.
+
+Each instance keeps its own `serveradmin` account, so the three passwords differ despite sharing the login name. My first cut read one `TS_QUERY_PASS` for all three, which would have authenticated against one server and failed silently on the other two. The collector now reads `TS_QUERY_PASS_TS01`, `TS_QUERY_PASS_TS02`, and `TS_QUERY_PASS_TS03`, falling back to a single shared value only if the passwords are ever unified. `teamspeak_query_up` exists so a login failure shows as a red panel rather than a missing series.
 
 ## Verification
 
@@ -68,11 +70,14 @@ I used Docker rather than a systemd timer because `dkadi` can't `sudo` without a
 | `node_textfile_scrape_error` | 0 |
 | node_exporter output | All `teamspeak_*` series present on 9100 |
 | Prometheus on monitor-01 | Queried every series successfully; target count unchanged at 45 |
-| Grafana dashboard | uid `teamspeak`, 12 panels, Homelab folder, `provisioned: true` |
+| Grafana dashboard | uid `teamspeak`, Homelab folder, `provisioned: true` |
 | Grafana query path | `avg_over_time(teamspeak_public_up[30m])` returned 1 for all three servers |
 | Fault logic, tunnel case | Forced an unresolvable domain: local 1, SRV 0, public 0, tunnel_fault 1, server_fault 0 |
 | Fault logic, server case | Forced an unreachable local address: local 0, public 1, server_fault 1, tunnel_fault 0 |
 | Live service during testing | Untouched; both fault tests ran in throwaway containers writing to `/tmp` |
+| ServerQuery, all three servers | `teamspeak_query_up` 1; clients 1, 1, 1; channels 3, 80, 1; uptime ~5.3 days |
+| Dashboard after rework | 16 panels, 3 rows, 0 descriptions, every panel returned values through Grafana's query path |
+| `.env` on the host | mode 0600, six keys, untracked |
 
 Both fault tests matter more than the green lights. A monitor whose failure path has never fired is a monitor that can lie.
 
@@ -80,10 +85,14 @@ Both fault tests matter more than the green lights. A monitor whose failure path
 
 `https://grafana.<YOUR_BASE_DOMAIN>/d/teamspeak/teamspeak`
 
-The first row answers "can my users connect", including an uptime percentage over whatever time range is selected. The second row answers "is it me or the tunnel". The third row holds the ServerQuery stats and stays empty until credentials exist. The last panel is collector age, which should sit near 60 seconds.
+Three rows: Public Availability, Fault Isolation, and Server Statistics.
+
+The first cut crammed six series into a panel five grid units tall, so Grafana shrank the text until every row read as dashes. Fault location now derives one value per server, `server_fault * 2 + tunnel_fault`, mapped to HEALTHY, TUNNEL OR DNS, or TEAMSPEAK SERVER. Local voice and SRV resolution each got their own panel instead of sharing one. Three rows per panel renders at full size.
+
+I also removed every panel description. The hover text was noise on panels whose titles already say what they show, and I stripped the 44 descriptions on the Homelab Overview dashboard for the same reason.
+
+Collector age sits near 60 seconds. Anything climbing past a few minutes means the lights above are stale.
 
 ## Remaining work
-
-ServerQuery stats need a credential file. Each instance keeps its own ServerQuery account, so the collector needs a per-server value rather than the single pair it reads today.
 
 The probe originates on the same host as the servers. It still round-trips through Playit's public relay, so it tests the external path, but a genuinely independent vantage would mean running a second collector on `edge-01` in DMZ-A. That's a cheaper firewall exception than MONITOR-A if I ever want it.

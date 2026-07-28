@@ -12,7 +12,10 @@ voice service answered rather than a port merely being open.
 The public port is read from the live SRV record every cycle, so a Playit port
 rotation follows DNS instead of needing an edit here.
 
-ServerQuery metrics appear only when TS_QUERY_USER and TS_QUERY_PASS are set.
+ServerQuery metrics appear only when credentials are supplied. Each instance
+keeps its own serveradmin account, so the passwords differ: set
+TS_QUERY_PASS_TS01, TS_QUERY_PASS_TS02, and TS_QUERY_PASS_TS03, or a single
+TS_QUERY_PASS if they are ever unified.
 
 Publication note: BASE_DOMAIN comes from the environment. The deployed Compose
 file carries the real internal domain; the repository copy carries a placeholder.
@@ -47,6 +50,7 @@ HEADERS = [
     ("teamspeak_dns_srv_up", "gauge", "The _ts3._udp SRV record resolved to a host and port."),
     ("teamspeak_tunnel_fault", "gauge", "Local voice is up but the public address is not, so the tunnel or DNS is at fault."),
     ("teamspeak_server_fault", "gauge", "The local voice service itself is not answering."),
+    ("teamspeak_query_up", "gauge", "ServerQuery login succeeded and serverinfo returned."),
     ("teamspeak_clients_online", "gauge", "Clients connected, from ServerQuery."),
     ("teamspeak_channels_online", "gauge", "Channels present, from ServerQuery."),
     ("teamspeak_uptime_seconds", "gauge", "Virtual server uptime, from ServerQuery."),
@@ -102,6 +106,19 @@ def srv_lookup(name):
     return (m.group(2), int(m.group(1))) if m else (None, None)
 
 
+def query_credentials(name):
+    """Per-server ServerQuery credentials.
+
+    Each TeamSpeak instance keeps its own serveradmin account, so the passwords
+    differ even though the login name matches. TS_QUERY_PASS_<NAME> wins;
+    TS_QUERY_PASS is the fallback for a single shared value.
+    """
+    suffix = name.upper()
+    user = os.environ.get(f"TS_QUERY_USER_{suffix}") or os.environ.get("TS_QUERY_USER")
+    password = os.environ.get(f"TS_QUERY_PASS_{suffix}") or os.environ.get("TS_QUERY_PASS")
+    return user, password
+
+
 def query_stats(port, user, password):
     """Pull serverinfo over ServerQuery. Returns {} on any failure."""
     try:
@@ -143,7 +160,6 @@ def query_stats(port, user, password):
 
 def collect():
     started = time.monotonic()
-    quser, qpass = os.environ.get("TS_QUERY_USER"), os.environ.get("TS_QUERY_PASS")
     L = []
     for metric, kind, help_text in HEADERS:
         L.append(f"# HELP {metric} {help_text}")
@@ -172,8 +188,11 @@ def collect():
         L.append(f"teamspeak_tunnel_fault{{{base}}} {int(lok and not pok)}")
         L.append(f"teamspeak_server_fault{{{base}}} {int(not lok)}")
 
+        quser, qpass = query_credentials(name)
         if quser and qpass:
-            for metric, value in query_stats(qport, quser, qpass).items():
+            stats = query_stats(qport, quser, qpass)
+            L.append(f"teamspeak_query_up{{{base}}} {int(bool(stats))}")
+            for metric, value in stats.items():
                 L.append(f"teamspeak_{metric}{{{base}}} {value}")
 
     L.append(f"teamspeak_probe_duration_seconds {time.monotonic() - started:.6f}")

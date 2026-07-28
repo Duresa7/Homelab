@@ -47,12 +47,13 @@ The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each serve
 
 - `Documentation/` holds the deployment record and dated change records.
 - `Source/teamspeak-monitor/` holds the reachability collector.
-- `Scripts/` holds the migration job scripts.
+- `Scripts/` holds the probe and rotation helpers plus the migration job scripts.
 
 ## Key Records
 
 - [Deployment record](Documentation/Teamspeak-deployment.md)
 - [Reachability monitoring (2026-07-28)](Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md)
+- [Scripts](Scripts/README.md)
 - [Hosting walkthrough](../../Guides/TeamSpeak.md)
 
 ## Boot Recovery
