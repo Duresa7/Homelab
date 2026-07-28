@@ -63,6 +63,7 @@ The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session run
 
 | Record | Purpose |
 | --- | --- |
+| [Session workflows](Documentation/Session-Workflows.md) | How to run each job: phishing links, target practice, samples, inspection, review |
 | [Deployment](Documentation/Deployment.md) | Original Kasm 1.19.0 build and current-state note |
 | [Kasm Session Isolation](Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) | Migration, storage, network, policy, tests, exceptions, and cleanup |
 | [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
