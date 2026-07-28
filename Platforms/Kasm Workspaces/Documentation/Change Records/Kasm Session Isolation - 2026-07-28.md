@@ -5,7 +5,7 @@
 
 **Implemented:** 2026-07-28  
 **Owner:** Platforms / Kasm Workspaces  
-**Status:** Implemented; Management Access VPN client test pending
+**Status:** Implemented and fully accepted
 
 ## Result
 
@@ -190,7 +190,7 @@ I ran the tests with a temporary Alpine-derived image that carried Bash, curl, a
 | Kasm administrator authentication | Returned a valid session token |
 | Kasm host image pull | `hello-world` pulled successfully |
 
-The Trusted test succeeded. The configured Management Access VPN allow rule precedes its catchall VPN block, but I did not have an active remote VPN client for an end-to-end UI request. I did not substitute a forged source address for that test.
+The Trusted test succeeded. The Management Access VPN allow rule precedes its catchall VPN block, and I closed that path from a real remote client on 2026-07-28: connected over the VPN, opened `https://192.168.78.10/`, and the UI loaded. I did not substitute a forged source address at any point.
 
 Each lane failed TCP probes to:
 
@@ -259,7 +259,6 @@ The exact final commands, structured requests, outputs, curated phase results, a
 
 ## Remaining Work
 
-- I still need one real Management Access VPN client to open `https://192.168.78.10/` and prove the end-to-end VPN path. The controller rule is present and ordered correctly, but that is not a client-path test.
 - Workspace catalog entries remain a separate task I will do. Each one needs the exact network and DNS override documented above before publication.
 
 ## Related Records

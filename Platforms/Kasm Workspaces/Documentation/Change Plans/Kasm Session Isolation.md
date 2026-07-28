@@ -3,7 +3,7 @@
 **Created:** 2026-07-28  
 **Last updated:** 2026-07-28
 
-**Status:** Implemented 2026-07-28; Management Access VPN client test pending
+**Status:** Implemented and fully accepted 2026-07-28
 
 ## Outcome
 
@@ -13,7 +13,7 @@ This plan builds the plumbing only. Adding a workspace registry, pulling images,
 
 ## Execution Result
 
-I completed the storage, migration, control-plane move, session networks, Kasm group policy, firewall matrix, containment tests, documentation, and residue cleanup. The durable result is in [Kasm Session Isolation - 2026-07-28](../Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). I verified the Management Access VPN policy and order, but no active remote VPN client was available for an end-to-end request.
+I completed the storage, migration, control-plane move, session networks, Kasm group policy, firewall matrix, containment tests, documentation, and residue cleanup. The durable result is in [Kasm Session Isolation - 2026-07-28](../Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). I verified the Management Access VPN policy and its order, then closed the end-to-end check from a real remote client later the same day.
 
 I skipped both backup steps during this implementation by choice: no `vzdump` archive and no pre-change VM snapshot. That applies to the migration and the NIC retag, not to running the lab. The snapshot-before-malware rule under Operating rules still stands.
 
@@ -244,7 +244,7 @@ A space in place of that second slash makes every probe fail, which reads as a c
 
 Record the results in a change record with the commands & their output. A pass here is what earns the right to run a sample.
 
-The container matrix, Trusted path, service-zone blocks, and cleanup passed. The Management Access VPN policy is present above its catchall block, but the end-to-end VPN client check remains open because no active remote client was available.
+Every check passed. The container matrix, the Trusted path, the service-zone blocks, and the cleanup all held, and I closed the last one, the end-to-end Management Access VPN client path to `https://192.168.78.10/`, from a real remote client on 2026-07-28.
 
 ## Operating rules
 

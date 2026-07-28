@@ -9,7 +9,7 @@ Community Edition caps the deployment at five concurrent sessions and one named 
 
 ## Current State
 
-The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443, as does Jedi PC at `192.168.50.241`, which needed its own rule because the Secure VLAN was never in the allow list. The Management Access VPN policy permits the same ports, but its live client-path test remains open. Every other Internal network and all service zones are blocked from the UI, and the two allows are ordered above the catchall block that enforces that.
+The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443, as does Jedi PC at `192.168.50.241`, which needed its own rule because the Secure VLAN was never in the allow list. The Management Access VPN permits the same ports, verified from a real remote client on 2026-07-28. Every other Internal network and all service zones are blocked from the UI, and the two allows are ordered above the catchall block that enforces that.
 
 Session containers join one of three Docker macvlan networks:
 

@@ -6,7 +6,7 @@
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
 **Host:** `kasm-01`, VM 122 on `purple-server`, `192.168.78.10`  
-**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition and session isolation are verified except for one pending Management Access VPN client-path test.
+**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition and session isolation are verified, including the Management Access VPN client path, closed on 2026-07-28.
 
 ## Current State on 2026-07-28
 
