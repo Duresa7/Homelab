@@ -26,18 +26,20 @@ I ran Termix 2.5.0 on `docker-main` with a Guacamole 1.6.0 companion daemon. The
 
 Termix has nine configured SSH hosts organized into `Homelab/Docker`, `Homelab/Edge`, `Homelab/Servers`, & `Homelab/Proxmox`. The inventory contains the four Galaxy Proxmox nodes, `docker-main`, `alpha-prod-01`, `app-01`, `edge-01`, & `docker-network`. All use the `Termix Homelab SSH` Ed25519 identity with per-host username overrides.
 
-The Proxmox entries are historical inventory, not an approved management path. Jedi PC, Pixel, MacBook Air, and `ansible-01` are the four approved devices. The [MGMT-A lockdown record](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md) explains the boundary and the tests.
+The Proxmox entries are historical inventory, not an approved management path. Jedi PC, Pixel, MacBook Air, and `ansible-01` are the four approved devices. The [MGMT-A lockdown record](../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md) explains the boundary and the tests.
 
 Ten additional SSH Manager entries were unreachable during the 2026-07-14 onboarding, and I intentionally did not save them as unverified Termix hosts. Their error states and the onboarding procedure are recorded in the change record below.
 
 ## Layout
 
 - `Documentation/` holds the operational and troubleshooting records.
+- `Evidence/` holds the retained Ansible LXC cleanup transcript from 2026-07-28.
 
 ## Key Records
 
 - [Decommission record](Documentation/Change%20Records/Termix%20Decommission%20-%202026-07-28.md)
+- [Ansible LXC cleanup evidence](Evidence/Termix%20Ansible%20LXC%20Cleanup%20-%202026-07-28/Evidence-Index.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Termix SSH Host Onboarding change record](Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
 - [Termix Upgrade 2.2.1 to 2.5.0 change record](Documentation/Change%20Records/Termix%20Upgrade%202.2.1%20to%202.5.0%20-%202026-07-13.md)
-- [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
+- [Internal HTTPS onboarding](../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

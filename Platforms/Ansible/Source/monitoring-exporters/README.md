@@ -37,7 +37,7 @@ v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101, not the usual 8080. 8080 was taken by termix on docker-main (retired 2026-07-28) and is still taken by coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all eight and sits next to `node_exporter`.
+cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all eight hosts and sits next to `node_exporter`.
 
 ## Running the playbooks
 

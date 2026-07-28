@@ -29,10 +29,9 @@
     # under a dashboard that depends on them. ghcr, not gcr: gcr's newest is
     # v0.55.1 and only v0.60.5 handles the containerd snapshotter.
     cadvisor_image: "ghcr.io/google/cadvisor:v0.60.5"
-    # 8080 was taken by termix on docker-main (retired) and is taken by coolify-proxy on app-01, and
-    # 8081 is taken by the NetBird server on docker-network. 9101 is free on all
-    # seven hosts and sits next to node_exporter's 9100, so the fleet publishes
-    # cAdvisor there for one consistent scrape port.
+    # coolify-proxy uses 8080 on app-01, and the NetBird server uses 8081 on
+    # docker-network. 9101 is free on all eight hosts and sits next to
+    # node_exporter's 9100, so the fleet publishes cAdvisor there.
     cadvisor_host_port: 9101
     cadvisor_project_dir: /opt/docker/cadvisor
     # Trimmed on purpose. The default metric set emits several thousand series

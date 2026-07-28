@@ -54,6 +54,12 @@ I moved `Platforms/Termix/` to `Archive/Platforms/Termix/` and the walkthrough a
 
 Dated change records elsewhere keep their Termix references. The [Galaxy Data Center Firewall](../../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) record already showed the TCP 22 exception retired on 2026-07-27. Historical records describe the state I observed when I wrote them.
 
+## Step 7: Sweep the Ansible LXC and current diagrams
+
+A follow-up search found two residual references on `ansible-01`: the monitoring-exporter README & cAdvisor playbook comment still explained port 9101 by naming the retired service. I replaced both with the current conflicts on `app-01` and `docker-network`. No cAdvisor setting changed.
+
+I also removed Termix from the current Ansible automation diagram and the homelab overview. The Ansible account, privileged Semaphore paths, Semaphore SQLite database, and current repository source now return no live Termix match. The [Ansible LXC cleanup transcript](../../Evidence/Termix%20Ansible%20LXC%20Cleanup%20-%202026-07-28/Logs/S01-Ansible-LXC-Termix-Sweep-2026-07-28.md) records the before state, deployed file hashes, & checks.
+
 ## Verification
 
 | Check | Observed result |
@@ -65,7 +71,12 @@ Dated change records elsewhere keep their Termix references. The [Galaxy Data Ce
 | NPM | 19 proxy hosts; none disabled; no termix domain |
 | Prometheus | 45 active targets, 45 up, no termix probe |
 | ssh-key-automation validator | 3 identities, 14 hosts, 0 unknown, 13 templates |
-| Repository | No `termix` match outside `Archive/` and dated historical records |
+| Ansible account | No Termix path or content match outside Git history |
+| monitoring-exporters | 9 node_exporter hosts, 8 cAdvisor hosts, & valid cAdvisor playbook syntax |
+| Semaphore | No Termix string in privileged paths or the SQLite database; service active |
+| Current diagrams | No Termix match; both Excalidraw files parse as JSON & both SVG files parse as XML |
+| Archived documentation | All relative links resolve across 8 Termix Markdown files |
+| Historical records | Dated records keep the state observed from 2026-07-14 through 2026-07-25 |
 
 ## Rollback
 
