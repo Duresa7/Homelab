@@ -12,7 +12,7 @@ import yaml
 
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED_IDENTITIES = {"mac", "ansible-control", "jedi-pc", "termix"}
+REQUIRED_IDENTITIES = {"mac", "ansible-control", "jedi-pc"}
 PUBLICATION_NOTICE = ROOT / "identities" / "PUBLICATION-NOTICE.md"
 PRESENT_TASK = (
     ROOT / "playbooks" / "tasks" / "ensure-key-present-posix.yml"

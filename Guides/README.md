@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -34,7 +34,6 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Prometheus](Prometheus.md) | Node exporters, seven scrape jobs, config validation, reload behavior, & target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [TeamSpeak](TeamSpeak.md) | Three servers, Playit tunnels, Cloudflare SRV records, TS3 Manager, boot recovery, & outage checks |
-| [Termix](Termix.md) | Upgrade, reusable Ed25519 identity, nine SSH hosts, folders, connection checks, & rollback |
 | [Wazuh](Wazuh.md) | Endpoint removal, fresh enrollment, manager checks, dashboard state, & recovery |
 
 ## Archived & Retired Guides

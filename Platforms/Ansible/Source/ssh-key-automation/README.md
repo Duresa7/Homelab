@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-27
 
 I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -15,7 +15,7 @@ I use this project to onboard and rotate SSH public-key identities. Semaphore ca
 - The four Proxmox nodes share one cluster-backed file. Only `grey-server` writes it; the other nodes independently verify the resulting state.
 - The nine running workload guests connect as `ansible`. Human identities still resolve to their original `root` or administrative-user key stores through passwordless privilege escalation.
 - `docker-blue` & `media-01` are supported Linux targets. Their identity allowlists remain explicit, like every other host.
-- `ws-dc-2-secondary` and `obi-pc` remain in the `ssh_key_unknown` inventory group and cannot be selected by these playbooks.
+- I removed the retired domain controllers and `obi-pc` from the inventory on 2026-07-27. No Windows host remains in this project.
 
 ## Direct Ansible Commands
 
@@ -24,18 +24,18 @@ Run commands from this directory on `ansible-01`.
 ```bash
 export LANG=C.utf8 LC_ALL=C.utf8
 python3 tests/validate_project.py
-ansible-playbook playbooks/ssh-key-audit.yml -e ssh_identity=termix
+ansible-playbook playbooks/ssh-key-audit.yml -e ssh_identity=jedi-pc
 ```
 
-Add the existing Termix key only to the currently missing candidate group:
+Add an existing key only to the hosts currently missing it:
 
 ```bash
 ansible-playbook playbooks/ssh-identity-onboard.yml \
-  -e ssh_identity=termix \
-  -e ssh_target_group=termix_candidate_targets
+  -e ssh_identity=jedi-pc \
+  -e ssh_target_group=ssh_key_missing
 ```
 
-I don't run that onboarding command until I'm ready to test the new Termix host records.
+I don't run that onboarding command until I'm ready to test the new host records.
 
 ## Rotation Workflow
 

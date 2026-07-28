@@ -19,7 +19,6 @@ views:
   - Mac
   - Ansible Control
   - Jedi PC
-  - Termix
   - Onboarding
 
 templates:
@@ -30,19 +29,10 @@ templates:
     survey:
       - name: ssh_identity
         title: SSH identity
-        description: Identity filename without .yml, for example mac, ansible-control, jedi-pc, or termix.
+        description: Identity filename without .yml, for example mac, ansible-control, or jedi-pc.
         type: ""
         required: true
         values: []
-
-  - name: Termix — Add Current Key to Missing Candidates
-    view: Onboarding
-    playbook: playbooks/ssh-identity-onboard.yml
-    arguments:
-      - -e
-      - ssh_identity=termix
-      - -e
-      - ssh_target_group=termix_candidate_targets
 
   - name: Mac — Audit
     view: Mac
@@ -111,30 +101,6 @@ templates:
     survey:
       - name: ssh_retire_confirmation
         title: Type RETIRE jedi-pc
-        description: Exact confirmation phrase required before the old key can be removed.
-        type: ""
-        required: true
-        values: []
-
-  - name: Termix — Audit
-    view: Termix
-    playbook: playbooks/ssh-key-audit.yml
-    arguments: [-e, ssh_identity=termix]
-  - name: Termix — Stage Replacement
-    view: Termix
-    playbook: playbooks/ssh-key-stage.yml
-    arguments: [-e, ssh_identity=termix]
-  - name: Termix — Verify Staged Key
-    view: Termix
-    playbook: playbooks/ssh-key-verify.yml
-    arguments: [-e, ssh_identity=termix]
-  - name: Termix — Retire Old Key
-    view: Termix
-    playbook: playbooks/ssh-key-retire.yml
-    arguments: [-e, ssh_identity=termix]
-    survey:
-      - name: ssh_retire_confirmation
-        title: Type RETIRE termix
         description: Exact confirmation phrase required before the old key can be removed.
         type: ""
         required: true

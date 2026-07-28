@@ -1,7 +1,7 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all eight Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
 
@@ -35,7 +35,7 @@ v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101, not the usual 8080. 8080 is taken by termix on docker-main & coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all eight and sits next to `node_exporter`.
+cAdvisor publishes on 9101, not the usual 8080. 8080 was taken by termix on docker-main (retired 2026-07-28) and is still taken by coolify-proxy on app-01, and 8081 is taken by the NetBird server on docker-network. 9101 was free on all eight and sits next to `node_exporter`.
 
 ## Running the playbooks
 

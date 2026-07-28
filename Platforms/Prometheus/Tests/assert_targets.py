@@ -73,7 +73,6 @@ EXPECTED_BLACKBOX_SERVICES = {
     "semaphore",
     "immich",
     "booklore",
-    "termix",
     "dashboard",
     "forgejo",
     "portainer",

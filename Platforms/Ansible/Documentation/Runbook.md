@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-28
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -58,30 +58,30 @@ Expected: `hostname: ansible-01` and `onboot: 1`.
 ## Audit One Identity
 
 ```bash
-ansible-playbook playbooks/ssh-key-audit.yml -e ssh_identity=termix
+ansible-playbook playbooks/ssh-key-audit.yml -e ssh_identity=jedi-pc
 ```
 
-Substitute `mac`, `ansible-control`, or `jedi-pc` as needed. Audit is read-only and reports `present`, `missing`, or `unreachable` without printing key material.
+Substitute `mac` or `ansible-control` as needed. Audit is read-only and reports `present`, `missing`, or `unreachable` without printing key material.
 
 To audit a safe subset, supply either an inventory group or a JSON host list:
 
 ```bash
 ansible-playbook playbooks/ssh-key-audit.yml \
-  -e ssh_identity=termix \
-  -e ssh_target_group=termix_candidate_targets
+  -e ssh_identity=jedi-pc \
+  -e ssh_target_group=ssh_key_missing
 ```
 
-## Add the Existing Termix Key to Missing Machines
+## Add an Existing Key to Missing Machines
 
 Preview first:
 
 ```bash
 ansible-playbook playbooks/ssh-identity-onboard.yml --check \
-  -e ssh_identity=termix \
-  -e ssh_target_group=termix_candidate_targets
+  -e ssh_identity=jedi-pc \
+  -e ssh_target_group=ssh_key_missing
 ```
 
-When the machines are reachable and I'm ready to test from Termix itself, I remove `--check`. Onboarding is additive: it does not remove the Mac, Ansible Control, Jedi PC, or any unrelated authorized key.
+When the machines are reachable and I'm ready to test from the device itself, I remove `--check`. Onboarding is additive: it does not remove the Mac, Ansible Control, Jedi PC, or any unrelated authorized key.
 
 ## Add a New SSH-Capable Device
 
@@ -140,7 +140,7 @@ Do not retire while a selected target is offline. The precheck deliberately bloc
 
 ## Semaphore
 
-Semaphore is a convenience layer. Its repository, inventory, environment, views, and task templates are defined in `semaphore/task-templates.yml`. The `All` view is Semaphore's aggregate view; use `Onboarding`, `Mac`, `Ansible Control`, `Jedi PC`, or `Termix` for the focused actions. Each identity view has Audit, Stage, Verify, and Retire in that order. Retirement templates prompt for the exact confirmation phrase.
+Semaphore is a convenience layer. Its repository, inventory, environment, views, and task templates are defined in `semaphore/task-templates.yml`. The `All` view is Semaphore's aggregate view; use `Onboarding`, `Mac`, `Ansible Control`, or `Jedi PC` for the focused actions. Each identity view has Audit, Stage, Verify, and Retire in that order. Retirement templates prompt for the exact confirmation phrase.
 
 If Semaphore is unavailable, run the commands above directly; no functionality is lost.
 

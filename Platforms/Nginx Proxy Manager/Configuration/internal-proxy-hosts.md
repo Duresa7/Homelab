@@ -1,7 +1,7 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-07-28
 
 I route these internal service names through Nginx Proxy Manager at `192.168.85.2`. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
@@ -18,7 +18,6 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `semaphore.<YOUR_BASE_DOMAIN>` | `192.168.40.36:3000` | HTTP | Semaphore advertises this HTTPS web host. |
 | `immich.<YOUR_BASE_DOMAIN>` | `192.168.40.35:2283` | HTTP | Request buffering is off; body limit is 50,000 MiB; proxy read, proxy send, & response-send timeouts are 600 seconds. |
 | `booklore.<YOUR_BASE_DOMAIN>` | `192.168.40.35:6060` | HTTP | Direct IP access remains available. |
-| `termix.<YOUR_BASE_DOMAIN>` | `192.168.40.35:8080` | HTTP | WebSockets enabled for terminal sessions. |
 | `dashboard.<YOUR_BASE_DOMAIN>` | `192.168.40.35:3001` | HTTP | No added NPM authentication. |
 | `forgejo.<YOUR_BASE_DOMAIN>` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | `portainer.<YOUR_BASE_DOMAIN>` | `192.168.40.35:9443` | HTTPS | NPM connects to Portainer's existing HTTPS listener. |

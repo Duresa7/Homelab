@@ -13,7 +13,7 @@
           - ssh_identity is string
           - ssh_identity is match('^[a-z0-9][a-z0-9-]*$')
           - ssh_operation in ['audit', 'onboard', 'stage', 'verify', 'retire']
-        fail_msg: Supply a lowercase identity name such as jedi-pc or termix.
+        fail_msg: Supply a lowercase identity name such as mac or jedi-pc.
 
     - name: Check that the identity file exists
       ansible.builtin.stat:

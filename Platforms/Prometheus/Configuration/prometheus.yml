@@ -104,7 +104,7 @@ scrape_configs:
   # Probes each internal service name through NPM, so a failure means the path a
   # person actually uses is broken: local DNS, the proxy, the certificate, or the
   # backend. 60s because uptime does not need 15-second resolution, and it keeps
-  # the probe load on NPM to 19 requests a minute.
+  # the probe load on NPM to 18 requests a minute.
   - job_name: blackbox
     scrape_interval: 60s
     metrics_path: /probe
@@ -121,7 +121,6 @@ scrape_configs:
           - https://semaphore.<YOUR_BASE_DOMAIN>/
           - https://immich.<YOUR_BASE_DOMAIN>/
           - https://booklore.<YOUR_BASE_DOMAIN>/
-          - https://termix.<YOUR_BASE_DOMAIN>/
           - https://dashboard.<YOUR_BASE_DOMAIN>/
           - https://forgejo.<YOUR_BASE_DOMAIN>/
           - https://portainer.<YOUR_BASE_DOMAIN>/

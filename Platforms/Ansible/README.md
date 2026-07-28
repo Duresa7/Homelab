@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-25 (monitoring-exporters project added)
+**Last updated:** 2026-07-28
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 15 supported hosts, patches 9 running Linux guests through apt or dnf, updates 16 docker compose projects on 5 hosts, & installs Prometheus exporters on 7 hosts. Semaphore provides an optional web interface over the same playbooks.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 9 running Linux guests through apt or dnf, updates 15 docker compose projects on 5 hosts, & installs Prometheus exporters on 7 hosts. Semaphore provides an optional web interface over the same playbooks.
 
 ## Live Deployment
 

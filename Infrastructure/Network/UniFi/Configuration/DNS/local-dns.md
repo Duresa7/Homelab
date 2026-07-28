@@ -1,7 +1,7 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-28
 
 I track 20 local A records on the UniFi gateway. They send NetBird and 19 internal application names to Nginx Proxy Manager at `192.168.85.2`. Public authoritative DNS stays in Cloudflare and doesn't contain the 19 application names.
 
@@ -19,7 +19,6 @@ I track 20 local A records on the UniFi gateway. They send NetBird and 19 intern
 | `semaphore.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a840` | Semaphore through NPM |
 | `immich.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a841` | Immich through NPM |
 | `booklore.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookLore through NPM |
-| `termix.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84e` | Termix through NPM |
 | `dashboard.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84f` | Homelab dashboard through NPM |
 | `forgejo.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
 | `portainer.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a852` | Portainer through NPM |

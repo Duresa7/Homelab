@@ -1,11 +1,11 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-28
 
 ## Request Path
 
-Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, or Termix) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac, Ansible Control, or Termix keys.
+Each device that can initiate SSH (Mac, Ansible Control, or Jedi PC) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac or Ansible Control keys.
 
 ![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](Diagrams/automation-flow.svg)
 
@@ -18,7 +18,6 @@ Semaphore launches the same playbooks through a web interface. It doesn't contai
 | Mac | `identities/mac.yml` | Only the exact Mac key |
 | Ansible Control | `identities/ansible-control.yml` | Only the exact Ansible Control key |
 | Jedi PC | `identities/jedi-pc.yml` | Only the exact Jedi PC key |
-| Termix | `identities/termix.yml` | Only the exact Termix key |
 
 Comments such as `jedi-pc` are labels. Exact comparison and removal use the key algorithm plus encoded public-key material, so renaming a comment does not create a different cryptographic key.
 
@@ -38,7 +37,7 @@ The removal gate stays closed unless all of these are true:
 
 The nine running Linux workload guests use the dedicated `ansible` account for controller access. That account has a validated `NOPASSWD: ALL` rule, so the controller can update packages and manage another account's authorized-key file without storing a sudo password in Ansible. Its own controller key is restricted to connections from `192.168.40.36` and disables agent forwarding, port forwarding, X11 forwarding, & PTY allocation.
 
-Each identity may override the POSIX account and authorized-keys path. `ansible-control` resolves to `/home/ansible/.ssh/authorized_keys`; Mac, Jedi PC, Termix, & the other human identities keep the original `root` or administrative-user key stores. Read, add, & remove operations become root only when the selected key store belongs to a different account than the SSH connection.
+Each identity may override the POSIX account and authorized-keys path. `ansible-control` resolves to `/home/ansible/.ssh/authorized_keys`; Mac, Jedi PC, & the other human identities keep the original `root` or administrative-user key stores. Read, add, & remove operations become root only when the selected key store belongs to a different account than the SSH connection.
 
 The four Proxmox nodes share `/etc/pve/priv/authorized_keys`. `grey-server` is the sole writer; `purple-server`, `blue-server`, and `red-server` verify the cluster-backed result without performing duplicate writes.
 
@@ -54,7 +53,7 @@ This gives the web UI automatic recovery after a controller or Proxmox-node boot
 
 ## Hosts Outside Automation
 
-- `ws-dc-2-secondary` and `obi-pc` remain in `ssh_key_unknown`; the playbooks cannot select them.
+- I removed the retired domain controllers and `obi-pc` from the deployed and repository inventories on 2026-07-27. No Windows host remains in this automation.
 - `nas-family` is retired and is absent from the inventory and validator.
 - Stopped guests remain in the general SSH-key inventory only when an existing identity record still references them. They aren't targets of the active fleet update playbooks.
 - I generate replacements on the device that owns the identity. Ansible stages, checks, & retires the public-key entries.
