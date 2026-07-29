@@ -11,3 +11,15 @@ This index links the latest complete Galaxy snapshot set. I rolled it forward on
 | [VMs Post-Kasm Build-Out - 2026-07-28.md](VMs%20Post-Kasm%20Build-Out%20-%202026-07-28.md) | Current QEMU VM configuration snapshot |
 | [LXCs Post-Kasm Build-Out - 2026-07-28.md](LXCs%20Post-Kasm%20Build-Out%20-%202026-07-28.md) | Current LXC configuration snapshot |
 | [Services Post-Kasm Build-Out - 2026-07-28.md](Services%20Post-Kasm%20Build-Out%20-%202026-07-28.md) | Current workload snapshot |
+
+## Snapshot sequence
+
+Two complete sets carry the date 2026-07-28, because I changed the fleet twice that day. Read them in this order. The suffixed set is the current one, and the plain dated set is not superseded so much as earlier in the same day.
+
+| Set | Captures | Index |
+| --- | --- | --- |
+| `- 2026-07-27` | The fleet before the 850 EVO became `ssd-lvm2` | [Galaxy Inventory - 2026-07-27.md](Galaxy%20Inventory%20-%202026-07-27.md) |
+| `- 2026-07-28` | After moving Kasm VM 122 onto `ssd-lvm2` and expanding `scsi0` to 150G | [Galaxy Inventory - 2026-07-28.md](Galaxy%20Inventory%20-%202026-07-28.md) |
+| `Post-Kasm Build-Out - 2026-07-28` | After the workspace build-out: 200G disk, VLAN 75, four session lanes | [Galaxy Inventory Post-Kasm Build-Out - 2026-07-28.md](Galaxy%20Inventory%20Post-Kasm%20Build-Out%20-%202026-07-28.md) |
+
+I keep both same-day sets rather than folding the later one into the earlier filenames. Each records a state the fleet actually held, and collapsing them would delete the only record of the intermediate one to satisfy a filename.

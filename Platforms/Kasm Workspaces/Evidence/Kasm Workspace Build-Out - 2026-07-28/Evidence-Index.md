@@ -13,3 +13,6 @@ This folder holds the command transcripts and controller read-backs for the 2026
 | Phases 3 through 6 | [S03 Gate, Group, and Workspace State](Logs/S03%20Gate,%20Group,%20and%20Workspace%20State%20-%202026-07-28.md) | Gate traffic, Lab Sessions settings, six profile directories, 19 isolated workspaces, and 15 unisolated originals verified |
 | Phase 7 | [S04 Acceptance, Reboot, and Cleanup](Logs/S04%20Acceptance,%20Reboot,%20and%20Cleanup%20-%202026-07-28.md) | Four real sessions passed egress and protected-target tests; reboot persistence, fresh launch, snapshots, and residue checks passed |
 | Final readback | [S05 Full Final State Readback](Logs/S05%20Full%20Final%20State%20Readback%20-%202026-07-28.md) | Exact VM, storage, guest network, service, Kasm policy, workspace, profile, snapshot, and residue output retained |
+| Phase 7 re-run | [S06 Lane Containment Probe Transcript](Logs/S06%20Lane%20Containment%20Probe%20Transcript%20-%202026-07-28.md) | Raw transcript for all four lanes: 36 of 36 protected probes timed out, DNS fails on 77 and 79, lane 74 exits via Proton and lane 75 via the ordinary WAN |
+
+S04 records the Phase 7 matrix as a summary, because the sessions that produced it were destroyed before the transcript was kept. S06 re-ran the same matrix and retains the output.

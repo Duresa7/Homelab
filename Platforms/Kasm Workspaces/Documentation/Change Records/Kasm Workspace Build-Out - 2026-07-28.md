@@ -120,7 +120,7 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 - I accepted controller-assigned gateway indexes 10000, 10001, and 10002 because they preserve the required security order.
 - I added the addressless netplan stanza omitted by the plan so the VLAN 75 parent remains up.
 - I accepted packet-level proof for the target-lane DNS gate because Docker's embedded resolver changes the generated file text without changing the configured upstream.
-- I retained curated results rather than the original raw Phase 3 and per-probe Phase 7 transcripts. The final-state transcript is exact, but it does not recreate those destroyed sessions.
+- I retained curated results rather than the original raw Phase 3 and per-probe Phase 7 transcripts. The final-state transcript is exact, but it does not recreate those destroyed sessions. I closed that gap the same day by re-running the whole 36-probe matrix from four throwaway containers and keeping the output in [S06](../../Evidence/Kasm%20Workspace%20Build-Out%20-%202026-07-28/Logs/S06%20Lane%20Containment%20Probe%20Transcript%20-%202026-07-28.md). One line there is redacted, because lane 75's egress check prints my ordinary WAN address.
 - I started VM 122 after `qm reboot` left it stopped. I verified the stopped state first.
 - I did not bypass the browser certificate warning. The toolbar lacks a retained visual check; the enforced group settings and real-session behavior are retained instead.
 - I restored `terminal-trusted` from Kasm's post-launch mode 0777 to 0750, then replaced only the final snapshot so its rollback state contains that correction.
@@ -149,7 +149,7 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 | VLAN 75 egress | Matched ordinary host WAN |
 | VLAN 74 egress | Proton exit `185.98.168.20` |
 | VLANs 77 and 79 egress | DNS and direct TCP blocked |
-| Protected target matrix | 36 of 36 lane-to-target probes blocked |
+| Protected target matrix | 36 of 36 lane-to-target probes blocked; re-run with the transcript kept in [S06](../../Evidence/Kasm%20Workspace%20Build-Out%20-%202026-07-28/Logs/S06%20Lane%20Containment%20Probe%20Transcript%20-%202026-07-28.md) |
 | Lane 75 to active lane listeners | Three of three blocked |
 | Profile mounts | Present only on intended persistent definitions tested |
 | Post-restart networks and shims | Four of four restored |
@@ -169,7 +169,7 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 ## Remaining Work
 
 - Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).
-- Replace the self-signed Kasm certificate or publish the UI through the approved internal HTTPS path if I want repeatable browser-automation captures.
+- Decide whether the self-signed Kasm certificate is worth replacing. I am leaving it for now, & the reason is the price of each option rather than the effort. Publishing the UI through Nginx Proxy Manager means an allow from the proxy's zone into LAB-MGMT, which cuts a hole in the boundary this project exists to build, and it would be the only inbound path to the control plane that is not a named client or the management VPN. Installing a real certificate directly on Kasm at `/opt/kasm/current/certs/` avoids that entirely, but it needs an internal DNS name resolving to `192.168.78.10` and a certificate for a name I control, so it is a small project rather than a chore. The benefit either way is repeatable browser-automation screenshots, which serves tooling rather than me: I click through one warning per login. The item stays open, not urgent.
 
 ## Evidence
 
