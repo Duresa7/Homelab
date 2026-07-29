@@ -94,9 +94,13 @@ The fleet update project now defines 11 OS targets, 6 Compose hosts, & 22 Compos
 
 Compose maintenance runs one host at a time, accepts a per-project pull policy, retries transient registry failures up to 3 times, waits up to 180 seconds for each project, & checks the complete service list for stopped or unhealthy containers.
 
-The deployed project on ansible-01 passed its validator and both Ansible syntax checks after these changes. A pre-maintenance backup remains under `/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/`.
+The deployed project on ansible-01 passed its validator and both Ansible syntax checks after these changes.
 
-Reviewing this record afterward, I found that the replacement reboot path could let the reconnect race the shutdown, so I added a wait for the guest's SSH listener to drop before reconnecting. That correction and its verification state are in [Reboot action did not finish after the guest returned](../Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md). I also moved four in-place `os-update.yml.bak.*` files out of the deployed `playbooks/` directory into `/home/ansible/fleet-update-backups/2026-07-29-in-place-playbook-edits/`, so the only playbooks beside the project's two plays are the plays themselves.
+Reviewing this record afterward, I found that the replacement reboot path could let the reconnect race the shutdown, so I added a wait for the guest's SSH listener to drop before reconnecting. That correction and its verification state are in [Reboot action did not finish after the guest returned](../Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md).
+
+I then cleared this job's working copies off the controller, because a live automation directory shouldn't hold old versions of its own files. Four `os-update.yml.bak.*` files from the deployed `playbooks/` directory and five `.pre-final-review` files from `/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/` are now in [Fleet Updates Intermediate States](../../../../Archive/Platforms/Ansible/Fleet%20Updates%20Intermediate%20States%20-%202026-07-29/README.md), hash-checked against the controller before I deleted the originals. The remaining four files in that pre-maintenance directory were byte-identical to the `e85c89c~1` state already in git, so I removed the directory rather than keep a second unversioned copy. `git show e85c89c~1:Platforms/Ansible/Source/fleet-updates/<file>` is the rollback path now, and `hosts.yml` needs the admin username substituted for the placeholder exactly as the project's publication note describes.
+
+I also deleted `/home/ansible/fleet-update-evidence/`, which held the S01 through S07 transcripts. Twelve of the thirteen were byte-identical to the copies committed under `Evidence/`. The thirteenth, `S05-system-and-container-health.log`, differed only where the committed copy carries `<YOUR_ADMIN_USERNAME>` in eight Compose paths, so the host copy held nothing the repository lacks.
 
 ## Verification
 

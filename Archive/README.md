@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 I keep retired records under their original category so the old owner & date remain obvious. Current records stay with their owner; this directory isn't a holding area for files that lack a clear location.
 
@@ -22,3 +22,10 @@ I keep retired records under their original category so the old owner & date rem
 | UniFi zone and object consolidation plan | [Zone and Object Consolidation - 2026-07-27](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
 | 61-policy pre-consolidation inventory | [Current firewall inventory](../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) |
 | Galaxy VM inventory before the Active Directory retirement | [Pre-decommission VM snapshot](Operations/Inventory/Galaxy/VMs%20-%20Pre-AD-Decommission%20-%202026-07-27.md) |
+
+## Superseded Automation Copies
+
+| Record | Replacement |
+|---|---|
+| Nine working copies from the 2026-07-29 fleet maintenance: four `os-update.yml` backups from the reboot rework and five `.pre-final-review` files | [Fleet Updates Intermediate States](Platforms/Ansible/Fleet%20Updates%20Intermediate%20States%20-%202026-07-29/README.md); the live project is [fleet-updates](../Platforms/Ansible/Source/fleet-updates/README.md) |
+| The first Ansible project on `ansible-01`, from 2026-04-09, connecting as `root` and pushing keys to root key stores | [Legacy Controller Project](Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md); superseded by the [dedicated account work](../Platforms/Ansible/Documentation/Change%20Records/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md) on 2026-07-25 |
