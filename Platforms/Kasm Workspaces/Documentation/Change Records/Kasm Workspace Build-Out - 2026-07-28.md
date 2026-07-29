@@ -200,6 +200,12 @@ I did not touch storage, and that one is not a preference. The `ssd-lvm2` volume
 
 I replaced `baseline-tiles-2026-07-28` again afterward. Proxmox snapshots capture guest configuration as well as disk state, so the earlier baseline would have rolled the guest back to 4 vCPU and 8 GiB along with the old tile names. The pool read 52.52 percent after the replacement.
 
+## Follow-up: residue sweep, 2026-07-28
+
+I swept both hosts after all of the above. Nothing was modified outside system paths on either one, no scripts, SQL, archives, packet captures, or stray output files remained, `purple-server` has no snippets directory and VM 122 carries no `cicustom` reference, the guest ran only its eight Kasm containers with no dangling images, and Kasm reported zero sessions.
+
+One real leftover: `/var/lib/kasm-profiles/terminal-trusted` held 2.7 MB of XFCE and terminal configuration written by a verification launch rather than by any work of mine. The other five profile directories were empty at 4 KB. I emptied that one and restored `1000:1000` with mode 0750 on all six, so the first genuine session on `Terminal - Normal` builds its own profile instead of inheriting a test's. Nothing else on either host traces back to this project.
+
 ## Remaining Work
 
 - Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).
