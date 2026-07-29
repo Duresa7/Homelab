@@ -183,6 +183,7 @@ Platforms/Teamspeak Hosting/Scripts/migration-scripts-job/channels.json
 # lives. These stay on local disk. The Galaxy troubleshooting index skips the
 # record this glob covers rather than linking a path git does not carry.
 /Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Duplicate*APT Repository on debian-dev*.md
+/Platforms/Teamspeak Hosting/Scripts/rotate-serverquery-password.ps1
 
 # High-risk authentication, infrastructure-variable, VPN, and vault files
 *.tfvars

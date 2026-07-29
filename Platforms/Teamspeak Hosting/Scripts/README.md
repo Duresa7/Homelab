@@ -1,14 +1,14 @@
 # TeamSpeak Scripts
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
-Operational helpers for the three TeamSpeak instances on `alpha-prod-01`. Neither script contains a credential, an address, or a domain: every value comes from an argument or the environment.
+Operational helpers for the three TeamSpeak instances on `alpha-prod-01`. No script contains a credential, an address, or a domain: every value comes from an argument or the environment. The rotation script stays out of git because it invokes my credential store's CLI directly, so the table below names it without linking it.
 
 | Script | Purpose |
 |---|---|
 | [ts3-probe.py](ts3-probe.py) | Send a real TS3 Init1 handshake to a public or local voice endpoint and report whether the service answered |
-| [rotate-serverquery-password.ps1](rotate-serverquery-password.ps1) | Rotate one instance's ServerQuery password and store the replacement without displaying it |
+| `rotate-serverquery-password.ps1` | Rotate one instance's ServerQuery password and store the replacement without displaying it. Kept on local disk only, because it calls my credential store's CLI by name |
 | [migration-scripts-job/](migration-scripts-job/) | Channel export and import used during the server migration |
 
 ## Probing

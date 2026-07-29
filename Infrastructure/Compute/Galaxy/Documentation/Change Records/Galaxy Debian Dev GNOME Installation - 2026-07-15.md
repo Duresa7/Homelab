@@ -1,7 +1,7 @@
 # Galaxy Debian Dev GNOME Installation
 
 **Created:** 2026-07-15  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-29
 
 **Status:** Complete  
 **Target:** Galaxy VM 102 on `grey-server`  
@@ -37,7 +37,7 @@ I added the renamed Debian development VM to SSH Manager with the existing Jedi-
 6. I rebooted VM 102 through Proxmox and verified a new boot ID, restored SSH access, active GDM and GNOME greeter processes, clean package state, zero failed units, and a cleared reboot-required marker.
 7. I repaired GNOME's wired-network question mark by moving `ens18` from legacy ifupdown/dhcpcd ownership to a native NetworkManager profile while preserving address `192.168.40.135` and the existing gateway/DNS.
 8. I added a Polkit rule that grants all Polkit-controlled actions to `<YOUR_ADMIN_USERNAME>` only from the active local GNOME session, eliminating graphical authentication prompts without extending the rule to remote SSH sessions.
-9. I removed a redundant legacy 1Password APT `.list` entry while retaining the package-maintained deb822 `.sources` definition and signing key.
+9. I removed a redundant legacy password-manager APT `.list` entry while retaining the package-maintained deb822 `.sources` definition and signing key.
 10. I diagnosed Claude Desktop's non-persistent sign-in warning as a first-run ordering edge case: GNOME Keyring and PAM were healthy, but Claude created `login.keyring` after the current authenticated session began and Chromium disabled libsecret when the new collection object was not yet exported.
 11. I added `<YOUR_ADMIN_USERNAME>` to the `kvm` group for Claude Cowork. I verified the persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module. The fresh GNOME sign-out/sign-in on 2026-07-22 activated both: Claude's sign-in survives a relaunch and Cowork uses `/dev/kvm`.
 
@@ -61,7 +61,7 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 | IPv4 configuration | Static `192.168.40.135/24`; gateway and DNS `192.168.40.1` |
 | Connectivity probe | Disabled; Debian's packaged probe endpoint did not resolve from this network |
 | GNOME Polkit policy | `/etc/polkit-1/rules.d/49-<YOUR_ADMIN_USERNAME>-gnome-nopasswd.rules`; `<YOUR_ADMIN_USERNAME>` + active + local only |
-| 1Password APT source | `/etc/apt/sources.list.d/1password.sources`; stable/main AMD64 with the vendor keyring |
+| Password-manager APT source | `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.sources`; stable/main AMD64 with the vendor keyring |
 | Claude credential backend | GNOME Keyring 48 / Secret Service; login collection created on Claude's first launch and exported by the 2026-07-22 fresh session |
 | Claude Cowork virtualization | `/dev/kvm` via supplementary group `kvm`; `<YOUR_ADMIN_USERNAME>` is a persistent member, with `svm`, `kvm_amd`, and `kvm` present |
 | Rollback point | `pre-gnome-20260715` |
@@ -79,7 +79,7 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 - A NetworkManager service restart proved the profile autoconnected while preserving `.135`, the default route, DNS, HTTPS internet access, and SSH.
 - Polkit approved PackageKit install and system reboot actions without prompting when checked against the active local GNOME Shell subject.
 - The same PackageKit Polkit action remained denied from the remote SSH shell, while the existing `sudo -n` path remained passwordless.
-- Two consecutive APT metadata refreshes completed without duplicate-source warnings; 1Password `8.12.28` remained installed and available from the retained vendor repository.
+- Two consecutive APT metadata refreshes completed without duplicate-source warnings; the password manager at `8.12.28` remained installed and available from the retained vendor repository.
 - GNOME Keyring packages, the enabled user daemon, Secret Service D-Bus ownership, GDM PAM hooks, and the active local Wayland session all passed inspection. Claude's journal captured the missing login collection object and Chromium's explicit restart/reboot remediation.
 - The account database now reports `kvm:x:993:<YOUR_ADMIN_USERNAME>`; `/dev/kvm` remains `root:kvm` mode `0660`, and nested AMD virtualization is available through the loaded KVM modules.
 
@@ -89,7 +89,7 @@ If GNOME causes a regression, I'll place VM 102 in maintenance, restore Proxmox 
 
 To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-<YOUR_ADMIN_USERNAME>-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
 
-To restore the retired legacy 1Password source for troubleshooting, copy `/root/apt-source-backups/1password.list.pre-dedup-20260715` back to `/etc/apt/sources.list.d/1password.list` with mode 0644. Doing so while `1password.sources` remains enabled will intentionally restore the duplicate warnings.
+To restore the retired legacy password-manager source for troubleshooting, copy `/root/apt-source-backups/<YOUR_PASSWORD_MANAGER>.list.pre-dedup-20260715` back to `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.list` with mode 0644. Doing so while `<YOUR_PASSWORD_MANAGER>.sources` remains enabled will intentionally restore the duplicate warnings.
 
 To remove Claude Cowork's KVM permission, run `gpasswd -d <YOUR_ADMIN_USERNAME> kvm` and start a new login session. The keyring diagnosis did not delete or rewrite any stored keyring data.
 
@@ -109,5 +109,5 @@ To remove Claude Cowork's KVM permission, run `gpasswd -d <YOUR_ADMIN_USERNAME> 
 | S05 | Controlled reboot and post-boot verification | A new boot completed with SSH, GDM, GNOME greeter, graphical target, and system health restored |
 | S06 | NetworkManager indicator repair | GNOME-facing wired state and NetworkManager autoconnect passed while address, route, DNS, and SSH remained stable |
 | S07 | GNOME Polkit passwordless policy | Active local GNOME actions were approved without a prompt while remote Polkit remained denied |
-| S08 | 1Password APT source deduplication | Duplicate warnings cleared twice while repository signing and package visibility remained intact |
+| S08 | Password-manager APT source deduplication | Duplicate warnings cleared twice while repository signing and package visibility remained intact |
 | S09 | Claude keyring and KVM repair | Root cause and persistent KVM membership confirmed; the 2026-07-22 fresh GNOME login closed the Secret Service and `/dev/kvm` checks |

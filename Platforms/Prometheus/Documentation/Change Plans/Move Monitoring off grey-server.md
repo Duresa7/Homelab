@@ -1,7 +1,7 @@
 # Move Monitoring off grey-server
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Status:** Complete on 2026-07-26  
 **Target:** CT 104 `monitor-01`, Debian 13 LXC on `blue-server`, VLAN 73 `MONITOR-A`, 192.168.73.2  
@@ -275,7 +275,7 @@ Debian 13 carries `prometheus-node-exporter` 1.9.0-1+b4, so this takes the APT p
 
 1. Copy `Configuration/` from this repository to `/home/<admin>/monitoring/` on `monitor-01`: `docker-compose.yml`, `prometheus.yml`, `blackbox.yml`, and the whole `grafana/` tree.
 2. Substitute `<YOUR_BASE_DOMAIN>` and `<YOUR_ADMIN_USERNAME>` in the copies. The versioned files carry placeholders; the deployed ones cannot.
-3. Create `pve.yml` with the new token, mode 0600, owner the admin user. Write it with a heredoc fed from `op read`; never echo the value. Confirm afterwards that `pve.yml` is not tracked by git and never will be.
+3. Create `pve.yml` with the new token, mode 0600, owner the admin user. Write it with a heredoc fed from the credential store; never echo the value. Confirm afterwards that `pve.yml` is not tracked by git and never will be.
 4. `docker compose up -d`.
 5. Rotate the Grafana credential immediately:
 
@@ -283,7 +283,7 @@ Debian 13 carries `prometheus-node-exporter` 1.9.0-1+b4, so this takes the APT p
 docker exec -i grafana grafana-cli admin reset-admin-password --password-from-stdin
 ```
 
-Feed it from `op read` on the existing Grafana administrator item, then rename that item for the new host. Do not add any admin password variable to the Compose file. That is exactly what caused the 2026-07-22 incident.
+Feed it from the credential store's existing Grafana administrator entry, then rename that entry for the new host. Do not add any admin password variable to the Compose file. That is exactly what caused the 2026-07-22 incident.
 
 **Pass:** six containers running, `curl -fsS http://127.0.0.1:9090/-/ready`, `curl -fsS http://127.0.0.1:3000/api/health` reporting `"database": "ok"`, `docker exec prometheus promtool check config /etc/prometheus/prometheus.yml` clean, and an authenticated Grafana API call succeeding with the rotated credential while the default one fails.
 
