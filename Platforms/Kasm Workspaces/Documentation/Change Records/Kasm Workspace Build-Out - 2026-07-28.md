@@ -182,6 +182,8 @@ The first category string was `Unsafe - Management VLAN 78`, and the dashboard w
 
 I verified the result in the UI as `alpha` rather than trusting the database. All 34 tiles render with the new names and all five categories display in full. Six names still truncate in the grid, every one of them because the application name itself is long: Claude Code, Debian Trixie, Forensic OSINT, and Tor Browser. Shortening those would mean renaming the application rather than the lane, so I left them.
 
+I replaced `baseline-tiles-2026-07-28` afterward so the baseline holds the new names. Rolling back to the old one would have restored `Chrome - Lab 74` and the rest, silently undoing the rename and putting the tiles out of step with these records. `pre-workspace-buildout-2026-07-28` is untouched and still returns the guest to its pre-build state. The pool read 52.51 percent data after the replacement.
+
 The rename touched `friendly_name` and `categories` only. It did not touch `run_config`, group membership, memory, or profile paths, and the read-back confirms every tile still resolves to the network its name claims. The real-session lane check in Phase 7 was run against the row now called `Terminal - VPN` before the rename, and `run_config` is byte-identical since.
 
 ## Remaining Work
