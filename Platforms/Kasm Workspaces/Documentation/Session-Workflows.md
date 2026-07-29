@@ -21,12 +21,18 @@ The certificate is self-signed because there's no proxy entry for this host, so 
 
 I use the 19 lane-assigned tiles instead of editing registry originals. Any new tile needs the matching override and an explicit decision about its profile path.
 
-| Lane | Override to paste | What it's for |
+The tile name tells me which lane I am about to land in. That is the whole reason the names are shaped this way.
+
+| Tile suffix | Means | Override to paste |
 | --- | --- | --- |
-| VLAN 75 | `{"network":"lab75","dns":["9.9.9.9","149.112.112.112"]}` | Trusted coding tools with ordinary WAN |
-| VLAN 74 | `{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}` | Browsers, phishing links, tooling |
-| VLAN 77 | `{"network":"lab77","dns":["192.168.77.10"]}` | Samples & disposable targets |
-| VLAN 79 | `{"network":"lab79","dns":["192.168.79.10"]}` | Artifact review |
+| `- Normal` | Ordinary WAN, saves state, for coding tools | `{"network":"lab75","dns":["9.9.9.9","149.112.112.112"]}` |
+| `- VPN` | Internet through Proton, disposable, for links & tooling | `{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}` |
+| `- Malware` | No Internet, no DNS, for samples | `{"network":"lab77","dns":["192.168.77.10"]}` |
+| `- Target` | No Internet, no DNS, disposable victim on the same lane as malware | `{"network":"lab77","dns":["192.168.77.10"]}` |
+| `- Review` | No Internet, no DNS, for artifacts | `{"network":"lab79","dns":["192.168.79.10"]}` |
+| `- Unsafe` | No override at all: management VLAN 78 with ordinary Internet and no containment | none |
+
+The `- Unsafe` tiles are the 15 registry originals. I keep them on purpose for the rare job that needs a plain session, and the suffix exists so I never open one thinking it is a lab tile.
 
 Nothing listens at `192.168.77.10` or `192.168.79.10`, which is the point: lookups fail inside the lane instead of leaking. Dropping the `dns` member lets Docker's embedded resolver at `127.0.0.11` forward through the management host, which quietly defeats an offline lane.
 
@@ -34,7 +40,7 @@ The `Lab Sessions` group enforces upload allowed, download blocked, clipboard of
 
 ## Working in the trusted-tools lane
 
-I use `Claude Code - Trusted 75`, `Codex CLI - Trusted 75`, or `Terminal - Trusted 75` for coding that needs the ordinary WAN and a profile that survives session destruction. Each tile has its own directory under `/var/lib/kasm-profiles`, so credentials and tool state do not cross between tools.
+I use `Claude Code - Normal`, `Codex CLI - Normal`, or `Terminal - Normal` for coding that needs the ordinary WAN and a profile that survives session destruction. Each tile has its own directory under `/var/lib/kasm-profiles`, so credentials and tool state do not cross between tools.
 
 Before relying on the lane, I confirm the exit matches the current ordinary WAN and does not match Proton:
 
@@ -46,7 +52,7 @@ Lane 75 cannot reach sessions on 74, 77, or 79 and cannot reach the nine protect
 
 ## Opening a phishing link
 
-Lane 74. Check the Proton route & VPN object are both enabled, then launch a browser workspace.
+`Chrome - VPN`, or `Tor Browser - VPN` when I want the extra hop. Check the Proton route & VPN object are both enabled first.
 
 Before clicking anything, confirm the egress is Proton's & not mine:
 
@@ -60,7 +66,7 @@ What this buys me: the page sees a Proton exit address, never my home IP, & if t
 
 ## Practising against a target
 
-Tooling on lane 74, target on lane 77. Start the target session first, then read its address from inside it:
+`Kali - VPN` against `Debian - Target` or `Fedora - Target`. Start the target session first, then read its address from inside it:
 
 ```bash
 ip -4 addr show eth0
@@ -78,7 +84,7 @@ Snapshot the host first. This is what makes "the Kasm host is disposable" true r
 qm snapshot 122 pre-malware-2026-07-28
 ```
 
-Run that on `purple-server`. Then launch a workspace on lane 77 & drag the sample into the session window; it lands in the session's `Uploads` directory. Upload works even though the lane has no Internet at all, because the transfer rides the HTTPS connection my browser already has to Kasm rather than the container's network.
+Run that on `purple-server`. Then launch `REMnux - Malware` & drag the sample into the session window; it lands in the session's `Uploads` directory. Upload works even though the lane has no Internet at all, because the transfer rides the HTTPS connection my browser already has to Kasm rather than the container's network.
 
 Execute it & watch. Expect DNS to fail and outbound connections to time out. That's the design: the sample cannot reach its operator, cannot pull a second stage, and cannot attack anyone else from my address. What I get is the local behaviour, the filesystem changes, and the fact & shape of its attempts.
 
@@ -91,23 +97,23 @@ qm rollback 122 pre-malware-2026-07-28 --start
 
 Rolling back reverts Kasm's own database along with everything else, so a workspace I added after the snapshot disappears too. I take a fresh snapshot whenever I finish changing workspaces or settings, & then a rollback only costs me the session I just ran.
 
-Three things not to do here. A Windows `.exe` will not run at all, because a Linux container has nothing to execute it, and that work needs a VM. Never mount a share from another host into the session, since that hands a live sample a filesystem path into the lab. And don't run a sample on lane 74 for convenience; that lane has working Internet.
+Three things not to do here. A Windows `.exe` will not run at all, because a Linux container has nothing to execute it, and that work needs a VM. Never mount a share from another host into the session, since that hands a live sample a filesystem path into the lab. And never run a sample on a `- VPN` tile for convenience; those have working Internet.
 
 ## Inspecting a file without running it
 
-Lane 79 for anything I want kept away from live sessions, lane 77 if it's part of a detonation I'm already running. Strings, hashes, unpacking, reading a suspicious PDF or an Office macro, and triaging a disk image are all fine here, because nothing hostile executes.
+`REMnux - Review` for anything I want kept away from live sessions, `REMnux - Malware` if it's part of a detonation I'm already running. Strings, hashes, unpacking, reading a suspicious PDF or an Office macro, and triaging a disk image are all fine here, because nothing hostile executes.
 
-Neither lane has Internet, so a reputation lookup means copying the hash out to a lane 74 session or to my own machine. Pasting a hash is the safer habit anyway; uploading the sample itself hands it to a third party.
+Neither lane has Internet, so a reputation lookup means copying the hash out to a `- VPN` session or to my own machine. Pasting a hash is the safer habit anyway; uploading the sample itself hands it to a third party.
 
 ## Reviewing artifacts afterwards
 
-Lane 79. It cannot be reached from 74 or 77 and cannot initiate toward either, so findings can't be touched by something still running in another lane. I reach it through the Kasm UI, never from another session.
+`REMnux - Review` or `Debian - Review`. Neither can be reached from a VPN, malware, or target tile, and neither can initiate toward one, so findings can't be touched by something still running elsewhere. I reach them through the Kasm UI, never from another session.
 
-Download stays blocked on every Lab Sessions tile. I move a written report through a reviewed Git workflow from lane 75 instead of enabling download on a malware or review workspace.
+Download stays blocked on every Lab Sessions tile. I move a written report out through a reviewed Git workflow from a `- Normal` tile instead of enabling download on a malware or review workspace.
 
 ## Checks when something feels wrong
 
-From a lane 74 session, the exit address should be Proton's, and stopping Proton should kill Internet access entirely rather than fall back. From a 77 or 79 session, both of these must fail:
+From a `- VPN` session, the exit address should be Proton's, and stopping Proton should kill Internet access entirely rather than fall back. From a malware, target, or review session, both of these must fail:
 
 ```bash
 timeout 3 bash -c 'echo > /dev/tcp/1.1.1.1/443'

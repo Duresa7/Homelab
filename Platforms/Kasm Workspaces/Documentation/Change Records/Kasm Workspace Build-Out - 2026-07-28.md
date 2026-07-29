@@ -166,6 +166,24 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 - Restore the 15 original names and categories and delete the 19 clones to unwind the catalog without restoring the VM snapshot.
 - Remove the six host profile directories only after confirming they contain no data I want to retain.
 
+## Follow-up: tile naming, 2026-07-28
+
+I renamed all 34 tiles the same day, after using the dashboard. The first scheme put the lane number in the name, which failed twice over: `Claude Code - Trusted 75` and `Forensic OSINT - Lab 74` both truncate in the grid view, and a VLAN number does not tell me what a tile is for. Alphabetical sort also placed each app beside its unisolated twin, so `Chrome - Lab 74` and `Chrome  (UNISOLATED)` sat next to each other, which is the one mistake the labels exist to prevent.
+
+The suffix now names the job. `- Normal` is the ordinary WAN with saved state, `- VPN` is Internet through Proton, `- Malware` is offline detonation, `- Target` is an offline disposable victim, `- Review` is offline artifact work, and `- Unsafe` is the 15 registry originals on the management VLAN with no override. Each tile's category carries the VLAN, as in `VPN - VLAN 74`, so the technical detail stays one line below the name instead of inside it.
+
+`- Malware` and `- Target` both sit on VLAN 77 and differ only in role. Collapsing them into one word would have erased the difference between the box I detonate on and the box I attack, so the two Debian and Fedora victims keep `- Target`.
+
+Six `UPDATE` statements in one transaction changed 34 rows: 3 to `- Normal`, 10 to `- VPN`, 2 to `- Malware`, 2 to `- Target`, 2 to `- Review`, and 15 to `- Unsafe`. The read-back joins each name against its `run_config` network and profile path, and all 34 match: every `- VPN` tile is on `lab74`, every malware and target tile on `lab77`, every review tile on `lab79`, all three `- Normal` tiles on `lab75` with a profile, and all 15 `- Unsafe` tiles with no network key at all. The three lane 74 profiles are still Nessus, Hunchly, and Telegram.
+
+The database change alone did nothing visible. Kasm's API holds the workspace catalog in memory, so the dashboard kept serving the old names through a full page reload until I restarted `kasm_api` and `kasm_manager`. Anyone editing the `images` table directly needs that restart, or they will conclude the write failed and repeat it.
+
+The first category string was `Unsafe - Management VLAN 78`, and the dashboard was too narrow to render it, showing only `VLAN 78` and dropping the one word that matters. I shortened it to `Unsafe - VLAN 78` so it displays in full and reads parallel to `VPN - VLAN 74`.
+
+I verified the result in the UI as `alpha` rather than trusting the database. All 34 tiles render with the new names and all five categories display in full. Six names still truncate in the grid, every one of them because the application name itself is long: Claude Code, Debian Trixie, Forensic OSINT, and Tor Browser. Shortening those would mean renaming the application rather than the lane, so I left them.
+
+The rename touched `friendly_name` and `categories` only. It did not touch `run_config`, group membership, memory, or profile paths, and the read-back confirms every tile still resolves to the network its name claims. The real-session lane check in Phase 7 was run against the row now called `Terminal - VPN` before the rename, and `run_config` is byte-identical since.
+
 ## Remaining Work
 
 - Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).

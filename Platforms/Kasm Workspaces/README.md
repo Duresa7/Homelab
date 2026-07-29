@@ -50,16 +50,22 @@ A workspace with no override uses `kasm_default_network` and ordinary management
 
 ## Workspace Tile Inventory
 
-The `alpha` account sees 19 lane-assigned tiles through `Lab Sessions`. The 15 registry originals remain available only through `All Users`, carry the ` (UNISOLATED)` suffix, and sit in the `Unisolated - Management Network` category.
+The `alpha` account sees 19 lane-assigned tiles through `Lab Sessions`. The 15 registry originals remain available only through `All Users`.
 
-| Lane | Tiles | Persistent profiles |
-| --- | --- | --- |
-| Trusted 75 | Claude Code, Codex CLI, Terminal | All three, each in its own directory |
-| Lab 74 | Chrome, Tor Browser, Kali, Nessus, Hunchly, Telegram, Spiderfoot, Forensic OSINT, Cyberbro, Terminal | Nessus, Hunchly, and Telegram only |
-| Malware 77 | REMnux, Debian, Fedora, Terminal | None |
-| Review 79 | REMnux, Debian | None |
+Tile names say what the tile is for, not which VLAN carries it. The suffix is the whole label: `Chrome - VPN`, `REMnux - Malware`, `Debian - Target`. Each tile's category line underneath carries the VLAN, so the number stays visible without crowding the name. I renamed them this way on 2026-07-28 because the first scheme put the lane number in the name, which truncated in the dashboard grid and told me nothing about what the tile does.
 
-The trusted tiles use the ordinary WAN. Lane 74 uses Proton. The malware and review tiles use nonexistent lane-local resolvers so DNS fails inside those networks.
+| Suffix | Category | Network | Tiles | Persistent profiles |
+| --- | --- | --- | --- | --- |
+| `- Normal` | `Normal - VLAN 75` | `lab75` | Claude Code, Codex CLI, Terminal | All three, each in its own directory |
+| `- VPN` | `VPN - VLAN 74` | `lab74` | Chrome, Tor Browser, Kali, Nessus, Hunchly, Telegram, Spiderfoot, Forensic OSINT, Cyberbro, Terminal | Nessus, Hunchly, and Telegram only |
+| `- Malware` | `Malware - VLAN 77` | `lab77` | REMnux, Terminal | None |
+| `- Target` | `Malware - VLAN 77` | `lab77` | Debian, Fedora | None |
+| `- Review` | `Review - VLAN 79` | `lab79` | REMnux, Debian | None |
+| `- Unsafe` | `Unsafe - VLAN 78` | none | All 15 registry originals | None |
+
+`- Malware` and `- Target` share VLAN 77 and differ only in role. Malware tiles are where I detonate and inspect; target tiles are disposable victims I attack from a VPN tile. Splitting the word keeps that distinction in the name.
+
+The `- Normal` tiles use the ordinary WAN. `- VPN` uses Proton. The malware, target, and review tiles point at nonexistent lane-local resolvers so DNS fails inside those networks. The `- Unsafe` tiles have no override at all, so they run on `kasm_default_network` with ordinary management-plane egress: that is the point of keeping them, and the suffix is there so I never launch one by accident.
 
 ## Running a malware session
 
