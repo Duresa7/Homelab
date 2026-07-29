@@ -1,7 +1,7 @@
 # Termix Decommission
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Date:** 2026-07-28  
 **Scope:** Remove the Termix web SSH platform from `docker-main`, revoke its deployed key, and clear every live reference. I kept no backup.
@@ -38,7 +38,7 @@ NPM proxy host 11 forwarded `termix.<YOUR_BASE_DOMAIN>` to `192.168.40.35:8080`.
 
 ## Step 4: Remove the Prometheus probe
 
-I dropped the blackbox target from `/home/dkadi/monitoring/prometheus.yml` on `monitor-01`, leaving 18 probed service names. `promtool check config` passed.
+I dropped the blackbox target from `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml` on `monitor-01`, leaving 18 probed service names. `promtool check config` passed.
 
 `POST /-/reload` returned HTTP 403 because this Prometheus runs without `--web.enable-lifecycle`, so I restarted the container instead. The first read 12 seconds later showed 30 targets not up, which was just the 15-second and 60-second scrape intervals not having fired yet. A read 75 seconds later returned 45 active targets with 45 up and no Termix entry.
 

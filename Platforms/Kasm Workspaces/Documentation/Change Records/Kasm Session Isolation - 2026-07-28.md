@@ -1,7 +1,7 @@
 # Kasm Session Isolation
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Implemented:** 2026-07-28  
 **Owner:** Platforms / Kasm Workspaces  
@@ -32,10 +32,10 @@ VM 122 has four VirtIO NICs:
 
 | NIC | VLAN | MAC | Proxmox firewall |
 | --- | ---: | --- | --- |
-| `net0` | 78 | `BC:24:11:33:A0:F1` | enabled |
-| `net1` | 74 | `BC:24:11:D7:E4:2E` | disabled |
-| `net2` | 77 | `BC:24:11:C5:EE:3D` | disabled |
-| `net3` | 79 | `BC:24:11:0F:77:1B` | disabled |
+| `net0` | 78 | `<YOUR_KASM_HOST_MAC>` | enabled |
+| `net1` | 74 | `<YOUR_KASM_LANE_74_MAC>` | disabled |
+| `net2` | 77 | `<YOUR_KASM_LANE_77_MAC>` | disabled |
+| `net3` | 79 | `<YOUR_KASM_LANE_79_MAC>` | disabled |
 
 I disabled the Proxmox firewall on the three macvlan parents because each session container uses its own MAC address. Enabling it would make the bridge filter discard valid session traffic.
 
@@ -244,7 +244,7 @@ Three things came out of reviewing the finished work.
 
 `LABMGMT Allow monitor-01 to kasm-01 node_exporter` permits `192.168.73.2` to that one port. The scrape still failed until I narrowed `LABMGMT Block to <YOUR_ORG_NAME>-Observability` from all connection states to `NEW, INVALID`; blocking every state also dropped the replies to a scrape monitor-01 had started. `kasm-01` still cannot initiate toward `192.168.73.2` on 9090, 3000, or 22. Prometheus reports 47 targets, all up, and the repository's target assertion passes.
 
-**The exporter needed a managed account, and that account is smaller than the fleet's.** The monitoring-exporters validator requires `ansible_user: ansible` on every host, and it failed my first attempt because I had pointed the inventory at `dkadi`. The check earned its keep, so I provisioned the standard account instead of relaxing it: user `ansible`, the controller's key carrying `from="192.168.40.36"` with pty and all forwarding disabled, and a mode-0440 `90-ansible` sudoers drop-in.
+**The exporter needed a managed account, and that account is smaller than the fleet's.** The monitoring-exporters validator requires `ansible_user: ansible` on every host, and it failed my first attempt because I had pointed the inventory at `<YOUR_ADMIN_USERNAME>`. The check earned its keep, so I provisioned the standard account instead of relaxing it: user `ansible`, the controller's key carrying `from="192.168.40.36"` with pty and all forwarding disabled, and a mode-0440 `90-ansible` sudoers drop-in.
 
 I then cut it below the fleet pattern. It holds no supplementary groups, so neither `sudo` nor `docker`, and its drop-in reads `ansible ALL=(root) NOPASSWD: ALL` rather than `(ALL:ALL)`. `docker` membership is root-equivalent by itself through a host bind mount, and the exporter play never touches Docker. What I could not do is allowlist commands: Ansible escalates through `sudo -u root /bin/sh -c '<token>; python3'` and feeds the module on stdin, so any grant that lets the play run is equivalent to root. The real constraints on this account are the source-address restriction on its key and the empty group list. The play runs clean afterwards and still reports `listen=192.168.78.10:9100`.
 

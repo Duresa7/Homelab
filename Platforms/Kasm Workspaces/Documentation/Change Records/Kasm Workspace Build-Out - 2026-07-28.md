@@ -1,7 +1,7 @@
 # Kasm Workspace Build-Out
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Implemented:** 2026-07-28  
 **Owner:** Platforms / Kasm Workspaces  
@@ -55,7 +55,7 @@ Docker's generated `/etc/resolv.conf` used its embedded resolver at `127.0.0.11`
 
 ### Step 4: Apply the Lab Sessions policy
 
-I added `alpha` to `Lab Sessions`, raised the concurrent-session cap to two, enabled uploads and persistent-profile support, and kept download, clipboard, microphone, printing, sharing, and user storage mappings disabled. The one-hour limit stayed in place. I did not change `All Users` or `dkadi` membership.
+I added `alpha` to `Lab Sessions`, raised the concurrent-session cap to two, enabled uploads and persistent-profile support, and kept download, clipboard, microphone, printing, sharing, and user storage mappings disabled. The one-hour limit stayed in place. I did not change `All Users` or `<YOUR_ADMIN_USERNAME>` membership.
 
 I read the 12 effective settings from Kasm's `group_settings` table after the change. The exact values and the target-lane gate are retained in [S03 Gate, Group, and Workspace State](../../Evidence/Kasm%20Workspace%20Build-Out%20-%202026-07-28/Logs/S03%20Gate,%20Group,%20and%20Workspace%20State%20-%202026-07-28.md).
 

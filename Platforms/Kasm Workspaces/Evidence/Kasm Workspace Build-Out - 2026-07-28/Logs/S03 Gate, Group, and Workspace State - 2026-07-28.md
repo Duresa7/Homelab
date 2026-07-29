@@ -1,7 +1,7 @@
 # S03 Gate, Group, and Workspace State
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Capture time:** 2026-07-28 EDT  
 **Target:** Kasm Workspaces 1.19.0 on `kasm-01`  
@@ -34,7 +34,7 @@ max_kasms_per_user=2
 session_time_limit=3600
 ```
 
-`All Users` settings and the `dkadi` membership rows did not change.
+`All Users` settings and the `<YOUR_ADMIN_USERNAME>` membership rows did not change.
 
 ## Persistent profiles
 

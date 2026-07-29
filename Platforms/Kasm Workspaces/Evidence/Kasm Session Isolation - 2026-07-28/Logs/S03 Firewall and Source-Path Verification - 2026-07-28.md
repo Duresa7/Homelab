@@ -1,7 +1,7 @@
 # S03 Firewall and Source-Path Verification
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Capture window:** 2026-07-28T15:14:47-04:00 through 2026-07-28T15:26:08-04:00  
 **Targets:** UniFi firewall and `https://192.168.78.10/`  
@@ -57,7 +57,7 @@ recorded_curl_exit=28
 app_01 | Server VLAN 80
 timestamp=2026-07-28T15:14:52-04:00
 shell=/bin/bash
-cwd=/home/dkadi
+cwd=/home/<YOUR_ADMIN_USERNAME>
 source_ip=192.168.80.10
 http_code=000 remote_ip= curl_exit=28
 recorded_curl_exit=28
@@ -65,7 +65,7 @@ recorded_curl_exit=28
 monitor_01 | Observability VLAN 73
 timestamp=2026-07-28T15:14:57-04:00
 shell=/bin/bash
-cwd=/home/dkadi
+cwd=/home/<YOUR_ADMIN_USERNAME>
 source_ip=192.168.73.2
 http_code=000 remote_ip= curl_exit=28
 recorded_curl_exit=28
@@ -73,7 +73,7 @@ recorded_curl_exit=28
 security_01 | Security VLAN 72
 timestamp=2026-07-28T19:15:02+00:00
 shell=/bin/bash
-cwd=/home/dkadi
+cwd=/home/<YOUR_ADMIN_USERNAME>
 source_ip=192.168.72.2
 http_code=000 remote_ip= curl_exit=28
 recorded_curl_exit=28
@@ -81,7 +81,7 @@ recorded_curl_exit=28
 docker_network | Access VLAN 85
 timestamp=2026-07-28T15:16:26-04:00
 shell=/bin/bash
-cwd=/home/dkadi
+cwd=/home/<YOUR_ADMIN_USERNAME>
 source_ip=192.168.85.2
 http_code=000 remote_ip= curl_exit=28
 recorded_curl_exit=28

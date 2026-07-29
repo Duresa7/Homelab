@@ -1,7 +1,7 @@
 # S07 Documentation and Local Access Verification
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Capture timestamp:** 2026-07-28T15:15:21.1243202-04:00  
 **Target:** Local Homelab workspace and Jedi PC SSH configuration  
@@ -37,7 +37,7 @@ checks run: 1080
 all passed
 mission_control_exit=0
 --- ssh-alias ---
-user dkadi
+user <YOUR_ADMIN_USERNAME>
 hostname 192.168.78.10
 port 22
 ssh_exit=0

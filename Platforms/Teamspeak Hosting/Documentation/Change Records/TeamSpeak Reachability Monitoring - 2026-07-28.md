@@ -1,7 +1,7 @@
 # TeamSpeak Reachability Monitoring
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Date:** 2026-07-28  
 **Scope:** Monitor the three TeamSpeak voice servers from the address my users actually connect to, and separate a local server fault from a Playit tunnel or DNS fault.
@@ -26,7 +26,7 @@ Running on `alpha-prod-01` costs no firewall change. Prometheus already scrapes 
 
 ## What I built
 
-A container at `/home/dkadi/teamspeak-monitor` writing a Prometheus textfile into `/var/lib/prometheus/node-exporter/`, which the host's `prometheus-node-exporter` already publishes on 9100. Source is versioned at [Source/teamspeak-monitor](../../Source/teamspeak-monitor/).
+A container at `/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor` writing a Prometheus textfile into `/var/lib/prometheus/node-exporter/`, which the host's `prometheus-node-exporter` already publishes on 9100. Source is versioned at [Source/teamspeak-monitor](../../Source/teamspeak-monitor/).
 
 The probe is a real TeamSpeak 3 `Init1` step-0 packet and a pass requires a reply whose MAC is `TS3INIT1`. That means the voice service answered, not that a port happened to be open.
 
@@ -40,7 +40,7 @@ Then it derives the fault location: `teamspeak_tunnel_fault` is 1 when local is 
 
 `network_mode: host` lets it see the local voice and ServerQuery ports exactly as a local client does. It runs as root inside the container so it can write the collector directory, which is why the compose file mounts only that one path.
 
-I used Docker rather than a systemd timer because `dkadi` can't `sudo` without a password on this host, and everything else on `alpha-prod-01` already runs under Docker.
+I used Docker rather than a systemd timer because `<YOUR_ADMIN_USERNAME>` can't `sudo` without a password on this host, and everything else on `alpha-prod-01` already runs under Docker.
 
 ## Metrics
 

@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-28  
+**Last updated:** 2026-07-29  
 
 Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -342,11 +342,11 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 78 | 192.168.78.10/24 | 192.168.78.1 | enabled | BC:24:11:33:A0:F1 |
-| net1 | virtio | vmbr0 | 74 | none | none | disabled | BC:24:11:D7:E4:2E |
-| net2 | virtio | vmbr0 | 77 | none | none | disabled | BC:24:11:C5:EE:3D |
-| net3 | virtio | vmbr0 | 79 | none | none | disabled | BC:24:11:0F:77:1B |
-| net4 | virtio | vmbr0 | 75 | none | none | disabled | BC:24:11:8A:6A:82 |
+| net0 | virtio | vmbr0 | 78 | 192.168.78.10/24 | 192.168.78.1 | enabled | <YOUR_KASM_HOST_MAC> |
+| net1 | virtio | vmbr0 | 74 | none | none | disabled | <YOUR_KASM_LANE_74_MAC> |
+| net2 | virtio | vmbr0 | 77 | none | none | disabled | <YOUR_KASM_LANE_77_MAC> |
+| net3 | virtio | vmbr0 | 79 | none | none | disabled | <YOUR_KASM_LANE_79_MAC> |
+| net4 | virtio | vmbr0 | 75 | none | none | disabled | <YOUR_KASM_LANE_75_MAC> |
 
 Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. I moved it to Purple, attached four session NICs, and expanded `scsi0` from 100G through 150G to 200G on 2026-07-28. The guest reports a 193G root partition and ext4 filesystem. The parents carry no host address; Docker networks `lab74`, `lab75`, `lab77`, and `lab79` own the session ranges.
 

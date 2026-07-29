@@ -1,7 +1,7 @@
 # S05 Full Final State Readback
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Capture time:** 2026-07-29 00:44:43 through 00:45:45 UTC  
 **Target:** `purple-server`, VM 122 `kasm-01`  
@@ -69,11 +69,11 @@ status: running
 cores: 4
 memory: 8192
 name: kasm-01
-net0: virtio=BC:24:11:33:A0:F1,bridge=vmbr0,firewall=1,tag=78
-net1: virtio=BC:24:11:D7:E4:2E,bridge=vmbr0,firewall=0,tag=74
-net2: virtio=BC:24:11:C5:EE:3D,bridge=vmbr0,firewall=0,tag=77
-net3: virtio=BC:24:11:0F:77:1B,bridge=vmbr0,firewall=0,tag=79
-net4: virtio=BC:24:11:8A:6A:82,bridge=vmbr0,firewall=0,tag=75
+net0: virtio=<YOUR_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78
+net1: virtio=<YOUR_KASM_LANE_74_MAC>,bridge=vmbr0,firewall=0,tag=74
+net2: virtio=<YOUR_KASM_LANE_77_MAC>,bridge=vmbr0,firewall=0,tag=77
+net3: virtio=<YOUR_KASM_LANE_79_MAC>,bridge=vmbr0,firewall=0,tag=79
+net4: virtio=<YOUR_KASM_LANE_75_MAC>,bridge=vmbr0,firewall=0,tag=75
 scsi0: ssd-lvm2:vm-122-disk-1,iothread=1,size=200G,ssd=1
 pre-workspace-buildout-2026-07-28  2026-07-28 19:35:27  no-description
 baseline-tiles-2026-07-28           2026-07-28 20:45:45  Accepted Kasm workspace build-out baseline after lane, policy, persistence-mode, reboot, and launch verification

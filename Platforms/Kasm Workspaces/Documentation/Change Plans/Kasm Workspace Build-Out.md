@@ -1,7 +1,7 @@
 # Kasm Workspace Build-Out
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Status:** Executed 2026-07-28  
 **Completion record:** [Kasm Workspace Build-Out - 2026-07-28](../Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md)
@@ -28,7 +28,7 @@ Claude Code, Codex CLI, & Terminal get their own lane rather than sitting on the
 
 Nessus, Hunchly, & Telegram get persistent profiles on lane 74. Nessus re-downloads a plugin feed of a gigabyte or more per launch without one, & Hunchly is keyed per install.
 
-`alpha` is my daily account & gets every lab tile. `dkadi` stays admin-only. `alpha` stays a single account rather than splitting the persistent tiles onto a second one. That has a cost, recorded under "Consequences I accepted".
+`alpha` is my daily account & gets every lab tile. `<YOUR_ADMIN_USERNAME>` stays admin-only. `alpha` stays a single account rather than splitting the persistent tiles onto a second one. That has a cost, recorded under "Consequences I accepted".
 
 The 15 original registry entries stay enabled & attached to All Users, because I want an unisolated session available when I deliberately choose one. They get renamed so I can't confuse one with a lane tile.
 
@@ -42,7 +42,7 @@ Memory shows 7.7 GiB total with 2.0 GiB held by Kasm's eight running containers,
 
 Inside the VM, `eth0` is 192.168.78.10 with the default route via 192.168.78.1. The macvlan parents are `enp6s19` for lab74, `enp6s20` for lab77, & `enp6s21` for lab79, each a `/24` with an IPAM range of `x.x.x.208/28` & gateway `x.x.x.1`. Host shims `shim74`, `shim77`, & `shim79` hold `x.x.x.201/32` with a route to the matching `/28`. They come from `/usr/local/sbin/kasm-lab-shims`, run once at boot by `kasm-lab-shims.service` ordered before `docker.service`.
 
-Kasm has three groups: Administrators at priority 1, Lab Sessions at 100, All Users at 1000. Lower priority wins. `dkadi` belongs to all three. `alpha` belongs to All Users only, so today it inherits downloads, clipboard, persistence, & storage mappings all enabled. Lab Sessions has zero workspaces attached; the 15 originals are attached to All Users.
+Kasm has three groups: Administrators at priority 1, Lab Sessions at 100, All Users at 1000. Lower priority wins. `<YOUR_ADMIN_USERNAME>` belongs to all three. `alpha` belongs to All Users only, so today it inherits downloads, clipboard, persistence, & storage mappings all enabled. Lab Sessions has zero workspaces attached; the 15 originals are attached to All Users.
 
 The `images` table carries exactly one unique index, on `image_id`, which defaults to `uuid_generate_v4()`. Nothing constrains `name` or `friendly_name`, so several tiles can point at one image. `run_config` is `NOT NULL` json.
 
@@ -195,7 +195,7 @@ Then set these on Lab Sessions. Four are new, one is a change, & the rest alread
 | `allow_kasm_uploads` | True | Confirm unchanged. Uploads ride my HTTPS session to Kasm, not the container's network, which is how a sample reaches an offline lane. |
 | `session_time_limit` | 3600 | Confirm unchanged. |
 
-Leave All Users alone. `dkadi` needs a working admin session & the 15 originals stay attached there.
+Leave All Users alone. `<YOUR_ADMIN_USERNAME>` needs a working admin session & the 15 originals stay attached there.
 
 ## Phase 5: create the 19 tiles
 
