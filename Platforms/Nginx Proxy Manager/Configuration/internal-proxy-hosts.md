@@ -28,6 +28,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `prometheus.<YOUR_BASE_DOMAIN>` | `192.168.73.2:9090` | HTTP | Prometheus starts with this HTTPS external URL. No added NPM authentication. |
 | `splunk.<YOUR_BASE_DOMAIN>` | `192.168.72.3:8000` | HTTPS | NPM connects to Splunk Web's existing HTTPS listener. HEC, syslog, & management ports remain direct backend services. |
 | `ts3-manager.<YOUR_BASE_DOMAIN>` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, & Playit ports remain outside NPM. |
+| `kasm.<YOUR_BASE_DOMAIN>` | `192.168.78.10:443` | HTTPS | NPM connects to Kasm's existing HTTPS listener. SSH, exporters, & all four session lanes remain outside NPM. |
 
 The existing `<YOUR_NETBIRD_DOMAIN>` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 

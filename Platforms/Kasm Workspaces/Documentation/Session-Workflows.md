@@ -13,9 +13,11 @@ How I use the lab, one workflow per job. The isolation and lane-assigned tiles a
 
 ## Getting in
 
-The UI is `https://192.168.78.10/`, & SSH uses the same address. Reachable from Jedi PC at `192.168.50.241`, the Mac on Trusted, anything on Personal-A, & any client on the Management Access VPN. Nothing else on the network can even see the login page.
+The normal way in is `https://kasm.<YOUR_BASE_DOMAIN>/` through NPM, which presents the wildcard certificate and throws no warning. `https://192.168.78.10/` still works as a direct fallback and still shows a self-signed warning, because Kasm's own certificate is untouched. SSH uses the address, never the name.
 
-The certificate is self-signed because there's no proxy entry for this host, so the browser warning is expected. Community Edition caps me at five concurrent sessions & one named user.
+The direct address answers only Jedi PC at `192.168.50.241`, the Mac on Trusted, anything on Personal-A, and any client on the Management Access VPN. The proxied name resolves on the internal resolver alone and NPM has no WAN ingress, so nothing off-network reaches either path. It does mean the login page is now reachable from wherever NPM is reachable, which is wider than those four, so the password is what stands in front of it rather than the network.
+
+Community Edition caps me at five concurrent sessions and one named user.
 
 ## Setting a workspace up once
 

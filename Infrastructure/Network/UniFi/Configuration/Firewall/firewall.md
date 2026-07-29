@@ -3,13 +3,13 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-28
 
-I verified this inventory against the live controller after the [Kasm workspace build-out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md) on 2026-07-28.
+I verified this inventory against the live controller after publishing Kasm through NPM on 2026-07-28.
 
-The gateway runs UniFi's zone-based V2 firewall. It has 118 user-defined policies after the Kasm workspace build-out on 2026-07-28. The list below contains the durable custom policy inventory, including 55 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. It has 119 user-defined policies after the Kasm NPM route on 2026-07-28. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
 
 ## Recorded Custom Policy Inventory
 
-Every custom policy uses the `Always` schedule. Two stateful isolation blocks use `NEW, INVALID`; the rest use connection state `ALL`. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
+Every custom policy uses the `Always` schedule. Three stateful isolation blocks use `NEW, INVALID`; the rest use connection state `ALL`. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
 
 | Policy | Enabled | Action | Index | Protocol | Source | Destination |
 |---|---|---|---:|---|---|---|
@@ -48,6 +48,7 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 8080, 8384, 9443 |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | `<YOUR_ORG_NAME>`-Servers / 192.168.80.118 / 9000 |
+| `Allow NPM to kasm-01 web UI` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | LAB-MGMT / 192.168.78.10 / 443 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | `<YOUR_ORG_NAME>`-Observability / 192.168.72.3 / 8000 |
 | `KASM Allow KASM-BROWSER DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | KASM-BROWSER / 68 | Gateway / 67 |
@@ -72,7 +73,7 @@ Every custom policy uses the `Always` schedule. Two stateful isolation blocks us
 | `LABMGMT Block to Internal` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | Internal / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
-| `LABMGMT Block to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
 | `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |

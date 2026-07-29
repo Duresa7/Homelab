@@ -39,3 +39,10 @@ Internal HTTPS onboarding is closed. NPM now has no open items.
 - [x] 2026-07-28: Added one logged policy permitting only NPM at `192.168.85.2` to reach `alpha-prod-01` at `192.168.80.118:9000`.
 - [x] 2026-07-28: Added NPM proxy host ID 22 with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
 - [x] 2026-07-28: Completed restart recovery, 46-target blackbox monitoring, documentation, final route validation, & deletion of every backup and temporary deployment file created by the change.
+
+## Kasm Workspaces Internal HTTPS
+
+- [x] 2026-07-28: Added `kasm.<YOUR_BASE_DOMAIN>` as NPM proxy host ID 23 with an HTTPS upstream, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
+- [x] 2026-07-28: Added one TTL-300 UniFi A record and one logged policy permitting only `192.168.85.2` to reach `192.168.78.10:443`.
+- [x] 2026-07-28: Narrowed the LAB-MGMT-to-Access block from `ALL` to `NEW, INVALID` after a packet capture proved it dropped Kasm's SYN-ACK.
+- [x] 2026-07-28: Added the twentieth NPM blackbox probe, verified all 48 scrape targets `up`, & verified `probe_success=1` for all 20 active URLs.

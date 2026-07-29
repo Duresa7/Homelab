@@ -11,7 +11,7 @@ The `Lab Sessions` group limits `alpha` to three concurrent sessions. Kasm's own
 
 ## Current State
 
-The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443, as does Jedi PC at `192.168.50.241`, which needed its own rule because the Secure VLAN was never in the allow list. The Management Access VPN permits the same ports, verified from a real remote client on 2026-07-28. Every other Internal network and all service zones are blocked from the UI, and the three narrow allows are ordered above the catchall blocks that enforce that.
+The control plane lives alone on LAB-MGMT VLAN 78. Trusted and Personal-A reach TCP 22 and 443, as does Jedi PC at `192.168.50.241`, which needed its own rule because the Secure VLAN was never in the allow list. The Management Access VPN permits the same ports, verified from a real remote client on 2026-07-28. NPM at `192.168.85.2` has one TCP 443 path. Every other Internal network and all service zones are blocked from the UI, and the four narrow allows are ordered above the catchall blocks that enforce that.
 
 Session containers join one of four Docker macvlan networks:
 
@@ -83,7 +83,7 @@ Sessions are not serialised. A sample can run beside another workspace, and a co
 
 ## Access
 
-SSH uses `<YOUR_ADMIN_USERNAME>@192.168.78.10`. The web UI is `https://192.168.78.10/`. The administrator credential and current URLs live outside this repository; nothing here holds a secret.
+SSH uses `<YOUR_ADMIN_USERNAME>@192.168.78.10`. The normal web path is `https://kasm.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback is `https://192.168.78.10/`. The administrator credential lives outside this repository; nothing here holds a secret.
 
 The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session runs. An enabled but failed tunnel is kill-switched. Administratively disabling the VPN object causes UniFi to use the normal WAN.
 
@@ -95,6 +95,7 @@ The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session run
 | [Deployment](Documentation/Deployment.md) | Original Kasm 1.19.0 build and current-state note |
 | [Kasm Session Isolation](Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) | Migration, storage, network, policy, tests, exceptions, and cleanup |
 | [Kasm Workspace Build-Out](Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md) | Disk growth, VLAN 75, 19 lane tiles, account policy, and acceptance results |
+| [Kasm Workspaces Internal HTTPS](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md) | NPM host, DNS, firewall return path, monitoring, & route verification |
 | [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
 | [Kasm Workspace Build-Out plan](Documentation/Change%20Plans/Kasm%20Workspace%20Build-Out.md) | Executed plan for the 19 tiles, VLAN 75 trusted lane, and 200 GiB disk |
 | [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md) | Cross-system boundary model |

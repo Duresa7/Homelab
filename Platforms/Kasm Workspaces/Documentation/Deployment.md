@@ -6,7 +6,7 @@
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
 **Host:** `kasm-01`, VM 122 on `purple-server`, `192.168.78.10`  
-**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition, four session lanes, 19 isolated workspaces, and the Management Access VPN client path are verified as of 2026-07-28.
+**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition, four session lanes, 19 isolated workspaces, the Management Access VPN client path, & internal NPM access are verified as of 2026-07-28.
 
 ## Current State on 2026-07-28
 
@@ -19,6 +19,8 @@ Four addressless guest NICs carry VLANs 74, 75, 77, and 79. Docker macvlan netwo
 I created the `Lab Sessions` group with a 3,600-second session limit, a three-session cap after the memory increase, upload enabled, and download, clipboard, printing, sharing, and user storage mappings disabled. Persistent profiles are available only to the six named trusted-lane tools with dedicated host directories. Every lab workspace has a Docker Run Config Override that declares both its network and resolver. The original isolation layout and Proton operating rule are in [Kasm Session Isolation](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). The 19-workspace inventory, KASM-TRUSTED lane, selective persistence, and final acceptance results are in [Kasm Workspace Build-Out](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
 I updated the existing `Host kasm-01` entry in Jedi PC's SSH configuration to `192.168.78.10` and confirmed `ssh -G kasm-01` resolves that address with user `<YOUR_ADMIN_USERNAME>`.
+
+I published the control plane at `https://kasm.<YOUR_BASE_DOMAIN>` through NPM on 2026-07-28. UniFi resolves that name only on the internal resolver, NPM forwards HTTPS to `192.168.78.10:443`, & the existing wildcard certificate replaces the installer's self-signed certificate on the client-facing path. Direct access at `https://192.168.78.10/` remains available.
 
 The original build history below records the 2026-07-24 deployment on Grey and VLAN 80. Those values explain the starting point and are not the current address or placement.
 
@@ -181,6 +183,6 @@ These were test launches on VLAN 80 with no isolation in place, which is fine fo
 - I completed the VLAN 74, 75, 77, and 79 NICs, macvlan networks, shim routes, and explicit UniFi containment rules on 2026-07-28.
 - I completed the harmless-container acceptance matrix before allowing a live sample.
 - I created 19 isolated workspaces and relabeled all 15 original definitions as unisolated on 2026-07-28.
-- Decide whether `kasm.<YOUR_BASE_DOMAIN>` goes through Nginx Proxy Manager at `192.168.85.2`, which would replace the self-signed certificate warning with the wildcard certificate.
+- I published `kasm.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager at `192.168.85.2` on 2026-07-28. The client-facing path validates against certificate ID 1 while NPM keeps HTTPS on the backend.
 - I disabled the stale VLAN 77 DHCP DNS option on 2026-07-28. UniFi retains `192.168.77.10` as an inactive value, so the network no longer advertises it.
 - Register `kasm-01` in the SSH Manager inventory. The MCP exposes no add-server tool & I couldn't locate its inventory file, so this stays manual.

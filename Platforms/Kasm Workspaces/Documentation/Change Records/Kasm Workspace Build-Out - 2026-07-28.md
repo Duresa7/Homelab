@@ -206,10 +206,22 @@ I swept both hosts after all of the above. Nothing was modified outside system p
 
 One real leftover: `/var/lib/kasm-profiles/terminal-trusted` held 2.7 MB of XFCE and terminal configuration written by a verification launch rather than by any work of mine. The other five profile directories were empty at 4 KB. I emptied that one and restored `1000:1000` with mode 0750 on all six, so the first genuine session on `Terminal - Normal` builds its own profile instead of inheriting a test's. Nothing else on either host traces back to this project.
 
+## Follow-up: certificate decision, closed 2026-07-28
+
+I published the control plane at `kasm.<YOUR_BASE_DOMAIN>` through NPM rather than installing a certificate on Kasm itself. The build narrative is in [Deployment](../Deployment.md); what belongs here is why the decision flipped and what I checked afterward.
+
+I had argued against the proxy on the grounds that it cuts an inbound path into LAB-MGMT. Two facts changed that. NPM binds 80, 81, and 443 on `192.168.85.2` with no WAN ingress and its 19 application names return NXDOMAIN publicly, so the proxy adds no Internet exposure. And the alternative was worse against my own threat model: copying the wildcard certificate onto Kasm would put a domain-wide private key on the host that runs malware, and I have already accepted that this host is the disposable part of the design. A one-address one-port firewall rule is a smaller concession than a domain-wide key sitting on the box I plan to roll back after every sample.
+
+The rule is `Allow NPM to kasm-01 web UI`, and it is as narrow as it should be: protocol TCP, source the single address `192.168.85.2` in the Access zone, destination the single address `192.168.78.10` on port 443 only, allow-respond on, logging on, index 10000 above the catchall blocks. It is the fourth and last inbound allow to LAB-MGMT.
+
+NPM generated `data/nginx/proxy_host/23.conf` with `$forward_scheme https` to `192.168.78.10:443`, the wildcard certificate, block-exploits, force-SSL, HSTS off, and no access list. The websocket headers matter more than the rest, since Kasm streams sessions over websockets and a proxy without them serves a login page and then a black screen: `proxy_set_header Upgrade`, `proxy_set_header Connection`, and `proxy_http_version 1.1` are present at both server level and inside `location /`. The login page loads over the proxied name with no certificate interstitial, which also unblocked browser automation against the UI for the first time.
+
+Two things worth knowing. The login page is now reachable from wherever NPM is reachable rather than only from the four named client paths, so the password is the control in front of it, not the network. And Kasm sees every request as coming from `192.168.85.2`, so session logs will attribute all proxied access to NPM unless I configure Kasm's trusted-proxy settings. That is a logging fidelity question, not a functional one.
+
 ## Remaining Work
 
 - Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).
-- Decide whether the self-signed Kasm certificate is worth replacing. I am leaving it for now, & the reason is the price of each option rather than the effort. Publishing the UI through Nginx Proxy Manager means an allow from the proxy's zone into LAB-MGMT, which cuts a hole in the boundary this project exists to build, and it would be the only inbound path to the control plane that is not a named client or the management VPN. Installing a real certificate directly on Kasm at `/opt/kasm/current/certs/` avoids that entirely, but it needs an internal DNS name resolving to `192.168.78.10` and a certificate for a name I control, so it is a small project rather than a chore. The benefit either way is repeatable browser-automation screenshots, which serves tooling rather than me: I click through one warning per login. The item stays open, not urgent.
+- Closed on 2026-07-28 by publishing the UI through NPM. See the follow-up below and the current-state note in [Deployment](../Deployment.md).
 
 ## Evidence
 
