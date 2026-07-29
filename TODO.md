@@ -11,7 +11,8 @@ None.
 
 ## Active Priorities
 
-None.
+- [ ] Work through the [Fleet Artifact Sweep - 2026-07-29](Operations/Maintenance/Fleet%20Artifact%20Sweep%20-%202026-07-29.md). About 52 GB is safely reclaimable across the 16 active machines, plus 33 GB of installer ISOs on `grey-server` that need a decision. Read the `kasm-01` warning first: its 100.4 GB of "reclaimable" images are the workspace images behind all 34 tiles, and pruning them breaks every tile. `grey-server` at 75 percent root use is the reason this matters.
+- [ ] Add SSH Manager profiles for `kasm-01`, `docker-blue`, and `media-01`. All three are running guests with no profile, so a sweep that trusts the profile list misses them.
 
 ## Scheduled
 
