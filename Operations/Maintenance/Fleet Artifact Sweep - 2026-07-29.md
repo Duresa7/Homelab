@@ -112,7 +112,7 @@ Everything is re-downloadable, so the real cost of deleting an ISO is bandwidth 
 | `edge-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.10.3-1_amd64.deb` | 11.1 MB | Superseded |
 | `edge-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.14.5-1_amd64.deb` | 13.2 MB | This one matches the installed 4.14.5-1. Keep it or not, but note that `edge-01` has no Wazuh apt repository, so this file is currently the only local upgrade path. |
 | `security-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-install.sh` | 194 KB | Wazuh installer script, 2026-02-24 |
-| `security-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar` | 11.0 KB | Installer's generated certificate bundle. Read the caution below. |
+| `security-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar` | 11.0 KB | Installer output bundle from 2026-02-24. Inspect before deleting rather than after. |
 | `docker-main` | `/root/wazuh-agent_4.14.0-1_amd64.deb` | 13.0 MB | Superseded, and `docker-main` is not a Wazuh endpoint |
 | `docker-main` | `/opt/docker/forgejo/docker-compose.yml.bak.20260511155104` | 370 B | Compose file copies beside the live file |
 | `docker-main` | `/opt/docker/forgejo/docker-compose.yml.bak.20260528-184846` | 374 B | Same |
@@ -121,7 +121,7 @@ Everything is re-downloadable, so the real cost of deleting an ISO is bandwidth 
 | `docker-main` | `/opt/docker/wyze-bridge/docker-compose.yml.save` | 694 B | |
 | `docker-main` | `/root/.claude/remote/run/6e864a9f/remote-server.log.old` | 333 B | |
 | `docker-main` | `/root/.bash_history-04350.tmp` | 0 B | Empty, from an interrupted shell exit |
-| `alpha-prod-01` | `/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor/.env.save` | 41 B | An editor copy of an environment file. Check it holds nothing live before deleting, and do not commit its contents anywhere. |
+| `alpha-prod-01` | `/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor/.env.save` | 41 B | An editor copy of an environment file. Inspect before deleting rather than after. |
 | `splunk-siem` | `/home/<YOUR_ADMIN_USERNAME>/backups/internal-https-2026-07-22-prechange/` | 45 B | Holds `splunk-web-configs.tar.gz`, which is 45 bytes and therefore an empty archive |
 | `purple-server` | `/root/.ssh/known_hosts.old` | 142 B | |
 | `blue-server` | `/root/.ssh/known_hosts.old` | 142 B | |
@@ -129,7 +129,7 @@ Everything is re-downloadable, so the real cost of deleting an ISO is bandwidth 
 | `grey-server` | `/root/.ssh/known_hosts.old` | small | |
 | `ansible-01` | `/root/.ssh/known_hosts.old` | small | Also `/root/internal-https-2026-07-22-prechange.tar.gz` |
 
-`wazuh-install-files.tar` on `security-01` is the Wazuh installer's output bundle and normally contains the cluster key and node certificates. Treat it as sensitive: check what is inside, and if it holds key material either destroy it deliberately or move it somewhere appropriate. Do not copy it into this repository and do not paste its contents anywhere.
+Two entries above say to inspect before deleting rather than after, and both mean it. Neither should be opened into anything that gets committed, pasted into a chat, or written to a log. If either turns out to hold live material, handling that is a separate task from this cleanup and does not belong in this file.
 
 ## Routine reclaimable, safe on every host
 
