@@ -73,6 +73,14 @@
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S07-Independent-Audit-Verification-2026-07-25.md
 
+# Fleet maintenance evidence records
+!/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/
+/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/*
+!/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Evidence-Index.md
+!/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/
+/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*
+# The matching *.log exception sits below the generated-logs section.
+
 # Termix Ansible LXC cleanup evidence records
 !/Archive/Platforms/Termix/Evidence/
 /Archive/Platforms/Termix/Evidence/*
@@ -124,6 +132,10 @@
 *.rar
 *.tfstate
 *.tfstate.*
+
+# Retained evidence transcripts kept as .log files. These negations must sit
+# after the *.log rule above, because the last matching pattern wins.
+!/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*.log
 
 # Private keys, certificates with private material, and credential exports
 *.key
