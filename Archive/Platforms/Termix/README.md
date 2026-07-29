@@ -1,7 +1,7 @@
 # Termix
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 > Retired on 2026-07-28. I destroyed the containers, the data volume, both application-data tarballs, and the images, and I revoked the `termix` key from the four Proxmox nodes. Nothing below is live. See the [decommission record](Documentation/Change%20Records/Termix%20Decommission%20-%202026-07-28.md).
 
@@ -38,6 +38,7 @@ Ten additional SSH Manager entries were unreachable during the 2026-07-14 onboar
 ## Key Records
 
 - [Decommission record](Documentation/Change%20Records/Termix%20Decommission%20-%202026-07-28.md)
+- [Semaphore templates](Configuration/Semaphore%20Templates%20-%202026-07-29.md), the five that outlived the service on `ansible-01` until 2026-07-29
 - [Ansible LXC cleanup evidence](Evidence/Termix%20Ansible%20LXC%20Cleanup%20-%202026-07-28/Evidence-Index.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Termix SSH Host Onboarding change record](Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)

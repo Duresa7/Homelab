@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -146,8 +146,8 @@ If Semaphore is unavailable, run the commands above directly; no functionality i
 
 ## Recovery
 
-- Controller project backup before deployment: `/home/ansible/backups/ansible-before-ssh-identity-automation-2026-07-14.tar.gz`
-- Controller known-hosts backup: `/home/ansible/backups/known_hosts-before-ssh-identity-automation-2026-07-14`
+- Controller project before deployment: [Legacy Controller Project](../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md) in this repository. The `/home/ansible/backups/` tarball it replaces is gone as of 2026-07-29; every file inside it was byte-identical to the archived copies, which carry the admin username as a placeholder.
+- Controller known-hosts before deployment: a redacted copy sits beside that archive as a record. It is not a restore source, and it doesn't need to be: none of its 24 host keys were missing from the live `known_hosts`. Re-accept a host key from the host itself if one is ever needed.
 - Semaphore project export before UI changes: `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json`
 - Runtime-upgrade backup set: `/root/semaphore-backups/upgrade-2026-07-14`
 

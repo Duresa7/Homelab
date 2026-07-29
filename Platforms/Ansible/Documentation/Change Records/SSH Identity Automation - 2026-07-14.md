@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-29
 
 **Implementation date:** 2026-07-14  
 **Status:** Complete  
@@ -87,9 +87,11 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, & Termix. Each r
 ## Rollback
 
 1. Stop using the new playbooks and fall back to the archived legacy project only if immediate recovery is necessary.
-2. Restore `/home/ansible/backups/ansible-before-ssh-identity-automation-2026-07-14.tar.gz` to recover the legacy directory.
-3. Restore `/home/ansible/backups/known_hosts-before-ssh-identity-automation-2026-07-14` if a controller known-host entry must be rolled back.
+2. Rebuild the legacy directory from [Legacy Controller Project](../../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md), substituting the admin username for the placeholder. This replaces the `/home/ansible/backups/ansible-before-ssh-identity-automation-2026-07-14.tar.gz` step; I removed that tarball on 2026-07-29 after confirming all four files inside it were byte-identical to the archived copies. See the note below before rebuilding it.
+3. Nothing needs restoring for controller host trust. I removed `/home/ansible/backups/known_hosts-before-ssh-identity-automation-2026-07-14` on 2026-07-29 after proving that none of its 24 host keys were missing from the live `known_hosts`, which holds 75. A redacted copy is archived beside the legacy project as a record of that state, not as a restore source. If a host key ever does need re-accepting, take it fresh from the host.
 4. Use `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json` as the supported Semaphore project-level recovery reference.
+
+Step 2 restores a project that connected as `root` and pushed authorized keys into root and admin key stores, which the [dedicated account work](Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md) on 2026-07-25 deliberately undid. Treat it as a last resort and undo it afterward rather than a routine fallback.
 
 No authorized-key rollback is necessary for this implementation because all live key operations were audits, rejected gate tests, or check-mode previews.
 
