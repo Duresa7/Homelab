@@ -101,6 +101,12 @@
 !/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/
 /Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*
 !/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*.md
+!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/
+/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Evidence-Index.md
+!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/
+/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*.md
 
 # Generated logs, databases, state, backups, and archives
 *.log

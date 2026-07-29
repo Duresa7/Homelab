@@ -63,6 +63,8 @@ I read the 12 effective settings from Kasm's `group_settings` table after the ch
 
 I created six host profile directories beneath `/var/lib/kasm-profiles`, each owned by UID and GID 1000 with mode 0750. They serve Claude Code, Codex CLI, Terminal on VLAN 75, Nessus, Hunchly, and Telegram. The real Terminal launch widened its directory to 0777. The final review caught that drift, and I restored all six exact paths to 0750 before replacing the final snapshot.
 
+0750 is the state at handover rather than a property that holds. Kasm's container startup sets the mode itself, so the next launch of a tile with a profile widens its directory again. That costs nothing here: each directory is owned by UID 1000 and the session runs as UID 1000, so 0750 already grants the container everything it needs, and 0777 grants no access to a user who is not on this host. I am recording the drift rather than fighting it, because a permission I reset on every review is a permission I will eventually believe is enforced.
+
 I cloned 19 workspace definitions:
 
 | Lane | Workspaces | Egress |
@@ -78,7 +80,7 @@ Each clone belongs only to `Lab Sessions`, carries its lane and resolver overrid
 
 I appended ` (UNISOLATED)` to all 15 original definitions and moved them to `Unisolated - Management Network`. They remain assigned only to `All Users`. An API request as `alpha` returned 34 definitions: 19 isolated lane definitions and 15 unisolated originals.
 
-The original Chrome name contained trailing whitespace, so its visible result may include two spaces before the suffix. I preserved the literal append rather than rewriting historical source text during the bulk rename.
+The original Chrome name carried trailing whitespace from the registry, so the bulk append left it reading `Chrome  (UNISOLATED)` with two spaces. I collapsed that to a single space in a follow-up review the same day. The row now reads `Chrome (UNISOLATED)`, which is the only name I changed outside the bulk rename.
 
 ### Step 7: Run real-session acceptance and reboot recovery
 
@@ -153,7 +155,7 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 | Post-restart networks and shims | Four of four restored |
 | Post-restart Kasm health | `{"ok":true}` |
 | Post-restart fresh session | Lane 77 `.208`, then destroyed |
-| Profile directory ownership and modes | Six of six at UID/GID 1000 and 0750 |
+| Profile directory ownership and modes | Six of six at UID/GID 1000 and 0750 at handover; Kasm rewrites the mode on each launch |
 | Residue | Zero `alpha` sessions and no temporary Kasm files |
 
 ## Rollback Points
