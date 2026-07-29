@@ -4,9 +4,9 @@
 **Last updated:** 2026-07-29
 
 **Started:** 2026-07-28  
-**Status:** Package, Compose, repair, & verification phases complete; 2 guest reboots pending
+**Status:** Complete
 
-I ran the first live fleet maintenance job from `ansible-01`. The job updated OS packages on 11 running Linux guests, refreshed 22 fleet-managed Compose projects, reconciled 8 pinned cAdvisor projects through their owning automation, repaired four failed systemd states found during verification, & left two guests waiting for planned reboots.
+I ran the first live fleet maintenance job from `ansible-01`. The job updated OS packages on 11 running Linux guests, refreshed 22 fleet-managed Compose projects, reconciled 8 pinned cAdvisor projects through their owning automation, repaired four failed systemd states found during verification, & completed the two approved guest reboots.
 
 ## Scope
 
@@ -68,9 +68,21 @@ Evidence: [initial health readback](../../Evidence/Fleet%20Maintenance%20-%20202
 
 The S05 & S06 files retain complete results but summarized command labels. The exact ad hoc command strings were not retained, so I treat them as result records rather than exact command transcripts.
 
+## Step 6: Reboot and verify the two pending guests
+
+After the maintenance window was approved, I ran `ansible-playbook playbooks/os-update.yml -e target=security-01 -e reboot=auto`. security-01 completed a new boot, cleared `/var/run/reboot-required`, returned `system_state=running` with zero failed units, & brought Wazuh manager, indexer, dashboard, Docker, and cAdvisor back healthy. The Wazuh dashboard returned HTTP 302 and its unauthenticated API returned HTTP 401.
+
+The original `ansible.builtin.reboot` action remained in its boot-time check after security-01 was reachable. I replaced that path with a transient systemd timer, an SSH reconnect wait, a before-and-after boot ID assertion, & a bounded system-state check. The earlier Rocky probe checked only the standalone helper and dnf5, so I added the dnf4 `dnf needs-restarting -r` subcommand and a conservative installed-kernel mismatch fallback.
+
+I then ran `ansible-playbook playbooks/os-update.yml -e target=splunk-siem -e reboot=auto`. The corrected path proved a new boot ID and loaded `6.12.0-211.39.1.el10_2.x86_64`, matching the newest installed kernel. Its first SC4S health timer fired before syslog-ng had opened its control socket, so the first system-state gate saw `degraded`. The next 120-second Podman health check returned healthy and cleared the transient failure. I changed the post-reboot gate to retry `systemctl is-system-running` for up to 5 minutes instead of failing on that first startup sample.
+
+The first combined final readback passed every guest and service check but contained a bad jq expression in the Prometheus target-count command. I retained that failed command, corrected only its quoting, & reran the monitoring check. The corrected result returned 48 of 48 targets up, HTTP 200 from Prometheus and Grafana, and 3 healthy series for each TeamSpeak metric.
+
+Evidence: [security-01 reboot attempt](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S08-security-01-reboot.log), [splunk-siem reboot](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S09-splunk-siem-reboot.log), [post-reboot readback with the failed monitoring command](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10-post-reboot-final-verification.log), [corrected monitoring readback](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10b-monitoring-post-reboot-verification.log), [final reboot-automation check](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10c-final-reboot-automation-check.log), [reboot automation troubleshooting](../Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md), & [SC4S startup troubleshooting](../Troubleshooting/SC4S%20startup%20health%20check%20briefly%20degraded%20systemd%20-%202026-07-29.md)
+
 ## Decisions
 
-I left reboots in report-only mode. security-01 reports a pending reboot for `libc6`; splunk-siem has kernel `6.12.0-211.39.1.el10_2.x86_64` installed while `6.12.0-211.32.1.el10_2.x86_64` remains running.
+I left reboots in report-only mode during the package and Compose phases. That kept both SIEM guests online until a separate reboot window was approved. I then rebooted security-01 and splunk-siem one at a time, verifying the first guest before starting the second.
 
 I did not treat every visible Compose file as independently managed. Coolify owns app-01's generated source and proxy projects, so I verified its `ghcr.io/coollabsio/coolify:4.1.2` container instead of running a second reconciler over its files. GitHub's official latest-release endpoints listed [Coolify v4.1.2](https://github.com/coollabsio/coolify/releases/tag/v4.1.2) & [cAdvisor v0.60.5](https://github.com/google/cadvisor/releases/tag/v0.60.5) on 2026-07-29. I reconciled cAdvisor through its separate owner automation without changing that pinned version.
 
@@ -78,7 +90,9 @@ I kept teamspeak-monitor in the managed project list but disabled pulls for that
 
 ## Resulting configuration
 
-The fleet update project now defines 11 OS targets, 6 Compose hosts, & 22 Compose projects. Normal OS maintenance runs 2 guests at a time. The local ansible-01 entry has a hostname guard. Compose maintenance runs one host at a time, accepts a per-project pull policy, retries transient registry failures up to 3 times, waits up to 180 seconds for each project, & checks the complete service list for stopped or unhealthy containers.
+The fleet update project now defines 11 OS targets, 6 Compose hosts, & 22 Compose projects. Normal OS maintenance runs 2 guests at a time. The local ansible-01 entry has a hostname guard and refuses automatic reboot through its local connection. Remote automatic reboots run one guest at a time, use a transient systemd timer outside the SSH session, prove that the boot ID changed, & wait up to 5 minutes for systemd and startup health checks to settle. The Rocky Linux reboot check supports standalone, dnf4, and dnf5 forms, then treats an installed-kernel mismatch as proof when those helpers do not answer.
+
+Compose maintenance runs one host at a time, accepts a per-project pull policy, retries transient registry failures up to 3 times, waits up to 180 seconds for each project, & checks the complete service list for stopped or unhealthy containers.
 
 The deployed project on ansible-01 passed its validator and both Ansible syntax checks after these changes. A pre-maintenance backup remains under `/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/`.
 
@@ -90,18 +104,20 @@ All 11 guests returned `system_state=running` with `failed_units=0`. Wazuh manag
 
 Prometheus reported 48 of 48 targets up. Prometheus and Grafana each returned HTTP 200. The TeamSpeak public, local, DNS SRV, & query checks each returned 3 series with a minimum value of 1.0. Coolify 4.1.2 remained running and healthy.
 
-Evidence: [final service verification](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S07-final-service-verification.log)
+After both reboots, a check-mode run reported `reboot_required=False` for security-01 and splunk-siem. All 11 guests again returned `system_state=running` with zero failed units. security-01 had an empty apt queue, no reboot flag, active Wazuh services, & healthy cAdvisor. splunk-siem had an empty dnf queue, matching running and installed kernels, active Splunkd and SC4S services, & a healthy SC4S container. Prometheus remained at 48 of 48 targets up.
+
+Evidence: [pre-reboot service verification](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S07-final-service-verification.log), [post-reboot final readback](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10-post-reboot-final-verification.log), [corrected monitoring readback](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10b-monitoring-post-reboot-verification.log), & [final reboot-automation check](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10c-final-reboot-automation-check.log)
 
 ## Rollback points
 
-The controller backup can restore the pre-maintenance inventory, playbooks, validator, README, & Semaphore template. The serial and pull-policy edits can also be reverted independently because they do not alter target data.
+The controller backup can restore the pre-maintenance inventory, playbooks, validator, README, & Semaphore template. The serial, pull-policy, and reboot-path edits can also be reverted independently because they do not alter target data.
 
 The OS and image updates changed installed packages and container images. Their rollback depends on each package repository or service-specific backup; I did not force a package downgrade or image rollback because the post-change service checks passed.
 
-I can re-enable mcelog with `systemctl enable mcelog.service`, but it failed on this guest's AMD processor before this maintenance. The two vanished timer units cannot be restarted because the package update removed their unit files; resetting their failed state was the correct cleanup.
+I can re-enable mcelog with `systemctl enable mcelog.service`, but it failed on this guest's AMD processor before this maintenance. The two vanished timer units cannot be restarted because the package update removed their unit files; resetting their failed state was the correct cleanup. A reboot cannot be rolled back, but both guests now run the package state already installed during the maintenance phase.
 
 ## Remaining work
 
-security-01 and splunk-siem still need controlled reboots. I left both online because the job used report-only reboot policy. After each reboot, I need to verify Wazuh or Splunk and SC4S, confirm zero failed units, & confirm that the pending reboot or old-kernel condition cleared.
+No work remains in this maintenance job.
 
-The storage contention, local-image warning, & registry timeout are recorded separately in [Shared SSD contention slowed the fleet package run](../Troubleshooting/Shared%20SSD%20contention%20slowed%20the%20fleet%20package%20run%20-%202026-07-28.md), [Local Compose image triggered a registry pull warning](../Troubleshooting/Local%20Compose%20image%20triggered%20a%20registry%20pull%20warning%20-%202026-07-28.md), & [Transient registry timeout interrupted the Compose dry run](../Troubleshooting/Transient%20registry%20timeout%20interrupted%20the%20Compose%20dry%20run%20-%202026-07-29.md).
+The storage contention, local-image warning, registry timeout, reboot wait, & SC4S startup state are recorded separately in [Shared SSD contention slowed the fleet package run](../Troubleshooting/Shared%20SSD%20contention%20slowed%20the%20fleet%20package%20run%20-%202026-07-28.md), [Local Compose image triggered a registry pull warning](../Troubleshooting/Local%20Compose%20image%20triggered%20a%20registry%20pull%20warning%20-%202026-07-28.md), [Transient registry timeout interrupted the Compose dry run](../Troubleshooting/Transient%20registry%20timeout%20interrupted%20the%20Compose%20dry%20run%20-%202026-07-29.md), [Reboot action did not finish after the guest returned](../Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md), & [SC4S startup health check briefly degraded systemd](../Troubleshooting/SC4S%20startup%20health%20check%20briefly%20degraded%20systemd%20-%202026-07-29.md).

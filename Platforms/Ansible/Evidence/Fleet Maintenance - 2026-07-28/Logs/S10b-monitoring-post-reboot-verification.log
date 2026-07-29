@@ -1,0 +1,13 @@
+captured_at=2026-07-29T05:26:17+00:00
+target=monitor-01 after security-01 and splunk-siem reboots; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; read-only Ansible command from /home/ansible/fleet-updates
+command=ansible monitor-01: Prometheus up query, HTTP endpoints, and TeamSpeak metrics
+monitor-01 | CHANGED | rc=0 >>
+targets_total=48 targets_up=48
+prometheus_http=200
+grafana_http=200
+teamspeak_public_up series=3 minimum=1
+teamspeak_local_up series=3 minimum=1
+teamspeak_dns_srv_up series=3 minimum=1
+teamspeak_query_up series=3 minimum=1
+exit_code=0

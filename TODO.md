@@ -11,7 +11,7 @@ None.
 
 ## Active Priorities
 
-- [ ] Complete the two [fleet-maintenance guest reboots](Platforms/Ansible/Documentation/TODO.md) and post-reboot checks. `kasm-01` & all four Proxmox nodes remain outside this work.
+None.
 
 ## Scheduled
 
@@ -22,7 +22,7 @@ None.
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Two pending guest-reboot items remain after the package, Compose, repair, & verification phases |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open items; the active-fleet package, Compose, repair, & reboot maintenance completed 2026-07-29 |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 `ai-bravo-02` on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
@@ -35,7 +35,7 @@ None.
 
 ## Recently Completed
 
-- [x] 2026-07-29: [Fleet maintenance package and Compose phases](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md). I updated 11 running Linux guests, refreshed 22 fleet-managed Compose projects, & reconciled 8 pinned cAdvisor projects through their owner automation between 2026-07-28 and 2026-07-29. Direct package checks are empty, all 11 guests returned `system_state=running`, & the final Compose guard found every service running and healthy. `kasm-01`, stopped guests, & all four Proxmox nodes were untouched. Two deferred guest reboots remain under Active Priorities.
+- [x] 2026-07-29: [Fleet maintenance](Platforms/Ansible/Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md). I updated 11 running Linux guests, refreshed 22 fleet-managed Compose projects, reconciled 8 pinned cAdvisor projects through their owner automation, & rebooted security-01 and splunk-siem one at a time between 2026-07-28 and 2026-07-29. Package queues are empty, the new Rocky Linux kernel is running, all 11 guests returned `system_state=running`, the final Compose guard passed, & Prometheus reported 48 of 48 targets up. `kasm-01`, stopped guests, & all four Proxmox nodes were untouched.
 - [x] 2026-07-28: [Kasm workspace build-out](Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). I expanded VM 122 to 200 GiB, added the ordinary-WAN KASM-TRUSTED lane on VLAN 75, and created 19 isolated workspaces across four macvlan lanes. Six trusted tools have dedicated persistent profiles; the other lane workspaces stay disposable. All nine protected destinations were blocked from every lane, lane 74 used Proton, lane 75 matched ordinary WAN, lanes 77 and 79 had no egress, and the full layout survived reboot.
 - [x] 2026-07-28: [Kasm session isolation](Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). I built `ssd-lvm2` on Purple's Samsung 850 EVO, moved VM 122 there offline in 15 minutes 25 seconds, put the control plane on LAB-MGMT VLAN 78 at `192.168.78.10`, and gave sessions three macvlan lanes on VLANs 74, 77, & 79. Thirty-eight new policies carry the narrow management allows, the one-way 74-to-77 path, & blocks from every lane toward LAB-MGMT, Internal, and the four service zones. Containment passed from throwaway containers in each lane. Later the same day I added a single-address allow for Jedi PC, which the Trusted and Personal-A rules had missed, and `node_exporter` 1.9.0 bound to `192.168.78.10:9100` alone so a session container on a shim subnet can't read host metrics. Prometheus reports 47 of 47 targets up. I closed the last acceptance check the same day by opening `https://192.168.78.10/` from a real remote Management Access VPN client. The workspace build-out is recorded separately.
 - [x] 2026-07-28: [Portainer Edge Agent fleet expansion](Platforms/Portainer/Documentation/Change%20Records/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28.md). I added environments 7 `docker-blue`, 8 `media-01`, & 9 `docker-network`, stored each Edge ID and key outside git, & deployed Agent 2.39.1 with root-owned 0600 environment files. One exact UniFi policy opened TCP 8000/9443 from `192.168.85.2` to `192.168.40.35`. Updating `docker-blue` from Docker / containerd / runc 29.5.3 / 2.2.4 / 1.3.5 to 29.6.2 / 2.2.6 / 1.3.6 removed the shim panic. Portainer listed 4, 10, & 5 containers through the three tunnels.

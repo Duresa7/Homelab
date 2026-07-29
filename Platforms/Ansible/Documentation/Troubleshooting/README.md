@@ -9,6 +9,8 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 
 | Date | Issue |
 |---|---|
+| 2026-07-29 | <a id="2026-07-29-sc4s-startup-health-check-briefly-degraded-systemd"></a>[SC4S startup health check briefly degraded systemd](SC4S%20startup%20health%20check%20briefly%20degraded%20systemd%20-%202026-07-29.md) |
+| 2026-07-29 | <a id="2026-07-29-reboot-action-did-not-finish-after-the-guest-returned"></a>[Reboot action did not finish after the guest returned](Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md) |
 | 2026-07-29 | [Transient registry timeout interrupted the Compose dry run](Transient%20registry%20timeout%20interrupted%20the%20Compose%20dry%20run%20-%202026-07-29.md) |
 | 2026-07-28 | <a id="2026-07-28-shared-ssd-contention-slowed-the-fleet-package-run"></a>[Shared SSD contention slowed the fleet package run](Shared%20SSD%20contention%20slowed%20the%20fleet%20package%20run%20-%202026-07-28.md) |
 | 2026-07-28 | <a id="2026-07-28-local-compose-image-triggered-a-registry-pull-warning"></a>[Local Compose image triggered a registry pull warning](Local%20Compose%20image%20triggered%20a%20registry%20pull%20warning%20-%202026-07-28.md) |

@@ -1,0 +1,32 @@
+captured_at=2026-07-29T05:07:02+00:00
+target=security-01 only; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/os-update.yml -e target=security-01 -e reboot=auto
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [security-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [security-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+ok: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [security-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [security-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [security-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [security-01]
+
+TASK [Reboot the host when required and the policy allows it] ******************

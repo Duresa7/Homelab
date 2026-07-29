@@ -1,0 +1,215 @@
+captured_at=2026-07-29T05:25:25+00:00
+target=11 in-scope Linux guests and post-reboot service endpoints; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; read-only Ansible commands from /home/ansible/fleet-updates
+command=python3 tests/validate_project.py; ansible-playbook playbooks/os-update.yml --syntax-check
+Validation passed: 11 OS-update hosts, 6 compose hosts, 22 projects.
+
+playbook: playbooks/os-update.yml
+command=ansible-playbook playbooks/os-update.yml --check -e target=security-01,splunk-siem -e reboot=auto
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [security-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [security-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+ok: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [security-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [security-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [security-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [security-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [security-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [security-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [security-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [security-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [security-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [security-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [security-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [security-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [security-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [security-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [security-01] => {
+    "msg": "security-01: pkg_mgr=apt changed=False reboot_required=False reboot_policy=auto"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [splunk-siem]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [splunk-siem]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [splunk-siem]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+skipping: [splunk-siem]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+ok: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+skipping: [splunk-siem]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [splunk-siem]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [splunk-siem]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [splunk-siem]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [splunk-siem]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [splunk-siem]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [splunk-siem]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [splunk-siem]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [splunk-siem]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [splunk-siem]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [splunk-siem]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [splunk-siem]
+
+TASK [Report the per-host result] **********************************************
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=False reboot_required=False reboot_policy=auto"
+}
+
+PLAY RECAP *********************************************************************
+security-01                : ok=6    changed=0    unreachable=0    failed=0    skipped=13   rescued=0    ignored=0   
+splunk-siem                : ok=6    changed=0    unreachable=0    failed=0    skipped=13   rescued=0    ignored=0   
+
+command=ansible os_update_targets: systemd running and zero failed units
+alpha-prod-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+docker-main | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+media-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+docker-blue | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+docker-network | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+security-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+splunk-siem | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+edge-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+ansible-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+app-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+monitor-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+command=ansible security-01: package queue, reboot flag, Wazuh, cAdvisor, and HTTPS
+security-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+reboot_required=false
+wazuh-manager=active
+wazuh-indexer=active
+wazuh-dashboard=active
+docker=active
+dashboard_http=302
+api_http=401
+cadvisor_status=running
+cadvisor_health=healthy
+command=ansible splunk-siem: package queue, kernel, Splunk, SC4S, and HTTPS
+splunk-siem | CHANGED | rc=0 >>
+dnf_check_update_rc=0
+running_kernel=6.12.0-211.39.1.el10_2.x86_64
+latest_installed_kernel=6.12.0-211.39.1.el10_2.x86_64
+Splunkd.service=active
+sc4s.service=active
+splunk_https=303
+sc4s_status=running
+sc4s_health=healthy
+command=ansible monitor-01: Prometheus targets, HTTP endpoints, and TeamSpeak metrics
+[ERROR]: Task failed: Module failed: The command exited with a non-zero return code.
+Origin: <adhoc 'shell' task>
+
+{'action': 'shell', 'args': {'_raw_params': 'payload=$(curl -fsS --max-time 20 [...]
+
+monitor-01 | FAILED | rc=2 >>
+targets_total=48 targets_up=
+unhealthy=
+prometheus_http=200
+grafana_http=200
+teamspeak_public_up series=3 minimum=1
+teamspeak_local_up series=3 minimum=1
+teamspeak_dns_srv_up series=3 minimum=1
+teamspeak_query_up series=3 minimum=1jq: error: syntax error, unexpected INVALID_CHARACTER (Unix shell quoting issues?) at <top-level>, line 1:
+[.data.activeTargets[] | select(.health == \up\)] | length                                           
+jq: 1 compile error
+jq: error: syntax error, unexpected INVALID_CHARACTER (Unix shell quoting issues?) at <top-level>, line 1:
+[.data.activeTargets[] | select(.health != \up\) | .labels.instance] | join(\,\)                                           
+jq: error: syntax error, unexpected INVALID_CHARACTER (Unix shell quoting issues?) at <top-level>, line 1:
+[.data.activeTargets[] | select(.health != \up\) | .labels.instance] | join(\,\)                                                                            
+jq: 2 compile errors
+/bin/sh: 1: [: Illegal number: The command exited with a non-zero return code.
+exit_code=2

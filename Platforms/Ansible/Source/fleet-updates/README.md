@@ -17,7 +17,9 @@ The inventory holds 11 running Linux guests for OS updates & 6 hosts with direct
 
 The play upgrades packages and never reboots unless I tell it to. On apt hosts it refreshes the cache & runs a safe upgrade with autoremove & autoclean. On dnf hosts it runs `name: '*' state: latest`. It sets `NEEDRESTART_MODE=l` so needrestart lists services instead of restarting them mid-run, and `DEBIAN_FRONTEND=noninteractive` so no prompt can hang the play.
 
-Reboot handling is report-only by default. The play checks `/var/run/reboot-required` on Debian & `needs-restarting` on Rocky, using the dnf-utils tool on dnf4 or the `dnf5 needs-restarting --reboothint` subcommand on dnf5. It prints `reboot_required=true` for any host that needs one, and prints `reboot check inconclusive` rather than a false negative when neither tool answers. Normal patching runs two guests at a time so concurrent package extraction doesn't saturate the shared guest-storage SSD. Pass `-e reboot=auto` to reboot the flagged hosts; that path defaults to one host at a time so a fleet auto-reboot never restarts several guests at once. Override either batch size with `-e os_update_serial=N`.
+Reboot handling is report-only by default. The play checks `/var/run/reboot-required` on Debian. On Rocky it tries the standalone `needs-restarting` helper, the dnf4 `dnf needs-restarting -r` subcommand, & `dnf5 needs-restarting --reboothint`. If none answer, a mismatch between the running and newest installed kernels can still prove that a reboot is needed. A matching kernel alone does not rule out another reason, so the play reports that fallback as inconclusive instead of returning a false negative.
+
+Normal patching runs two guests at a time so concurrent package extraction doesn't saturate the shared guest-storage SSD. Pass `-e reboot=auto` to reboot flagged remote hosts one at a time. That path records the boot ID, schedules the reboot through a transient systemd timer outside the SSH session, waits for SSH, proves the boot ID changed, & allows up to 5 minutes for systemd and startup health checks to settle. The local ansible-01 connection refuses automatic reboot. Override the package or reboot batch size with `-e os_update_serial=N`.
 
 ```bash
 cd /home/ansible/fleet-updates
@@ -31,6 +33,9 @@ ansible-playbook playbooks/os-update.yml
 
 # Patch one host or group.
 ansible-playbook playbooks/os-update.yml -e target=splunk-siem
+
+# Patch and reboot one remote host when its check requires a reboot.
+ansible-playbook playbooks/os-update.yml -e target=splunk-siem -e reboot=auto
 ```
 
 Every host connects through the dedicated `ansible` account. Its sudo rule is `NOPASSWD: ALL`, so scheduled runs don't carry a sudo password or stop at an interactive prompt. Override the upgrade type with `-e apt_upgrade=full` for a dist-upgrade when I actually want new dependencies pulled in.

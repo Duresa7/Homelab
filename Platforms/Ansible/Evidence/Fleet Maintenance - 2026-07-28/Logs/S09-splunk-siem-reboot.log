@@ -1,0 +1,75 @@
+captured_at=2026-07-29T05:20:38+00:00
+target=splunk-siem only; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/os-update.yml -e target=splunk-siem -e reboot=auto
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [splunk-siem]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [splunk-siem]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [splunk-siem]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+skipping: [splunk-siem]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+ok: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+skipping: [splunk-siem]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [splunk-siem]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+ok: [splunk-siem]
+
+TASK [Record the current boot ID] **********************************************
+ok: [splunk-siem]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: INJECT_FACTS_AS_VARS default to `True` is deprecated, top-level facts will not be auto injected after the change. This feature will be removed from ansible-core version 2.24.
+Origin: /home/ansible/fleet-updates/playbooks/os-update.yml:136:17
+
+134             argv:
+135               - systemd-run
+136               - "--unit=ansible-fleet-reboot-{{ ansible_date_time.epoch }}"
+                    ^ column 17
+
+Use `ansible_facts["fact_name"]` (no `ansible_` prefix) instead.
+
+changed: [splunk-siem]
+
+TASK [Wait for SSH after the reboot] *******************************************
+ok: [splunk-siem]
+
+TASK [Read the boot ID after reconnect] ****************************************
+ok: [splunk-siem]
+
+TASK [Confirm the guest completed a new boot] **********************************
+ok: [splunk-siem]
+
+TASK [Wait for systemd to settle after the reboot] *****************************
+[ERROR]: Task failed: Module failed: The command exited with a non-zero return code.
+Origin: /home/ansible/fleet-updates/playbooks/os-update.yml:166:11
+
+164             quiet: true
+165
+166         - name: Wait for systemd to settle after the reboot
+              ^ column 11
+
+fatal: [splunk-siem]: FAILED! => {"changed": false, "changed_when_result": false, "cmd": ["systemctl", "is-system-running", "--wait"], "delta": "0:00:08.762945", "end": "2026-07-29 01:21:56.532320", "msg": "The command exited with a non-zero return code.", "rc": 1, "start": "2026-07-29 01:21:47.769375", "stderr": "", "stderr_lines": [], "stdout": "degraded", "stdout_lines": ["degraded"]}
+
+PLAY RECAP *********************************************************************
+splunk-siem                : ok=11   changed=1    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0   
+
+exit_code=2

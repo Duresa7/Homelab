@@ -1,0 +1,135 @@
+captured_at=2026-07-29T05:33:40+00:00
+target=security-01 and splunk-siem after final reboot-automation deployment; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; read-only Ansible check mode from /home/ansible/fleet-updates
+command=python3 tests/validate_project.py; ansible-playbook playbooks/os-update.yml --syntax-check; ansible-playbook playbooks/os-update.yml --check -e target=security-01,splunk-siem -e reboot=auto
+Validation passed: 11 OS-update hosts, 6 compose hosts, 22 projects.
+
+playbook: playbooks/os-update.yml
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [security-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [security-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+ok: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [security-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [security-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [security-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [security-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [security-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [security-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [security-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [security-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [security-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [security-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [security-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [security-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [security-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [security-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [security-01] => {
+    "msg": "security-01: pkg_mgr=apt changed=False reboot_required=False reboot_policy=auto"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [splunk-siem]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [splunk-siem]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [splunk-siem]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+skipping: [splunk-siem]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+ok: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+skipping: [splunk-siem]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [splunk-siem]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [splunk-siem]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [splunk-siem]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [splunk-siem]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [splunk-siem]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [splunk-siem]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [splunk-siem]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [splunk-siem]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [splunk-siem]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [splunk-siem]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [splunk-siem]
+
+TASK [Report the per-host result] **********************************************
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=False reboot_required=False reboot_policy=auto"
+}
+
+PLAY RECAP *********************************************************************
+security-01                : ok=6    changed=0    unreachable=0    failed=0    skipped=13   rescued=0    ignored=0   
+splunk-siem                : ok=6    changed=0    unreachable=0    failed=0    skipped=13   rescued=0    ignored=0   
+
+exit_code=0
