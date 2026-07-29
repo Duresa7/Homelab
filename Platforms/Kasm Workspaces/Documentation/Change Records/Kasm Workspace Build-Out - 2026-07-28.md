@@ -133,7 +133,7 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 | Recovery points | `pre-workspace-buildout-2026-07-28`, `baseline-tiles-2026-07-28` |
 | Session networks | `lab74`, `lab75`, `lab77`, `lab79`, each with `.208/28` allocation range and `.201/32` host shim |
 | UniFi | KASM-TRUSTED/VLAN 75, one-network custom zone, 17 new policies, no Proton route change |
-| Kasm group | `Lab Sessions`, one-hour limit, maximum two sessions, upload on, selective persistent profiles on, clipboard/download/printing/sharing/user storage off |
+| Kasm group | `Lab Sessions`, one-hour limit, maximum three sessions, upload on, selective persistent profiles on, clipboard/download/printing/sharing/user storage off |
 | Workspace catalog | 19 isolated definitions and 15 visibly unisolated originals |
 | Persistent storage | Six dedicated profile directories under `/var/lib/kasm-profiles`, UID/GID 1000, mode 0750 |
 
@@ -170,21 +170,35 @@ I updated the Kasm platform records, architecture, UniFi VLAN, zone, firewall, a
 
 I renamed all 34 tiles the same day, after using the dashboard. The first scheme put the lane number in the name, which failed twice over: `Claude Code - Trusted 75` and `Forensic OSINT - Lab 74` both truncate in the grid view, and a VLAN number does not tell me what a tile is for. Alphabetical sort also placed each app beside its unisolated twin, so `Chrome - Lab 74` and `Chrome  (UNISOLATED)` sat next to each other, which is the one mistake the labels exist to prevent.
 
-The suffix now names the job. `- Normal` is the ordinary WAN with saved state, `- VPN` is Internet through Proton, `- Malware` is offline detonation, `- Target` is an offline disposable victim, `- Review` is offline artifact work, and `- Unsafe` is the 15 registry originals on the management VLAN with no override. Each tile's category carries the VLAN, as in `VPN - VLAN 74`, so the technical detail stays one line below the name instead of inside it.
+The suffix now names the job. `- Normal` is the ordinary WAN with saved state, `- VPN` is Internet through Proton, `- Malware` is offline detonation, `- Target` is an offline disposable victim, `- Review` is offline artifact work, and `- Full` is the 15 registry originals on the management VLAN with no override. Each tile's category carries the VLAN, as in `VPN - VLAN 74`, so the technical detail stays one line below the name instead of inside it.
 
 `- Malware` and `- Target` both sit on VLAN 77 and differ only in role. Collapsing them into one word would have erased the difference between the box I detonate on and the box I attack, so the two Debian and Fedora victims keep `- Target`.
 
-Six `UPDATE` statements in one transaction changed 34 rows: 3 to `- Normal`, 10 to `- VPN`, 2 to `- Malware`, 2 to `- Target`, 2 to `- Review`, and 15 to `- Unsafe`. The read-back joins each name against its `run_config` network and profile path, and all 34 match: every `- VPN` tile is on `lab74`, every malware and target tile on `lab77`, every review tile on `lab79`, all three `- Normal` tiles on `lab75` with a profile, and all 15 `- Unsafe` tiles with no network key at all. The three lane 74 profiles are still Nessus, Hunchly, and Telegram.
+Six `UPDATE` statements in one transaction changed 34 rows: 3 to `- Normal`, 10 to `- VPN`, 2 to `- Malware`, 2 to `- Target`, 2 to `- Review`, and 15 to the originals. The read-back joins each name against its `run_config` network and profile path, and all 34 match: every `- VPN` tile is on `lab74`, every malware and target tile on `lab77`, every review tile on `lab79`, all three `- Normal` tiles on `lab75` with a profile, and all 15 originals with no network key at all. The three lane 74 profiles are still Nessus, Hunchly, and Telegram.
 
 The database change alone did nothing visible. Kasm's API holds the workspace catalog in memory, so the dashboard kept serving the old names through a full page reload until I restarted `kasm_api` and `kasm_manager`. Anyone editing the `images` table directly needs that restart, or they will conclude the write failed and repeat it.
 
-The first category string was `Unsafe - Management VLAN 78`, and the dashboard was too narrow to render it, showing only `VLAN 78` and dropping the one word that matters. I shortened it to `Unsafe - VLAN 78` so it displays in full and reads parallel to `VPN - VLAN 74`.
+The originals went through two names. I labelled them `- Unsafe` first, in the category `Unsafe - Management VLAN 78`, and the dashboard was too narrow to render that category, showing only `VLAN 78` and dropping the one word that mattered. Shortening it to `Unsafe - VLAN 78` fixed the display. I then renamed the suffix itself to `- Full` with the category `Full Access - VLAN 78`, because these tiles are a capability I keep on purpose rather than a mistake, and "Unsafe" described them as the latter.
+
+That trade is worth stating plainly: "Full" does not warn. `- Unsafe` made the risk unmissable in the tile name, and `- Full` moves that job onto the category line and onto this record. The tiles still run on `kasm_default_network` with ordinary management-plane egress and no containment, and launching one for phishing or a sample would defeat the entire lab.
 
 I verified the result in the UI as `alpha` rather than trusting the database. All 34 tiles render with the new names and all five categories display in full. Six names still truncate in the grid, every one of them because the application name itself is long: Claude Code, Debian Trixie, Forensic OSINT, and Tor Browser. Shortening those would mean renaming the application rather than the lane, so I left them.
 
 I replaced `baseline-tiles-2026-07-28` afterward so the baseline holds the new names. Rolling back to the old one would have restored `Chrome - Lab 74` and the rest, silently undoing the rename and putting the tiles out of step with these records. `pre-workspace-buildout-2026-07-28` is untouched and still returns the guest to its pre-build state. The pool read 52.51 percent data after the replacement.
 
 The rename touched `friendly_name` and `categories` only. It did not touch `run_config`, group membership, memory, or profile paths, and the read-back confirms every tile still resolves to the network its name claims. The real-session lane check in Phase 7 was run against the row now called `Terminal - VPN` before the rename, and `run_config` is byte-identical since.
+
+## Follow-up: guest resources, 2026-07-28
+
+I raised VM 122 from 4 vCPU and 8192 MB to 6 vCPU and 12288 MB. The build-out had recorded two concurrent sessions as the honest ceiling, and that number came from 5.7 GiB of usable guest memory against a 2.77 GiB default workspace. Two sessions is thin for the one workflow I actually run most, tooling on a VPN tile against a target tile with a terminal open beside them.
+
+`purple-server` has six cores and 15 GiB, and VM 122 is its only guest, so the headroom was already there. The guest takes all six cores because nothing competes for them, and 12 GiB leaves roughly 2 GiB for Proxmox. That is enough here specifically because `ssd-lvm2` is LVM-thin rather than ZFS, so there is no ARC growing into whatever memory is left.
+
+Neither memory nor CPU is hotpluggable on this guest, so the change needed a shutdown. After boot the guest reported 6 cores and 11 GiB usable, all four shims returned with their routes, all four macvlan networks were present, and Kasm answered `{"ok": true}` with all eight containers healthy about 45 seconds in. Sessions now have 9.7 GiB rather than 5.7 GiB, so I raised `max_kasms_per_user` on `Lab Sessions` from 2 to 3. Three desktops at 2.77 GiB fit; a fourth does not, so the cap is still doing real work rather than being decorative.
+
+I did not touch storage, and that one is not a preference. The `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot be extended at all, and raising the disk's provisioned size beyond 200 GB would only deepen overcommit against a pool that already carries two snapshots. The guest has 76 GB free of 193 GB. More space needs another physical disk in `purple-server`.
+
+I replaced `baseline-tiles-2026-07-28` again afterward. Proxmox snapshots capture guest configuration as well as disk state, so the earlier baseline would have rolled the guest back to 4 vCPU and 8 GiB along with the old tile names. The pool read 52.52 percent after the replacement.
 
 ## Remaining Work
 

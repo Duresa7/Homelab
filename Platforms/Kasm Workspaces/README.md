@@ -5,7 +5,9 @@
 
 Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
-Community Edition caps the deployment at five concurrent sessions and one named user. The current VM has four vCPUs, 8 GiB of memory, and a 200 GiB disk. The `Lab Sessions` group limits `alpha` to two concurrent sessions because the VM has 5.7 GiB available to workspace containers.
+Community Edition caps the deployment at five concurrent sessions and one named user. The VM has six vCPUs, 12 GiB of memory, and a 200 GiB disk after I raised it from four vCPUs and 8 GiB on 2026-07-28. VM 122 is the only guest on `purple-server`, which has six cores and 15 GiB, so the guest takes every core and leaves roughly 2 GiB for Proxmox. That is enough on a node running one VM against LVM-thin rather than ZFS, since there is no ARC competing for memory.
+
+The `Lab Sessions` group limits `alpha` to three concurrent sessions. Kasm's own containers hold about 2 GiB, leaving 9.7 GiB for workspaces against a 2.77 GiB default, so three desktops fit and a fourth would not. Storage is the one dimension I cannot raise: the `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot grow, and more space needs another physical disk. The guest has 76 GB free of 193 GB, so it does not need one yet.
 
 ## Current State
 
@@ -61,11 +63,13 @@ Tile names say what the tile is for, not which VLAN carries it. The suffix is th
 | `- Malware` | `Malware - VLAN 77` | `lab77` | REMnux, Terminal | None |
 | `- Target` | `Malware - VLAN 77` | `lab77` | Debian, Fedora | None |
 | `- Review` | `Review - VLAN 79` | `lab79` | REMnux, Debian | None |
-| `- Unsafe` | `Unsafe - VLAN 78` | none | All 15 registry originals | None |
+| `- Full` | `Full Access - VLAN 78` | none | All 15 registry originals | None |
 
 `- Malware` and `- Target` share VLAN 77 and differ only in role. Malware tiles are where I detonate and inspect; target tiles are disposable victims I attack from a VPN tile. Splitting the word keeps that distinction in the name.
 
-The `- Normal` tiles use the ordinary WAN. `- VPN` uses Proton. The malware, target, and review tiles point at nonexistent lane-local resolvers so DNS fails inside those networks. The `- Unsafe` tiles have no override at all, so they run on `kasm_default_network` with ordinary management-plane egress: that is the point of keeping them, and the suffix is there so I never launch one by accident.
+The `- Normal` tiles use the ordinary WAN. `- VPN` uses Proton. The malware, target, and review tiles point at nonexistent lane-local resolvers so DNS fails inside those networks.
+
+The `- Full` tiles have no override at all, so they run on `kasm_default_network` with ordinary management-plane egress and no containment. Keeping them is deliberate, for the rare job that needs a plain session. The word carries less warning than the `- Unsafe` label I used first, so the `Full Access - VLAN 78` category is what tells me a tile has no lane, and I renamed it on 2026-07-28 because these are a capability rather than a mistake.
 
 ## Running a malware session
 

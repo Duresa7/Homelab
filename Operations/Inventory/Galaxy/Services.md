@@ -110,8 +110,8 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | --- | --- |
 | Kasm Workspaces | 1.19.0 Community Edition, `--role all` single-server install under `/opt/kasm/1.19.0`; eight containers running, seven Docker health checks healthy, and `kasm_proxy` running without a Docker health check; HTTPS on TCP 443 with the installer's self-signed certificate; RDP gateway on TCP 3389 |
 | Docker | 29.6.2 with containerd 2.2.6, installed by the Kasm dependency script from `download.docker.com` |
-| Workspace images | 19 isolated lane workspaces suffixed `- Normal`, `- VPN`, `- Malware`, `- Target`, or `- Review`, plus the 15 originals suffixed `- Unsafe`; lane images remain pull-on-first-launch |
-| Session isolation | `lab74`, `lab75`, `lab77`, and `lab79` macvlan networks on addressless VLAN parents; host shims persist before Docker; the `Lab Sessions` group limits sessions to one hour and two concurrent sessions with upload and selective persistent profiles enabled while download, clipboard, printing, sharing, and user storage mappings remain disabled |
+| Workspace images | 19 isolated lane workspaces suffixed `- Normal`, `- VPN`, `- Malware`, `- Target`, or `- Review`, plus the 15 originals suffixed `- Full` in the `Full Access - VLAN 78` category; lane images remain pull-on-first-launch |
+| Session isolation | `lab74`, `lab75`, `lab77`, and `lab79` macvlan networks on addressless VLAN parents; host shims persist before Docker; the `Lab Sessions` group limits sessions to one hour and three concurrent sessions with upload and selective persistent profiles enabled while download, clipboard, printing, sharing, and user storage mappings remain disabled |
 | Storage | VM disk expanded from 150 GiB to 200 GiB on `ssd-lvm2`; guest ext4 reports 193 GiB total, 117 GiB used, and 76 GiB available |
 | Swap | 4 GiB file at `/mnt/Kasm.swap`, required by Kasm's own guidance |
 | Network | Static `192.168.78.10/24` on LAB-MGMT/VLAN 78; sessions use `192.168.74.208/28`, `192.168.75.208/28`, `192.168.77.208/28`, or `192.168.79.208/28`; VLAN 74 exits through Proton, VLAN 75 uses ordinary WAN, and VLANs 77 and 79 have no Internet |

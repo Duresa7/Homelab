@@ -19,7 +19,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 24 GiB | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
-| 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 200G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/75/77/79 sessions | disabled |
+| 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 6 | 12 GiB | 200G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/75/77/79 sessions | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 

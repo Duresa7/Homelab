@@ -30,13 +30,13 @@ The tile name tells me which lane I am about to land in. That is the whole reaso
 | `- Malware` | No Internet, no DNS, for samples | `{"network":"lab77","dns":["192.168.77.10"]}` |
 | `- Target` | No Internet, no DNS, disposable victim on the same lane as malware | `{"network":"lab77","dns":["192.168.77.10"]}` |
 | `- Review` | No Internet, no DNS, for artifacts | `{"network":"lab79","dns":["192.168.79.10"]}` |
-| `- Unsafe` | No override at all: management VLAN 78 with ordinary Internet and no containment | none |
+| `- Full` | No override at all: management VLAN 78 with ordinary Internet and no containment | none |
 
-The `- Unsafe` tiles are the 15 registry originals. I keep them on purpose for the rare job that needs a plain session, and the suffix exists so I never open one thinking it is a lab tile.
+The `- Full` tiles are the 15 registry originals, kept on purpose for the rare job that needs a plain session with no lane. Their category reads `Full Access - VLAN 78`, and that category is the thing to check, because "Full" does not warn me the way the earlier "Unsafe" label did.
 
 Nothing listens at `192.168.77.10` or `192.168.79.10`, which is the point: lookups fail inside the lane instead of leaking. Dropping the `dns` member lets Docker's embedded resolver at `127.0.0.11` forward through the management host, which quietly defeats an offline lane.
 
-The `Lab Sessions` group enforces upload allowed, download blocked, clipboard off in both directions, printing off, sharing off, microphone off, user storage mappings off, a one-hour limit, and no more than two sessions. Persistent profiles are allowed only so six named tiles can use their dedicated paths. Every lane 77 and lane 79 tile keeps that path empty.
+The `Lab Sessions` group enforces upload allowed, download blocked, clipboard off in both directions, printing off, sharing off, microphone off, user storage mappings off, a one-hour limit, and no more than three sessions. Persistent profiles are allowed only so six named tiles can use their dedicated paths. Every malware, target, and review tile keeps that path empty.
 
 ## Working in the trusted-tools lane
 
@@ -140,7 +140,7 @@ If a session starts and then won't display, that's host-to-container reachabilit
 
 ## Limits worth remembering
 
-Five concurrent sessions and one named user are the Community Edition caps. The `alpha` account is limited to two sessions by the Lab Sessions group.
+Five concurrent sessions and one named user are the Community Edition caps. The `alpha` account is limited to three by the Lab Sessions group, which is what the VM's 12 GiB actually serves: Kasm's own containers hold about 2 GiB, leaving 9.7 GiB against a 2.77 GiB default workspace.
 
 Sessions are not serialised, so a sample can run beside another workspace. A container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time.
 
