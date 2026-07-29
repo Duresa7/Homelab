@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
@@ -14,10 +14,10 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer)<br>Portainer Edge Agent 2.39.1 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1 |
-| app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.5 |
+| app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | kasm-01 | VM 122 | purple-server | Isolated disposable desktops (`192.168.78.10`, VLAN 78 control plane) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2<br>macvlan session lanes 74, 75, 77, 79 |
-| security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh<br>node_exporter<br>cAdvisor |
+| security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; applications onboarded, end-to-end acquisition test pending | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1 |
@@ -93,7 +93,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | Coolify | Coolify app, Sentinel, Realtime, Postgres, Redis |
 | Traefik | Coolify ingress proxy: `traefik:v3.6` |
 | Generated apps | Coolify-managed application containers |
-| Wazuh agent | 4.14.5-1; enabled/active; fresh manager ID `004` as `app-01`; connected to `192.168.72.2:1514` |
+| Wazuh agent | 4.14.6-1; enabled/active; fresh manager ID `004` as `app-01`; connected to `192.168.72.2:1514` |
 
 ## edge-01
 
@@ -120,7 +120,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 
 | Workload | Details |
 | --- | --- |
-| Wazuh | Manager, indexer, dashboard |
+| Wazuh | Manager, indexer, & dashboard at package version 4.14.6-1 |
 | node_exporter | 1.9.0 on 9100 |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on 9101 from `/opt/docker/cadvisor`; one named container after the monitoring stack moved |
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |

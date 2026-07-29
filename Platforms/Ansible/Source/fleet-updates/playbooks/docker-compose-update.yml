@@ -27,12 +27,17 @@
         files: "{{ item.files | default(omit) }}"
         profiles: "{{ item.profiles | default(omit) }}"
         state: present
-        pull: "{{ compose_pull | default('always') }}"
+        pull: "{{ item.pull | default(compose_pull | default('always')) }}"
         remove_orphans: "{{ item.remove_orphans | default(false) }}"
+        wait: true
+        wait_timeout: "{{ compose_wait_timeout | default(180) | int }}"
       loop: "{{ compose_projects }}"
       loop_control:
         label: "{{ inventory_hostname }}/{{ item.name }}"
       register: compose_updates
+      retries: "{{ compose_pull_retries | default(3) | int }}"
+      delay: "{{ compose_pull_retry_delay | default(10) | int }}"
+      until: compose_updates is succeeded
 
     - name: Report what changed per stack
       ansible.builtin.debug:
@@ -40,3 +45,37 @@
       loop: "{{ compose_updates.results }}"
       loop_control:
         label: "{{ inventory_hostname }}/{{ item.item.name }}"
+
+    # docker_compose_v2 returns `docker compose ps --all` data for the project,
+    # including stopped containers. Checking that complete list catches a
+    # partial project where one service is running and another exited.
+    - name: Confirm every managed project settled cleanly
+      ansible.builtin.assert:
+        that:
+          - item.containers | length > 0
+          - non_running_names | length == 0
+          - unsettled_health_names | length == 0
+        fail_msg: >-
+          {{ inventory_hostname }}/{{ item.item.name }} did not settle:
+          non_running={{ non_running_names }},
+          health_not_ready={{ unsettled_health_names }}
+        quiet: true
+      loop: "{{ compose_updates.results }}"
+      loop_control:
+        label: "{{ inventory_hostname }}/{{ item.item.name }}"
+      vars:
+        non_running_names: >-
+          {{
+            item.containers
+            | rejectattr('State', 'equalto', 'running')
+            | map(attribute='Name')
+            | list
+          }}
+        unsettled_health_names: >-
+          {{
+            item.containers
+            | selectattr('Health', 'defined')
+            | rejectattr('Health', 'in', ['', 'healthy'])
+            | map(attribute='Name')
+            | list
+          }}

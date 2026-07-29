@@ -1,0 +1,377 @@
+captured_at=2026-07-29T04:51:42+00:00
+target=6 directly managed Compose hosts and 22 projects; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/docker-compose-update.yml --check -e compose_serial=1
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-main]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-main] => (item=docker-main/booklore)
+changed: [docker-main] => (item=docker-main/forgejo)
+changed: [docker-main] => (item=docker-main/homelab-dashboard-aio)
+changed: [docker-main] => (item=docker-main/immich)
+changed: [docker-main] => (item=docker-main/portainer)
+changed: [docker-main] => (item=docker-main/syncthing)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-main] => (item=docker-main/booklore) => {
+    "msg": "docker-main/booklore: changed=True"
+}
+ok: [docker-main] => (item=docker-main/forgejo) => {
+    "msg": "docker-main/forgejo: changed=True"
+}
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio) => {
+    "msg": "docker-main/homelab-dashboard-aio: changed=True"
+}
+ok: [docker-main] => (item=docker-main/immich) => {
+    "msg": "docker-main/immich: changed=True"
+}
+ok: [docker-main] => (item=docker-main/portainer) => {
+    "msg": "docker-main/portainer: changed=True"
+}
+ok: [docker-main] => (item=docker-main/syncthing) => {
+    "msg": "docker-main/syncthing: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-main] => (item=docker-main/booklore)
+ok: [docker-main] => (item=docker-main/forgejo)
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio)
+ok: [docker-main] => (item=docker-main/immich)
+ok: [docker-main] => (item=docker-main/portainer)
+ok: [docker-main] => (item=docker-main/syncthing)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-network]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-network] => (item=docker-network/netbird)
+changed: [docker-network] => (item=docker-network/nginx-proxy-manager)
+changed: [docker-network] => (item=docker-network/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-network] => (item=docker-network/netbird) => {
+    "msg": "docker-network/netbird: changed=True"
+}
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager) => {
+    "msg": "docker-network/nginx-proxy-manager: changed=True"
+}
+ok: [docker-network] => (item=docker-network/portainer-edge-agent) => {
+    "msg": "docker-network/portainer-edge-agent: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-network] => (item=docker-network/netbird)
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager)
+ok: [docker-network] => (item=docker-network/portainer-edge-agent)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-blue]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-blue] => (item=docker-blue/portainer-edge-agent)
+changed: [docker-blue] => (item=docker-blue/rustdesk)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent) => {
+    "msg": "docker-blue/portainer-edge-agent: changed=True"
+}
+ok: [docker-blue] => (item=docker-blue/rustdesk) => {
+    "msg": "docker-blue/rustdesk: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent)
+ok: [docker-blue] => (item=docker-blue/rustdesk)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [media-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [media-01] => (item=media-01/media-stack)
+changed: [media-01] => (item=media-01/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [media-01] => (item=media-01/media-stack) => {
+    "msg": "media-01/media-stack: changed=True"
+}
+ok: [media-01] => (item=media-01/portainer-edge-agent) => {
+    "msg": "media-01/portainer-edge-agent: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [media-01] => (item=media-01/media-stack)
+ok: [media-01] => (item=media-01/portainer-edge-agent)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [alpha-prod-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+changed: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+changed: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+
+TASK [Report what changed per stack] *******************************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent) => {
+    "msg": "alpha-prod-01/playit-agent: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent) => {
+    "msg": "alpha-prod-01/portainer-edge-agent: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak) => {
+    "msg": "alpha-prod-01/teamspeak: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02) => {
+    "msg": "alpha-prod-01/teamspeak-02: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03) => {
+    "msg": "alpha-prod-01/teamspeak-03: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor) => {
+    "msg": "alpha-prod-01/teamspeak-monitor: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager) => {
+    "msg": "alpha-prod-01/ts3-manager: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [monitor-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [monitor-01] => (item=monitor-01/monitoring)
+changed: [monitor-01] => (item=monitor-01/peanut)
+
+TASK [Report what changed per stack] *******************************************
+ok: [monitor-01] => (item=monitor-01/monitoring) => {
+    "msg": "monitor-01/monitoring: changed=True"
+}
+ok: [monitor-01] => (item=monitor-01/peanut) => {
+    "msg": "monitor-01/peanut: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [monitor-01] => (item=monitor-01/monitoring)
+ok: [monitor-01] => (item=monitor-01/peanut)
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-blue                : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-main                : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-network             : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+media-01                   : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+monitor-01                 : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+command=ansible-playbook playbooks/docker-compose-update.yml -e compose_serial=1
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-main]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [docker-main] => (item=docker-main/booklore)
+ok: [docker-main] => (item=docker-main/forgejo)
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio)
+ok: [docker-main] => (item=docker-main/immich)
+ok: [docker-main] => (item=docker-main/portainer)
+ok: [docker-main] => (item=docker-main/syncthing)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-main] => (item=docker-main/booklore) => {
+    "msg": "docker-main/booklore: changed=False"
+}
+ok: [docker-main] => (item=docker-main/forgejo) => {
+    "msg": "docker-main/forgejo: changed=False"
+}
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio) => {
+    "msg": "docker-main/homelab-dashboard-aio: changed=False"
+}
+ok: [docker-main] => (item=docker-main/immich) => {
+    "msg": "docker-main/immich: changed=False"
+}
+ok: [docker-main] => (item=docker-main/portainer) => {
+    "msg": "docker-main/portainer: changed=False"
+}
+ok: [docker-main] => (item=docker-main/syncthing) => {
+    "msg": "docker-main/syncthing: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-main] => (item=docker-main/booklore)
+ok: [docker-main] => (item=docker-main/forgejo)
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio)
+ok: [docker-main] => (item=docker-main/immich)
+ok: [docker-main] => (item=docker-main/portainer)
+ok: [docker-main] => (item=docker-main/syncthing)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-network]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [docker-network] => (item=docker-network/netbird)
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager)
+ok: [docker-network] => (item=docker-network/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-network] => (item=docker-network/netbird) => {
+    "msg": "docker-network/netbird: changed=False"
+}
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager) => {
+    "msg": "docker-network/nginx-proxy-manager: changed=False"
+}
+ok: [docker-network] => (item=docker-network/portainer-edge-agent) => {
+    "msg": "docker-network/portainer-edge-agent: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-network] => (item=docker-network/netbird)
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager)
+ok: [docker-network] => (item=docker-network/portainer-edge-agent)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-blue]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent)
+ok: [docker-blue] => (item=docker-blue/rustdesk)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent) => {
+    "msg": "docker-blue/portainer-edge-agent: changed=False"
+}
+ok: [docker-blue] => (item=docker-blue/rustdesk) => {
+    "msg": "docker-blue/rustdesk: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent)
+ok: [docker-blue] => (item=docker-blue/rustdesk)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [media-01]
+
+TASK [Pull images and recreate each stack] *************************************
+FAILED - RETRYING: [media-01]: Pull images and recreate each stack (2 retries left).
+changed: [media-01] => (item=media-01/media-stack)
+ok: [media-01] => (item=media-01/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [media-01] => (item=media-01/media-stack) => {
+    "msg": "media-01/media-stack: changed=True"
+}
+ok: [media-01] => (item=media-01/portainer-edge-agent) => {
+    "msg": "media-01/portainer-edge-agent: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [media-01] => (item=media-01/media-stack)
+ok: [media-01] => (item=media-01/portainer-edge-agent)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [alpha-prod-01]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+
+TASK [Report what changed per stack] *******************************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent) => {
+    "msg": "alpha-prod-01/playit-agent: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent) => {
+    "msg": "alpha-prod-01/portainer-edge-agent: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak) => {
+    "msg": "alpha-prod-01/teamspeak: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02) => {
+    "msg": "alpha-prod-01/teamspeak-02: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03) => {
+    "msg": "alpha-prod-01/teamspeak-03: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor) => {
+    "msg": "alpha-prod-01/teamspeak-monitor: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager) => {
+    "msg": "alpha-prod-01/ts3-manager: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [monitor-01]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [monitor-01] => (item=monitor-01/monitoring)
+ok: [monitor-01] => (item=monitor-01/peanut)
+
+TASK [Report what changed per stack] *******************************************
+ok: [monitor-01] => (item=monitor-01/monitoring) => {
+    "msg": "monitor-01/monitoring: changed=False"
+}
+ok: [monitor-01] => (item=monitor-01/peanut) => {
+    "msg": "monitor-01/peanut: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [monitor-01] => (item=monitor-01/monitoring)
+ok: [monitor-01] => (item=monitor-01/peanut)
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-blue                : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-main                : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-network             : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+media-01                   : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+monitor-01                 : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+exit_code=0

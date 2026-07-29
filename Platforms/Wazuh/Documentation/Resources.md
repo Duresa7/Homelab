@@ -1,7 +1,7 @@
 ﻿# Wazuh Resource Specification
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-29
 
 I verified these VM and package specifications on 2026-07-13.
 
@@ -18,6 +18,6 @@ I verified these VM and package specifications on 2026-07-13.
 
 ## Wazuh Packages
 
-I verified `wazuh-manager`, `wazuh-indexer`, and `wazuh-dashboard` at package version `4.14.5-1` on 2026-07-13. The manager runtime reported Wazuh `v4.14.5` revision `rc1`.
+I verified `wazuh-manager`, `wazuh-indexer`, and `wazuh-dashboard` at package version `4.14.6-1` after fleet maintenance on 2026-07-29. All three units were active; the dashboard returned HTTP 302 & the unauthenticated API root returned HTTP 401.
 
 At final verification the VM root filesystem was 30% used and memory use was about 25%. The generic EFI-variable pseudo-filesystem warning does not represent root-disk pressure.

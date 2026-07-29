@@ -1,0 +1,33 @@
+captured_at=2026-07-29T04:30:18+00:00
+target=docker-network, monitor-01, security-01, and splunk-siem
+mechanism=SSH Manager to ansible-01; Ansible corrective actions
+command=reset stale wtmpdb timer failures; retry fwupd refresh; disable unsupported mcelog
+monitor-01 | CHANGED | rc=0 >>
+
+docker-network | CHANGED | rc=0 >>
+
+security-01 | CHANGED | rc=0 >>
+
+splunk-siem | CHANGED | rc=0 >>
+Removed '/etc/systemd/system/multi-user.target.wants/mcelog.service'.
+security-01 | CHANGED | rc=0 >>
+system_state=running
+not-found
+Result=success
+ActiveState=inactive
+splunk-siem | CHANGED | rc=0 >>
+system_state=running
+disabled
+Result=success
+ActiveState=inactive
+docker-network | CHANGED | rc=0 >>
+system_state=running
+not-found
+Result=success
+ActiveState=inactive
+monitor-01 | CHANGED | rc=0 >>
+system_state=running
+not-found
+Result=success
+ActiveState=inactive
+exit_code=0

@@ -1,7 +1,7 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 ## Request Path
 
@@ -35,7 +35,7 @@ The removal gate stays closed unless all of these are true:
 
 ## Privilege Model
 
-The nine running Linux workload guests use the dedicated `ansible` account for controller access. That account has a validated `NOPASSWD: ALL` rule, so the controller can update packages and manage another account's authorized-key file without storing a sudo password in Ansible. Its own controller key is restricted to connections from `192.168.40.36` and disables agent forwarding, port forwarding, X11 forwarding, & PTY allocation.
+Ten remote guests in the fleet-update scope use the dedicated `ansible` account for controller access. That account has a validated `NOPASSWD: ALL` rule, so the controller can update packages and manage another account's authorized-key file without storing a sudo password in Ansible. `ansible-01` joins the 11-host package-update scope through Ansible's local connection. Its controller key is restricted to connections from `192.168.40.36` and disables agent forwarding, port forwarding, X11 forwarding, & PTY allocation.
 
 Each identity may override the POSIX account and authorized-keys path. `ansible-control` resolves to `/home/ansible/.ssh/authorized_keys`; Mac, Jedi PC, & the other human identities keep the original `root` or administrative-user key stores. Read, add, & remove operations become root only when the selected key store belongs to a different account than the SSH connection.
 
@@ -56,4 +56,6 @@ This gives the web UI automatic recovery after a controller or Proxmox-node boot
 - I removed the retired domain controllers and `obi-pc` from the deployed and repository inventories on 2026-07-27. No Windows host remains in this automation.
 - `nas-family` is retired and is absent from the inventory and validator.
 - Stopped guests remain in the general SSH-key inventory only when an existing identity record still references them. They aren't targets of the active fleet update playbooks.
+- `kasm-01` is excluded from fleet package and compose updates.
+- The fleet-update playbooks don't target `grey-server`, `purple-server`, `blue-server`, or `red-server`. Proxmox node maintenance remains a separate operation.
 - I generate replacements on the device that owns the identity. Ansible stages, checks, & retires the public-key entries.

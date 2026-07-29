@@ -1,9 +1,11 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 9 running Linux guests through apt or dnf, updates 15 docker compose projects on 5 hosts, & installs Prometheus exporters on 7 hosts. Semaphore provides an optional web interface over the same playbooks.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 11 running Linux guests through apt or dnf, updates 22 docker compose projects on 6 hosts, manages node_exporter on 9 targets, & manages cAdvisor on 8 Docker hosts. Semaphore provides an optional web interface over the same playbooks.
+
+Fleet package updates include `ansible-01` through Ansible's local connection. The fleet-update inventory excludes `kasm-01` and all four Proxmox nodes.
 
 ## Live Deployment
 
@@ -44,6 +46,7 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 - [SSH identity automation implementation](Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
 - [Ansible and Semaphore upgrade](Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
 - [Fleet update automation](Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md)
+- [Fleet maintenance](Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md)
 - [Dedicated Ansible account and fleet expansion](Documentation/Change%20Records/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md)
 - [Direct administrative SSH to the controller](Documentation/Change%20Records/Direct%20Administrative%20SSH%20to%20the%20Controller%20-%202026-07-25.md)
 - [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

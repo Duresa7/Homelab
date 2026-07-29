@@ -1,0 +1,120 @@
+captured_at=2026-07-29T04:26:53+00:00
+target=11 in-scope Linux guests; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible ad-hoc readback
+command=ansible os_update_targets -b -m shell -a systemd-and-runtime-readback
+docker-main | CHANGED | rc=0 >>
+system_state=running
+docker=active
+[{"Name":"booklore","Status":"running(2)","ConfigFiles":"/opt/docker/booklore/docker-compose.yml"},{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"forgejo","Status":"running(1)","ConfigFiles":"/opt/docker/forgejo/docker-compose.yml"},{"Name":"homelab-dashboard-aio","Status":"running(1)","ConfigFiles":"/opt/docker/homelab-dashboard-aio/docker-compose.yml"},{"Name":"immich","Status":"running(4)","ConfigFiles":"/opt/docker/immich-app/docker-compose.yml"},{"Name":"portainer","Status":"running(1)","ConfigFiles":"/opt/docker/portainer/docker-compose.yml"},{"Name":"syncthing","Status":"running(1)","ConfigFiles":"/opt/docker/syncthing/docker-compose.yml"}]
+unhealthy_or_restarting
+media-01 | CHANGED | rc=0 >>
+system_state=running
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"media-stack","Status":"running(8)","ConfigFiles":"/opt/media-stack/compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"}]
+unhealthy_or_restarting
+docker-network | CHANGED | rc=0 >>
+system_state=degraded
+wtmpdb-rotate.timer not-found failed failed wtmpdb-rotate.timer
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"netbird","Status":"running(2)","ConfigFiles":"/opt/docker/netbird/docker-compose.yml"},{"Name":"nginx-proxy-manager","Status":"running(1)","ConfigFiles":"/opt/docker/nginx-proxy-manager/docker-compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"}]
+unhealthy_or_restarting
+docker-blue | CHANGED | rc=0 >>
+system_state=running
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"},{"Name":"rustdesk","Status":"running(2)","ConfigFiles":"/opt/docker/rustdesk/docker-compose.yml"}]
+unhealthy_or_restarting
+alpha-prod-01 | CHANGED | rc=0 >>
+system_state=running
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"playit-agent","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/playit-agent/docker-compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"},{"Name":"teamspeak","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak/docker-compose.yml"},{"Name":"teamspeak-02","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-02/docker-compose.yml"},{"Name":"teamspeak-03","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-03/docker-compose.yml"},{"Name":"teamspeak-monitor","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor/docker-compose.yml"},{"Name":"ts3-manager","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/ts3-manager/docker-compose.yml"}]
+unhealthy_or_restarting
+ansible-01 | CHANGED | rc=0 >>
+system_state=running
+monitor-01 | CHANGED | rc=0 >>
+system_state=degraded
+wtmpdb-rotate.timer not-found failed failed wtmpdb-rotate.timer
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"monitoring","Status":"running(5)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml"},{"Name":"peanut","Status":"running(1)","ConfigFiles":"/opt/docker/peanut/docker-compose.yml"}]
+unhealthy_or_restarting
+splunk-siem | CHANGED | rc=0 >>
+system_state=degraded
+mcelog.service loaded failed failed Machine Check Exception Logging Daemon
+podman_containers
+[
+  {
+    "AutoRemove": true,
+    "Command": null,
+    "CreatedAt": "6 days ago",
+    "CIDFile": "",
+    "Exited": false,
+    "ExitedAt": -62135596800,
+    "ExitCode": 0,
+    "ExposedPorts": {
+      "514": [
+  "tcp",
+  "udp"
+],
+      "601": [
+  "tcp"
+],
+      "6514": [
+  "tcp"
+]
+    },
+    "Id": "20d02fba3ae1b9ba63100128772ed251687d3c008368e00513b831adf52d0b39",
+    "Image": "ghcr.io/splunk/splunk-connect-for-syslog/container3:latest",
+    "ImageID": "e05f067310dfd4bb6588b5b21a1fdffb3ef972c71e53ca350d970b3de3ba13b1",
+    "IsInfra": false,
+    "Labels": {
+      "maintainer": "axoflow.io",
+      "org.opencontainers.image.authors": "Axoflow",
+      "org.opencontainers.image.created": "2026-07-07T09:42:40.999Z",
+      "org.opencontainers.image.description": "Splunk Connect for Syslog",
+      "org.opencontainers.image.documentation": "https://axoflow.com/docs/axosyslog/docs/",
+      "org.opencontainers.image.licenses": "Apache-2.0",
+      "org.opencontainers.image.revision": "96873d46de671d58e38f2d12476eae642eca0787",
+      "org.opencontainers.image.source": "https://github.com/splunk/splunk-connect-for-syslog",
+      "org.opencontainers.image.title": "splunk-connect-for-syslog",
+      "org.opencontainers.image.url": "https://github.com/splunk/splunk-connect-for-syslog",
+      "org.opencontainers.image.vendor": "Axoflow",
+      "org.opencontainers.image.version": "3.45.1"
+    },
+    "Mounts": [
+      "/etc/syslog-ng/conf.d/local",
+      "/var/lib/syslog-ng/archive",
+      "/etc/syslog-ng/tls",
+      "/var/lib/syslog-ng"
+    ],
+    "Names": [
+      "SC4S"
+    ],
+    "Namespaces": {
+      
+    },
+    "Networks": [],
+    "Pid": 2433,
+    "Pod": "",
+    "PodName": "",
+    "Ports": null,
+    "Restarts": 0,
+    "Size": null,
+    "StartedAt": 1784780888,
+    "State": "running",
+    "Status": "Up 6 days (healthy)",
+    "Created": 1784780888
+  }
+]
+app-01 | CHANGED | rc=0 >>
+system_state=running
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"coolify-proxy","Status":"running(1)","ConfigFiles":"/data/coolify/proxy/docker-compose.yml"},{"Name":"source","Status":"running(4)","ConfigFiles":"/data/coolify/source/docker-compose.yml,/data/coolify/source/docker-compose.prod.yml"}]
+unhealthy_or_restarting
+edge-01 | CHANGED | rc=0 >>
+system_state=running
+security-01 | CHANGED | rc=0 >>
+system_state=degraded
+fwupd-refresh.service loaded failed failed Refresh fwupd metadata and update motd
+docker=active
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"}]
+unhealthy_or_restarting
+exit_code=0

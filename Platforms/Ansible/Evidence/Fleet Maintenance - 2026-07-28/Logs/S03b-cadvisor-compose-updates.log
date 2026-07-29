@@ -1,0 +1,259 @@
+captured_at=2026-07-29T04:45:55+00:00
+target=8 cAdvisor Compose projects from cadvisor_targets; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/monitoring-exporters
+command=python3 tests/validate_project.py
+Validation passed: 9 node_exporter hosts, 8 cAdvisor hosts.
+command=ansible cadvisor_targets -f 1 -b -m shell -a 'cd /opt/docker/cadvisor && docker compose pull && docker compose up -d'
+docker-main | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+docker-network | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+docker-blue | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+media-01 | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+alpha-prod-01 | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+app-01 | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+security-01 | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+monitor-01 | CHANGED | rc=0 >>
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulling 
+ Image ghcr.io/google/cadvisor:v0.60.5 Pulled 
+ Container cadvisor Running 
+command=ansible-playbook playbooks/cadvisor.yml
+
+PLAY [Manage cAdvisor as a compose project on the Docker hosts] ****************
+
+TASK [Gathering Facts] *********************************************************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [monitor-01]
+ok: [docker-main]
+ok: [security-01]
+
+TASK [Confirm Docker is present] ***********************************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Read the Docker storage driver] ******************************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [media-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Take the compose project down] *******************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Remove any leftover container] *******************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Remove the project directory] ********************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Confirm nothing answers on the published port] ***************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Report the removal] ******************************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Confirm the chosen host port is free or already ours] ********************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [media-01]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Detect an existing cAdvisor container] ***********************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Stop when the port is taken by something that is not cAdvisor] ***********
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Create the project directory] ********************************************
+ok: [alpha-prod-01]
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Write the compose file] **************************************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Bring the project up] ****************************************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Confirm cAdvisor answers on the published port] **************************
+ok: [alpha-prod-01]
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Count the named containers cAdvisor actually reports] ********************
+ok: [docker-main]
+ok: [docker-network]
+ok: [alpha-prod-01]
+ok: [docker-blue]
+ok: [media-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Count the containers Docker itself reports running] **********************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Fail when cAdvisor registered nothing on a host that has containers] *****
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-main] => {
+    "msg": "docker-main: docker=29.6.2 driver=overlay2 port=9101 named_containers=11 of 11 running"
+}
+ok: [docker-network] => {
+    "msg": "docker-network: docker=29.6.2 driver=overlayfs port=9101 named_containers=5 of 5 running"
+}
+ok: [docker-blue] => {
+    "msg": "docker-blue: docker=29.6.2 driver=overlayfs port=9101 named_containers=4 of 4 running"
+}
+ok: [media-01] => {
+    "msg": "media-01: docker=29.6.2 driver=overlayfs port=9101 named_containers=10 of 10 running"
+}
+ok: [alpha-prod-01] => {
+    "msg": "alpha-prod-01: docker=29.6.2 driver=overlayfs port=9101 named_containers=8 of 8 running"
+}
+ok: [app-01] => {
+    "msg": "app-01: docker=29.6.2 driver=overlayfs port=9101 named_containers=7 of 7 running"
+}
+ok: [security-01] => {
+    "msg": "security-01: docker=29.6.2 driver=overlayfs port=9101 named_containers=1 of 1 running"
+}
+ok: [monitor-01] => {
+    "msg": "monitor-01: docker=29.6.2 driver=overlayfs port=9101 named_containers=7 of 7 running"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+app-01                     : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-blue                : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-main                : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-network             : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+media-01                   : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+monitor-01                 : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+security-01                : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+
+exit_code=0

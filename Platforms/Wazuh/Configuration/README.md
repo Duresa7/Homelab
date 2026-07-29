@@ -1,7 +1,7 @@
 ﻿# Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-07-29
 
 This reference records endpoints, paths, package versions, & current agent state.
 
@@ -23,7 +23,7 @@ This reference records endpoints, paths, package versions, & current agent state
 
 | Host | Package | Manager identity | Address | Service state |
 |---|---|---|---|---|
-| `app-01` | 4.14.5-1 | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
+| `app-01` | 4.14.6-1 | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
 | `edge-01` | 4.14.5-1 | ID `005`, `edge-01` | `192.168.90.10` | Enabled/active; TCP 1514 established |
 
 `app-01` and `edge-01` are the only intended Wazuh endpoints. The dashboard verifies IDs `004` and `005` active on manager node `node01`.

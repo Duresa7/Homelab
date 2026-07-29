@@ -28,6 +28,8 @@ EXPECTED_OS_HOSTS = {
     "edge-01",
     "security-01",
     "splunk-siem",
+    "ansible-01",
+    "monitor-01",
 }
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {
@@ -36,6 +38,7 @@ EXPECTED_COMPOSE_PROJECTS = {
         "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
         "immich": ("/opt/docker/immich-app", ()),
         "portainer": ("/opt/docker/portainer", ()),
+        "syncthing": ("/opt/docker/syncthing", ()),
     },
     "docker-network": {
         "netbird": ("/opt/docker/netbird", ()),
@@ -59,8 +62,19 @@ EXPECTED_COMPOSE_PROJECTS = {
         "teamspeak": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak", ()),
         "teamspeak-02": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-02", ()),
         "teamspeak-03": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-03", ()),
+        "teamspeak-monitor": (
+            "/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor",
+            (),
+        ),
         "ts3-manager": ("/home/<YOUR_ADMIN_USERNAME>/ts3-manager", ()),
     },
+    "monitor-01": {
+        "monitoring": ("/home/<YOUR_ADMIN_USERNAME>/monitoring", ()),
+        "peanut": ("/opt/docker/peanut", ()),
+    },
+}
+EXPECTED_PULL_OVERRIDES = {
+    ("alpha-prod-01", "teamspeak-monitor"): "never",
 }
 
 
@@ -91,12 +105,12 @@ def main() -> int:
 
     if set(os_hosts) != EXPECTED_OS_HOSTS:
         errors.append(
-            "OS-update host set differs from the approved nine-host fleet: "
+            "OS-update host set differs from the approved eleven-host fleet: "
             f"{sorted(os_hosts)}"
         )
     if set(compose_hosts) != set(EXPECTED_COMPOSE_PROJECTS):
         errors.append(
-            "compose host set differs from the approved five-host fleet: "
+            "compose host set differs from the approved six-host fleet: "
             f"{sorted(compose_hosts)}"
         )
     if set(compose_hosts) - set(os_hosts):
@@ -104,6 +118,11 @@ def main() -> int:
     for host, host_vars in os_hosts.items():
         if (host_vars or {}).get("ansible_user") != "ansible":
             errors.append(f"{host}: ansible_user must be ansible")
+        connection = (host_vars or {}).get("ansible_connection")
+        if host == "ansible-01" and connection != "local":
+            errors.append("ansible-01 must use the guarded local connection")
+        elif host != "ansible-01" and connection == "local":
+            errors.append(f"{host}: only ansible-01 may use a local connection")
 
     for host, host_vars in collect_hosts(compose_group).items():
         projects = (host_vars or {}).get("compose_projects")
@@ -163,6 +182,12 @@ def main() -> int:
                     f"{host}/{name}: expected profiles {list(expected_profiles)}, "
                     f"found {profiles or []}"
                 )
+            expected_pull = EXPECTED_PULL_OVERRIDES.get((host, name))
+            if entry.get("pull") != expected_pull:
+                errors.append(
+                    f"{host}/{name}: expected pull {expected_pull!r}, "
+                    f"found {entry.get('pull')!r}"
+                )
         missing_projects = set(expected_projects) - seen
         if missing_projects:
             errors.append(
@@ -199,8 +224,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 18:
-        errors.append(f"expected 18 compose projects, found {project_count}")
+    if project_count != 22:
+        errors.append(f"expected 22 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

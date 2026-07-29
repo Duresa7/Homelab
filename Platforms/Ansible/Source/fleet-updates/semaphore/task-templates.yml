@@ -55,7 +55,7 @@ templates:
     survey:
       - name: target
         title: Target host
-        description: Host that runs compose stacks (docker-main, docker-network, or alpha-prod-01).
+        description: Inventory host name from the Docker Compose view.
         type: ""
         required: true
         values: []

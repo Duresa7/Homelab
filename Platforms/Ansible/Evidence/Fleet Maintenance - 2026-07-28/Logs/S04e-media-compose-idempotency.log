@@ -1,0 +1,30 @@
+captured_at=2026-07-29T04:53:47+00:00
+target=media-01 managed Compose projects; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/docker-compose-update.yml -e target=media-01
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [media-01]
+
+TASK [Pull images and recreate each stack] *************************************
+ok: [media-01] => (item=media-01/media-stack)
+ok: [media-01] => (item=media-01/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [media-01] => (item=media-01/media-stack) => {
+    "msg": "media-01/media-stack: changed=False"
+}
+ok: [media-01] => (item=media-01/portainer-edge-agent) => {
+    "msg": "media-01/portainer-edge-agent: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [media-01] => (item=media-01/media-stack)
+ok: [media-01] => (item=media-01/portainer-edge-agent)
+
+PLAY RECAP *********************************************************************
+media-01                   : ok=4    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+exit_code=0

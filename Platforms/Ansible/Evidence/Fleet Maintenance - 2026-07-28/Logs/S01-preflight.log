@@ -1,0 +1,328 @@
+captured_at=2026-07-29T03:55:49+00:00
+target=ansible-01 controller and 11 in-scope running Linux guests
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=python3 tests/validate_project.py
+command=ansible-playbook playbooks/os-update.yml --check
+command=ansible-playbook playbooks/docker-compose-update.yml --check -e compose_serial=1
+Validation passed: 11 OS-update hosts, 6 compose hosts, 22 projects.
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [alpha-prod-01]
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [edge-01]
+ok: [ansible-01]
+ok: [splunk-siem]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [edge-01]
+ok: [security-01]
+ok: [splunk-siem]
+ok: [ansible-01]
+ok: [monitor-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [docker-main]
+changed: [media-01]
+changed: [alpha-prod-01]
+changed: [docker-blue]
+skipping: [splunk-siem]
+changed: [docker-network]
+changed: [edge-01]
+ok: [monitor-01]
+changed: [app-01]
+changed: [security-01]
+changed: [ansible-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [ansible-01]
+skipping: [monitor-01]
+changed: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [docker-network]
+ok: [docker-blue]
+skipping: [splunk-siem]
+ok: [app-01]
+ok: [edge-01]
+ok: [security-01]
+ok: [ansible-01]
+ok: [monitor-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [ansible-01]
+skipping: [monitor-01]
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [edge-01]
+ok: [security-01]
+ok: [splunk-siem]
+ok: [ansible-01]
+ok: [monitor-01]
+
+TASK [Reboot the host when required and the policy allows it] ******************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [splunk-siem]
+skipping: [ansible-01]
+skipping: [monitor-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [splunk-siem]
+skipping: [ansible-01]
+skipping: [monitor-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-main] => {
+    "msg": "docker-main: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [docker-network] => {
+    "msg": "docker-network: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [docker-blue] => {
+    "msg": "docker-blue: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [media-01] => {
+    "msg": "media-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [alpha-prod-01] => {
+    "msg": "alpha-prod-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [app-01] => {
+    "msg": "app-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [edge-01] => {
+    "msg": "edge-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [security-01] => {
+    "msg": "security-01: pkg_mgr=apt changed=True reboot_required=True reboot_policy=report"
+}
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=True reboot_required=False (reboot check inconclusive, verify manually) reboot_policy=report"
+}
+ok: [ansible-01] => {
+    "msg": "ansible-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [monitor-01] => {
+    "msg": "monitor-01: pkg_mgr=apt changed=False reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+ansible-01                 : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+app-01                     : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-blue                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-main                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-network             : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+edge-01                    : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+media-01                   : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+monitor-01                 : ok=6    changed=0    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+security-01                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+splunk-siem                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-main]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-main] => (item=docker-main/booklore)
+changed: [docker-main] => (item=docker-main/forgejo)
+changed: [docker-main] => (item=docker-main/homelab-dashboard-aio)
+changed: [docker-main] => (item=docker-main/immich)
+changed: [docker-main] => (item=docker-main/portainer)
+changed: [docker-main] => (item=docker-main/syncthing)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-main] => (item=docker-main/booklore) => {
+    "msg": "docker-main/booklore: changed=True"
+}
+ok: [docker-main] => (item=docker-main/forgejo) => {
+    "msg": "docker-main/forgejo: changed=True"
+}
+ok: [docker-main] => (item=docker-main/homelab-dashboard-aio) => {
+    "msg": "docker-main/homelab-dashboard-aio: changed=True"
+}
+ok: [docker-main] => (item=docker-main/immich) => {
+    "msg": "docker-main/immich: changed=True"
+}
+ok: [docker-main] => (item=docker-main/portainer) => {
+    "msg": "docker-main/portainer: changed=True"
+}
+ok: [docker-main] => (item=docker-main/syncthing) => {
+    "msg": "docker-main/syncthing: changed=True"
+}
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-network]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-network] => (item=docker-network/netbird)
+changed: [docker-network] => (item=docker-network/nginx-proxy-manager)
+changed: [docker-network] => (item=docker-network/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-network] => (item=docker-network/netbird) => {
+    "msg": "docker-network/netbird: changed=True"
+}
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager) => {
+    "msg": "docker-network/nginx-proxy-manager: changed=True"
+}
+ok: [docker-network] => (item=docker-network/portainer-edge-agent) => {
+    "msg": "docker-network/portainer-edge-agent: changed=True"
+}
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-blue]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-blue] => (item=docker-blue/portainer-edge-agent)
+changed: [docker-blue] => (item=docker-blue/rustdesk)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-blue] => (item=docker-blue/portainer-edge-agent) => {
+    "msg": "docker-blue/portainer-edge-agent: changed=True"
+}
+ok: [docker-blue] => (item=docker-blue/rustdesk) => {
+    "msg": "docker-blue/rustdesk: changed=True"
+}
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [media-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [media-01] => (item=media-01/media-stack)
+changed: [media-01] => (item=media-01/portainer-edge-agent)
+
+TASK [Report what changed per stack] *******************************************
+ok: [media-01] => (item=media-01/media-stack) => {
+    "msg": "media-01/media-stack: changed=True"
+}
+ok: [media-01] => (item=media-01/portainer-edge-agent) => {
+    "msg": "media-01/portainer-edge-agent: changed=True"
+}
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [alpha-prod-01]
+
+TASK [Pull images and recreate each stack] *************************************
+[WARNING]: Docker compose: image teamspeak-monitor:local: authorization failed
+changed: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+changed: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+changed: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+
+TASK [Report what changed per stack] *******************************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent) => {
+    "msg": "alpha-prod-01/playit-agent: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/portainer-edge-agent) => {
+    "msg": "alpha-prod-01/portainer-edge-agent: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak) => {
+    "msg": "alpha-prod-01/teamspeak: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02) => {
+    "msg": "alpha-prod-01/teamspeak-02: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03) => {
+    "msg": "alpha-prod-01/teamspeak-03: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor) => {
+    "msg": "alpha-prod-01/teamspeak-monitor: changed=False"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager) => {
+    "msg": "alpha-prod-01/ts3-manager: changed=True"
+}
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [monitor-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [monitor-01] => (item=monitor-01/monitoring)
+changed: [monitor-01] => (item=monitor-01/peanut)
+
+TASK [Report what changed per stack] *******************************************
+ok: [monitor-01] => (item=monitor-01/monitoring) => {
+    "msg": "monitor-01/monitoring: changed=True"
+}
+ok: [monitor-01] => (item=monitor-01/peanut) => {
+    "msg": "monitor-01/peanut: changed=True"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-blue                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-main                : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-network             : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+media-01                   : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+monitor-01                 : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+exit_code=0

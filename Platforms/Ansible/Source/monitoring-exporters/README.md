@@ -1,7 +1,7 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all eight Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
 
@@ -76,6 +76,6 @@ Scraping the new host also needs a UniFi policy from the collector's zone to the
 
 ## Relationship to fleet-updates
 
-Separate projects on purpose. `fleet-updates` patches packages & compose stacks on a schedule; this one installs and verifies exporters. They share the `ansible` account and inventory style but not their host sets: `fleet-updates` covers 9 hosts including `edge-01`, `security-01`, & `app-01`, which this project excludes because they already export.
+Separate projects on purpose. `fleet-updates` patches packages on 11 guests & updates 22 application Compose projects on a schedule; this project manages node_exporter on 9 targets & cAdvisor on 8 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
 
-The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so it isn't picked up by automated image updates. Its image is pinned, so that's the intended behavior rather than an oversight. It does mean upgrades are a deliberate act here: bump `cadvisor_image` and re-run, which is exactly how v0.52.1 became v0.60.5.
+The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so it isn't picked up by scheduled application-image updates. Its image is pinned, so upgrades remain a deliberate act here: bump `cadvisor_image` and re-run, which is exactly how v0.52.1 became v0.60.5. The 2026-07-29 fleet maintenance ran `pull` and `up -d` for all 8 pinned projects, then used this playbook's owner checks without changing the version.

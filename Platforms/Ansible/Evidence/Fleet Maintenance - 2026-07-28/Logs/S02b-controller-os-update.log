@@ -1,0 +1,43 @@
+captured_at=2026-07-29T04:20:30+00:00
+target=ansible-01 only; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; local Ansible connection from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/os-update.yml -e target=ansible-01
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [ansible-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [ansible-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [ansible-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [ansible-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [ansible-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [ansible-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [ansible-01]
+
+TASK [Reboot the host when required and the policy allows it] ******************
+skipping: [ansible-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [ansible-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [ansible-01] => {
+    "msg": "ansible-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+ansible-01                 : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+
+exit_code=0

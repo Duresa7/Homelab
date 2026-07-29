@@ -1,0 +1,107 @@
+captured_at=2026-07-29T04:59:08+00:00
+target=11 in-scope Linux guests and service endpoints after final Compose review; Proxmox nodes and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; read-only Ansible commands from /home/ansible/fleet-updates
+command=ansible os_update_targets excluding splunk-siem: apt-get -s upgrade | tail -n 1
+docker-main | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+alpha-prod-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+media-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+docker-blue | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+docker-network | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+ansible-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+app-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+edge-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+monitor-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+security-01 | CHANGED | rc=0 >>
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+command=ansible splunk-siem: dnf -q check-update; uname -r; rpm -q --last kernel-core
+splunk-siem | CHANGED | rc=0 >>
+Security: kernel-core-6.12.0-211.39.1.el10_2.x86_64 is an installed security update
+Security: kernel-core-6.12.0-211.32.1.el10_2.x86_64 is the currently running version
+dnf_check_update_rc=0
+running_kernel=6.12.0-211.32.1.el10_2.x86_64
+latest_installed_kernel=kernel-core-6.12.0-211.39.1.el10_2.x86_64     Wed 29 Jul 2026 12:15:28 AM EDT
+command=ansible os_update_targets: systemctl is-system-running; systemctl --failed count
+docker-main | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+alpha-prod-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+media-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+docker-blue | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+docker-network | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+app-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+edge-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+security-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+splunk-siem | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+ansible-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+monitor-01 | CHANGED | rc=0 >>
+system_state=running
+failed_units=0
+command=ansible security-01: Wazuh packages, units, HTTPS responses, reboot flag
+security-01 | CHANGED | rc=0 >>
+wazuh-dashboard	4.14.6-1
+wazuh-indexer	4.14.6-1
+wazuh-manager	4.14.6-1
+active
+active
+active
+active
+dashboard_http=302
+api_http=401
+reboot_required=libc6,
+command=ansible splunk-siem: Splunkd and sc4s units, Splunk HTTPS, SC4S container
+splunk-siem | CHANGED | rc=0 >>
+active
+active
+splunk_https=303
+sc4s_status=running
+sc4s_health=healthy
+command=ansible monitor-01: Prometheus target count and Grafana/Prometheus HTTP status
+monitor-01 | CHANGED | rc=0 >>
+targets_total=48 targets_up=48
+unhealthy=
+prometheus_http=200
+grafana_http=200
+command=ansible monitor-01: TeamSpeak public, local, DNS SRV, and query metric minimums
+monitor-01 | CHANGED | rc=0 >>
+teamspeak_public_up series=3 minimum=1.0
+teamspeak_local_up series=3 minimum=1.0
+teamspeak_dns_srv_up series=3 minimum=1.0
+teamspeak_query_up series=3 minimum=1.0
+command=ansible app-01: Coolify image and source project container state
+app-01 | CHANGED | rc=0 >>
+coolify_image=ghcr.io/coollabsio/coolify:4.1.2
+coolify_status=running
+coolify_health=healthy
+CONTAINER ID   IMAGE                                        COMMAND                  CREATED       STATUS                    PORTS                                                                       NAMES
+03a7c0792f20   ghcr.io/coollabsio/coolify:4.1.2             "docker-php-serversi…"   7 weeks ago   Up 56 minutes (healthy)   8000/tcp, 8443/tcp, 9000/tcp, 0.0.0.0:8000->8080/tcp, [::]:8000->8080/tcp   coolify
+bdfda148eea3   postgres:15-alpine                           "docker-entrypoint.s…"   7 weeks ago   Up 56 minutes (healthy)   5432/tcp                                                                    coolify-db
+60cbba90f863   redis:7-alpine                               "docker-entrypoint.s…"   7 weeks ago   Up 56 minutes (healthy)   6379/tcp                                                                    coolify-redis
+d5c2977d4ef7   ghcr.io/coollabsio/coolify-realtime:1.0.16   "/bin/sh /soketi-ent…"   7 weeks ago   Up 56 minutes (healthy)   0.0.0.0:6001-6002->6001-6002/tcp, [::]:6001-6002->6001-6002/tcp             coolify-realtime
+exit_code=0

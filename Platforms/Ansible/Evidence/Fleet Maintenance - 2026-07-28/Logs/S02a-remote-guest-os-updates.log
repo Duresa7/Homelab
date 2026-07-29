@@ -1,0 +1,160 @@
+captured_at=2026-07-29T03:57:35+00:00
+target=10 remote running Linux guests; ansible-01 and kasm-01 excluded
+mechanism=SSH Manager to ansible-01; Ansible from /home/ansible/fleet-updates
+command=ansible-playbook playbooks/os-update.yml --limit !ansible-01
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [alpha-prod-01]
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [edge-01]
+ok: [splunk-siem]
+ok: [monitor-01]
+ok: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [edge-01]
+ok: [security-01]
+ok: [splunk-siem]
+ok: [monitor-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [media-01]
+changed: [docker-blue]
+changed: [docker-main]
+changed: [docker-network]
+skipping: [splunk-siem]
+ok: [monitor-01]
+changed: [edge-01]
+changed: [alpha-prod-01]
+changed: [app-01]
+changed: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [monitor-01]
+changed: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [alpha-prod-01]
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-blue]
+ok: [docker-network]
+skipping: [splunk-siem]
+ok: [app-01]
+ok: [edge-01]
+ok: [monitor-01]
+ok: [security-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [monitor-01]
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [edge-01]
+ok: [security-01]
+ok: [splunk-siem]
+ok: [monitor-01]
+
+TASK [Reboot the host when required and the policy allows it] ******************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [splunk-siem]
+skipping: [monitor-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [edge-01]
+skipping: [security-01]
+skipping: [splunk-siem]
+skipping: [monitor-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-main] => {
+    "msg": "docker-main: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [docker-network] => {
+    "msg": "docker-network: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [docker-blue] => {
+    "msg": "docker-blue: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [media-01] => {
+    "msg": "media-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [alpha-prod-01] => {
+    "msg": "alpha-prod-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [app-01] => {
+    "msg": "app-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [edge-01] => {
+    "msg": "edge-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [security-01] => {
+    "msg": "security-01: pkg_mgr=apt changed=True reboot_required=True reboot_policy=report"
+}
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=True reboot_required=False (reboot check inconclusive, verify manually) reboot_policy=report"
+}
+ok: [monitor-01] => {
+    "msg": "monitor-01: pkg_mgr=apt changed=False reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+app-01                     : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-blue                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-main                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+docker-network             : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+edge-01                    : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+media-01                   : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+monitor-01                 : ok=6    changed=0    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+security-01                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+splunk-siem                : ok=6    changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+
+exit_code=0

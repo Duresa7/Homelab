@@ -4,9 +4,10 @@
   gather_facts: true
   become: "{{ os_update_become | default(true) }}"
   # When reboot=auto, default to one host at a time so several guests never
-  # reboot at once. A plain report-only run patches the whole fleet in parallel.
-  # os_update_serial overrides either default.
-  serial: "{{ os_update_serial | default('1' if (reboot | default('report')) == 'auto' else '100%') }}"
+  # reboot at once. A plain report-only run uses two hosts at a time so package
+  # extraction does not saturate the shared guest-storage SSD. os_update_serial
+  # overrides either default.
+  serial: "{{ os_update_serial | default('1' if (reboot | default('report')) == 'auto' else '2') }}"
   # DEBIAN_FRONTEND stops any package prompt from hanging the run.
   # NEEDRESTART_MODE=l makes needrestart list services instead of restarting
   # them, so an apt upgrade never bounces a service on its own. Reboots and
@@ -18,6 +19,19 @@
     apt_upgrade_type: "{{ apt_upgrade | default('safe') }}"
     reboot_policy: "{{ reboot | default('report') }}"
   tasks:
+    - name: Confirm a local controller run is on ansible-01
+      when:
+        - inventory_hostname == 'ansible-01'
+        - (ansible_connection | default('ssh')) == 'local'
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.hostname == 'ansible-01'
+        fail_msg: >-
+          The ansible-01 inventory entry uses a local connection, but this
+          runner reports hostname {{ ansible_facts.hostname }}. Run the project
+          from ansible-01 or use an explicit SSH connection.
+        quiet: true
+
     - name: Confirm a supported package manager is present
       ansible.builtin.assert:
         that:
