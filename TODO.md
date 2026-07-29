@@ -22,7 +22,7 @@ None.
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | No open items; the active-fleet package, Compose, repair, & reboot maintenance completed 2026-07-29 |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Watch the first real automatic reboot after the 2026-07-29 reconnect-race fix; the package, Compose, repair, & reboot maintenance itself completed 2026-07-29 |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 `ai-bravo-02` on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on `blue-server` |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
@@ -31,7 +31,7 @@ None.
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Remove the inactive Grafana WAL setting at the next recreate, alert routing then rules, & UniFi gateway metrics |
-| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; `app-01` and `edge-01` are the only intended endpoints |
+| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; decide how `edge-01` gets agent updates, since it has no Wazuh apt repository and sits at 4.14.5-1 |
 
 ## Recently Completed
 

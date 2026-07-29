@@ -19,7 +19,9 @@ The play upgrades packages and never reboots unless I tell it to. On apt hosts i
 
 Reboot handling is report-only by default. The play checks `/var/run/reboot-required` on Debian. On Rocky it tries the standalone `needs-restarting` helper, the dnf4 `dnf needs-restarting -r` subcommand, & `dnf5 needs-restarting --reboothint`. If none answer, a mismatch between the running and newest installed kernels can still prove that a reboot is needed. A matching kernel alone does not rule out another reason, so the play reports that fallback as inconclusive instead of returning a false negative.
 
-Normal patching runs two guests at a time so concurrent package extraction doesn't saturate the shared guest-storage SSD. Pass `-e reboot=auto` to reboot flagged remote hosts one at a time. That path records the boot ID, schedules the reboot through a transient systemd timer outside the SSH session, waits for SSH, proves the boot ID changed, & allows up to 5 minutes for systemd and startup health checks to settle. The local ansible-01 connection refuses automatic reboot. Override the package or reboot batch size with `-e os_update_serial=N`.
+Normal patching runs two guests at a time so concurrent package extraction doesn't saturate the shared guest-storage SSD. Pass `-e reboot=auto` to reboot flagged remote hosts one at a time. That path records the boot ID, schedules the reboot through a transient systemd timer outside the SSH session, waits for the guest to stop answering on TCP 22, waits for SSH to come back, proves the boot ID changed, & allows up to 5 minutes for systemd and startup health checks to settle. The local ansible-01 connection refuses automatic reboot. Override the package or reboot batch size with `-e os_update_serial=N`.
+
+The wait for the SSH listener to drop is there so the reconnect can't race the shutdown. Without it, a guest still answering five seconds after the timer fires lets the reconnect succeed before the reboot starts, and the boot ID check then fails on a guest that reboots correctly. That wait uses a 120-second `reboot_drop_timeout` and never fails the play on its own, because a guest that reboots faster than it samples never looks down. The boot ID comparison is the actual proof.
 
 ```bash
 cd /home/ansible/fleet-updates
@@ -47,6 +49,14 @@ The play runs `docker compose pull` then `docker compose up -d` for each registr
 The module retries a failed registry pull up to three times, then passes `docker compose up -d --wait` with a 180-second default timeout. It returns the full `docker compose ps --all` state for each project, including stopped containers. The play asserts that each project has at least one container, every container is running, & every configured health check is healthy. Its own assertion failure names only the affected containers, not their commands or labels. A successful recap therefore proves both reconciliation & the settled state of every service in the 22 managed projects.
 
 Each stack is pinned by `project_name` taken from `docker compose ls`, not from the directory name. immich runs as project `immich` out of `/opt/docker/immich-app`, so pinning the name keeps the update on the running project instead of starting a second one called `immich-app`.
+
+## Floating image tags are the intended policy
+
+Most managed projects track floating tags rather than fixed versions, and that's deliberate. Taking the newest image is the reason this play exists. On docker-main, booklore, homelab-dashboard-aio, nginx-proxy-manager, & portainer run `:latest`. On monitor-01, the monitoring project runs `prom/prometheus:latest`, `grafana/grafana:latest`, & `prompve/prometheus-pve-exporter:latest`, alongside `prom/blackbox-exporter:v0.28.0` & `hon95/prometheus-nut-exporter:1`. PeaNUT is pinned to `brandawg93/peanut:6.0.0` by digest.
+
+Be clear about what that buys and costs. A scheduled run can land a new major release without me reading its notes first, including on the monitoring stack that watches the rest of the fleet. The `--wait` behavior and the `ps --all` assertion are what catch it: a project whose containers don't come back running and healthy fails the play loudly instead of leaving a half-started stack. What they can't catch is an image that starts cleanly and behaves differently, such as a Grafana major that changes how a datasource or dashboard resolves.
+
+cAdvisor is the deliberate exception and stays out of this project. It's pinned to `ghcr.io/google/cadvisor:v0.60.5` under monitoring-exporters, where a version bump is an explicit edit rather than a scheduled pull.
 
 ```bash
 cd /home/ansible/fleet-updates

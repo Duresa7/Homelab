@@ -154,6 +154,23 @@
               - reboot
           changed_when: true
 
+        # Without this wait, a guest whose sshd is still answering five seconds
+        # after the timer fires lets the reconnect below succeed before the
+        # shutdown starts. The boot ID would then still be the old one and the
+        # assertion would fail on a guest that goes on to reboot correctly.
+        # A guest that reboots faster than this samples never looks down, so a
+        # missed drop is not an error; the boot ID remains the actual proof.
+        - name: Wait for the guest to stop answering on SSH
+          become: false
+          delegate_to: localhost
+          ansible.builtin.wait_for:
+            host: "{{ ansible_host | default(inventory_hostname) }}"
+            port: "{{ ansible_port | default(22) | int }}"
+            state: stopped
+            timeout: "{{ reboot_drop_timeout | default(120) | int }}"
+          failed_when: false
+          changed_when: false
+
         - name: Wait for SSH after the reboot
           become: false
           ansible.builtin.wait_for_connection:

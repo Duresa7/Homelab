@@ -96,6 +96,8 @@ Compose maintenance runs one host at a time, accepts a per-project pull policy, 
 
 The deployed project on ansible-01 passed its validator and both Ansible syntax checks after these changes. A pre-maintenance backup remains under `/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/`.
 
+Reviewing this record afterward, I found that the replacement reboot path could let the reconnect race the shutdown, so I added a wait for the guest's SSH listener to drop before reconnecting. That correction and its verification state are in [Reboot action did not finish after the guest returned](../Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md). I also moved four in-place `os-update.yml.bak.*` files out of the deployed `playbooks/` directory into `/home/ansible/fleet-update-backups/2026-07-29-in-place-playbook-edits/`, so the only playbooks beside the project's two plays are the plays themselves.
+
 ## Verification
 
 Direct package simulation returned `0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded` on all 10 apt guests. Rocky Linux returned `dnf_check_update_rc=0`.

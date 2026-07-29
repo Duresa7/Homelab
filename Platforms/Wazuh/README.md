@@ -35,5 +35,6 @@ NPM presents the Let's Encrypt wildcard certificate to internal dashboard client
 - `app-01` is enrolled as manager ID `004` from `192.168.80.10`; agent 4.14.6-1 is enabled, active, & connected.
 - `edge-01` is enrolled as manager ID `005` from `192.168.90.10`; agent 4.14.5-1 is enabled, active, & connected.
 - `app-01` and `edge-01` are the only intended Wazuh endpoints; no further agent enrollment is planned.
+- Those two versions differ because only `app-01` has the Wazuh apt repository configured. `edge-01` has no repository file, so fleet package maintenance can't move its agent and never will until I add one. The [configuration reference](Configuration/README.md) records what I checked on both hosts.
 
 The completed reinstall is documented in [Wazuh Endpoint Re-enrollment - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md). The preceding clean removal is in [Wazuh Endpoint Agent Removal - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md).
