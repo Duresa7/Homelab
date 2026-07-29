@@ -3,7 +3,7 @@
 **Created:** 2026-07-28  
 **Last updated:** 2026-07-28
 
-How I actually use the lab, one workflow per job. The isolation is already built & tested; this is the operating side of it. The design & the proof live in [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
+How I use the lab, one workflow per job. The isolation and lane-assigned tiles are built and tested. The design and proof live in [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) and [Kasm Workspace Build-Out - 2026-07-28](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
 ## Two things that break isolation without telling me
 
@@ -19,17 +19,30 @@ The certificate is self-signed because there's no proxy entry for this host, so 
 
 ## Setting a workspace up once
 
-I add workspaces myself from the registry, then edit each one & paste the matching override. Leave the persistent profile path empty so nothing survives the session.
+I use the 19 lane-assigned tiles instead of editing registry originals. Any new tile needs the matching override and an explicit decision about its profile path.
 
 | Lane | Override to paste | What it's for |
 | --- | --- | --- |
+| VLAN 75 | `{"network":"lab75","dns":["9.9.9.9","149.112.112.112"]}` | Trusted coding tools with ordinary WAN |
 | VLAN 74 | `{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}` | Browsers, phishing links, tooling |
 | VLAN 77 | `{"network":"lab77","dns":["192.168.77.10"]}` | Samples & disposable targets |
 | VLAN 79 | `{"network":"lab79","dns":["192.168.79.10"]}` | Artifact review |
 
 Nothing listens at `192.168.77.10` or `192.168.79.10`, which is the point: lookups fail inside the lane instead of leaking. Dropping the `dns` member lets Docker's embedded resolver at `127.0.0.11` forward through the management host, which quietly defeats an offline lane.
 
-The `Lab Sessions` group already enforces the rest: upload allowed, download blocked, clipboard off in both directions, a one-hour limit, & no persistent profile.
+The `Lab Sessions` group enforces upload allowed, download blocked, clipboard off in both directions, printing off, sharing off, microphone off, user storage mappings off, a one-hour limit, and no more than two sessions. Persistent profiles are allowed only so six named tiles can use their dedicated paths. Every lane 77 and lane 79 tile keeps that path empty.
+
+## Working in the trusted-tools lane
+
+I use `Claude Code - Trusted 75`, `Codex CLI - Trusted 75`, or `Terminal - Trusted 75` for coding that needs the ordinary WAN and a profile that survives session destruction. Each tile has its own directory under `/var/lib/kasm-profiles`, so credentials and tool state do not cross between tools.
+
+Before relying on the lane, I confirm the exit matches the current ordinary WAN and does not match Proton:
+
+```bash
+curl -s ifconfig.me
+```
+
+Lane 75 cannot reach sessions on 74, 77, or 79 and cannot reach the nine protected addresses in the checks below. It is a trusted Internet lane, not a path into the rest of the lab or home network.
 
 ## Opening a phishing link
 
@@ -90,7 +103,7 @@ Neither lane has Internet, so a reputation lookup means copying the hash out to 
 
 Lane 79. It cannot be reached from 74 or 77 and cannot initiate toward either, so findings can't be touched by something still running in another lane. I reach it through the Kasm UI, never from another session.
 
-Download stays blocked on the malware workspaces. If I want to pull a written report back to my PC, I enable download on the review workspace only, and I keep it off everywhere else.
+Download stays blocked on every Lab Sessions tile. I move a written report through a reviewed Git workflow from lane 75 instead of enabling download on a malware or review workspace.
 
 ## Checks when something feels wrong
 
@@ -121,7 +134,7 @@ If a session starts and then won't display, that's host-to-container reachabilit
 
 ## Limits worth remembering
 
-Five concurrent sessions and one named user, which is the Community Edition cap.
+Five concurrent sessions and one named user are the Community Edition caps. The `alpha` account is limited to two sessions by the Lab Sessions group.
 
 Sessions are not serialised, so a sample can run beside another workspace. A container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time.
 
@@ -130,6 +143,7 @@ The host itself is monitored on `192.168.78.10:9100` only, so `node_exporter` ne
 ## Related records
 
 - [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md)
+- [Kasm Workspace Build-Out - 2026-07-28](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md)
 - [Kasm Session Isolation plan](Change%20Plans/Kasm%20Session%20Isolation.md)
 - [Deployment](Deployment.md)
 - [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md)

@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-28
 
-I verified this table against the controller after the [Kasm session isolation change](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) on 2026-07-28. Eighteen routed LAN networks remain. The controller reports 26 network objects when I include two WANs, the ProtonVPN client, and five remote-user VPN networks.
+I verified this table against the controller after the [Kasm workspace build-out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md) on 2026-07-28. Nineteen routed LAN networks remain. The controller reports 27 network objects when I include two WANs, the ProtonVPN client, and five remote-user VPN networks.
 
 I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory retirement removed VLAN 65 and its three guests. The consolidation removed the `Non-tracking` route before deleting VLAN 100. Neither network is part of current placement.
 
@@ -23,6 +23,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 | Security-A | 72 | 192.168.72.0/24 | 192.168.72.1 | .6 – .254 | Ahsoka Gateway |
 | MONITOR-A | 73 | 192.168.73.0/24 | 192.168.73.1 | .6 – .254 | Ahsoka Gateway |
 | KASM-BROWSER | 74 | 192.168.74.0/24 | 192.168.74.1 | .100 – .199 | Ahsoka Gateway |
+| KASM-TRUSTED | 75 | 192.168.75.0/24 | 192.168.75.1 | .100 – .199 | Ahsoka Gateway |
 | MALWARE-OFFLINE | 77 | 192.168.77.0/24 | 192.168.77.1 | .100 – .199 | Ahsoka Gateway |
 | LAB-MGMT | 78 | 192.168.78.0/24 | 192.168.78.1 | none | Ahsoka Gateway |
 | EVIDENCE-QUARANTINE | 79 | 192.168.79.0/24 | 192.168.79.1 | .100 – .199 | Ahsoka Gateway |
@@ -48,6 +49,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Security-A (72) | `<YOUR_ORG_NAME>`-Observability | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to approved web and NTP from the three-member observability object. |
 | MONITOR-A (73) | `<YOUR_ORG_NAME>`-Observability | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
 | KASM-BROWSER (74) | KASM-BROWSER | Lab tools | Kasm browser containers and pentest tooling use `192.168.74.208/28` through the `lab74` macvlan network. Proton egress with the kill switch on is supplied by `KASM Lab Proton Egress`. |
+| KASM-TRUSTED (75) | KASM-TRUSTED | Trusted disposable sessions | Claude Code, Codex CLI, and Terminal sessions use `192.168.75.208/28` through `lab75`. They have ordinary WAN egress, no access to the other session lanes, and persistent storage only through their assigned per-user profile directories. |
 | MALWARE-OFFLINE (77) | MALWARE-OFFLINE | Detonation & targets | Disposable Linux samples and targets use `192.168.77.208/28` through `lab77`. External egress is blocked and DHCP no longer advertises the retired `.10` resolver. |
 | LAB-MGMT (78) | LAB-MGMT | Isolated control plane | VM 122 `kasm-01` uses static `192.168.78.10/24`. DHCP is disabled. Only Trusted, Personal-A, and the Management Access VPN may reach TCP 22 and 443. |
 | EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review sessions use `192.168.79.208/28` through `lab79`. They have no Internet and no routed path to another session lane. |
@@ -63,7 +65,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**
 - Internal application or database VM → **SERVERS-A (80)**
 - Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `<YOUR_ORG_NAME>`-Observability zone.
-- Kasm control plane → **LAB-MGMT (78)**; Kasm sessions → **KASM-BROWSER (74)**, **MALWARE-OFFLINE (77)**, or **EVIDENCE-QUARANTINE (79)** according to their workspace override
+- Kasm control plane → **LAB-MGMT (78)**; Kasm sessions → **KASM-BROWSER (74)**, **KASM-TRUSTED (75)**, **MALWARE-OFFLINE (77)**, or **EVIDENCE-QUARANTINE (79)** according to their workspace override
 - Reverse proxy, VPN, or remote-access ingress → **Access-A (85)**
 - Public / internet-facing service → **DMZ-A (90)** (legacy: **DMZ (30)**)
 - General lab, automation, or utility VM/container → **Personal-A (40)**

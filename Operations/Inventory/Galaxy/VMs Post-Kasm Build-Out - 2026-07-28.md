@@ -1,11 +1,12 @@
-# Galaxy VMs
+# Galaxy VMs Post-Kasm Build-Out Snapshot
 
-**Created:** 2026-07-08  
+**Created:** 2026-07-28  
 **Last updated:** 2026-07-28  
+**Snapshot date:** 2026-07-28
 
-Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+I recorded 10 Galaxy QEMU VMs and two templates. This snapshot includes each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
-I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. The cluster resource API listed 10 QEMU VMs and two templates.
+I captured the live cluster after the Kasm workspace build-out. VM 122 had its 200G disk, VLAN 75 NIC, and four session lanes. The cluster resource API listed 10 QEMU VMs and two templates.
 
 VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in the PVE API while building the Grafana guest-inventory panel, which reads every guest the hypervisor knows about rather than every guest I had written down. It has been stopped since 2026-07-15 and holds 80 GiB on `ssd-lvm1`. I decided to keep it on 2026-07-27.
 

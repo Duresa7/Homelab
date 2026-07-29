@@ -6,15 +6,15 @@
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
 **Host:** `kasm-01`, VM 122 on `purple-server`, `192.168.78.10`  
-**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition and session isolation are verified, including the Management Access VPN client path, closed on 2026-07-28.
+**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition, four session lanes, 19 isolated workspaces, and the Management Access VPN client path are verified as of 2026-07-28.
 
 ## Current State on 2026-07-28
 
-I moved VM 122 to `purple-server` and the `ssd-lvm2` thin pool on the Samsung 850 EVO. I expanded its disk from 100 GiB to 150 GiB on 2026-07-28. The guest exposes a 149 GiB root partition and a 145 GiB ext4 filesystem, so Kasm and Docker use the added capacity without another mount or storage path. The control plane uses LAB-MGMT VLAN 78 at `192.168.78.10/24`.
+I moved VM 122 to `purple-server` and the `ssd-lvm2` thin pool on the Samsung 850 EVO. I expanded its disk from 100 GiB through 150 GiB to 200 GiB on 2026-07-28. The guest exposes a 193 GiB root partition and ext4 filesystem, so Kasm and Docker use the added capacity without another mount or storage path. The control plane uses LAB-MGMT VLAN 78 at `192.168.78.10/24`.
 
-Three addressless guest NICs carry VLANs 74, 77, and 79. Docker macvlan networks `lab74`, `lab77`, and `lab79` place sessions into their matching UniFi zones. A persistent systemd unit creates the host shims before Docker. All eight Kasm containers, the three networks, their shim routes, the agent network report, the health endpoint, and administrator authentication survived a full reboot.
+Four addressless guest NICs carry VLANs 74, 75, 77, and 79. Docker macvlan networks `lab74`, `lab75`, `lab77`, and `lab79` place sessions into their matching UniFi zones. A persistent systemd unit creates the host shims before Docker. All eight Kasm containers, the four networks, their shim routes, the health endpoint, and a fresh post-reboot lane launch survived a full reboot.
 
-I created the `Lab Sessions` group with a 3,600-second session limit, upload enabled, and download, clipboard, seamless clipboard, and persistent profiles disabled. Every lab workspace needs a Docker Run Config Override that declares both its network and resolver. The completed layout, exact recipes, containment results, and Proton operating rule are in [Kasm Session Isolation](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
+I created the `Lab Sessions` group with a 3,600-second session limit, a two-session cap, upload enabled, and download, clipboard, printing, sharing, and user storage mappings disabled. Persistent profiles are available only to the six named trusted-lane tools with dedicated host directories. Every lab workspace has a Docker Run Config Override that declares both its network and resolver. The original isolation layout and Proton operating rule are in [Kasm Session Isolation](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). The 19-workspace inventory, KASM-TRUSTED lane, selective persistence, and final acceptance results are in [Kasm Workspace Build-Out](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
 I updated the existing `Host kasm-01` entry in Jedi PC's SSH configuration to `192.168.78.10` and confirmed `ssh -G kasm-01` resolves that address with user `<YOUR_ADMIN_USERNAME>`.
 
@@ -176,8 +176,9 @@ These were test launches on VLAN 80 with no isolation in place, which is fine fo
 
 ## Follow-up State
 
-- I completed the VLAN 74, 77, and 79 NICs, macvlan networks, shim routes, and explicit UniFi containment rules on 2026-07-28.
+- I completed the VLAN 74, 75, 77, and 79 NICs, macvlan networks, shim routes, and explicit UniFi containment rules on 2026-07-28.
 - I completed the harmless-container acceptance matrix before allowing a live sample.
+- I created 19 isolated workspaces and relabeled all 15 original definitions as unisolated on 2026-07-28.
 - Decide whether `kasm.<YOUR_BASE_DOMAIN>` goes through Nginx Proxy Manager at `192.168.85.2`, which would replace the self-signed certificate warning with the wildcard certificate.
 - I disabled the stale VLAN 77 DHCP DNS option on 2026-07-28. UniFi retains `192.168.77.10` as an inactive value, so the network no longer advertises it.
 - Register `kasm-01` in the SSH Manager inventory. The MCP exposes no add-server tool & I couldn't locate its inventory file, so this stays manual.

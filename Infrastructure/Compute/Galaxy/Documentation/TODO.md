@@ -3,7 +3,7 @@
 **Created:** 2026-07-14  
 **Last updated:** 2026-07-28
 
-This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's boot NVMe replacement, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog contains the scheduled CT 105 deletion, Purple storage monitoring, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
 ## `ai-bravo-02` Deletion Scheduled
 
@@ -32,6 +32,7 @@ This backlog contains the scheduled CT 105 deletion, follow-ups from Purple's bo
 - [ ] Watch the Toshiba's endurance counter along with media errors, filesystem errors, controller resets, and cluster stability. It's a used spare at 30% endurance used and 23,148 power-on hours, not a new drive, so plan its own replacement rather than treating this as permanent.
 - [x] Keep the Samsung SSD 850 EVO 250 GB installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. I made that role decision on 2026-07-27.
 - [x] Create `ssd-lvm2` as LVM-thin on the Samsung 850 EVO, restrict it to `purple-server`, enable VM image and LXC root-directory content, and verify it with a real guest disk. I completed this on 2026-07-28 by migrating Kasm VM 122 onto the pool. The pool was active at 11.03 percent allocated after the move, the guest booted, all eight Kasm services ran, seven Docker health checks reported healthy, and the API health endpoint passed. The unchanged [SMART capture](../../../Hardware/Components/Drives/SSD/smartctl-a_Samsung-SSD-850-EVO-250GB_S21NNXAH105252T_2026-07-28.txt) reports zero reallocated, CRC, and uncorrectable errors.
+- [ ] Watch `ssd-lvm2` data use after the Kasm image catalog expands. It read 52.24 percent after the final corrected snapshot and post-change health check. Treat 80 percent as the action threshold: remove unused images or move VM 122 before thin-pool data crosses it.
 - [ ] Watch the 850 EVO's wear counters now that it carries a guest. It has absorbed 332 TB of host writes against a 75 TBW rating, and `Wear_Leveling_Count` normalized sits at 15 of 100 with raw 1801 average erase cycles. The baseline to compare against is that same 2026-07-28 capture. A non-zero `Reallocated_Sector_Ct`, a non-zero `CRC_Error_Count`, or a normalized wear value below 10 means move the pool rather than keep writing to it. Nothing irreplaceable lives there: the lab guest is rebuildable from the Kasm deployment record.
 
 ## Cluster Maintenance Done During Kasm Prep
