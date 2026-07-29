@@ -1,0 +1,42 @@
+Fleet Artifact Sweep starting state
+Captured: 2026-07-29
+Scope: 16 active machines
+
+Method
+- SSH Manager: 13 configured profiles
+- Ansible from ansible-01: docker-blue and media-01
+- QEMU guest agent from purple-server: kasm-01
+
+HOST|ROOT_USED_BYTES|ROOT_USE|PACKAGE_CACHE_BYTES
+grey-server|71268655104|75%|3286033380
+purple-server|6589652992|10%|535146696
+blue-server|6783623168|10%|535143572
+red-server|6517526528|10%|538585876
+docker-main|34566197248|35%|814507824
+alpha-prod-01|5417234432|10%|562778688
+app-01|12466454528|7%|703170092
+edge-01|2380357632|9%|363498016
+ansible-01|2304311296|15%|76815136
+monitor-01|5207220224|33%|179360176
+docker-network|5030375424|16%|262885578
+security-01|27881050112|29%|1791646250
+splunk-siem|40593530880|55%|22990602
+docker-blue|1736101888|12%|128772976
+media-01|12573761536|13%|144559812
+kasm-01|125604081664|61%|293757502
+
+TOTAL_ROOT_USED_BYTES=366920134656
+TOTAL_PACKAGE_CACHE_BYTES=10239652176
+
+Docker inspection
+- docker-main: 11 running containers, 32 images, 10.77 GB reported reclaimable, 5 dangling anonymous volumes
+- alpha-prod-01: 2 dangling volumes, 342.7 MB combined
+- app-01: 4.443 GB reported reclaimable in tagged idle state; inactive Coolify PostgreSQL volume 49.35 MB
+- docker-network: 3 dangling volumes, 557.5 MB combined
+- docker-blue: 19 MB dangling image data
+- media-01: 10 running containers, 4.434 GB reported reclaimable
+- kasm-01: 23 image IDs, 8 control-plane containers, 100.4 GB reported reclaimable images, 31.83 MB builder cache
+
+Boundary
+- Stopped and untouched: db-13-dev, ai-bravo-02, supabase-01
+- Kasm workspace images protected from image pruning

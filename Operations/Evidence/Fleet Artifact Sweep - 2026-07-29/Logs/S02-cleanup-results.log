@@ -1,0 +1,59 @@
+Fleet Artifact Sweep cleanup results
+Captured: 2026-07-29
+
+Routine commands
+- Debian family: apt-get clean
+- Rocky Linux: dnf clean all
+- Every active machine: journalctl --vacuum-size=200M
+- Every active machine: /etc/systemd/journald.conf.d/90-fleet-artifact-sweep.conf with SystemMaxUse=200M
+- Every active machine: systemctl restart systemd-journald
+- Ordinary Docker hosts: docker image prune -f
+- kasm-01 only: docker builder prune -f
+
+Routine result
+- All 16 active machines returned the effective SystemMaxUse=200M value.
+- All apt caches returned 0 bytes except docker-main at 24,576 bytes.
+- splunk-siem returned an 823,300-byte dnf cache.
+- kasm-01 builder prune removed 31.83 MB and left all 23 image IDs.
+
+Docker result
+- docker-main: 11 containers remained running; 5 inspected anonymous Redis volumes were removed; root use later measured 17,793,368,064 bytes below the starting sample.
+- alpha-prod-01: 343.2 MB removed; 8 of 8 containers running.
+- app-01: 0 bytes removed from tagged idle state; 7 of 7 containers running; inactive Coolify database volume retained.
+- docker-network: 557.5 MB removed; 5 of 5 containers running.
+- docker-blue: 19 MB removed; 4 of 4 containers running.
+- media-01: 2.357 GB removed; 10 of 10 containers running.
+- No ordinary Docker host reported an unhealthy container after pruning.
+
+grey-server
+- apt-get --purge autoremove -y exited 0 and reported 3,602 MB freed.
+- Removed autoremovable packages:
+  proxmox-kernel-6.14.11-6-pve-signed
+  proxmox-kernel-6.17.13-11-pve-signed
+  proxmox-kernel-6.17.13-2-pve-signed
+  proxmox-kernel-6.17.4-2-pve-signed
+- Removed /var/lib/vz/wazuh.
+- Removed /root/nvidia-580.159.03-patched and /root/nvidia-580.126.18-patched.
+- Removed /root/noble-server-cloudimg-amd64.img after template 9000 verification.
+- Removed the OpenVAS VMDK and OVF from /var/lib/vz/template/iso.
+- Removed Debian 12.11 and Windows Server evaluation ISOs.
+- Removed the finished-job transcripts, temporary Ansible files, stale host-key backups, installer logs, original template scripts, and mistyped file listed in the source survey.
+- The removal command exited 0.
+
+Other inspected files
+- app-01: removed Wazuh 4.10.3 and 4.14.5 packages plus a failed 111-byte download; installed agent is 4.14.6.
+- edge-01: removed Wazuh 4.10.3 package; retained matching 4.14.5 package because the host has no Wazuh apt repository.
+- security-01: retained the root-only Wazuh recovery bundle; removed the redownloadable installer script.
+- alpha-prod-01: removed .env.save after confirming its stale keys were absent from the live environment.
+- splunk-siem: removed an empty 45-byte archive.
+- ansible-01: removed a leftover internal-HTTPS archive whose completed record already documents deletion; retained current recovery material.
+- docker-main: removed the inspected Wazuh package, Forgejo backups, tiny dashboard backup, stale Wyze Bridge save file, old tool log, and empty history temporary file.
+
+Protected material
+- All Kasm workspace images
+- Windows 11 and VirtIO installer media
+- Current distinct Linux installers
+- security-01 Wazuh recovery bundle
+- edge-01 matching Wazuh package
+- app-01 inactive Coolify PostgreSQL volume
+- Current Ansible recovery material

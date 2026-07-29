@@ -1,0 +1,52 @@
+Kasm acceptance
+Captured: 2026-07-29
+
+Pre-launch state
+image_ids=23
+control_containers=8
+build_cache=0B
+
+Workflow
+- Signed in to the Kasm administrator interface.
+- Opened the Workspaces view.
+- Launched Terminal - Normal.
+- Observed the terminal prompt render.
+- Checked Docker events from the pre-launch UTC timestamp.
+
+Launch readback
+image_pull_events=0
+image_ids=23
+running_containers=9
+session_container=<YOUR_ADMIN_USERNAME>_3fc023ce
+session_image=kasmweb/terminal:1.19.0-rolling-daily
+session_status=Up
+control_containers_healthy=8
+
+Cleanup
+- Deleted the disposable session through the Kasm Sessions interface.
+- Kasm reported: Session Deleted Successfully.
+- The Sessions table reported: No Results.
+- Logged out and returned to #/staticlogin.
+
+Final QEMU guest-agent readback
+host=kasm-01
+root_used_bytes=125180239872
+root_use=61%
+package_cache_bytes=0
+journal=82.7M
+SystemMaxUse=200M
+system_state=running
+failed_units=0
+image_ids=23
+running_containers=8
+total_containers=8
+unhealthy_containers=0
+
+docker system df
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          23        8         114.1GB   100.4GB (88%)
+Containers      8         8         299kB     0B (0%)
+Local Volumes   1         1         2.2GB     0B (0%)
+Build Cache     0         0         0B        0B
+
+The 100.4 GB image figure remains a false cleanup signal because the idle Kasm workspace images have no container references between sessions.

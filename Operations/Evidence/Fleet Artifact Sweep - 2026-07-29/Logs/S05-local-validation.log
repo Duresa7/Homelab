@@ -1,0 +1,26 @@
+Fleet Artifact Sweep local validation
+Captured: 2026-07-29
+
+bash -n Infrastructure/Compute/Galaxy/Scripts/configure-debian-kasm-lab-template.sh
+exit=0
+
+bash -n Infrastructure/Compute/Galaxy/Scripts/configure-kali-kasm-ops.sh
+exit=0
+
+node "Mission Control/harness.js"
+checks=1140
+failed=0
+
+Temporary credential files
+pattern=.tmp-kasm-password*
+matches=0
+
+Credential handling
+- The injected value stayed in short-lived local files.
+- No secret value was printed or copied into repository evidence.
+- The value file was zeroed before its final unlink.
+- The browser virtual clipboard and Windows clipboard were cleared.
+
+SSH Manager
+temporary_group=artifact-sweep
+final_state=deleted

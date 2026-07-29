@@ -4,10 +4,10 @@
 **Last updated:** 2026-07-29
 
 **Survey date:** 2026-07-29  
-**Status:** Findings only, nothing removed  
+**Status:** Executed; see the [execution record](Fleet%20Artifact%20Sweep%20Execution%20-%202026-07-29.md)  
 **Scope:** Read-only discovery of stale artifacts, backups, installers, package caches, journals, and unused container images across all 16 active machines
 
-This is a work list, not a change record. I changed nothing on any host while producing it. Whoever executes the removals should write their own record and link back here.
+This remains the read-only findings record. I changed nothing on any host while producing it. I completed the bounded cleanup later on 2026-07-29 and recorded the actions, decisions, and verification in the linked execution record.
 
 Roughly 52 GB is safely reclaimable without a judgment call, and another 33 GB sits in installer media on `grey-server` that needs a decision rather than a command. Read the `kasm-01` warning before running anything anywhere, because the single largest number in this document is a trap.
 

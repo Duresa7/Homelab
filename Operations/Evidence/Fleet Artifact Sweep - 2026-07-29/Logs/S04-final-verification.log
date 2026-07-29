@@ -1,0 +1,74 @@
+Fleet Artifact Sweep final verification
+Captured: 2026-07-29
+
+HOST|ROOT_USED_BYTES|ROOT_USE|CACHE_BYTES|JOURNAL|SYSTEM_STATE|FAILED_UNITS
+grey-server|34764120064|37%|0|175.8M|running|0
+purple-server|5874036736|9%|0|172M|degraded|1
+blue-server|6007496704|9%|0|174.7M|degraded|1
+red-server|5978673152|9%|0|124.9M|degraded|2
+docker-main|16772829184|17%|24576|104.6M|running|0
+alpha-prod-01|4511080448|9%|0|174.6M|running|0
+app-01|11509092352|6%|0|198.4M|running|0
+edge-01|1880780800|7%|0|196.2M|running|0
+ansible-01|2227609600|15%|0|40M|running|0
+monitor-01|5044338688|32%|0|24M|running|0
+docker-network|4209577984|14%|0|40M|running|0
+security-01|25590272000|26%|0|172.9M|running|0
+splunk-siem|40639729664|55%|823300|8M|running|0
+docker-blue|1588178944|11%|0|30.5M|running|0
+media-01|10073563136|11%|0|32M|running|0
+kasm-01|125180239872|61%|0|82.7M|running|0
+
+TOTAL_ROOT_USED_BYTES=301851619328
+NET_RECLAIMED_BYTES=65068515328
+NET_RECLAIMED_GIB=60.60
+
+Every host returned SystemMaxUse=200M.
+
+Docker
+HOST|TOTAL|RUNNING|UNHEALTHY
+docker-main|11|11|0
+alpha-prod-01|8|8|0
+app-01|7|7|0
+monitor-01|7|7|0
+docker-network|5|5|0
+security-01|1|1|0
+docker-blue|4|4|0
+media-01|10|10|0
+kasm-01|8|8|0
+
+Ordinary Docker total=53
+Ordinary Docker running=53
+Ordinary Docker unhealthy=0
+
+Proxmox nodes
+HOST|NODES|QUORATE|FIREWALL|KERNEL
+grey-server|4|Yes|enabled/running|7.0.14-6-pve
+purple-server|4|Yes|enabled/running|7.0.14-6-pve
+blue-server|4|Yes|enabled/running|7.0.14-6-pve
+red-server|4|Yes|enabled/running|7.0.14-6-pve
+
+Retained failure timestamps
+purple-server openipmi.service inactive since 2026-07-25 07:20:04 EDT
+blue-server openipmi.service inactive since 2026-07-23 00:33:30 EDT
+red-server openipmi.service inactive since 2026-07-23 00:18:40 EDT
+red-server nut-monitor.service inactive since 2026-07-23 00:18:41 EDT
+
+Prometheus
+total=48 up=48 down=0
+
+grey-server retained state
+template_9000=stopped
+nvidia_driver=580.159.03
+retained_iso_count=8
+removed_path_check=passed
+
+Retained ISOs
+debian-13.0.0-amd64-netinst.iso|790626304
+Fedora-Workstation-Live-44-1.7.x86_64.iso|2851612672
+kali-linux-2025.2-installer-amd64.iso|4478939136
+openmediavault_7.4.17-amd64.iso|985661440
+Rocky-10.2-x86_64-boot.iso|1049538560
+ubuntu-24.04.3-live-server-amd64.iso|3303444480
+virtio-win-0.1.285.iso|789645312
+Win11_25H2_English_x64.iso|7736125440

@@ -1,7 +1,7 @@
 # Kasm Workspaces Internal HTTPS
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-29
 
 **Date:** 2026-07-28  
 **Status:** Complete
@@ -38,7 +38,7 @@ Evidence: [return-path repair](../../Evidence/Kasm%20Workspaces%20Internal%20HTT
 
 ## Step 3: Create the NPM host
 
-I retrieved the NPM administrator fields through 1Password secret references and passed them directly to `POST /api/tokens`. The password and bearer token stayed in process variables.
+I retrieved the NPM administrator fields through secret references and passed them directly to `POST /api/tokens`. The password and bearer token stayed in process variables.
 
 I created proxy host ID `23` with HTTPS upstream `192.168.78.10:443`, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support enabled. HSTS and the NPM access list remain disabled.
 

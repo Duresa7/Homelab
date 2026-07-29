@@ -81,6 +81,16 @@
 /Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*
 # The matching *.log exception sits below the generated-logs section.
 
+# Fleet artifact sweep evidence records
+!/Operations/Evidence/
+/Operations/Evidence/*
+!/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/
+/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/*
+!/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/Evidence-Index.md
+!/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/Logs/
+/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/Logs/*
+# The matching *.log exception sits below the generated-logs section.
+
 # Termix Ansible LXC cleanup evidence records
 !/Archive/Platforms/Termix/Evidence/
 /Archive/Platforms/Termix/Evidence/*
@@ -136,6 +146,7 @@
 # Retained evidence transcripts kept as .log files. These negations must sit
 # after the *.log rule above, because the last matching pattern wins.
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*.log
+!/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/Logs/*.log
 
 # Private keys, certificates with private material, and credential exports
 *.key
@@ -167,6 +178,11 @@ client_secret_*.json
 token.json
 **/*Resume*
 Platforms/Teamspeak Hosting/Scripts/migration-scripts-job/channels.json
+
+# Records that name my password manager or point at where a specific secret
+# lives. These stay on local disk. The Galaxy troubleshooting index skips the
+# record this glob covers rather than linking a path git does not carry.
+/Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Duplicate*APT Repository on debian-dev*.md
 
 # High-risk authentication, infrastructure-variable, VPN, and vault files
 *.tfvars

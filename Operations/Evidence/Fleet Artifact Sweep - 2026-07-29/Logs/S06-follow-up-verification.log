@@ -1,0 +1,103 @@
+Fleet Artifact Sweep follow-up verification
+Captured: 2026-07-29
+
+Purpose
+Re-check the recorded sweep results against live state, close the files the
+first pass left, and settle the two decisions it deferred.
+
+Live re-check of the recorded claims
+grey-server root use=37% used=34764931072
+docker-main root use=17% used=16773120000
+monitor-01 root use=33% used=5074878464
+splunk-siem root use=55% used=40660713472
+kasm-01 root use=61% used=125227282432
+Every sampled value sits at or above its recorded after-value, which is
+ordinary write drift rather than a corrected figure.
+
+journald cap present and effective on all 16 active machines
+prometheus total=48 up=48 down=0
+proxmox grey/purple/blue/red: Nodes=4 Quorate=Yes firewall=enabled/running
+retained failed units unchanged: purple openipmi, blue openipmi,
+  red nut-monitor and openipmi
+
+container counts re-counted per host
+docker-main=11 alpha-prod-01=8 app-01=7 monitor-01=7 docker-network=5
+security-01=1 docker-blue=4 media-01=10
+ordinary total=53 running=53 unhealthy=0
+edge-01 runs no container engine; docker is not installed there
+kasm-01 images=23 containers=8 build_cache=0B
+
+grey-server residue re-check
+/var/lib/vz/wazuh absent
+/root nvidia build trees absent
+noble cloud image absent
+iso store holds 8 files, sizes match S04 byte for byte
+template 9000 present
+kernels installed=8, running=7.0.14-6-pve, autoremove proposal empty
+
+stopped guests confirmed untouched
+102 db-13-dev, 105 ai-bravo-02, 106 kali-pen, 111 fedora-dev, 117 supabase-01
+106 and 111 have no SSH Manager profile and have never been surveyed
+
+ssh manager group artifact-sweep: absent, only production/staging/development remain
+
+security-01 removal
+command: ansible security-01 -m file -a 'path=/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar state=absent' --become
+result: changed=true state=absent
+readback: ls reports No such file or directory
+wazuh-manager=active wazuh-indexer=active wazuh-dashboard=active filebeat=active
+/etc/filebeat/certs: 3 files present
+/etc/wazuh-dashboard/certs: 3 files present
+/etc/wazuh-indexer/certs: 5 files present
+Not archived first. The bundle held secret material, so the removal is terminal.
+
+grey-server removal, dkms enrollment file
+target: /root/dkms-mok-password.hash 103 bytes mode 0600 mtime 2026-04-29 09:48:32
+mokutil --sb-state=SecureBoot disabled
+references found under /etc, /usr/local, /var/lib/dkms: none
+result: removed
+readback: ls reports No such file or directory
+/var/lib/dkms/mok.key present 1704 bytes, mok.pub present 832 bytes
+nvidia modules loaded=6 driver=580.159.03 signer=DKMS module signing key
+dkms status: nvidia/580.159.03 installed for 7.0.14-6-pve and 7.0.2-6-pve
+
+grey-server removal, redundant cluster CA copies
+targets: /root/proxmox-ca.pem and /root/pve-root-ca.pem, 2074 bytes each, 2025-09-09
+sha256 both files = 664c0e99cbd4a996b206b4f09e098f0de5109cc38e4a4e7ec8f6f1ea1dc6da2e
+sha256 live /etc/pve/pve-root-ca.pem = same value
+certificate: PVE Cluster Manager CA, self-signed, notAfter 2035-08-20, no private key
+references found under /etc, /usr/local: none
+result: both removed
+readback: both paths report No such file or directory
+live /etc/pve/pve-root-ca.pem unchanged at the same sha256
+pveproxy=active pvedaemon=active pve-cluster=active corosync=active
+firewall=enabled/running Nodes=4 Quorate=Yes
+pvesh get /version = 9.2.5
+failed units=0 root use=37%
+/root now contains shell and tool state only
+
+journald cap decision, measured retention at 200M
+grey-server    175.8M  2026-07-08 to 2026-07-29  21 days
+security-01    172.9M  2026-07-13 to 2026-07-29  16 days
+docker-main    104.6M  2026-05-16 to 2026-07-29  74 days, under the cap
+monitor-01      24M    3 days, under the cap
+splunk-siem      8M    same day, journal restarted at the 2026-07-28 reboot
+decision: keep the cap
+
+SSH Manager profile gap closed
+authorized-key check before adding, key SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4
+  present for <YOUR_ADMIN_USERNAME> on kasm-01, docker-blue, and media-01
+added kasm_01=192.168.78.10 docker_blue=192.168.40.39 media_01=192.168.40.42
+  all as <YOUR_ADMIN_USERNAME>, port 22, workstation key
+ssh_list_servers now returns 19 profiles, was 16
+connection test kasm_01: hostname=kasm-01 user=<YOUR_ADMIN_USERNAME> root use=61%
+connection test docker_blue: hostname=docker-blue user=<YOUR_ADMIN_USERNAME> run=4
+connection test media_01: hostname=media-01 user=<YOUR_ADMIN_USERNAME> run=10
+note: <YOUR_ADMIN_USERNAME> is not in the docker group on kasm-01, so Docker there needs sudo,
+  which is passwordless
+previous server list kept at ssh-manager.env.pre-3-profiles-20260729, outside the repo
+
+local validation after the record edits
+node "Mission Control/harness.js" checks=1144 failed=0
+tracked files naming the password manager: reduced to the Debian Dev GNOME
+  installation change record, deliberately retained for its rollback paths

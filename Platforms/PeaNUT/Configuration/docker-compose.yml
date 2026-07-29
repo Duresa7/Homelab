@@ -8,9 +8,9 @@ services:
     environment:
       TZ: America/New_York
       WEB_PORT: "8080"
-      WEB_USERNAME: ${WEB_USERNAME:?WEB_USERNAME must be injected from 1Password}
-      WEB_PASSWORD: ${WEB_PASSWORD:?WEB_PASSWORD must be injected from 1Password}
-      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET must be injected from 1Password}
+      WEB_USERNAME: ${WEB_USERNAME:?WEB_USERNAME must be injected from the secret store}
+      WEB_PASSWORD: ${WEB_PASSWORD:?WEB_PASSWORD must be injected from the secret store}
+      AUTH_SECRET: ${AUTH_SECRET:?AUTH_SECRET must be injected from the secret store}
     volumes:
       - /opt/docker/peanut/config:/config
     ports:
