@@ -1,9 +1,10 @@
-# Galaxy VMs
+# Galaxy VMs Post-Parrot Snapshot
 
-**Created:** 2026-07-08  
+**Created:** 2026-07-30  
 **Last updated:** 2026-07-30  
+**Snapshot date:** 2026-07-30
 
-Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+I captured 10 QEMU VMs and two templates after the Kasm Parrot build-out. This complete snapshot records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates.
 

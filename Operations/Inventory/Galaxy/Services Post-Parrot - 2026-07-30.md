@@ -1,9 +1,10 @@
-# Galaxy Services
+# Galaxy Services Post-Parrot Snapshot
 
-**Created:** 2026-07-08  
+**Created:** 2026-07-30  
 **Last updated:** 2026-07-30
+**Snapshot date:** 2026-07-30
 
-This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
+I captured the complete workload inventory after the Kasm Parrot build-out. It maps 13 Galaxy guests to their workloads, versions, listeners, and verification state. The final table records node_exporter on all four Proxmox nodes.
 
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |

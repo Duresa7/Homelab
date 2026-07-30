@@ -1,9 +1,9 @@
 # Kasm Lab Session Workflows
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-30
 
-How I use the lab, one workflow per job. The isolation and lane-assigned tiles are built and tested. The design and proof live in [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) and [Kasm Workspace Build-Out - 2026-07-28](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
+How I use the lab, one workflow per job. The isolation and lane-assigned tiles are built and tested. The design and proof live in [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md), [Kasm Workspace Build-Out - 2026-07-28](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md), and [Kasm Parrot Workspace Build-Out - 2026-07-30](Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md).
 
 ## Two things that break isolation without telling me
 
@@ -27,14 +27,14 @@ The tile name tells me which lane I am about to land in. That is the whole reaso
 
 | Tile suffix | Means | Override to paste |
 | --- | --- | --- |
-| `- Normal` | Ordinary WAN, saves state, for coding tools | `{"network":"lab75","dns":["9.9.9.9","149.112.112.112"]}` |
+| `- Normal` | Ordinary WAN; saves state only when that tile has a profile path | `{"network":"lab75","dns":["9.9.9.9","149.112.112.112"]}` |
 | `- VPN` | Internet through Proton, disposable, for links & tooling | `{"network":"lab74","dns":["9.9.9.9","149.112.112.112"]}` |
 | `- Malware` | No Internet, no DNS, for samples | `{"network":"lab77","dns":["192.168.77.10"]}` |
 | `- Target` | No Internet, no DNS, disposable victim on the same lane as malware | `{"network":"lab77","dns":["192.168.77.10"]}` |
 | `- Review` | No Internet, no DNS, for artifacts | `{"network":"lab79","dns":["192.168.79.10"]}` |
 | `- Full` | No override at all: management VLAN 78 with ordinary Internet and no containment | none |
 
-The `- Full` tiles are the 15 registry originals, kept on purpose for the rare job that needs a plain session with no lane. Their category reads `Full Access - VLAN 78`, and that category is the thing to check, because "Full" does not warn me the way the earlier "Unsafe" label did.
+The 14 `- Full` tiles are kept on purpose for the rare job that needs a plain session with no lane. Their category reads `Full Access - VLAN 78`, and that category is the thing to check, because "Full" does not warn me the way the earlier "Unsafe" label did.
 
 Nothing listens at `192.168.77.10` or `192.168.79.10`, which is the point: lookups fail inside the lane instead of leaking. Dropping the `dns` member lets Docker's embedded resolver at `127.0.0.11` forward through the management host, which quietly defeats an offline lane.
 
@@ -42,7 +42,7 @@ The `Lab Sessions` group enforces upload allowed, download blocked, clipboard of
 
 ## Working in the trusted-tools lane
 
-I use `Claude Code - Normal`, `Codex CLI - Normal`, or `Terminal - Normal` for coding that needs the ordinary WAN and a profile that survives session destruction. Each tile has its own directory under `/var/lib/kasm-profiles`, so credentials and tool state do not cross between tools.
+I use `Claude Code - Normal`, `Codex CLI - Normal`, or `Terminal - Normal` for coding that needs the ordinary WAN and a profile that survives session destruction. Each tile has its own directory under `/var/lib/kasm-profiles`, so credentials and tool state do not cross between tools. `Parrot OS - Normal` uses the same network but has no profile path, so ending it destroys its state.
 
 Before relying on the lane, I confirm the exit matches the current ordinary WAN and does not match Proton:
 
@@ -54,7 +54,7 @@ Lane 75 cannot reach sessions on 74, 77, or 79 and cannot reach the nine protect
 
 ## Opening a phishing link
 
-`Chrome - VPN`, or `Tor Browser - VPN` when I want the extra hop. Check the Proton route & VPN object are both enabled first.
+`Chrome - VPN`, `Parrot OS - VPN` for a full security desktop, or `Tor Browser - VPN` when I want the extra hop. Check the Proton route & VPN object are both enabled first.
 
 Before clicking anything, confirm the egress is Proton's & not mine:
 
@@ -68,7 +68,7 @@ What this buys me: the page sees a Proton exit address, never my home IP, & if t
 
 ## Practising against a target
 
-`Kali - VPN` against `Debian - Target` or `Fedora - Target`. Start the target session first, then read its address from inside it:
+`Kali - VPN` against `Debian - Malware` or `Fedora - Target`. Start the lane 77 session first, then read its address from inside it:
 
 ```bash
 ip -4 addr show eth0
@@ -80,13 +80,13 @@ Two sessions in the same lane can always see each other directly, since that tra
 
 ## Watching a Linux sample run
 
-Snapshot the host first. This is what makes "the Kasm host is disposable" true rather than aspirational:
+Use the one verified recovery boundary. Do not create another snapshot:
 
 ```bash
-qm snapshot 122 pre-malware-2026-07-28
+qm listsnapshot 122
 ```
 
-Run that on `purple-server`. Then launch `REMnux - Malware` & drag the sample into the session window; it lands in the session's `Uploads` directory. Upload works even though the lane has no Internet at all, because the transfer rides the HTTPS connection my browser already has to Kasm rather than the container's network.
+The list must contain only `baseline-parrot-2026-07-30`. Then launch `REMnux - Malware` or `Debian - Malware` and drag the sample into the session window; it lands in the session's `Uploads` directory. Upload works even though the lane has no Internet at all, because the transfer rides the HTTPS connection my browser already has to Kasm rather than the container's network.
 
 Execute it & watch. Expect DNS to fail and outbound connections to time out. That's the design: the sample cannot reach its operator, cannot pull a second stage, and cannot attack anyone else from my address. What I get is the local behaviour, the filesystem changes, and the fact & shape of its attempts.
 
@@ -94,10 +94,10 @@ When finished, end the session, then roll the host back:
 
 ```bash
 qm shutdown 122 --timeout 180
-qm rollback 122 pre-malware-2026-07-28 --start
+qm rollback 122 baseline-parrot-2026-07-30 --start
 ```
 
-Rolling back reverts Kasm's own database along with everything else, so a workspace I added after the snapshot disappears too. I take a fresh snapshot whenever I finish changing workspaces or settings, & then a rollback only costs me the session I just ran.
+Rolling back reverts Kasm's own database along with everything else. I never stack a per-session snapshot on top. When I change workspaces or settings, I remove the old baseline before the controlled change, verify the catalog and lanes, and create one replacement baseline.
 
 Three things not to do here. A Windows `.exe` will not run at all, because a Linux container has nothing to execute it, and that work needs a VM. Never mount a share from another host into the session, since that hands a live sample a filesystem path into the lab. And never run a sample on a `- VPN` tile for convenience; those have working Internet.
 

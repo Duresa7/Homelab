@@ -1,12 +1,12 @@
 # Kasm Workspaces Deployment
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-30
 
 **Implemented:** 2026-07-24  
 **Owner:** Platforms / Kasm Workspaces  
 **Host:** `kasm-01`, VM 122 on `purple-server`, `192.168.78.10`  
-**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition, four session lanes, 19 isolated workspaces, the Management Access VPN client path, & internal NPM access are verified as of 2026-07-28.
+**Status:** Complete. Kasm Workspaces 1.19.0 Community Edition, four session lanes, 19 lane workspaces, 14 Full workspaces, the Management Access VPN client path, & internal NPM access are verified as of 2026-07-30.
 
 ## Current State on 2026-07-28
 
@@ -185,4 +185,7 @@ These were test launches on VLAN 80 with no isolation in place, which is fine fo
 - I created 19 isolated workspaces and relabeled all 15 original definitions as unisolated on 2026-07-28.
 - I published `kasm.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager at `192.168.85.2` on 2026-07-28. The client-facing path validates against certificate ID 1 while NPM keeps HTTPS on the backend.
 - I disabled the stale VLAN 77 DHCP DNS option on 2026-07-28. UniFi retains `192.168.77.10` as an inactive value, so the network no longer advertises it.
+- I installed Parrot under live storage monitoring on 2026-07-30 and added Full, Normal, and VPN definitions. I renamed the existing lane 77 Debian Target definition to Debian Malware.
+- I disabled automatic registry pulls on every workspace row after the agent attempted to refresh the whole moving-image catalog. Updates are manual and one named image at a time.
+- I replaced both old VM snapshots with `baseline-parrot-2026-07-30`. It is the only snapshot; the final `ssd-lvm2` readback was 68.25 percent data use and the guest had 39 GB free.
 - Register `kasm-01` in the SSH Manager inventory. The MCP exposes no add-server tool & I couldn't locate its inventory file, so this stays manual.

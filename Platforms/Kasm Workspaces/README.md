@@ -1,13 +1,13 @@
 # Kasm Workspaces
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-30
 
 Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
 Community Edition caps the deployment at five concurrent sessions and one named user. The VM has six vCPUs, 12 GiB of memory, and a 200 GiB disk after I raised it from four vCPUs and 8 GiB on 2026-07-28. VM 122 is the only guest on `purple-server`, which has six cores and 15 GiB, so the guest takes every core and leaves roughly 2 GiB for Proxmox. That is enough on a node running one VM against LVM-thin rather than ZFS, since there is no ARC competing for memory.
 
-The `Lab Sessions` group limits `alpha` to three concurrent sessions. Kasm's own containers hold about 2 GiB, leaving 9.7 GiB for workspaces against a 2.77 GiB default, so three desktops fit and a fourth would not. Storage is the one dimension I cannot raise: the `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot grow, and more space needs another physical disk. The guest has 76 GB free of 193 GB, so it does not need one yet.
+The `Lab Sessions` group limits `alpha` to three concurrent sessions. Kasm's own containers hold about 2 GiB, leaving 9.7 GiB for workspaces against a 2.77 GiB default, so three desktops fit and a fourth would not. Storage is the constrained dimension: the `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot grow without another physical disk. The first Parrot attempt filled the 228.11 GiB pool and paused VM 122. I recovered, enabled discard, removed both old snapshots, pruned unused Docker layers, and installed Parrot one image at a time. The final pool readback is 68.25 percent, the guest has 39 GB free, and `baseline-parrot-2026-07-30` is the only snapshot.
 
 ## Current State
 
@@ -52,18 +52,18 @@ A workspace with no override uses `kasm_default_network` and ordinary management
 
 ## Workspace Tile Inventory
 
-The `alpha` account sees 19 lane-assigned tiles through `Lab Sessions`. The 15 registry originals remain available only through `All Users`.
+The `alpha` account sees 19 lane-assigned tiles through `Lab Sessions`. Fourteen Full definitions remain available through `All Users`. The catalog points at 15 distinct Docker images.
 
 Tile names say what the tile is for, not which VLAN carries it. The suffix is the whole label: `Chrome - VPN`, `REMnux - Malware`, `Debian - Target`. Each tile's category line underneath carries the VLAN, so the number stays visible without crowding the name. I renamed them this way on 2026-07-28 because the first scheme put the lane number in the name, which truncated in the dashboard grid and told me nothing about what the tile does.
 
 | Suffix | Category | Network | Tiles | Persistent profiles |
 | --- | --- | --- | --- | --- |
-| `- Normal` | `Normal - VLAN 75` | `lab75` | Claude Code, Codex CLI, Terminal | All three, each in its own directory |
-| `- VPN` | `VPN - VLAN 74` | `lab74` | Chrome, Tor Browser, Kali, Nessus, Hunchly, Telegram, Spiderfoot, Forensic OSINT, Cyberbro, Terminal | Nessus, Hunchly, and Telegram only |
-| `- Malware` | `Malware - VLAN 77` | `lab77` | REMnux, Terminal | None |
-| `- Target` | `Malware - VLAN 77` | `lab77` | Debian, Fedora | None |
+| `- Normal` | `Normal - VLAN 75` | `lab75` | Claude Code, Codex CLI, Parrot OS, Terminal | Claude Code, Codex CLI, and Terminal only |
+| `- VPN` | `VPN - VLAN 74` | `lab74` | Chrome, Cyberbro, Forensic OSINT, Hunchly, Kali, Parrot OS, Spiderfoot, Terminal, Tor Browser | Hunchly only |
+| `- Malware` | `Malware - VLAN 77` | `lab77` | Debian, REMnux, Terminal | None |
+| `- Target` | `Malware - VLAN 77` | `lab77` | Fedora | None |
 | `- Review` | `Review - VLAN 79` | `lab79` | REMnux, Debian | None |
-| `- Full` | `Full Access - VLAN 78` | none | All 15 registry originals | None |
+| `- Full` | `Full Access - VLAN 78` | none | Chrome, Claude Code, Codex CLI, Cyberbro, Debian Trixie, Fedora 43, Forensic OSINT, Hunchly, Kali Linux, Nessus, Parrot OS, REMnux, Spiderfoot, Terminal | None |
 
 `- Malware` and `- Target` share VLAN 77 and differ only in role. Malware tiles are where I detonate and inspect; target tiles are disposable victims I attack from a VPN tile. Splitting the word keeps that distinction in the name.
 
@@ -73,13 +73,19 @@ The `- Full` tiles have no override at all, so they run on `kasm_default_network
 
 ## Running a malware session
 
-Snapshot VM 122 first, then roll back to that snapshot when the session ends. The host is the disposable part of this design, and the snapshot is what makes that true instead of aspirational. Rolling back reverts Kasm's database too, so take a fresh snapshot after any workspace or settings change and the rollback then costs only the session just run.
+I don't stack another VM snapshot before a malware session. VM 122 carries one verified snapshot, `baseline-parrot-2026-07-30`. I end the session and roll back that same baseline after detonation. A snapshot retains every old block that the running VM replaces, so repeated snapshots on the same 228.11 GiB pool would consume the space that Docker needs.
+
+No external VM backup exists. The current baseline includes Parrot Full, Normal, and VPN; Debian Malware; null Docker Registry fields; and the verified service state. A future workspace or settings change must delete this snapshot before the controlled change, pass the full checks, and replace it with one new baseline. I never keep both generations.
 
 Sessions are not serialised. A sample can run beside another workspace, and a container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time, not adding a rule.
 
 ## Monitoring
 
 `node_exporter` 1.9.0 runs here bound to `192.168.78.10:9100` and nothing else. Every other host in the fleet exports on all interfaces; this one cannot, because a session container sharing a lab subnet would reach the macvlan shim address directly and the gateway would never see the request. One policy lets `192.168.73.2` scrape that port. cAdvisor is deliberately absent, since a second listener is a second way into the lane holding the sessions.
+
+VM 122's 200 GiB `scsi0` has `discard=on` as of 2026-07-29. Removing both old snapshots, pruning seven unused Docker images, and trimming the guest reduced `ssd-lvm2` to 51.46 percent before the controlled Parrot pull. Parrot then raised the pool to 67.44 percent and guest use from 116 GB to 154 GB. The capacity check must read both Proxmox `data_percent` and guest `df`.
+
+Automatic workspace-image pulls are disabled. Every Kasm image row has a null Docker Registry, so the agent uses the local images without checking all moving `rolling-daily` tags each hour. Updates are manual and one image at a time. I require `ssd-lvm2` at or below 55 percent and at least 70 GB free in the guest before another new-image pull; the present state fails that gate. The open monitoring task is to warn before the 80 percent hard stop.
 
 ## Access
 
@@ -95,7 +101,11 @@ The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session run
 | [Deployment](Documentation/Deployment.md) | Original Kasm 1.19.0 build and current-state note |
 | [Kasm Session Isolation](Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) | Migration, storage, network, policy, tests, exceptions, and cleanup |
 | [Kasm Workspace Build-Out](Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md) | Disk growth, VLAN 75, 19 lane tiles, account policy, and acceptance results |
+| [Kasm Parrot Workspace Build-Out](Documentation/Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md) | Controlled Parrot pull, automatic-update control, three Parrot tiles, Debian Malware, lane tests, and replacement snapshot |
 | [Kasm Workspaces Internal HTTPS](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md) | NPM host, DNS, firewall return path, monitoring, & route verification |
 | [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
 | [Kasm Workspace Build-Out plan](Documentation/Change%20Plans/Kasm%20Workspace%20Build-Out.md) | Executed plan for the 19 tiles, VLAN 75 trusted lane, and 200 GiB disk |
+| [Kasm Workspaces TODO](Documentation/TODO.md) | Thin-pool alert and controlled image-maintenance follow-up |
+| [Thin-pool exhaustion troubleshooting](Documentation/Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md) | `502` diagnosis, baseline rollback, discard enablement, trim, & verification |
+| [Thin-pool exhaustion incident](../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md) | Availability impact, timeline, root cause, evidence, & open prevention work |
 | [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md) | Cross-system boundary model |

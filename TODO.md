@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -11,7 +11,7 @@ None.
 
 ## Active Priorities
 
-None.
+- [ ] Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). I completed the storage recovery, controlled Parrot installation, Parrot Full/Normal/VPN, Debian Malware, manual capacity gate, automatic-pull control, and `baseline-parrot-2026-07-30`. Kasm returns HTTP `200`; the alert is the only open item.
 
 ## Scheduled
 
@@ -24,6 +24,7 @@ None.
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Watch the first real automatic reboot after the 2026-07-29 reconnect-race fix; the package, Compose, repair, & reboot maintenance itself completed 2026-07-29 |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 `ai-bravo-02` on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on `blue-server` |
+| [Kasm Workspaces](Platforms/Kasm%20Workspaces/Documentation/TODO.md) | Add an automated warning below the 80 percent thin-pool hard stop; recovery, Parrot, Debian Malware, update control, capacity gate, and replacement baseline are complete |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
 | [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |

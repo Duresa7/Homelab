@@ -126,6 +126,22 @@
 /Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*
 !/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*.md
 
+# Kasm thin-pool exhaustion incident evidence records
+!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/
+/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/*
+!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Evidence-Index.md
+!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/
+/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/*
+!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/*.md
+
+# Kasm Parrot workspace build-out evidence records
+!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/
+/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Evidence-Index.md
+!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/
+/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*
+!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*.md
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db
