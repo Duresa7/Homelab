@@ -1,0 +1,53 @@
+---
+project:
+  name: Monitoring-Exporters
+  repository:
+    name: monitoring-exporters
+    path: /home/ansible/monitoring-exporters
+  inventory:
+    name: homelab-monitoring-exporter-hosts
+    path: /home/ansible/monitoring-exporters/inventory/hosts.yml
+    credential: ansible-key
+  environment:
+    name: C UTF-8
+    variables:
+      LANG: C.utf8
+      LC_ALL: C.utf8
+
+views:
+  - All
+  - Node Exporter
+  - cAdvisor
+
+templates:
+  - name: "Node Exporter: Reconcile All Hosts"
+    view: Node Exporter
+    playbook: playbooks/node-exporter.yml
+    arguments: []
+  - name: "Node Exporter: Single Host"
+    view: Node Exporter
+    playbook: playbooks/node-exporter.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host
+        description: Inventory host name from the Node Exporter view.
+        type: ""
+        required: true
+        values: []
+
+  - name: "cAdvisor: Reconcile All Docker Hosts"
+    view: cAdvisor
+    playbook: playbooks/cadvisor.yml
+    arguments: []
+  - name: "cAdvisor: Single Host"
+    view: cAdvisor
+    playbook: playbooks/cadvisor.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host
+        description: Inventory host name from the cAdvisor view.
+        type: ""
+        required: true
+        values: []

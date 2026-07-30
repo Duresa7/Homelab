@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 11 running Linux guests through apt or dnf, updates 22 docker compose projects on 6 hosts, manages node_exporter on 9 targets, & manages cAdvisor on 8 Docker hosts. Semaphore provides an optional web interface over the same playbooks.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 11 running Linux guests through apt or dnf, updates 22 docker compose projects on 6 hosts, manages node_exporter on 9 targets, & manages cAdvisor on 8 Docker hosts. Semaphore provides 23 task templates across three projects over the same playbooks.
 
 Fleet package updates include `ansible-01` through Ansible's local connection. The fleet-update inventory excludes `kasm-01` and all four Proxmox nodes.
 
@@ -16,7 +16,7 @@ Fleet package updates include `ansible-01` through Ansible's local connection. T
 - Ansible: community package 14.2.0 with ansible-core 2.21.2
 - Semaphore: 2.18.27 at `https://semaphore.<YOUR_BASE_DOMAIN>` through NPM; direct fallback `http://192.168.40.36:3000`
 - Boot behavior: Proxmox starts LXC 100 automatically; systemd starts Semaphore inside it
-- Source of truth: [SSH identity automation source](Source/ssh-key-automation/README.md)
+- Source of truth: each project directory under `Source/`, including its `semaphore/task-templates.yml` manifest
 
 Semaphore isn't required. Every operation also runs through `ansible-playbook` from the project directory.
 
@@ -24,14 +24,15 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 
 | Location | Purpose |
 |---|---|
-| `Source/ssh-key-automation/` | Versioned inventory, identity definitions, playbooks, tests, and Semaphore manifest |
-| `Source/fleet-updates/` | OS-update & docker-compose-update playbooks, scoped inventory, validator, and Semaphore manifest |
-| `Source/monitoring-exporters/` | node_exporter & cAdvisor playbooks, scoped inventory, and validator |
-| `Configuration/semaphore.service` | Deployed systemd unit for Semaphore startup and recovery |
-| `Scripts/` | Native Python backup and state-verification utilities |
+| `Source/ssh-key-automation/` | Versioned inventory, identity definitions, playbooks, tests, & Semaphore manifest |
+| `Source/fleet-updates/` | OS-update & docker-compose-update playbooks, scoped inventory, validator, & Semaphore manifest |
+| `Source/monitoring-exporters/` | node_exporter & cAdvisor playbooks, scoped inventory, validator, & Semaphore manifest |
+| `Configuration/semaphore.service` | Deployed systemd unit for Semaphore startup & recovery |
+| `Scripts/` | Native Python backup, state-verification, & manifest-reconciliation utilities |
+| `Tests/` | Unit tests for the Semaphore reconciler |
 | `Documentation/Architecture.md` | How the system fits together |
-| `Documentation/Runbook.md` | Commands for audits, onboarding, and future rotations |
-| `Documentation/Troubleshooting/` | Issue index and one dated record per operational problem |
+| `Documentation/Runbook.md` | Commands for audits, onboarding, & future rotations |
+| `Documentation/Troubleshooting/` | Issue index & one dated record per operational problem |
 | `Documentation/TODO.md` | Platform-owned backlog |
 | `Documentation/Change Records/` | Dated implementation history |
 | `Evidence/` | Sanitized verification summaries retained beside each change |
@@ -47,6 +48,7 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 - [Ansible and Semaphore upgrade](Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
 - [Fleet update automation](Documentation/Change%20Records/Fleet%20Update%20Automation%20-%202026-07-20.md)
 - [Fleet maintenance](Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md)
+- [Semaphore & Ansible project parity](Documentation/Change%20Records/Semaphore%20and%20Ansible%20Project%20Parity%20-%202026-07-30.md)
 - [Dedicated Ansible account and fleet expansion](Documentation/Change%20Records/Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md)
 - [Direct administrative SSH to the controller](Documentation/Change%20Records/Direct%20Administrative%20SSH%20to%20the%20Controller%20-%202026-07-25.md)
 - [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

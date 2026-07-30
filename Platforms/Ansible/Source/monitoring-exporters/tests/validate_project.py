@@ -3,8 +3,9 @@
 
 Checks that the inventory parses, both target groups exist and hold exactly the
 approved host sets, every host connects as the ansible account, the referenced
-playbooks exist, and that hosts deliberately excluded from collection have not
-crept back in.
+playbooks exist, the Semaphore manifest references only valid playbooks and
+views, and that hosts deliberately excluded from collection have not crept back
+in.
 """
 
 from __future__ import annotations
@@ -110,7 +111,7 @@ def main() -> int:
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
-            "node_exporter host set differs from the approved eight-host set: "
+            "node_exporter host set differs from the approved nine-host set: "
             f"{sorted(node_hosts)}"
         )
     if set(cadvisor_hosts) != EXPECTED_CADVISOR_HOSTS:
@@ -156,6 +157,23 @@ def main() -> int:
     for playbook in PLAYBOOKS:
         if not (ROOT / playbook).is_file():
             errors.append(f"missing playbook {playbook}")
+
+    semaphore_path = ROOT / "semaphore" / "task-templates.yml"
+    if semaphore_path.is_file():
+        semaphore = yaml.safe_load(semaphore_path.read_text(encoding="utf-8"))
+        declared_views = set(semaphore.get("views") or [])
+        template_names: set[str] = set()
+        for template in semaphore.get("templates", []):
+            name = template.get("name", "")
+            if not name or name in template_names:
+                errors.append(f"Semaphore template name is empty or duplicated: {name!r}")
+            template_names.add(name)
+            if not (ROOT / template.get("playbook", "")).is_file():
+                errors.append(f"{name}: missing playbook {template.get('playbook')}")
+            if template.get("view") not in declared_views:
+                errors.append(f"{name}: unknown Semaphore view {template.get('view')!r}")
+    else:
+        errors.append("Semaphore manifest semaphore/task-templates.yml is missing")
 
     if errors:
         print("monitoring-exporters validation failed:")

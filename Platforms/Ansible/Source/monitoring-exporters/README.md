@@ -1,9 +1,9 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
-I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, and `cadvisor.yml` manages cAdvisor on all eight Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door.
+I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, & `cadvisor.yml` manages cAdvisor on all 8 Docker hosts. Both use the same `ansible` account, the same key, & the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope & single-host templates for both playbooks.
 
 ## Scope
 
@@ -66,7 +66,7 @@ Both plays verify their own work. `node-exporter.yml` probes the exporter and as
 
 `node-exporter.yml` also refuses to overwrite an unmanaged listener. If something already answers on 9100 and neither the Debian package nor a managed `node_exporter.service` is present, the play stops and asks for `-e allow_port_takeover=true`. That guard exists because of `app-01`.
 
-A `--check` run of `node-exporter.yml` fails its verification tasks on a host that has no exporter yet, since there's nothing to probe. That's expected; use it to preview package changes, not as a pass/fail gate.
+A `--check` run of `node-exporter.yml` isn't a pass/fail gate. On a binary-managed host, `get_url` predicts the download without creating the staging archive, then `unarchive` & `copy` can't read that missing file. Ansible also skips the `uri` & shell verification modules in check mode, so installed package-managed hosts report an unknown version. I keep that command as a command-line preview of package decisions, but I don't expose it as a Semaphore template that looks like a health check.
 
 ## Adding a host
 

@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -140,9 +140,35 @@ Do not retire while a selected target is offline. The precheck deliberately bloc
 
 ## Semaphore
 
-Semaphore is a convenience layer. Its repository, inventory, environment, views, and task templates are defined in `semaphore/task-templates.yml`. The `All` view is Semaphore's aggregate view; use `Onboarding`, `Mac`, `Ansible Control`, or `Jedi PC` for the focused actions. Each identity view has Audit, Stage, Verify, and Retire in that order. Retirement templates prompt for the exact confirmation phrase.
+Semaphore is a convenience layer over three ordinary Ansible projects. The repository, inventory, environment, views, & task templates for each project are defined in that project's `semaphore/task-templates.yml`.
 
-If Semaphore is unavailable, run the commands above directly; no functionality is lost.
+| Project | Templates | Views |
+|---|---:|---:|
+| `Server-SSH` | 13 | 5 |
+| `Fleet-Updates` | 6 | 3 |
+| `Monitoring-Exporters` | 4 | 3 |
+
+`All` is Semaphore's aggregate view. `Server-SSH` keeps focused views for onboarding & the three current identities. `Fleet-Updates` separates package work from Compose work. `Monitoring-Exporters` separates node_exporter from cAdvisor.
+
+I check manifest drift with a short-lived API token. The default command is read-only:
+
+```bash
+sudo sh -c 'umask 077; semaphore --config /root/config.json users token create \
+  --login <YOUR_SEMAPHORE_LOGIN> --name ansible-manifest-check --ttl 15m \
+  > /root/semaphore-api-token.tmp'
+
+sudo python3 /opt/homelab/ansible-tools/reconcile_semaphore.py \
+  --token-file /root/semaphore-api-token.tmp \
+  /home/ansible/ssh-key-automation/semaphore/task-templates.yml \
+  /home/ansible/fleet-updates/semaphore/task-templates.yml \
+  /home/ansible/monitoring-exporters/semaphore/task-templates.yml
+```
+
+The final line should report 3 projects & 0 actions. To apply reviewed drift, add `--apply --expire-token --private-key-file /home/ansible/.ssh/id_ed25519`. The private-key option is used only when a project credential is missing or when I explicitly add `--refresh-credential`. Absent templates & views are retained unless I add `--prune`; I review that deletion list before applying it. I remove `/root/semaphore-api-token.tmp` after the command. The token never belongs in this repository or an evidence transcript.
+
+The monitoring playbooks don't have Semaphore dry-run templates. Ansible check mode doesn't create the node_exporter staging archive & skips the verification modules, so the command-line preview exits with errors even when the installed exporters answer. The exact limitation is in [Monitoring exporter check mode cannot complete](Troubleshooting/Monitoring%20exporter%20check%20mode%20cannot%20complete%20-%202026-07-30.md).
+
+If Semaphore is unavailable, I run the same playbooks directly; no automation depends on the UI.
 
 ## Recovery
 

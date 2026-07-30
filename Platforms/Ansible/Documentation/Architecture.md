@@ -1,7 +1,7 @@
 # SSH Identity Automation Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
 ## Request Path
 
@@ -9,7 +9,15 @@ Each device that can initiate SSH (Mac, Ansible Control, or Jedi PC) has one ide
 
 ![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](Diagrams/automation-flow.svg)
 
-Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation.
+Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation. Three project manifests keep that interface aligned with the controller directories:
+
+| Semaphore project | Controller directory | Managed scope |
+|---|---|---|
+| `Server-SSH` | `/home/ansible/ssh-key-automation` | SSH identity audit, onboarding, staging, verification, & retirement |
+| `Fleet-Updates` | `/home/ansible/fleet-updates` | OS package maintenance & 22 Compose projects |
+| `Monitoring-Exporters` | `/home/ansible/monitoring-exporters` | node_exporter on 9 hosts & cAdvisor on 8 Docker hosts |
+
+Each project has its own repository, inventory, `C.utf8` environment, views, templates, & project-scoped copy of the controller SSH credential. `/opt/homelab/ansible-tools/reconcile_semaphore.py` compares every managed field with the three manifests & reports drift without writing unless I supply `--apply`. It retains unmanaged objects by default; `--prune` deletes only absent templates & views.
 
 ## Identity Separation
 

@@ -1,7 +1,7 @@
 # Ansible Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-30
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -9,6 +9,7 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 
 | Date | Issue |
 |---|---|
+| 2026-07-30 | <a id="2026-07-30-monitoring-exporter-check-mode-cannot-complete"></a>[Monitoring exporter check mode cannot complete](Monitoring%20exporter%20check%20mode%20cannot%20complete%20-%202026-07-30.md) |
 | 2026-07-29 | <a id="2026-07-29-sc4s-startup-health-check-briefly-degraded-systemd"></a>[SC4S startup health check briefly degraded systemd](SC4S%20startup%20health%20check%20briefly%20degraded%20systemd%20-%202026-07-29.md) |
 | 2026-07-29 | <a id="2026-07-29-reboot-action-did-not-finish-after-the-guest-returned"></a>[Reboot action did not finish after the guest returned](Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md) |
 | 2026-07-29 | <a id="2026-07-29-transient-registry-timeout-interrupted-the-compose-dry-run"></a>[Transient registry timeout interrupted the Compose dry run](Transient%20registry%20timeout%20interrupted%20the%20Compose%20dry%20run%20-%202026-07-29.md) |

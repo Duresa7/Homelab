@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-30
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -9,7 +9,7 @@
 ![Wazuh](https://img.shields.io/badge/Wazuh-security_monitoring-3585BB)
 ![Prometheus](https://img.shields.io/badge/Prometheus-7_scrape_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
-![Ansible](https://img.shields.io/badge/Ansible-18_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
+![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
 
 This repository documents my four-node Proxmox cluster, segmented UniFi network, deployed platforms, automation, monitoring, & security work. The [walkthrough guides](Guides/README.md) are the quickest way to follow a build from its first command to the checks I ran afterward.
