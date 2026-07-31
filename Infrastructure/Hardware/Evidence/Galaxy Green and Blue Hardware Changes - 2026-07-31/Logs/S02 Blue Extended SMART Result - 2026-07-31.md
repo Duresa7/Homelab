@@ -8,7 +8,7 @@
 **Mechanism:** SSH Manager `ssh_execute` on `blue_server`, root shell  
 **Published redaction:** The retained capture replaces the drive serial and WWN with contextual placeholders.
 
-## The Self-Test Log Lied First
+## The Self-Test Log Showed a Stale Completed Entry
 
 At 11:22 EDT the self-test log looked finished, and it wasn't:
 

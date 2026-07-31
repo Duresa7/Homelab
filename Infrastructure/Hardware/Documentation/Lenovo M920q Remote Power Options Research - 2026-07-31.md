@@ -27,7 +27,7 @@ KVM isn't automatic with AMT. Intel requires the KVM setting enabled in MEBx, th
 
 Wake-on-LAN can't restart this powered-on hung installer. Intel defines Wake on Magic Packet as a wake mechanism for standby, with an optional setting for a shutdown or powered-off state. It doesn't define a reset command for a machine already running in the S0 power state. [Intel's Wake-on-LAN guide describes standby & power-off behavior](https://edc.intel.com/content/www/us/en/design/products/ethernet/adapters-and-devices-user-guide/29.4/wake-on-lan-wol-options/https%3A%25252F%25252Fedc.intel.com%25252Fcontent%25252Fwww%25252Fcn%25252Fzh%25252Fdesign%25252Fproducts%25252Fethernet%25252Fadapters-and-devices-user-guide%25252F29.4%25252Fwake-on-lan-wol-options%25252F/). A magic packet is useful after shutdown only when firmware, adapter, & power-state settings preserve that wake path.
 
-After Proxmox was installed, `ethtool nic0` reported `Supports Wake-on: pumbg` and `Wake-on: g`. That proves the running driver has Magic Packet wake enabled. It still does not prove the firmware will wake from soft-off, and it does not turn Wake-on-LAN into a reset mechanism for a running system.
+After I installed Proxmox, `ethtool nic0` reported `Supports Wake-on: pumbg` and `Wake-on: g`. That proves the running driver has Magic Packet wake enabled. It still does not prove the firmware will wake from soft-off, and it does not turn Wake-on-LAN into a reset mechanism for a running system.
 
 ## UniFi Port Control
 

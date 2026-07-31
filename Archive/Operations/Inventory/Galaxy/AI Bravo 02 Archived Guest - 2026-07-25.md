@@ -1,7 +1,7 @@
 # ai-bravo-02 Archived Guest
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-31
 
 **Asset:** Galaxy LXC 105 `ai-bravo-02`  
 **Node:** `grey-server`  
@@ -70,7 +70,7 @@ I queried CT 105 through `grey-server` before archiving it. Proxmox reported the
 - [TNIO platform archive](../../../Platforms/TNIO%20AI%20Bot/README.md)
 - [TNIO walkthrough archive](../../../Guides/TNIO-AI-Bot.md)
 - [SSH identity automation record](../../../../Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
-- [Termix SSH host onboarding record](../../../../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
+- [Termix SSH host onboarding record](../../../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
 
 ## Current-State Cleanup
 

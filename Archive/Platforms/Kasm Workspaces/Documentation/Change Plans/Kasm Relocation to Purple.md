@@ -1,21 +1,21 @@
 # Kasm Relocation to Purple
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-31
 
 **Status:** Superseded and implemented 2026-07-28
 
-> [Kasm Session Isolation](Kasm%20Session%20Isolation.md) superseded this plan and was implemented on 2026-07-28. It built `ssd-lvm2`, moved VM 122 to Purple, dropped INetSim and KVM guests from scope, moved the control plane to VLAN 78, attached the three macvlan session lanes, and completed the containment gate. This record remains for the placement reasoning and cluster-trust tradeoff.
+> [Kasm Session Isolation](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) superseded this plan and was implemented on 2026-07-28. It built `ssd-lvm2`, moved VM 122 to Purple, dropped INetSim and KVM guests from scope, moved the control plane to VLAN 78, attached the three macvlan session lanes, and completed the containment gate. This record remains for the placement reasoning and cluster-trust tradeoff.
 
 ## Execution Result
 
-The completed change is recorded in [Kasm Session Isolation - 2026-07-28](../Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). `kasm-01` now runs on `purple-server` from `ssd-lvm2`; the LAB-MGMT control plane and VLAN 74, 77, and 79 session networks survived a reboot and passed the harmless-container acceptance matrix.
+The completed change is recorded in [Kasm Session Isolation - 2026-07-28](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). `kasm-01` now runs on `purple-server` from `ssd-lvm2`; the LAB-MGMT control plane and VLAN 74, 77, and 79 session networks survived a reboot and passed the harmless-container acceptance matrix.
 
 I chose to proceed without a `vzdump` archive or VM snapshot, so neither rollback artifact was created. The live VM and final storage state were healthy after the migration.
 
 ## Outcome
 
-Kasm and everything Kasm spawns runs on `purple-server`. Grey is back to production only. The lab VLANs 74, 77, and 79 reach their Kasm session networks, VLAN 77 stays offline with no INetSim, and the acceptance checks in the [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md) passed before any real sample.
+Kasm and everything Kasm spawns runs on `purple-server`. Grey is back to production only. The lab VLANs 74, 77, and 79 reach their Kasm session networks, VLAN 77 stays offline with no INetSim, and the acceptance checks in the [Isolated Security Lab](../../../../../Architecture/Isolated-Security-Lab.md) passed before any real sample.
 
 Out of scope: `kali-pen` (VM 106) stays on Grey. It predates Kasm and isn't part of this lab. I destroyed the unrelated Windows test VM 103 during the Active Directory decommission on 2026-07-27.
 
@@ -62,7 +62,7 @@ Read-only. Nothing else starts until this passes, because every later step assum
 
 - [ ] Confirm KASM-BROWSER, MALWARE-OFFLINE, & EVIDENCE-QUARANTINE each block toward Internal, `<YOUR_ORG_NAME>`-Servers, & `<YOUR_ORG_NAME>`-Mgmt
 - [ ] Confirm `KASM Lab Proton Egress` still targets VLAN 74 only with the kill switch on
-- [ ] Confirm the 9 surviving `KASM` policies match the [2026-07-23 simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
+- [ ] Confirm the 9 surviving `KASM` policies match the [2026-07-23 simplification](../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 
 Custom zones default to Block All, but that change deleted 44 policies & I want the current matrix confirmed rather than assumed.
 
@@ -99,7 +99,7 @@ This is where the isolation actually lives now that Purple stays clustered.
 
 ## Step 5: Rebuild INetSim & fix the VLAN 77 resolver
 
-VLAN 77's DHCP still hands out `192.168.77.10`, which was the INetSim host destroyed in the [2026-07-23 teardown](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md). Malware that gets silence plays dead & teaches me nothing, so this has to exist before the first sample.
+VLAN 77's DHCP still hands out `192.168.77.10`, which was the INetSim host destroyed in the [2026-07-23 teardown](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md). Malware that gets silence plays dead & teaches me nothing, so this has to exist before the first sample.
 
 - [ ] Create the INetSim LXC on Purple, 1 GiB, static `192.168.77.10/24` on VLAN 77
 - [ ] Configure it to answer DNS for every name with its own address, & to serve HTTP, HTTPS, SMTP, FTP, & IRC
@@ -119,7 +119,7 @@ Confirm against the Kasm 1.19 networking documentation whether the agent expects
 
 ## Step 7: Acceptance before the first live sample
 
-Every check in the [Isolated Security Lab acceptance boundary](../../../../Architecture/Isolated-Security-Lab.md) runs with harmless test guests. No sample runs until all of them pass, & I record the results in the change record rather than here.
+Every check in the [Isolated Security Lab acceptance boundary](../../../../../Architecture/Isolated-Security-Lab.md) runs with harmless test guests. No sample runs until all of them pass, & I record the results in the change record rather than here.
 
 ## Rollback points
 
@@ -142,8 +142,8 @@ I stop & reassess if any of these happen:
 
 ## Related records
 
-- [Kasm Workspaces deployment](../Deployment.md)
-- [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md)
-- [Kasm lab network simplification (2026-07-23)](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
-- [Kasm lab Proxmox teardown (2026-07-23)](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md)
-- [Purple NVMe reliability failure](../../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md)
+- [Kasm Workspaces deployment](../../../../../Platforms/Kasm%20Workspaces/Documentation/Deployment.md)
+- [Isolated Security Lab](../../../../../Architecture/Isolated-Security-Lab.md)
+- [Kasm lab network simplification (2026-07-23)](../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
+- [Kasm lab Proxmox teardown (2026-07-23)](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md)
+- [Purple NVMe reliability failure](../../../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md)

@@ -1,7 +1,7 @@
 # ai-alpha-01 Retired Guest
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-07-31
 
 **Former asset:** Galaxy LXC 104 `ai-alpha-01`  
 **Former node:** `grey-server`  
@@ -34,7 +34,7 @@ The cluster no longer holds the guest configuration or disk. This archive is a d
 - [OpenClaw 2026-04-27 change record](../../../Platforms/Openclaw/Documentation/OpenClaw-Change-Record-2026-04-27.md)
 - [Archived OpenClaw walkthrough](../../../Guides/OpenClaw.md)
 - [SSH identity automation record](../../../../Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
-- [Termix SSH host onboarding record](../../../../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
+- [Termix SSH host onboarding record](../../../Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md)
 
 ## Current-State Cleanup
 
