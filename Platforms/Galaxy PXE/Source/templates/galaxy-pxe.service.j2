@@ -1,0 +1,27 @@
+[Unit]
+Description=Galaxy Proxmox PXE provisioning service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /usr/local/lib/galaxy-pxe/galaxy_pxe.py \
+    --base-url {{ galaxy_pxe_base_url }} \
+    --machines /etc/galaxy-pxe/machines.json \
+    --state /var/lib/galaxy-pxe/state.json \
+    --assets /srv/galaxy-pxe \
+    --root-hash /etc/galaxy-pxe/root-password.hash \
+    --root-ssh-keys /etc/galaxy-pxe/root-ssh-keys \
+    --join-key /etc/galaxy-pxe/cluster-join-key
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/galaxy-pxe
+
+[Install]
+WantedBy=multi-user.target

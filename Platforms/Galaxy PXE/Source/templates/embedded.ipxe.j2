@@ -1,0 +1,3 @@
+#!ipxe
+dhcp
+chain --replace {{ galaxy_pxe_base_url }}/v1/boot?mac=${net0/mac} || shell

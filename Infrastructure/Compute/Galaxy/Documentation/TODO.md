@@ -1,9 +1,30 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-07-31
 
 This backlog contains the scheduled CT 105 deletion, Purple storage correction, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+
+## `green-server` PXE Expansion Complete
+
+**Status:** Green joined Galaxy and reached PXE state `complete` at 2026-07-31 12:41:27 UTC  
+**Change record:** [Galaxy PXE Provisioning Service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md)  
+**Troubleshooting record:** [Green PXE Install Stalls Before Reboot](../../../../Platforms/Galaxy%20PXE/Documentation/Troubleshooting/Green%20PXE%20Install%20Stalls%20Before%20Reboot%20-%202026-07-31.md)
+
+- [x] Build and validate the UEFI PXE service, Proxmox VE 9.2-1 assets, MAC-specific answer, and first-boot hook on `ansible-01`.
+- [x] Add `192.168.70.14` to the Galaxy `pve_cluster` IP set and UniFi `OBJ-Proxmox-Nodes`.
+- [x] Capture the first physical request through the installer answer and bootstrap fetch. Green did not reboot or join, and the old service could not identify the stopping phase.
+- [x] Repair the lifecycle, installer webhook, SSH cluster join, root SSH baseline, storage checks, and failure telemetry. The deployed suite has 21 passing tests and the playbook reports `changed=0`.
+- [x] Complete a disposable 12 GiB UEFI install through tagged VLAN 5. Proxmox reported only `/dev/sda` through the success webhook and powered the VM off.
+- [x] Add and read back the UniFi callback policy from Green at `192.168.70.14` to `ansible-01` TCP 8080.
+- [x] Add and read back the callback policy from `Server-Provision` to `ansible-01` TCP 8080.
+- [x] Return Green to `disabled` after the repair.
+- [x] Record that RAM capacity cannot be checked remotely, infer Secure Boot is off from the completed unsigned iPXE load, and rearm Green with `ready --force`.
+- [x] Restart the M920q with UEFI PXE IPv4 first and complete the physical NVMe installation.
+- [x] Verify `green-server` at `192.168.70.14`, Cluster-Net at `192.168.71.14`, five-vote quorum, both Corosync links, firewall state, node exporter, `local`, and `local-lvm`.
+- [x] Prove the SATA disk was excluded from the installer and Proxmox storage.
+- [x] Change Bane port 4 from `Server-Provision` to `Proxmox-Trunk` after MGMT-A reachability and cluster membership passed.
+- [ ] Complete the extended SATA SMART test, wipe the Green SATA disk, capture the final node hardware, and roll the complete Galaxy inventory forward.
 
 ## `ai-bravo-02` Deletion Scheduled
 

@@ -73,6 +73,16 @@
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S02-Automation-and-Service-Verification-2026-07-25.md
 !/Platforms/Ansible/Evidence/Dedicated Ansible Account and Fleet Expansion - 2026-07-25/Logs/S07-Independent-Audit-Verification-2026-07-25.md
 
+# Galaxy PXE repair evidence records
+!/Platforms/Galaxy PXE/Evidence/
+/Platforms/Galaxy PXE/Evidence/*
+!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/
+/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/*
+!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Evidence-Index.md
+!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/
+/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*
+!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*.md
+
 # Fleet maintenance evidence records
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/
 /Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/*
@@ -302,6 +312,9 @@ __pycache__/
 *.env
 !.env.example
 !*.env.example
+
+# Galaxy PXE machine registry contains live hardware identifiers
+/Platforms/Galaxy PXE/Source/config/machines.json
 
 # NetBird and Nginx Proxy Manager protected runtime state
 Platforms/Netbird/Configuration/config.yaml

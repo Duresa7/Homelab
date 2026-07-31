@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-31
 
-**Last verified:** 2026-07-27 after removing the Termix SSH exception. `pve-firewall compile` passed, the live file held SHA256 `e26a6380cdd19f742dfdb5ec9ddd3c03f5202a894acdf751118dec22d5983735`, and all four nodes reported the firewall enabled and running.
+**Last verified:** 2026-07-31 after Green joined Galaxy. `pve-firewall compile` exited `0`, the live file held SHA256 `c3a5836e5ac37399ed0ca507a7c1191a892f953d4cab7a1d3f7588e3c6726656`, Grey reported the firewall enabled and running, and Galaxy reported five nodes with quorum.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -17,6 +17,7 @@
 | 192.168.70.11 | purple-server |
 | 192.168.70.12 | blue-server |
 | 192.168.70.13 | red-server |
+| 192.168.70.14 | green-server |
 
 ### `pve_admins`: approved admin devices (GUI + SSH)
 
@@ -57,11 +58,13 @@
 | in | DROP | tcp | - | - | 22 | nolog | DROP SSH |
 | in | DROP | tcp | - | - | 8006 | nolog | Drop GUI |
 
-I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, which contains only the four node addresses. Inter-node GUI proxying still works; another device on MGMT-A no longer inherits TCP 8006 access from its subnet.
+I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, which contains only the five registered node addresses. Another device on MGMT-A does not inherit TCP 8006 access from its subnet.
 
 Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`, SPICE `3128`, migration `60000:60050`, SSH 22, & GUI 8006. The explicit `pve_mgmt` drops for 22 and 8006 run first, so they take precedence. I left the generated set unchanged.
 
 ## History
+
+- On 2026-07-30 I added `192.168.70.14 # green-server` before the first PXE install. Both the API and cluster file showed five `pve_cluster` members, `pve-firewall compile` passed, and the firewall remained enabled and running. Green completed the repaired PXE run and joined as the fifth node on 2026-07-31. The service build and repair are in [Galaxy PXE Provisioning Service - 2026-07-30](../../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md).
 
 - On 2026-07-27 I removed `pve_termix` and its TCP 22 accept. `docker-main` remains in `pve_svc_clients` for the dashboard's TCP 8006 API use, but it failed all four post-change SSH probes. Jedi PC and `ansible-01` passed SSH and TCP 8006 to all four nodes. Monitoring passed its API, node-exporter, and NUT checks. The complete record is [MGMT-A Final Lockdown - 2026-07-27](../../../../Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
 

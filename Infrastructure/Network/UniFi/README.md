@@ -1,15 +1,16 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-31
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
-The 2026-07-27 live state is 25 network objects, 17 routed LAN networks, 14 firewall zones, 361 policies, 13 reusable firewall groups, 12 client groups, four OON policies, two traffic routes, four WLANs, and four switch port profiles.
+The last full controller count on 2026-07-30 was 28 network objects, 20 routed LAN networks, 14 firewall zones, 361 policies, 13 reusable firewall groups, 12 client groups, four OON policies, two traffic routes, four WLANs, and five switch port profiles. The user-defined firewall inventory reached 121 on 2026-07-31 after I added the VLAN 5 and Proxmox-node callback rules to `ansible-01:8080`. The post-cutover rule uses `OBJ-Proxmox-Nodes` instead of a Green-only selector.
 
 ## Configuration Records
 
 - [Networks and VLANs](Configuration/VLANs/network-vlan.md)
+- [Galaxy PXE provisioning service (2026-07-30)](../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md)
 - [Firewall zones](Configuration/Zones/zone.md)
 - [Firewall policies](Configuration/Firewall/firewall.md)
 - [Local DNS](Configuration/DNS/local-dns.md)

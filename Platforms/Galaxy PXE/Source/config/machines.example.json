@@ -1,0 +1,20 @@
+{
+  "machines": {
+    "<YOUR_NODE_MAC>": {
+      "hostname": "<YOUR_NODE_HOSTNAME>",
+      "domain": "<YOUR_CLUSTER_DOMAIN>",
+      "install_disk": "<YOUR_INSTALL_DISK>",
+      "management_cidr": "<YOUR_MANAGEMENT_CIDR>",
+      "management_gateway": "<YOUR_MANAGEMENT_GATEWAY>",
+      "cluster_cidr": "<YOUR_CLUSTER_CIDR>",
+      "cluster_peer": "<YOUR_JOIN_PEER_MANAGEMENT_IP>",
+      "cluster_peer_address": "<YOUR_JOIN_PEER_CLUSTER_IP>"
+    },
+    "02:00:00:00:09:99": {
+      "hostname": "pxe-acceptance",
+      "domain": "<YOUR_CLUSTER_DOMAIN>",
+      "install_disk": "sda",
+      "acceptance_only": true
+    }
+  }
+}

@@ -1,0 +1,329 @@
+---
+- name: Deploy Galaxy Proxmox PXE provisioning
+  hosts: ansible-01
+  become: true
+  gather_facts: true
+
+  vars:
+    galaxy_pxe_base_url: http://192.168.40.36:8080
+    proxmox_iso_version: "9.2-1"
+    proxmox_iso_filename: "proxmox-ve_{{ proxmox_iso_version }}.iso"
+    proxmox_iso_url: "https://enterprise.proxmox.com/iso/{{ proxmox_iso_filename }}"
+    proxmox_iso_sha256: "4e88fe416df9b527624a175f24c9aa07c714d3332afb1ee3dbf3879573ef2c6c"
+    assistant_version: "9.2.7"
+    assistant_deb_filename: "proxmox-auto-install-assistant_{{ assistant_version }}_amd64.deb"
+    assistant_deb_url: >-
+      http://download.proxmox.com/debian/pve/dists/trixie/pve-no-subscription/binary-amd64/{{
+      assistant_deb_filename }}
+    assistant_deb_sha256: "92d34cd218bcabea83b72dd45f6e92ab571a221a8cbe1b548076685bc9234f15"
+    pxe_asset_dir: /srv/galaxy-pxe
+    pxe_source_iso: "/var/cache/galaxy-pxe/{{ proxmox_iso_filename }}"
+    pxe_prepared_iso: >-
+      {{ pxe_asset_dir }}/proxmox-ve_{{ proxmox_iso_version }}-auto-from-http-url.iso
+    ipxe_commit: "404588d5f7c84815dfbf6c34912467b86a4376f4"
+    cluster_join_key: /etc/galaxy-pxe/cluster-join-key
+
+  pre_tasks:
+    - name: Refuse deployment on any host except ansible-01
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.hostname == "ansible-01"
+        fail_msg: "This local-connection playbook may run only on ansible-01."
+
+  tasks:
+    - name: Install PXE build and runtime packages
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - git
+          - liblzma-dev
+          - tftpd-hpa
+          - xorriso
+        state: present
+        update_cache: true
+
+    - name: Create PXE directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        owner: "{{ item.owner | default('root') }}"
+        group: "{{ item.group | default('root') }}"
+        mode: "{{ item.mode }}"
+      loop:
+        - { path: /etc/galaxy-pxe, mode: "0700" }
+        - { path: /usr/local/lib/galaxy-pxe, mode: "0755" }
+        - { path: /var/lib/galaxy-pxe, mode: "0700" }
+        - { path: /var/cache/galaxy-pxe, mode: "0755" }
+        - { path: /srv/galaxy-pxe, mode: "0755" }
+        - { path: /srv/tftp, owner: tftp, group: tftp, mode: "0755" }
+
+    - name: Generate the dedicated Galaxy cluster join key
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -q
+          - -t
+          - ed25519
+          - -N
+          - ""
+          - -C
+          - galaxy-pxe-join
+          - -f
+          - "{{ cluster_join_key }}"
+      args:
+        creates: "{{ cluster_join_key }}"
+
+    - name: Secure the cluster join private key
+      ansible.builtin.file:
+        path: "{{ cluster_join_key }}"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Read the cluster join public key
+      ansible.builtin.slurp:
+        src: "{{ cluster_join_key }}.pub"
+      register: cluster_join_public_key
+
+    - name: Authorize the dedicated join key on Grey
+      ansible.builtin.lineinfile:
+        path: /root/.ssh/authorized_keys
+        line: >-
+          {{
+            ((cluster_join_public_key.content | b64decode).split()[0:2]
+            | join(' ')) ~ ' galaxy-pxe-join'
+          }}
+        create: true
+        owner: root
+        group: root
+        mode: "0600"
+      delegate_to: grey-server
+
+    - name: Remove the join key from Grey's unused cluster key file
+      ansible.builtin.lineinfile:
+        path: /etc/pve/priv/authorized_keys
+        regexp: ' galaxy-pxe-join$'
+        state: absent
+      delegate_to: grey-server
+
+    - name: Read the approved Galaxy root SSH keys from Grey
+      ansible.builtin.slurp:
+        src: /root/.ssh/authorized_keys
+      register: galaxy_root_ssh_keys
+      delegate_to: grey-server
+
+    - name: Install the approved root SSH keys for new nodes
+      ansible.builtin.copy:
+        content: "{{ galaxy_root_ssh_keys.content | b64decode }}"
+        dest: /etc/galaxy-pxe/root-ssh-keys
+        owner: root
+        group: root
+        mode: "0600"
+      notify: Restart Galaxy PXE
+
+    - name: Install the provisioning application
+      ansible.builtin.copy:
+        src: "../app/{{ item }}"
+        dest: "/usr/local/lib/galaxy-pxe/{{ item }}"
+        owner: root
+        group: root
+        mode: "0755"
+      loop:
+        - galaxy_pxe.py
+        - registry.py
+        - rendering.py
+        - service.py
+        - state.py
+      notify: Restart Galaxy PXE
+
+    - name: Install the Galaxy machine registry
+      ansible.builtin.copy:
+        src: ../config/machines.json
+        dest: /etc/galaxy-pxe/machines.json
+        owner: root
+        group: root
+        mode: "0600"
+      notify: Restart Galaxy PXE
+
+    - name: Initialize an empty machine state registry
+      ansible.builtin.copy:
+        content: "{}\n"
+        dest: /var/lib/galaxy-pxe/state.json
+        owner: root
+        group: root
+        mode: "0600"
+        force: false
+
+    - name: Install the Galaxy PXE systemd unit
+      ansible.builtin.template:
+        src: ../templates/galaxy-pxe.service.j2
+        dest: /etc/systemd/system/galaxy-pxe.service
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload systemd
+        - Restart Galaxy PXE
+
+    - name: Configure TFTP
+      ansible.builtin.template:
+        src: ../templates/tftpd-hpa.j2
+        dest: /etc/default/tftpd-hpa
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart TFTP
+
+    - name: Download the Proxmox auto-install assistant package
+      ansible.builtin.get_url:
+        url: "{{ assistant_deb_url }}"
+        dest: "/var/cache/galaxy-pxe/{{ assistant_deb_filename }}"
+        checksum: "sha256:{{ assistant_deb_sha256 }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install the Proxmox auto-install assistant
+      ansible.builtin.apt:
+        deb: "/var/cache/galaxy-pxe/{{ assistant_deb_filename }}"
+        state: present
+
+    - name: Download the official Proxmox VE ISO
+      ansible.builtin.get_url:
+        url: "{{ proxmox_iso_url }}"
+        dest: "{{ pxe_source_iso }}"
+        checksum: "sha256:{{ proxmox_iso_sha256 }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Prepare the HTTP-answer PXE installer assets
+      ansible.builtin.command:
+        argv:
+          - proxmox-auto-install-assistant
+          - prepare-iso
+          - "{{ pxe_source_iso }}"
+          - --fetch-from
+          - http
+          - --url
+          - "{{ galaxy_pxe_base_url }}/v1/answer"
+          - --output
+          - "{{ pxe_asset_dir }}"
+          - --pxe
+          - --pxe-loader
+          - ipxe
+      args:
+        creates: "{{ pxe_prepared_iso }}"
+
+    - name: Apply the Proxmox installer framebuffer workaround
+      ansible.builtin.replace:
+        path: "{{ pxe_asset_dir }}/boot.ipxe"
+        regexp: >-
+          (?m)^(\s*kernel vmlinuz .*proxmox-start-auto-installer)(?!.*\bnomodeset\b)(\s*)$
+        replace: '\1 nomodeset\2'
+
+    - name: Read the generated automated installer entry
+      ansible.builtin.slurp:
+        src: "{{ pxe_asset_dir }}/boot.ipxe"
+      register: generated_boot_ipxe
+
+    - name: Require automated mode and nomodeset in the generated PXE entry
+      ansible.builtin.assert:
+        that:
+          - >-
+            'proxmox-start-auto-installer' in
+            (generated_boot_ipxe.content | b64decode)
+          - "'nomodeset' in (generated_boot_ipxe.content | b64decode)"
+        fail_msg: "The generated automated iPXE entry is missing a required kernel argument."
+
+    - name: Check out the iPXE source
+      ansible.builtin.git:
+        repo: https://github.com/ipxe/ipxe.git
+        dest: /usr/local/src/ipxe
+        version: "{{ ipxe_commit }}"
+      register: ipxe_source
+
+    - name: Write the embedded iPXE policy
+      ansible.builtin.template:
+        src: ../templates/embedded.ipxe.j2
+        dest: /usr/local/src/ipxe/galaxy.ipxe
+        owner: root
+        group: root
+        mode: "0644"
+      register: embedded_ipxe
+
+    - name: Check for the UEFI iPXE loader
+      ansible.builtin.stat:
+        path: /usr/local/src/ipxe/src/bin-x86_64-efi/snponly.efi
+      register: ipxe_loader
+
+    - name: Build the UEFI iPXE loader
+      ansible.builtin.command:
+        argv:
+          - make
+          - bin-x86_64-efi/snponly.efi
+          - EMBED=/usr/local/src/ipxe/galaxy.ipxe
+      args:
+        chdir: /usr/local/src/ipxe/src
+      when: >-
+        ipxe_source.changed or embedded_ipxe.changed or
+        not ipxe_loader.stat.exists
+
+    - name: Install the UEFI iPXE loader in TFTP
+      ansible.builtin.copy:
+        src: /usr/local/src/ipxe/src/bin-x86_64-efi/snponly.efi
+        remote_src: true
+        dest: /srv/tftp/galaxy-ipxe.efi
+        owner: tftp
+        group: tftp
+        mode: "0644"
+      notify: Restart TFTP
+
+    - name: Inspect the root-only PXE credential files
+      ansible.builtin.stat:
+        path: "{{ item }}"
+      loop:
+        - /etc/galaxy-pxe/root-password.hash
+        - /etc/galaxy-pxe/root-ssh-keys
+        - /etc/galaxy-pxe/cluster-join-key
+      register: pxe_credentials
+
+    - name: Require nonempty root-only PXE credential files
+      ansible.builtin.assert:
+        that:
+          - item.stat.exists
+          - item.stat.isreg
+          - item.stat.size > 0
+          - item.stat.mode == "0600"
+          - item.stat.pw_name == "root"
+          - item.stat.gr_name == "root"
+        fail_msg: "A required PXE credential file is missing, empty, or has the wrong ownership or mode."
+      loop: "{{ pxe_credentials.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Enable the nondestructive provisioning services
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+      loop:
+        - tftpd-hpa
+        - galaxy-pxe
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Restart Galaxy PXE
+      ansible.builtin.systemd_service:
+        name: galaxy-pxe
+        state: restarted
+        daemon_reload: true
+
+    - name: Restart TFTP
+      ansible.builtin.systemd_service:
+        name: tftpd-hpa
+        state: restarted

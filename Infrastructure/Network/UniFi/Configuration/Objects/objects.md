@@ -1,13 +1,15 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-31
 
 ## How I Use UniFi Objects
 
 I build UniFi policies from clients, groups, networks, zones, regions, applications, & IP or port groups. The controller turns those object references into the firewall, ACL, routing, QoS, & zone configuration enforced by the gateway, switches, and access points.
 
 An object-based rule follows its membership. If a client changes address or moves between groups, I update the object instead of rewriting every policy that uses it.
+
+On 2026-07-31 I reused `OBJ-Proxmox-Nodes` as the source for `Allow Proxmox Nodes to Galaxy PXE`. Future Galaxy nodes gain the post-cutover TCP 8080 callback path when I add their management address to this object. The VLAN 5 phase remains covered by the separate `Server-Provision` network object.
 
 ## OON Policies
 
@@ -40,7 +42,7 @@ Thirteen reusable firewall groups exist: five IPv4 address groups and eight port
 | OBJ-Monitor-Collector | IPv4 | 192.168.73.2 |
 | OBJ-Reverse-Proxy | IPv4 | 192.168.85.2 |
 | OBJ-Security-Stack | IPv4 | 192.168.72.2, 192.168.72.3 |
-| OBJ-Proxmox-Nodes | IPv4 | 192.168.70.10 through 192.168.70.13 |
+| OBJ-Proxmox-Nodes | IPv4 | 192.168.70.10 through 192.168.70.14 |
 | OBJ-Observability-Hosts | IPv4 | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
 | Wazuh Ports | Port | 1514, 1515 |
 | App Access | Port | 80, 8000 |

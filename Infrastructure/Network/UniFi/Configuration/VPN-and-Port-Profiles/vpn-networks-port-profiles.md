@@ -1,9 +1,9 @@
 # UniFi VPNs, Groups & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-31
 
-I track five WireGuard servers, one WireGuard client, two traffic routes, 13 reusable firewall groups, and four switch port profiles here.
+I track five WireGuard servers, one WireGuard client, two traffic routes, 13 reusable firewall groups, and five switch port profiles here.
 
 ## VPN Servers
 
@@ -48,7 +48,7 @@ Reusable port/address groups referenced by firewall policies.
 | OBJ-Monitor-Collector | IPv4 address group | 192.168.73.2 |
 | OBJ-Reverse-Proxy | IPv4 address group | 192.168.85.2 |
 | OBJ-Security-Stack | IPv4 address group | 192.168.72.2, 192.168.72.3 |
-| OBJ-Proxmox-Nodes | IPv4 address group | 192.168.70.10 through 192.168.70.13 |
+| OBJ-Proxmox-Nodes | IPv4 address group | 192.168.70.10 through 192.168.70.14 |
 | OBJ-Observability-Hosts | IPv4 address group | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
 | PG-Node-Exporter | Port group | 9100, 9101 |
 | PG-Egress-Web | Port group | 80, 443 |
@@ -62,5 +62,10 @@ Reusable port/address groups referenced by firewall policies.
 | Trusted | Edge | Trusted (VLAN 10) | - | - | Auto | On | Force Authorized | - | - |
 | IoT | Edge | IoT (VLAN 20) | - | - | Auto | On | Force Authorized | - | - |
 | Proxmox-Trunk | Uplink | None | Custom exclusion list | All networks except Management, IoT (20), Trusted (10), DMZ (30), and Secure (50) | Off | On (STP Uplink) | Force Authorized | On | On |
+| Server-Provision | Uplink | Server-Provision (VLAN 5) | Custom exclusion list | All networks except Management, IoT (20), Trusted (10), DMZ (30), and Secure (50) | Off | On | Force Authorized | On | On |
 
 The controller stores `Proxmox-Trunk` as an exclusion list, not a positive tagged-VLAN list. It automatically adds a new network to that exclusion list. I removed LAB-MGMT/VLAN 78 during the session-isolation change and KASM-TRUSTED/VLAN 75 during the [workspace build-out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The final list still contains exactly five exclusions: Management, IoT, Trusted, DMZ, and Secure. VLANs 74, 75, 77, 78, and 79 are admitted.
+
+`Server-Provision` uses the same five exclusions but adds native VLAN 5. I assigned it to Bane switch port 4 for the `green-server` installation. UniFi DHCP advertises `192.168.40.36` and `galaxy-ipxe.efi` on that network. Green completed the installation and cluster join on 2026-07-31, after which I changed Bane port 4 to `Proxmox-Trunk`.
+
+On 2026-07-31 I explicitly admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`. The profile readback still uses the same five exclusions, and VLAN 5 is not one of them. A disposable UEFI VM on Red received `192.168.5.143`, completed the automatic Proxmox install, reported `/dev/sda`, and powered off. The final Bane port 4 readback showed `Proxmox-Trunk`, VLANs 70 and 71 admitted, a 1 GbE link, and PoE off.
