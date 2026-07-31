@@ -1,7 +1,7 @@
 # Galaxy Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-31
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](../TODO.md).
 
@@ -20,3 +20,4 @@ One 2026-07-15 record covering a duplicate APT source on `debian-dev` stays loca
 | <a id="5-disabled-ha-daemons-on-grey-server"></a>[5](Disabled%20HA%20Daemons%20on%20grey-server%20-%202026-07-22.md) | 2026-07-22 | HA reported `grey-server` with `old timestamp - dead?`, `watchdog standby`, & a 2025-08-22 LRM timestamp | Grey's `pve-ha-lrm` & `pve-ha-crm` units were disabled and hadn't started during the current boot | Resolved |
 | <a id="6-ssh-backup-helper-reported-missing-archives"></a>[6](SSH%20Backup%20Helper%20Reported%20Missing%20Archives%20-%202026-07-22.md) | 2026-07-22 | The backup helper reported four successful Proxmox configuration archives, but its inventory and the remote filesystems contained none | The success response did not match remote state; I replaced it with direct checksummed root-only archives | Mitigated; helper defect remains |
 | <a id="7-purple-nvme-reliability-failure"></a>[7](Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md) | 2026-07-22 | Purple's boot log reported NVMe critical warning `0x04` after the Proxmox 9.2.5 canary reboot | The 256 GB boot NVMe was worn out: overall health `FAILED` at 169% endurance used | Resolved 2026-07-25; Toshiba clone in, health `PASSED`, four votes |
+| <a id="8-duplicate-pve-volume-group-on-blue-server"></a>[8](Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md) | 2026-07-30 | `local-lvm` stayed inactive and CTs 104, 107, & 108 couldn't start after Blue booted | A newly connected WDC SATA disk retained an older Proxmox VG also named `pve`, which made the NVMe `pve/data` activation ambiguous | Resolved 2026-07-31; WDC layout wiped, NVMe storage and guests verified |

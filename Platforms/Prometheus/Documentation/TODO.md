@@ -1,7 +1,7 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-31
 
 Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines; removing the inactive WAL setting at the next recreate replaces that measurement task.
 
@@ -12,6 +12,8 @@ Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 w
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 
 **Decide where alerts go, then write rules.** There are no alert rules and no Alertmanager. I kept alerting out of the 2026-07-25 expansion deliberately, because rules that fire into nothing are worse than no rules, so this starts with picking a notification path rather than with writing conditions. The dashboard already encodes the thresholds worth alerting on: targets down, `probe_success == 0`, certificate expiry, ZFS pool state, `nvme_critical_warning`, NVMe spare below 10%, filesystem above 90%, and a UPS off mains.
+
+**Verify Prometheus auto-start during the next controlled CT 104 restart.** Prometheus exited with code 0 during Blue's 2026-07-30 shutdown but remained stopped when `monitor-01` returned, even though Docker reported restart policy `unless-stopped`. A manual `docker start prometheus` restored the ready endpoint at 00:02:12 EDT on 2026-07-31. I changed no Compose setting because the configured policy already matches the desired behavior. The [Galaxy incident report](../../../Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Galaxy-Incident-Report-2026-07-30-Blue-Server-Duplicate-VG.md) carries the shutdown evidence.
 
 ## Known limits, not tracked as work
 

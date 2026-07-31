@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-07-31
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -11,7 +11,7 @@ None.
 
 ## Active Priorities
 
-- [ ] Complete the first armed `green-server` install in the [Galaxy PXE provisioning record](Platforms/Ansible/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md). Green is `ready`; the physical M920q still needs its one PXE restart, followed by the five-node cluster and disk checks.
+- [ ] Run the `*-server` to `*-node` naming migration through the [rolling replacement plan](Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md), starting with the guest-free [Green pilot](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md). Clustered Proxmox node names can't be edited in place, so each node is a `pvecm delnode` plus a fresh PXE install. The preflight passed and execution has not started; this is the one remaining item from the five-node expansion.
 - [ ] Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). I completed the storage recovery, controlled Parrot installation, Parrot Full/Normal/VPN, Debian Malware, manual capacity gate, automatic-pull control, and `baseline-parrot-2026-07-30`. Kasm returns HTTP `200`; the alert is the only open item.
 
 ## Scheduled
@@ -23,8 +23,9 @@ None.
 | Backlog | Open items |
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Complete Green's first armed PXE run and watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Finish and verify Green's five-node expansion; delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on Blue |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Run the Green-first rolling node replacement for the `*-node` rename; delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on Blue |
+| [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Kasm Workspaces](Platforms/Kasm%20Workspaces/Documentation/TODO.md) | Add an automated warning below the 80 percent thin-pool hard stop; recovery, Parrot, Debian Malware, update control, capacity gate, and replacement baseline are complete |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
@@ -32,10 +33,12 @@ None.
 | [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Remove the inactive Grafana WAL setting at the next recreate, alert routing then rules, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Verify Prometheus auto-start on the next controlled CT 104 restart, remove the inactive Grafana WAL setting at the next recreate, alert routing then rules, & UniFi gateway metrics |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | No pending enrollments; decide how `edge-01` gets agent updates, since it has no Wazuh apt repository and sits at 4.14.5-1 |
 
 ## Recently Completed
+
+- [x] 2026-07-31: [Blue duplicate VG incident](Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Galaxy-Incident-Report-2026-07-30-Blue-Server-Duplicate-VG.md). A newly added WDC SATA disk retained an older Proxmox VG named `pve`, which made Blue's NVMe `pve/data` activation ambiguous and kept CTs 104, 107, & 108 down after boot. I renamed the inactive VG by UUID, restored `local-lvm`, cleared both HA errors, wiped the WDC layout after validating its serial and lack of mounts, & verified every affected workload. The NVMe is the only LVM PV, the WDC disk holds an empty GPT with no filesystem, and Galaxy now runs five votes. That disk went on to pass a full extended SMART read at 23,215 hours with all four critical counters at 0, so this was a volume-group name collision rather than failing hardware.
 
 - [x] 2026-07-30: [Semaphore & Ansible project parity](Platforms/Ansible/Documentation/Change%20Records/Semaphore%20and%20Ansible%20Project%20Parity%20-%202026-07-30.md). Semaphore now mirrors all 3 projects on `ansible-01`: 13 `Server-SSH` templates, 6 `Fleet-Updates` templates, & 4 `Monitoring-Exporters` templates. The manifest reconciler reports zero actions, SQLite integrity returns `ok`, the service remains enabled & active with HTTP `200`, & the Fleet-Updates dry run reached all 11 hosts with `failed=0` & `unreachable=0`.
 - [x] 2026-07-29: [Fleet artifact sweep](Operations/Maintenance/Fleet%20Artifact%20Sweep%20Execution%20-%202026-07-29.md). I reclaimed a measured 60.6 GiB across all 16 active machines, cut `grey-server` from 75 percent to 37 percent root use, cleaned package caches, capped journals at 200 MB, and removed only inspected Docker and deployment residue. Kasm retained all 23 images and launched `Terminal - Normal` without an image pull. The four-node cluster stayed quorate with its firewall enabled, every workload container remained running without an unhealthy state, and Prometheus reported 48 of 48 targets up. I verified all of that against live state afterward and closed four files the first pass had left: the `security-01` installer bundle, the inert DKMS enrollment file on `grey-server`, and two `grey-server` copies of the cluster CA certificate that matched the live file by hash. I kept the 200 MB journald cap after measuring that it still holds 21 days on `grey-server` and 16 on `security-01`, and I added the three missing SSH Manager profiles for `kasm_01`, `docker_blue`, and `media_01`.

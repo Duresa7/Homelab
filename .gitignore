@@ -83,6 +83,40 @@
 /Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*
 !/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*.md
 
+# Galaxy Green and Blue hardware change evidence records
+!/Infrastructure/Hardware/Evidence/
+/Infrastructure/Hardware/Evidence/*
+!/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/
+/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/*
+!/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/Evidence-Index.md
+!/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/Logs/
+/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/Logs/*
+!/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/Logs/*.md
+
+# Galaxy Green baseline and monitoring evidence records
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/
+/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/*
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Evidence-Index.md
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/*.md
+
+# Galaxy Green node rolling replacement evidence records
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/
+/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/*
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Evidence-Index.md
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*.md
+
+# Blue duplicate volume group incident evidence records
+!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/
+/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/*
+!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Evidence-Index.md
+!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/
+/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/*
+!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/*.md
+
 # Fleet maintenance evidence records
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/
 /Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/*

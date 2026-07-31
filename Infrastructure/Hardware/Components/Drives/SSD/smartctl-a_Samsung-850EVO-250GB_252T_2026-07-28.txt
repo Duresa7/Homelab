@@ -4,8 +4,8 @@ Copyright (C) 2002-25, Bruce Allen, Christian Franke, www.smartmontools.org
 === START OF INFORMATION SECTION ===
 Model Family:     Samsung based SSDs
 Device Model:     Samsung SSD 850 EVO 250GB
-Serial Number:    S21NNXAH105252T
-LU WWN Device Id: 5 002538 d409399b4
+Serial Number: <YOUR_DRIVE_SERIAL>
+LU WWN Device Id: <YOUR_DRIVE_WWN>
 Firmware Version: EMT02B6Q
 User Capacity:    250,059,350,016 bytes [250 GB]
 Sector Size:      512 bytes logical/physical
