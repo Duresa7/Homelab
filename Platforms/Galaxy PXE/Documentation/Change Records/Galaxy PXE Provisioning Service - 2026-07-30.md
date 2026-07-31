@@ -189,7 +189,7 @@ The update preview showed only the source selector changing from the Green addre
 
 I checked the exact cleanup candidates on `ansible-01` after the repaired deployment reached an idempotent result. The legacy `/etc/galaxy-pxe/cluster-password` file was already absent. The only remaining text reference to that filename was a negative regression assertion that rejects the retired command-line option.
 
-I removed three timestamped deployment backups, the source and deployed Python bytecode caches, and one abandoned Ansible temporary cache. I kept the PXE source, services, prepared installer assets, ISO and package caches, state database, join key, and TFTP loader. Both services remained active, `/health` returned `ok`, and all 21 remote tests passed with bytecode generation disabled. [S07](../../Evidence/Galaxy%20PXE%20Repair%20-%202026-07-31/Logs/S07%20Deployment%20Residue%20Cleanup%20-%202026-07-31.md) records the exact boundary and post-delete verification.
+I removed three timestamped deployment backups, the source and deployed Python bytecode caches, one abandoned Ansible temporary cache, and the two local Windows helper files used for Green's one-time SSH path. I kept the PXE source, services, prepared installer assets, ISO and package caches, state database, join key, and TFTP loader. Both services remained active, `/health` returned `ok`, and all 21 remote tests passed with bytecode generation disabled. [S07](../../Evidence/Galaxy%20PXE%20Repair%20-%202026-07-31/Logs/S07%20Deployment%20Residue%20Cleanup%20-%202026-07-31.md) records the exact boundary and post-delete verification.
 
 ## Remaining Work
 

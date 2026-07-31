@@ -22,8 +22,10 @@ I removed these superseded deployment artifacts:
 
 I retained the authoritative source tree, systemd services, prepared installer assets, TFTP loader, state database, join key, and reusable ISO and package caches.
 
+I also removed the one-use `codex-green-askpass.cmd` and `galaxy-green-known-hosts` files from my Windows temporary directory. I deleted the ignored local Python bytecode caches under the PXE source tree after resolving their exact workspace paths.
+
 ## Verification
 
 The post-delete check found every listed path absent. `galaxy-pxe.service` and `tftpd-hpa.service` both returned `active`, and `http://127.0.0.1:8080/health` returned `ok`.
 
-I ran the deployed suite with `PYTHONDONTWRITEBYTECODE=1`. All 21 tests passed in 0.578 seconds, and neither source test directory recreated a `__pycache__` directory.
+I ran the deployed suite with `PYTHONDONTWRITEBYTECODE=1`. All 21 tests passed in 0.578 seconds, and neither source test directory recreated a `__pycache__` directory. The two Windows helpers and both local cache directories were absent after cleanup.
