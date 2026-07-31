@@ -4,13 +4,13 @@
 **Last updated:** 2026-07-31
 
 **Implementation date:** 2026-07-31  
-**Status:** In progress  
+**Status:** Complete except Green's pending kernel reboot  
 **Primary owner:** Galaxy Proxmox cluster  
 **Affected systems:** All five Galaxy nodes, Galaxy PXE on `ansible-01`, Prometheus on `monitor-01`
 
 ## Scope
 
-I made the Proxmox subscription-popup change reproducible across all five nodes, added the same action to Galaxy PXE first boot, and added Green to the shared Prometheus node job. The hardware tests, Green SATA wipe, and reboot into the installed kernel remain in this change.
+I made the Proxmox subscription-popup change reproducible across all five nodes, added the same action to Galaxy PXE first boot, and added Green to the shared Prometheus node job. I also made that popup change survive package upgrades. The hardware tests and Green SATA wipe closed under the hardware change record; Green's reboot into the installed kernel is the only step still open.
 
 ## Starting State
 
@@ -48,11 +48,20 @@ The first acceptance run exposed a stale test: `assert_targets.py` omitted the e
 
 On the final run I checked Green separately, waited through a full scrape cycle, then required the whole target set. The live file kept inode `393283`, its SHA-256 matched `/etc/prometheus/prometheus.yml` inside the container, all 49 targets were up, and all 65 dashboard queries returned data. Green reported node_exporter 1.9.0, `up=1`, and 88 SMART or NVMe metric families. I retained `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` and removed the three superseded rollback copies and temporary test files. [S03 records the rollout and final checks](../../Evidence/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31/Logs/S03%20Green%20Prometheus%20Target%20-%202026-07-31.md).
 
+## Step 5: Make the Popup Patch Survive Upgrades
+
+Applying the patch is not the same as keeping it. Any `proxmox-widget-toolkit` upgrade replaces `proxmoxlib.js` with the stock file and brings the nag back, and only Grey had a re-apply hook; Purple, Blue, Red, and Green had none. Grey's hook was also an unguarded `sed` over any line matching `/data\.status/`, which would rewrite a future layout the tested script is built to refuse.
+
+I installed the same `/etc/apt/apt.conf.d/99-galaxy-no-subscription-nag` on all five nodes. It calls `/usr/local/sbin/disable-proxmox-subscription-popup --apply` from `DPkg::Post-Invoke` and swallows the exit status behind a warning, so an unrecognized layout prints a review message instead of failing the `apt` run. All five nodes report the same hook SHA-256 prefix `d4384dc64be2`, one parsed instance in `apt-config dump`, and a passing `apt-get check`. I moved Grey's old hook to `/root/no-nag-script.superseded-2026-07-31` so exactly one hook remains.
+
+Then I proved it fires rather than just existing. I reinstalled `proxmox-widget-toolkit` on Green, which has no guests. The package overwrote the file with the stock version and the hook printed `popup patch applied` inside the same `apt` transaction, ending at 0 stock markers and 2 patched markers with `pveproxy` still active. [S04 records the gap, the hook, and the reinstall proof](../../Evidence/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31/Logs/S04%20Popup%20Patch%20Upgrade%20Durability%20-%202026-07-31.md).
+
 ## Resulting Configuration
 
 | Item | Result |
 |---|---|
 | Popup automation | One guarded script with the same SHA-256 on all five nodes |
+| Upgrade durability | Same `apt` `DPkg::Post-Invoke` hook on all five nodes, proven by a package reinstall on Green |
 | PXE first boot | Applies the guarded popup baseline and restarts `pveproxy` when needed |
 | Prometheus targets | 49 of 49 present and up |
 | Green exporter | `node` job, `green-server`, `192.168.70.14:9100`, node_exporter 1.9.0 |
@@ -61,14 +70,13 @@ On the final run I checked Green separately, waited through a full scrape cycle,
 
 ## Rollback
 
-For the popup change, I can reinstall `proxmox-widget-toolkit` to restore its stock JavaScript and restart `pveproxy`. The script refuses any source layout outside the exact stock or patched form.
+For the popup change, I can remove `/etc/apt/apt.conf.d/99-galaxy-no-subscription-nag` and then reinstall `proxmox-widget-toolkit` to restore its stock JavaScript and restart `pveproxy`. Reinstalling without removing the hook first will simply re-patch the file, which S04 demonstrates. Grey's previous hook is recoverable at `/root/no-nag-script.superseded-2026-07-31`. The script refuses any source layout outside the exact stock or patched form.
 
 For Prometheus, I can copy `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` over the live file, restart the `prometheus` container, and rerun both assertions. The retained backup is the 48-target pre-Green state.
 
 ## Remaining Work
 
-- Finish and retain the Green and Blue extended SMART results.
-- Wipe Green's unused SATA disk by its checked `/dev/disk/by-id` path.
-- Update the hardware and Galaxy inventory records with both nodes' final memory and drive state.
-- Reboot Green after the SMART test and wipe, then verify kernel `7.0.14-8-pve`, quorum, Corosync, monitoring, and the popup patch.
+One item. Green still runs the installer kernel `7.0.2-6-pve` with `7.0.14-8-pve` installed, so it needs a reboot followed by a check of the kernel, quorum, both Corosync links, monitoring, and the popup patch. I am holding that reboot until the `*-node` rename decision, because the [Green rolling replacement](Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md) reinstalls the node and would make the reboot redundant.
+
+Both extended SMART results are captured, Green's SATA metadata is wiped, and the hardware and inventory records carry both nodes' final memory and drive state. The [hardware change record](../../../../Hardware/Documentation/Change%20Records/Galaxy%20Green%20and%20Blue%20Hardware%20Changes%20-%202026-07-31.md) closes that side of the work.
 

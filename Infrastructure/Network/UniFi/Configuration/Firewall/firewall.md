@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-31
 
-I verified both Galaxy PXE callback policies against the live controller on 2026-07-31. The full baseline remains the 2026-07-28 Kasm readback.
+I verified both Galaxy PXE callback policies against the live controller on 2026-07-31, then moved their shared destination onto `OBJ-Galaxy-PXE-Service` and `PG-Galaxy-PXE-Callback` so neither rule carries a hardcoded service address. Both sides of both policies are now object references. All five Galaxy nodes returned `ok` with HTTP 200 from `http://192.168.40.36:8080/health` afterward. The full baseline remains the 2026-07-28 Kasm readback.
 
 The gateway runs UniFi's zone-based V2 firewall. It has 121 user-defined policies after the two Galaxy PXE callback additions on 2026-07-31. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
 
@@ -19,8 +19,8 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow VPN to <YOUR_ORG_NAME>-Mgmt` | Yes | ALLOW | 10000 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
 | `Allow VPN to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | Vpn / Any | `<YOUR_ORG_NAME>`-Servers / Any |
 | `Allow <YOUR_ORG_NAME>-Mgmt to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | `<YOUR_ORG_NAME>`-Mgmt / Any | `<YOUR_ORG_NAME>`-Servers / Any |
-| `Allow Proxmox Nodes to Galaxy PXE` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Mgmt / `OBJ-Proxmox-Nodes` | Internal / 192.168.40.36 / 8080 |
-| `Allow Server-Provision callbacks to Galaxy PXE` | Yes | ALLOW | 10005 | TCP | Internal / `Server-Provision` | Internal / 192.168.40.36 / 8080 |
+| `Allow Proxmox Nodes to Galaxy PXE` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Mgmt / `OBJ-Proxmox-Nodes` | Internal / `OBJ-Galaxy-PXE-Service` / `PG-Galaxy-PXE-Callback` |
+| `Allow Server-Provision callbacks to Galaxy PXE` | Yes | ALLOW | 10005 | TCP | Internal / `Server-Provision` | Internal / `OBJ-Galaxy-PXE-Service` / `PG-Galaxy-PXE-Callback` |
 | `Allow Internal to <YOUR_ORG_NAME>-Mgmt` | No | ALLOW | 10000 | All | Internal / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
 | `Allow Internal to <YOUR_ORG_NAME>-Servers` | Yes | ALLOW | 10000 | All | Internal / Any | `<YOUR_ORG_NAME>`-Servers / Any |
 | `Allow edge-01 to app-01 Web` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `<YOUR_ORG_NAME>`-Servers / 192.168.80.10 / `App Access` |

@@ -35,7 +35,7 @@ I deleted `Non-tracking` before deleting Secure-V/VLAN 100. The controller now r
 
 ## Address and Port Groups
 
-Thirteen reusable firewall groups exist: five IPv4 address groups and eight port groups.
+Fifteen reusable firewall groups exist: six IPv4 address groups and nine port groups.
 
 | Group | Type | Members |
 |---|---|---|
@@ -44,6 +44,7 @@ Thirteen reusable firewall groups exist: five IPv4 address groups and eight port
 | OBJ-Security-Stack | IPv4 | 192.168.72.2, 192.168.72.3 |
 | OBJ-Proxmox-Nodes | IPv4 | 192.168.70.10 through 192.168.70.14 |
 | OBJ-Observability-Hosts | IPv4 | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
+| OBJ-Galaxy-PXE-Service | IPv4 | 192.168.40.36 |
 | Wazuh Ports | Port | 1514, 1515 |
 | App Access | Port | 80, 8000 |
 | Proxmox-Admin-Ports | Port | 22, 8006 |
@@ -52,8 +53,11 @@ Thirteen reusable firewall groups exist: five IPv4 address groups and eight port
 | PG-Node-Exporter | Port | 9100, 9101 |
 | PG-Egress-Web | Port | 80, 443 |
 | PG-NTP | Port | 123 |
+| PG-Galaxy-PXE-Callback | Port | 8080 |
 
 I moved 35 exact selectors across 24 policies onto these objects. I kept 11 partial or mixed selectors inline because replacing them with a broader group would change behavior.
+
+`OBJ-Galaxy-PXE-Service` and `PG-Galaxy-PXE-Callback` are single-member groups, which I normally avoid. I created them on 2026-07-31 because the same literal `192.168.40.36:8080` destination was duplicated across both Galaxy PXE policies. Two policies carrying the same hardcoded service is the duplication these objects exist to remove: if the PXE service ever moves off `ansible-01` or gains a second listener, I edit one object instead of hunting two rules. Both policies now reference objects on the source and the destination side, and all five nodes still returned `ok` with HTTP 200 from the health endpoint after the change.
 
 ## Client Groups
 
