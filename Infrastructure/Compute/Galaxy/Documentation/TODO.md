@@ -24,7 +24,12 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 - [x] Verify `green-server` at `192.168.70.14`, Cluster-Net at `192.168.71.14`, five-vote quorum, both Corosync links, firewall state, node exporter, `local`, and `local-lvm`.
 - [x] Prove the SATA disk was excluded from the installer and Proxmox storage.
 - [x] Change Bane port 4 from `Server-Provision` to `Proxmox-Trunk` after MGMT-A reachability and cluster membership passed.
-- [ ] Complete the extended SATA SMART test, wipe the Green SATA disk, capture the final node hardware, and roll the complete Galaxy inventory forward.
+- [x] Apply the guarded subscription-popup script to all five nodes and add the same action to Galaxy PXE first boot.
+- [x] Add Green to the Prometheus `node` job. All 49 targets and all 65 Grafana query assertions passed.
+- [ ] Capture Blue's completed extended SATA SMART result, reconcile its final blank-disk state, and roll the complete five-node hardware inventory forward. Green's extended test failed with a read error, and I retained that result before wiping its unused SATA metadata.
+- [x] Remove the stale deployment backups and bytecode caches from `ansible-01` after the reusable service passed all 21 tests. The legacy cluster-password file was already absent, and I retained the service, installer cache, assets, registry, state, and join-key machinery.
+- [ ] Remove Green's one-use first-boot script, log, and join-only SSH configuration after the retained evidence and reboot checks are complete.
+- [ ] Follow the [rolling replacement plan](Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) to replace `green-server`, `purple-server`, `red-server`, `blue-server`, and `grey-server` with fresh `*-node` cluster members one at a time. Green is the guest-free pilot; Grey is last.
 
 ## `ai-bravo-02` Deletion Scheduled
 
