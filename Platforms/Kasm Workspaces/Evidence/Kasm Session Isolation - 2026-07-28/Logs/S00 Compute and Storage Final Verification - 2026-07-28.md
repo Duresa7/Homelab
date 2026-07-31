@@ -1,7 +1,7 @@
 # S00 Compute and Storage Final Verification
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-31
 
 **Capture timestamp:** 2026-07-28T14:40:41-04:00  
 **Target:** `purple-server`  
@@ -56,4 +56,4 @@ SMART overall-health self-assessment test result: PASSED
 **Exit code:** 0  
 **Structured result:** `success: true`
 
-The follow-up query itself verifies four-node quorum, VM state and placement, pool state, the absence of a named snapshot, and the final SMART counters. The unchanged full SMART output is stored with the [drive inventory](../../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-SSD-850-EVO-250GB_S21NNXAH105252T_2026-07-28.txt).
+The follow-up query itself verifies four-node quorum, VM state and placement, pool state, the absence of a named snapshot, and the final SMART counters. The unchanged full SMART output is stored with the [drive inventory](../../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt).

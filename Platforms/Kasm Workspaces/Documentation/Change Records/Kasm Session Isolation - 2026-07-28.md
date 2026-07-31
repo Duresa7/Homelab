@@ -1,7 +1,7 @@
 # Kasm Session Isolation
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-31
 
 **Implemented:** 2026-07-28  
 **Owner:** Platforms / Kasm Workspaces  
@@ -45,7 +45,7 @@ I disabled the Proxmox firewall on the three macvlan parents because each sessio
 
 I verified `/dev/sda`, created `ssd-lvm2`, restricted it to Purple, shut down VM 122, and ran the offline migration. The exact creation and migration commands are retained in the Storage and Migration section below. I did not retain the full action transcript. The observed migration ran for 15 minutes 25 seconds at an average of 117 MB/s.
 
-I verified the final node, disk volumes, quorum, snapshot list, pool use, and SMART counters with [S00 Compute and Storage Final Verification](../../Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/S00%20Compute%20and%20Storage%20Final%20Verification%20-%202026-07-28.md). I retained the exact [Proxmox storage stanza](../../../../Infrastructure/Compute/Galaxy/Configuration/Storage/ssd-lvm2.storage.cfg) and the unchanged [SMART capture](../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-SSD-850-EVO-250GB_S21NNXAH105252T_2026-07-28.txt).
+I verified the final node, disk volumes, quorum, snapshot list, pool use, and SMART counters with [S00 Compute and Storage Final Verification](../../Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/S00%20Compute%20and%20Storage%20Final%20Verification%20-%202026-07-28.md). I retained the exact [Proxmox storage stanza](../../../../Infrastructure/Compute/Galaxy/Configuration/Storage/ssd-lvm2.storage.cfg) and the unchanged [SMART capture](../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt).
 
 ### Step 1: Move the control plane to LAB-MGMT
 
