@@ -4,8 +4,16 @@
 **Last updated:** 2026-07-31
 
 **Research date:** 2026-07-31  
-**Status:** Research complete; execution not started  
+**Status:** Cancelled 2026-07-31; archived unexecuted  
 **Scope:** Proxmox VE 9.2.5 cluster `Galaxy`
+
+## Why I Cancelled This
+
+I decided on 2026-07-31 to keep the `*-server` names. Nothing in this plan ran. The five nodes are still `grey-server`, `purple-server`, `blue-server`, `red-server`, & `green-server`, and Galaxy reports five votes with quorum.
+
+The cost drove the decision. A cosmetic rename would have meant five `pvecm delnode` removals & five reinstalls, because Galaxy has no shared storage: all 19 guests sit on node-local LVM-thin or ZFS, `kasm-01` is pinned to purple's `ssd-lvm2`, and CT 842 depends on a bind mount to red's physical Seagate. No guest can live-migrate, so four of the five nodes needed a backup & restore cycle per node to change a string.
+
+I'm keeping the research below because the finding outlives the plan: clustered Proxmox node names can't be edited in place, and the documented path for reusing a removed server is a fresh installation. Anyone who proposes a Galaxy node rename later should read this first & price it the same way.
 
 ## Decision
 
@@ -36,9 +44,9 @@ I will replace one member at a time in this order. The listed workload state com
 | Order | Replacement | Reason for position | Required workload action |
 | --- | --- | --- | --- |
 | 1 | `green-server` to `green-node` | Green is the pilot candidate because the PXE project assigned it no production guest. | Stop if `qm list`, `pct list`, either guest configuration directory, or local storage inspection finds a workload. |
-| 2 | `purple-server` to `purple-node` | Purple has one bounded workload, Kasm VM 122, & one SATA LVM-thin pool restricted to the old node name. | Migrate or back up VM 122; preserve or copy its disks; change `ssd-lvm2` from `nodes purple-server` to `nodes purple-node` only after the physical VG is present. [Galaxy storage inventory](../../Configuration/Storage/README.md) |
+| 2 | `purple-server` to `purple-node` | Purple has one bounded workload, Kasm VM 122, & one SATA LVM-thin pool restricted to the old node name. | Migrate or back up VM 122; preserve or copy its disks; change `ssd-lvm2` from `nodes purple-server` to `nodes purple-node` only after the physical VG is present. [Galaxy storage inventory](../../../../../../Infrastructure/Compute/Galaxy/Configuration/Storage/README.md) |
 | 3 | `red-server` to `red-node` | Red has CT 842 plus a host SATA bind mount at `/data`. | Back up the CT root file system & the bind-mounted data with separate mechanisms. `vzdump` does not include bind-mount contents. [Proxmox VE Administration Guide 9.2.3, LXC Bind Mount Points, pp. 306-308](https://pve.proxmox.com/pve-docs/pve-admin-guide.pdf#page=329) |
-| 4 | `blue-server` to `blue-node` | Blue carries monitor-01 plus CT 107 & CT 108. The latter two use node-local `local-lvm` & a strict node-affinity rule named `pin-blue-local-storage`. | Take restorable backups, remove the two services from HA without stopping them, migrate them through controlled downtime, then recreate the rule against `blue-node` only after their disks return to Blue. The 2026-07-20 incident proves their configs can't be placed on a node without the matching local volumes. [HA local-storage incident](../Troubleshooting/HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md) |
+| 4 | `blue-server` to `blue-node` | Blue carries monitor-01 plus CT 107 & CT 108. The latter two use node-local `local-lvm` & a strict node-affinity rule named `pin-blue-local-storage`. | Take restorable backups, remove the two services from HA without stopping them, migrate them through controlled downtime, then recreate the rule against `blue-node` only after their disks return to Blue. The 2026-07-20 incident proves their configs can't be placed on a node without the matching local volumes. [HA local-storage incident](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md) |
 | 5 | `grey-server` to `grey-node` | Grey carries the largest guest set, multiple node-local storage pools, NUT service, & the Ansible/PXE LXC. Grey's AMD CPU also differs from the four Intel nodes. | Move every guest & node service first. Use offline VM migration or backup/restore between AMD & Intel, because Proxmox supports online VM migration only between CPUs from the same vendor. [Proxmox VE Administration Guide 9.2.3, Cluster Requirements, p. 110](https://pve.proxmox.com/pve-docs/pve-admin-guide.pdf#page=133) |
 
 Green must return as a five-node member before Purple starts. The same rule applies at every later boundary.

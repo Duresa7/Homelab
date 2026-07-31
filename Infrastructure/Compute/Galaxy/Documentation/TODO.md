@@ -26,10 +26,10 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 - [x] Change Bane port 4 from `Server-Provision` to `Proxmox-Trunk` after MGMT-A reachability and cluster membership passed.
 - [x] Apply the guarded subscription-popup script to all five nodes and add the same action to Galaxy PXE first boot.
 - [x] Add Green to the Prometheus `node` job. All 49 targets and all 65 Grafana query assertions passed.
-- [ ] Capture Blue's completed extended SATA SMART result, reconcile its final blank-disk state, and roll the complete five-node hardware inventory forward. Green's extended test failed with a read error, and I retained that result before wiping its unused SATA metadata.
+- [x] Capture Blue's completed extended SATA SMART result, reconcile its final blank-disk state, and roll the complete five-node hardware inventory forward. Blue's WDC passed at 23,215 power-on hours with all four critical counters at 0. Green's extended test failed with a read error, and I retained that result before wiping its unused SATA metadata.
 - [x] Remove the stale deployment backups and bytecode caches from `ansible-01` after the reusable service passed all 21 tests. The legacy cluster-password file was already absent, and I retained the service, installer cache, assets, registry, state, and join-key machinery.
 - [ ] Remove Green's one-use first-boot script, log, and join-only SSH configuration after the retained evidence and reboot checks are complete.
-- [ ] Follow the [rolling replacement plan](Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) to replace `green-server`, `purple-server`, `red-server`, `blue-server`, and `grey-server` with fresh `*-node` cluster members one at a time. Green is the guest-free pilot; Grey is last.
+- [x] Decide the `*-server` to `*-node` rename. I cancelled it on 2026-07-31 and kept the current names. The [archived plan](../../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) records why: no shared storage means four of five nodes would need a backup and restore cycle to change a string.
 
 ## `ai-bravo-02` Deletion Scheduled
 

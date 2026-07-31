@@ -11,7 +11,6 @@ None.
 
 ## Active Priorities
 
-- [ ] Run the `*-server` to `*-node` naming migration through the [rolling replacement plan](Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md), starting with the guest-free [Green pilot](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md). Clustered Proxmox node names can't be edited in place, so each node is a `pvecm delnode` plus a fresh PXE install. The preflight passed and execution has not started; this is the one remaining item from the five-node expansion.
 - [ ] Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). I completed the storage recovery, controlled Parrot installation, Parrot Full/Normal/VPN, Debian Malware, manual capacity gate, automatic-pull control, and `baseline-parrot-2026-07-30`. Kasm returns HTTP `200`; the alert is the only open item.
 
 ## Scheduled
@@ -24,7 +23,7 @@ None.
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Run the Green-first rolling node replacement for the `*-node` rename; delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on Blue |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Clear Green's one-use first-boot residue; delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on Blue |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Kasm Workspaces](Platforms/Kasm%20Workspaces/Documentation/TODO.md) | Add an automated warning below the 80 percent thin-pool hard stop; recovery, Parrot, Debian Malware, update control, capacity gate, and replacement baseline are complete |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |

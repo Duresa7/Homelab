@@ -3,10 +3,16 @@
 **Created:** 2026-07-31  
 **Last updated:** 2026-07-31
 
-**Implementation date:** 2026-07-31  
-**Status:** Prepared; execution not started  
-**Replacement:** `green-server` to `green-node`  
+**Implementation date:** Not implemented  
+**Status:** Cancelled 2026-07-31; archived unexecuted  
+**Replacement:** `green-server` to `green-node`, abandoned  
 **Parent plan:** [Galaxy Cluster Node Rename Rolling Replacement Plan](../Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md)
+
+## Cancellation
+
+I cancelled the rename on 2026-07-31 and kept `green-server`. Only step 2 of the sequence below ever ran: I changed the PXE machine registry to `green-node`, ran the 21 tests, and deployed. I reverted that same day, so `/etc/galaxy-pxe/machines.json` reads `green-server` again with `nvme0n1` as the only install disk, both services are active, and `/health` returns `ok`. Green never rebooted, never left the cluster, and its PXE state file still holds the original `complete` record for attempt `60d0f991` with `fqdn: green-server.galaxy`.
+
+Bane port 4 stayed on `Proxmox-Trunk` the whole time, so step 3 never happened and no switch configuration changed. The starting state below is a read-only preflight and remains an accurate 2026-07-31 snapshot of Green.
 
 ## Scope
 
@@ -45,4 +51,4 @@ After `pvecm delnode`, I will keep workloads away from the replacement until fiv
 
 ## Result
 
-Execution has not started. The read-only preflight passed, and the old member remains online and unchanged.
+Cancelled. The read-only preflight passed, the PXE registry edit was reverted, and `green-server` remains online at node ID 5 with both Corosync links and zero guests. Galaxy reports five expected votes, five total votes, and `Quorate`.

@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-07-31
 
 I keep retired records under their original category so the old owner & date remain obvious. Current records stay with their owner; this directory isn't a holding area for files that lack a clear location.
 
@@ -22,6 +22,12 @@ I keep retired records under their original category so the old owner & date rem
 | UniFi zone and object consolidation plan | [Zone and Object Consolidation - 2026-07-27](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
 | 61-policy pre-consolidation inventory | [Current firewall inventory](../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) |
 | Galaxy VM inventory before the Active Directory retirement | [Pre-decommission VM snapshot](Operations/Inventory/Galaxy/VMs%20-%20Pre-AD-Decommission%20-%202026-07-27.md) |
+
+## Cancelled Plans
+
+| Record | Why it stopped |
+|---|---|
+| [Galaxy cluster node rename](Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) & its [Green pilot](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md) | I cancelled the `*-server` to `*-node` rename on 2026-07-31 and kept the current names. Clustered Proxmox node names can't be edited in place, and Galaxy has no shared storage, so four of five nodes would have needed a backup and restore cycle. The [preflight evidence](Infrastructure/Compute/Galaxy/Evidence/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31/Evidence-Index.md) is a valid 2026-07-31 snapshot of Green |
 
 ## Superseded Automation Copies
 

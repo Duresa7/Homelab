@@ -76,7 +76,7 @@ For Prometheus, I can copy `/home/dkadi/monitoring/prometheus.yml.bak.20260731T1
 
 ## Remaining Work
 
-One item. Green still runs the installer kernel `7.0.2-6-pve` with `7.0.14-8-pve` installed, so it needs a reboot followed by a check of the kernel, quorum, both Corosync links, monitoring, and the popup patch. I am holding that reboot until the `*-node` rename decision, because the [Green rolling replacement](Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md) reinstalls the node and would make the reboot redundant.
+One item. Green still runs the installer kernel `7.0.2-6-pve` with `7.0.14-8-pve` installed, so it needs a reboot followed by a check of the kernel, quorum, both Corosync links, monitoring, and the popup patch. I held that reboot while the `*-node` rename was still open, since a reinstall would have made it redundant. I cancelled the rename on 2026-07-31, so nothing blocks the reboot now.
 
 Both extended SMART results are captured, Green's SATA metadata is wiped, and the hardware and inventory records carry both nodes' final memory and drive state. The [hardware change record](../../../../Hardware/Documentation/Change%20Records/Galaxy%20Green%20and%20Blue%20Hardware%20Changes%20-%202026-07-31.md) closes that side of the work.
 
