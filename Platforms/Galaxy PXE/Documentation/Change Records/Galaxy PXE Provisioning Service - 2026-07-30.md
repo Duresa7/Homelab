@@ -185,6 +185,12 @@ I replaced the Green-only source on policy `6a6c36cc85e3cf84d3d71363` with exist
 
 The update preview showed only the source selector changing from the Green address to the existing group. After applying it, UniFi read back `matching_target_type: OBJECT` and the expected group ID. Grey and Green each received `ok` from the PXE `/health` endpoint. The provisioning rule still uses the `Server-Provision` network object, so no duplicate address group or firewall policy was required. [S06](../../Evidence/Galaxy%20PXE%20Repair%20-%202026-07-31/Logs/S06%20Firewall%20Group%20Consolidation%20-%202026-07-31.md) records the change and verification.
 
+## Step 12: Remove Superseded Deployment Residue
+
+I checked the exact cleanup candidates on `ansible-01` after the repaired deployment reached an idempotent result. The legacy `/etc/galaxy-pxe/cluster-password` file was already absent. The only remaining text reference to that filename was a negative regression assertion that rejects the retired command-line option.
+
+I removed three timestamped deployment backups, the source and deployed Python bytecode caches, and one abandoned Ansible temporary cache. I kept the PXE source, services, prepared installer assets, ISO and package caches, state database, join key, and TFTP loader. Both services remained active, `/health` returned `ok`, and all 21 remote tests passed with bytecode generation disabled. [S07](../../Evidence/Galaxy%20PXE%20Repair%20-%202026-07-31/Logs/S07%20Deployment%20Residue%20Cleanup%20-%202026-07-31.md) records the exact boundary and post-delete verification.
+
 ## Remaining Work
 
 The PXE deployment is complete. The separate Galaxy hardware and baseline work tracks the extended SMART tests, Green disk wipe, hardware inventory, monitoring target, subscription-popup automation, and the planned rolling node-name replacements.

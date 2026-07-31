@@ -14,5 +14,6 @@
 | S04 | [Final Live Verification](Logs/S04%20Final%20Live%20Verification%20-%202026-07-31.md) | The live services, disabled states, join key, both Corosync links, callback policy, disposable VM cleanup, and idempotent deployment passed. |
 | S05 | [Green Physical Rerun](Logs/S05%20Green%20Physical%20Rerun%20-%202026-07-31.md) | The original callback failure was identified, both callback paths were allowed, the M920q installed to NVMe, Green joined as the fifth node, both Corosync links passed, and Bane port 4 moved to `Proxmox-Trunk`. |
 | S06 | [Firewall Group Consolidation](Logs/S06%20Firewall%20Group%20Consolidation%20-%202026-07-31.md) | The post-cutover policy moved from a Green-only selector to `OBJ-Proxmox-Nodes`; UniFi read back the group reference and Grey and Green still reached the PXE health endpoint. |
+| S07 | [Deployment Residue Cleanup](Logs/S07%20Deployment%20Residue%20Cleanup%20-%202026-07-31.md) | Superseded backups and caches were removed after the live service and retained runtime paths passed verification. |
 
 I retained no passwords, private keys, public key bodies, or generated password hashes in these artifacts.
