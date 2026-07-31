@@ -15,7 +15,7 @@ Number of Namespaces:               1
 Namespace 1 Size/Capacity:          256,060,514,304 [256 GB]
 Namespace 1 Utilization:            55,344,574,464 [55.3 GB]
 Namespace 1 Formatted LBA Size:     512
-Namespace 1 IEEE EUI-64:            002538 8391bf518a
+Namespace 1 IEEE EUI-64: [redacted]
 Local Time is:                      Fri Jul 31 10:34:53 2026 EDT
 Firmware Updates (0x16):            3 Slots, no Reset required
 Optional Admin Commands (0x0017):   Security Format Frmw_DL Self_Test

@@ -1,7 +1,7 @@
 # Coolify Access Hardening
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-31
 
 ## Summary
 
@@ -16,10 +16,10 @@ I replaced the reusable `Webhook Bypass` policy that exposed the entire `coolify
 
 ## Verification
 
-- A request to `/login` redirected to `alphsec.cloudflareaccess.com`, so the dashboard is protected.
-- A request to `/wp-content` redirected to `alphsec.cloudflareaccess.com`, so a common scanner path doesn't reach Coolify.
+- A request to `/login` redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`, so the dashboard is protected.
+- A request to `/wp-content` redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`, so a common scanner path doesn't reach Coolify.
 - A request to the exact `/webhooks/source/github/events` path reached Coolify and returned its own redirect to `/login`, so Cloudflare didn't challenge the webhook endpoint.
-- Requests to `/webhooks/source/github/events/`, `/webhooks/source/github/events/manual`, and an unmatched child path redirected to `alphsec.cloudflareaccess.com`.
+- Requests to `/webhooks/source/github/events/`, `/webhooks/source/github/events/manual`, and an unmatched child path redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`.
 - The Cloudflare API showed one allow policy on the root application, one bypass policy on the exact webhook application, and one allow policy on the wildcard child-path application.
 
 ## Rollback
