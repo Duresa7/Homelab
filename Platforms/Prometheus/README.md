@@ -1,9 +1,11 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-31
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 48 targets: `node_exporter` on 16 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 20 internal service names, both APC UPS units over NUT, and itself. The count reached 47 on 2026-07-28 when `kasm-01` gained an exporter, then 48 when I published its Kasm interface through NPM and added the HTTPS probe. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus scrapes 49 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 20 internal service names, both APC UPS units over NUT, and itself. The count reached 49 on 2026-07-31 when Green joined Galaxy and entered the node job. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+
+The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation.
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -39,9 +41,9 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 
 | Job | Targets |
 |---|---|
-| `node` | grey-server, purple-server, blue-server, red-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, kasm-01 |
+| `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, kasm-01 |
 | `cadvisor` | all 8 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01 |
-| `proxmox` | PVE API exporter, covering all 22 guests and 10 storages |
+| `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 20 service names published through NPM |
 | `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
 | `prometheus` | self-scrape |

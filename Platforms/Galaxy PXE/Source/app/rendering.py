@@ -214,6 +214,26 @@ apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
 DEBIAN_FRONTEND=noninteractive apt-get install -y prometheus-node-exporter
 
+popup_file=/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+popup_stock="res.data.status.toLowerCase() !== 'active'"
+popup_patched="res.data.status.toLowerCase() == 'NoMoreNagging'"
+popup_stock_count="$(grep -Fc "${popup_stock}" "${popup_file}" || true)"
+popup_patched_count="$(grep -Fc "${popup_patched}" "${popup_file}" || true)"
+popup_changed=0
+if [ "${popup_patched_count}" -eq 2 ] && [ "${popup_stock_count}" -eq 0 ]; then
+    :
+elif [ "${popup_stock_count}" -eq 2 ] && [ "${popup_patched_count}" -eq 0 ]; then
+    sed -i "s/${popup_stock}/${popup_patched}/g" "${popup_file}"
+    popup_changed=1
+else
+    fail "popup_source_unexpected" \
+        "The installed proxmox-widget-toolkit has an unsupported subscription-check layout."
+fi
+test "$(grep -Fc "${popup_patched}" "${popup_file}" || true)" -eq 2
+if [ "${popup_changed}" -eq 1 ]; then
+    systemctl restart pveproxy
+fi
+
 cat > /etc/ssh/sshd_config.d/99-galaxy-proxmox.conf <<'EOF'
 PermitRootLogin prohibit-password
 PubkeyAuthentication yes

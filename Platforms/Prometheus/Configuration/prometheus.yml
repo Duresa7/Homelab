@@ -35,6 +35,8 @@ scrape_configs:
         labels: {host: blue-server, role: hypervisor}
       - targets: ["192.168.70.13:9100"]
         labels: {host: red-server, role: hypervisor}
+      - targets: ["192.168.70.14:9100"]
+        labels: {host: green-server, role: hypervisor}
       - targets: ["192.168.72.2:9100"]
         labels: {host: security-01, role: security}
       - targets: ["192.168.72.3:9100"]

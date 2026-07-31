@@ -21,11 +21,12 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 16 hosts
+    # node_exporter, 17 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
     "http://192.168.70.13:9100/metrics": ("node", "red-server"),
+    "http://192.168.70.14:9100/metrics": ("node", "green-server"),
     "http://192.168.72.2:9100/metrics": ("node", "security-01"),
     "http://192.168.72.3:9100/metrics": ("node", "splunk-siem"),
     "http://192.168.90.10:9100/metrics": ("node", "edge-01"),
@@ -64,7 +65,7 @@ EXPECTED_TARGETS = {
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 
-# The 19 internal service names probed through NPM. Host label is absent; the
+# The 20 internal service names probed through NPM. Host label is absent; the
 # instance label carries the probed URL.
 EXPECTED_BLACKBOX_SERVICES = {
     "jellyfin",
@@ -76,6 +77,7 @@ EXPECTED_BLACKBOX_SERVICES = {
     "semaphore",
     "immich",
     "booklore",
+    "kasm",
     "dashboard",
     "forgejo",
     "portainer",

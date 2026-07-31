@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-07-31
 
 ## Health Check
 
@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 46 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 49 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 

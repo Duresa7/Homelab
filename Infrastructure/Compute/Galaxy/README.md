@@ -1,9 +1,9 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-07-31
 
-Galaxy is my four-node Proxmox VE 9.2.2 cluster. This directory owns its bridge configuration, two-link Corosync setup, storage references, Datacenter firewall, change records, & troubleshooting history.
+Galaxy is my five-node Proxmox VE 9.2.5 cluster. This directory owns its bridge configuration, two-link Corosync setup, storage references, Datacenter firewall, change records, & troubleshooting history.
 
 ## Records
 
@@ -11,6 +11,7 @@ Galaxy is my four-node Proxmox VE 9.2.2 cluster. This directory owns its bridge 
 - [Change records](Documentation/Change%20Records/)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Galaxy TODO](Documentation/TODO.md)
+- [Green baseline and monitoring change](Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md)
 - [Proxmox Datacenter firewall](Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md)
 - [Current inventory](../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md)
 - [Hardware inventory](../../Hardware/Nodes.md)
