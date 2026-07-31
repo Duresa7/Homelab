@@ -70,9 +70,11 @@ Then I proved it fires rather than just existing. I reinstalled `proxmox-widget-
 
 ## Rollback
 
-For the popup change, I can remove `/etc/apt/apt.conf.d/99-galaxy-no-subscription-nag` and then reinstall `proxmox-widget-toolkit` to restore its stock JavaScript and restart `pveproxy`. Reinstalling without removing the hook first will simply re-patch the file, which S04 demonstrates. Grey's previous hook is recoverable at `/root/no-nag-script.superseded-2026-07-31`. The script refuses any source layout outside the exact stock or patched form.
+For the popup change, I can remove `/etc/apt/apt.conf.d/99-galaxy-no-subscription-nag` and then reinstall `proxmox-widget-toolkit` to restore its stock JavaScript and restart `pveproxy`. Reinstalling without removing the hook first will simply re-patch the file, which S04 demonstrates. The script refuses any source layout outside the exact stock or patched form.
 
 For Prometheus, I can copy `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` over the live file, restart the `prometheus` container, and rerun both assertions. The retained backup is the 48-target pre-Green state.
+
+Both of those host-side rollback files are gone as of later the same day. The [artifact cleanup](../../../../../Operations/Maintenance/Galaxy%20Artifact%20Cleanup%20and%20Green%20SSH%20Parity%20-%202026-07-31.md) removed the Prometheus backup, because cancelling the node rename made Green permanent and a config without it pointless, and removed Grey's superseded hook after preserving its text in that record. The two paragraphs above stay as written since they were accurate when I wrote them; the cleanup record is the newer fact.
 
 ## Remaining Work
 
