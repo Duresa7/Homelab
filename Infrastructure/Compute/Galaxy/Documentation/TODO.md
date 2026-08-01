@@ -35,13 +35,13 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 
 ## `grey-server` Identity and Leftover Cleanup
 
-**Status:** FQDN corrected 2026-08-01; certificate and agent leftovers still open  
+**Status:** Complete 2026-08-01. FQDN, search domain, certificate CN, kernels, & agent leftovers all resolved  
 **Change record:** [Galaxy Cluster PVE 9.2.6 Upgrade and SSH Host Key Seeding](Change%20Records/Galaxy%20Cluster%20PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md)
 
 - [x] Make Grey's FQDN match the other four. Its `/etc/hosts` line now reads `192.168.70.10 grey-server.galaxy grey-server grey-server.local`, so `hostname -f` returns `grey-server.galaxy`. The short hostname is unchanged, so pmxcfs and Corosync identity are untouched. All 20 SSH pairs still verify and every node resolves all five `.galaxy` names.
 - [x] Trim Grey's accumulated kernels. `apt-get autoremove` cleared `proxmox-kernel-6.17.13-19-pve-signed` & `proxmox-kernel-7.0.2-6-pve-signed`, leaving five installed and nothing further autoremovable. `/boot` is 94 GB at 37 percent, so this was tidiness rather than pressure.
-- [ ] Regenerate Grey's TLS certificate. Its CN is `grey-server.Grey`, a search domain from before the machine was renamed, while the other four carry `<node>.galaxy`. Grey created the cluster instead of joining it, so nothing ever reissued it. Run `pvecm updatecerts --force` on Grey then `systemctl restart pveproxy`, which briefly drops the web interface. The plain `pvecm updatecerts` is a no-op here and leaves the certificate as it is. The `/etc/hosts` fix above means the forced run will now produce `grey-server.galaxy`.
-- [ ] Remove `/root/.claude`, `/root/.claude.json`, & `/root/.codex` from Grey, 282 MB in total. Nothing references them: no cron entry, no systemd unit, no running process, and the newest file in either tree dates to 2026-06-11. Grey is the only node carrying them; the other four and `ansible-01` are clean.
+- [x] Regenerate Grey's TLS certificate. Its CN was `grey-server.Grey` against `<node>.galaxy` on the other four. The `/etc/hosts` fix did not change it: Proxmox builds the CN from the search domain in `/etc/resolv.conf`, and Grey's read `search Grey`. I set it with `pvesh set /nodes/grey-server/dns --search galaxy --dns1 192.168.70.1`, passing the existing nameserver so the call wouldn't drop it, then ran `pvecm updatecerts --force` and restarted `pveproxy`. The CN is now `grey-server.galaxy` with matching SANs, all five nodes agree, and a cross-node API call between members succeeds. Both forced runs left the seeded `known_hosts` file at 15 lines.
+- [x] Remove `/root/.claude`, `/root/.claude.json`, & `/root/.codex` from Grey, 282 MB in total. Nothing referenced them: no cron entry, no systemd unit, no running process, and the newest file in either tree dated to 2026-06-11. Grey was the only node carrying them; the other four and `ansible-01` were already clean. Done 2026-08-01.
 
 ## `ai-bravo-02` Deletion Scheduled
 
