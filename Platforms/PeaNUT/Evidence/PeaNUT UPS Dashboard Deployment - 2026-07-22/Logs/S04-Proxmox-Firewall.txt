@@ -1,0 +1,277 @@
+Script started on 2026-07-22 08:16:05-04:00 [COMMAND="set -eu; test -f /root/cluster.fw.bak.peanut-20260722; grep -q 'PeaNUT to Grey NUT' /etc/pve/firewall/cluster.fw && exit 0; awk '{ print; if ($0 ~ /security-01 Prometheus node_exporter/) { print "IN ACCEPT -source 192.168.40.35 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # PeaNUT to Grey NUT"; print "IN ACCEPT -source 192.168.40.35 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # PeaNUT to Red NUT" } }' /etc/pve/firewall/cluster.fw > /root/cluster.fw.peanut.candidate; grep -q 'PeaNUT to Grey NUT' /root/cluster.fw.peanut.candidate; grep -q 'PeaNUT to Red NUT' /root/cluster.fw.peanut.candidate; cp /root/cluster.fw.peanut.candidate /etc/pve/firewall/cluster.fw; if ! pve-firewall compile; then cp /root/cluster.fw.bak.peanut-20260722 /etc/pve/firewall/cluster.fw; pve-firewall compile; exit 1; fi; pve-firewall status; grep 'PeaNUT to .* NUT' /etc/pve/firewall/cluster.fw; rm -f -- /root/cluster.fw.peanut.candidate" <not executed on terminal>]
+ipset cmdlist:
+exists PVEFW-0-management-v4 (/caA8T1SqnaKurTMPXMGx0hwM80)
+	create PVEFW-0-management-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-management-v4 192.168.70.0/24
+exists PVEFW-0-management-v6 (6g+lzHFoCegXcweHRfBY4vRsbOc)
+	create PVEFW-0-management-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+exists PVEFW-0-pve_admins-v4 (Bh8qbeMtC9QVB3HHc82xMuGT+QU)
+	create PVEFW-0-pve_admins-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-pve_admins-v4 192.168.10.27
+	add PVEFW-0-pve_admins-v4 192.168.50.241
+exists PVEFW-0-pve_admins-v6 (Kf8O4EFj4UjIPXEfLZ8uQ1tkkFo)
+	create PVEFW-0-pve_admins-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+exists PVEFW-0-pve_automation-v4 (ObRGtJ720dsh+nyRIsz0H20WIlQ)
+	create PVEFW-0-pve_automation-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-pve_automation-v4 192.168.40.36
+exists PVEFW-0-pve_automation-v6 (jrm4Hr5nCpSDbVpV6DkkB7KCHBg)
+	create PVEFW-0-pve_automation-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+exists PVEFW-0-pve_cluster-v4 (jBySLeGsMsYD1ItPwrr2Th34xzg)
+	create PVEFW-0-pve_cluster-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-pve_cluster-v4 192.168.70.10
+	add PVEFW-0-pve_cluster-v4 192.168.70.11
+	add PVEFW-0-pve_cluster-v4 192.168.70.12
+	add PVEFW-0-pve_cluster-v4 192.168.70.13
+exists PVEFW-0-pve_cluster-v6 (pGJeDw9Nh8pVco0TzjqSLtv6Kl4)
+	create PVEFW-0-pve_cluster-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+exists PVEFW-0-pve_svc_clients-v4 (FstsDAsSnReVlMm+ivO6maMiiFA)
+	create PVEFW-0-pve_svc_clients-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-pve_svc_clients-v4 192.168.40.35
+	add PVEFW-0-pve_svc_clients-v4 192.168.72.2
+exists PVEFW-0-pve_svc_clients-v6 (ENCvEVFu9H/Pp16+37fsHLto0SA)
+	create PVEFW-0-pve_svc_clients-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+exists PVEFW-0-pve_termix-v4 (XoQf116uJO4jdR1+HxtpDJVA8Bk)
+	create PVEFW-0-pve_termix-v4 hash:net family inet hashsize 64 maxelem 64 bucketsize 12
+	add PVEFW-0-pve_termix-v4 192.168.40.35
+exists PVEFW-0-pve_termix-v6 (dC1cp6aS63vRV9hhtVx8ol+sodk)
+	create PVEFW-0-pve_termix-v6 hash:net family inet6 hashsize 64 maxelem 64 bucketsize 12
+
+iptables cmdlist:
+update GROUP-pve_mgmt-IN (SAIHenka3qqXW7OkXfVdGcttRqI)
+	-A GROUP-pve_mgmt-IN -j MARK --set-mark 0x00000000/0x80000000
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_termix-v4 src -p tcp --dport 22 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_cluster-v4 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_admins-v4 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_automation-v4 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_svc_clients-v4 src -p tcp --dport 8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -s 192.168.72.2 -p tcp --dport 9100 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -s 192.168.40.35 -d 192.168.70.10 -p tcp --dport 3493 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -s 192.168.40.35 -d 192.168.70.13 -p tcp --dport 3493 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -s 10.6.0.0/24 -d 192.168.70.0/24 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -s 10.6.0.0/24 -d 192.168.80.0/24 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -p tcp --dport 22 -j DROP
+	-A GROUP-pve_mgmt-IN -p tcp --dport 8006 -j DROP
+exists GROUP-pve_mgmt-OUT (c688uQ6dW/rWeuRQT0rV4JEbywY)
+	-A GROUP-pve_mgmt-OUT -j MARK --set-mark 0x00000000/0x80000000
+exists PVEFW-Drop (83WlR/a4wLbmURFqMQT3uJSgIG8)
+	-A PVEFW-Drop  -j PVEFW-DropBroadcast
+	-A PVEFW-Drop -p icmp -m icmp --icmp-type fragmentation-needed -j ACCEPT
+	-A PVEFW-Drop -p icmp -m icmp --icmp-type time-exceeded -j ACCEPT
+	-A PVEFW-Drop -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-Drop -p udp --match multiport --dports 135,445 -j DROP
+	-A PVEFW-Drop -p udp --dport 137:139 -j DROP
+	-A PVEFW-Drop -p udp --sport 137 --dport 1024:65535 -j DROP
+	-A PVEFW-Drop -p tcp --match multiport --dports 135,139,445 -j DROP
+	-A PVEFW-Drop -p udp --dport 1900 -j DROP
+	-A PVEFW-Drop -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -j DROP
+	-A PVEFW-Drop -p udp --sport 53 -j DROP
+exists PVEFW-DropBroadcast (NyjHNAtFbkH7WGLamPpdVnxHy4w)
+	-A PVEFW-DropBroadcast -m addrtype --dst-type BROADCAST -j DROP
+	-A PVEFW-DropBroadcast -m addrtype --dst-type MULTICAST -j DROP
+	-A PVEFW-DropBroadcast -m addrtype --dst-type ANYCAST -j DROP
+	-A PVEFW-DropBroadcast -d 224.0.0.0/4 -j DROP
+exists PVEFW-FORWARD (qnNexOcGa+y+jebd4dAUqFSp5nw)
+	-A PVEFW-FORWARD -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-FORWARD -m physdev --physdev-is-bridged --physdev-in fwln+ -j PVEFW-FWBR-IN
+	-A PVEFW-FORWARD -m physdev --physdev-is-bridged --physdev-out fwln+ -j PVEFW-FWBR-OUT
+exists PVEFW-FWBR-IN (Ijl7/xz0DD7LF91MlLCz0ybZBE0)
+	-A PVEFW-FWBR-IN -m conntrack --ctstate INVALID,NEW -j PVEFW-smurfs
+exists PVEFW-FWBR-OUT (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+exists PVEFW-HOST-IN (BBHSX8L97HkwWImlQR6ooz4mJPM)
+	-A PVEFW-HOST-IN -i lo -j ACCEPT
+	-A PVEFW-HOST-IN -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-HOST-IN -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-HOST-IN -m conntrack --ctstate INVALID,NEW -j PVEFW-smurfs
+	-A PVEFW-HOST-IN -p igmp -j RETURN
+	-A PVEFW-HOST-IN -j GROUP-pve_mgmt-IN
+	-A PVEFW-HOST-IN -m mark --mark 0x80000000/0x80000000 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v4 src -p tcp --dport 8006 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v4 src -p tcp --dport 5900:5999 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v4 src -p tcp --dport 3128 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v4 src -p tcp --dport 22 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v4 src -p tcp --dport 60000:60050 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.70.10 -s 192.168.70.12 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.71.10 -s 192.168.71.12 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.70.10 -s 192.168.70.11 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.71.10 -s 192.168.71.11 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.70.10 -s 192.168.70.13 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -d 192.168.71.10 -s 192.168.71.13 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-IN -j PVEFW-Drop
+	-A PVEFW-HOST-IN -j DROP
+exists PVEFW-HOST-OUT (DPHiPIZkqz71oP/vTX7B1QeEUt4)
+	-A PVEFW-HOST-OUT -o lo -j ACCEPT
+	-A PVEFW-HOST-OUT -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-HOST-OUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-HOST-OUT -p igmp -j RETURN
+	-A PVEFW-HOST-OUT -j GROUP-pve_mgmt-OUT
+	-A PVEFW-HOST-OUT -m mark --mark 0x80000000/0x80000000 -j RETURN
+	-A PVEFW-HOST-OUT -d 192.168.70.0/24 -p tcp --dport 8006 -j RETURN
+	-A PVEFW-HOST-OUT -d 192.168.70.0/24 -p tcp --dport 22 -j RETURN
+	-A PVEFW-HOST-OUT -d 192.168.70.0/24 -p tcp --dport 5900:5999 -j RETURN
+	-A PVEFW-HOST-OUT -d 192.168.70.0/24 -p tcp --dport 3128 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.70.10 -d 192.168.70.12 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.71.10 -d 192.168.71.12 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.70.10 -d 192.168.70.11 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.71.10 -d 192.168.71.11 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.70.10 -d 192.168.70.13 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT -s 192.168.71.10 -d 192.168.71.13 -p udp --dport 5404:5405 -j RETURN
+	-A PVEFW-HOST-OUT  -j RETURN
+exists PVEFW-INPUT (+5iMmLaxKXynOB/+5xibfx7WhFk)
+	-A PVEFW-INPUT -j PVEFW-HOST-IN
+exists PVEFW-OUTPUT (LjHoZeSSiWAG3+2ZAyL/xuEehd0)
+	-A PVEFW-OUTPUT -j PVEFW-HOST-OUT
+exists PVEFW-Reject (h3DyALVslgH5hutETfixGP08w7c)
+	-A PVEFW-Reject  -j PVEFW-DropBroadcast
+	-A PVEFW-Reject -p icmp -m icmp --icmp-type fragmentation-needed -j ACCEPT
+	-A PVEFW-Reject -p icmp -m icmp --icmp-type time-exceeded -j ACCEPT
+	-A PVEFW-Reject -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-Reject -p udp --match multiport --dports 135,445 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --dport 137:139 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --sport 137 --dport 1024:65535 -j PVEFW-reject
+	-A PVEFW-Reject -p tcp --match multiport --dports 135,139,445 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --dport 1900 -j DROP
+	-A PVEFW-Reject -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -j DROP
+	-A PVEFW-Reject -p udp --sport 53 -j DROP
+exists PVEFW-SET-ACCEPT-MARK (Hg/OIgIwJChBUcWU8Xnjhdd2jUY)
+	-A PVEFW-SET-ACCEPT-MARK  -j MARK --set-mark 0x80000000/0x80000000
+exists PVEFW-logflags (MN4PH1oPZeABMuWr64RrygPfW7A)
+	-A PVEFW-logflags  -j DROP
+exists PVEFW-reject (Jlkrtle1mDdtxDeI9QaDSL++Npc)
+	-A PVEFW-reject -m addrtype --dst-type BROADCAST -j DROP
+	-A PVEFW-reject -s 224.0.0.0/4 -j DROP
+	-A PVEFW-reject -p icmp -j DROP
+	-A PVEFW-reject -p tcp -j REJECT --reject-with tcp-reset
+	-A PVEFW-reject -p udp -j REJECT --reject-with icmp-port-unreachable
+	-A PVEFW-reject -p icmp -j REJECT --reject-with icmp-host-unreachable
+	-A PVEFW-reject  -j REJECT --reject-with icmp-host-prohibited
+exists PVEFW-smurflog (2gfT1VMkfr0JL6OccRXTGXo+1qk)
+	-A PVEFW-smurflog  -j DROP
+exists PVEFW-smurfs (HssVe5QCBXd5mc9kC88749+7fag)
+	-A PVEFW-smurfs -s 0.0.0.0/32 -j RETURN
+	-A PVEFW-smurfs -m addrtype --src-type BROADCAST -g PVEFW-smurflog
+	-A PVEFW-smurfs -s 224.0.0.0/4 -g PVEFW-smurflog
+exists PVEFW-tcpflags (CMFojwNPqllyqD67NeI5m+bP5mo)
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --sport 0 --tcp-flags FIN,SYN,RST,ACK SYN -g PVEFW-logflags
+
+ip6tables cmdlist:
+exists GROUP-pve_mgmt-IN (a46g7ELlnF0Xr9ndQdsm2Vwmn7A)
+	-A GROUP-pve_mgmt-IN -j MARK --set-mark 0x00000000/0x80000000
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_termix-v6 src -p tcp --dport 22 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_cluster-v6 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_admins-v6 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_automation-v6 src -p tcp --match multiport --dports 22,8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -m set --match-set PVEFW-0-pve_svc_clients-v6 src -p tcp --dport 8006 -g PVEFW-SET-ACCEPT-MARK
+	-A GROUP-pve_mgmt-IN -p tcp --dport 22 -j DROP
+	-A GROUP-pve_mgmt-IN -p tcp --dport 8006 -j DROP
+exists GROUP-pve_mgmt-OUT (c688uQ6dW/rWeuRQT0rV4JEbywY)
+	-A GROUP-pve_mgmt-OUT -j MARK --set-mark 0x00000000/0x80000000
+exists PVEFW-Drop (Jb79Uw7z1vZglIcV7QXA5uY/nbk)
+	-A PVEFW-Drop -p tcp --dport 43 -j PVEFW-reject
+	-A PVEFW-Drop  -j PVEFW-DropBroadcast
+	-A PVEFW-Drop -p icmpv6 -m icmpv6 --icmpv6-type destination-unreachable -j ACCEPT
+	-A PVEFW-Drop -p icmpv6 -m icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+	-A PVEFW-Drop -p icmpv6 -m icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+	-A PVEFW-Drop -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-Drop -p udp --match multiport --dports 135,445 -j DROP
+	-A PVEFW-Drop -p udp --dport 137:139 -j DROP
+	-A PVEFW-Drop -p udp --sport 137 --dport 1024:65535 -j DROP
+	-A PVEFW-Drop -p tcp --match multiport --dports 135,139,445 -j DROP
+	-A PVEFW-Drop -p udp --dport 1900 -j DROP
+	-A PVEFW-Drop -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -j DROP
+	-A PVEFW-Drop -p udp --sport 53 -j DROP
+exists PVEFW-DropBroadcast (8Krk5Nh8pDZOOc7BQAbM6PlyFSU)
+	-A PVEFW-DropBroadcast -d ff00::/8 -j DROP
+exists PVEFW-FORWARD (qnNexOcGa+y+jebd4dAUqFSp5nw)
+	-A PVEFW-FORWARD -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-FORWARD -m physdev --physdev-is-bridged --physdev-in fwln+ -j PVEFW-FWBR-IN
+	-A PVEFW-FORWARD -m physdev --physdev-is-bridged --physdev-out fwln+ -j PVEFW-FWBR-OUT
+exists PVEFW-FWBR-IN (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+exists PVEFW-FWBR-OUT (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+exists PVEFW-HOST-IN (Y2HQajkxiTGDlQgXYxK6nAEJ6OY)
+	-A PVEFW-HOST-IN -i lo -j ACCEPT
+	-A PVEFW-HOST-IN -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-HOST-IN -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-HOST-IN -p icmpv6 --icmpv6-type router-solicitation -j RETURN
+	-A PVEFW-HOST-IN -p icmpv6 --icmpv6-type router-advertisement -j RETURN
+	-A PVEFW-HOST-IN -p icmpv6 --icmpv6-type neighbor-solicitation -j RETURN
+	-A PVEFW-HOST-IN -p icmpv6 --icmpv6-type neighbor-advertisement -j RETURN
+	-A PVEFW-HOST-IN -p igmp -j RETURN
+	-A PVEFW-HOST-IN -j GROUP-pve_mgmt-IN
+	-A PVEFW-HOST-IN -m mark --mark 0x80000000/0x80000000 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v6 src -p tcp --dport 8006 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v6 src -p tcp --dport 5900:5999 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v6 src -p tcp --dport 3128 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v6 src -p tcp --dport 22 -j RETURN
+	-A PVEFW-HOST-IN -m set --match-set PVEFW-0-management-v6 src -p tcp --dport 60000:60050 -j RETURN
+	-A PVEFW-HOST-IN -j PVEFW-Drop
+	-A PVEFW-HOST-IN -j DROP
+exists PVEFW-HOST-OUT (yzwD8nKXrfwNZGrFLxWP5hjcaLc)
+	-A PVEFW-HOST-OUT -o lo -j ACCEPT
+	-A PVEFW-HOST-OUT -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-HOST-OUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+	-A PVEFW-HOST-OUT -p icmpv6 --icmpv6-type router-solicitation -j RETURN
+	-A PVEFW-HOST-OUT -p icmpv6 --icmpv6-type neighbor-solicitation -j RETURN
+	-A PVEFW-HOST-OUT -p icmpv6 --icmpv6-type neighbor-advertisement -j RETURN
+	-A PVEFW-HOST-OUT -p igmp -j RETURN
+	-A PVEFW-HOST-OUT -j GROUP-pve_mgmt-OUT
+	-A PVEFW-HOST-OUT -m mark --mark 0x80000000/0x80000000 -j RETURN
+	-A PVEFW-HOST-OUT  -j RETURN
+exists PVEFW-INPUT (+5iMmLaxKXynOB/+5xibfx7WhFk)
+	-A PVEFW-INPUT -j PVEFW-HOST-IN
+exists PVEFW-OUTPUT (LjHoZeSSiWAG3+2ZAyL/xuEehd0)
+	-A PVEFW-OUTPUT -j PVEFW-HOST-OUT
+exists PVEFW-Reject (aL1nrxJk/u3XmTb3Am2eaM/3yCM)
+	-A PVEFW-Reject -p tcp --dport 43 -j PVEFW-reject
+	-A PVEFW-Reject  -j PVEFW-DropBroadcast
+	-A PVEFW-Reject -p icmpv6 -m icmpv6 --icmpv6-type destination-unreachable -j ACCEPT
+	-A PVEFW-Reject -p icmpv6 -m icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+	-A PVEFW-Reject -p icmpv6 -m icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+	-A PVEFW-Reject -m conntrack --ctstate INVALID -j DROP
+	-A PVEFW-Reject -p udp --match multiport --dports 135,445 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --dport 137:139 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --sport 137 --dport 1024:65535 -j PVEFW-reject
+	-A PVEFW-Reject -p tcp --match multiport --dports 135,139,445 -j PVEFW-reject
+	-A PVEFW-Reject -p udp --dport 1900 -j DROP
+	-A PVEFW-Reject -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -j DROP
+	-A PVEFW-Reject -p udp --sport 53 -j DROP
+exists PVEFW-SET-ACCEPT-MARK (Hg/OIgIwJChBUcWU8Xnjhdd2jUY)
+	-A PVEFW-SET-ACCEPT-MARK  -j MARK --set-mark 0x80000000/0x80000000
+exists PVEFW-logflags (MN4PH1oPZeABMuWr64RrygPfW7A)
+	-A PVEFW-logflags  -j DROP
+exists PVEFW-reject (etEECUYcgUdzuuO+LDP83pu0S8Y)
+	-A PVEFW-reject -p icmpv6 -j DROP
+	-A PVEFW-reject -p tcp -j REJECT --reject-with tcp-reset
+	-A PVEFW-reject -p udp -j REJECT --reject-with icmp6-port-unreachable
+	-A PVEFW-reject  -j REJECT --reject-with icmp6-adm-prohibited
+exists PVEFW-tcpflags (CMFojwNPqllyqD67NeI5m+bP5mo)
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -g PVEFW-logflags
+	-A PVEFW-tcpflags -p tcp -m tcp --sport 0 --tcp-flags FIN,SYN,RST,ACK SYN -g PVEFW-logflags
+
+ebtables cmdlist:
+exists PVEFW-FORWARD (ULtZ6lqjrD/jAKLY+OZo3BbXs9k)
+	-A PVEFW-FORWARD -p IPv4 -j ACCEPT
+	-A PVEFW-FORWARD -p IPv6 -j ACCEPT
+	-A PVEFW-FORWARD -o fwln+ -j PVEFW-FWBR-OUT
+exists PVEFW-FWBR-OUT (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+ignore FORWARD (zuQi5YOvmMWiM9zohnQw/qWemOA)
+ignore INPUT (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+ignore OUTPUT (2jmj7l5rSw0yVb/vlWAYkK/YBwk)
+
+iptables table raw cmdlist:
+
+ip6tables table raw cmdlist:
+detected changes
+Status: enabled/running (pending changes)
+IN ACCEPT -source 192.168.40.35 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # PeaNUT to Grey NUT
+IN ACCEPT -source 192.168.40.35 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # PeaNUT to Red NUT
+
+Script done on 2026-07-22 08:16:06-04:00 [COMMAND_EXIT_CODE="0"]

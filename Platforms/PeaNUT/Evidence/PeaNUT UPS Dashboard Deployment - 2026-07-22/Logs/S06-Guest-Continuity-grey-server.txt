@@ -1,0 +1,21 @@
+Capture timestamp: 2026-07-22 08:36 EDT
+Target: grey-server
+Mechanism: SSH Manager ssh_execute
+Working directory: configured root default
+
+Exact command:
+threshold=$(( $(date +%s) - $(date -d '2026-07-22 08:10:00' +%s) )); pvesh get /cluster/resources --type vm --output-format json | python3 -c "import json,sys; node=sys.argv[1]; threshold=int(sys.argv[2]); rows=[x for x in json.load(sys.stdin) if x.get('node')==node and x.get('status')=='running']; print('deployment_elapsed_seconds='+str(threshold)); [print(f\"guest={x.get('vmid')} type={x.get('type')} status={x.get('status')} uptime={x.get('uptime',0)}\") for x in rows]; short=[x for x in rows if int(x.get('uptime',0))<threshold]; print('running_guests='+str(len(rows))); print('running_guests_started_after_deployment='+str(len(short))); sys.exit(1 if short else 0)" "$(hostname)" "$threshold"
+
+Standard output:
+deployment_elapsed_seconds=1574
+guest=100 type=lxc status=running uptime=144614
+guest=110 type=lxc status=running uptime=144614
+guest=116 type=qemu status=running uptime=144614
+guest=121 type=qemu status=running uptime=144611
+guest=200 type=qemu status=running uptime=122751
+guest=401 type=qemu status=running uptime=144608
+running_guests=6
+running_guests_started_after_deployment=0
+
+Standard error: empty
+Exit code: 0

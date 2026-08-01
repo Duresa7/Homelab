@@ -1,0 +1,20 @@
+Script started on 2026-07-22 08:32:51-04:00 [COMMAND="set -eu; echo host=$(hostname); dpkg-query -W nut-server; echo driver=$(systemctl is-active nut-driver@ups01.service); echo server=$(systemctl is-active nut-server.service); enabled=$(systemctl is-enabled nut-monitor.service 2>/dev/null || true); echo nut-monitor-enabled=$enabled; test "$enabled" = disabled; active=$(systemctl is-active nut-monitor.service 2>/dev/null || true); echo nut-monitor-active=$active; test "$active" = inactive; ss -lnt "sport = :3493"; upsc ups01@localhost | grep -E "^(device.model|ups.load|battery.charge|battery.runtime|input.voltage|ups.status):"; since=$(date -d "2026-07-22 08:10:00" +%s); guest_stops=$(pvesh get /nodes/$(hostname)/tasks --since "$since" --limit 500 --output-format yaml | grep -Ec "type: (qmstop|qmshutdown|qmdestroy|vzstop|vzshutdown|vzdestroy|stopall)" || true); echo guest-stop-tasks-since-deployment=$guest_stops; test "$guest_stops" = 0" <not executed on terminal>]
+host=red-server
+nut-server	2.8.1-5
+driver=active
+server=active
+nut-monitor-enabled=disabled
+nut-monitor-active=inactive
+State  Recv-Q Send-Q Local Address:Port Peer Address:Port
+LISTEN 0      16         127.0.0.1:3493      0.0.0.0:*   
+LISTEN 0      16     192.168.70.13:3493      0.0.0.0:*   
+Init SSL without certificate database
+battery.charge: 100
+battery.runtime: 675
+device.model: Back-UPS RS 1500MS2
+input.voltage: 122.0
+ups.load: 58
+ups.status: OL
+guest-stop-tasks-since-deployment=0
+
+Script done on 2026-07-22 08:32:52-04:00 [COMMAND_EXIT_CODE="0"]

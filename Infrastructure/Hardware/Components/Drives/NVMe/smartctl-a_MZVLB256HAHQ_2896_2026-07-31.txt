@@ -3,7 +3,7 @@ Copyright (C) 2002-25, Bruce Allen, Christian Franke, www.smartmontools.org
 
 === START OF INFORMATION SECTION ===
 Model Number:                       SAMSUNG MZVLB256HAHQ-000L7
-Serial Number:                       [redacted; suffix 2896]
+Serial Number:                      ****2896
 Firmware Version:                   1L2QEXD7
 PCI Vendor/Subsystem ID:            0x144d
 IEEE OUI Identifier:                0x002538

@@ -1,7 +1,7 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-01
 
 This backlog contains the scheduled CT 105 deletion, Purple storage correction, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
@@ -29,7 +29,8 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 - [x] Capture Blue's completed extended SATA SMART result, reconcile its final blank-disk state, and roll the complete five-node hardware inventory forward. Blue's WDC passed at 23,215 power-on hours with all four critical counters at 0. Green's extended test failed with a read error, and I retained that result before wiping its unused SATA metadata.
 - [x] Remove the stale deployment backups and bytecode caches from `ansible-01` after the reusable service passed all 21 tests. The legacy cluster-password file was already absent, and I retained the service, installer cache, assets, registry, state, and join-key machinery.
 - [x] Remove Green's one-use first-boot script, log, and join-only SSH configuration. All three are gone, and replacing the join-only SSH config with the fleet standard also closed two parity gaps: Green now carries the same cipher restriction as the other four, and Grey's hand-maintained `authorized_keys` now holds Green's cluster root key. See [Galaxy Artifact Cleanup and Green SSH Parity](../../../../Operations/Maintenance/Galaxy%20Artifact%20Cleanup%20and%20Green%20SSH%20Parity%20-%202026-07-31.md).
-- [ ] Decide what to do about the empty `/etc/pve/priv/known_hosts` and per-node `ssh_known_hosts` files. Ad-hoc root SSH between members fails host key verification in both directions on every pair, not just Green, and `pvecm updatecerts` did not repopulate them. Cluster operations are unaffected.
+- [x] Decide what to do about the empty `/etc/pve/priv/known_hosts` and per-node `ssh_known_hosts` files. I seeded them on 2026-08-01. There were three gaps, not one: the cluster store held a single line, the `/etc/ssh/ssh_known_hosts` symlink that reads it existed only on Grey, and every node's `/etc/hosts` carried nothing but its own entry. I wrote 15 key lines covering all five nodes under five name forms each, created the missing symlink on four nodes, and added peer host entries. All 20 ordered pairs verify by name and by IP under `StrictHostKeyChecking=yes`. See [Galaxy Cluster PVE 9.2.6 Upgrade and SSH Host Key Seeding](Change%20Records/Galaxy%20Cluster%20PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md).
+- [x] Reboot Green onto its installed kernel. Done 2026-08-01 as the first step of a five-node rolling upgrade. Green had been running the installer kernel `7.0.2-6-pve` with `7.0.14-8` unused on disk; all five nodes now run `7.0.14-8-pve` on `pve-manager/9.2.6` with nothing pending.
 - [x] Decide the `*-server` to `*-node` rename. I cancelled it on 2026-07-31 and kept the current names. The [archived plan](../../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) records why: no shared storage means four of five nodes would need a backup and restore cycle to change a string.
 
 ## `ai-bravo-02` Deletion Scheduled

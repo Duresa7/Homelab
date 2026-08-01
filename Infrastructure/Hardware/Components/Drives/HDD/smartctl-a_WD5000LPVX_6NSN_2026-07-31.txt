@@ -4,8 +4,8 @@ Copyright (C) 2002-25, Bruce Allen, Christian Franke, www.smartmontools.org
 === START OF INFORMATION SECTION ===
 Model Family:     Western Digital Blue Mobile
 Device Model:     WDC WD5000LPVX-08V0TT5
-Serial Number: <YOUR_DRIVE_SERIAL>
-LU WWN Device Id: <YOUR_DRIVE_WWN>
+Serial Number:    ****6NSN
+LU WWN Device Id: [redacted]
 Firmware Version: 05.01A05
 User Capacity:    500,107,862,016 bytes [500 GB]
 Sector Sizes:     512 bytes logical, 4096 bytes physical

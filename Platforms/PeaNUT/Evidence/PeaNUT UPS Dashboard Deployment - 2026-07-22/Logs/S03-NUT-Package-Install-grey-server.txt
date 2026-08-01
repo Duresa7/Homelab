@@ -1,0 +1,68 @@
+Script started on 2026-07-22 08:11:23-04:00 [COMMAND="apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y nut-server" <not executed on terminal>]
+0% [Working]            Hit:1 http://deb.debian.org/debian trixie InRelease
+0% [Connecting to download.proxmox.com (66.70.154.82)] [Waiting for headers]                                                                            Get:2 http://security.debian.org/debian-security trixie-security InRelease [43.4 kB]
+0% [Connecting to download.proxmox.com (66.70.154.82)] [Waiting for headers] [2                                                                               0% [Connecting to download.proxmox.com (66.70.154.82)] [Waiting for headers]                                                                            Get:3 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+0% [Connecting to download.proxmox.com (66.70.154.82)] [3 InRelease 39.1 kB/47.0% [Connecting to download.proxmox.com (66.70.154.82)] [3 InRelease 40.5 kB/47.                                                                               0% [Waiting for headers]0% [Waiting for headers]0% [Waiting for headers]                        Hit:4 http://download.proxmox.com/debian/ceph-squid trixie InRelease
+                        0% [Working]0% [Waiting for headers]                        Get:5 http://download.proxmox.com/debian/pve trixie InRelease [3,534 B]
+0% [5 InRelease 2,649 B/3,534 B 75%]                                    0% [Working]37% [Working]             Get:6 http://download.proxmox.com/debian/pve trixie/pve-no-subscription amd64 Packages [339 kB]
+39% [6 Packages 8,192 B/339 kB 2%]                                  100% [Working]100% [6 Packages store 0 B]                           100% [Working]              Fetched 433 kB in 0s (1,834 kB/s)
+Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 0%Reading package lists... 57%Reading package lists... 57%Reading package lists... 93%Reading package lists... 93%Reading package lists... 93%Reading package lists... 93%Reading package lists... 93%Reading package lists... 93%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 94%Reading package lists... 96%Reading package lists... 96%Reading package lists... 97%Reading package lists... 97%Reading package lists... 97%Reading package lists... 97%Reading package lists... 97%Reading package lists... 97%Reading package lists... 99%Reading package lists... 99%Reading package lists... Done
+Reading package lists... 0%Reading package lists... 100%Reading package lists... Done
+Building dependency tree... 0%Building dependency tree... 0%Building dependency tree... 50%Building dependency tree... 50%Building dependency tree... Done
+Reading state information... 0% Reading state information... 1%Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  proxmox-kernel-6.14.11-6-pve-signed proxmox-kernel-6.17.4-2-pve-signed
+Use 'apt autoremove' to remove them.
+The following additional packages will be installed:
+  libltdl7 libnutscan2 libupsclient6t64 nut-client
+Suggested packages:
+  nut-monitor nut-cgi nut-i2c nut-ipmi nut-modbus nut-snmp nut-xml
+The following NEW packages will be installed:
+  libltdl7 libnutscan2 libupsclient6t64 nut-client nut-server
+0 upgraded, 5 newly installed, 0 to remove and 99 not upgraded.
+Need to get 3,442 kB of archives.
+After this operation, 12.5 MB of additional disk space will be used.
+0% [Working]            Get:1 http://deb.debian.org/debian trixie/main amd64 libupsclient6t64 amd64 2.8.1-5 [446 kB]
+0% [1 libupsclient6t64 9,660 B/446 kB 2%]                                         14% [Working]             Get:2 http://deb.debian.org/debian trixie/main amd64 nut-client amd64 2.8.1-5 [541 kB]
+15% [2 nut-client 15.2 kB/541 kB 3%]                                    31% [Waiting for headers]                         Get:3 http://deb.debian.org/debian trixie/main amd64 libltdl7 amd64 2.5.4-4 [416 kB]
+31% [3 libltdl7 0 B/416 kB 0%]                              45% [Waiting for headers]                         Get:4 http://deb.debian.org/debian trixie/main amd64 libnutscan2 amd64 2.8.1-5 [497 kB]
+45% [4 libnutscan2 14.6 kB/497 kB 3%]                                     60% [Waiting for headers]                         Get:5 http://deb.debian.org/debian trixie/main amd64 nut-server amd64 2.8.1-5 [1,543 kB]
+60% [5 nut-server 0 B/1,543 kB 0%]                                  100% [Working]              Fetched 3,442 kB in 0s (30.9 MB/s)
+Selecting previously unselected package libupsclient6t64:amd64.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 191756 files and directories currently installed.)
+Preparing to unpack .../libupsclient6t64_2.8.1-5_amd64.deb ...
+Adding 'diversion of /lib/x86_64-linux-gnu/libupsclient.so.6 to /lib/x86_64-linux-gnu/libupsclient.so.6.usr-is-merged by libupsclient6t64'
+Adding 'diversion of /lib/x86_64-linux-gnu/libupsclient.so.6.0.1 to /lib/x86_64-linux-gnu/libupsclient.so.6.0.1.usr-is-merged by libupsclient6t64'
+Unpacking libupsclient6t64:amd64 (2.8.1-5) ...
+Selecting previously unselected package nut-client.
+Preparing to unpack .../nut-client_2.8.1-5_amd64.deb ...
+Unpacking nut-client (2.8.1-5) ...
+Selecting previously unselected package libltdl7:amd64.
+Preparing to unpack .../libltdl7_2.5.4-4_amd64.deb ...
+Unpacking libltdl7:amd64 (2.5.4-4) ...
+Selecting previously unselected package libnutscan2:amd64.
+Preparing to unpack .../libnutscan2_2.8.1-5_amd64.deb ...
+Unpacking libnutscan2:amd64 (2.8.1-5) ...
+Selecting previously unselected package nut-server.
+Preparing to unpack .../nut-server_2.8.1-5_amd64.deb ...
+Unpacking nut-server (2.8.1-5) ...
+Setting up libupsclient6t64:amd64 (2.8.1-5) ...
+Removing 'diversion of /lib/x86_64-linux-gnu/libupsclient.so.6 to /lib/x86_64-linux-gnu/libupsclient.so.6.usr-is-merged by libupsclient6t64'
+Removing 'diversion of /lib/x86_64-linux-gnu/libupsclient.so.6.0.1 to /lib/x86_64-linux-gnu/libupsclient.so.6.0.1.usr-is-merged by libupsclient6t64'
+Setting up nut-client (2.8.1-5) ...
+Created symlink '/etc/systemd/system/upsmon.service' → '/usr/lib/systemd/system/nut-monitor.service'.
+Created symlink '/etc/systemd/system/nut.target.wants/nut-monitor.service' → '/usr/lib/systemd/system/nut-monitor.service'.
+Created symlink '/etc/systemd/system/multi-user.target.wants/nut.target' → '/usr/lib/systemd/system/nut.target'.
+Setting up libltdl7:amd64 (2.5.4-4) ...
+Setting up libnutscan2:amd64 (2.8.1-5) ...
+Setting up nut-server (2.8.1-5) ...
+/usr/lib/tmpfiles.d/nut-server.conf:1: Duplicate line for path "/run/nut", ignoring.
+Created symlink '/etc/systemd/system/nut.target.wants/nut-driver-enumerator.path' → '/usr/lib/systemd/system/nut-driver-enumerator.path'.
+Created symlink '/etc/systemd/system/nut.target.wants/nut-driver-enumerator.service' → '/usr/lib/systemd/system/nut-driver-enumerator.service'.
+Created symlink '/etc/systemd/system/nut.target.wants/nut-driver.target' → '/usr/lib/systemd/system/nut-driver.target'.
+Created symlink '/etc/systemd/system/upsd.service' → '/usr/lib/systemd/system/nut-server.service'.
+Created symlink '/etc/systemd/system/nut.target.wants/nut-server.service' → '/usr/lib/systemd/system/nut-server.service'.
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u3) ...
+
+Script done on 2026-07-22 08:11:28-04:00 [COMMAND_EXIT_CODE="0"]

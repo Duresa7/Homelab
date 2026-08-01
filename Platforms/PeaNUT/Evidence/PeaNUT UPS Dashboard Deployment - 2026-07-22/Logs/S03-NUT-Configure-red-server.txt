@@ -1,0 +1,6 @@
+Script started on 2026-07-22 08:15:18-04:00 [COMMAND="set -eu; systemctl disable --now nut-monitor.service; udevadm control --reload-rules; udevadm trigger --subsystem-match=usb --action=change; udevadm settle; systemctl restart nut-driver-enumerator.service; sleep 3; systemctl restart nut-server.service; systemctl is-active nut-driver@ups01.service; systemctl is-active nut-server.service; systemctl is-enabled nut-monitor.service || true; ss -lntp 'sport = :3493'; upsc ups01@localhost | grep -E '^(device.model|ups.load|battery.charge|battery.runtime|input.voltage|output.voltage|ups.status):'" <not executed on terminal>]
+Removed '/etc/systemd/system/nut.target.wants/nut-monitor.service'.
+Removed '/etc/systemd/system/upsmon.service'.
+activating
+
+Script done on 2026-07-22 08:15:21-04:00 [COMMAND_EXIT_CODE="3"]

@@ -1,0 +1,58 @@
+Capture date: 2026-07-22
+Targets: red-server and grey-server
+Mechanism: SSH Manager structured tool responses
+Working directory: configured root default
+Note: This transcript was assembled from the exact requests and structured responses retained in the deployment session. No UPS serial or secret is included.
+
+1. Red file deployment failure
+
+Request: ssh_deploy the versioned nut.conf, ups.conf, and upsd.conf files to /etc/nut on red-server with root:root 0644 for nut.conf and root:nut 0640 for the other two files.
+
+Response:
+Deployment failed: copy failed: sh: 1: sudo: not found
+
+Result: failed before the stock Red files were replaced.
+
+2. Red root-safe correction
+
+The three versioned files were uploaded to:
+/root/peanut-nut.conf.new
+/root/peanut-ups.conf.new
+/root/peanut-upsd.conf.new
+
+Exact command:
+set -eu; test "$(readlink -f /root/peanut-nut.conf.new)" = /root/peanut-nut.conf.new; test "$(readlink -f /root/peanut-ups.conf.new)" = /root/peanut-ups.conf.new; test "$(readlink -f /root/peanut-upsd.conf.new)" = /root/peanut-upsd.conf.new; install -o root -g root -m 0644 /root/peanut-nut.conf.new /etc/nut/nut.conf; install -o root -g nut -m 0640 /root/peanut-ups.conf.new /etc/nut/ups.conf; install -o root -g nut -m 0640 /root/peanut-upsd.conf.new /etc/nut/upsd.conf; rm -f -- /root/peanut-nut.conf.new /root/peanut-ups.conf.new /root/peanut-upsd.conf.new; stat -c '%n %U:%G %a' /etc/nut/nut.conf /etc/nut/ups.conf /etc/nut/upsd.conf
+
+Standard output:
+/etc/nut/nut.conf root:root 644
+/etc/nut/ups.conf root:nut 640
+/etc/nut/upsd.conf root:nut 640
+
+Standard error: empty
+Exit code: 0
+
+3. Initial USB driver failure
+
+The first driver start on each host returned activating and exit code 3. Red's driver journal contained:
+
+libusb1: Could not open any HID devices: insufficient permissions on everything
+No matching HID UPS found
+Driver failed to start (exit status=1)
+
+The APC device node was root:root 0664 before the package udev rule was triggered. The installed rule matched vendor 051d, product 0002 and set GROUP="nut".
+
+4. USB permission correction
+
+Exact commands:
+systemctl disable --now nut-monitor.service
+udevadm control --reload-rules
+udevadm trigger --subsystem-match=usb --action=change
+udevadm settle
+systemctl restart nut-driver-enumerator.service
+systemctl restart nut-server.service
+
+Immediate result:
+The APC device became root:nut 0664 on both hosts. Grey's ups02 driver reached active first. Red's retry then reached active and upsd listened on 127.0.0.1:3493 and 192.168.70.13:3493.
+
+Follow-up verification:
+The retained S06 NUT transcripts show both drivers and servers active, both shutdown monitors disabled and inactive, both TCP/3493 listeners, live UPS variables, and exit code 0.

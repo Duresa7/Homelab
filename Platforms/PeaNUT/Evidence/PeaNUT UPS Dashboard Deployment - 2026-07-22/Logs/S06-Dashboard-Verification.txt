@@ -1,0 +1,21 @@
+Script started on 2026-07-22 12:21:24+00:00 [COMMAND="set -eu; docker inspect -f 'image={{.Config.Image}} state={{.State.Status}} health={{.State.Health.Status}}' peanut; ss -lnt 'sport = :8090'; curl -fsS http://192.168.40.35:8090/api/ping; docker exec peanut node -e "const net=require('net');const ts=[['192.168.70.13',3493],['192.168.70.10',3493]];let n=ts.length,bad=false;for(const[h,p]of ts){const s=net.createConnection({host:h,port:p},()=>s.write('LIST UPS\n'));let d='';s.setTimeout(5000);s.on('data',c=>{d+=c;if(d.includes('END LIST UPS')){console.log(h+' '+d.split('\n').filter(x=>x.startsWith('UPS ')).map(x=>x.split(' ').slice(0,2).join(' ')).join(','));s.end()}});s.on('error',e=>{bad=true;console.error(h+' '+e.code)});s.on('timeout',()=>{bad=true;s.destroy()});s.on('close',()=>{if(!--n)process.exit(bad?1:0)})}"; docker ps --format '{{.Names}} {{.Status}}' | sort" <not executed on terminal>]
+image=brandawg93/peanut:6.0.0@sha256:81c0511efa48728cedc7954a7ff8cff5f3069615d6925af66741029dc526f2a1 state=running health=healthy
+State  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess
+LISTEN 0      4096   192.168.40.35:8090      0.0.0.0:*          
+"pong"192.168.70.10 UPS ups02
+192.168.70.13 UPS ups01
+booklore Up 40 hours (healthy)
+forgejo Up 40 hours
+guacd Up 40 hours (healthy)
+homelab-dashboard Up 40 hours (healthy)
+immich_machine_learning Up 40 hours (healthy)
+immich_postgres Up 40 hours (healthy)
+immich_redis Up 40 hours (healthy)
+immich_server Up 40 hours (healthy)
+mariadb Up 40 hours (healthy)
+peanut Up About a minute (healthy)
+portainer_ce Up 40 hours
+syncthing Up 4 hours (healthy)
+termix Up 40 hours (healthy)
+
+Script done on 2026-07-22 12:21:24+00:00 [COMMAND_EXIT_CODE="0"]

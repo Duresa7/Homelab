@@ -188,6 +188,18 @@
 /Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*
 !/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*.md
 
+# PeaNUT UPS dashboard deployment evidence records
+!/Platforms/PeaNUT/Evidence/
+/Platforms/PeaNUT/Evidence/*
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/
+/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/*
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Evidence-Index.md
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/
+/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/*
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/*.txt
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/
+!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db

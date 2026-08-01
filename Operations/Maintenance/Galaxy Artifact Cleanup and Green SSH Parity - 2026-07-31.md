@@ -1,10 +1,10 @@
 # Galaxy Artifact Cleanup and Green SSH Parity
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-01
 
 **Change date:** 2026-07-31  
-**Status:** Complete, with three items left open and listed below  
+**Status:** Complete. Of the three items left open below, I closed two on 2026-08-01  
 **Scope:** Removal of working files left on `ansible-01`, `monitor-01`, & the five Galaxy nodes after the five-node expansion; reversal of the PXE registry rename; & the SSH client and key-trust parity fixes that brought `green-server` in line with the other four nodes
 
 ## Outcome
@@ -27,7 +27,7 @@ My first sweep only caught files newer than 2026-07-29, which hid four older ite
 | `purple-server`, `blue-server`, `red-server` | `/tmp/disable-proxmox-subscription-popup_<epoch>_<hash>.sh` | Three upload copies the SSH transfer left behind after the popup script ran |
 | `green-server` | `/var/lib/proxmox-first-boot/proxmox-first-boot`, `/var/log/galaxy-pxe-first-boot.log` | The executed one-use first-boot script & its 59,635-byte log. I had already checked both for credentials, and the join key had removed itself at the end of the run |
 | `blue-server` | `/etc/lvm/backup/pve-old-sata`, `/etc/lvm/archive/pve-old-sata_00000-1822880599.vg` | LVM metadata for a volume group that no longer exists. `vgs` returns only `pve` & `pvs` only `/dev/nvme0n1p3` |
-| `monitor-01` | `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` | The 48-target pre-Green rollback copy. Green is permanent now that the rename is cancelled, so rolling back to a config without it has no purpose |
+| `monitor-01` | `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.20260731T140158Z` | The 48-target pre-Green rollback copy. Green is permanent now that the rename is cancelled, so rolling back to a config without it has no purpose |
 | `grey-server` | `/root/no-nag-script.superseded-2026-07-31` | The unguarded subscription-nag hook the tested script replaced. Content preserved below |
 | `purple-server`, `blue-server` | `/root/pvecm_add.log` | Nine-line cluster join transcripts from 2026-05-30. Content preserved below |
 | `red-server` | `/root/clone-verify.log`, `/root/purple-clone/` | The 2026-07-25 boot-drive clone verification, six files. Content preserved below |
@@ -176,10 +176,10 @@ The `galaxy-pxe` & `tftpd-hpa` services are active on `ansible-01` and `/health`
 
 ## Still Open
 
-Three items I did not act on.
+Three items I did not act on. I closed the first two on 2026-08-01; see [Galaxy Cluster PVE 9.2.6 Upgrade and SSH Host Key Seeding](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md).
 
-Red still holds `PeaNUT-S03-NUT-Configure-red-server-2026-07-22.txt`, `PeaNUT-S03-NUT-Package-Install-red-server-2026-07-22.txt`, & `PeaNUT-S06-Verification-red-server-2026-07-22.txt` in `/root`, 91 lines across the three. The 65-line install transcript is almost entirely `apt` progress redraws. The [PeaNUT records](../../Platforms/PeaNUT/README.md) already carry the outcomes, including the exit code 3 that the configure transcript shows. I left all three rather than delete evidence from work I wasn't reviewing.
+**Closed 2026-08-01.** Red still holds `PeaNUT-S03-NUT-Configure-red-server-2026-07-22.txt`, `PeaNUT-S03-NUT-Package-Install-red-server-2026-07-22.txt`, & `PeaNUT-S06-Verification-red-server-2026-07-22.txt` in `/root`, 91 lines across the three. The 65-line install transcript is almost entirely `apt` progress redraws. The [PeaNUT records](../../Platforms/PeaNUT/README.md) already carry the outcomes, including the exit code 3 that the configure transcript shows. I left all three rather than delete evidence from work I wasn't reviewing. Two of the three turned out to be byte-identical to transcripts already captured under undated filenames, so only the configure run needed keeping. I added it to the PeaNUT evidence index and deleted all three from Red.
 
-The empty `/etc/pve/priv/known_hosts` and `ssh_known_hosts` state described above needs a decision. It breaks ad-hoc root SSH between every pair of members, not just Green.
+**Closed 2026-08-01.** The empty `/etc/pve/priv/known_hosts` and `ssh_known_hosts` state described above needs a decision. It breaks ad-hoc root SSH between every pair of members, not just Green. I seeded the cluster store with 15 key lines covering all five nodes, which exposed two further gaps I'd missed here: the `/etc/ssh/ssh_known_hosts` symlink that reads that store existed only on Grey, and no node's `/etc/hosts` listed its peers. All 20 ordered pairs now verify by name and by IP.
 
 Grey carries `.claude`, `.claude.json`, & `.codex` in `/root`. Those are agent configuration rather than artifacts of this work, and they predate it.
