@@ -107,8 +107,36 @@ Two results look like failures & aren't. `edge-01` returns nothing from `docker 
 
 A reachability sweep run from Grey against the guest addresses is not a useful health signal, because Grey sits on VLAN 70 and has no route to VLANs 40, 72, 73, 78, 85 or 90. I checked each guest directly instead.
 
+## Grey's FQDN, and the Certificate Behind It
+
+Later the same day I went back to Grey's `/etc/hosts` oddity and found it wasn't cosmetic. Grey's own line read `192.168.70.10 grey-server grey-server.local`, so `hostname -f` returned the bare `grey-server` while the other four returned `<node>.galaxy`. Checking the TLS certificates explained why:
+
+| Node | `hostname -f` before | Certificate CN |
+|---|---|---|
+| grey-server | `grey-server` | `grey-server.Grey` |
+| purple-server | `purple-server.galaxy` | `purple-server.galaxy` |
+| blue-server | `blue-server.galaxy` | `blue-server.galaxy` |
+| red-server | `red-server.galaxy` | `red-server.galaxy` |
+| green-server | `green-server.galaxy` | `green-server.galaxy` |
+
+Grey's certificate carries `grey-server.Grey`, a search domain from before this machine was Grey-Server. Its SSH host keys still say `root@Kadi` for the same reason. Grey created the cluster rather than joining it, so nothing ever regenerated that certificate against the `.galaxy` domain the other four picked up from `pvecm add`.
+
+I reordered Grey's own `/etc/hosts` line to `192.168.70.10 grey-server.galaxy grey-server grey-server.local`. The short hostname is unchanged, which is what matters: pmxcfs keys node identity on `hostname`, not the FQDN, so `/etc/pve/nodes/grey-server/` and the Corosync `name: grey-server` entry are untouched. `hostname -f` now returns `grey-server.galaxy` on all five.
+
+All 20 ordered pairs still verify under `StrictHostKeyChecking=yes` after the change, and every node resolves all five `.galaxy` names.
+
+The certificate itself is still wrong, and I did not regenerate it. That needs `pvecm updatecerts --force` on Grey followed by `systemctl restart pveproxy`, which briefly drops the web interface. Running `pvecm updatecerts` without `--force` is a no-op against an existing certificate, which I confirmed: the CN stayed `grey-server.Grey`. Worth knowing that the plain form left the seeded `known_hosts` file alone at 15 lines, so the seeding above survives a normal certificate refresh.
+
+## Kernel Housekeeping on Grey
+
+Grey had accumulated seven signed kernels against three on Purple, Blue, & Red and two on Green, because it has carried more kernel series over its life. `apt-get autoremove` cleared `proxmox-kernel-6.17.13-19-pve-signed` & `proxmox-kernel-7.0.2-6-pve-signed`, dropping Grey to five installed with nothing further autoremovable.
+
+This was tidiness rather than pressure. Grey's `/boot` is a 94 GB partition sitting at 37 percent, so it was never close to the failure this usually prevents. It still runs `7.0.14-8-pve` with `7.0.14-6-pve` as the fallback.
+
 ## Still Open
 
-Grey carries `.claude`, `.claude.json`, & `.codex` in `/root`. Those are agent configuration rather than artifacts of any change, & they predate this work. Carried forward unchanged from the [2026-07-31 cleanup](../../../../../Operations/Maintenance/Galaxy%20Artifact%20Cleanup%20and%20Green%20SSH%20Parity%20-%202026-07-31.md).
+Grey carries `.claude`, `.claude.json`, & `.codex` in `/root`, 282 MB in total, most of it a Codex log database and a cached plugin tree. Nothing references them: no cron entry, no systemd unit, no running process, and the newest file in either tree dates to 2026-06-11. They should be removed. I could not do it in this session because the change was refused at the tooling layer, so this stays with the owner.
 
-Grey's own `/etc/hosts` entry still reads `grey-server grey-server.local` while the other four use the `.galaxy` suffix that the cluster TLS certificates use. I added `.galaxy` aliases for Grey on the peers & left Grey's self-entry alone rather than change how a running node resolves its own name. Worth tidying during a future maintenance window.
+Grey's certificate CN is still `grey-server.Grey`, as described above. The `/etc/hosts` change means a future `pvecm updatecerts --force` will now produce `grey-server.galaxy` rather than repeating the old value, so the prerequisite is in place whenever that runs.
+
+The organisation name, the Cloudflare Access hostname, & the full Samsung serial remain in this repository's published git history. The working tree is clean of all three, and I confirmed the admin username appears in no tracked file. Removing them from history means rewriting all 173 commits and force-pushing, which breaks every existing clone and still cannot un-index what has already been crawled. I am accepting them rather than rewriting history.
