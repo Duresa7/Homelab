@@ -1,13 +1,13 @@
 # Kasm Workspaces
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-01
 
 Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
 Community Edition caps the deployment at five concurrent sessions and one named user. The VM has six vCPUs, 12 GiB of memory, and a 200 GiB disk after I raised it from four vCPUs and 8 GiB on 2026-07-28. VM 122 is the only guest on `purple-server`, which has six cores and 15 GiB, so the guest takes every core and leaves roughly 2 GiB for Proxmox. That is enough on a node running one VM against LVM-thin rather than ZFS, since there is no ARC competing for memory.
 
-The `Lab Sessions` group limits `alpha` to three concurrent sessions. Kasm's own containers hold about 2 GiB, leaving 9.7 GiB for workspaces against a 2.77 GiB default, so three desktops fit and a fourth would not. Storage is the constrained dimension: the `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot grow without another physical disk. The first Parrot attempt filled the 228.11 GiB pool and paused VM 122. I recovered, enabled discard, removed both old snapshots, pruned unused Docker layers, and installed Parrot one image at a time. The final pool readback is 68.25 percent, the guest has 39 GB free, and `baseline-parrot-2026-07-30` is the only snapshot.
+`alpha` is limited to three concurrent sessions through `Lab Sessions`; my own account is set to five, the Community Edition ceiling. Kasm's own containers hold about 2 GiB, leaving 9.7 GiB for workspaces against a 2.70 GiB per-session limit, so three busy desktops fit and a fourth does not. That limit is a Docker `--memory` ceiling rather than a reservation, so five idle terminals are fine and five working desktops will reach the 4 GiB swap file. The node has 15 GiB total and VM 122 is its only guest, so raising the guest past 12 GiB would starve Proxmox; more sessions means more physical memory, not a bigger number in the group. Storage is the constrained dimension: the `ssd-lvm2` volume group has 124 MB unallocated, so the thin pool cannot grow without another physical disk. The first Parrot attempt filled the 228.11 GiB pool and paused VM 122. I recovered, enabled discard, removed both old snapshots, pruned unused Docker layers, and installed Parrot one image at a time. The final pool readback is 68.25 percent, the guest has 39 GB free, and `baseline-parrot-2026-07-30` is the only snapshot.
 
 ## Current State
 
@@ -24,7 +24,9 @@ Session containers join one of four Docker macvlan networks:
 
 VLAN 74 may initiate toward VLAN 77. VLAN 77 cannot initiate back. Neither lane reaches VLAN 79. VLAN 75 cannot reach any other session lane. Every session lane is explicitly blocked from LAB-MGMT, Internal, Servers, Management, Access, Observability, and the gateway UI.
 
-The `Lab Sessions` group permits browser-mediated upload and enforces a one-hour session limit. Download, clipboard in both directions, seamless clipboard, printing, sharing, microphone access, and user storage mappings are disabled. Persistent profiles are allowed at the group level but only six named tiles carry a host path. Every malware and review tile has a null profile path.
+The `Lab Sessions` group permits browser-mediated upload. Download, clipboard in both directions, seamless clipboard, printing, sharing, microphone access, and user storage mappings are disabled. Persistent profiles are allowed at the group level but only six named tiles carry a host path. Every malware and review tile has a null profile path.
+
+Policy is per account rather than per group as of 2026-08-01. `alpha` gets everything above plus 3600 seconds through `Lab Session Time Limit` at priority 50. My own account is exempt through `Administrators` at priority 1: no time limit, no idle disconnect, a seven-day keepalive window, five concurrent slots, and download, clipboard, printing, sharing, microphone, and storage mappings all enabled on every tile. The lanes, DNS blackholes, and firewall rules are unchanged and still apply to both accounts, so network containment holds while data-egress containment is now discipline rather than policy on my sessions. [Kasm Session Limit Exemption](Documentation/Change%20Records/Kasm%20Session%20Limit%20Exemption%20-%202026-08-01.md) has the resolution rule and why a `session_time_limit` of `0` blocks the keepalive instead of removing the cap.
 
 ## Workspace Network Overrides
 
@@ -102,6 +104,7 @@ The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session run
 | [Kasm Session Isolation](Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) | Migration, storage, network, policy, tests, exceptions, and cleanup |
 | [Kasm Workspace Build-Out](Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md) | Disk growth, VLAN 75, 19 lane tiles, account policy, and acceptance results |
 | [Kasm Parrot Workspace Build-Out](Documentation/Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md) | Controlled Parrot pull, automatic-update control, three Parrot tiles, Debian Malware, lane tests, and replacement snapshot |
+| [Kasm Session Limit Exemption](Documentation/Change%20Records/Kasm%20Session%20Limit%20Exemption%20-%202026-08-01.md) | Group priority resolution, the zero-versus-absent keepalive trap, per-account time limits, and the concurrency arithmetic |
 | [Kasm Workspaces Internal HTTPS](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md) | NPM host, DNS, firewall return path, monitoring, & route verification |
 | [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
 | [Kasm Workspace Build-Out plan](Documentation/Change%20Plans/Kasm%20Workspace%20Build-Out.md) | Executed plan for the 19 tiles, VLAN 75 trusted lane, and 200 GiB disk |

@@ -1,7 +1,7 @@
 # Kasm Workspaces TODO
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-01
 
 This backlog holds Kasm-specific follow-up. The root [TODO](../../../TODO.md) links here; implementation detail stays in this file.
 
@@ -17,3 +17,13 @@ This backlog holds Kasm-specific follow-up. The root [TODO](../../../TODO.md) li
 - [x] Retry Parrot under live pool monitoring. I pruned seven unused images, trimmed the guest, started at 51.46 percent pool use and 77 GB guest free, and pulled only Parrot. The verified image raised the pool to 67.44 percent and left 39 GB free.
 - [x] Add Parrot Normal, VPN, and Full plus Debian Malware. All four lane tests passed on 2026-07-30, the API returned HTTP `200`, and [the change record](Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md) holds the result.
 - [x] Stop unattended rolling-image refreshes. I cleared the Docker Registry field on all Kasm image rows, restarted the agent, and observed no follow-on pull. Future image maintenance is manual and one image at a time.
+
+## Session Limit Exemption Follow-Up
+
+**Status:** Settings applied and verified; snapshot and reboot items open  
+**Change record:** [Kasm Session Limit Exemption](Change%20Records/Kasm%20Session%20Limit%20Exemption%20-%202026-08-01.md)
+
+- [ ] Replace `baseline-parrot-2026-07-30`. It predates the 2026-08-01 group-settings change, so a rollback reverts the exemption and restores the one-hour limit on my account. The documented practice is one baseline that contains the current settings, and replacing it needs the full lane and service checks plus the pool gate at or below 55 percent. The pool currently fails that gate.
+- [x] Explain the VM 122 power cycle. Proxmox logged `qmshutdown` at 11:04:32 and `qmstart` at 11:05:35 on 2026-08-01. That was the PVE 9.2.5 to 9.2.6 fleet upgrade rebooting `purple-server` onto kernel `7.0.14-8-pve`, with `kasm-01` down 80 seconds. See [the upgrade record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md).
+- [ ] Decide whether `idle_disconnect` `0` disables the timer. I set 525600 minutes on `Administrators` because nothing in `client_api.pyc` or `provider_manager.pyc` shows how the client reads zero, and the RDP path only multiplies it by 60. A tested zero would be cleaner than a year.
+- [ ] Trim the `logs` table. It holds 1556 MB of a 1.75 GB database dump, which makes every backup of a config-only database mostly session logging.

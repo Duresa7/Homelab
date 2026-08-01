@@ -1,7 +1,7 @@
 # Kasm Lab Session Workflows
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-01
 
 How I use the lab, one workflow per job. The isolation and lane-assigned tiles are built and tested. The design and proof live in [Kasm Session Isolation - 2026-07-28](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md), [Kasm Workspace Build-Out - 2026-07-28](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md), and [Kasm Parrot Workspace Build-Out - 2026-07-30](Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md).
 
@@ -38,7 +38,11 @@ The 14 `- Full` tiles are kept on purpose for the rare job that needs a plain se
 
 Nothing listens at `192.168.77.10` or `192.168.79.10`, which is the point: lookups fail inside the lane instead of leaking. Dropping the `dns` member lets Docker's embedded resolver at `127.0.0.11` forward through the management host, which quietly defeats an offline lane.
 
-The `Lab Sessions` group enforces upload allowed, download blocked, clipboard off in both directions, printing off, sharing off, microphone off, user storage mappings off, a one-hour limit, and no more than three sessions. Persistent profiles are allowed only so six named tiles can use their dedicated paths. Every malware, target, and review tile keeps that path empty.
+The `Lab Sessions` group enforces upload allowed, download blocked, clipboard off in both directions, printing off, sharing off, microphone off, user storage mappings off, and no more than three sessions. Persistent profiles are allowed only so six named tiles can use their dedicated paths. Every malware, target, and review tile keeps that path empty.
+
+None of that applies to me any more. On 2026-08-01 I put overrides on `Administrators` at priority 1, which holds my own account alone, so my sessions have no time limit, no idle disconnect, a seven-day keepalive window, five concurrent slots, and working download, clipboard, printing, sharing, microphone, and storage mappings on every tile. `alpha` still gets the full list above, and its 3600-second limit moved to `Lab Session Time Limit` at priority 50. [Kasm Session Limit Exemption](Change%20Records/Kasm%20Session%20Limit%20Exemption%20-%202026-08-01.md) has the resolution rule and why a `session_time_limit` of zero blocks the keepalive instead of removing the cap.
+
+The containment that still holds for me is the part the network does: the lanes, the DNS blackholes, and the firewall. The part the group did, stopping data leaving a session, is now my own discipline on the malware and review lanes.
 
 ## Working in the trusted-tools lane
 
@@ -62,7 +66,7 @@ Before clicking anything, confirm the egress is Proton's & not mine:
 curl -s ifconfig.me
 ```
 
-Then follow the link, read the fake page, & note what I need. Anything I want to keep, I type into my own notes rather than downloading, because download is blocked on these workspaces by design. End the session when done; the container is destroyed with it.
+Then follow the link, read the fake page, & note what I need. Download and clipboard now work for my own account, so the habit is mine to keep rather than the group's to enforce: I type what I need into my own notes instead of pulling a file off a page I just called hostile. End the session when done; the container is destroyed with it.
 
 What this buys me: the page sees a Proton exit address, never my home IP, & if the tunnel drops mid-session the traffic stops instead of falling back. What it doesn't buy me: permission to run the payload. If I want to execute what the page served, that's the next workflow, in a different lane.
 
@@ -111,7 +115,7 @@ Neither lane has Internet, so a reputation lookup means copying the hash out to 
 
 `REMnux - Review` or `Debian - Review`. Neither can be reached from a VPN, malware, or target tile, and neither can initiate toward one, so findings can't be touched by something still running elsewhere. I reach them through the Kasm UI, never from another session.
 
-Download stays blocked on every Lab Sessions tile. I move a written report out through a reviewed Git workflow from a `- Normal` tile instead of enabling download on a malware or review workspace.
+Download is no longer blocked for my account on any tile, including the review and malware lanes. `alpha` still can't download anywhere. That means the air gap on artifacts is now my discipline rather than a setting: I move a written report out through a reviewed Git workflow from a `- Normal` tile, and I don't drag a sample or an unexamined artifact straight to my desktop just because the button works.
 
 ## Checks when something feels wrong
 
@@ -142,7 +146,9 @@ If a session starts and then won't display, that's host-to-container reachabilit
 
 ## Limits worth remembering
 
-Five concurrent sessions and one named user are the Community Edition caps. The `alpha` account is limited to three by the Lab Sessions group, which is what the VM's 12 GiB actually serves: Kasm's own containers hold about 2 GiB, leaving 9.7 GiB against a 2.77 GiB default workspace.
+Five concurrent sessions and one named user are the Community Edition caps. Both accounts are limited to three, which is what the VM's 12 GiB actually serves: Kasm's own containers hold about 2 GiB, leaving 9.7 GiB against a 2.77 GiB default workspace. `alpha` gets its three from `Lab Sessions`; `<YOUR_ADMIN_USERNAME>` gets the same three from `Administrators`.
+
+Three is the number that matters more now that `<YOUR_ADMIN_USERNAME>` sessions don't expire. A forgotten desktop holds its memory until I delete it or the seven-day keepalive window closes, and the 20-minute idle disconnect that used to reclaim it is set to a year for that account. When a session won't start, check `free -h` before checking Kasm.
 
 Sessions are not serialised, so a sample can run beside another workspace. A container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time.
 
