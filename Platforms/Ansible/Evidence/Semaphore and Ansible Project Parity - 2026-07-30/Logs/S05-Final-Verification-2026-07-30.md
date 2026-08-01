@@ -12,7 +12,7 @@
 ## Temporary Token Command
 
 ```bash
-sudo sh -c 'umask 077; semaphore --config /root/config.json users token create --login dkadi --name ansible-parity-final-2026-07-30 --ttl 15m > /root/semaphore-api-token-final.tmp' && sudo stat -c 'token_file_mode=%a' /root/semaphore-api-token-final.tmp
+sudo sh -c 'umask 077; semaphore --config /root/config.json users token create --login <YOUR_ADMIN_USERNAME> --name ansible-parity-final-2026-07-30 --ttl 15m > /root/semaphore-api-token-final.tmp' && sudo stat -c 'token_file_mode=%a' /root/semaphore-api-token-final.tmp
 ```
 
 ## Temporary Token Result

@@ -9,10 +9,10 @@
 
 ## Candidate and Rollback Checks
 
-I built `/home/dkadi/monitoring/.prometheus.green-node.candidate.yml` from the current live file and inserted Green after Red. I validated it before the live write:
+I built `/home/<YOUR_ADMIN_USERNAME>/monitoring/.prometheus.green-node.candidate.yml` from the current live file and inserted Green after Red. I validated it before the live write:
 
 ```bash
-docker cp /home/dkadi/monitoring/.prometheus.green-node.candidate.yml prometheus:/tmp/prometheus-green-node.yml
+docker cp /home/<YOUR_ADMIN_USERNAME>/monitoring/.prometheus.green-node.candidate.yml prometheus:/tmp/prometheus-green-node.yml
 docker exec prometheus promtool check config /tmp/prometheus-green-node.yml
 ```
 
@@ -29,7 +29,7 @@ The first guarded acceptance run rolled back because the target assertion omitte
 The final run copied the validated candidate over the live file, preserving the bind-mounted inode, restarted Prometheus, waited for Green, and then waited through a complete scrape cycle. The immediate checks returned:
 
 ```text
-backup=/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z
+backup=/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.20260731T140158Z
 inode_preserved=393283
 hash_match=becd6552c7618a7e4b3be03f47027b70bba5e6fb4e1ba6315274475a3a429228
 green_target=up last_error=none
@@ -43,12 +43,12 @@ I uploaded the versioned assertion scripts temporarily, ran them against the liv
 ```bash
 set -eu
 set -o pipefail
-curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 /home/dkadi/assert_targets.py | tail -2
-python3 /home/dkadi/assert_dashboard_queries.py /home/dkadi/monitoring/grafana/dashboards/homelab-overview.json | tail -1
-host_hash=$(sha256sum /home/dkadi/monitoring/prometheus.yml | awk '{print $1}')
+curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 /home/<YOUR_ADMIN_USERNAME>/assert_targets.py | tail -2
+python3 /home/<YOUR_ADMIN_USERNAME>/assert_dashboard_queries.py /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/dashboards/homelab-overview.json | tail -1
+host_hash=$(sha256sum /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml | awk '{print $1}')
 container_hash=$(docker exec prometheus sha256sum /etc/prometheus/prometheus.yml | awk '{print $1}')
 test "$host_hash" = "$container_hash"
-printf 'host_container_sha256=%s\ngreen_target_entries=%s\n' "$host_hash" "$(grep -Fc '192.168.70.14:9100' /home/dkadi/monitoring/prometheus.yml)"
+printf 'host_container_sha256=%s\ngreen_target_entries=%s\n' "$host_hash" "$(grep -Fc '192.168.70.14:9100' /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml)"
 ```
 
 ```text

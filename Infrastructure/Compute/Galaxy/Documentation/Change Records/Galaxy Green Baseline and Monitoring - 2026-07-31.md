@@ -1,7 +1,7 @@
 # Galaxy Green Baseline and Monitoring
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-01
 
 **Implementation date:** 2026-07-31  
 **Status:** Complete except Green's pending kernel reboot  
@@ -46,7 +46,7 @@ I inserted `192.168.70.14:9100` after the other four Galaxy nodes with `host: gr
 
 The first acceptance run exposed a stale test: `assert_targets.py` omitted the existing Kasm probe and expected 48 targets. The rollback restored the original file. I added Kasm to the expected set and tried again. The next acceptance check ran before the 60-second blackbox scrape cycle had completed, so nine existing probes were still `unknown`; that guard also rolled back. Neither failure left Green in the live config.
 
-On the final run I checked Green separately, waited through a full scrape cycle, then required the whole target set. The live file kept inode `393283`, its SHA-256 matched `/etc/prometheus/prometheus.yml` inside the container, all 49 targets were up, and all 65 dashboard queries returned data. Green reported node_exporter 1.9.0, `up=1`, and 88 SMART or NVMe metric families. I retained `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` and removed the three superseded rollback copies and temporary test files. [S03 records the rollout and final checks](../../Evidence/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31/Logs/S03%20Green%20Prometheus%20Target%20-%202026-07-31.md).
+On the final run I checked Green separately, waited through a full scrape cycle, then required the whole target set. The live file kept inode `393283`, its SHA-256 matched `/etc/prometheus/prometheus.yml` inside the container, all 49 targets were up, and all 65 dashboard queries returned data. Green reported node_exporter 1.9.0, `up=1`, and 88 SMART or NVMe metric families. I retained `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.20260731T140158Z` and removed the three superseded rollback copies and temporary test files. [S03 records the rollout and final checks](../../Evidence/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31/Logs/S03%20Green%20Prometheus%20Target%20-%202026-07-31.md).
 
 ## Step 5: Make the Popup Patch Survive Upgrades
 
@@ -72,7 +72,7 @@ Then I proved it fires rather than just existing. I reinstalled `proxmox-widget-
 
 For the popup change, I can remove `/etc/apt/apt.conf.d/99-galaxy-no-subscription-nag` and then reinstall `proxmox-widget-toolkit` to restore its stock JavaScript and restart `pveproxy`. Reinstalling without removing the hook first will simply re-patch the file, which S04 demonstrates. The script refuses any source layout outside the exact stock or patched form.
 
-For Prometheus, I can copy `/home/dkadi/monitoring/prometheus.yml.bak.20260731T140158Z` over the live file, restart the `prometheus` container, and rerun both assertions. The retained backup is the 48-target pre-Green state.
+For Prometheus, I can copy `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.20260731T140158Z` over the live file, restart the `prometheus` container, and rerun both assertions. The retained backup is the 48-target pre-Green state.
 
 Both of those host-side rollback files are gone as of later the same day. The [artifact cleanup](../../../../../Operations/Maintenance/Galaxy%20Artifact%20Cleanup%20and%20Green%20SSH%20Parity%20-%202026-07-31.md) removed the Prometheus backup, because cancelling the node rename made Green permanent and a config without it pointless, and removed Grey's superseded hook after preserving its text in that record. The two paragraphs above stay as written since they were accurate when I wrote them; the cleanup record is the newer fact.
 
