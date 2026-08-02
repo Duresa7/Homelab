@@ -1,0 +1,56 @@
+Captured at: 2026-08-02T08:59:22Z
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'COMPOSE_RUNNER='; docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /data/coolify/proxy:/data/coolify/proxy:ro -w /data/coolify/proxy docker:cli docker compose version
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /data/coolify/proxy:/data/coolify/proxy:ro -w /data/coolify/proxy docker:cli docker compose -p coolify-proxy config -q
+printf 'COMPOSE_CONFIG=valid\n'
+test_host=$(docker inspect $(docker ps -q) | jq -r '.[].Config.Labels // {} | to_entries[] | select(.key|test("^traefik\\.http\\.routers\\..*\\.rule$")) | .value' | sed -n 's/.*Host(`\([^`]*\)`).*/\1/p' | head -n 1)
+if [ -z "$test_host" ]; then echo 'ROUTED_HOST_TEST=no-host-found' >&2; exit 1; fi
+printf 'ROUTED_HOST_HTTP='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 -H "Host: $test_host" http://127.0.0.1:80
+printf 'PROXY_FALLBACK='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:80
+
+Standard output:
+COMPOSE_RUNNER=Docker Compose version v5.3.1
+COMPOSE_CONFIG=valid
+
+Standard error:
+Unable to find image 'docker:cli' locally
+cli: Pulling from library/docker
+661305fee4a1: Pulling fs layer
+fd2fd10137d2: Pulling fs layer
+9a6e32d662c4: Pulling fs layer
+be1a9a8487c0: Pulling fs layer
+f464f4588a51: Pulling fs layer
+63223109fc2e: Pulling fs layer
+822881948558: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+7abf45e40384: Pulling fs layer
+4f4fb700ef54: Already exists
+be1a9a8487c0: Download complete
+661305fee4a1: Download complete
+7abf45e40384: Download complete
+fd2fd10137d2: Download complete
+f464f4588a51: Download complete
+9a6e32d662c4: Download complete
+63223109fc2e: Download complete
+3c783a962f97: Download complete
+822881948558: Download complete
+822881948558: Pull complete
+4f4fb700ef54: Pull complete
+fd2fd10137d2: Pull complete
+9a6e32d662c4: Pull complete
+63223109fc2e: Pull complete
+be1a9a8487c0: Pull complete
+7abf45e40384: Pull complete
+f464f4588a51: Pull complete
+661305fee4a1: Pull complete
+Digest: sha256:206ae9cc405101ab0cf97d4b515d21bf6aae961f98f7f9d8de6c111718fef335
+Status: Downloaded newer image for docker:cli
+ROUTED_HOST_TEST=no-host-found
+
+Exit code: 1

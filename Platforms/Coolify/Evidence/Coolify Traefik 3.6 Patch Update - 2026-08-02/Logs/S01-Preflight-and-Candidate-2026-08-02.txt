@@ -1,0 +1,59 @@
+Captured at: 2026-08-02T08:57:16Z
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+old_id=$(docker inspect coolify-proxy --format '{{.Image}}')
+rollback_ref=traefik:rollback-v3.6.11-2026-08-02
+existing_id=$(docker image inspect "$rollback_ref" --format '{{.Id}}' 2>/dev/null || true)
+if [ -n "$existing_id" ] && [ "$existing_id" != "$old_id" ]; then
+  printf 'ROLLBACK_TAG_CONFLICT=%s\n' "$existing_id" >&2
+  exit 1
+fi
+docker tag "$old_id" "$rollback_ref"
+printf 'ROLLBACK_REF=%s|%s\n' "$rollback_ref" "$old_id"
+printf 'DOCKER_API='; docker version --format '{{.Server.APIVersion}}'
+docker pull traefik:v3.6
+new_id=$(docker image inspect traefik:v3.6 --format '{{.Id}}')
+printf 'CANDIDATE_IMAGE=%s\n' "$new_id"
+printf 'CANDIDATE_VERSION\n'
+docker run --rm --network none traefik:v3.6 version
+printf 'RUNNING_UNCHANGED='; docker inspect coolify-proxy --format '{{.Image}}|{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}'
+
+Standard output:
+ROLLBACK_REF=traefik:rollback-v3.6.11-2026-08-02|sha256:acfc80650104f0194a15f73dc1648f517561bc1645391a15705332a064cfc33c
+DOCKER_API=1.55
+v3.6: Pulling from library/traefik
+de5cbc806753: Pulling fs layer
+55afa1ecc21d: Pulling fs layer
+43865a9fef03: Pulling fs layer
+58e302bf3a34: Pulling fs layer
+de5cbc806753: Download complete
+43865a9fef03: Download complete
+55afa1ecc21d: Download complete
+5175c52b645d: Download complete
+a623aa2ecc9a: Download complete
+55afa1ecc21d: Pull complete
+43865a9fef03: Pull complete
+58e302bf3a34: Download complete
+de5cbc806753: Pull complete
+58e302bf3a34: Pull complete
+Digest: sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d
+Status: Downloaded newer image for traefik:v3.6
+docker.io/library/traefik:v3.6
+CANDIDATE_IMAGE=sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d
+CANDIDATE_VERSION
+Version:      3.6.25
+Codename:     ramequin
+Go version:   go1.26.5
+Built:        2026-07-31T12:26:16Z
+OS/Arch:      linux/amd64
+RUNNING_UNCHANGED=sha256:acfc80650104f0194a15f73dc1648f517561bc1645391a15705332a064cfc33c|running|healthy
+
+Standard error:
+(empty)
+
+Exit code: 0

@@ -200,6 +200,16 @@
 !/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/
 !/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png
 
+# Coolify Traefik patch update evidence records
+!/Platforms/Coolify/Evidence/
+/Platforms/Coolify/Evidence/*
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/
+/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/*
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Evidence-Index.md
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/
+/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db

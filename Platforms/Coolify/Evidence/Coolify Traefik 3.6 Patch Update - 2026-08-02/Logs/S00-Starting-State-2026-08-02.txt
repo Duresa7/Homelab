@@ -1,0 +1,39 @@
+Captured at: 2026-08-02T08:56:16Z
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'HOST='; hostname
+printf 'OS='; . /etc/os-release; printf '%s %s\n' "$ID" "$VERSION_ID"
+printf 'COOLIFY_PROXY='; docker inspect coolify-proxy --format '{{.Config.Image}}|{{.Image}}|{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}'
+printf 'COMPOSE_SOURCE='; docker inspect coolify-proxy --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}|{{index .Config.Labels "com.docker.compose.project.config_files"}}|{{index .Config.Labels "com.docker.compose.project"}}'
+printf 'PROXY_VERSION='; docker exec coolify-proxy traefik version 2>/dev/null | tr '\n' ' ' || true; printf '\n'
+printf 'COOLIFY='; docker inspect coolify --format '{{.Config.Image}}|{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}'
+printf 'CONTAINERS\n'; docker ps --format '{{.Names}}|{{.Image}}|{{.Status}}' | grep -E '^(coolify|coolify-proxy|coolify-db|coolify-redis|coolify-realtime|coolify-sentinel)\|' | sort
+printf 'LOCAL_HTTP='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:8000
+printf 'PROXY_DEFAULT='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:80
+
+Standard output:
+HOST=app-01
+OS=debian 13
+COOLIFY_PROXY=traefik:v3.6|sha256:acfc80650104f0194a15f73dc1648f517561bc1645391a15705332a064cfc33c|running|healthy
+COMPOSE_SOURCE=/data/coolify/proxy|/data/coolify/proxy/docker-compose.yml|coolify-proxy
+PROXY_VERSION=Version:      3.6.11 Codename:     ramequin Go version:   go1.25.8 Built:        2026-03-19T09:18:26Z OS/Arch:      linux/amd64
+COOLIFY=ghcr.io/coollabsio/coolify:4.1.2|running|healthy
+CONTAINERS
+coolify-db|postgres:15-alpine|Up 18 hours (healthy)
+coolify|ghcr.io/coollabsio/coolify:4.1.2|Up 18 hours (healthy)
+coolify-proxy|traefik:v3.6|Up 18 hours (healthy)
+coolify-realtime|ghcr.io/coollabsio/coolify-realtime:1.0.16|Up 18 hours (healthy)
+coolify-redis|redis:7-alpine|Up 18 hours (healthy)
+coolify-sentinel|ghcr.io/coollabsio/sentinel:0.0.21|Up 18 hours (healthy)
+LOCAL_HTTP=302
+PROXY_DEFAULT=404
+
+Standard error:
+(empty)
+
+Exit code: 0
