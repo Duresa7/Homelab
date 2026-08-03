@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-02
+**Last updated:** 2026-08-03
 
 This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
 
@@ -10,7 +10,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>SSH<br>cron |
 | debian-dev | VM 102 | grey-server | Development workstation | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Docusaurus<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>Syncthing |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>Syncthing |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer)<br>Portainer Edge Agent 2.39.1 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1 |
@@ -48,7 +48,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 
 | Workload | Details |
 | --- | --- |
-| Docusaurus | 3.10.2 static documentation site at `192.168.40.35:3010`; Node.js 24.14.0 builds the source and Nginx 1.29.5 serves the final 62,720,008-byte image as UID 101 with a read-only root filesystem; Compose under `/opt/docker/docusaurus` |
+| Internal documentation site | Static HTML served by an unprivileged Nginx container as UID 101 with a read-only root filesystem, all Linux capabilities dropped, and no writable application volume |
 | Immich | Photo/video stack: server, Postgres, machine learning, Valkey |
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/<YOUR_GITHUB_USERNAME>/homelab-dashboard-aio:latest` |
