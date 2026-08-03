@@ -11,6 +11,7 @@ None.
 
 ## Active Priorities
 
+- [x] 2026-08-03: Governance and structure rewrite. I replaced the documentation standard, dropped the tier system, retired 935 placeholder substitutions, gave incidents one naming convention, centralised 47 diagrams under `Assets/`, and took `Governance/` out of the published tree. The record is local-only with the rest of that folder.
 - [ ] Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). I completed the storage recovery, controlled Parrot installation, Parrot Full/Normal/VPN, Debian Malware, manual capacity gate, automatic-pull control, and `baseline-parrot-2026-07-30`. Kasm returns HTTP `200`; the alert is the only open item.
 
 ## Scheduled
