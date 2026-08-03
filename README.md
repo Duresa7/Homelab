@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-03
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-4--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -35,7 +35,6 @@ The guides provide the reading path. Detailed records stay with the system that 
 | Category | What it holds | Example |
 |---|---|---|
 | [Guides](Guides/README.md) | Visitor walkthroughs across infrastructure and platforms | [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md) |
-| [Governance](Governance/README.md) | Documentation rules and naming conventions | [Documentation Standard](Governance/Documentation-Standard.md) |
 | [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
 | [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) |

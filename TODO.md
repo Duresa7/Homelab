@@ -89,5 +89,5 @@ None.
 - [x] 2026-07-11: [NetBird and Nginx Proxy Manager HTTPS access stack on `docker-network`](Platforms/Netbird/Documentation/Deployment.md).
 - [x] 2026-07-10: [Galaxy docker-network LXC and Access-A egress foundation](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md).
 - [x] 2026-07-10: [Galaxy Cluster-Net Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
-- [x] 2026-07-09: [Enterprise workspace restructure](Governance/Change%20Records/Workspace%20Enterprise%20Restructure%20-%202026-07-09.md).
-- [x] 2026-07-09: [TNIO and Windows working-tree organization](Governance/Change%20Records/Platform%20Working%20Tree%20Reorganization%20-%202026-07-09.md).
+- [x] 2026-07-09: Enterprise workspace restructure.
+- [x] 2026-07-09: TNIO and Windows working-tree organization.

@@ -1,7 +1,7 @@
 # Security Incident Response Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -48,6 +48,22 @@ Repeat the user path, backend path, authentication check, DNS lookup, & provider
 
 List follow-ups with owners & conditions. Close the incident only when the service is stable, the exposed path is disabled, the verification results are recorded, & any residual risk has a bounded next action.
 
+## What the Report Contains
+
+Step 6 produces the report. I keep it under `Security/Incidents/`, separate from the affected service's own records, so an incident stays findable whether I go looking by service or by date. Each report carries:
+
+- Metadata: the date, the affected service, and the closure status.
+- A summary a reader can take in without the detail below it.
+- Impact, in terms of what stopped working and for whom.
+- Affected assets: the hosts, guests, networks, and accounts in scope.
+- Symptoms, including the exact error text where I captured it.
+- A timeline, where I have the timestamps to build one.
+- Findings, then the root cause, or the current hypothesis when I never proved one.
+- Corrective action, and the validation that shows it worked.
+- Residual risk and follow-ups, with the closure status saying plainly whether this is finished.
+
+Routine troubleshooting isn't an incident. Those records live with the platform that owns them. When a problem turns into an incident, I write the report and cross-link both records so neither is a dead end.
+
 ## What I Checked After Each Step
 
 - Corrective actions had an observed result, not just a successful command submission.
@@ -68,4 +84,3 @@ This guide doesn't replace provider-specific incident procedures. A disclosure i
 - [Application-stack incident response](../Security/Incidents/Vercel/security-incident-response-2026-04-19.md)
 - [TeamSpeak service incident](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24.md)
 - [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md)
-- [Documentation Standard](../Governance/Documentation-Standard.md#incident-reports)

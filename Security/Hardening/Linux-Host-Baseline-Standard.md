@@ -1,11 +1,9 @@
 # Linux Host Baseline Standard
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-03
 
 Every Linux VM or LXC I provision gets this baseline before it carries a workload or enters the SSH Manager inventory. This file defines the required end state. Windows hosts are out of scope and follow their records under `Platforms/Windows Servers/`.
-
-Work terms & evidence mechanics are defined in the [Documentation Standard](../../Governance/Documentation-Standard.md#work-terms).
 
 ## Required Baseline
 
