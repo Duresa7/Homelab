@@ -219,7 +219,12 @@
 *.sqlite
 *.sqlite-*
 *.bak
+*.bak.*
 *.backup
+*.pre-final-review
+*.orig
+*.rej
+*~
 *.zip
 *.tar
 *.tar.gz
