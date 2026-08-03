@@ -113,13 +113,23 @@
 /Archive/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*
 !/Archive/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*.md
 
-# Blue duplicate volume group incident evidence records
-!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/
-/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/*
-!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Evidence-Index.md
-!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/
-/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/*
-!/Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/*.md
+# Galaxy incident evidence records. The Evidence directory itself has to be
+# un-ignored first: git cannot re-include a file inside an ignored directory.
+!/Security/Incidents/Galaxy/Evidence/
+/Security/Incidents/Galaxy/Evidence/*
+!/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/
+/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/*
+!/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/Evidence-Index.md
+!/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/Logs/
+/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/Logs/*
+!/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/Logs/*.txt
+!/Security/Incidents/Galaxy/Evidence/HA Local Storage Stranding - 2026-07-20/Screenshots/
+!/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/
+/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/*
+!/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Evidence-Index.md
+!/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/
+/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/*
+!/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/*.md
 
 # Fleet maintenance evidence records
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/
@@ -175,12 +185,14 @@
 !/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*.md
 
 # Kasm thin-pool exhaustion incident evidence records
-!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/
-/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/*
-!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Evidence-Index.md
-!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/
-/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/*
-!/Security/Incidents/Kasm Workspaces/Kasm Thin Pool Exhaustion - 2026-07-29/Evidence/Logs/*.md
+!/Security/Incidents/Kasm Workspaces/Evidence/
+/Security/Incidents/Kasm Workspaces/Evidence/*
+!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/
+/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/*
+!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Evidence-Index.md
+!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/
+/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/*
+!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/*.md
 
 # Kasm Parrot workspace build-out evidence records
 !/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/

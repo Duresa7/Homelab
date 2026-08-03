@@ -28,7 +28,7 @@ Changing only the HTTP `Host` header isolated the rejection:
 | `192.168.40.42:8080` | HTTP `401` |
 | `qbittorrent.<YOUR_BASE_DOMAIN>` | HTTP `200`, body `v5.2.3` |
 
-The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/qBittorrent%20Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md) retains the request commands and outputs, safe configuration readback, container network state, & the explicit boundary for the filtered Arr log lines that weren't copied into the local artifact.
+The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md) retains the request commands and outputs, safe configuration readback, container network state, & the explicit boundary for the filtered Arr log lines that weren't copied into the local artifact.
 
 ## Hypotheses and Tests
 
@@ -68,7 +68,7 @@ I created no backup. The API serialized the corrected value to the existing qBit
 - Gluetun was healthy, qBittorrent shared Gluetun's exact container namespace, & forwarded port `51342` matched qBittorrent's listening port.
 - Radarr and Sonarr logged zero qBittorrent connection errors after 20:49:22 EDT.
 
-The [correction and verification transcript](../../../../Security/Incidents/qBittorrent/Evidence/qBittorrent%20Host%20Validation%20Recovery%20-%202026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md) records the API change and resulting checks.
+The [correction and verification transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md) records the API change and resulting checks.
 
 ## Failed Attempts
 
@@ -80,6 +80,6 @@ The previous single-domain value is known, but restoring it would reproduce the 
 
 ## Linked Records
 
-- [qBittorrent Arr Client Outage Incident](../../../../Security/Incidents/qBittorrent/qBittorrent-Incident-Report-2026-07-22-Arr-Client-Outage.md)
+- [qBittorrent Arr Client Outage Incident](../../../../Security/Incidents/qBittorrent/Arr Client Outage - 2026-07-22.md)
 - [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
 - [Media Stack configuration reference](../../Configuration/README.md)

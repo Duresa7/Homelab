@@ -81,6 +81,6 @@ This guide doesn't replace provider-specific incident procedures. A disclosure i
 
 ## Source Records
 
-- [Application-stack incident response](../Security/Incidents/Vercel/security-incident-response-2026-04-19.md)
-- [TeamSpeak service incident](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24.md)
-- [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/TeamSpeak-Incident-Report-2026-04-24-UDP-Relay-Outage.md)
+- [Application-stack incident response](../Security/Incidents/Vercel/Credential Rotation After Vendor Bulletin - 2026-04-19.md)
+- [TeamSpeak service incident](../Security/Incidents/Teamspeak/DNS and ServerQuery - 2026-04-24.md)
+- [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/UDP Relay Outage - 2026-04-24.md)

@@ -45,7 +45,7 @@ Internet egress splits by lane. The trusted lane gets normal outbound so apt, pi
 
 ## Lifetime & cleanup
 
-Every box is throwaway. The default lifetime is 2 hours from the task finishing or going idle, an agent can request up to 24 hours for a longer job & extend while it's still working, & an idle box gets reclaimed early. A sweeper runs on a schedule & destroys anything past its lifetime or orphaned, so no sandbox strands the way CT 107 & CT 108 did in the [2026-07-20 HA stranding incident](../../../Security/Incidents/Galaxy-HA-Local-Storage-Stranding-2026-07-20/Galaxy-HA-Local-Storage-Stranding-Incident-2026-07-20.md).
+Every box is throwaway. The default lifetime is 2 hours from the task finishing or going idle, an agent can request up to 24 hours for a longer job & extend while it's still working, & an idle box gets reclaimed early. A sweeper runs on a schedule & destroys anything past its lifetime or orphaned, so no sandbox strands the way CT 107 & CT 108 did in the [2026-07-20 HA stranding incident](../../../Security/Incidents/Galaxy/HA Local Storage Stranding - 2026-07-20.md).
 
 Boxes are always freshly cloned from a template & never backed up, so they don't bloat my backup jobs & there's no stale state to roll back. Reclaim is destroy-and-reclone, not snapshot-and-restore.
 
@@ -101,4 +101,4 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 - [Galaxy cluster](../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes, storage, & templates the sandboxes clone from.
 - [UniFi network and zone inventories](../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state used to assign the sandbox VLAN and firewall zone.
 - [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
-- [Galaxy HA local-storage stranding incident](../../../Security/Incidents/Galaxy-HA-Local-Storage-Stranding-2026-07-20/Galaxy-HA-Local-Storage-Stranding-Incident-2026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.
+- [Galaxy HA local-storage stranding incident](../../../Security/Incidents/Galaxy/HA Local Storage Stranding - 2026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.

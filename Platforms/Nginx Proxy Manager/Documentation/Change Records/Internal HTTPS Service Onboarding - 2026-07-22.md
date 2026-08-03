@@ -58,7 +58,7 @@ I made only the application changes needed for the new names:
 - Grafana's domain and root URL use `https://grafana.<YOUR_BASE_DOMAIN>` while its container listener stays HTTP.
 - Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`.
 - Syncthing's server GUI now binds on `0.0.0.0:8384` so NPM can reach it. Its synchronization listeners and peer paths are unchanged.
-- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, & verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Grafana-Incident-Report-2026-07-22-Plaintext-Administrator-Credential.md) records the exposure boundary and corrective actions without retaining the credential.
+- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, & verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Plaintext Administrator Credential - 2026-07-22.md) records the exposure boundary and corrective actions without retaining the credential.
 
 Recreating the Media Stack pulled the current floating Gluetun and qBittorrent images because that Compose project intentionally uses `pull_policy: always`. Both containers returned running, Jellyfin returned `Healthy`, and qBittorrent's WebUI answered afterward.
 

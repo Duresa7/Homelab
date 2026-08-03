@@ -111,5 +111,5 @@ That snapshot already contains this completed change. To remove only the Parrot 
 ## Linked Records
 
 - [Kasm Thin Pool Exhaustion Paused VM 122](../Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md)
-- [Kasm Workspaces Thin Pool Exhaustion Incident](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md)
+- [Kasm Workspaces Thin Pool Exhaustion Incident](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 - [Evidence index](../../Evidence/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30/Evidence-Index.md)

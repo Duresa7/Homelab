@@ -29,7 +29,7 @@ status: io-error
 
 I requested the Kasm root and health endpoint through NPM, then requested the health endpoint directly at `192.168.78.10`. NPM returned `502` twice, while the direct request timed out after 10 seconds.
 
-The [diagnosis transcript](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence/Logs/S01%20Diagnosis%20-%202026-07-29.md) retains those requests, the VM status, thin-pool readback, & capacity timeline.
+The [diagnosis transcript](../../../../Security/Incidents/Kasm%20Workspaces/Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Logs/S01%20Diagnosis%20-%202026-07-29.md) retains those requests, the VM status, thin-pool readback, & capacity timeline.
 
 ## Hypotheses and Tests
 
@@ -93,13 +93,13 @@ I cleared the Docker Registry field on all 31 Kasm workspace rows that existed b
 - The agent logged no image pull after automatic registry checks were disabled.
 - At snapshot creation, `ssd-lvm2` reported 67.45 percent data. The 01:18 EDT final readback reported 68.25 percent data and 2.91 percent metadata; all Kasm services remained healthy and the local health endpoint returned HTTP `200`.
 
-The [rollback and verification transcript](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence/Logs/S02%20Rollback%20and%20Verification%20-%202026-07-29.md) retains the commands and results.
+The [rollback and verification transcript](../../../../Security/Incidents/Kasm%20Workspaces/Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Logs/S02%20Rollback%20and%20Verification%20-%202026-07-29.md) retains the commands and results.
 
-The [discard and trim transcript](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence/Logs/S03%20Discard%20Enablement%20and%20Trim%20-%202026-07-29.md) retains the controlled shutdown, disk change, trim output, & final service checks.
+The [discard and trim transcript](../../../../Security/Incidents/Kasm%20Workspaces/Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Logs/S03%20Discard%20Enablement%20and%20Trim%20-%202026-07-29.md) retains the controlled shutdown, disk change, trim output, & final service checks.
 
-The [snapshot deletion transcript](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence/Logs/S04%20Older%20Snapshot%20Removal%20-%202026-07-29.md) retains the before-and-after snapshot trees, pool readings, & health checks.
+The [snapshot deletion transcript](../../../../Security/Incidents/Kasm%20Workspaces/Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Logs/S04%20Older%20Snapshot%20Removal%20-%202026-07-29.md) retains the before-and-after snapshot trees, pool readings, & health checks.
 
-The [final old-baseline removal transcript](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence/Logs/S05%20Final%20Baseline%20Removal%20-%202026-07-29.md) records the zero-snapshot boundary before the retry.
+The [final old-baseline removal transcript](../../../../Security/Incidents/Kasm%20Workspaces/Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Logs/S05%20Final%20Baseline%20Removal%20-%202026-07-29.md) records the zero-snapshot boundary before the retry.
 
 The [Parrot build-out evidence](../../Evidence/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30/Evidence-Index.md) retains the queue stop, dangling-image cleanup, controlled pull, update-policy change, tile readback, lane tests, and replacement snapshot.
 
@@ -119,7 +119,7 @@ The current rollback point is `baseline-parrot-2026-07-30`, created after the co
 
 ## Linked Records
 
-- [Kasm Workspaces Thin Pool Exhaustion Incident](../../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md)
+- [Kasm Workspaces Thin Pool Exhaustion Incident](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 - [Kasm Workspace Build-Out - 2026-07-28](../Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md)
 - [Kasm Parrot Workspace Build-Out - 2026-07-30](../Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md)
 - [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md)

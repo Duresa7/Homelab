@@ -8,7 +8,7 @@ This backlog holds Kasm-specific follow-up. The root [TODO](../../../TODO.md) li
 ## Storage Recovery Before Workspace Expansion
 
 **Status:** Parrot build complete; automated thin-pool alert open  
-**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../../../Security/Incidents/Kasm%20Workspaces/Kasm%20Thin%20Pool%20Exhaustion%20-%202026-07-29/Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md)
+**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 
 - [x] Retain one local recovery snapshot. I removed both 2026-07-28 snapshots before the controlled Parrot pull, then created `baseline-parrot-2026-07-30` after the image, tiles, lanes, services, and storage passed. VM 122 has exactly one snapshot and no external guest backup.
 - [x] Enable discard for VM 122 `scsi0`, complete a controlled reboot, run `fstrim`, & record the before-and-after thin-pool allocation. I enabled `discard=on` on 2026-07-29 without replacing the disk or changing either snapshot. `fstrim` submitted 72.7 GiB from `/`, while `ssd-lvm2` fell from 54.91 to 54.78 percent because the snapshots still reference most old blocks. Kasm returned with all health checks passing and the public route at HTTP `200`.
