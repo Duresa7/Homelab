@@ -29,17 +29,17 @@ I added the renamed Debian development VM to SSH Manager with the existing Jedi-
 
 ## Actions and Results
 
-1. I confirmed the Jedi-PC public-key fingerprint matched the private-key path already used by SSH Manager for `<YOUR_ADMIN_USERNAME>` hosts.
+1. I confirmed the Jedi-PC public-key fingerprint matched the private-key path already used by SSH Manager for `dkadi` hosts.
 2. I added `debian_dev` at `192.168.40.135` to the SSH Manager environment, hot-reloaded the configuration, and completed an authenticated health check.
 3. I refreshed APT metadata, simulated the full desktop installation, verified guest and thin-pool capacity, and created the pre-change snapshot.
 4. I installed `task-gnome-desktop`, selected `graphical.target`, and started GDM.
 5. I verified package integrity, the active Wayland greeter, GNOME Shell and Xwayland processes, active SSH, zero failed systemd units, 47 GiB remaining disk space, and an overall healthy SSH Manager health result.
 6. I rebooted VM 102 through Proxmox and verified a new boot ID, restored SSH access, active GDM and GNOME greeter processes, clean package state, zero failed units, and a cleared reboot-required marker.
 7. I repaired GNOME's wired-network question mark by moving `ens18` from legacy ifupdown/dhcpcd ownership to a native NetworkManager profile while preserving address `192.168.40.135` and the existing gateway/DNS.
-8. I added a Polkit rule that grants all Polkit-controlled actions to `<YOUR_ADMIN_USERNAME>` only from the active local GNOME session, eliminating graphical authentication prompts without extending the rule to remote SSH sessions.
+8. I added a Polkit rule that grants all Polkit-controlled actions to `dkadi` only from the active local GNOME session, eliminating graphical authentication prompts without extending the rule to remote SSH sessions.
 9. I removed a redundant legacy password-manager APT `.list` entry while retaining the package-maintained deb822 `.sources` definition and signing key.
 10. I diagnosed Claude Desktop's non-persistent sign-in warning as a first-run ordering edge case: GNOME Keyring and PAM were healthy, but Claude created `login.keyring` after the current authenticated session began and Chromium disabled libsecret when the new collection object was not yet exported.
-11. I added `<YOUR_ADMIN_USERNAME>` to the `kvm` group for Claude Cowork. I verified the persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module. The fresh GNOME sign-out/sign-in on 2026-07-22 activated both: Claude's sign-in survives a relaunch and Cowork uses `/dev/kvm`.
+11. I added `dkadi` to the `kvm` group for Claude Cowork. I verified the persistent account membership, `/dev/kvm` ownership, AMD virtualization flag, and loaded `kvm_amd` module. The fresh GNOME sign-out/sign-in on 2026-07-22 activated both: Claude's sign-in survives a relaunch and Cowork uses `/dev/kvm`.
 
 My SSH Manager client timed out after five minutes, but the package transaction kept running. Process and log checks showed active `apt-get` and `dpkg` work. The transaction finished with every requested package in the `ii` state.
 
@@ -49,7 +49,7 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 | --- | --- |
 | SSH Manager target | `debian_dev` |
 | Compatibility alias | `db_13_test` |
-| SSH account | `<YOUR_ADMIN_USERNAME>` |
+| SSH account | `dkadi` |
 | Identity | Jedi-PC Ed25519 key; fingerprint verified |
 | Desktop task | `task-gnome-desktop 3.81` |
 | GNOME metapackage | `gnome 1:48+2` |
@@ -60,10 +60,10 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 | Wired network owner | NetworkManager profile `Wired connection 1`, autoconnect enabled |
 | IPv4 configuration | Static `192.168.40.135/24`; gateway and DNS `192.168.40.1` |
 | Connectivity probe | Disabled; Debian's packaged probe endpoint did not resolve from this network |
-| GNOME Polkit policy | `/etc/polkit-1/rules.d/49-<YOUR_ADMIN_USERNAME>-gnome-nopasswd.rules`; `<YOUR_ADMIN_USERNAME>` + active + local only |
+| GNOME Polkit policy | `/etc/polkit-1/rules.d/49-dkadi-gnome-nopasswd.rules`; `dkadi` + active + local only |
 | Password-manager APT source | `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.sources`; stable/main AMD64 with the vendor keyring |
 | Claude credential backend | GNOME Keyring 48 / Secret Service; login collection created on Claude's first launch and exported by the 2026-07-22 fresh session |
-| Claude Cowork virtualization | `/dev/kvm` via supplementary group `kvm`; `<YOUR_ADMIN_USERNAME>` is a persistent member, with `svm`, `kvm_amd`, and `kvm` present |
+| Claude Cowork virtualization | `/dev/kvm` via supplementary group `kvm`; `dkadi` is a persistent member, with `svm`, `kvm_amd`, and `kvm` present |
 | Rollback point | `pre-gnome-20260715` |
 
 ## Verification
@@ -81,17 +81,17 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 - The same PackageKit Polkit action remained denied from the remote SSH shell, while the existing `sudo -n` path remained passwordless.
 - Two consecutive APT metadata refreshes completed without duplicate-source warnings; the password manager at `8.12.28` remained installed and available from the retained vendor repository.
 - GNOME Keyring packages, the enabled user daemon, Secret Service D-Bus ownership, GDM PAM hooks, and the active local Wayland session all passed inspection. Claude's journal captured the missing login collection object and Chromium's explicit restart/reboot remediation.
-- The account database now reports `kvm:x:993:<YOUR_ADMIN_USERNAME>`; `/dev/kvm` remains `root:kvm` mode `0660`, and nested AMD virtualization is available through the loaded KVM modules.
+- The account database now reports `kvm:x:993:dkadi`; `/dev/kvm` remains `root:kvm` mode `0660`, and nested AMD virtualization is available through the loaded KVM modules.
 
 ## Rollback
 
 If GNOME causes a regression, I'll place VM 102 in maintenance, restore Proxmox snapshot `pre-gnome-20260715`, then check the hostname, SSH, networking, & package state. The post-reboot checks passed, so I can remove the snapshot when I no longer need the short-term rollback point.
 
-To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-<YOUR_ADMIN_USERNAME>-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
+To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-dkadi-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
 
 To restore the retired legacy password-manager source for troubleshooting, copy `/root/apt-source-backups/<YOUR_PASSWORD_MANAGER>.list.pre-dedup-20260715` back to `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.list` with mode 0644. Doing so while `<YOUR_PASSWORD_MANAGER>.sources` remains enabled will intentionally restore the duplicate warnings.
 
-To remove Claude Cowork's KVM permission, run `gpasswd -d <YOUR_ADMIN_USERNAME> kvm` and start a new login session. The keyring diagnosis did not delete or rewrite any stored keyring data.
+To remove Claude Cowork's KVM permission, run `gpasswd -d dkadi kvm` and start a new login session. The keyring diagnosis did not delete or rewrite any stored keyring data.
 
 ## Remaining Work
 

@@ -33,7 +33,7 @@ I built a Splunk Enterprise 10.4.0 SIEM on Rocky Linux 10.2, then connected UniF
 The build uses four targets:
 
 - VMID 109 runs alone on Security-A with 6 vCPU, 12 GiB RAM, a 150 GiB SSD-backed disk, & the Proxmox firewall enabled. The original build used 4 vCPU; I added two during the ES installation on 2026-07-02.
-- Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `<YOUR_ADMIN_USERNAME>`; password authentication & direct root login are disabled.
+- Splunk runs as the `splunk` service account. SSH accepts three Ed25519 keys for `dkadi`; password authentication & direct root login are disabled.
 - UniFi sends CEF to SC4S on TCP/UDP 1514. SC4S forwards through HEC on 8088 instead of sending syslog directly to the indexer, matching Splunk's guidance [2][3].
 
 ## Architecture
@@ -120,7 +120,7 @@ I did a **Minimal Install with no desktop environment** to keep the footprint sm
 | Base environment | Minimal Install |
 | Add-ons | Standard, Headless Management |
 | Desktop environment | None |
-| User account | Duresa7 / `<YOUR_ADMIN_USERNAME>` (wheel/sudo, password required) |
+| User account | Duresa7 / `dkadi` (wheel/sudo, password required) |
 | Interface | `ens18` |
 | IP address | `192.168.70.109/24` (DHCP) |
 | Gateway / DNS | `192.168.70.1` |
@@ -165,7 +165,7 @@ cat /etc/rocky-release # confirm: Rocky Linux 10.2
 
 ### SSH authentication controls
 
-I set `PasswordAuthentication no` & `PermitRootLogin no`. The documented remote login path became the `<YOUR_ADMIN_USERNAME>` account with three authorized public keys; the Proxmox console remained the fallback.
+I set `PasswordAuthentication no` & `PermitRootLogin no`. The documented remote login path became the `dkadi` account with three authorized public keys; the Proxmox console remained the fallback.
 
 I used Ed25519 for all three client keys. I tested one key from a second SSH session before closing the first session.
 
@@ -179,7 +179,7 @@ I installed three `ed25519` public keys, one per client, each identified by its 
 
 | Key comment | Client | Passphrase |
 |---|---|:-:|
-| `mac-air3-<YOUR_ADMIN_USERNAME>` | MacBook Air | Yes |
+| `mac-air3-dkadi` | MacBook Air | Yes |
 | `ansible-control` | Ansible control node | No (automation needs unattended login) |
 | `<RETIRED_ROOT_KEY_LABEL>-nopass` | jedi-pc workstation | No |
 
@@ -464,7 +464,7 @@ The Security-A VM runs Splunk Enterprise 10.4.0. UniFi sends CEF to SC4S at `192
 
 ## 2026-07-22: Internal HTTPS name
 
-I published Splunk Web at `https://splunk.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager. UniFi resolves the name only on the internal resolver and permits NPM at `192.168.85.2` only to the existing HTTPS listener on TCP 8000. NPM presents the Let's Encrypt wildcard certificate and forces HTTPS. Splunk's self-signed listener remains the upstream transport and direct rollback path.
+I published Splunk Web at `https://splunk.alphasecunited.com` through Nginx Proxy Manager. UniFi resolves the name only on the internal resolver and permits NPM at `192.168.85.2` only to the existing HTTPS listener on TCP 8000. NPM presents the Let's Encrypt wildcard certificate and forces HTTPS. Splunk's self-signed listener remains the upstream transport and direct rollback path.
 
 The change didn't publish HEC 8088, management 8089, SC4S 1514, or any data input. The new name returned the Splunk login page with HTTP 200, public DNS returned NXDOMAIN, & the route survived a controlled NPM restart. See [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 

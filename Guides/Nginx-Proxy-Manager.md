@@ -15,7 +15,7 @@ Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107
 
 - A Docker host with TCP ports 80, 81, & 443 available.
 - A domain managed in Cloudflare and a zone-scoped DNS Write token.
-- A DNS name such as `<YOUR_NETBIRD_DOMAIN>` for the upstream service.
+- A DNS name such as `netbird.alphsec.com` for the upstream service.
 - The upstream container attached to the same external Docker network.
 
 ## How the Pieces Fit Together
@@ -48,7 +48,7 @@ I opened the management interface on port 81, completed the administrator setup,
 
 ### Step 4: Add the NetBird Proxy Host
 
-I created `<YOUR_NETBIRD_DOMAIN>` with upstream `http://netbird-dashboard:80`, WebSocket Support, & Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, & gRPC requests go to `netbird-server:80`.
+I created `netbird.alphsec.com` with upstream `http://netbird-dashboard:80`, WebSocket Support, & Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, & gRPC requests go to `netbird-server:80`.
 
 I ran `nginx -t` inside the container and sent a Host-header request through Nginx Proxy Manager. Both checks passed before I added TLS.
 
@@ -56,7 +56,7 @@ I ran `nginx -t` inside the container and sent a Host-header request through Ngi
 
 ### Step 5: Issue and Assign the Certificate
 
-I created a Let's Encrypt request for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`, selected Cloudflare DNS, & supplied `<YOUR_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
+I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, & supplied `<YOUR_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
 
 ![Wildcard certificate issued](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 

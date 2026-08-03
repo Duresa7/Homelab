@@ -23,8 +23,8 @@ Do not treat a successful file copy or a HUP signal as proof of reload. Verify t
 ## Change the Target Set
 
 1. Edit [Configuration/prometheus.yml](../Configuration/prometheus.yml) first.
-2. Upload it to a candidate path under `/home/<YOUR_ADMIN_USERNAME>/monitoring/`.
-3. Replace `<YOUR_BASE_DOMAIN>` with the real internal base domain in the candidate. The versioned copy carries the placeholder; the deployed copy cannot.
+2. Upload it to a candidate path under `/home/dkadi/monitoring/`.
+3. Replace `alphasecunited.com` with the real internal base domain in the candidate. The versioned copy carries the placeholder; the deployed copy cannot.
 4. `docker cp` the candidate into the container and run `promtool check config` against it.
 5. Confirm a dated backup of the live file exists.
 6. Write the candidate into the live file with `cat candidate > prometheus.yml`, not `mv`.
@@ -33,7 +33,7 @@ Do not treat a successful file copy or a HUP signal as proof of reload. Verify t
 
 Step 6 matters. `prometheus.yml` is a single-file bind mount, and `mv` replaces the inode while the container stays attached to the old one, which is what cost the 2026-07-13 change a reload. Redirecting into the existing file keeps the inode and removes the failure mode. Restart anyway, because Prometheus still has to re-read the file.
 
-Adding a target on another VLAN needs a UniFi policy from `<YOUR_ORG_NAME>`-Monitor to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
+Adding a target on another VLAN needs a UniFi policy from `AlphaSec`-Monitor to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
 
 ## Change a Dashboard
 
@@ -76,12 +76,12 @@ cAdvisor is pinned to `ghcr.io/google/cadvisor:v0.60.5`. Do not move it back to 
 
 ## User Endpoints
 
-- Homelab Overview: `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview`
-- Prometheus: `https://prometheus.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:9090/`
-- Grafana: `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:3000/`
+- Homelab Overview: `https://grafana.alphasecunited.com/d/homelab-overview`
+- Prometheus: `https://prometheus.alphasecunited.com/`; direct fallback `http://192.168.73.2:9090/`
+- Grafana: `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/`
 
 Exporter endpoints on 9100, 9101, 9115, 9221, and 9995 are backend services. Query them through Prometheus except during diagnostics.
 
-Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
+Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
 
 The Grafana administrator credential is held outside this repository. Retrieve it through the credential-retrieval skill; Prometheus itself has no authentication.

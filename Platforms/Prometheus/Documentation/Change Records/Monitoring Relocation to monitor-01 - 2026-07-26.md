@@ -12,11 +12,11 @@
 
 I moved Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, and the NUT exporter from `security-01` on `grey-server` to CT 104 `monitor-01` on `blue-server`. I kept `node_exporter`, cAdvisor, and Wazuh on `security-01`.
 
-The change added VLAN 73 `MONITOR-A`, custom firewall zone `<YOUR_ORG_NAME>`-Monitor, a dedicated Proxmox API identity, and the firewall paths required by a collector at 192.168.73.2. I also repointed the existing Nginx Proxy Manager hosts for Grafana and Prometheus.
+The change added VLAN 73 `MONITOR-A`, custom firewall zone `AlphaSec`-Monitor, a dedicated Proxmox API identity, and the firewall paths required by a collector at 192.168.73.2. I also repointed the existing Nginx Proxy Manager hosts for Grafana and Prometheus.
 
 ## Starting State
 
-- Prometheus and Grafana ran in a five-container Compose project under `/home/<YOUR_ADMIN_USERNAME>/monitoring` on `security-01`, 192.168.72.2.
+- Prometheus and Grafana ran in a five-container Compose project under `/home/dkadi/monitoring` on `security-01`, 192.168.72.2.
 - `security-01` shared `grey-server` with several workloads it monitored.
 - Prometheus reported 44 of 44 expected targets `up`.
 - The live UniFi controller held 52 user-defined policies. The firewall inventory said 43 because it had not counted the nine Kasm policies retained on 2026-07-23.
@@ -27,7 +27,7 @@ The change added VLAN 73 `MONITOR-A`, custom firewall zone `<YOUR_ORG_NAME>`-Mon
 
 ### 1. Network and firewall foundation
 
-I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24 with DHCP from 192.168.73.6 through 192.168.73.254. CT 104 keeps 192.168.73.2 as a static address in its Proxmox network configuration, outside that pool. I created `<YOUR_ORG_NAME>`-Monitor with only `MONITOR-A`.
+I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24 with DHCP from 192.168.73.6 through 192.168.73.254. CT 104 keeps 192.168.73.2 as a static address in its Proxmox network configuration, outside that pool. I created `AlphaSec`-Monitor with only `MONITOR-A`.
 
 UniFi initially excluded the new network from the shared `Proxmox-Trunk` port profile. I added only `MONITOR-A` to that trunk. The guest could then reach its gateway.
 
@@ -57,7 +57,7 @@ Docker 29.6.2 and Compose 5.3.1 run inside the LXC. The Ansible monitoring-expor
 
 ### 4. Monitoring stack and credentials
 
-I deployed the versioned Compose, Prometheus, blackbox, and Grafana files under `/home/<YOUR_ADMIN_USERNAME>/monitoring`. The untracked `pve.yml` is mode 0600 and owned by `<YOUR_ADMIN_USERNAME>`; `pve-exporter` runs as UID 1000 so it can read that file.
+I deployed the versioned Compose, Prometheus, blackbox, and Grafana files under `/home/dkadi/monitoring`. The untracked `pve.yml` is mode 0600 and owned by `dkadi`; `pve-exporter` runs as UID 1000 so it can read that file.
 
 The six running containers are Prometheus 3.13.1, Grafana 13.1.1, `pve-exporter`, `blackbox-exporter` 0.27.0, NUT exporter 1, and cAdvisor 0.60.5. Grafana 13 uses `/usr/share/grafana/bin/grafana cli`, so I used that supported path instead of the removed `grafana-cli` executable. I rotated the saved administrator credential through stdin, renamed the stored credential for the new host, confirmed the saved login succeeds, and confirmed `admin:admin` fails.
 
@@ -67,7 +67,7 @@ The NPM proxy hosts for Grafana and Prometheus now forward to 192.168.73.2 on po
 
 After the 46-target gate passed, I stopped only the old five-container monitoring Compose project on `security-01`. I then removed the six old UniFi policies, narrowed the retained NPM-to-Wazuh policy to port 443, and installed the final `cluster.fw`.
 
-I deleted `/home/<YOUR_ADMIN_USERNAME>/monitoring`, the `monitoring_prometheus_data` and `monitoring_grafana_data` volumes, and only the five retired monitoring images from `security-01`. I did not prune images. The separate cAdvisor project under `/opt/docker/cadvisor`, `node_exporter`, and all three Wazuh services remained in place.
+I deleted `/home/dkadi/monitoring`, the `monitoring_prometheus_data` and `monitoring_grafana_data` volumes, and only the five retired monitoring images from `security-01`. I did not prune images. The separate cAdvisor project under `/opt/docker/cadvisor`, `node_exporter`, and all three Wazuh services remained in place.
 
 I later removed 50 task leftovers after checking their contents and confirming the live configuration no longer used them: 36 UniFi mutation snapshots, four temporary `cluster.fw` backup or candidate files, three Ansible `.bak` files, four remote assertion copies, the `hello-world:latest` test image, and two local Python bytecode files. The useful Python sources were already tracked at [Tests/assert_targets.py](../../Tests/assert_targets.py), [Tests/assert_dashboard_queries.py](../../Tests/assert_dashboard_queries.py), and [the Ansible project validator](../../../Ansible/Source/monitoring-exporters/tests/validate_project.py), so no source file needed to be moved. The older target assertion on `security-01` matched the versioned [Tests/assert_targets.py](../../Tests/assert_targets.py) as it stood before the 2026-07-26 relocation raised the expected set to 46.
 
@@ -86,10 +86,10 @@ I later removed 50 task leftovers after checking their contents and confirming t
 | Host | CT 104 `monitor-01` on `blue-server` |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; gateway and DNS 192.168.73.1 |
 | DHCP | Enabled at 192.168.73.6 through 192.168.73.254 |
-| Firewall zone | `<YOUR_ORG_NAME>`-Monitor, containing only `MONITOR-A` |
+| Firewall zone | `AlphaSec`-Monitor, containing only `MONITOR-A` |
 | UniFi user-defined policies | 59: started at 52, added 13, deleted 6 |
 | Proxmox API identity | `pve-exporter@pve!monitor01`, `PVEAuditor` on `/` |
-| Stack path | `/home/<YOUR_ADMIN_USERNAME>/monitoring` on `monitor-01` |
+| Stack path | `/home/dkadi/monitoring` on `monitor-01` |
 | Prometheus | 3.13.1, 15-day retention, 46 expected targets |
 | Grafana | 13.1.1, one provisioned Homelab Overview dashboard |
 | NPM upstreams | Grafana 192.168.73.2:3000; Prometheus 192.168.73.2:9090 |
@@ -121,7 +121,7 @@ After the Phase 8 wipe, rollback means rebuilding rather than restoring local da
 
 1. Re-create the six Security-A UniFi policies and restore ports 3000 and 9090 on the NPM-to-`security-01` policy.
 2. Restore the four 192.168.72.2 entries in `cluster.fw`, build a candidate outside `/etc/pve`, run `pve-firewall compile`, and verify ports 22 and 8006.
-3. Deploy [Configuration](../../Configuration/) to `/home/<YOUR_ADMIN_USERNAME>/monitoring` on `security-01`, create a new untracked `pve.yml`, and start the Compose project.
+3. Deploy [Configuration](../../Configuration/) to `/home/dkadi/monitoring` on `security-01`, create a new untracked `pve.yml`, and start the Compose project.
 4. Repoint the Grafana and Prometheus NPM hosts to 192.168.72.2.
 5. Run `promtool`, the exact target assertion, and the dashboard query assertion before removing `monitor-01`.
 
@@ -139,7 +139,7 @@ Seven hosts still carried `gcr.io/cadvisor/cadvisor:v0.52.1` from the 2026-07-25
 
 I also checked every component against its upstream release. Prometheus 3.13.1, Grafana 13.1.1, and cAdvisor v0.60.5 are current. `hon95/prometheus-nut-exporter:1` resolves to v1.2.1 from 2022-08-03, which is still the newest release. `blackbox-exporter` was one release behind, so I moved the pin from v0.27.0 to v0.28.0 and recreated that container alone: `probe_success` returned 1 for all 19 names, certificate expiry still collects for all 19, and the target set stayed at 46 of 46. The upgrade left v0.27.0 behind on `monitor-01`, which is the same leftover I had just cleared off seven other hosts, so that came off too. Every host now holds one image per running service and no dangling layers.
 
-Two fields needed the controller UI, because the plugin has no zone-rename operation and silently drops `description` from a policy update. I made both edits in the browser and confirmed them through the API rather than the interface. The zone reads `<YOUR_ORG_NAME>`-Monitor under an unchanged `zone_id`, so all 13 monitoring policies kept their binding. Policy `6a60fd2c2d027bb05525a876` reads `Allow NPM to security-01 Wazuh`, its description names only the Wazuh dashboard, and its port stayed at 443. The target set held at 46 of 46 with all 19 probes succeeding through both changes.
+Two fields needed the controller UI, because the plugin has no zone-rename operation and silently drops `description` from a policy update. I made both edits in the browser and confirmed them through the API rather than the interface. The zone reads `AlphaSec`-Monitor under an unchanged `zone_id`, so all 13 monitoring policies kept their binding. Policy `6a60fd2c2d027bb05525a876` reads `Allow NPM to security-01 Wazuh`, its description names only the Wazuh dashboard, and its port stayed at 443. The target set held at 46 of 46 with all 19 probes succeeding through both changes.
 
 ## Remaining Work
 

@@ -9,7 +9,7 @@
 
 ## Symptom
 
-The first controller login as `ansible` was rejected because `/etc/ssh/sshd_config.d/60-media-01-hardening.conf` allowed only `<YOUR_ADMIN_USERNAME>`. I added `ansible` to that `AllowUsers` line and validated the configuration with `sshd -t`.
+The first controller login as `ansible` was rejected because `/etc/ssh/sshd_config.d/60-media-01-hardening.conf` allowed only `dkadi`. I added `ansible` to that `AllowUsers` line and validated the configuration with `sshd -t`.
 
 The following `systemctl reload ssh` sent SIGHUP to the socket-activated daemon. The daemon exited with `fatal: Cannot bind any address`, and `ssh.service` entered the failed state. Proxmox console access remained available throughout the 19-second listener interruption.
 
@@ -19,7 +19,7 @@ The following `systemctl reload ssh` sent SIGHUP to the socket-activated daemon.
 
 ## Correction
 
-I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, restarted `ssh.socket`, cleared the failed service state, & started `ssh.service`. I kept `AllowUsers <YOUR_ADMIN_USERNAME> ansible` because both accounts require key-only access.
+I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, restarted `ssh.socket`, cleared the failed service state, & started `ssh.service`. I kept `AllowUsers dkadi ansible` because both accounts require key-only access.
 
 ## Verification
 
@@ -28,7 +28,7 @@ I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, re
 - TCP 22 listened on all configured addresses.
 - The controller logged in as `ansible` with its restricted key.
 - `sudo -n id -u` returned `0`, Docker access passed, & password-only SSH was rejected.
-- I removed the controller key from `/home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` only after the new login passed.
+- I removed the controller key from `/home/dkadi/.ssh/authorized_keys` only after the new login passed.
 
 ## Future Handling
 

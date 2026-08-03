@@ -64,7 +64,7 @@ splunk-siem blocks Guest Agent command execution. I used its existing stored sud
 
 ## Findings During Rollout
 
-- media-01 allowed only `<YOUR_ADMIN_USERNAME>` through SSH. I added `ansible`; its socket-activated daemon then failed during reload and returned 19 seconds later after I restarted the socket and service together. The [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/SSH%20Reload%20Failed%20During%20Ansible%20Account%20Onboarding%20-%202026-07-25.md) holds the cause and checks.
+- media-01 allowed only `dkadi` through SSH. I added `ansible`; its socket-activated daemon then failed during reload and returned 19 seconds later after I restarted the socket and service together. The [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/SSH%20Reload%20Failed%20During%20Ansible%20Account%20Onboarding%20-%202026-07-25.md) holds the cause and checks.
 - security-01 loaded `PasswordAuthentication yes` from `50-cloud-init.conf` before the main-file `no`. I added an earlier hardening drop-in, validated it, reloaded SSH, & confirmed the effective value is `no`.
 - Compose check mode first failed on protected `.env` files. I changed the play to use the account's validated passwordless sudo, reran syntax and project checks, & completed all sixteen dry-run project checks.
 - The live `fedora-dev` identity contained placeholder public-key and fingerprint values. I preserved it under the controller's private `identities/Archive/` folder and left the four valid identities active.

@@ -181,7 +181,7 @@ Working directory:
 D:\Documents\Homelab
 
 Command:
-curl.exe -k -sS --max-time 20 -o NUL -w "ROOT HTTP %{http_code} in %{time_total}s`n" https://kasm.<YOUR_BASE_DOMAIN>/; curl.exe -k -sS --max-time 20 -o NUL -w "HEALTH HTTP %{http_code} in %{time_total}s`n" https://kasm.<YOUR_BASE_DOMAIN>/api/__healthcheck
+curl.exe -k -sS --max-time 20 -o NUL -w "ROOT HTTP %{http_code} in %{time_total}s`n" https://kasm.alphasecunited.com/; curl.exe -k -sS --max-time 20 -o NUL -w "HEALTH HTTP %{http_code} in %{time_total}s`n" https://kasm.alphasecunited.com/api/__healthcheck
 
 Standard output:
 ROOT HTTP 200 in 0.021883s

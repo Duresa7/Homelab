@@ -5,14 +5,14 @@
 
 **Date:** 2026-07-13  
 **Target:** `docker-main`, container `termix`  
-**Impact:** The local user `<YOUR_ADMIN_USERNAME>` could initiate password recovery, but the six-digit code was unavailable through either location named by the application. The service otherwise remained healthy.
+**Impact:** The local user `dkadi` could initiate password recovery, but the six-digit code was unavailable through either location named by the application. The service otherwise remained healthy.
 
 ## Symptom
 
 Termix logged the successful reset request without the value:
 
 ```text
-[11:27:57 PM] [INFO] Password reset code generated for user <YOUR_ADMIN_USERNAME> (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
+[11:27:57 PM] [INFO] Password reset code generated for user dkadi (expires at 7/13/2026, 11:42:57 PM). Check admin panel or database settings table for code.
 ```
 
 The API response also instructed the user to check Docker logs for a code that was not present.

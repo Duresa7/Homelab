@@ -12,8 +12,8 @@ The Kasm NPM hostname returned HTTP `502` while a Parrot OS workspace image was 
 The NPM route reproduced the failure in 3.13 seconds:
 
 ```text
-https://kasm.<YOUR_BASE_DOMAIN>/|502|192.168.85.2|3.134773
-https://kasm.<YOUR_BASE_DOMAIN>/api/__healthcheck|502|192.168.85.2|3.176288
+https://kasm.alphasecunited.com/|502|192.168.85.2|3.134773
+https://kasm.alphasecunited.com/api/__healthcheck|502|192.168.85.2|3.176288
 https://192.168.78.10/api/__healthcheck|000||10.016189
 ```
 

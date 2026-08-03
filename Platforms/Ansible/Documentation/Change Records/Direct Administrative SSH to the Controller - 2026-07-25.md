@@ -21,15 +21,15 @@ I added my two workstation keys to `ansible-01`, so I reach the controller over 
 
 | Step | Action | Observed result |
 |---|---|---|
-| S01 | Read the two admin keys out of grey-server's `/root/.ssh/authorized_keys` by comment | Matched 2 lines, `jedi-pc` & `mac-air3-<YOUR_ADMIN_USERNAME>` |
-| S02 | Appended both to `/home/ansible/.ssh/authorized_keys` with a duplicate check, then reset owner to `ansible:ansible` & mode to `0600` | File is 367 bytes holding 3 keys: `ansible-control`, `mac-air3-<YOUR_ADMIN_USERNAME>`, `jedi-pc` |
+| S01 | Read the two admin keys out of grey-server's `/root/.ssh/authorized_keys` by comment | Matched 2 lines, `jedi-pc` & `mac-air3-dkadi` |
+| S02 | Appended both to `/home/ansible/.ssh/authorized_keys` with a duplicate check, then reset owner to `ansible:ansible` & mode to `0600` | File is 367 bytes holding 3 keys: `ansible-control`, `mac-air3-dkadi`, `jedi-pc` |
 | S03 | Logged in from jedi-pc with `ssh -o BatchMode=yes ansible-01` | Returned `ansible-01`, `ansible`, & `ansible [core 2.21.2]` |
 
 I copied `authorized_keys` to a `.bak` file before editing & removed that copy before running S03, so the login test ran against the only remaining copy. `ls -a /home/ansible/.ssh/` now matches on nothing containing `bak`, `tmp`, or `admin-keys`, & the staging file `/tmp/admin-keys.pub` is gone from both grey-server & the container.
 
 ## Post-Change Verification
 
-`ssh -v` from jedi-pc reports `Server accepts key: SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4` & `Authenticated to 192.168.40.36 ([192.168.40.36]:22) using "publickey"`. The `mac-air3-<YOUR_ADMIN_USERNAME>` line carries `SHA256:QyNF8ipQ5F/1KV69opH2QHuVVclpfNnZFGhDYZL38rM`, the same fingerprint that line has in grey-server's `/root/.ssh/authorized_keys`. I haven't logged in from the Mac itself.
+`ssh -v` from jedi-pc reports `Server accepts key: SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4` & `Authenticated to 192.168.40.36 ([192.168.40.36]:22) using "publickey"`. The `mac-air3-dkadi` line carries `SHA256:QyNF8ipQ5F/1KV69opH2QHuVVclpfNnZFGhDYZL38rM`, the same fingerprint that line has in grey-server's `/root/.ssh/authorized_keys`. I haven't logged in from the Mac itself.
 
 The file is 3 lines & 367 bytes with 0 duplicate key bodies. Line 1 still carries `from="192.168.40.36",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty`; my two lines carry no options. Directory mode is `0700` & the file is `0600`, both owned `ansible:ansible`.
 
@@ -45,4 +45,4 @@ Two consequences follow. My keys sit in the same file as the automation key, so 
 
 ## Rollback
 
-Remove the `jedi-pc` & `mac-air3-<YOUR_ADMIN_USERNAME>` lines from `/home/ansible/.ssh/authorized_keys` through `pct exec 100` on grey-server. The `ansible-control` line must stay: deleting it breaks the controller's own loopback identity. Access reverts to `pct exec`, which never depended on this change.
+Remove the `jedi-pc` & `mac-air3-dkadi` lines from `/home/ansible/.ssh/authorized_keys` through `pct exec 100` on grey-server. The `ansible-control` line must stay: deleting it breaks the controller's own loopback identity. Access reverts to `pct exec`, which never depended on this change.

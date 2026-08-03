@@ -15,7 +15,7 @@ Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent por
 ## Starting State
 
 - NPM 2.15.1 was healthy on `docker-network` with one existing NetBird proxy host.
-- Certificate ID 1 covered `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` and expired on 2026-10-08.
+- Certificate ID 1 covered `*.alphasecunited.com` and `alphasecunited.com` and expired on 2026-10-08.
 - UniFi held only the existing NetBird local A record for NPM.
 - The 19 applications were reachable by their existing IP-and-port paths.
 - Syncthing's server GUI listened only on loopback.
@@ -23,7 +23,7 @@ Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent por
 
 ## Decisions
 
-- I used direct names such as `jellyfin.<YOUR_BASE_DOMAIN>` because the existing wildcard certificate covers one label beneath the base domain.
+- I used direct names such as `jellyfin.alphasecunited.com` because the existing wildcard certificate covers one label beneath the base domain.
 - I assigned WebSocket support to every host. That keeps the shared baseline simple and preserves the applications that need upgraded connections.
 - I kept HSTS disabled. Force SSL provides the required redirect without making rollback dependent on a cached HSTS policy.
 - I used HTTPS upstreams only for Portainer 9443, Wazuh 443, & Splunk 8000. All other NPM-to-application connections use HTTP on the internal network.
@@ -39,7 +39,7 @@ I captured the mutable NPM, Docker Main, Media Stack, Ansible, & security-monito
 | Docker Main | `/opt/docker/backups/internal-https-2026-07-22-prechange/docker-main-configs.tar.gz` | `8dc6e361375aa7f93760a70cb7c26aee97c0ecfe95bc35be61390718563bbadb` |
 | Media Stack | `/var/lib/vz/dump/internal-https-2026-07-22-prechange/media-01-configs.tar.gz` | `97114cea42417ef24eff75f00cb43db44634d4a896688cdba8b659cddbfa88e7` |
 | Ansible | `/var/lib/vz/dump/internal-https-2026-07-22-prechange/ansible-01-configs.tar.gz` | `85cd68768ed57f47c0d60fd0177e3a82d1590ccb66493baf24778c35d53dfb26` |
-| Security monitoring | `/home/<YOUR_ADMIN_USERNAME>/backups/internal-https-2026-07-22-prechange/security-monitoring-compose-sanitized.tar.gz` | Sanitized Compose backup; no password retained |
+| Security monitoring | `/home/dkadi/backups/internal-https-2026-07-22-prechange/security-monitoring-compose-sanitized.tar.gz` | Sanitized Compose backup; no password retained |
 
 I didn't change Splunk configuration, so I kept its current service state as the rollback baseline instead of bypassing permissions to archive unrelated files. The NPM recovery point included the SQLite database, generated hosts, ACME state, & certificate files needed to restore the proxy layer.
 
@@ -51,12 +51,12 @@ I deleted all six project-created archives after implementation at the owner's r
 
 I made only the application changes needed for the new names:
 
-- Jellyfin now advertises `https://jellyfin.<YOUR_BASE_DOMAIN>` and trusts NPM address `192.168.85.2` as a proxy.
-- qBittorrent accepts `qbittorrent.<YOUR_BASE_DOMAIN>`, internal Docker hostname `gluetun`, & direct address `192.168.40.42` as WebUI server domains.
-- Semaphore's `web_host` uses `https://semaphore.<YOUR_BASE_DOMAIN>`.
+- Jellyfin now advertises `https://jellyfin.alphasecunited.com` and trusts NPM address `192.168.85.2` as a proxy.
+- qBittorrent accepts `qbittorrent.alphasecunited.com`, internal Docker hostname `gluetun`, & direct address `192.168.40.42` as WebUI server domains.
+- Semaphore's `web_host` uses `https://semaphore.alphasecunited.com`.
 - Forgejo's `DOMAIN` and `ROOT_URL` use the new HTTPS host. `SSH_DOMAIN` remains `192.168.40.35`.
-- Grafana's domain and root URL use `https://grafana.<YOUR_BASE_DOMAIN>` while its container listener stays HTTP.
-- Prometheus starts with `--web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>`.
+- Grafana's domain and root URL use `https://grafana.alphasecunited.com` while its container listener stays HTTP.
+- Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`.
 - Syncthing's server GUI now binds on `0.0.0.0:8384` so NPM can reach it. Its synchronization listeners and peer paths are unchanged.
 - I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, & verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Plaintext Administrator Credential - 2026-07-22.md) records the exposure boundary and corrective actions without retaining the credential.
 
@@ -70,7 +70,7 @@ Evidence: [Step 2 backend compatibility verification](../../Evidence/Internal%20
 
 ## Step 3: Add UniFi DNS and Firewall State
 
-I added 19 enabled local A records with TTL 300. Each direct service name beneath `<YOUR_BASE_DOMAIN>` resolves to `192.168.85.2`. The existing NetBird record remained unchanged.
+I added 19 enabled local A records with TTL 300. Each direct service name beneath `alphasecunited.com` resolves to `192.168.85.2`. The existing NetBird record remained unchanged.
 
 I previewed the firewall changes before application, then added these five enabled, logged TCP policies from exact source `192.168.85.2`:
 
@@ -110,7 +110,7 @@ I verified the complete route set from an Internal-zone Windows client:
 - All 19 UniFi A queries returned `192.168.85.2`.
 - All 19 HTTP requests returned 301 and redirected to HTTPS.
 - All 19 HTTPS requests returned an application response: 200, 302, 303, or 307. None returned 502 or 504.
-- Every host presented the same `CN=*.<YOUR_BASE_DOMAIN>` certificate, with the same thumbprint prefix and 2026-10-08 expiry. Normal certificate validation succeeded.
+- Every host presented the same `CN=*.alphasecunited.com` certificate, with the same thumbprint prefix and 2026-10-08 expiry. Normal certificate validation succeeded.
 - Cloudflare DNS-over-HTTPS returned NXDOMAIN (`Rcode 3`) for all 19 public A queries.
 - UniFi reported zero port-forward rules, so TCP 80 and 443 on `192.168.85.2` have no WAN NAT path.
 - Jellyfin `/health`, Immich `/api/server/ping`, Portainer `/api/status`, Syncthing `/rest/noauth/health`, Grafana `/api/health`, & Prometheus `/-/healthy` returned HTTP 200.

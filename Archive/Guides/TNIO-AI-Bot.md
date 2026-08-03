@@ -9,7 +9,7 @@ I operated TNIO as a Discord bot backed by a lore retrieval service on `ai-bravo
 
 ## Current Status and Verified Versions
 
-The former project path was `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. The archive contains primary, remote, experimental, & legacy source snapshots plus policy, corpus, & golden-evaluation tests. The records describe repeated live fixes & accuracy audits, but they don't contain a clean deployment from an empty host or one product version number.
+The former project path was `/home/aibravo/lore-rag`. The archive contains primary, remote, experimental, & legacy source snapshots plus policy, corpus, & golden-evaluation tests. The records describe repeated live fixes & accuracy audits, but they don't contain a clean deployment from an empty host or one product version number.
 
 ## What You Need
 
@@ -27,7 +27,7 @@ The former project path was `/home/<YOUR_DEPLOYMENT_USER>/lore-rag`. The archive
 
 ### Step 1: Identify the Source You Intend to Deploy
 
-I treat `Source/lore-rag/` as the primary snapshot and `Source/lore-rag-remote/` as the remote variant. Before copying anything, I compare the selected files with `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` and record which service consumes each one.
+I treat `Source/lore-rag/` as the primary snapshot and `Source/lore-rag-remote/` as the remote variant. Before copying anything, I compare the selected files with `/home/aibravo/lore-rag` and record which service consumes each one.
 
 ### Step 2: Check Service and Sync State
 

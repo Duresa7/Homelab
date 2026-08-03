@@ -34,7 +34,7 @@ sudo docker logs grafana 2>&1 | grep -c "level=error"
 
 `sudo` needs a password on this host and failed. Because `2>&1` was on the `docker logs` side of the pipe, sudo's own complaint went into `grep` instead of to the terminal, matched nothing, and printed `0`. A clean zero from a command that never ran.
 
-`<YOUR_ADMIN_USERNAME>` is in the `docker` group, so `sudo` was never needed here at all. Dropping it returned the real count. Worth remembering: `2>&1 | grep -c` converts a failed command into a confident zero.
+`dkadi` is in the `docker` group, so `sudo` was never needed here at all. Dropping it returned the real count. Worth remembering: `2>&1 | grep -c` converts a failed command into a confident zero.
 
 ## Root Cause
 

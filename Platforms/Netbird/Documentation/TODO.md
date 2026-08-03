@@ -16,9 +16,9 @@ The NetBird control plane, HTTPS publication, authenticated administrator dashbo
 
 Completed 2026-07-12; see [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
-- [x] Enroll the first NetBird peers and confirm they reach the control plane through `https://<YOUR_NETBIRD_DOMAIN>`.
+- [x] Enroll the first NetBird peers and confirm they reach the control plane through `https://netbird.alphsec.com`.
 - [x] Exercise the live WireGuard data path with real peers (direct peer-to-peer tunnel confirmed), not configuration-only probes.
-- [x] Confirm the VPN-client path into Access-A and document the owning route (`<YOUR_ORG_NAME>`-Access network, `docker-network` routing peer) and masquerade/firewall behavior.
+- [x] Confirm the VPN-client path into Access-A and document the owning route (`AlphaSec`-Access network, `docker-network` routing peer) and masquerade/firewall behavior.
 
 ## Operational Follow-ups
 

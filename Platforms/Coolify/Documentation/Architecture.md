@@ -15,14 +15,14 @@ Coolify installs itself with Docker Compose & keeps everything on the `coolify` 
 
 ## How a deployment becomes a URL
 
-Publishing `<name>.<YOUR_PUBLIC_DOMAIN>` takes one input from me: the domain field on the Coolify resource. The wildcard DNS record, the wildcard tunnel ingress rule, & the wildcard Caddy site already exist, so I add no DNS, tunnel, or Caddy configuration. Coolify writes the Traefik router, Traefik starts matching the Host, & the service answers. TLS is Cloudflare's at the edge, so the app speaks plain HTTP inside the chain.
+Publishing `<name>.alphsec.com` takes one input from me: the domain field on the Coolify resource. The wildcard DNS record, the wildcard tunnel ingress rule, & the wildcard Caddy site already exist, so I add no DNS, tunnel, or Caddy configuration. Coolify writes the Traefik router, Traefik starts matching the Host, & the service answers. TLS is Cloudflare's at the edge, so the app speaks plain HTTP inside the chain.
 
 ## Control-panel path vs app path
 
-The dashboard & the apps take different routes on purpose. `coolify-a1.<YOUR_PUBLIC_DOMAIN>` bypasses Caddy & Traefik & hits the control panel on port 8000, so the panel stays reachable even while the proxy is being reconfigured. Deployed apps ride `*.<YOUR_PUBLIC_DOMAIN>` through Caddy & Traefik.
+The dashboard & the apps take different routes on purpose. `coolify-a1.alphsec.com` bypasses Caddy & Traefik & hits the control panel on port 8000, so the panel stays reachable even while the proxy is being reconfigured. Deployed apps ride `*.alphsec.com` through Caddy & Traefik.
 
 ## Security notes
 
-- Only `coolify-a1.<YOUR_PUBLIC_DOMAIN>` sits behind Cloudflare Access. Any other `*.<YOUR_PUBLIC_DOMAIN>` host is public once deployed, so I add Access or app-level auth for anything that shouldn't be open.
-- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.<YOUR_PUBLIC_DOMAIN>/webhooks/source/github/events`; child paths & the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/applications.md).
+- Only `coolify-a1.alphsec.com` sits behind Cloudflare Access. Any other `*.alphsec.com` host is public once deployed, so I add Access or app-level auth for anything that shouldn't be open.
+- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.alphsec.com/webhooks/source/github/events`; child paths & the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/applications.md).
 - The UniFi edge policy limits edge-01 to TCP 80 & 8000 on this host.

@@ -11,7 +11,7 @@ Jedi PC is my Windows 11 Pro administration workstation. It has a 16-core Ryzen 
 |---|---|
 | Nickname | Jedi PC |
 | Computer Name | `<YOUR_WORKSTATION_NAME>` |
-| User | `<YOUR_ADMIN_USERNAME>` |
+| User | `dkadi` |
 | Manufacturer | ASUS |
 | Model | System Product Name (custom build) |
 | System Type | x64-based PC |

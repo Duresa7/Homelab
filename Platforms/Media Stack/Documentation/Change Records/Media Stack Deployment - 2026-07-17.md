@@ -41,7 +41,7 @@ No dedicated media guest or platform record existed.
 | Step | Action | Observed result |
 | --- | --- | --- |
 | S01 | Created and configured the unprivileged LXC | Guest running on `red-server`; resource, VLAN, firewall, startup, and device settings matched the table above |
-| S02 | Applied the Linux host baseline | Approved-key SSH worked; root locked; root/password/keyboard-interactive SSH disabled; `<YOUR_ADMIN_USERNAME>` NOPASSWD sudo verified |
+| S02 | Applied the Linux host baseline | Approved-key SSH worked; root locked; root/password/keyboard-interactive SSH disabled; `dkadi` NOPASSWD sudo verified |
 | S03 | Installed Docker and deployed the core services | Six non-VPN services running; Jellyfin healthy; service HTTP checks returned successful or expected redirect responses |
 | S04 | Passed the Intel render device to Jellyfin | Intel iHD driver and H.264, HEVC Main 10, and VP9 hardware profiles observed in the container |
 | S05 | Configured Prowlarr, Sonarr, Radarr, and FlareSolverr | Prowlarr application links saved; media root paths present; tagged FlareSolverr proxy available but not yet tested against a real challenge |

@@ -80,7 +80,7 @@ For OS updates, add the host under `os_update_targets` with its `ansible_host` &
 
 ## Publication note
 
-The copy in this repository uses `<YOUR_ADMIN_USERNAME>` in workload-owned compose paths on alpha-prod-01 & monitor-01. The copy deployed at `/home/ansible/fleet-updates` on `ansible-01` uses the accounts that own those directories.
+The copy in this repository uses `dkadi` in workload-owned compose paths on alpha-prod-01 & monitor-01. The copy deployed at `/home/ansible/fleet-updates` on `ansible-01` uses the accounts that own those directories.
 
 ## Semaphore
 

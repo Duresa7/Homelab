@@ -16,7 +16,7 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 
 - CT 107 and Docker did not exist before this bounded deployment.
 - No Nginx Proxy Manager instance or shared `proxy` Docker network existed on the new guest.
-- No Cloudflare DNS-01 certificate or proxy host existed for `<YOUR_NETBIRD_DOMAIN>`.
+- No Cloudflare DNS-01 certificate or proxy host existed for `netbird.alphsec.com`.
 
 ## Implementation
 
@@ -31,8 +31,8 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 9. I saved the NetBird proxy host; it reported Online with upstream `http://netbird-dashboard:80`, Block Common Exploits, and WebSocket Support enabled.
 10. I applied the 1,296-character advanced configuration for API, OAuth2, WebSocket, signal, management, and gRPC routing.
 11. `nginx -t` succeeded, and an HTTP Host-header request through NPM returned the NetBird dashboard with status `200`.
-12. NPM obtained a Let's Encrypt DNS-01 certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`. The certificate expires `2026-10-08 23:49:46 UTC`.
-13. I assigned the certificate to `<YOUR_NETBIRD_DOMAIN>` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
+12. NPM obtained a Let's Encrypt DNS-01 certificate for `*.alphasecunited.com` and `alphasecunited.com`. The certificate expires `2026-10-08 23:49:46 UTC`.
+13. I assigned the certificate to `netbird.alphsec.com` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
 14. The HTTPS client path presented the expected certificate and loaded the authenticated NetBird dashboard.
 15. I restarted the NPM and NetBird Compose projects in a controlled validation. Both stacks returned healthy, the proxy configuration remained valid, and the authenticated HTTPS dashboard remained reachable.
 
@@ -63,13 +63,13 @@ The intended proxy host is:
 
 | Field | Current value |
 |---|---|
-| Domain | `<YOUR_NETBIRD_DOMAIN>` |
+| Domain | `netbird.alphsec.com` |
 | Scheme | `http` |
 | Default upstream | `netbird-dashboard:80` |
 | WebSocket support | Enabled |
 | Block common exploits | Enabled |
 | Advanced routes | `Configuration/netbird-advanced-config.conf` |
-| Certificate | Let's Encrypt DNS-01 certificate for `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>`; expires `2026-10-08 23:49:46 UTC` |
+| Certificate | Let's Encrypt DNS-01 certificate for `*.alphasecunited.com` and `alphasecunited.com`; expires `2026-10-08 23:49:46 UTC` |
 | Force SSL | Enabled |
 | HTTP/2 | Enabled |
 
@@ -87,7 +87,7 @@ The advanced configuration sends dashboard traffic to `netbird-dashboard` and Ne
 - The initialized-administrator dashboard loaded after setup.
 - The wildcard/apex certificate was issued through Cloudflare DNS-01, assigned to the NetBird host, and observed with expiry `2026-10-08 23:49:46 UTC`.
 - The renewal configuration uses the non-interactive `dns-cloudflare` authenticator, NPM's Node backend checks hourly for certificates within 30 days of expiry, and a Let's Encrypt staging dry-run succeeded for lineage `npm-1` on 2026-07-12.
-- Force SSL redirects the client path to HTTPS, HTTP/2 is enabled, and the authenticated NetBird dashboard loads through `https://<YOUR_NETBIRD_DOMAIN>`.
+- Force SSL redirects the client path to HTTPS, HTTP/2 is enabled, and the authenticated NetBird dashboard loads through `https://netbird.alphsec.com`.
 - After controlled NPM and NetBird Compose restarts, all containers returned healthy and the authenticated HTTPS dashboard remained reachable.
 - Docker inspection confirmed bounded `json-file` logging with `max-size=10m` and `max-file=3` on the NPM container.
 
@@ -105,6 +105,6 @@ These results verify the runtime, inter-container path, saved host, certificate 
 
 On 2026-07-22 I added 19 internal application proxy hosts without changing the NetBird host or NPM administrator path. UniFi resolves each name to `192.168.85.2`; five narrow firewall policies permit NPM to the approved web listeners. Every host uses the existing wildcard certificate with Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. The full mapping, compatibility changes, verification, backup disposition, & rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
-On 2026-07-28 I added TS3 Manager at `ts3-manager.<YOUR_BASE_DOMAIN>` with one exact NPM-to-backend TCP 9000 policy and one local A record. Termix had been retired earlier that day, so NPM returned to 20 total hosts rather than growing past its earlier count. The [TS3 Manager Internal HTTPS record](Change%20Records/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28.md) holds the saved IDs, restart check, 46-target monitoring result, & rollback commands. No backup from that change remains.
+On 2026-07-28 I added TS3 Manager at `ts3-manager.alphasecunited.com` with one exact NPM-to-backend TCP 9000 policy and one local A record. Termix had been retired earlier that day, so NPM returned to 20 total hosts rather than growing past its earlier count. The [TS3 Manager Internal HTTPS record](Change%20Records/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28.md) holds the saved IDs, restart check, 46-target monitoring result, & rollback commands. No backup from that change remains.
 
 No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material.

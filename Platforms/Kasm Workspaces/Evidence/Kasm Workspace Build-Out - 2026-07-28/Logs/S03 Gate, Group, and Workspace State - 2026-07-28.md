@@ -34,7 +34,7 @@ max_kasms_per_user=2
 session_time_limit=3600
 ```
 
-`All Users` settings and the `<YOUR_ADMIN_USERNAME>` membership rows did not change.
+`All Users` settings and the `dkadi` membership rows did not change.
 
 ## Persistent profiles
 

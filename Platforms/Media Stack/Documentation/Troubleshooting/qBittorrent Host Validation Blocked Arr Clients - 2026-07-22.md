@@ -26,7 +26,7 @@ Changing only the HTTP `Host` header isolated the rejection:
 |---|---|
 | `gluetun:8080` | HTTP `401`, body `Unauthorized` |
 | `192.168.40.42:8080` | HTTP `401` |
-| `qbittorrent.<YOUR_BASE_DOMAIN>` | HTTP `200`, body `v5.2.3` |
+| `qbittorrent.alphasecunited.com` | HTTP `200`, body `v5.2.3` |
 
 The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md) retains the request commands and outputs, safe configuration readback, container network state, & the explicit boundary for the filtered Arr log lines that weren't copied into the local artifact.
 
@@ -41,7 +41,7 @@ The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/H
 
 ## Root Cause
 
-I set `WebUI\ServerDomains` to only `qbittorrent.<YOUR_BASE_DOMAIN>` while adding NPM. qBittorrent performs Host-header validation before WebUI authentication, so it rejected the existing Arr requests carrying `Host: gluetun:8080` even though their Docker subnet and target port were correct. I didn't edit either saved client; both tests passed after the Host-list repair.
+I set `WebUI\ServerDomains` to only `qbittorrent.alphasecunited.com` while adding NPM. qBittorrent performs Host-header validation before WebUI authentication, so it rejected the existing Arr requests carrying `Host: gluetun:8080` even though their Docker subnet and target port were correct. I didn't edit either saved client; both tests passed after the Host-list repair.
 
 The Gluetun and qBittorrent recreation made the new value active at 13:31 EDT. The Arr path remained unavailable until 20:49 EDT, an observed window of about 7 hours 18 minutes. The NPM route test passed because NPM sent the one allowed hostname; that test didn't exercise the separate Docker hostname used by Sonarr and Radarr.
 
@@ -50,7 +50,7 @@ The Gluetun and qBittorrent recreation made the new value active at 13:31 EDT. T
 I kept Host-header validation enabled and changed the semicolon-separated server-domain list through qBittorrent's Web API:
 
 ```text
-qbittorrent.<YOUR_BASE_DOMAIN>;gluetun;192.168.40.42
+qbittorrent.alphasecunited.com;gluetun;192.168.40.42
 ```
 
 The direct hostname supports NPM, `gluetun` supports Sonarr and Radarr, & `192.168.40.42` preserves direct IP-and-port access. The qBittorrent [WebUI API reference](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-%28qBittorrent-4.1%29) defines `web_ui_domain_list` as a semicolon-separated list.
@@ -59,7 +59,7 @@ I created no backup. The API serialized the corrected value to the existing qBit
 
 ## Verification
 
-- The persistent configuration reads `WebUI\ServerDomains="qbittorrent.<YOUR_BASE_DOMAIN>;gluetun;192.168.40.42"`.
+- The persistent configuration reads `WebUI\ServerDomains="qbittorrent.alphasecunited.com;gluetun;192.168.40.42"`.
 - The preferences API reports `web_ui_host_header_validation_enabled=true`.
 - Three Radarr and three Sonarr calls through `gluetun:8080` returned HTTP `200` in 2.3 ms or less.
 - Radarr and Sonarr `downloadclient/testall` each returned HTTP `200`.
@@ -76,7 +76,7 @@ I had no failed corrective attempt. One combined verification command returned e
 
 ## Rollback
 
-The previous single-domain value is known, but restoring it would reproduce the outage. If I must remove the direct IP path later, I can remove only `192.168.40.42`; `qbittorrent.<YOUR_BASE_DOMAIN>` and `gluetun` are required while NPM and the Arr clients use their current paths.
+The previous single-domain value is known, but restoring it would reproduce the outage. If I must remove the direct IP path later, I can remove only `192.168.40.42`; `qbittorrent.alphasecunited.com` and `gluetun` are required while NPM and the Arr clients use their current paths.
 
 ## Linked Records
 

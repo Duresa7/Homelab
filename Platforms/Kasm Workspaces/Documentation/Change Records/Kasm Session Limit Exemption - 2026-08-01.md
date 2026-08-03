@@ -9,9 +9,9 @@
 
 ## Result
 
-My `<YOUR_ADMIN_USERNAME>` account no longer has a session time limit. An active session now runs until I end it, survives a closed browser tab for seven days, and won't be disconnected for sitting idle. The `alpha` account kept its one-hour cap, its three-session ceiling, and every containment setting, so nothing about the lab lanes changed.
+My `dkadi` account no longer has a session time limit. An active session now runs until I end it, survives a closed browser tab for seven days, and won't be disconnected for sitting idle. The `alpha` account kept its one-hour cap, its three-session ceiling, and every containment setting, so nothing about the lab lanes changed.
 
-The fix wasn't setting a limit to zero. Kasm 1.19.0 treats a `session_time_limit` of `0` as present rather than absent, and a present value stops the keepalive from being extended at all. I had to remove the setting from every group `<YOUR_ADMIN_USERNAME>` belongs to, which meant moving the limit onto `alpha` instead of relaxing it on the group both accounts share.
+The fix wasn't setting a limit to zero. Kasm 1.19.0 treats a `session_time_limit` of `0` as present rather than absent, and a present value stops the keepalive from being extended at all. I had to remove the setting from every group `dkadi` belongs to, which meant moving the limit onto `alpha` instead of relaxing it on the group both accounts share.
 
 I then lifted the eight `Lab Sessions` restrictions on my account as well, so download, clipboard in both directions, seamless clipboard, printing, sharing, microphone, and user storage mappings all work on every tile including the malware and review lanes. `alpha` keeps every one of them.
 
@@ -23,7 +23,7 @@ This change covered twelve `group_settings` rows, one new group, and one group m
 
 `get_setting_value` in `/src/api_server/data/model.pyc` walks every group the user belongs to, keeps the value from the group with the numerically lowest `priority`, and starts its comparison at 4096. One group wins outright. There's no merge and no most-restrictive rule, so a permissive value in a priority 1 group beats a restrictive value in a priority 100 group.
 
-The three groups were `Administrators` at priority 1, `Lab Sessions` at 100, and `All Users` at 1000. `Administrators` is a system group holding only `<YOUR_ADMIN_USERNAME>`, which makes it the natural place for anything that should apply to me alone.
+The three groups were `Administrators` at priority 1, `Lab Sessions` at 100, and `All Users` at 1000. `Administrators` is a system group holding only `dkadi`, which makes it the natural place for anything that should apply to me alone.
 
 ## The Zero-Versus-Absent Trap
 
@@ -39,19 +39,19 @@ Absent is the only state that means unlimited. Kasm's own migration `513964618cf
 
 ### Step 1: Read the live state and back up the database
 
-`<YOUR_ADMIN_USERNAME>` resolved to `session_time_limit` 3600 from `Lab Sessions`, `keepalive_expiration` 3600 and `keepalive_expiration_action` `delete` from `All Users`, `idle_disconnect` 20 minutes from `All Users`, and `max_kasms_per_user` 3 from `Lab Sessions`. No workspace row carried its own `session_time_limit`, so the group value was the only clock.
+`dkadi` resolved to `session_time_limit` 3600 from `Lab Sessions`, `keepalive_expiration` 3600 and `keepalive_expiration_action` `delete` from `All Users`, `idle_disconnect` 20 minutes from `All Users`, and `max_kasms_per_user` 3 from `Lab Sessions`. No workspace row carried its own `session_time_limit`, so the group value was the only clock.
 
-`pg_dump` produced 1,756,363,737 bytes, which gzip reduced to 234 MB at `/home/<YOUR_ADMIN_USERNAME>/kasm-db-backup-2026-08-01.sql.gz`. The `logs` table accounts for 1556 MB of that, against 424 kB for `servers` and 224 kB for `kasms`.
+`pg_dump` produced 1,756,363,737 bytes, which gzip reduced to 234 MB at `/home/dkadi/kasm-db-backup-2026-08-01.sql.gz`. The `logs` table accounts for 1556 MB of that, against 424 kB for `servers` and 224 kB for `kasms`.
 
 ### Step 2: Move the limit onto alpha rather than off the shared group
 
-`Lab Sessions` grants the 19 lane-assigned tiles and carries no egress, file, storage, or permission mappings, so pulling `<YOUR_ADMIN_USERNAME>` out of it would only have cost tile access. I left the membership alone anyway, because staying in the group keeps the download and clipboard restrictions applied to my own sessions.
+`Lab Sessions` grants the 19 lane-assigned tiles and carries no egress, file, storage, or permission mappings, so pulling `dkadi` out of it would only have cost tile access. I left the membership alone anyway, because staying in the group keeps the download and clipboard restrictions applied to my own sessions.
 
-Instead I created `Lab Session Time Limit` at priority 50, added `alpha` to it, gave it the single row `session_time_limit` 3600, and deleted that row from `Lab Sessions`. Priority 50 beats `Lab Sessions` at 100, so `alpha` resolves to the same 3600 it did before. `<YOUR_ADMIN_USERNAME>` now belongs to no group that defines the setting.
+Instead I created `Lab Session Time Limit` at priority 50, added `alpha` to it, gave it the single row `session_time_limit` 3600, and deleted that row from `Lab Sessions`. Priority 50 beats `Lab Sessions` at 100, so `alpha` resolves to the same 3600 it did before. `dkadi` now belongs to no group that defines the setting.
 
 ### Step 3: Set the remaining timers on Administrators
 
-Three rows went onto `Administrators`, which only `<YOUR_ADMIN_USERNAME>` can reach:
+Three rows went onto `Administrators`, which only `dkadi` can reach:
 
 | Setting | Value | Effect |
 | --- | --- | --- |
@@ -83,7 +83,7 @@ I restarted `kasm_api` and `kasm_manager` after each write. All eight services r
 
 Replaying the priority rule against the live database gives:
 
-| Setting | `<YOUR_ADMIN_USERNAME>` | Won from | `alpha` | Won from |
+| Setting | `dkadi` | Won from | `alpha` | Won from |
 | --- | --- | --- | --- | --- |
 | `session_time_limit` | absent | none | 3600 | `Lab Session Time Limit` (50) |
 | `keepalive_expiration` | 604800 | `Administrators` (1) | 3600 | `All Users` (1000) |
@@ -96,9 +96,9 @@ All eight services returned healthy after the second write as well, and the heal
 
 ## Final State
 
-- `<YOUR_ADMIN_USERNAME>` has no `session_time_limit` in any group, so `_keepalive` extends `expiration_date` by 604800 seconds on every client keepalive.
-- A `<YOUR_ADMIN_USERNAME>` session ends when I delete it, when the host runs out of memory, or seven days after the last keepalive.
-- Download, clipboard both ways, seamless clipboard, printing, sharing, microphone, and user storage mappings work for `<YOUR_ADMIN_USERNAME>` on all 33 tiles.
+- `dkadi` has no `session_time_limit` in any group, so `_keepalive` extends `expiration_date` by 604800 seconds on every client keepalive.
+- A `dkadi` session ends when I delete it, when the host runs out of memory, or seven days after the last keepalive.
+- Download, clipboard both ways, seamless clipboard, printing, sharing, microphone, and user storage mappings work for `dkadi` on all 33 tiles.
 - `alpha` is unchanged in every effective value: 3600 seconds, three sessions, and all eight restrictions.
 - Group priorities are `Administrators` 1, `Lab Session Time Limit` 50, `Lab Sessions` 100, `All Users` 1000.
 - Network containment is untouched. The four macvlan lanes, the blackholed VLAN 77 and 79 resolvers, and every UniFi policy behave the same for both accounts.
@@ -121,7 +121,7 @@ Worth keeping in mind for the settings this change makes: a node reboot destroys
 
 ## Rollback
 
-To restore the one-hour limit on `<YOUR_ADMIN_USERNAME>`, put the row back on the group that both accounts share and drop the exemption group:
+To restore the one-hour limit on `dkadi`, put the row back on the group that both accounts share and drop the exemption group:
 
 ```sql
 INSERT INTO group_settings (name, value, value_type, description, group_id)
@@ -144,7 +144,7 @@ WHERE gs.group_id = g.group_id AND g.name = 'Administrators'
                   'allow_kasm_printing','allow_kasm_sharing','allow_user_storage_mapping');
 ```
 
-Deleting the group cascades to its `user_groups` and `group_settings` rows. Restart `kasm_api` and `kasm_manager` afterwards. The full database rollback is `/home/<YOUR_ADMIN_USERNAME>/kasm-db-backup-2026-08-01.sql.gz`, taken before any write.
+Deleting the group cascades to its `user_groups` and `group_settings` rows. Restart `kasm_api` and `kasm_manager` afterwards. The full database rollback is `/home/dkadi/kasm-db-backup-2026-08-01.sql.gz`, taken before any write.
 
 ## Linked Records
 

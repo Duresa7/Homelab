@@ -25,4 +25,4 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 
 ## Completed
 
-- 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `<YOUR_ORG_NAME>`-Monitor, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.
+- 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `AlphaSec`-Monitor, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.

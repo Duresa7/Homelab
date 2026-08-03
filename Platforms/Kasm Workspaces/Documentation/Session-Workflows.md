@@ -13,7 +13,7 @@ How I use the lab, one workflow per job. The isolation and lane-assigned tiles a
 
 ## Getting in
 
-The normal way in is `https://kasm.<YOUR_BASE_DOMAIN>/` through NPM, which presents the wildcard certificate and throws no warning. `https://192.168.78.10/` still works as a direct fallback and still shows a self-signed warning, because Kasm's own certificate is untouched. SSH uses the address, never the name.
+The normal way in is `https://kasm.alphasecunited.com/` through NPM, which presents the wildcard certificate and throws no warning. `https://192.168.78.10/` still works as a direct fallback and still shows a self-signed warning, because Kasm's own certificate is untouched. SSH uses the address, never the name.
 
 The direct address answers only Jedi PC at `192.168.50.241`, the Mac on Trusted, anything on Personal-A, and any client on the Management Access VPN. The proxied name resolves on the internal resolver alone and NPM has no WAN ingress, so nothing off-network reaches either path. It does mean the login page is now reachable from wherever NPM is reachable, which is wider than those four, so the password is what stands in front of it rather than the network.
 
@@ -146,9 +146,9 @@ If a session starts and then won't display, that's host-to-container reachabilit
 
 ## Limits worth remembering
 
-Five concurrent sessions and one named user are the Community Edition caps. Both accounts are limited to three, which is what the VM's 12 GiB actually serves: Kasm's own containers hold about 2 GiB, leaving 9.7 GiB against a 2.77 GiB default workspace. `alpha` gets its three from `Lab Sessions`; `<YOUR_ADMIN_USERNAME>` gets the same three from `Administrators`.
+Five concurrent sessions and one named user are the Community Edition caps. Both accounts are limited to three, which is what the VM's 12 GiB actually serves: Kasm's own containers hold about 2 GiB, leaving 9.7 GiB against a 2.77 GiB default workspace. `alpha` gets its three from `Lab Sessions`; `dkadi` gets the same three from `Administrators`.
 
-Three is the number that matters more now that `<YOUR_ADMIN_USERNAME>` sessions don't expire. A forgotten desktop holds its memory until I delete it or the seven-day keepalive window closes, and the 20-minute idle disconnect that used to reclaim it is set to a year for that account. When a session won't start, check `free -h` before checking Kasm.
+Three is the number that matters more now that `dkadi` sessions don't expire. A forgotten desktop holds its memory until I delete it or the seven-day keepalive window closes, and the 20-minute idle disconnect that used to reclaim it is set to a year for that account. When a session won't start, check `free -h` before checking Kasm.
 
 Sessions are not serialised, so a sample can run beside another workspace. A container escape reaches every session on the host through the shared kernel no matter what the gateway does to their lanes. Closing that means running one session at a time.
 

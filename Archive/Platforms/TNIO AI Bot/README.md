@@ -19,7 +19,7 @@ I preserved the TNIO lore-retrieval source snapshots, evaluation tests, runtime 
 - `Evidence/`: corpus audits and remote snapshots
 - `Artifacts/`: deployment bundles and generated state
 
-Source files that reference `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` describe the former Linux runtime.
+Source files that reference `/home/aibravo/lore-rag` describe the former Linux runtime.
 
 ## Key Records
 

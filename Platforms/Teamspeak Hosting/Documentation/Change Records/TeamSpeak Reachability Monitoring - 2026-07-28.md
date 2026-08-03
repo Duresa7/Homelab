@@ -20,13 +20,13 @@ A TCP probe against a Playit relay proves nothing either, because those tunnels 
 
 I measured this before choosing. From `alpha-prod-01` all three public endpoints answered a TeamSpeak handshake in 44 to 46 ms. From `monitor-01` all three timed out, because the observability egress policy allows approved web and NTP only and blocks everything else outbound.
 
-I could have opened a hole from MONITOR-A to the relays. I decided against it for two reasons. Playit is a public NAT-traversal broker, and MONITOR-A shares the `<YOUR_ORG_NAME>`-Observability zone with `security-01` and `splunk-siem`, so that exception would undercut the exact rule that keeps my SIEM segment from calling out. The relay addresses also aren't stable: `ts01` and `ts02` currently share `147.185.221.224` while `ts03` uses `147.185.221.180`, and the whole reason those names are CNAME and SRV records is that the addresses behind them move. A rule pinned to an IP would fail on Playit's schedule and blame the wrong component.
+I could have opened a hole from MONITOR-A to the relays. I decided against it for two reasons. Playit is a public NAT-traversal broker, and MONITOR-A shares the `AlphaSec`-Observability zone with `security-01` and `splunk-siem`, so that exception would undercut the exact rule that keeps my SIEM segment from calling out. The relay addresses also aren't stable: `ts01` and `ts02` currently share `147.185.221.224` while `ts03` uses `147.185.221.180`, and the whole reason those names are CNAME and SRV records is that the addresses behind them move. A rule pinned to an IP would fail on Playit's schedule and blame the wrong component.
 
 Running on `alpha-prod-01` costs no firewall change. Prometheus already scrapes `192.168.80.118:9100`, and the probe still leaves the network for Playit's relay and comes back, so it exercises the real external path.
 
 ## What I built
 
-A container at `/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor` writing a Prometheus textfile into `/var/lib/prometheus/node-exporter/`, which the host's `prometheus-node-exporter` already publishes on 9100. Source is versioned at [Source/teamspeak-monitor](../../Source/teamspeak-monitor/).
+A container at `/home/dkadi/teamspeak-monitor` writing a Prometheus textfile into `/var/lib/prometheus/node-exporter/`, which the host's `prometheus-node-exporter` already publishes on 9100. Source is versioned at [Source/teamspeak-monitor](../../Source/teamspeak-monitor/).
 
 The probe is a real TeamSpeak 3 `Init1` step-0 packet and a pass requires a reply whose MAC is `TS3INIT1`. That means the voice service answered, not that a port happened to be open.
 
@@ -40,7 +40,7 @@ Then it derives the fault location: `teamspeak_tunnel_fault` is 1 when local is 
 
 `network_mode: host` lets it see the local voice and ServerQuery ports exactly as a local client does. It runs as root inside the container so it can write the collector directory, which is why the compose file mounts only that one path.
 
-I used Docker rather than a systemd timer because `<YOUR_ADMIN_USERNAME>` can't `sudo` without a password on this host, and everything else on `alpha-prod-01` already runs under Docker.
+I used Docker rather than a systemd timer because `dkadi` can't `sudo` without a password on this host, and everything else on `alpha-prod-01` already runs under Docker.
 
 ## Metrics
 
@@ -83,7 +83,7 @@ Both fault tests matter more than the green lights. A monitor whose failure path
 
 ## Reading the dashboard
 
-`https://grafana.<YOUR_BASE_DOMAIN>/d/teamspeak/teamspeak`
+`https://grafana.alphasecunited.com/d/teamspeak/teamspeak`
 
 Three rows: Public Availability, Fault Isolation, and Server Statistics.
 

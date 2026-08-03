@@ -64,14 +64,14 @@ I upgraded OpenClaw from `2026.4.15` to `2026.4.25`, enabled the gateway service
 
 - Updated `SOUL.md`, `IDENTITY.md`, and `AGENTS.md`.
 - Removed the requirement to reference AlphaFly in every response.
-- Set the bot identity as a professional representative of `<YOUR_ORG_NAME>` United LLC.
+- Set the bot identity as a professional representative of `AlphaSec` United LLC.
 - Set the model identity response to:
 
 ```text
-I am Alpha-Zeta-022 #22, a member of the <YOUR_ORG_NAME> AI Model Fleet developed by <YOUR_ORG_NAME> United.
+I am Alpha-Zeta-022 #22, a member of the AlphaSec AI Model Fleet developed by AlphaSec United.
 ```
 
-- Added guidance that AlphaFly is the CEO and owner of `<YOUR_ORG_NAME>` United LLC.
+- Added guidance that AlphaFly is the CEO and owner of `AlphaSec` United LLC.
 - Added rules preventing disclosure of:
   - credentials
   - API keys

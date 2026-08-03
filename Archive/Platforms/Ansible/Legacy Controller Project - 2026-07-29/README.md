@@ -39,7 +39,7 @@ The [SSH Identity Automation record](../../../../Platforms/Ansible/Documentation
 
 ## Redaction
 
-I replaced the admin username with `<YOUR_ADMIN_USERNAME>` and each authorized-key body with `<REDACTED_PUBLIC_KEY>`, keeping the key comments so it stays clear which three identities the playbook pushed. Internal addresses are unchanged. The pre-redaction copies matched the controller at these hashes:
+I replaced the admin username with `dkadi` and each authorized-key body with `<REDACTED_PUBLIC_KEY>`, keeping the key comments so it stays clear which three identities the playbook pushed. Internal addresses are unchanged. The pre-redaction copies matched the controller at these hashes:
 
 ```text
 94a221220aaedb693bad43b89c0f62b5fb32b5fe5d07c0b95fd01b60732a143c  ansible.cfg

@@ -55,9 +55,9 @@ I copied the former active inventory tables without dropping the storage, networ
 
 | Setting | Value |
 | --- | --- |
-| Administrative account | `<YOUR_DEPLOYMENT_USER>` |
+| Administrative account | `aibravo` |
 | Workload | TNIO lore retrieval & Discord bot |
-| Former project path | `/home/<YOUR_DEPLOYMENT_USER>/lore-rag` |
+| Former project path | `/home/aibravo/lore-rag` |
 
 The guest configuration & disk still exist on `grey-server`. This record doesn't replace a guest backup.
 

@@ -5,21 +5,21 @@
 
 ## Summary
 
-I replaced the reusable `Webhook Bypass` policy that exposed the entire `coolify-a1.<YOUR_PUBLIC_DOMAIN>` application with a path-scoped GitHub webhook exception. I didn't change Cloudflare Tunnel ingress, DNS, the Coolify origin, or any deployed application route.
+I replaced the reusable `Webhook Bypass` policy that exposed the entire `coolify-a1.alphsec.com` application with a path-scoped GitHub webhook exception. I didn't change Cloudflare Tunnel ingress, DNS, the Coolify origin, or any deployed application route.
 
 ## Change
 
 1. I saved the pre-change Access application and policy state to `C:\Users\dures\.codex\state\cloudflare-snapshots\access-coolify-20260722T215406Z.json`.
-2. I created `Coolify GitHub Webhook` for `coolify-a1.<YOUR_PUBLIC_DOMAIN>/webhooks/source/github/events` with a bypass policy.
+2. I created `Coolify GitHub Webhook` for `coolify-a1.alphsec.com/webhooks/source/github/events` with a bypass policy.
 3. I removed the reusable `Webhook Bypass` policy from the root Coolify application and deleted the unused reusable policy.
-4. I created `Coolify GitHub Webhook Child Paths` for `coolify-a1.<YOUR_PUBLIC_DOMAIN>/webhooks/source/github/events/*` with the same allow policy as the root application. This protects every child route while leaving the exact GitHub endpoint reachable.
+4. I created `Coolify GitHub Webhook Child Paths` for `coolify-a1.alphsec.com/webhooks/source/github/events/*` with the same allow policy as the root application. This protects every child route while leaving the exact GitHub endpoint reachable.
 
 ## Verification
 
-- A request to `/login` redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`, so the dashboard is protected.
-- A request to `/wp-content` redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`, so a common scanner path doesn't reach Coolify.
+- A request to `/login` redirected to `AlphaSec.cloudflareaccess.com`, so the dashboard is protected.
+- A request to `/wp-content` redirected to `AlphaSec.cloudflareaccess.com`, so a common scanner path doesn't reach Coolify.
 - A request to the exact `/webhooks/source/github/events` path reached Coolify and returned its own redirect to `/login`, so Cloudflare didn't challenge the webhook endpoint.
-- Requests to `/webhooks/source/github/events/`, `/webhooks/source/github/events/manual`, and an unmatched child path redirected to `<YOUR_ORG_NAME>.cloudflareaccess.com`.
+- Requests to `/webhooks/source/github/events/`, `/webhooks/source/github/events/manual`, and an unmatched child path redirected to `AlphaSec.cloudflareaccess.com`.
 - The Cloudflare API showed one allow policy on the root application, one bypass policy on the exact webhook application, and one allow policy on the wildcard child-path application.
 
 ## Rollback

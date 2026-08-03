@@ -46,7 +46,7 @@ Grafana already held two imported dashboards, Node Exporter Full (`rYdddlPWk`) a
 
 ### 1. Backups
 
-Dated copies of `docker-compose.yml`, `prometheus.yml`, and `pve.yml` under `/home/<YOUR_ADMIN_USERNAME>/monitoring/`, plus a 3,395,584-byte copy of `grafana.db` read out of the running container into `~/monitoring/backups/`. I confirmed the copy starts with the `SQLite format 3` magic and matches the live file's size before touching anything.
+Dated copies of `docker-compose.yml`, `prometheus.yml`, and `pve.yml` under `/home/dkadi/monitoring/`, plus a 3,395,584-byte copy of `grafana.db` read out of the running container into `~/monitoring/backups/`. I confirmed the copy starts with the `SQLite format 3` magic and matches the live file's size before touching anything.
 
 ### 2. node_exporter on seven hosts
 

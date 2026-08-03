@@ -8,7 +8,7 @@
 
 ## Scope
 
-I published Kasm Workspaces at `https://kasm.<YOUR_BASE_DOMAIN>` through internal Nginx Proxy Manager. UniFi resolves the name to `192.168.85.2`; NPM forwards HTTPS to `192.168.78.10:443` and presents certificate ID 1.
+I published Kasm Workspaces at `https://kasm.alphasecunited.com` through internal Nginx Proxy Manager. UniFi resolves the name to `192.168.85.2`; NPM forwards HTTPS to `192.168.78.10:443` and presents certificate ID 1.
 
 I did not expose SSH, `node_exporter`, any Kasm database or service port, or session VLANs 74, 75, 77, & 79. Direct fallback remains `https://192.168.78.10/`, and the change added no public DNS record or WAN ingress.
 
@@ -20,7 +20,7 @@ The timeout was intentional network state. LAB-MGMT accepted only the existing T
 
 ## Step 1: Add the UniFi path
 
-I previewed and created DNS record `6a69768d052792cd2140e39f`, which maps `kasm.<YOUR_BASE_DOMAIN>` to `192.168.85.2` with TTL 300. I also previewed and created firewall policy `6a69768a052792cd2140e39c`, which permits only `192.168.85.2` to reach `192.168.78.10` on TCP 443 and logs matches.
+I previewed and created DNS record `6a69768d052792cd2140e39f`, which maps `kasm.alphasecunited.com` to `192.168.85.2` with TTL 300. I also previewed and created firewall policy `6a69768a052792cd2140e39c`, which permits only `192.168.85.2` to reach `192.168.78.10` on TCP 443 and logs matches.
 
 The first connection still timed out. A packet capture on `kasm-01` showed its SYN-ACK leaving for `192.168.85.2`, which proved the new allow admitted NPM's SYN but the return packet was dropped.
 
@@ -28,7 +28,7 @@ Evidence: [UniFi path and packet trace](../../Evidence/Kasm%20Workspaces%20Inter
 
 ## Step 2: Repair the stateful return path
 
-`LABMGMT Block to <YOUR_ORG_NAME>-Access` matched `ALL` connection states. That block dropped Kasm's reply even though the forward policy had `create_allow_respond` enabled.
+`LABMGMT Block to AlphaSec-Access` matched `ALL` connection states. That block dropped Kasm's reply even though the forward policy had `create_allow_respond` enabled.
 
 I previewed and changed only its state selector from `ALL` to `NEW, INVALID`. This keeps LAB-MGMT from initiating a new connection toward the Access zone while permitting replies to connections admitted in the opposite direction. The same return-path model was already active on LAB-MGMT blocks toward Internal and Observability.
 
@@ -48,7 +48,7 @@ Evidence: [NPM host and route verification](../../Evidence/Kasm%20Workspaces%20I
 
 ## Step 4: Add monitoring
 
-I added `https://kasm.<YOUR_BASE_DOMAIN>/` to the 60-second blackbox job. This raises the Prometheus target set from 47 to 48 and the NPM probe set from 19 to 20.
+I added `https://kasm.alphasecunited.com/` to the 60-second blackbox job. This raises the Prometheus target set from 47 to 48 and the NPM probe set from 19 to 20.
 
 Prometheus accepted the changed host file after `promtool check config`, but the host-side `sed -i` replaced its inode. The running container retained an older inode with 19 placeholder targets, so `up=1` only proved blackbox_exporter answered while `probe_success=0` proved those service probes failed. I wrote the validated host file through the existing mount, matched the host and container SHA-256 digests, passed `promtool` again, & reloaded without a container restart.
 
@@ -58,7 +58,7 @@ Evidence: [Prometheus probe](../../Evidence/Kasm%20Workspaces%20Internal%20HTTPS
 
 ## Resulting Configuration
 
-- NPM proxy host ID `23` serves `kasm.<YOUR_BASE_DOMAIN>` through HTTPS on both proxy legs.
+- NPM proxy host ID `23` serves `kasm.alphasecunited.com` through HTTPS on both proxy legs.
 - UniFi DNS record `6a69768d052792cd2140e39f` points the internal name to NPM.
 - UniFi firewall policy `6a69768a052792cd2140e39c` permits one source, one destination, & TCP 443.
 - The LAB-MGMT-to-Access block still rejects `NEW` and `INVALID` traffic.

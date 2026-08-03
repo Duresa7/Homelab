@@ -42,7 +42,7 @@ stopped guests confirmed untouched
 ssh manager group artifact-sweep: absent, only production/staging/development remain
 
 security-01 removal
-command: ansible security-01 -m file -a 'path=/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar state=absent' --become
+command: ansible security-01 -m file -a 'path=/home/dkadi/wazuh-install-files.tar state=absent' --become
 result: changed=true state=absent
 readback: ls reports No such file or directory
 wazuh-manager=active wazuh-indexer=active wazuh-dashboard=active filebeat=active
@@ -86,14 +86,14 @@ decision: keep the cap
 
 SSH Manager profile gap closed
 authorized-key check before adding, key SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4
-  present for <YOUR_ADMIN_USERNAME> on kasm-01, docker-blue, and media-01
+  present for dkadi on kasm-01, docker-blue, and media-01
 added kasm_01=192.168.78.10 docker_blue=192.168.40.39 media_01=192.168.40.42
-  all as <YOUR_ADMIN_USERNAME>, port 22, workstation key
+  all as dkadi, port 22, workstation key
 ssh_list_servers now returns 19 profiles, was 16
-connection test kasm_01: hostname=kasm-01 user=<YOUR_ADMIN_USERNAME> root use=61%
-connection test docker_blue: hostname=docker-blue user=<YOUR_ADMIN_USERNAME> run=4
-connection test media_01: hostname=media-01 user=<YOUR_ADMIN_USERNAME> run=10
-note: <YOUR_ADMIN_USERNAME> is not in the docker group on kasm-01, so Docker there needs sudo,
+connection test kasm_01: hostname=kasm-01 user=dkadi root use=61%
+connection test docker_blue: hostname=docker-blue user=dkadi run=4
+connection test media_01: hostname=media-01 user=dkadi run=10
+note: dkadi is not in the docker group on kasm-01, so Docker there needs sudo,
   which is passwordless
 previous server list kept at ssh-manager.env.pre-3-profiles-20260729, outside the repo
 

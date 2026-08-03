@@ -16,10 +16,10 @@ I run NetBird and Nginx Proxy Manager in Debian 13 LXC 107 `docker-network`. The
 | Live path | `/opt/docker/netbird` |
 | Containers | `netbird-dashboard`, `netbird-server` |
 | Direct bindings | Dashboard `127.0.0.1:8080`; server `127.0.0.1:8081`; STUN `3478/udp` |
-| Live URL | `https://<YOUR_NETBIRD_DOMAIN>` |
-| Internal DNS | `<YOUR_NETBIRD_DOMAIN>` resolves to `192.168.85.2` through UniFi |
+| Live URL | `https://netbird.alphsec.com` |
+| Internal DNS | `netbird.alphsec.com` resolves to `192.168.85.2` through UniFi |
 | Reverse proxy | Online Nginx Proxy Manager host through `172.31.85.10` on Docker network `proxy` |
-| Routing peer | `docker-network` (CT 107) is a NetBird peer (overlay `100.121.111.204`) advertising the `<YOUR_ORG_NAME>-Access` network `192.168.85.0/24` with masquerade |
+| Routing peer | `docker-network` (CT 107) is a NetBird peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` with masquerade |
 | VPN path | Validated 2026-07-12; a remote peer reaches Access-A through the overlay via the routing peer (`ip route ... dev wt0`, HTTPS `200`) |
 
 The embedded identity provider and dashboard return HTTP `200` on their direct local checks. The saved Nginx Proxy Manager host is Online, its advanced routes pass `nginx -t`, and its Let's Encrypt wildcard/apex certificate was issued through Cloudflare DNS-01. Force SSL and HTTP/2 are enabled, the intended HTTPS URL returns `200`, and I confirmed the authenticated NetBird administrator dashboard in Chrome. My controlled restarts of both Compose projects finished with Nginx Proxy Manager healthy, both NetBird containers running, and HTTPS still returning `200`.

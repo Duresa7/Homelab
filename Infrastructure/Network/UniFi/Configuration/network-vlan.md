@@ -34,7 +34,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 
 ## Purpose and Device Placement
 
-I use this table when placing a new device or workload. The **Zone** column names the [firewall zone](../zone.md) that controls its network paths. Names ending in **`-A`** belong to the segmented `<YOUR_ORG_NAME>` infrastructure tier, while unsuffixed VLANs serve household and general lab devices. The examples reflect controller state but don't list every client.
+I use this table when placing a new device or workload. The **Zone** column names the [firewall zone](../zone.md) that controls its network paths. Names ending in **`-A`** belong to the segmented `AlphaSec` infrastructure tier, while unsuffixed VLANs serve household and general lab devices. The examples reflect controller state but don't list every client.
 
 | Network (VLAN) | Zone | Trust tier | What belongs here: device types and examples |
 |---|---|---|---|
@@ -42,22 +42,22 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Server-Provision (5) | Internal | Temporary deployment lane | Bare-metal Galaxy nodes use DHCP and UEFI PXE here before first boot moves them to tagged MGMT-A and Cluster-Net. DHCP network boot advertises `192.168.40.36` and `galaxy-ipxe.efi`. |
 | Trusted (10) | Internal | Trusted personal | Personal devices I trust but that are not admin machines: household phones, tablets, laptops, watches, and personal streaming/voice devices (iPhones, Pixels, MacBooks, Galaxy Watch, personal Fire TV / Alexa). Blocked from reaching Personal-A. |
 | IoT (20) | Untrusted | Untrusted appliance | Smart-home and appliance-class gear with no admin need and no reason to reach the LAN: smart cameras (Wyze, Ring), thermostats (Nest), smart TVs and streamers (Samsung TV, Roku), smart appliances (Samsung FamilyHub), plugs and sensors. Isolated from Internal. |
-| DMZ (30) | Dmz | Internet-facing (legacy) | General internet-exposed / untrusted workloads kept off the LAN. Blocked from Internal; can be pinned to ProtonVPN egress via the `isolate` policy. I prefer DMZ-A for new `<YOUR_ORG_NAME>` edge hosts. |
+| DMZ (30) | Dmz | Internet-facing (legacy) | General internet-exposed / untrusted workloads kept off the LAN. Blocked from Internal; can be pinned to ProtonVPN egress via the `isolate` policy. I prefer DMZ-A for new `AlphaSec` edge hosts. |
 | Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `debian-dev`). Reachable only from a defined admin device allow-list. |
 | Secure (50) | Internal | Primary admin workstation | The trusted workstation I administer the homelab from: my main management PC, Jedi PC. Part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | Secondary trusted workstation | Additional trusted desktops or workstations for specific users that need LAN trust but are not my primary admin box. |
-| MGMT-A (70) | `<YOUR_ORG_NAME>`-Mgmt | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the registered cluster node IPs from `.10` through `.14`, PVE GUI/API/SSH, and Corosync link0. Out-of-band / IPMI belongs here. |
-| Cluster-Net (71) | `<YOUR_ORG_NAME>`-Mgmt | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication on node IPs `.10` through `.14`. No DHCP, no Internet access, and no general hosts. It shares the management trust zone with MGMT-A but remains a separate broadcast domain. |
-| Security-A (72) | `<YOUR_ORG_NAME>`-Observability | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to approved web and NTP from the three-member observability object. |
-| MONITOR-A (73) | `<YOUR_ORG_NAME>`-Observability | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
+| MGMT-A (70) | `AlphaSec`-Mgmt | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the registered cluster node IPs from `.10` through `.14`, PVE GUI/API/SSH, and Corosync link0. Out-of-band / IPMI belongs here. |
+| Cluster-Net (71) | `AlphaSec`-Mgmt | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication on node IPs `.10` through `.14`. No DHCP, no Internet access, and no general hosts. It shares the management trust zone with MGMT-A but remains a separate broadcast domain. |
+| Security-A (72) | `AlphaSec`-Observability | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to approved web and NTP from the three-member observability object. |
+| MONITOR-A (73) | `AlphaSec`-Observability | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
 | KASM-BROWSER (74) | KASM-BROWSER | Lab tools | Kasm browser containers and pentest tooling use `192.168.74.208/28` through the `lab74` macvlan network. Proton egress with the kill switch on is supplied by `KASM Lab Proton Egress`. |
 | KASM-TRUSTED (75) | KASM-TRUSTED | Trusted disposable sessions | Claude Code, Codex CLI, and Terminal sessions use `192.168.75.208/28` through `lab75`. They have ordinary WAN egress, no access to the other session lanes, and persistent storage only through their assigned per-user profile directories. |
 | MALWARE-OFFLINE (77) | MALWARE-OFFLINE | Detonation & targets | Disposable Linux samples and targets use `192.168.77.208/28` through `lab77`. External egress is blocked and DHCP no longer advertises the retired `.10` resolver. |
 | LAB-MGMT (78) | LAB-MGMT | Isolated control plane | VM 122 `kasm-01` uses static `192.168.78.10/24`. DHCP is disabled. Only Trusted, Personal-A, and the Management Access VPN may reach TCP 22 and 443. |
 | EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review sessions use `192.168.79.208/28` through `lab79`. They have no Internet and no routed path to another session lane. |
-| SERVERS-A (80) | `<YOUR_ORG_NAME>`-Servers | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers, databases (app-01 = .10, supabase-01 = .20, db-13-host = .228). |
-| Access-A (85) | `<YOUR_ORG_NAME>`-Access | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
-| DMZ-A (90) | Dmz | Internet-facing edge | `<YOUR_ORG_NAME>` public-facing edge workloads that accept inbound from the internet (edge-01 = .10), monitored from Security-A. Blocked from reaching Internal. |
+| SERVERS-A (80) | `AlphaSec`-Servers | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers, databases (app-01 = .10, supabase-01 = .20, db-13-host = .228). |
+| Access-A (85) | `AlphaSec`-Access | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
+| DMZ-A (90) | Dmz | Internet-facing edge | `AlphaSec` public-facing edge workloads that accept inbound from the internet (edge-01 = .10), monitored from Security-A. Blocked from reaching Internal. |
 
 ### Placement by Workload
 
@@ -66,7 +66,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Workstation I manage the lab from → **Secure (50)**; another user's trusted desktop → **Secure Client (60)**
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**
 - Internal application or database VM → **SERVERS-A (80)**
-- Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `<YOUR_ORG_NAME>`-Observability zone.
+- Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `AlphaSec`-Observability zone.
 - Kasm control plane → **LAB-MGMT (78)**; Kasm sessions → **KASM-BROWSER (74)**, **KASM-TRUSTED (75)**, **MALWARE-OFFLINE (77)**, or **EVIDENCE-QUARANTINE (79)** according to their workspace override
 - Reverse proxy, VPN, or remote-access ingress → **Access-A (85)**
 - Public / internet-facing service → **DMZ-A (90)** (legacy: **DMZ (30)**)
@@ -81,4 +81,4 @@ I use this table when placing a new device or workload. The **Zone** column name
 | AD-SERVERS (65) | 2026-07-27 | The Windows domain, both domain controllers, and the domain-joined test VM were retired. | [Windows Servers retirement](../../../../../Platforms/Windows%20Servers/README.md) |
 | Secure-V (100) | 2026-07-27 | Its domain SSID was already gone. I deleted the `Non-tracking` ProtonVPN route first, then removed the unused network. | [Zone and Object Consolidation](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
 
-The disabled `<YOUR_ORG_NAME>`-IoT WLAN now points to IoT/VLAN 20. It stayed disabled during the correction.
+The disabled `AlphaSec`-IoT WLAN now points to IoT/VLAN 20. It stayed disabled during the correction.

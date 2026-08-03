@@ -21,7 +21,7 @@ Connector notes:
 
 ## Runtime State Added
 
-I added these runtime artifacts to `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
+I added these runtime artifacts to `/home/aibravo/lore-rag/state/`:
 
 - `tnio_source_authority_map.json`
 - `tnio_policy_cards.json`
@@ -32,7 +32,7 @@ These tell the bot which archive shelf is authoritative for each kind of questio
 
 ## Bot Code Changes
 
-I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py`:
+I updated `/home/aibravo/lore-rag/lore_agent.py`:
 
 - Added corpus-artifact loading.
 - Added source authority routing for policy, roster/current office, story, profile, ownership, progression, ability, combat, engineering, faction, and casual/persona questions.
@@ -42,11 +42,11 @@ I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py`:
 - Added artifact hints from curated aliases like Ghost, Racer, Moon, Sharps, Beastarius, Rakkos, Erebus, Harik, Kujan, and Operation Bastion.
 - Added stronger direct source-backed answers for Sithspawn creation so it uses Sithspawn Alchemy plus the relevant Sith Alchemy 2/3 ability rows instead of random Force ability rows.
 
-I updated `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_mcp_server.py`:
+I updated `/home/aibravo/lore-rag/lore_mcp_server.py`:
 
 - Bumped `/agent-answer` cache key from `v31` to `v32` so old wrong cached answers do not survive the routing upgrade.
 
-I added `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/test_corpus_accuracy.py`.
+I added `/home/aibravo/lore-rag/test_corpus_accuracy.py`.
 
 ## Verification
 

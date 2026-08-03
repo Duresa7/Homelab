@@ -13,15 +13,15 @@
 | Host | IP | VLAN | Role |
 |------|----|------|------|
 | docker-main | 192.168.40.35 | VLAN 40 (Personal-A) | Portainer Server |
-| alpha-prod-01 | 192.168.80.118 | VLAN 80 (`<YOUR_ORG_NAME>`-Servers) | Edge Agent |
+| alpha-prod-01 | 192.168.80.118 | VLAN 80 (`AlphaSec`-Servers) | Edge Agent |
 | docker-blue | 192.168.40.39 | VLAN 40 (Personal-A) | Edge Agent |
 | media-01 | 192.168.40.42 | VLAN 40 (Personal-A) | Edge Agent |
-| docker-network | 192.168.85.2 | VLAN 85 (`<YOUR_ORG_NAME>`-Access) | Edge Agent |
+| docker-network | 192.168.85.2 | VLAN 85 (`AlphaSec`-Access) | Edge Agent |
 
 ## Network Diagram
 
 ```
-VLAN 40 (Personal-A)          VLAN 80 (<YOUR_ORG_NAME>-Servers)
+VLAN 40 (Personal-A)          VLAN 80 (AlphaSec-Servers)
 ┌─────────────────────┐        ┌──────────────────────┐
 │     docker-main     │        │    alpha-prod-01      │
 │   192.168.40.35     │        │   192.168.80.118      │
@@ -33,12 +33,12 @@ VLAN 40 (Personal-A)          VLAN 80 (<YOUR_ORG_NAME>-Servers)
          ▲
          │
     Browser access
-    https://portainer.<YOUR_BASE_DOMAIN>
+    https://portainer.alphasecunited.com
 ```
 
 ## Portainer Server (docker-main)
 
-The browser UI uses `https://portainer.<YOUR_BASE_DOMAIN>` through internal NPM. NPM connects to the existing HTTPS listener on `192.168.40.35:9443`; direct access remains the rollback path. This doesn't change the Edge Agent tunnel on TCP 8000. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+The browser UI uses `https://portainer.alphasecunited.com` through internal NPM. NPM connects to the existing HTTPS listener on `192.168.40.35:9443`; direct access remains the rollback path. This doesn't change the Edge Agent tunnel on TCP 8000. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 **Path:** `/opt/docker/portainer/docker-compose.yml`
 
@@ -97,9 +97,9 @@ I store one Edge ID & key per environment outside this repository. Live `.env` f
 
 | Field | Value |
 |-------|-------|
-| Name | Allow `<YOUR_ORG_NAME>`-Servers to Portainer Edge |
-| Description | Allow `<YOUR_ORG_NAME>`-Servers VMs to reach Portainer Edge tunnel and API on docker-main |
-| Source Zone | `<YOUR_ORG_NAME>`-Servers |
+| Name | Allow `AlphaSec`-Servers to Portainer Edge |
+| Description | Allow `AlphaSec`-Servers VMs to reach Portainer Edge tunnel and API on docker-main |
+| Source Zone | `AlphaSec`-Servers |
 | Source | Any |
 | Destination Zone | Internal |
 | Destination IP | 192.168.40.35 (docker-main) |

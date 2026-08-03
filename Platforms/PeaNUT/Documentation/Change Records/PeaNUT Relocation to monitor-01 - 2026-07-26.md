@@ -27,7 +27,7 @@ I read the three values from their stored copy and reused all three verbatim, in
 
 The old `.env` turned out to be CRLF, not LF. Its 130 bytes were 127 bytes of content plus 3 carriage returns. Docker Compose strips a trailing `\r` when it parses `.env`, which I confirmed by reading the running container's environment: `WEB_USERNAME` was 5 characters, `WEB_PASSWORD` 17, & `AUTH_SECRET` 64, none with a trailing CR. I wrote the replacement file LF-only at 127 bytes so the parsed values would be byte-identical. Had I copied the CRLF file blindly onto a host where Compose behaved differently, the password & the cookie-signing secret would both have gained a stray character.
 
-I staged the file through `/home/<YOUR_ADMIN_USERNAME>`, which is mode `0700`, then used `install -o root -g root -m 0600` to place it and `shred -u` to destroy the staging copy. No secret value entered a command argument, a repository file, or captured output.
+I staged the file through `/home/dkadi`, which is mode `0700`, then used `install -o root -g root -m 0600` to place it and `shred -u` to destroy the staging copy. No secret value entered a command argument, a repository file, or captured output.
 
 ### Step 3: Build the Compose project
 
@@ -35,7 +35,7 @@ I created `/opt/docker/peanut` on `monitor-01` with the same layout the old host
 
 ### Step 3a: Confirm the container can write its own config
 
-The PeaNUT image ships without a shell, so `docker exec peanut sh` fails and the runtime UID has to be read from the host. `ps` against the container PID returned UID 1000, which maps to `ansible` on `docker-main` & to `<YOUR_ADMIN_USERNAME>` on `monitor-01`. The config directory was already owned by `<YOUR_ADMIN_USERNAME>:<YOUR_ADMIN_USERNAME>`, so no `chown` was needed.
+The PeaNUT image ships without a shell, so `docker exec peanut sh` fails and the runtime UID has to be read from the host. `ps` against the container PID returned UID 1000, which maps to `ansible` on `docker-main` & to `dkadi` on `monitor-01`. The config directory was already owned by `dkadi:dkadi`, so no `chown` was needed.
 
 I proved writability twice. First with the image's own Node runtime, running `fs.accessSync` with `W_OK` against `/config` & `/config/settings.yml` plus a write, read-back, & unlink round trip at UID 1000. Then functionally, after the domain was cut over: I changed the temperature unit to Celsius in the web UI, watched `settings.yml` update on the host mount at 21:26:37, restarted the container, & confirmed the value survived. Setting it back to Fahrenheit returned the file to hash `69bd5eb2`, which also confirms PeaNUT's serializer produces the same bytes I typed by hand.
 
@@ -47,7 +47,7 @@ I added 8090 to the destination port list on `Allow NPM to monitor-01 web UIs` (
 
 I created `Allow VPN Management Access to PeaNUT` (`6a66ad76052792cd214067ca`) from the `Vpn` zone, targeting the `Management Access` WireGuard network object `698cd56010cb5676c296e2d1` on subnet `10.6.0.1/24`, to `192.168.73.2` on TCP 8090 with the automatic return policy enabled. I scoped it to 8090 alone.
 
-I created `Allow <YOUR_ADMIN_USERNAME> MacBook Air M3 to PeaNUT` (`6a66adb3052792cd214067fe`) from `192.168.10.27` to the same destination & port. The controller confirmed the client `<YOUR_ADMIN_USERNAME>-MBA-MAIN` still holds that address as a fixed reservation, so pinning the policy to it is safe.
+I created `Allow dkadi MacBook Air M3 to PeaNUT` (`6a66adb3052792cd214067fe`) from `192.168.10.27` to the same destination & port. The controller confirmed the client `dkadi-MBA-MAIN` still holds that address as a fixed reservation, so pinning the policy to it is safe.
 
 The plan flagged one open question: my two inventory files disagreed about which zone holds Trusted (VLAN 10). The controller settled it. The Internal zone contains Management, Trusted, Personal-A, Secure, Secure Client, & AD-SERVERS, so `network-vlan.md` was right & `zone.md` was missing Trusted. I fixed `zone.md`. The laptop policy therefore sources from Internal, the same zone the Jedi PC break-glass rule already uses.
 
@@ -57,17 +57,17 @@ That policy points an admin laptop on a personal-device VLAN at a monitoring hos
 
 `docker compose up -d` pulled the pinned digest & started the container. It reached `healthy` rather than merely `Up`, and `curl http://192.168.73.2:8090/api/ping` returned 200 with a body of `"pong"`. `127.0.0.1:8090` refused the connection, which is correct for a host-address bind & matched the old host's behavior. `ss -ltn` showed the listener on `192.168.73.2:8090` only.
 
-The device API returned both units over HTTP Basic auth: `ups01` on `red-server` & `ups02` on `grey-server`, each reporting model, serial, load, charge, runtime, input voltage, & `OL` line state. A NextAuth login with the stored credential issued a session for user `<YOUR_ADMIN_USERNAME>`. The container log held 6 lines with no NUT connection errors. The one line matching an error grep is a Node `DEP0169` deprecation warning about `url.parse()`, which carries the word "errors" in its text & comes from the image, not this deployment.
+The device API returned both units over HTTP Basic auth: `ups01` on `red-server` & `ups02` on `grey-server`, each reporting model, serial, load, charge, runtime, input voltage, & `OL` line state. A NextAuth login with the stored credential issued a session for user `dkadi`. The container log held 6 lines with no NUT connection errors. The one line matching an error grep is a Node `DEP0169` deprecation warning about `url.parse()`, which carries the word "errors" in its text & comes from the image, not this deployment.
 
 ### Step 6: Repoint Nginx Proxy Manager
 
-The plan reserved this step for me to do by hand, and I did it in the NPM web UI at `http://192.168.85.2:81` rather than editing `15.conf`, because NPM regenerates that file from its SQLite database. I changed proxy host 15's forward host from `192.168.40.35` to `192.168.73.2` & left everything else alone: scheme HTTP, port 8090, the `*.<YOUR_BASE_DOMAIN>` certificate, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support all on, HSTS off.
+The plan reserved this step for me to do by hand, and I did it in the NPM web UI at `http://192.168.85.2:81` rather than editing `15.conf`, because NPM regenerates that file from its SQLite database. I changed proxy host 15's forward host from `192.168.40.35` to `192.168.73.2` & left everything else alone: scheme HTTP, port 8090, the `*.alphasecunited.com` certificate, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support all on, HSTS off.
 
 `15.conf` regenerated at 21:06:15 with `set $server "192.168.73.2";`. Two nginx worker processes started in that same second, which is the proof the reload actually took rather than the file just changing on disk.
 
 ### Step 7: Remove PeaNUT from docker-main
 
-`docker compose down` removed the container & the `peanut_default` network. I then loaded `https://peanut.<YOUR_BASE_DOMAIN>` with the old container already gone and got both UPS units, which settles any doubt about which backend was serving.
+`docker compose down` removed the container & the `peanut_default` network. I then loaded `https://peanut.alphasecunited.com` with the old container already gone and got both UPS units, which settles any doubt about which backend was serving.
 
 The image was referenced only by digest, so it showed with a `<none>` tag. `docker rmi brandawg93/peanut@sha256:81c0511e...` untagged it & deleted 16 layers. I didn't run `docker image prune`; this host runs 13 other containers and had 9 unrelated dangling images at the time. Removing `/opt/docker/peanut` took the `.env` with it, `ss -ltn` showed nothing on 8090, and all 13 remaining containers held their prior uptimes.
 
@@ -89,16 +89,16 @@ For `cluster.fw` I copied the live file to `/root/cluster.fw.bak.peanut-relocati
 | --- | --- |
 | PeaNUT | 6.0.0 pinned by digest; healthy on `192.168.73.2:8090`; Compose under `/opt/docker/peanut` on `monitor-01` |
 | monitor-01 memory | 3072 MB, raised live from 2048 MB |
-| Persistent state | `settings.yml`, 554 bytes, SHA256 `69bd5eb2...`, owned `<YOUR_ADMIN_USERNAME>:<YOUR_ADMIN_USERNAME>` |
+| Persistent state | `settings.yml`, 554 bytes, SHA256 `69bd5eb2...`, owned `dkadi:dkadi` |
 | Secrets | `.env` mode `0600` root-owned, 127 bytes, LF endings, values unchanged from the stored copy |
-| Public route | `peanut.<YOUR_BASE_DOMAIN>` through NPM proxy host 15 to `192.168.73.2:8090` |
+| Public route | `peanut.alphasecunited.com` through NPM proxy host 15 to `192.168.73.2:8090` |
 | UniFi policies | 61 custom policies; 8090 added to two monitor-01 entries, removed from the docker-main entry, two new 8090 policies |
 | Galaxy firewall | 49 lines, SHA256 `6847426a...` on all four nodes; two TCP/3493 accepts, both from `192.168.73.2` |
 | docker-main | 13 containers, no `peanut` container, image, directory, or listener |
 
 ## Verification
 
-The dashboard renders both units at `https://peanut.<YOUR_BASE_DOMAIN>` with the `docker-main` container deleted. Prometheus reports the `nut` job targets `up` & returns `nut_battery_charge` for `ups01` at `192.168.70.13:3493` & `ups02` at `192.168.70.10:3493`, so the exporter kept working through the `cluster.fw` edit. The temperature-unit change survived a container restart. All four Proxmox nodes hold the same firewall hash & report `enabled/running`. Every container on `docker-main` & `monitor-01` other than `peanut` itself kept its prior uptime.
+The dashboard renders both units at `https://peanut.alphasecunited.com` with the `docker-main` container deleted. Prometheus reports the `nut` job targets `up` & returns `nut_battery_charge` for `ups01` at `192.168.70.13:3493` & `ups02` at `192.168.70.10:3493`, so the exporter kept working through the `cluster.fw` edit. The temperature-unit change survived a container restart. All four Proxmox nodes hold the same firewall hash & report `enabled/running`. Every container on `docker-main` & `monitor-01` other than `peanut` itself kept its prior uptime.
 
 I didn't pull utility power or test shutdown behavior. `nut-monitor.service` stays disabled on Red & Grey.
 

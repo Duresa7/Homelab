@@ -23,7 +23,7 @@
 
 | Address | Host |
 |---|---|
-| 192.168.10.27 | `<YOUR_ADMIN_USERNAME>` Mac Air |
+| 192.168.10.27 | `dkadi` Mac Air |
 | 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
 

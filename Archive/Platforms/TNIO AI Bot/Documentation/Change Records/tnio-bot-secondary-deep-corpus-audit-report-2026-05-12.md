@@ -22,7 +22,7 @@ The two files still blocked by the local Google Drive connector were included th
 - TNIO Master Engineers: Droid Codex
 
 ## Rebuilt Runtime State
-The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/`:
+The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/aibravo/lore-rag/state/`:
 
 - `tnio_deep_source_audit.json`
 - `tnio_source_authority_map.json`

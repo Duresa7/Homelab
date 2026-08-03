@@ -59,6 +59,6 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, <YOUR_ORG_NAME>-Servers, & <YOUR_ORG_NAME>-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
+1. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, AlphaSec-Servers, & AlphaSec-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
 2. Configure the permanently installed Samsung 850 EVO on `purple-server` as ordinary Proxmox storage for VM disks and LXC root volumes. Its [boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md) is done and Galaxy is back to four votes.
 3. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.

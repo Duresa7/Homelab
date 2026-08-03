@@ -23,7 +23,7 @@ I deployed Syncthing 2.1.2 on `docker-main`, installed the same version on my Wi
 
 - I pinned both peers to Syncthing 2.1.2 instead of following a floating container tag.
 - I used host networking because Syncthing's Docker documentation recommends it for LAN discovery & direct addresses.
-- I initially bound the server GUI to `127.0.0.1:8384`. On 2026-07-22 I changed it to `0.0.0.0:8384` so NPM at `192.168.85.2` can publish `https://syncthing.<YOUR_BASE_DOMAIN>`. UniFi permits only that NPM source to TCP 8384; synchronization still uses TCP/UDP 22000.
+- I initially bound the server GUI to `127.0.0.1:8384`. On 2026-07-22 I changed it to `0.0.0.0:8384` so NPM at `192.168.85.2` can publish `https://syncthing.alphasecunited.com`. UniFi permits only that NPM source to TCP 8384; synchronization still uses TCP/UDP 22000.
 - I configured direct peer addresses across VLANs. The peers connected between `192.168.50.241:22000` & `192.168.40.35:22000`, so I made no UniFi firewall change.
 - I excluded `.obsidian/workspace.json` & `.obsidian/workspace-mobile.json` because these device-specific interface-state files change often. Plugins, themes, hotkeys, & the remaining `.obsidian` files stay synchronized.
 - I enabled staggered versioning only on `docker-main`, with a 7,776,000-second maximum age. That equals 90 days.
@@ -64,7 +64,7 @@ I restarted the Compose service after configuration. The container returned `hea
 | Server image | `syncthing/syncthing:2.1.2` |
 | Server image ID | `sha256:62cee511289c3fcbaec0d0eaf1be0d24cfc329f641a6ab38d843bf9128f632f8` |
 | Server state | `running`, `healthy`, restart count 0 |
-| Server GUI | `0.0.0.0:8384`; internal HTTPS through `syncthing.<YOUR_BASE_DOMAIN>` |
+| Server GUI | `0.0.0.0:8384`; internal HTTPS through `syncthing.alphasecunited.com` |
 | Direct synchronization | TCP 22000 between VLAN 50 & VLAN 40 |
 | Included dataset | 14 files, 6,425,692 bytes, matching canonical manifest SHA-256 on both peers |
 | Server versioning | Staggered, 90 days, `/data/syncthing/versions/the-vault` |
@@ -82,7 +82,7 @@ docker compose logs --tail 100 syncthing
 docker compose restart syncthing
 ```
 
-The server GUI is available internally through NPM at `https://syncthing.<YOUR_BASE_DOMAIN>`. Direct TCP 8384 remains the rollback path, but UniFi limits the approved cross-zone path to NPM. If NPM is unavailable, I can forward the loopback request through SSH to local TCP 8385 so it doesn't collide with the Windows peer's TCP 8384 listener:
+The server GUI is available internally through NPM at `https://syncthing.alphasecunited.com`. Direct TCP 8384 remains the rollback path, but UniFi limits the approved cross-zone path to NPM. If NPM is unavailable, I can forward the loopback request through SSH to local TCP 8385 so it doesn't collide with the Windows peer's TCP 8384 listener:
 
 ```bash
 ssh -L 8385:127.0.0.1:8384 root@192.168.40.35

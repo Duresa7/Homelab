@@ -56,7 +56,7 @@ On the controller there are 14 zones & 25 networks. The three lab networks exist
 | 77 | MALWARE-OFFLINE 192.168.77.1/24 | `6a616a0e2d027bb055268251` | MALWARE-OFFLINE | `6a616dbb2d027bb055268d8e` |
 | 79 | EVIDENCE-QUARANTINE 192.168.79.1/24 | `6a616a0e2d027bb05526825c` | EVIDENCE-QUARANTINE | `6a616dc32d027bb055268e16` |
 
-Nine `KASM` firewall policies survive & all nine are baseline: DHCP & NTP allows to the Gateway zone, a gateway block per lane, & an External block on 77 & 79. Not one of them blocks a lab zone toward Internal or the `<YOUR_ORG_NAME>` zones. That containment rests on the custom-zone default, & after the 2026-07-27 consolidation deleted 44 policies I want it tested rather than assumed.
+Nine `KASM` firewall policies survive & all nine are baseline: DHCP & NTP allows to the Gateway zone, a gateway block per lane, & an External block on 77 & 79. Not one of them blocks a lab zone toward Internal or the `AlphaSec` zones. That containment rests on the custom-zone default, & after the 2026-07-27 consolidation deleted 44 policies I want it tested rather than assumed.
 
 Traffic route `KASM Lab Proton Egress` (`6a6170cc2d027bb055269a6c`) is enabled with the kill switch on, matching INTERNET, targeting the KASM-BROWSER network object. The older `VPN - Proton` route is disabled.
 
@@ -116,10 +116,10 @@ VLAN tags live in the guest's NIC config & the macvlan parents are guest interfa
 | ALLOW | Internal zone, networks Trusted & Personal-A only | 192.168.78.10 | TCP 443, 22 |
 | ALLOW | Vpn zone, network Management Access | 192.168.78.10 | TCP 443, 22 |
 | BLOCK | LAB-MGMT | Internal | any |
-| BLOCK | LAB-MGMT | `<YOUR_ORG_NAME>`-Servers | any |
-| BLOCK | LAB-MGMT | `<YOUR_ORG_NAME>`-Mgmt | any |
-| BLOCK | LAB-MGMT | `<YOUR_ORG_NAME>`-Access | any |
-| BLOCK | LAB-MGMT | `<YOUR_ORG_NAME>`-Observability | any |
+| BLOCK | LAB-MGMT | `AlphaSec`-Servers | any |
+| BLOCK | LAB-MGMT | `AlphaSec`-Mgmt | any |
+| BLOCK | LAB-MGMT | `AlphaSec`-Access | any |
+| BLOCK | LAB-MGMT | `AlphaSec`-Observability | any |
 | BLOCK | LAB-MGMT | Gateway | any |
 | BLOCK | LAB-MGMT | KASM-BROWSER, MALWARE-OFFLINE, EVIDENCE-QUARANTINE | any |
 
@@ -203,7 +203,7 @@ Keep the nine existing `KASM` policies. Add these, prefixed the same way:
 | BLOCK | KASM-BROWSER | EVIDENCE-QUARANTINE | Review artifacts stay out of reach of tooling |
 | BLOCK | MALWARE-OFFLINE | EVIDENCE-QUARANTINE | Same, from the lane that holds live samples |
 | BLOCK | each lab zone | LAB-MGMT | A session can't attack the control plane over the network |
-| BLOCK | each lab zone | Internal, `<YOUR_ORG_NAME>`-Servers, `<YOUR_ORG_NAME>`-Mgmt, `<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Observability | Written explicitly instead of trusting the zone-matrix default |
+| BLOCK | each lab zone | Internal, `AlphaSec`-Servers, `AlphaSec`-Mgmt, `AlphaSec`-Access, `AlphaSec`-Observability | Written explicitly instead of trusting the zone-matrix default |
 
 EVIDENCE-QUARANTINE gets reached through the Kasm web UI, never from another lane.
 

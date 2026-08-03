@@ -12,18 +12,18 @@ I run three TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN
 | Host | `alpha-prod-01` (`192.168.80.118`), Debian 13 |
 | Voice containers | `ts-valorant-01`, `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`) |
 | Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:0.17`), four registered tunnels |
-| Administration | `https://ts3-manager.<YOUR_BASE_DOMAIN>` through internal NPM; direct fallback `http://192.168.80.118:9000` |
+| Administration | `https://ts3-manager.alphasecunited.com` through internal NPM; direct fallback `http://192.168.80.118:9000` |
 | Networking | Host networking, so each container needs a unique port set |
 
 ## Port and Name Map
 
 | Server | Voice | ServerQuery | File transfer | Public name |
 |---|---:|---:|---:|---|
-| `ts-valorant-01` | 9987/udp | 10011/tcp | 30033/tcp | `ts01.<YOUR_BASE_DOMAIN>` |
-| `ts-valorant-02` | 9988/udp | 10012/tcp | 30034/tcp | `ts02.<YOUR_BASE_DOMAIN>` |
-| `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.<YOUR_BASE_DOMAIN>` |
+| `ts-valorant-01` | 9987/udp | 10011/tcp | 30033/tcp | `ts01.alphasecunited.com` |
+| `ts-valorant-02` | 9988/udp | 10012/tcp | 30034/tcp | `ts02.alphasecunited.com` |
+| `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.alphasecunited.com` |
 
-Each public name is a DNS-only CNAME to its Playit relay plus an `_ts3._udp` SRV record carrying the relay host and assigned port. The SRV target points at the Playit hostname directly, not the CNAME, because some TeamSpeak clients reject an alias there. `ts03` also answers on `ts-valorant-03.<YOUR_BASE_DOMAIN>`, which has its own CNAME and SRV pair.
+Each public name is a DNS-only CNAME to its Playit relay plus an `_ts3._udp` SRV record carrying the relay host and assigned port. The SRV target points at the Playit hostname directly, not the CNAME, because some TeamSpeak clients reject an alias there. `ts03` also answers on `ts-valorant-03.alphasecunited.com`, which has its own CNAME and SRV pair.
 
 ServerQuery ports are LAN only and their allowlists cover `127.0.0.1`, `192.168.80.118`, and `192.168.50.241`. They aren't tunneled, so only voice is reachable from the internet.
 
@@ -33,9 +33,9 @@ Each server is a separate Compose project with its own named volume, which is wh
 
 | Server | Virtual server name | Compose project | Data volume |
 |---|---|---|---|
-| `ts-valorant-01` | `<YOUR_ORG_NAME>` x LYON | `teamspeak` | `teamspeak_ts-data` |
-| `ts-valorant-02` | `<YOUR_ORG_NAME>` United x HomeBase | `teamspeak-02` | `teamspeak-02_ts-data` |
-| `ts-valorant-03` | `<YOUR_ORG_NAME>` United x Valorant 03 | `teamspeak-03` | `teamspeak-03_ts-data` |
+| `ts-valorant-01` | `AlphaSec` x LYON | `teamspeak` | `teamspeak_ts-data` |
+| `ts-valorant-02` | `AlphaSec` United x HomeBase | `teamspeak-02` | `teamspeak-02_ts-data` |
+| `ts-valorant-03` | `AlphaSec` United x Valorant 03 | `teamspeak-03` | `teamspeak-03_ts-data` |
 
 ## Monitoring
 

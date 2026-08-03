@@ -8,7 +8,7 @@ NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS h
 ## Complete NetBird Publication
 
 - [x] Configure Cloudflare DNS-01 validation for the NPM certificate.
-- [x] Request the `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` DNS-01 certificate.
+- [x] Request the `*.alphasecunited.com` and `alphasecunited.com` DNS-01 certificate.
 - [x] Assign the certificate, enable Force SSL, and enable HTTP/2.
 - [x] Verify certificate presentation and the authenticated NetBird dashboard over HTTPS.
 - [x] Enroll the first NetBird peer and verify VPN traffic plus peer-dependent API, OAuth2, WebSocket, signal, management, and gRPC behavior. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
@@ -35,14 +35,14 @@ Internal HTTPS onboarding is closed. NPM now has no open items.
 
 ## TS3 Manager Internal HTTPS
 
-- [x] 2026-07-28: Added one TTL-300 UniFi A record for `ts3-manager.<YOUR_BASE_DOMAIN>` pointing to `192.168.85.2`.
+- [x] 2026-07-28: Added one TTL-300 UniFi A record for `ts3-manager.alphasecunited.com` pointing to `192.168.85.2`.
 - [x] 2026-07-28: Added one logged policy permitting only NPM at `192.168.85.2` to reach `alpha-prod-01` at `192.168.80.118:9000`.
 - [x] 2026-07-28: Added NPM proxy host ID 22 with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
 - [x] 2026-07-28: Completed restart recovery, 46-target blackbox monitoring, documentation, final route validation, & deletion of every backup and temporary deployment file created by the change.
 
 ## Kasm Workspaces Internal HTTPS
 
-- [x] 2026-07-28: Added `kasm.<YOUR_BASE_DOMAIN>` as NPM proxy host ID 23 with an HTTPS upstream, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
+- [x] 2026-07-28: Added `kasm.alphasecunited.com` as NPM proxy host ID 23 with an HTTPS upstream, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
 - [x] 2026-07-28: Added one TTL-300 UniFi A record and one logged policy permitting only `192.168.85.2` to reach `192.168.78.10:443`.
 - [x] 2026-07-28: Narrowed the LAB-MGMT-to-Access block from `ALL` to `NEW, INVALID` after a packet capture proved it dropped Kasm's SYN-ACK.
 - [x] 2026-07-28: Added the twentieth NPM blackbox probe, verified all 48 scrape targets `up`, & verified `probe_success=1` for all 20 active URLs.

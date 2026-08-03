@@ -18,21 +18,21 @@ I verified every LAN row against the controller on 2026-07-28 by reading `firewa
 | Vpn | Built-in | FamilyVPN, Management Access, Game-Access, One-Click VPN, Temp |
 | Gateway | Built-in | *(none)* |
 | Hotspot | Built-in | *(none)* |
-| `<YOUR_ORG_NAME>`-Servers | Custom | SERVERS-A (VLAN 80) |
-| `<YOUR_ORG_NAME>`-Mgmt | Custom | MGMT-A (VLAN 70), Cluster-Net (VLAN 71) |
-| `<YOUR_ORG_NAME>`-Observability | Custom | Security-A (VLAN 72), MONITOR-A (VLAN 73) |
-| `<YOUR_ORG_NAME>`-Access | Custom | Access-A (VLAN 85) |
+| `AlphaSec`-Servers | Custom | SERVERS-A (VLAN 80) |
+| `AlphaSec`-Mgmt | Custom | MGMT-A (VLAN 70), Cluster-Net (VLAN 71) |
+| `AlphaSec`-Observability | Custom | Security-A (VLAN 72), MONITOR-A (VLAN 73) |
+| `AlphaSec`-Access | Custom | Access-A (VLAN 85) |
 | KASM-BROWSER | Custom | KASM-BROWSER (VLAN 74) |
 | KASM-TRUSTED | Custom | KASM-TRUSTED (VLAN 75) |
 | MALWARE-OFFLINE | Custom | MALWARE-OFFLINE (VLAN 77) |
 | LAB-MGMT | Custom | LAB-MGMT (VLAN 78) |
 | EVIDENCE-QUARANTINE | Custom | EVIDENCE-QUARANTINE (VLAN 79) |
 
-The controller has seven built-in and nine custom zones. The custom set is `<YOUR_ORG_NAME>`-Servers, `<YOUR_ORG_NAME>`-Mgmt, `<YOUR_ORG_NAME>`-Observability, `<YOUR_ORG_NAME>`-Access, KASM-BROWSER, KASM-TRUSTED, MALWARE-OFFLINE, LAB-MGMT, and EVIDENCE-QUARANTINE.
+The controller has seven built-in and nine custom zones. The custom set is `AlphaSec`-Servers, `AlphaSec`-Mgmt, `AlphaSec`-Observability, `AlphaSec`-Access, KASM-BROWSER, KASM-TRUSTED, MALWARE-OFFLINE, LAB-MGMT, and EVIDENCE-QUARANTINE.
 
 ## Consolidation Result
 
-I moved Cluster-Net into `<YOUR_ORG_NAME>`-Mgmt and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `<YOUR_ORG_NAME>`-Observability. The two shortened organisation prefixes were corrected before either merge. The three Kasm zones stayed unchanged because their mutual unreachability is the design.
+I moved Cluster-Net into `AlphaSec`-Mgmt and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `AlphaSec`-Observability. The two shortened organisation prefixes were corrected before either merge. The three Kasm zones stayed unchanged because their mutual unreachability is the design.
 
 The 2026-07-27 consolidation reduced the live result to 14. I added LAB-MGMT on 2026-07-28 so a Kasm container escape no longer lands on SERVERS-A beside application workloads. I then added KASM-TRUSTED for ordinary-WAN development sessions during the [workspace build-out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The controller now has 16 zones.
 

@@ -37,7 +37,7 @@ checks run: 1080
 all passed
 mission_control_exit=0
 --- ssh-alias ---
-user <YOUR_ADMIN_USERNAME>
+user dkadi
 hostname 192.168.78.10
 port 22
 ssh_exit=0

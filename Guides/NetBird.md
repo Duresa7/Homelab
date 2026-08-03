@@ -14,7 +14,7 @@ NetBird v0.74.4 runs on CT 107 `docker-network` at `192.168.85.2`. The dashboard
 ## What You Need
 
 - A Debian Docker host with TCP 80, 443, & UDP 3478 available.
-- An internal DNS name such as `<YOUR_NETBIRD_DOMAIN>`.
+- An internal DNS name such as `netbird.alphsec.com`.
 - Nginx Proxy Manager on the same external Docker network.
 - One client device for peer enrollment and route testing.
 - Firewall access from the routing peer to the destination subnet.
@@ -41,7 +41,7 @@ I changed the generated trusted-proxy address to Nginx Proxy Manager's fixed `17
 
 ### Step 4: Publish the Control Plane
 
-I created the internal DNS record for `<YOUR_NETBIRD_DOMAIN>`, added the Nginx Proxy Manager host and advanced NetBird routes, assigned its certificate, & enabled Force SSL and HTTP/2.
+I created the internal DNS record for `netbird.alphsec.com`, added the Nginx Proxy Manager host and advanced NetBird routes, assigned its certificate, & enabled Force SSL and HTTP/2.
 
 ![Authenticated NetBird dashboard](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg)
 

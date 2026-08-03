@@ -15,7 +15,7 @@ Fleet package updates include `ansible-01` through Ansible's local connection. T
 - Execution account: `ansible`
 - Administrative access: `ssh ansible-01` from my workstations
 - Ansible: community package 14.2.0 with ansible-core 2.21.2
-- Semaphore: 2.18.27 at `https://semaphore.<YOUR_BASE_DOMAIN>` through NPM; direct fallback `http://192.168.40.36:3000`
+- Semaphore: 2.18.27 at `https://semaphore.alphasecunited.com` through NPM; direct fallback `http://192.168.40.36:3000`
 - Boot behavior: Proxmox starts LXC 100 automatically; systemd starts Semaphore, `galaxy-pxe`, and `tftpd-hpa` inside it
 - Source of truth: each Ansible platform project under `Source/`, including its `semaphore/task-templates.yml` manifest; the hosted Galaxy PXE source belongs to `Platforms/Galaxy PXE/`
 

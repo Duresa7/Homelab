@@ -7,7 +7,7 @@
 
 I operate the NetBird v0.74.4 control plane on `docker-network` through SSH Manager target `docker_network`. The live Compose project is `/opt/docker/netbird`.
 
-The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://<YOUR_NETBIRD_DOMAIN>`; direct local checks stay useful for isolating a container or proxy failure.
+The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://netbird.alphsec.com`; direct local checks stay useful for isolating a container or proxy failure.
 
 ## Routine Health Check
 
@@ -19,8 +19,8 @@ docker compose ps
 docker inspect -f 'name={{.Name}} status={{.State.Status}} restart={{.HostConfig.RestartPolicy.Name}}' netbird-dashboard netbird-server
 curl -sS -o /dev/null -w 'dashboard_http=%{http_code}\n' http://127.0.0.1:8080/
 curl -sS -o /dev/null -w 'idp_http=%{http_code}\n' http://127.0.0.1:8081/oauth2/.well-known/openid-configuration
-getent ahostsv4 <YOUR_NETBIRD_DOMAIN>
-curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://<YOUR_NETBIRD_DOMAIN>/
+getent ahostsv4 netbird.alphsec.com
+curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://netbird.alphsec.com/
 ```
 
 Expected baseline:
@@ -88,7 +88,7 @@ The repository Compose file is a reader-editable reference. I don't replace the 
 I validate the live entry point from an internal client using UniFi DNS:
 
 ```sh
-curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://<YOUR_NETBIRD_DOMAIN>/
+curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://netbird.alphsec.com/
 ```
 
 My established baseline is a valid certificate, HTTP `200`, and a successfully authenticated administrator dashboard without mixed-content errors. After a configuration change or upgrade I also exercise the management, signal, relay/WebSocket, and gRPC routes through the same name. I completed first-peer and routed VPN-path validation on 2026-07-12; it is recorded in the linked change record below.
@@ -120,8 +120,8 @@ ping -c3 100.121.111.204                       # CT 107 overlay IP
 ip route get 192.168.85.2                      # expect: dev wt0 table 7120
 
 # 3. Application layer through the tunnel (force SNI + tunnel IP):
-curl -k -m5 --resolve <YOUR_NETBIRD_DOMAIN>:443:192.168.85.2 \
-    -o /dev/null -w '%{http_code}\n' https://<YOUR_NETBIRD_DOMAIN>   # expect 200
+curl -k -m5 --resolve netbird.alphsec.com:443:192.168.85.2 \
+    -o /dev/null -w '%{http_code}\n' https://netbird.alphsec.com   # expect 200
 ```
 
 A raw-IP HTTPS request (`https://192.168.85.2`) returns a TLS `unrecognized_name` alert rather than a page; that is expected, because the front end has no server block for a bare-IP SNI, and it still confirms the connection reached the service through the tunnel.

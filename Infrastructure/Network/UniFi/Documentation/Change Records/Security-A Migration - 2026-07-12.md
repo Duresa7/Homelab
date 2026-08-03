@@ -30,10 +30,10 @@ My preflight confirmed both QEMU agents responded, both NICs were VirtIO on `vmb
 - I assigned static addresses: `security-01` = `192.168.72.2/24`; `splunk-siem` = `192.168.72.3/24`; gateway and DNS = `192.168.72.1`.
 - I cut over hard, one guest at a time, Splunk first. `security-01` could not start until Splunk passed service, port, UI, and egress validation.
 - I preserved NIC model, MAC, bridge, and guest-firewall state; I changed only the VLAN tag and in-guest addressing.
-- I permitted external TCP 80/443 and UDP 123 only from the two Security-A workload IPs, then blocked and logged all remaining `<YOUR_ORG_NAME>`-Security-to-External IPv4 traffic.
+- I permitted external TCP 80/443 and UDP 123 only from the two Security-A workload IPs, then blocked and logged all remaining `AlphaSec`-Security-to-External IPv4 traffic.
 - I added only the inbound/cross-zone paths required for Wazuh and monitoring. No WAN-inbound policies or port forwards.
 - I kept the existing Galaxy TCP 8006 accept from `192.168.70.0/24` for later review, but replaced the broad TCP 9100 accept with `192.168.72.2/32`.
-- I recorded MGMT-A's future allowed set as Trusted/VLAN 10, Secure/VLAN 50, WireGuard VPN, and future NetBird traffic sourced from `<YOUR_ORG_NAME>`-Access. Final MGMT-A lockdown is a separate bounded change.
+- I recorded MGMT-A's future allowed set as Trusted/VLAN 10, Secure/VLAN 50, WireGuard VPN, and future NetBird traffic sourced from `AlphaSec`-Access. Final MGMT-A lockdown is a separate bounded change.
 
 ## Migration Walkthrough
 
@@ -43,13 +43,13 @@ I created seven enabled UniFi policies:
 
 | Policy | Path |
 |---|---|
-| Allow `<YOUR_ORG_NAME>`-Servers to Wazuh - Security-A | `<YOUR_ORG_NAME>`-Servers → `192.168.72.2`, Wazuh Ports |
+| Allow `AlphaSec`-Servers to Wazuh - Security-A | `AlphaSec`-Servers → `192.168.72.2`, Wazuh Ports |
 | Allow DMZ to Wazuh - Security-A | `edge-01` → `192.168.72.2`, Wazuh Ports |
 | Allow Security to DMZ monitoring | `192.168.72.2` → `192.168.90.10:9100` |
 | Allow Security to Proxmox monitoring | `192.168.72.2` → `192.168.70.10`–`.13`, TCP 9100/8006 |
 | Allow Security Workloads Web Egress | `.72.2` and `.72.3` → External TCP 80/443 |
 | Allow Security Workloads NTP Egress | `.72.2` and `.72.3` → External UDP 123 |
-| Block `<YOUR_ORG_NAME>`-Security Other External Egress | remaining `<YOUR_ORG_NAME>`-Security → External IPv4 |
+| Block `AlphaSec`-Security Other External Egress | remaining `AlphaSec`-Security → External IPv4 |
 
 I added `/32` accepts from `192.168.72.2` for TCP 9100 and 8006 to the Galaxy firewall. `pve-firewall compile` completed successfully.
 

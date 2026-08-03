@@ -30,16 +30,16 @@ The main issue was not missing Google Drive data. The correct answers were prese
 
 ## Files Changed On AI Bravo 02
 
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_source_map.py`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_mcp_server.py`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/test_accuracy_policy.py`
+- `/home/aibravo/lore-rag/lore_agent.py`
+- `/home/aibravo/lore-rag/lore_source_map.py`
+- `/home/aibravo/lore-rag/lore_mcp_server.py`
+- `/home/aibravo/lore-rag/test_accuracy_policy.py`
 
 I created backups before overwrite:
 
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_agent.py.bak.accuracy-policy-20260512T150221Z`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_source_map.py.bak.accuracy-policy-20260512T150221Z`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/lore_mcp_server.py.bak.accuracy-policy-20260512T150221Z`
+- `/home/aibravo/lore-rag/lore_agent.py.bak.accuracy-policy-20260512T150221Z`
+- `/home/aibravo/lore-rag/lore_source_map.py.bak.accuracy-policy-20260512T150221Z`
+- `/home/aibravo/lore-rag/lore_mcp_server.py.bak.accuracy-policy-20260512T150221Z`
 
 ## Intel Policy Card Added
 

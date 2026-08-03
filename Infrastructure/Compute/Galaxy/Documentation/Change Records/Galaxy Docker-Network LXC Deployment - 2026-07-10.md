@@ -15,8 +15,8 @@ I provisioned a Debian 13 LXC on `blue-server` for network-access services. The 
 
 - CTID 107 was unused, and no dedicated `docker-network` guest existed.
 - Access-A already existed as VLAN 85 with subnet `192.168.85.0/24`, gateway `192.168.85.1`, and reserved static range `.2` through `.5`.
-- The existing UniFi `Allow Internal to <YOUR_ORG_NAME>-Access` and `Allow VPN to <YOUR_ORG_NAME>-Access` policies provided the intended inbound zone paths.
-- There were no workload-specific `<YOUR_ORG_NAME>`-Access-to-External egress rules and no internal DNS record for `<YOUR_NETBIRD_DOMAIN>`.
+- The existing UniFi `Allow Internal to AlphaSec-Access` and `Allow VPN to AlphaSec-Access` policies provided the intended inbound zone paths.
+- There were no workload-specific `AlphaSec`-Access-to-External egress rules and no internal DNS record for `netbird.alphsec.com`.
 
 ## Egress Policy Order
 
@@ -24,9 +24,9 @@ I created three order-sensitive UniFi policies with logging enabled and automati
 
    | Order | Policy | Source | Destination | Protocol / port | Result |
    |---:|---|---|---|---|---|
-   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | TCP 80, 443 | Allow |
-   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `<YOUR_ORG_NAME>`-Access | External | UDP 123 | Allow |
-   | 10002 | `Block <YOUR_ORG_NAME>-Access Other External Egress` | Any, `<YOUR_ORG_NAME>`-Access | External | Any IPv4 | Block |
+   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `AlphaSec`-Access | External | TCP 80, 443 | Allow |
+   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `AlphaSec`-Access | External | UDP 123 | Allow |
+   | 10002 | `Block AlphaSec-Access Other External Egress` | Any, `AlphaSec`-Access | External | Any IPv4 | Block |
 
 ## Resulting LXC Configuration
 
@@ -41,7 +41,7 @@ I created three order-sensitive UniFi policies with logging enabled and automati
 | Boot / HA | `onboot=1`; HA state `started` |
 | Network | `eth0`, `vmbr0`, VLAN 85, firewall enabled |
 | Addressing | `192.168.85.2/24`; gateway and DNS `192.168.85.1` |
-| SSH | Public-key only as `<YOUR_ADMIN_USERNAME>`; root and password-based SSH disabled |
+| SSH | Public-key only as `dkadi`; root and password-based SSH disabled |
 | Hosted workloads | Nginx Proxy Manager 2.15.1; NetBird 0.74.3 |
 
 The HA resource is backed by node-local `local-lvm`. I accepted that this starts and monitors the guest but doesn't provide shared-storage failover to another node.
@@ -54,14 +54,14 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 ## Verification
 
 - The guest started, reported Debian 13.1, & reached `192.168.85.1` with 0% packet loss.
-- SSH Manager connected as `<YOUR_ADMIN_USERNAME>`; passwordless sudo returned exit code 0, the SSH service was active, & all three approved public-key fingerprints were present.
+- SSH Manager connected as `dkadi`; passwordless sudo returned exit code 0, the SSH service was active, & all three approved public-key fingerprints were present.
 - `ha-manager` reported `ct:107` on `blue-server` with state `started`.
 - HTTP to `deb.debian.org` returned 200, and HTTPS to the Docker registry returned the expected unauthenticated 401 response, proving TCP 80/443 egress.
 - `ntpdig` reached `time.cloudflare.com` and returned valid time data, proving UDP 123 egress.
 - A direct TCP DNS attempt to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as expected under the final block rule.
-- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `<YOUR_NETBIRD_DOMAIN>`.
+- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `netbird.alphsec.com`.
 - Nginx Proxy Manager, the NetBird dashboard, & the NetBird server containers were running; direct NPM administration and the NetBird identity endpoint returned HTTP 200.
-- The Let's Encrypt wildcard/apex certificate passed validation, `https://<YOUR_NETBIRD_DOMAIN>` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
+- The Let's Encrypt wildcard/apex certificate passed validation, `https://netbird.alphsec.com` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
 - Both Compose projects restarted; readiness passed on the second check, NPM returned `healthy`, `nginx -t` passed, & direct/HTTPS probes returned 200.
 
 ## Walkthrough
@@ -92,7 +92,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 ### Step 3: Harden SSH and add the guest to HA
 
-**Action:** I created the `<YOUR_ADMIN_USERNAME>` administrator, installed the three approved public keys, granted NOPASSWD sudo, disabled root & password-based SSH, added the guest to SSH Manager as `docker_network`, & set its HA desired state to `started`.
+**Action:** I created the `dkadi` administrator, installed the three approved public keys, granted NOPASSWD sudo, disabled root & password-based SSH, added the guest to SSH Manager as `docker_network`, & set its HA desired state to `started`.
 
 **Observed result:** Key-only SSH and passwordless sudo worked, while root, password, and keyboard-interactive authentication were disabled. Proxmox showed CT 107 running as an unprivileged container on `blue-server`, with HA desired state `started`.
 
@@ -157,7 +157,7 @@ The capture showed the client & server versions, Compose version, active service
 
 ### Step 6: Add internal DNS
 
-**UI action:** I added the UniFi local A record `<YOUR_NETBIRD_DOMAIN>` pointing to `192.168.85.2` with TTL 300 seconds.
+**UI action:** I added the UniFi local A record `netbird.alphsec.com` pointing to `192.168.85.2` with TTL 300 seconds.
 
 **Observed result:** The controller saved the enabled DNS record.
 
@@ -173,7 +173,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Observed result:** The certificate was issued and the NetBird proxy host reported Online.
 
-**Verification:** `nginx -t` passed & `https://<YOUR_NETBIRD_DOMAIN>` returned HTTP 200.
+**Verification:** `nginx -t` passed & `https://netbird.alphsec.com` returned HTTP 200.
 
 **Evidence:**
 

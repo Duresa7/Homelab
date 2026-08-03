@@ -60,7 +60,7 @@ I assigned the 850 EVO a permanent role as ordinary Proxmox guest storage on 202
 
 Read-only. Nothing else starts until this passes, because every later step assumes the lab zones are sealed.
 
-- [ ] Confirm KASM-BROWSER, MALWARE-OFFLINE, & EVIDENCE-QUARANTINE each block toward Internal, `<YOUR_ORG_NAME>`-Servers, & `<YOUR_ORG_NAME>`-Mgmt
+- [ ] Confirm KASM-BROWSER, MALWARE-OFFLINE, & EVIDENCE-QUARANTINE each block toward Internal, `AlphaSec`-Servers, & `AlphaSec`-Mgmt
 - [ ] Confirm `KASM Lab Proton Egress` still targets VLAN 74 only with the kill switch on
 - [ ] Confirm the 9 surviving `KASM` policies match the [2026-07-23 simplification](../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 
@@ -134,7 +134,7 @@ Every check in the [Isolated Security Lab acceptance boundary](../../../../../Ar
 
 I stop & reassess if any of these happen:
 
-- Step 1 finds a lab zone that doesn't block toward Internal, `<YOUR_ORG_NAME>`-Servers, or `<YOUR_ORG_NAME>`-Mgmt
+- Step 1 finds a lab zone that doesn't block toward Internal, `AlphaSec`-Servers, or `AlphaSec`-Mgmt
 - The migration in Step 3 fails verification & the `vzdump` restore is needed
 - Purple's replacement NVMe reports a `Critical Warning` other than `0x00`, or `Percentage Used` climbs above its current 30%
 - A Step 6 containment test shows a session reaching a production address

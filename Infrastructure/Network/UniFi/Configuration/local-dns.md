@@ -9,26 +9,26 @@ I track 21 local A records on the UniFi gateway. They send NetBird and 20 intern
 
 | Hostname | Type | Value | TTL | Enabled | Record ID | Purpose |
 |---|---|---|---:|---|---|---|
-| `<YOUR_NETBIRD_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `<YOUR_NETBIRD_DNS_RECORD_ID>` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
-| `jellyfin.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a834` | Jellyfin through NPM |
-| `seerr.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a837` | Seerr through NPM |
-| `sonarr.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83a` | Sonarr through NPM |
-| `radarr.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83d` | Radarr through NPM |
-| `prowlarr.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83e` | Prowlarr through NPM |
-| `qbittorrent.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83f` | qBittorrent through NPM |
-| `semaphore.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a840` | Semaphore through NPM |
-| `immich.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a841` | Immich through NPM |
-| `booklore.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookLore through NPM |
-| `dashboard.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84f` | Homelab dashboard through NPM |
-| `forgejo.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
-| `portainer.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a852` | Portainer through NPM |
-| `peanut.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a853` | PeaNUT through NPM |
-| `syncthing.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a857` | Syncthing GUI through NPM |
-| `wazuh.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a85a` | Wazuh dashboard through NPM |
-| `grafana.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a862` | Grafana through NPM |
-| `splunk.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a863` | Splunk Web through NPM |
-| `prometheus.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
-| `kasm.<YOUR_BASE_DOMAIN>` | A | `192.168.85.2` | 300 | Yes | `6a69768d052792cd2140e39f` | Kasm Workspaces through NPM |
+| `netbird.alphsec.com` | A | `192.168.85.2` | 300 | Yes | `<YOUR_NETBIRD_DNS_RECORD_ID>` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
+| `jellyfin.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a834` | Jellyfin through NPM |
+| `seerr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a837` | Seerr through NPM |
+| `sonarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83a` | Sonarr through NPM |
+| `radarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83d` | Radarr through NPM |
+| `prowlarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83e` | Prowlarr through NPM |
+| `qbittorrent.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83f` | qBittorrent through NPM |
+| `semaphore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a840` | Semaphore through NPM |
+| `immich.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a841` | Immich through NPM |
+| `booklore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookLore through NPM |
+| `dashboard.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84f` | Homelab dashboard through NPM |
+| `forgejo.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
+| `portainer.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a852` | Portainer through NPM |
+| `peanut.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a853` | PeaNUT through NPM |
+| `syncthing.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a857` | Syncthing GUI through NPM |
+| `wazuh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a85a` | Wazuh dashboard through NPM |
+| `grafana.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a862` | Grafana through NPM |
+| `splunk.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a863` | Splunk Web through NPM |
+| `prometheus.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
+| `kasm.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a69768d052792cd2140e39f` | Kasm Workspaces through NPM |
 
 ## Verification
 
@@ -41,6 +41,6 @@ I created and verified the record on 2026-07-11:
 
 I added and verified the 19 application records on 2026-07-22. An Internal-zone Windows client resolved every name to `192.168.85.2`. Cloudflare DNS-over-HTTPS returned NXDOMAIN for all 19 names. The implementation is documented in the NPM [change record](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
-I added `kasm.<YOUR_BASE_DOMAIN>` on 2026-07-28 as record `6a69768d052792cd2140e39f`. A Windows client resolved it to `192.168.85.2`, & the HTTPS health endpoint returned `{"ok": true}` through NPM.
+I added `kasm.alphasecunited.com` on 2026-07-28 as record `6a69768d052792cd2140e39f`. A Windows client resolved it to `192.168.85.2`, & the HTTPS health endpoint returned `{"ok": true}` through NPM.
 
 These records exist only on the UniFi resolver. They don't change the public Cloudflare zone.

@@ -26,7 +26,7 @@ unhealthy_or_restarting
 alpha-prod-01 | CHANGED | rc=0 >>
 system_state=running
 docker=active
-[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"playit-agent","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/playit-agent/docker-compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"},{"Name":"teamspeak","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak/docker-compose.yml"},{"Name":"teamspeak-02","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-02/docker-compose.yml"},{"Name":"teamspeak-03","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-03/docker-compose.yml"},{"Name":"teamspeak-monitor","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor/docker-compose.yml"},{"Name":"ts3-manager","Status":"running(1)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/ts3-manager/docker-compose.yml"}]
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"playit-agent","Status":"running(1)","ConfigFiles":"/home/dkadi/playit-agent/docker-compose.yml"},{"Name":"portainer-edge-agent","Status":"running(1)","ConfigFiles":"/opt/docker/portainer-edge-agent/docker-compose.yml"},{"Name":"teamspeak","Status":"running(1)","ConfigFiles":"/home/dkadi/teamspeak/docker-compose.yml"},{"Name":"teamspeak-02","Status":"running(1)","ConfigFiles":"/home/dkadi/teamspeak-02/docker-compose.yml"},{"Name":"teamspeak-03","Status":"running(1)","ConfigFiles":"/home/dkadi/teamspeak-03/docker-compose.yml"},{"Name":"teamspeak-monitor","Status":"running(1)","ConfigFiles":"/home/dkadi/teamspeak-monitor/docker-compose.yml"},{"Name":"ts3-manager","Status":"running(1)","ConfigFiles":"/home/dkadi/ts3-manager/docker-compose.yml"}]
 unhealthy_or_restarting
 ansible-01 | CHANGED | rc=0 >>
 system_state=running
@@ -34,7 +34,7 @@ monitor-01 | CHANGED | rc=0 >>
 system_state=degraded
 wtmpdb-rotate.timer not-found failed failed wtmpdb-rotate.timer
 docker=active
-[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"monitoring","Status":"running(5)","ConfigFiles":"/home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml"},{"Name":"peanut","Status":"running(1)","ConfigFiles":"/opt/docker/peanut/docker-compose.yml"}]
+[{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"monitoring","Status":"running(5)","ConfigFiles":"/home/dkadi/monitoring/docker-compose.yml"},{"Name":"peanut","Status":"running(1)","ConfigFiles":"/opt/docker/peanut/docker-compose.yml"}]
 unhealthy_or_restarting
 splunk-siem | CHANGED | rc=0 >>
 system_state=degraded

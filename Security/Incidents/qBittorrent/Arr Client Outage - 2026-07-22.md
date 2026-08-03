@@ -48,7 +48,7 @@ Unable to communicate with qBittorrent via Proton VPN.
 Failed to connect to qBittorrent. Check your settings and qBittorrent configuration.
 ```
 
-Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms. Changing only the Host header to `qbittorrent.<YOUR_BASE_DOMAIN>` returned HTTP `200` and qBittorrent version `v5.2.3`.
+Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms. Changing only the Host header to `qbittorrent.alphasecunited.com` returned HTTP `200` and qBittorrent version `v5.2.3`.
 
 ## Timeline
 
@@ -65,20 +65,20 @@ Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms.
 
 - Sonarr and Radarr resolved and connected to `gluetun:8080`; TCP and Docker DNS weren't the failure.
 - `Host: gluetun:8080` and `Host: 192.168.40.42:8080` returned HTTP `401` before mitigation.
-- `Host: qbittorrent.<YOUR_BASE_DOMAIN>` returned HTTP `200` from the same source and request path.
+- `Host: qbittorrent.alphasecunited.com` returned HTTP `200` from the same source and request path.
 - The Arr addresses were inside qBittorrent's enabled `172.18.0.0/16` authentication-bypass subnet.
 - Gluetun was healthy, qBittorrent shared Gluetun's exact container ID, & provider-forwarded port `51342` matched qBittorrent's listening port.
 - The HTTPS route check passed during the original change because NPM sent the one allowed hostname. It didn't test the separate `gluetun` hostname used by both Arr applications.
 
 ## Root Cause
 
-I replaced qBittorrent's effective server-domain allowance with only `qbittorrent.<YOUR_BASE_DOMAIN>` during the HTTPS compatibility change. qBittorrent validates the HTTP Host header before WebUI authentication, so the new value blocked the established Arr client path even though its DNS, TCP connection, subnet bypass, & VPN namespace were unchanged. I didn't edit either saved Arr client during mitigation; both saved-client tests passed after the Host-list repair.
+I replaced qBittorrent's effective server-domain allowance with only `qbittorrent.alphasecunited.com` during the HTTPS compatibility change. qBittorrent validates the HTTP Host header before WebUI authentication, so the new value blocked the established Arr client path even though its DNS, TCP connection, subnet bypass, & VPN namespace were unchanged. I didn't edit either saved Arr client during mitigation; both saved-client tests passed after the Host-list repair.
 
 The original verification tested the NPM route and qBittorrent WebUI response. It didn't include a saved-client test from Sonarr or Radarr after the server-domain change.
 
 ## Corrective Actions
 
-1. I changed `web_ui_domain_list` to `qbittorrent.<YOUR_BASE_DOMAIN>;gluetun;192.168.40.42` through qBittorrent's Web API.
+1. I changed `web_ui_domain_list` to `qbittorrent.alphasecunited.com;gluetun;192.168.40.42` through qBittorrent's Web API.
 2. I confirmed `web_ui_host_header_validation_enabled=true` after the change.
 3. I ran each Arr application's saved download-client test.
 4. I verified direct qBittorrent access, NPM HTTPS with certificate validation, the Gluetun namespace, & Proton port matching.

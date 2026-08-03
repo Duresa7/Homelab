@@ -14,7 +14,7 @@ The same inode failure recurred when I added the Kasm blackbox target with host-
 I copied the validated host file through the existing writable mount without replacing the mounted inode:
 
 ```sh
-docker exec -i -u 0 prometheus sh -c 'cat > /etc/prometheus/prometheus.yml' < /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml
+docker exec -i -u 0 prometheus sh -c 'cat > /etc/prometheus/prometheus.yml' < /home/dkadi/monitoring/prometheus.yml
 ```
 
 The host and container SHA-256 digests then matched at `6c552c06b9109f146b5d02b6bd68db35d8fcc19b8ed815f8356d907fe97a5924`. `promtool` passed, Prometheus reloaded on `SIGHUP`, & a check against the 20 active target labels found 20 `probe_success=1` results and no failure. I did not restart the container.

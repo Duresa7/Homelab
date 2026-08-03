@@ -16,7 +16,7 @@ CT 107 `docker-network` is the recorded reference implementation. The same basel
 - Hypervisor console access.
 - A hostname, address, gateway, DNS server, & time zone.
 - Three public keys: `<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>`, `<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>`, & `<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>`.
-- The intended administrative username, shown here as `<YOUR_ADMIN_USERNAME>`.
+- The intended administrative username, shown here as `dkadi`.
 
 ## How the Pieces Fit Together
 
@@ -36,16 +36,16 @@ On an RHEL-family host, use `dnf upgrade -y`. I don't install the workload until
 ### Step 2: Create the Administrative Account
 
 ```sh
-adduser <YOUR_ADMIN_USERNAME>
-usermod -aG sudo <YOUR_ADMIN_USERNAME>
-printf '<YOUR_ADMIN_USERNAME> ALL=(ALL:ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/90-<YOUR_ADMIN_USERNAME>
-chmod 0440 /etc/sudoers.d/90-<YOUR_ADMIN_USERNAME>
-visudo -cf /etc/sudoers.d/90-<YOUR_ADMIN_USERNAME>
+adduser dkadi
+usermod -aG sudo dkadi
+printf 'dkadi ALL=(ALL:ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/90-dkadi
+chmod 0440 /etc/sudoers.d/90-dkadi
+visudo -cf /etc/sudoers.d/90-dkadi
 ```
 
 ### Step 3: Install the Three Public Keys
 
-Create `/home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` with one complete public key per line. Set the directory to `0700`, the file to `0600`, & both to `<YOUR_ADMIN_USERNAME>` ownership.
+Create `/home/dkadi/.ssh/authorized_keys` with one complete public key per line. Set the directory to `0700`, the file to `0600`, & both to `dkadi` ownership.
 
 ### Step 4: Disable Password and Root SSH
 
@@ -72,10 +72,10 @@ Generate `en_US.UTF-8` & make it active through the distribution's locale tools.
 ## What I Checked After Each Step
 
 ```sh
-id <YOUR_ADMIN_USERNAME>
+id dkadi
 sudo -n true
 sudo sshd -T | grep -E 'permitrootlogin|pubkeyauthentication|passwordauthentication|kbdinteractiveauthentication'
-ssh-keygen -lf /home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys
+ssh-keygen -lf /home/dkadi/.ssh/authorized_keys
 passwd -S root
 timedatectl
 locale

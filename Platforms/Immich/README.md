@@ -3,7 +3,7 @@
 **Created:** 2026-07-22  
 **Last updated:** 2026-07-22
 
-I run Immich on `docker-main` with the application on TCP 2283 and its library under `/data/immich`. The internal browser path is `https://immich.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager; direct fallback remains `http://192.168.40.35:2283`.
+I run Immich on `docker-main` with the application on TCP 2283 and its library under `/data/immich`. The internal browser path is `https://immich.alphasecunited.com` through Nginx Proxy Manager; direct fallback remains `http://192.168.40.35:2283`.
 
 **Owner:** Homelab photo and video library
 

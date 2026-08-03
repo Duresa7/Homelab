@@ -16,7 +16,7 @@ I inventoried my `ansible-01` control node and documented the SSH key distributi
 The playbook is configured to:
 
 - target the `lxc` and `management` groups as `root` with privilege escalation enabled
-- target the `VM` group as user `<YOUR_ADMIN_USERNAME>` without privilege escalation
+- target the `VM` group as user `dkadi` without privilege escalation
 - deploy three SSH public keys to the configured hosts
 
 ## Inventory Summary
@@ -38,11 +38,11 @@ The playbook is configured to:
 
 | Host | IP | User |
 | --- | --- | --- |
-| app-01 | 192.168.80.10 | `<YOUR_ADMIN_USERNAME>` |
-| security-01 | 192.168.70.20 | `<YOUR_ADMIN_USERNAME>` |
-| edge-01 | 192.168.90.10 | `<YOUR_ADMIN_USERNAME>` |
-| db-13-test | 192.168.40.135 | `<YOUR_ADMIN_USERNAME>` |
-| alpha-prod-01 | 192.168.80.118 | `<YOUR_ADMIN_USERNAME>` |
+| app-01 | 192.168.80.10 | `dkadi` |
+| security-01 | 192.168.70.20 | `dkadi` |
+| edge-01 | 192.168.90.10 | `dkadi` |
+| db-13-test | 192.168.40.135 | `dkadi` |
+| alpha-prod-01 | 192.168.80.118 | `dkadi` |
 
 ## Raw Inventory File
 
@@ -57,11 +57,11 @@ docker-red ansible_host=192.168.40.30 ansible_user=root
 grey-server ansible_host=192.168.70.10 ansible_user=root
 
 [VM]
-app-01 ansible_host=192.168.80.10 ansible_user=<YOUR_ADMIN_USERNAME>
-security-01 ansible_host=192.168.70.20 ansible_user=<YOUR_ADMIN_USERNAME>
-edge-01 ansible_host=192.168.90.10 ansible_user=<YOUR_ADMIN_USERNAME>
-db-13-test ansible_host=192.168.40.135 ansible_user=<YOUR_ADMIN_USERNAME>
-alpha-prod-01 ansible_host=192.168.80.118 ansible_user=<YOUR_ADMIN_USERNAME>
+app-01 ansible_host=192.168.80.10 ansible_user=dkadi
+security-01 ansible_host=192.168.70.20 ansible_user=dkadi
+edge-01 ansible_host=192.168.90.10 ansible_user=dkadi
+db-13-test ansible_host=192.168.40.135 ansible_user=dkadi
+alpha-prod-01 ansible_host=192.168.80.118 ansible_user=dkadi
 ```
 
 ## Raw Playbook File
@@ -88,7 +88,7 @@ Path: `/home/ansible/ansible/playbooks/distribute_keys.yml`
   tasks:
     - name: Deploy authorized SSH keys
       authorized_key:
-        user: <YOUR_ADMIN_USERNAME>
+        user: dkadi
         key: "{{ item }}"
         state: present
       loop:
@@ -102,4 +102,4 @@ Path: `/home/ansible/ansible/playbooks/distribute_keys.yml`
 - The inventory currently defines 9 managed hosts across 3 groups.
 - The playbook deploys the same 3 SSH public keys to every configured host.
 - For `lxc` and `management`, the keys are placed under `root`.
-- For `VM`, the keys are placed under `<YOUR_ADMIN_USERNAME>`.
+- For `VM`, the keys are placed under `dkadi`.

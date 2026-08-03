@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-03
 
 **Captured:** 2026-08-03 07:46 through 07:51 EDT  
-**Target:** `https://wazuh.<YOUR_BASE_DOMAIN>/`; `security-01:/var/ossec/etc/shared/proxmox`  
+**Target:** `https://wazuh.alphasecunited.com/`; `security-01:/var/ossec/etc/shared/proxmox`  
 **Mechanism:** Codex in-app browser; SSH Manager MCP through `ansible-01`; Wazuh `agent_groups`
 
 ## Dashboard sign-in

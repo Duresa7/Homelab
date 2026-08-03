@@ -18,7 +18,7 @@ Operational helpers for the three TeamSpeak instances on `alpha-prod-01`. No scr
 Compare the two paths to place a fault:
 
 ```bash
-./ts3-probe.py --public ts01 ts02 ts03 --domain <YOUR_BASE_DOMAIN>
+./ts3-probe.py --public ts01 ts02 ts03 --domain alphasecunited.com
 ./ts3-probe.py --local 9987 9988 9989
 ```
 

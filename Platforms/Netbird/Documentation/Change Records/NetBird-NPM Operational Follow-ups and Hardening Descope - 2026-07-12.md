@@ -15,7 +15,7 @@ The access stack was operational with HTTPS publication, authenticated administr
 
 ### 1. Automated Let's Encrypt renewal
 
-NPM's `npm-1` lineage covers `*.<YOUR_BASE_DOMAIN>` and `<YOUR_BASE_DOMAIN>` and expires `2026-10-08 23:49:46 UTC`. The renewal configuration uses `authenticator = dns-cloudflare`. A Let's Encrypt staging run completed successfully for `/etc/letsencrypt/live/npm-1/fullchain.pem` with exit code `0`.
+NPM's `npm-1` lineage covers `*.alphasecunited.com` and `alphasecunited.com` and expires `2026-10-08 23:49:46 UTC`. The renewal configuration uses `authenticator = dns-cloudflare`. A Let's Encrypt staging run completed successfully for `/etc/letsencrypt/live/npm-1/fullchain.pem` with exit code `0`.
 
 NPM's running Node backend owns the observed schedule: `/app/internal/certificate.js` initializes a one-hour timer, checks immediately at startup, and processes Let's Encrypt certificates within 30 days of expiry.
 
@@ -68,7 +68,7 @@ The runbook keeps recovery and update procedures even though those items aren't 
 - NPM returned `healthy`; `nginx -t` succeeded.
 - Direct dashboard and identity-provider probes returned HTTP `200`.
 - NPM-to-NetBird dashboard and identity-provider probes returned HTTP `200`.
-- Internal DNS resolved `<YOUR_NETBIRD_DOMAIN>` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
+- Internal DNS resolved `netbird.alphsec.com` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
 - After the upstream-address refresh, `netbird status` returned both `Management: Connected` and `Signal: Connected`, with the Access-A network still advertised.
 - I removed the temporary live Compose rollback copies after successful validation.
 

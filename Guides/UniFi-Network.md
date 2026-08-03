@@ -52,7 +52,7 @@ The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is 
 
 ### Step 5: Add Local DNS
 
-I added `<YOUR_NETBIRD_DOMAIN>` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address.
+I added `netbird.alphsec.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address.
 
 ![UniFi local DNS record for the NetBird host](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 

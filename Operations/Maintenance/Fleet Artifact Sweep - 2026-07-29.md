@@ -106,13 +106,13 @@ Everything is re-downloadable, so the real cost of deleting an ISO is bandwidth 
 
 | Host | Path | Size | Note |
 |---|---|---:|---|
-| `app-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.10.3-1_amd64.deb` | 11.1 MB | Superseded twice over; the host runs 4.14.6-1 |
-| `app-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.14.5-1_amd64.deb` | 13.2 MB | Superseded on 2026-07-29 |
-| `app-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent-linux-amd64.deb` | 111 B | A failed download, not a package |
-| `edge-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.10.3-1_amd64.deb` | 11.1 MB | Superseded |
-| `edge-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-agent_4.14.5-1_amd64.deb` | 13.2 MB | This one matches the installed 4.14.5-1. Keep it or not, but note that `edge-01` has no Wazuh apt repository, so this file is currently the only local upgrade path. |
-| `security-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-install.sh` | 194 KB | Wazuh installer script, 2026-02-24 |
-| `security-01` | `/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar` | 11.0 KB | Installer output bundle from 2026-02-24. Inspect before deleting rather than after. |
+| `app-01` | `/home/dkadi/wazuh-agent_4.10.3-1_amd64.deb` | 11.1 MB | Superseded twice over; the host runs 4.14.6-1 |
+| `app-01` | `/home/dkadi/wazuh-agent_4.14.5-1_amd64.deb` | 13.2 MB | Superseded on 2026-07-29 |
+| `app-01` | `/home/dkadi/wazuh-agent-linux-amd64.deb` | 111 B | A failed download, not a package |
+| `edge-01` | `/home/dkadi/wazuh-agent_4.10.3-1_amd64.deb` | 11.1 MB | Superseded |
+| `edge-01` | `/home/dkadi/wazuh-agent_4.14.5-1_amd64.deb` | 13.2 MB | This one matches the installed 4.14.5-1. Keep it or not, but note that `edge-01` has no Wazuh apt repository, so this file is currently the only local upgrade path. |
+| `security-01` | `/home/dkadi/wazuh-install.sh` | 194 KB | Wazuh installer script, 2026-02-24 |
+| `security-01` | `/home/dkadi/wazuh-install-files.tar` | 11.0 KB | Installer output bundle from 2026-02-24. Inspect before deleting rather than after. |
 | `docker-main` | `/root/wazuh-agent_4.14.0-1_amd64.deb` | 13.0 MB | Superseded, and `docker-main` is not a Wazuh endpoint |
 | `docker-main` | `/opt/docker/forgejo/docker-compose.yml.bak.20260511155104` | 370 B | Compose file copies beside the live file |
 | `docker-main` | `/opt/docker/forgejo/docker-compose.yml.bak.20260528-184846` | 374 B | Same |
@@ -121,8 +121,8 @@ Everything is re-downloadable, so the real cost of deleting an ISO is bandwidth 
 | `docker-main` | `/opt/docker/wyze-bridge/docker-compose.yml.save` | 694 B | |
 | `docker-main` | `/root/.claude/remote/run/6e864a9f/remote-server.log.old` | 333 B | |
 | `docker-main` | `/root/.bash_history-04350.tmp` | 0 B | Empty, from an interrupted shell exit |
-| `alpha-prod-01` | `/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor/.env.save` | 41 B | An editor copy of an environment file. Inspect before deleting rather than after. |
-| `splunk-siem` | `/home/<YOUR_ADMIN_USERNAME>/backups/internal-https-2026-07-22-prechange/` | 45 B | Holds `splunk-web-configs.tar.gz`, which is 45 bytes and therefore an empty archive |
+| `alpha-prod-01` | `/home/dkadi/teamspeak-monitor/.env.save` | 41 B | An editor copy of an environment file. Inspect before deleting rather than after. |
+| `splunk-siem` | `/home/dkadi/backups/internal-https-2026-07-22-prechange/` | 45 B | Holds `splunk-web-configs.tar.gz`, which is 45 bytes and therefore an empty archive |
 | `purple-server` | `/root/.ssh/known_hosts.old` | 142 B | |
 | `blue-server` | `/root/.ssh/known_hosts.old` | 142 B | |
 | `red-server` | `/root/.ssh/known_hosts.old` | 142 B | |

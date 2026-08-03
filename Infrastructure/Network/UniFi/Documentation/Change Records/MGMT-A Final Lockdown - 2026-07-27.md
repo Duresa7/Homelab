@@ -27,14 +27,14 @@ I saved a full UniFi firewall snapshot before each controller mutation. I also d
 
 ### S02: Narrow the UniFi policies
 
-I disabled `Allow Internal to <YOUR_ORG_NAME>-Mgmt`. This removed the broad Internal-zone path and left UniFi's zone default block in charge for unmatched clients.
+I disabled `Allow Internal to AlphaSec-Mgmt`. This removed the broad Internal-zone path and left UniFi's zone default block in charge for unmatched clients.
 
 I changed `Docker-main Allowed -> Server` from all protocols on ports 22 and 8006 to TCP 8006 only. This keeps the read-only homelab dashboard working without treating `docker-main` or Termix as an approved SSH device.
 
 I left these policies enabled and unchanged:
 
 - `Device Access to Proxmox`, which contains the four approved devices and targets ports 22 and 8006
-- `Allow VPN to <YOUR_ORG_NAME>-Mgmt`, which keeps broad WireGuard VPN access
+- `Allow VPN to AlphaSec-Mgmt`, which keeps broad WireGuard VPN access
 - Both `Allow Monitor to Proxmox` policies for TCP 8006, 9100, and 3493
 
 ### S03: Remove the Termix SSH exception
@@ -79,7 +79,7 @@ The retained evidence is indexed in [MGMT-A Final Lockdown evidence](../../Evide
 
 ## Rollback
 
-To restore the controller state, I can re-enable `Allow Internal to <YOUR_ORG_NAME>-Mgmt` and change `Docker-main Allowed -> Server` back to its prior all-protocol port-group target. The pre-change UniFi snapshot is retained outside the repository at `C:\Users\dures\.codex\state\unifi-mcp\skills\firewall-snapshots\firewall_20260727T122034Z_before.json`.
+To restore the controller state, I can re-enable `Allow Internal to AlphaSec-Mgmt` and change `Docker-main Allowed -> Server` back to its prior all-protocol port-group target. The pre-change UniFi snapshot is retained outside the repository at `C:\Users\dures\.codex\state\unifi-mcp\skills\firewall-snapshots\firewall_20260727T122034Z_before.json`.
 
 To restore the Galaxy firewall, I can copy the retained before export from the evidence folder to `/etc/pve/firewall/cluster.fw`, run `pve-firewall compile`, and verify `pve-firewall status` on all four nodes.
 

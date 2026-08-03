@@ -106,7 +106,7 @@ Evidence: [Kasm acceptance](../Evidence/Fleet%20Artifact%20Sweep%20-%202026-07-2
 
 I re-checked the sweep against live state the same day, found two files the first pass should have taken, and removed both. A third check of `grey-server:/root` turned up two more.
 
-`security-01:/home/<YOUR_ADMIN_USERNAME>/wazuh-install-files.tar` was 10,983 bytes from 2026-02-24, and it was installer output rather than recovery material. Wazuh runs single-node here: `ossec.conf` carries `<disabled>yes</disabled>` in its cluster block, and the indexer is `node-1` bound to `127.0.0.1` with an empty `cluster.initial_master_nodes`. Every certificate the services load already sits in `/etc/wazuh-indexer/certs/`, `/etc/filebeat/certs/`, and `/etc/wazuh-dashboard/certs/`. The bundle only mattered for bringing up a second node, which this deployment has never had, and `wazuh-certs-tool.sh` reissues the full certificate set anyway.
+`security-01:/home/dkadi/wazuh-install-files.tar` was 10,983 bytes from 2026-02-24, and it was installer output rather than recovery material. Wazuh runs single-node here: `ossec.conf` carries `<disabled>yes</disabled>` in its cluster block, and the indexer is `node-1` bound to `127.0.0.1` with an empty `cluster.initial_master_nodes`. Every certificate the services load already sits in `/etc/wazuh-indexer/certs/`, `/etc/filebeat/certs/`, and `/etc/wazuh-dashboard/certs/`. The bundle only mattered for bringing up a second node, which this deployment has never had, and `wazuh-certs-tool.sh` reissues the full certificate set anyway.
 
 I removed it with the Ansible `file` module at `state=absent` and read the host back. The path is gone, `wazuh-manager`, `wazuh-indexer`, `wazuh-dashboard`, and `filebeat` all still report `active`, and all eleven certificate files remain in the three stores. Nothing was archived first, because the bundle held secret material and secrets don't go into this repository, so the removal is terminal.
 
@@ -128,7 +128,7 @@ The journald cap needed deciding rather than assuming, because `/etc/systemd/jou
 
 The cap stays. Two to three weeks of local history on the two busiest hosts is enough to diagnose anything I would still be chasing, the other machines never reach the ceiling so the setting does nothing to them, and security-relevant events leave the host for Wazuh and Splunk regardless. Before the sweep those journals held 9.2 GB fleet-wide for the same practical retention.
 
-Three SSH Manager profiles closed the coverage gap this sweep exposed: `kasm_01` at `192.168.78.10`, `docker_blue` at `192.168.40.39`, and `media_01` at `192.168.40.42`, each as `<YOUR_ADMIN_USERNAME>` on port 22 with the workstation key. I confirmed that key is authorized for `<YOUR_ADMIN_USERNAME>` on all three before adding them, and all three now answer. On `kasm-01` the account isn't in the `docker` group, so Docker commands there need `sudo`, which works without a password.
+Three SSH Manager profiles closed the coverage gap this sweep exposed: `kasm_01` at `192.168.78.10`, `docker_blue` at `192.168.40.39`, and `media_01` at `192.168.40.42`, each as `dkadi` on port 22 with the workstation key. I confirmed that key is authorized for `dkadi` on all three before adding them, and all three now answer. On `kasm-01` the account isn't in the `docker` group, so Docker commands there need `sudo`, which works without a password.
 
 ## Rollback
 

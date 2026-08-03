@@ -3,7 +3,7 @@
 **Created:** 2026-05-13  
 **Last updated:** 2026-07-20
 
-**Model identity:** `<YOUR_ORG_NAME>` United `Alpha-Echo-TNIO-Lore Model`  
+**Model identity:** `AlphaSec` United `Alpha-Echo-TNIO-Lore Model`  
 **Interface:** TNIO Discord server  
 **Source of truth:** TNIO Google Drive archive
 

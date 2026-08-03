@@ -11,7 +11,7 @@ I completed this change on 2026-07-27.
 
 I reduced the UniFi zone matrix, moved repeated host and port selectors into reusable groups, removed Secure-V and its route, corrected two zone names and one disabled WLAN binding, and cleaned unreferenced client groups.
 
-I kept KASM-BROWSER, MALWARE-OFFLINE, and EVIDENCE-QUARANTINE separate. I also kept `<YOUR_ORG_NAME>`-Access separate from observability because its reverse proxy accepts internet traffic.
+I kept KASM-BROWSER, MALWARE-OFFLINE, and EVIDENCE-QUARANTINE separate. I also kept `AlphaSec`-Access separate from observability because its reverse proxy accepts internet traffic.
 
 The [Windows Servers retirement](../../../../../Platforms/Windows%20Servers/README.md) ran between S01 and S02. S01 therefore captured the controller before that plan changed its remaining UniFi, Proxmox, Ansible, Termix, and credential state.
 
@@ -80,7 +80,7 @@ Evidence: [S04 zone name corrections](../../Evidence/Zone%20and%20Object%20Conso
 
 ### Step 5: Merge Cluster-Net into the management zone
 
-I moved Cluster-Net/VLAN 71 into `<YOUR_ORG_NAME>`-Mgmt, then deleted the empty cluster zone. Cluster-Net retained `dhcpd_enabled: false` and `internet_access_enabled: false`.
+I moved Cluster-Net/VLAN 71 into `AlphaSec`-Mgmt, then deleted the empty cluster zone. Cluster-Net retained `dhcpd_enabled: false` and `internet_access_enabled: false`.
 
 `pvecm status` returned four nodes, four votes, and quorum after the move. GUI and SSH remained available on 192.168.70.10 through 192.168.70.13.
 
@@ -88,7 +88,7 @@ Evidence: [S05 cluster zone merge](../../Evidence/Zone%20and%20Object%20Consolid
 
 ### Step 6: Build the observability zone
 
-I repointed nine security-zone policy references before moving Security-A/VLAN 72. I moved Security-A into the monitor zone, created `Allow Monitor to Security monitoring` for the collector-to-security node-exporter path, removed the obsolete cross-zone rule, deleted the empty security zone, and renamed the survivor `<YOUR_ORG_NAME>`-Observability.
+I repointed nine security-zone policy references before moving Security-A/VLAN 72. I moved Security-A into the monitor zone, created `Allow Monitor to Security monitoring` for the collector-to-security node-exporter path, removed the obsolete cross-zone rule, deleted the empty security zone, and renamed the survivor `AlphaSec`-Observability.
 
 I collapsed five overlapping egress policies into an ordered three-policy set sourced from `OBJ-Observability-Hosts`:
 
@@ -104,7 +104,7 @@ Evidence: [S06 observability zone merge](../../Evidence/Zone%20and%20Object%20Co
 
 I deleted `Non-tracking` before deleting Secure-V/VLAN 100. The final readback returned 25 network objects, two traffic routes, no WLAN reference to the deleted network, and five Proxmox-Trunk exclusions.
 
-I also rebound the disabled `<YOUR_ORG_NAME>`-IoT WLAN from the untagged Management network to IoT/VLAN 20. It remained disabled and no other WLAN field changed.
+I also rebound the disabled `AlphaSec`-IoT WLAN from the untagged Management network to IoT/VLAN 20. It remained disabled and no other WLAN field changed.
 
 Evidence: [S07 Secure-V removal](../../Evidence/Zone%20and%20Object%20Consolidation%20-%202026-07-27/Logs/S07-Secure-V-Removal.md)
 
@@ -129,7 +129,7 @@ Evidence: [S09 final verification](../../Evidence/Zone%20and%20Object%20Consolid
 ## Decisions
 
 - I kept the three Kasm zones separate.
-- I kept `<YOUR_ORG_NAME>`-Access separate from observability.
+- I kept `AlphaSec`-Access separate from observability.
 - I preserved Cluster-Net as its own VLAN while sharing the management trust zone.
 - I repointed policies before moving Security-A so a stale block could not stop matching.
 - I kept mixed or partial selectors inline when a group would widen access.
@@ -158,7 +158,7 @@ Evidence: [S09 final verification](../../Evidence/Zone%20and%20Object%20Consolid
 | WLANs | 4 |
 | Proxmox-Trunk exclusions | 5 |
 
-Security-A and MONITOR-A share `<YOUR_ORG_NAME>`-Observability. MGMT-A and Cluster-Net share `<YOUR_ORG_NAME>`-Mgmt. Their VLAN boundaries remain separate.
+Security-A and MONITOR-A share `AlphaSec`-Observability. MGMT-A and Cluster-Net share `AlphaSec`-Mgmt. Their VLAN boundaries remain separate.
 
 The project reduced the policy set by 70: two custom policies and 68 controller-generated policies.
 
@@ -170,7 +170,7 @@ The project reduced the policy set by 70: two custom policies and 68 controller-
 | Final network count | 25 objects, 17 routed LAN networks |
 | Cluster-Net settings | DHCP disabled, Internet access disabled |
 | Secure-V and Non-tracking | Both absent |
-| `<YOUR_ORG_NAME>`-IoT | Disabled and bound to IoT/VLAN 20 |
+| `AlphaSec`-IoT | Disabled and bound to IoT/VLAN 20 |
 | Proxmox-Trunk | Five exclusions |
 | Client groups | 12; deleted IDs absent |
 | `QoS for D` | Enabled and still targets `D_devices` |

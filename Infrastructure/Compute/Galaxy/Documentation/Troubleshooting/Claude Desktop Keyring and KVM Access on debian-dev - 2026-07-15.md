@@ -10,7 +10,7 @@
 
 ## Reproduction
 
-Claude Desktop warned that sign-in would not be saved without an installed and unlocked system keyring. Cowork separately reported that `<YOUR_ADMIN_USERNAME>` lacked permission to use `/dev/kvm`.
+Claude Desktop warned that sign-in would not be saved without an installed and unlocked system keyring. Cowork separately reported that `dkadi` lacked permission to use `/dev/kvm`.
 
 My tight reproduction combined Claude's `safeStorage` log with the live Secret Service tree. Claude selected `gnome_libsecret` but logged `isEncryptionAvailable=false`; the D-Bus service answered normally while `/org/freedesktop/secrets/collection/login` was absent.
 
@@ -22,10 +22,10 @@ The virtualization problem was independent and direct: `/dev/kvm` was correctly 
 
 ## Corrective action
 
-I added `<YOUR_ADMIN_USERNAME>` to group `kvm`. I didn't change the keyring packages, PAM files, or keyring database. A blank unlock probe didn't export the new login collection, so I completed a normal GNOME sign-out & sign-in to create a session with the updated group list & an initialized login collection.
+I added `dkadi` to group `kvm`. I didn't change the keyring packages, PAM files, or keyring database. A blank unlock probe didn't export the new login collection, so I completed a normal GNOME sign-out & sign-in to create a session with the updated group list & an initialized login collection.
 
 ## Verification
 
-The account database reported `kvm:x:993:<YOUR_ADMIN_USERNAME>`, and the KVM device, CPU feature, & kernel modules passed before the session restart. After the fresh GNOME login on 2026-07-22, Claude retained sign-in & Cowork used `/dev/kvm` without the prior permission error.
+The account database reported `kvm:x:993:dkadi`, and the KVM device, CPU feature, & kernel modules passed before the session restart. After the fresh GNOME login on 2026-07-22, Claude retained sign-in & Cowork used `/dev/kvm` without the prior permission error.
 
 I retained no new terminal transcript or screenshot from the final interactive check. The closure evidence is the observed application behavior: the Claude sign-in survives relaunch & Cowork's KVM workflow opens without the original warning.

@@ -98,7 +98,7 @@ DNS Chain (for end-users):
     <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
 ```
 
-## DNS Records (`<YOUR_BASE_DOMAIN>`)
+## DNS Records (`alphasecunited.com`)
 
 | Type | Name | Target | Port | Proxy |
 |------|------|--------|------|-------|
@@ -142,7 +142,7 @@ fail to connect when an SRV record points at a CNAME.
   - `10011/tcp` - ServerQuery
   - `30033/tcp` - File Transfer
 - **Public server listing**: Disabled
-- **Virtual server name**: `<YOUR_ORG_NAME> x LYON`
+- **Virtual server name**: `AlphaSec x LYON`
 - **Server password**: Enabled
 
 ### TeamSpeak 3 (ts-valorant-02)
@@ -160,7 +160,7 @@ fail to connect when an SRV record points at a CNAME.
 - **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810`
 - **Playit local target**: `127.0.0.1:9988/udp`
 - **Cloudflare connect address**: `<YOUR_TEAMSPEAK_TWO_DOMAIN>`
-- **Virtual server name**: `<YOUR_ORG_NAME> United - Valorant Community`
+- **Virtual server name**: `AlphaSec United - Valorant Community`
 - **Server password**: Disabled intentionally; public to users who know the address
 - **Unique ID**: `<YOUR_TEAMSPEAK_ONE_UNIQUE_ID>`
 
@@ -180,7 +180,7 @@ fail to connect when an SRV record points at a CNAME.
 - **Playit local target**: `127.0.0.1:9989/udp`
 - **Cloudflare connect address**: `<YOUR_TEAMSPEAK_THREE_DOMAIN>`
 - **Cloudflare alternate address**: `<YOUR_TEAMSPEAK_ALTERNATE_DOMAIN>`
-- **Virtual server name**: `<YOUR_ORG_NAME> United x Valorant 03`
+- **Virtual server name**: `AlphaSec United x Valorant 03`
 - **Server password**: Disabled intentionally; public to users who know the address
 - **Unique ID**: `<YOUR_TEAMSPEAK_THREE_UNIQUE_ID>`
 
@@ -201,7 +201,7 @@ fail to connect when an SRV record points at a CNAME.
 - **Image**: `joni1802/ts3-manager`
 - **Host port**: `9000`
 - **Container port**: `8080`
-- **Access**: `https://ts3-manager.<YOUR_BASE_DOMAIN>` through internal NPM; direct fallback `http://192.168.80.118:9000`
+- **Access**: `https://ts3-manager.alphasecunited.com` through internal NPM; direct fallback `http://192.168.80.118:9000`
 - **Location**: `~/ts3-manager/docker-compose.yml`
 - **ServerQuery targets**: use LAN/internal host ports, not public Playit DNS.
   - TeamSpeak 1: `192.168.80.118:10011`
@@ -284,8 +284,8 @@ services:
 
 ### ~/playit-agent/playit-boot-recover.sh
 ```sh
-# Runs from <YOUR_ADMIN_USERNAME>'s crontab at reboot:
-# @reboot /home/<YOUR_ADMIN_USERNAME>/playit-agent/playit-boot-recover.sh
+# Runs from dkadi's crontab at reboot:
+# @reboot /home/dkadi/playit-agent/playit-boot-recover.sh
 #
 # Purpose:
 # - Waits 90 seconds after VM/host boot
@@ -351,7 +351,7 @@ services:
 ## Behavior and Constraints
 - Playit is intentionally decoupled from `~/teamspeak/docker-compose.yml`; running `docker compose down` in `~/teamspeak` will stop TeamSpeak 1 but will not stop `playit-agent`
 - Playit tunnels TeamSpeak UDP voice only; TCP services such as ServerQuery and file transfer stay LAN/internal only
-- ts3-manager is not exposed through Playit or public DNS. I access it through internal NPM at `https://ts3-manager.<YOUR_BASE_DOMAIN>` or use `http://192.168.80.118:9000` as the direct fallback.
+- ts3-manager is not exposed through Playit or public DNS. I access it through internal NPM at `https://ts3-manager.alphasecunited.com` or use `http://192.168.80.118:9000` as the direct fallback.
 - To add future TeamSpeak servers to ts3-manager, connect via the host VLAN 80 IP and that server's unique ServerQuery host port
 - Future TeamSpeak servers must use unique host ports. TeamSpeak 2 currently uses `9988/udp`, `10012/tcp`, and `30034/tcp`; TeamSpeak 3 uses `9989/udp`, `10013/tcp`, and `30035/tcp`
 - Use normal/raw ServerQuery in TS3 Manager, not SSH

@@ -37,7 +37,7 @@ I found no evidence of SSD media failure, network-policy bypass, or credential e
 - `kasm-01`, VM 122 on `purple-server`.
 - Purple's 228.11 GiB `ssd-lvm2` thin data pool on `/dev/sda`.
 - Kasm Workspaces 1.19.0 service containers.
-- NPM proxy host 23 for `kasm.<YOUR_BASE_DOMAIN>`.
+- NPM proxy host 23 for `kasm.alphasecunited.com`.
 
 The Galaxy cluster remained quorate. NPM itself stayed online and returned `502` because its approved backend didn't answer.
 

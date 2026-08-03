@@ -91,7 +91,7 @@ Automatic workspace-image pulls are disabled. Every Kasm image row has a null Do
 
 ## Access
 
-SSH uses `<YOUR_ADMIN_USERNAME>@192.168.78.10`. The normal web path is `https://kasm.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback is `https://192.168.78.10/`. The administrator credential lives outside this repository; nothing here holds a secret.
+SSH uses `dkadi@192.168.78.10`. The normal web path is `https://kasm.alphasecunited.com/` through NPM; direct fallback is `https://192.168.78.10/`. The administrator credential lives outside this repository; nothing here holds a secret.
 
 The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session runs. An enabled but failed tunnel is kill-switched. Administratively disabling the VPN object causes UniFi to use the normal WAN.
 

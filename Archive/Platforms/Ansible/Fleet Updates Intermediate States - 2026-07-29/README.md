@@ -44,4 +44,4 @@ So git is the rollback path, and a better one than an unversioned directory on t
 
 ## Redaction
 
-I replaced the admin username with `<YOUR_ADMIN_USERNAME>` in `hosts.yml.pre-final-review`. Nothing else needed changing, and no file here holds a key, token, or password. Every download was hash-checked against the controller before I removed the original.
+I replaced the admin username with `dkadi` in `hosts.yml.pre-final-review`. Nothing else needed changing, and no file here holds a key, token, or password. Every download was hash-checked against the controller before I removed the original.

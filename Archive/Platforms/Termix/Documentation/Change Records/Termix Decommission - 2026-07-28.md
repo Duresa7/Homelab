@@ -14,7 +14,7 @@ I stopped using Termix as a management path. The 2026-07-27 MGMT-A lockdown had 
 
 Termix 2.5.0 ran on `docker-main` (`192.168.40.35`) with a `guacd` 1.6.0 companion, both healthy for five days. Its data lived in the 15.45 MB Docker volume `termix_termix-data`. The compose project sat at `/opt/docker/termix` and held two application-data tarballs from 2026-07-14 totalling 11.83 MB.
 
-The platform reached the network through `termix.<YOUR_BASE_DOMAIN>`: a UniFi static DNS record, NPM proxy host 11, and a Prometheus blackbox probe. The `termix` Ed25519 identity was registered in the ssh-key-automation project against 14 target hosts.
+The platform reached the network through `termix.alphasecunited.com`: a UniFi static DNS record, NPM proxy host 11, and a Prometheus blackbox probe. The `termix` Ed25519 identity was registered in the ssh-key-automation project against 14 target hosts.
 
 ## Step 1: Revoke the deployed SSH key
 
@@ -32,13 +32,13 @@ No backup exists. That was the intent.
 
 ## Step 3: Clear the network path
 
-I deleted the `termix.<YOUR_BASE_DOMAIN>` A record from the UniFi controller, which left 20 static DNS records.
+I deleted the `termix.alphasecunited.com` A record from the UniFi controller, which left 20 static DNS records.
 
-NPM proxy host 11 forwarded `termix.<YOUR_BASE_DOMAIN>` to `192.168.40.35:8080`. I deleted it through the NPM API and confirmed 19 proxy hosts remain, none disabled. The [runbook](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md) records an API login returning HTTP 400 during an earlier attempt; the `/api/tokens` login worked on this run, so that note is stale.
+NPM proxy host 11 forwarded `termix.alphasecunited.com` to `192.168.40.35:8080`. I deleted it through the NPM API and confirmed 19 proxy hosts remain, none disabled. The [runbook](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md) records an API login returning HTTP 400 during an earlier attempt; the `/api/tokens` login worked on this run, so that note is stale.
 
 ## Step 4: Remove the Prometheus probe
 
-I dropped the blackbox target from `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml` on `monitor-01`, leaving 18 probed service names. `promtool check config` passed.
+I dropped the blackbox target from `/home/dkadi/monitoring/prometheus.yml` on `monitor-01`, leaving 18 probed service names. `promtool check config` passed.
 
 `POST /-/reload` returned HTTP 403 because this Prometheus runs without `--web.enable-lifecycle`, so I restarted the container instead. The first read 12 seconds later showed 30 targets not up, which was just the 15-second and 60-second scrape intervals not having fired yet. A read 75 seconds later returned 45 active targets with 45 up and no Termix entry.
 
@@ -67,7 +67,7 @@ I also removed Termix from the current Ansible automation diagram and the homela
 | Key on Proxmox nodes | Zero matches on all four; seven authorized keys remain per node |
 | Containers, volume, network | All removed; `docker ps -a` returns no `termix` or `guacd` |
 | Filesystem on `docker-main` | No path matching `*termix*` |
-| UniFi DNS | 20 records; `termix.<YOUR_BASE_DOMAIN>` absent |
+| UniFi DNS | 20 records; `termix.alphasecunited.com` absent |
 | NPM | 19 proxy hosts; none disabled; no termix domain |
 | Prometheus | 45 active targets, 45 up, no termix probe |
 | ssh-key-automation validator | 3 identities, 14 hosts, 0 unknown, 13 templates |

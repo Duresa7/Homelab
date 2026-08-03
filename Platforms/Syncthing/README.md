@@ -19,7 +19,7 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 | Windows vault | `D:\Documents\Vault-DK\The Vault` |
 | Folder ID | `obsidian-the-vault` |
 | Version retention | Staggered, 90 days |
-| GUI | Server: `https://syncthing.<YOUR_BASE_DOMAIN>` through NPM; Windows: `127.0.0.1:8384` |
+| GUI | Server: `https://syncthing.alphasecunited.com` through NPM; Windows: `127.0.0.1:8384` |
 | Transfer listeners | TCP/UDP 22000; UDP 21027 discovery |
 
 ## Layout

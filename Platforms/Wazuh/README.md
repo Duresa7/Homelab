@@ -24,7 +24,7 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 
 | Service | Endpoint | Use |
 |---|---|---|
-| Wazuh dashboard | `https://wazuh.<YOUR_BASE_DOMAIN>/`; direct fallback `https://192.168.72.2/` | Human web interface through internal NPM |
+| Wazuh dashboard | `https://wazuh.alphasecunited.com/`; direct fallback `https://192.168.72.2/` | Human web interface through internal NPM |
 | Wazuh API | `https://192.168.72.2:55000/` | Authenticated API |
 | Agent events | `192.168.72.2:1514/tcp` | Enrolled agent traffic |
 | Agent enrollment | `192.168.72.2:1515/tcp` | New agent registration |

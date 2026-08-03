@@ -34,9 +34,9 @@ I checked all of this live before writing the plan. The executing agent should r
 | `blue-server` headroom | 8 GB RAM available of 11 GB |
 | Ansible references to PeaNUT | None. `grep -ril peanut` across `/opt/ansible` and `/home/ansible` on `ansible-01` returns nothing |
 
-DNS needs no change. `peanut.<YOUR_BASE_DOMAIN>` is a UniFi local A record pointing at `192.168.85.2`, which is Nginx Proxy Manager, and that stays true. Only NPM's upstream changes.
+DNS needs no change. `peanut.alphasecunited.com` is a UniFi local A record pointing at `192.168.85.2`, which is Nginx Proxy Manager, and that stays true. Only NPM's upstream changes.
 
-The Prometheus blackbox job needs no change either. It probes `https://peanut.<YOUR_BASE_DOMAIN>/`, which keeps working once NPM is repointed. Expect that one probe to report `probe_success 0` for the length of the cutover window, which is normal and self-clearing.
+The Prometheus blackbox job needs no change either. It probes `https://peanut.alphasecunited.com/`, which keeps working once NPM is repointed. Expect that one probe to report `probe_success 0` for the length of the cutover window, which is normal and self-clearing.
 
 ## Steps
 
@@ -56,7 +56,7 @@ The Prometheus blackbox job needs no change either. It probes `https://peanut.<Y
 
 ### Step 3: Build the Compose project on monitor-01
 
-Use `/opt/docker/peanut`, matching both the fleet convention and the existing `/opt/docker/cadvisor` project already on this host. The monitoring stack at `/home/<YOUR_ADMIN_USERNAME>/monitoring` stays a separate Compose project; PeaNUT isn't part of it and isn't scraped by it.
+Use `/opt/docker/peanut`, matching both the fleet convention and the existing `/opt/docker/cadvisor` project already on this host. The monitoring stack at `/home/dkadi/monitoring` stays a separate Compose project; PeaNUT isn't part of it and isn't scraped by it.
 
 Create `/opt/docker/peanut/docker-compose.yml`:
 
@@ -155,9 +155,9 @@ Two of the five changes are additions that must land before cutover. All UniFi m
 
 2. Update policy `6a665727052792cd21405892`, `Allow Secure to monitor-01 break-glass`. Destination port list goes from `3000,9090` to `3000,8090,9090`. Source is Jedi PC at `192.168.50.241`, unchanged.
 
-3. Create a new policy, `Allow VPN Management Access to PeaNUT`. Source zone `Vpn` (`68b788c0e9f08f1e1b2a228b`), targeting the `Management Access` WireGuard network by network object; look up its `network_id` with `unifi_list_networks`. That server is WireGuard on UDP 51822 with subnet `10.6.0.1/24`. Destination zone `<YOUR_ORG_NAME>`-Monitor (`6a665585052792cd214057cb`), IP `192.168.73.2`, TCP 8090. Enable the automatic return policy, matching every sibling. Scope it to 8090 only; widening it to 3000 and 9090 later is a one-field edit.
+3. Create a new policy, `Allow VPN Management Access to PeaNUT`. Source zone `Vpn` (`68b788c0e9f08f1e1b2a228b`), targeting the `Management Access` WireGuard network by network object; look up its `network_id` with `unifi_list_networks`. That server is WireGuard on UDP 51822 with subnet `10.6.0.1/24`. Destination zone `AlphaSec`-Monitor (`6a665585052792cd214057cb`), IP `192.168.73.2`, TCP 8090. Enable the automatic return policy, matching every sibling. Scope it to 8090 only; widening it to 3000 and 9090 later is a one-field edit.
 
-4. Create a new policy, `Allow <YOUR_ADMIN_USERNAME> MacBook Air M3 to PeaNUT`, source IP `192.168.10.27`, destination `192.168.73.2` TCP 8090. The machine is `<YOUR_ADMIN_USERNAME>-mb-air3`, controller name `<YOUR_ADMIN_USERNAME>-MBA-MAIN`. I confirmed on the controller on 2026-07-26 that it holds a fixed IP: `use_fixedip` is true and `fixed_ip` is `192.168.10.27`, so the policy can be pinned to that address safely.
+4. Create a new policy, `Allow dkadi MacBook Air M3 to PeaNUT`, source IP `192.168.10.27`, destination `192.168.73.2` TCP 8090. The machine is `dkadi-mb-air3`, controller name `dkadi-MBA-MAIN`. I confirmed on the controller on 2026-07-26 that it holds a fixed IP: `use_fixedip` is true and `fixed_ip` is `192.168.10.27`, so the policy can be pinned to that address safely.
 
 **The Mac's source zone is the one thing left to resolve.** It sits on VLAN 10 Trusted (`network_id 68b78940e9f08f1e1b2a232b`), and my two inventory files disagree about which zone that is. `network-vlan.md` line 36 puts Trusted (10) in the Internal zone. `zone.md` line 12 lists the Internal zone as Management, Personal-A (40), Secure (50), Secure Client (60), and AD-SERVERS (65), with no VLAN 10. The V2 zone API returns empty `networks` arrays, so it can't settle this. Read the actual zone membership in the UniFi UI before creating the policy, use whatever the controller really says, and fix whichever repository file is wrong as part of Step 8.
 
@@ -195,9 +195,9 @@ Both old and new containers are running at this point. That's intentional. Two r
 
 Repointing the domain is mine to do, so the agent's job ends after Step 5 passes and the Step 4 additions are in. It should report what it verified, name the direct URL, and wait. It must not touch NPM, and it must not start Step 7.
 
-For my own reference when I get to it: proxy host ID 15 on `192.168.85.2` forwards `peanut.<YOUR_BASE_DOMAIN>` to `192.168.40.35:8090` over HTTP, and the forward host becomes `192.168.73.2`. I do it in the NPM web UI at `http://192.168.85.2:81`, not by editing `/opt/docker/nginx-proxy-manager/data/nginx/proxy_host/15.conf`, because NPM regenerates that file from its SQLite database and a hand edit gets overwritten. Scheme stays HTTP, port stays 8090, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support all stay as they are, and HSTS stays disabled. Afterward `15.conf` should read `set $server "192.168.73.2";` and `https://peanut.<YOUR_BASE_DOMAIN>` should render both UPS units.
+For my own reference when I get to it: proxy host ID 15 on `192.168.85.2` forwards `peanut.alphasecunited.com` to `192.168.40.35:8090` over HTTP, and the forward host becomes `192.168.73.2`. I do it in the NPM web UI at `http://192.168.85.2:81`, not by editing `/opt/docker/nginx-proxy-manager/data/nginx/proxy_host/15.conf`, because NPM regenerates that file from its SQLite database and a hand edit gets overwritten. Scheme stays HTTP, port stays 8090, certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support all stay as they are, and HSTS stays disabled. Afterward `15.conf` should read `set $server "192.168.73.2";` and `https://peanut.alphasecunited.com` should render both UPS units.
 
-I said I'd do the domain last, so it's worth being blunt about the ordering: Step 7 tears down the old container, and the domain still points at that container until I've repointed it. Doing the NPM edit before teardown means no outage on the HTTPS name at all. Doing it strictly last, after teardown, means `peanut.<YOUR_BASE_DOMAIN>` returns a gateway error for however long I take to get to it, while `http://192.168.73.2:8090` keeps working the whole time. Either is fine and neither risks data. I just want to be choosing it rather than discovering it.
+I said I'd do the domain last, so it's worth being blunt about the ordering: Step 7 tears down the old container, and the domain still points at that container until I've repointed it. Doing the NPM edit before teardown means no outage on the HTTPS name at all. Doing it strictly last, after teardown, means `peanut.alphasecunited.com` returns a gateway error for however long I take to get to it, while `http://192.168.73.2:8090` keeps working the whole time. Either is fine and neither risks data. I just want to be choosing it rather than discovering it.
 
 ### Step 7: Remove PeaNUT from docker-main
 
@@ -247,7 +247,7 @@ Then run a case-insensitive `peanut` search across the workspace and confirm no 
 
 Rollback is cheap right up until Step 7, and that's the reason Step 7 is last.
 
-At the hand-back point, nothing has been rolled back because nothing has been taken away. The old stack on `docker-main` is still running, still healthy, and still serving `peanut.<YOUR_BASE_DOMAIN>`. Abandoning the move there costs one `docker compose down` on `monitor-01` and deleting `/opt/docker/peanut` on that host. If I've already repointed NPM by then, add one more edit to send proxy host 15 back to `192.168.40.35:8090`, and the dashboard returns immediately.
+At the hand-back point, nothing has been rolled back because nothing has been taken away. The old stack on `docker-main` is still running, still healthy, and still serving `peanut.alphasecunited.com`. Abandoning the move there costs one `docker compose down` on `monitor-01` and deleting `/opt/docker/peanut` on that host. If I've already repointed NPM by then, add one more edit to send proxy host 15 back to `192.168.40.35:8090`, and the dashboard returns immediately.
 
 After Step 7, rebuilding on `docker-main` means recreating the Compose file with the `192.168.40.35:8090:8080` bind, retyping the same `settings.yml` from Step 3, pulling the pinned digest again, restoring the saved `cluster.fw`, and re-adding 8090 to the NPM-to-`docker-main` policy. That's roughly ten minutes of work and no data is at risk, because there is no data. The 554-byte config file in Step 3 is the whole of it.
 

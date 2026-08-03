@@ -7,14 +7,14 @@
 
 I archived this plan after Access-A, Security-A, Cluster-Net, and the MGMT-A lockdown were complete. Their dated change records remain with the active UniFi documentation.
 
-I've built the `<YOUR_ORG_NAME>`-Access, `<YOUR_ORG_NAME>`-Security, & `<YOUR_ORG_NAME>`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. I completed the final MGMT-A rule review and lockdown on 2026-07-27.
+I've built the `AlphaSec`-Access, `AlphaSec`-Security, & `AlphaSec`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. I completed the final MGMT-A rule review and lockdown on 2026-07-27.
 
 ## Access-A Deployment
 
 - [x] Deploy network-access / connectivity tooling onto Access-A: Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 now run on LXC 107 `docker-network`
 - [x] Assign a static IP from the reserved range: `192.168.85.2/24` (DHCP pool starts at `.6`)
 - [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
-- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `<YOUR_ORG_NAME>`-Access-to-External IPv4 traffic
+- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `AlphaSec`-Access-to-External IPv4 traffic
 
 The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 

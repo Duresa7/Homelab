@@ -6,7 +6,7 @@
 ## Incident Summary
 
 On 2026-04-24, users reported repeated TeamSpeak connection failures against the
-public Playit endpoints and Cloudflare DNS names for `<YOUR_ORG_NAME>` United TeamSpeak
+public Playit endpoints and Cloudflare DNS names for `AlphaSec` United TeamSpeak
 services. I began triage with basic health checks, which showed TeamSpeak,
 Docker, DNS, and Playit all nominal. My deeper testing showed that UDP packets
 were reaching the TeamSpeak path, but the TeamSpeak client handshake was not
@@ -135,11 +135,11 @@ confirmed security breach.
 
 | Action | Owner | Priority | Status |
 |--------|-------|----------|--------|
-| Confirm multiple external users can join TS1 | `<YOUR_ORG_NAME>` United | High | Pending |
-| Confirm multiple external users can join TS2 | `<YOUR_ORG_NAME>` United | High | Pending |
-| Add Cloudflare aliases for `ts-valorant-01` and `ts-valorant-02` after Cloudflare API re-authentication | `<YOUR_ORG_NAME>` United | Medium | Pending |
-| Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | `<YOUR_ORG_NAME>` United | Medium | Open |
-| Keep TeamSpeak containers on host networking for future voice servers | `<YOUR_ORG_NAME>` United | Medium | In Progress |
+| Confirm multiple external users can join TS1 | `AlphaSec` United | High | Pending |
+| Confirm multiple external users can join TS2 | `AlphaSec` United | High | Pending |
+| Add Cloudflare aliases for `ts-valorant-01` and `ts-valorant-02` after Cloudflare API re-authentication | `AlphaSec` United | Medium | Pending |
+| Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | `AlphaSec` United | Medium | Open |
+| Keep TeamSpeak containers on host networking for future voice servers | `AlphaSec` United | Medium | In Progress |
 
 ## Linked Records
 

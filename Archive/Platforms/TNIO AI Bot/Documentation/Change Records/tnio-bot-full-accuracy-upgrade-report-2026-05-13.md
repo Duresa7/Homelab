@@ -51,10 +51,10 @@ Added:
 
 Generated on `<YOUR_TNIO_HOST>`:
 
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/tnio_golden_eval_suite.json`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/feedback_eval_queue.jsonl`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/feedback_eval_summary.json`
-- `/home/<YOUR_DEPLOYMENT_USER>/lore-rag/state/drive_change_report.json`
+- `/home/aibravo/lore-rag/state/tnio_golden_eval_suite.json`
+- `/home/aibravo/lore-rag/state/feedback_eval_queue.jsonl`
+- `/home/aibravo/lore-rag/state/feedback_eval_summary.json`
+- `/home/aibravo/lore-rag/state/drive_change_report.json`
 
 ## Discord Answer Logs
 The Discord bot now logs more evidence with each agent answer:

@@ -5,7 +5,7 @@
 
 ## Symptom
 
-I found `GF_SECURITY_ADMIN_PASSWORD` with a plaintext value in `/home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml` during the 2026-07-22 internal HTTPS change. Grafana was healthy; this was a credential-handling problem rather than an availability failure.
+I found `GF_SECURITY_ADMIN_PASSWORD` with a plaintext value in `/home/dkadi/monitoring/docker-compose.yml` during the 2026-07-22 internal HTTPS change. Grafana was healthy; this was a credential-handling problem rather than an availability failure.
 
 ## Exact Error
 

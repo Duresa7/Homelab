@@ -31,7 +31,7 @@ UniFi returned the policy enabled with:
 
 ```text
 Policy ID: 6a6c36cc85e3cf84d3d71363
-Source zone: <YOUR_ORG_NAME>-Mgmt
+Source zone: AlphaSec-Mgmt
 Source matching target: IP object
 Source group ID: 6a67a1eb052792cd214090f1
 Source group: OBJ-Proxmox-Nodes

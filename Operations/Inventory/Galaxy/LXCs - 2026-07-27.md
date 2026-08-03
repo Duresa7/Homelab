@@ -73,12 +73,12 @@ The LXC keeps its address static in the Proxmox network configuration. UniFi DHC
 
 ### Administrative Access
 
-- SSH is public-key only as `<YOUR_ADMIN_USERNAME>` and `ansible`; I installed the approved keys.
+- SSH is public-key only as `dkadi` and `ansible`; I installed the approved keys.
 - Both accounts have their recorded recovery credentials. Root is locked.
 
 ### Workload
 
-Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, the NUT exporter, and cAdvisor run from `/home/<YOUR_ADMIN_USERNAME>/monitoring`. The build and verification are in [Monitoring Relocation to monitor-01 - 2026-07-26](../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, the NUT exporter, and cAdvisor run from `/home/dkadi/monitoring`. The build and verification are in [Monitoring Relocation to monitor-01 - 2026-07-26](../../../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
 
 ## LXC 107 - docker-network
 
@@ -110,9 +110,9 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 
 ### Administrative Access
 
-- SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the three approved administrative keys.
-- `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root and `<YOUR_ADMIN_USERNAME>` password records are locked; public-key SSH remains available.
+- SSH is public-key only as `dkadi`; I installed the three approved administrative keys.
+- `dkadi` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
+- Root and `dkadi` password records are locked; public-key SSH remains available.
 
 ## LXC 108 - docker-blue
 
@@ -206,8 +206,8 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 
 ### Administrative Access
 
-- SSH is public-key only as `<YOUR_ADMIN_USERNAME>`; I installed the approved administrative keys.
-- `<YOUR_ADMIN_USERNAME>` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
+- SSH is public-key only as `dkadi`; I installed the approved administrative keys.
+- `dkadi` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
 - Root is locked; the administrative account uses the recorded public-key SSH path.
 
 ## Archived & Retired LXCs

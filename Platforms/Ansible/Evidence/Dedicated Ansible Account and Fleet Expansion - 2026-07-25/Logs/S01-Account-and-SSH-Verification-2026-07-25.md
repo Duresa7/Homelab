@@ -37,7 +37,7 @@ Each account reports an active password state. `/home/ansible/.ssh` is mode `070
 - Fresh controller login as `ansible` passed before old-key removal on each guest.
 - `sudo -n id -u` returned `0` on the controller and every guest.
 - Password-only SSH was rejected on the controller and every guest.
-- The exact controller key material has zero matches in the former root or `<YOUR_ADMIN_USERNAME>` authorized-keys file on all nine guests.
+- The exact controller key material has zero matches in the former root or `dkadi` authorized-keys file on all nine guests.
 - Docker access as `ansible` passed on docker-main, docker-network, docker-blue, media-01, & alpha-prod-01.
 
 ## Secret Cleanup

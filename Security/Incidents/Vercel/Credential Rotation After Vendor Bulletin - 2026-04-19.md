@@ -28,7 +28,7 @@ In response to Vercel's April 2026 security bulletin, I rotated the affected app
 ## 3. Scope of Review
 
 ### In-scope systems
-- **Hosting platform:** Vercel (primary deployment of the `<YOUR_ORG_NAME>` web application)
+- **Hosting platform:** Vercel (primary deployment of the `AlphaSec` web application)
 - **Backend-as-a-service:** Supabase (project `<YOUR_SUPABASE_PROJECT_REF>`, organization `<YOUR_SUPABASE_ORGANIZATION_ID>`)
 - **Source control:** GitHub (auto-deploy integration to Vercel)
 - **Edge Functions:** Supabase `delete-account` function and its configuration
@@ -74,7 +74,7 @@ All actions performed on 2026-04-19.
 
 ### 5.4 GitHub integration refresh
 - I uninstalled the Vercel GitHub App from the connected GitHub account.
-- I reinstalled the Vercel GitHub App, restricting repository access to the `<YOUR_ORG_NAME>` project repository only.
+- I reinstalled the Vercel GitHub App, restricting repository access to the `AlphaSec` project repository only.
 - I triggered a test deployment to confirm the auto-deploy pipeline was restored.
 
 ### 5.5 Code verification

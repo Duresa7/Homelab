@@ -89,7 +89,7 @@ My first host-path replacement plus SIGHUP did not change the running target set
 
 ## Rollback Points
 
-- Prometheus: `/home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml.bak.security-monitoring-cleanup-20260713` on `security-01`.
+- Prometheus: `/home/dkadi/monitoring/prometheus.yml.bak.security-monitoring-cleanup-20260713` on `security-01`.
 - Wazuh manager keys: `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713` on `security-01`, mode 0600.
 - Endpoint configs: `/var/ossec/etc/ossec.conf.bak.security-monitoring-cleanup-20260713` on `app-01` and `edge-01`, mode 0600.
 - The newly installed exporter packages can be removed with APT if rollback is required; no Proxmox networking or firewall state changed.

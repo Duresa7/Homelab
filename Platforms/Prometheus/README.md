@@ -22,10 +22,10 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 
 | Item | Value |
 |---|---|
-| Prometheus UI | `https://prometheus.<YOUR_BASE_DOMAIN>/` through NPM; direct fallback `http://192.168.73.2:9090/` |
-| Grafana UI | `https://grafana.<YOUR_BASE_DOMAIN>/`; direct fallback `http://192.168.73.2:3000/` |
-| Homelab Overview dashboard | `https://grafana.<YOUR_BASE_DOMAIN>/d/homelab-overview` |
-| Live host configuration | `/home/<YOUR_ADMIN_USERNAME>/monitoring/` on `monitor-01` |
+| Prometheus UI | `https://prometheus.alphasecunited.com/` through NPM; direct fallback `http://192.168.73.2:9090/` |
+| Grafana UI | `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/` |
+| Homelab Overview dashboard | `https://grafana.alphasecunited.com/d/homelab-overview` |
+| Live host configuration | `/home/dkadi/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
 | Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
 | Retention | 15 days |

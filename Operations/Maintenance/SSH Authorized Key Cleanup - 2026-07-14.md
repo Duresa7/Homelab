@@ -13,7 +13,7 @@ I removed two identified ED25519 keys from every readable authorized-key scope w
 
 ## Three-Key Fleet Baseline
 
-I normalized all 15 inspectable SSH Manager targets to contain exactly one copy of each approved ED25519 identity: `mac-air3-<YOUR_ADMIN_USERNAME>`, `ansible-control`, & `jedi-pc`. The `jedi-pc` key blob and fingerprint didn't change; only its comment changed. `supabase_01` was the only target missing `mac-air3-<YOUR_ADMIN_USERNAME>`, so I added that line.
+I normalized all 15 inspectable SSH Manager targets to contain exactly one copy of each approved ED25519 identity: `mac-air3-dkadi`, `ansible-control`, & `jedi-pc`. The `jedi-pc` key blob and fingerprint didn't change; only its comment changed. `supabase_01` was the only target missing `mac-air3-dkadi`, so I added that line.
 
 I updated the four Proxmox nodes once through `/etc/pve/priv/authorized_keys`, then checked the result independently on every node. Linux files passed `ssh-keygen` validation with mode `0600`; the Windows administrator key file retained its ACL. Follow-up SSH commands reached every changed target. The two unreachable Windows systems remain Unknown and unchanged.
 
@@ -24,7 +24,7 @@ The live Ansible distribution playbook in LXC 100, the Linux host baseline, and 
 | Key | Fingerprint | Removed from | Authorized-key path | Observed result |
 |---|---|---|---|---|
 | `<RETIRED_ROOT_KEY_LABEL>` | `<RETIRED_ROOT_KEY_FINGERPRINT>` | `docker_main` / `root` | `/root/.ssh/authorized_keys` | One exact match removed; zero remained |
-| `<RETIRED_USER_KEY_LABEL>` | `<RETIRED_USER_KEY_FINGERPRINT>` | `alpha_prod_01` / `<YOUR_ADMIN_USERNAME>` | `/home/<YOUR_ADMIN_USERNAME>/.ssh/authorized_keys` | One exact match removed; zero remained |
+| `<RETIRED_USER_KEY_LABEL>` | `<RETIRED_USER_KEY_FINGERPRINT>` | `alpha_prod_01` / `dkadi` | `/home/dkadi/.ssh/authorized_keys` | One exact match removed; zero remained |
 
 I replaced each file atomically, confirmed it still parsed as SSH public-key syntax, & rescanned it. Follow-up SSH commands reached both changed hosts.
 

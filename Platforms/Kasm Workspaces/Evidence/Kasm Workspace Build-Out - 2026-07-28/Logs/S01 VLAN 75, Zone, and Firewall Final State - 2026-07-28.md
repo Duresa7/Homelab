@@ -79,10 +79,10 @@ KASM Block KASM-TRUSTED to MALWARE-OFFLINE
 KASM Block KASM-TRUSTED to EVIDENCE-QUARANTINE
 KASM Block KASM-TRUSTED to LAB-MGMT
 KASM Block KASM-TRUSTED to Internal
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Servers
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Mgmt
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Access
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Observability
+KASM Block KASM-TRUSTED to AlphaSec-Servers
+KASM Block KASM-TRUSTED to AlphaSec-Mgmt
+KASM Block KASM-TRUSTED to AlphaSec-Access
+KASM Block KASM-TRUSTED to AlphaSec-Observability
 KASM Block KASM-BROWSER to KASM-TRUSTED
 KASM Block MALWARE-OFFLINE to KASM-TRUSTED
 KASM Block EVIDENCE-QUARANTINE to KASM-TRUSTED
@@ -129,10 +129,10 @@ KASM Block MALWARE-OFFLINE to KASM-TRUSTED|BLOCK|true|10000|all|IPV4
 KASM Block EVIDENCE-QUARANTINE to KASM-TRUSTED|BLOCK|true|10000|all|IPV4
 LABMGMT Block to KASM-TRUSTED|BLOCK|true|10000|all|IPV4
 KASM Block KASM-TRUSTED to Internal|BLOCK|true|10000|all|IPV4
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Servers|BLOCK|true|10000|all|IPV4
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Mgmt|BLOCK|true|10000|all|IPV4
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Access|BLOCK|true|10000|all|IPV4
-KASM Block KASM-TRUSTED to <YOUR_ORG_NAME>-Observability|BLOCK|true|10000|all|IPV4
+KASM Block KASM-TRUSTED to AlphaSec-Servers|BLOCK|true|10000|all|IPV4
+KASM Block KASM-TRUSTED to AlphaSec-Mgmt|BLOCK|true|10000|all|IPV4
+KASM Block KASM-TRUSTED to AlphaSec-Access|BLOCK|true|10000|all|IPV4
+KASM Block KASM-TRUSTED to AlphaSec-Observability|BLOCK|true|10000|all|IPV4
 ```
 
 Every row also returned `connection_state_type: ALL`, `create_allow_respond: false`, `schedule.mode: ALWAYS`, and `logging: true`. The DHCP row returned source port 68 and destination port 67. The NTP row returned destination port 123.

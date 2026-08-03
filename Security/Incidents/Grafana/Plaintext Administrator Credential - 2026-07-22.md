@@ -18,20 +18,20 @@
 
 ## Summary
 
-I found a Grafana bootstrap administrator password value in `/home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml` while adding the internal HTTPS name on 2026-07-22. Grafana only needs that bootstrap value when it initializes its database, but the Compose definition continued to inject the plaintext value into each recreated container.
+I found a Grafana bootstrap administrator password value in `/home/dkadi/monitoring/docker-compose.yml` while adding the internal HTTPS name on 2026-07-22. Grafana only needs that bootstrap value when it initializes its database, but the Compose definition continued to inject the plaintext value into each recreated container.
 
 I removed the variable, recreated Grafana, rotated the administrator credential, & verified an authenticated Grafana request. Neither the credential nor its storage location is retained in this repository, evidence, or incident record.
 
 ## Impact
 
-The plaintext value was readable to the `<YOUR_ADMIN_USERNAME>` account and root on `security-01`. The Compose file had mode `0664`, but the administrator's home directory had mode `0750` and its private group had no supplementary members, which blocked traversal by other local users.
+The plaintext value was readable to the `dkadi` account and root on `security-01`. The Compose file had mode `0664`, but the administrator's home directory had mode `0750` and its private group had no supplementary members, which blocked traversal by other local users.
 
 I found no copy in tracked repository content. Grafana also had no public DNS record or WAN port forward; access remained on internal network paths. A compromise of the administrator account or root while the old file existed could still have disclosed the value.
 
 ## Affected Assets
 
 - Grafana 12.4.1 container on `security-01` at `192.168.72.2`.
-- `/home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml` before the 2026-07-22 recreation.
+- `/home/dkadi/monitoring/docker-compose.yml` before the 2026-07-22 recreation.
 - The Grafana administrator account.
 
 Prometheus configuration, Grafana dashboards, data sources, & the SQLite database showed no availability or integrity impact during remediation.

@@ -23,7 +23,7 @@ I populated the empty Termix host manager with every machine SSH Manager could r
 ## Identity, Host and Firewall Choices
 
 - I generated a dedicated Ed25519 identity for Termix and installed its public key on the reachable accounts.
-- I used one reusable Termix credential with per-host username override because the reachable inventory contains both `root` and `<YOUR_ADMIN_USERNAME>` accounts.
+- I used one reusable Termix credential with per-host username override because the reachable inventory contains both `root` and `dkadi` accounts.
 - I added only targets that passed the source reachability probe. A saved host without a deployable and verified authentication path would look complete while remaining unusable.
 - I diagnosed the Proxmox timeouts across both network layers before changing policy. UniFi flow records proved those SSH attempts were allowed; the Proxmox datacenter firewall's explicit TCP/22 drop was the actual blocker.
 - I gave Termix a dedicated Proxmox IPSet and TCP/22-only accept instead of adding Docker Main to a broader admin or automation group that also permits TCP/8006.
@@ -54,10 +54,10 @@ I populated the empty Termix host manager with every machine SSH Manager could r
 | 3 | `blue-server` | 192.168.70.12 | root | `Homelab/Proxmox` | Yes |
 | 4 | `red-server` | 192.168.70.13 | root | `Homelab/Proxmox` | Yes |
 | 5 | `docker-main` | 192.168.40.35 | root | `Homelab/Docker` | Yes |
-| 6 | `alpha-prod-01` | 192.168.80.118 | `<YOUR_ADMIN_USERNAME>` | `Homelab/Servers` | Yes |
-| 7 | `app-01` | 192.168.80.10 | `<YOUR_ADMIN_USERNAME>` | `Homelab/Servers` | Yes |
-| 8 | `edge-01` | 192.168.90.10 | `<YOUR_ADMIN_USERNAME>` | `Homelab/Edge` | Yes |
-| 9 | `docker-network` | 192.168.85.2 | `<YOUR_ADMIN_USERNAME>` | `Homelab/Docker` | Yes |
+| 6 | `alpha-prod-01` | 192.168.80.118 | `dkadi` | `Homelab/Servers` | Yes |
+| 7 | `app-01` | 192.168.80.10 | `dkadi` | `Homelab/Servers` | Yes |
+| 8 | `edge-01` | 192.168.90.10 | `dkadi` | `Homelab/Edge` | Yes |
+| 9 | `docker-network` | 192.168.85.2 | `dkadi` | `Homelab/Docker` | Yes |
 
 ## Configured Targets Not Onboarded
 

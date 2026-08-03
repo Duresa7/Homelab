@@ -202,7 +202,7 @@ I used grey-server's settings as the baseline for the two new nodes.
 | PermitEmptyPasswords | no |
 | Key exchange | Includes `mlkem768x25519-sha256` |
 
-Authorized keys present for root: mac-air3-`<YOUR_ADMIN_USERNAME>`, `<RETIRED_ROOT_KEY_LABEL>`-nopass, ansible-control, and a legacy root@`<YOUR_RETIRED_NODE_NAME>` RSA key.
+Authorized keys present for root: mac-air3-`dkadi`, `<RETIRED_ROOT_KEY_LABEL>`-nopass, ansible-control, and a legacy root@`<YOUR_RETIRED_NODE_NAME>` RSA key.
 
 ### 8.2 Firewall posture
 

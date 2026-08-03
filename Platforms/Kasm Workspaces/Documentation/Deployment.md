@@ -18,9 +18,9 @@ Four addressless guest NICs carry VLANs 74, 75, 77, and 79. Docker macvlan netwo
 
 I created the `Lab Sessions` group with a 3,600-second session limit, a three-session cap after the memory increase, upload enabled, and download, clipboard, printing, sharing, and user storage mappings disabled. Persistent profiles are available only to the six named trusted-lane tools with dedicated host directories. Every lab workspace has a Docker Run Config Override that declares both its network and resolver. The original isolation layout and Proton operating rule are in [Kasm Session Isolation](Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). The 19-workspace inventory, KASM-TRUSTED lane, selective persistence, and final acceptance results are in [Kasm Workspace Build-Out](Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
-I updated the existing `Host kasm-01` entry in Jedi PC's SSH configuration to `192.168.78.10` and confirmed `ssh -G kasm-01` resolves that address with user `<YOUR_ADMIN_USERNAME>`.
+I updated the existing `Host kasm-01` entry in Jedi PC's SSH configuration to `192.168.78.10` and confirmed `ssh -G kasm-01` resolves that address with user `dkadi`.
 
-I published the control plane at `https://kasm.<YOUR_BASE_DOMAIN>` through NPM on 2026-07-28. UniFi resolves that name only on the internal resolver, NPM forwards HTTPS to `192.168.78.10:443`, & the existing wildcard certificate replaces the installer's self-signed certificate on the client-facing path. Direct access at `https://192.168.78.10/` remains available.
+I published the control plane at `https://kasm.alphasecunited.com` through NPM on 2026-07-28. UniFi resolves that name only on the internal resolver, NPM forwards HTTPS to `192.168.78.10:443`, & the existing wildcard certificate replaces the installer's self-signed certificate on the client-facing path. Direct access at `https://192.168.78.10/` remains available.
 
 The original build history below records the 2026-07-24 deployment on Grey and VLAN 80. Those values explain the starting point and are not the current address or placement.
 
@@ -59,13 +59,13 @@ I full-cloned template 9000 to VMID 122 on `ssd-lvm1`, then set the hardware.
 
 Template 9000 carried `cicustom: user=local:snippets/ssh-harden.yaml`. In Proxmox, a `cicustom` `user=` entry replaces the generated user-data outright, so `ciuser`, `cipassword`, & `sshkeys` get ignored. That snippet contains four `sed` lines against `sshd_config` & a service restart. It creates no user & installs no keys.
 
-Cloning as-is would have produced a VM with `PasswordAuthentication no`, no authorized keys, & no `<YOUR_ADMIN_USERNAME>` account. The only way in would have been the hypervisor console. I deleted `cicustom` & used native cloud-init instead, then applied the hardening over SSH afterward where I could verify the result.
+Cloning as-is would have produced a VM with `PasswordAuthentication no`, no authorized keys, & no `dkadi` account. The only way in would have been the hypervisor console. I deleted `cicustom` & used native cloud-init instead, then applied the hardening over SSH afterward where I could verify the result.
 
 ## Host baseline
 
 I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) before installing anything.
 
-Cloud-init installed the four fleet public keys & created `<YOUR_ADMIN_USERNAME>` in `sudo`. I then patched the host, added `qemu-guest-agent`, wrote a validated `/etc/sudoers.d/90-<YOUR_ADMIN_USERNAME>` drop-in, wrote `/etc/ssh/sshd_config.d/99-hardening.conf`, locked root, & set timezone & locale.
+Cloud-init installed the four fleet public keys & created `dkadi` in `sudo`. I then patched the host, added `qemu-guest-agent`, wrote a validated `/etc/sudoers.d/90-dkadi` drop-in, wrote `/etc/ssh/sshd_config.d/99-hardening.conf`, locked root, & set timezone & locale.
 
 The standard's text still lists three authorized keys. The live fleet carries four, & `app-01` plus `docker-network` both match that set exactly, so I installed four. The standard needs a correction; that's tracked separately.
 
@@ -75,12 +75,12 @@ Every check ran over SSH from `ansible-01` after the sshd restart.
 
 | Check | Result |
 | --- | --- |
-| `id <YOUR_ADMIN_USERNAME>` includes `sudo` | `uid=1000(<YOUR_ADMIN_USERNAME>)`, group `27(sudo)` |
+| `id dkadi` includes `sudo` | `uid=1000(dkadi)`, group `27(sudo)` |
 | `sudo -n true` | Succeeds |
 | `sshd -T` | `permitrootlogin no`, `pubkeyauthentication yes`, `passwordauthentication no`, `kbdinteractiveauthentication no` |
 | `ssh-keygen -lf ~/.ssh/authorized_keys` | Four fingerprints, matching `app-01` |
 | `passwd -S root` | `root L` (locked) |
-| Console recovery password for `<YOUR_ADMIN_USERNAME>` | `<YOUR_ADMIN_USERNAME> P` (set, inherited from the template) |
+| Console recovery password for `dkadi` | `dkadi P` (set, inherited from the template) |
 | Timezone & locale | `America/New_York (EDT, -0400)`, `LANG=en_US.UTF-8` |
 | Key-only SSH | Password attempt returns `Permission denied (publickey)` |
 | `qemu-guest-agent` | `active` |
@@ -89,7 +89,7 @@ The four installed key fingerprints:
 
 ```text
 SHA256:UtepyFu+HiAXaFy88mnPAS1kOYaknIGW5w3SuC2rjF8  (no comment)
-SHA256:QyNF8ipQ5F/1KV69opH2QHuVVclpfNnZFGhDYZL38rM  mac-air3-<YOUR_ADMIN_USERNAME>
+SHA256:QyNF8ipQ5F/1KV69opH2QHuVVclpfNnZFGhDYZL38rM  mac-air3-dkadi
 SHA256:7sgrdr0LDOx+QyFwDZSsOOV7PTrbqFtG9KkK0Rn6qc8  ansible-control
 SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4  jedi-pc
 ```
@@ -150,7 +150,7 @@ kasm-01
 Ubuntu 24.04.4 LTS
 ```
 
-That connection used the `jedi-pc` Ed25519 identity at `SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4`. I added a `kasm-01` host entry to `~/.ssh/config` on Jedi PC pointing at `192.168.80.30` as `<YOUR_ADMIN_USERNAME>`.
+That connection used the `jedi-pc` Ed25519 identity at `SHA256:pcjlugUJER60YblfoAOfzZYKHJ1pHVTeqGm7Vwquj/4`. I added a `kasm-01` host entry to `~/.ssh/config` on Jedi PC pointing at `192.168.80.30` as `dkadi`.
 
 ## Credentials
 
@@ -183,7 +183,7 @@ These were test launches on VLAN 80 with no isolation in place, which is fine fo
 - I completed the VLAN 74, 75, 77, and 79 NICs, macvlan networks, shim routes, and explicit UniFi containment rules on 2026-07-28.
 - I completed the harmless-container acceptance matrix before allowing a live sample.
 - I created 19 isolated workspaces and relabeled all 15 original definitions as unisolated on 2026-07-28.
-- I published `kasm.<YOUR_BASE_DOMAIN>` through Nginx Proxy Manager at `192.168.85.2` on 2026-07-28. The client-facing path validates against certificate ID 1 while NPM keeps HTTPS on the backend.
+- I published `kasm.alphasecunited.com` through Nginx Proxy Manager at `192.168.85.2` on 2026-07-28. The client-facing path validates against certificate ID 1 while NPM keeps HTTPS on the backend.
 - I disabled the stale VLAN 77 DHCP DNS option on 2026-07-28. UniFi retains `192.168.77.10` as an inactive value, so the network no longer advertises it.
 - I installed Parrot under live storage monitoring on 2026-07-30 and added Full, Normal, and VPN definitions. I renamed the existing lane 77 Debian Target definition to Debian Malware.
 - I disabled automatic registry pulls on every workspace row after the agent attempted to refresh the whole moving-image catalog. Updates are manual and one named image at a time.

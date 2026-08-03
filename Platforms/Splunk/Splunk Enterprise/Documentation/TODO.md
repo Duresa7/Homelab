@@ -9,7 +9,7 @@ I track unfinished Splunk Enterprise work here. Completed deployment steps are i
 
 - [x] Assigned a static SIEM address: `192.168.72.3/24` on Security-A, gateway/DNS `192.168.72.1`.
 - [x] Enabled HTTPS on the Splunk web UI (`enableSplunkWebSSL`, Splunk's default self-signed cert). Reachable at `https://192.168.72.3:8000`.
-- [x] 2026-07-22: Assigned `splunk.<YOUR_BASE_DOMAIN>` as the internal FQDN through UniFi local DNS.
+- [x] 2026-07-22: Assigned `splunk.alphasecunited.com` as the internal FQDN through UniFi local DNS.
 - [x] 2026-07-22: Published Splunk Web through NPM with the existing Let's Encrypt wildcard certificate, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. NPM connects to the existing HTTPS 8000 listener; HEC and syslog remain direct backend ports. See [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 ## Data sources

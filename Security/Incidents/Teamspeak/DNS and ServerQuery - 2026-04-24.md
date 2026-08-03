@@ -20,7 +20,7 @@
 
 ## Incident Summary
 
-On 2026-04-24, `<YOUR_ORG_NAME>` United observed intermittent TeamSpeak client connection
+On 2026-04-24, `AlphaSec` United observed intermittent TeamSpeak client connection
 failures against the community TeamSpeak endpoint `<YOUR_TEAMSPEAK_ONE_DOMAIN>`. I began
 triage with the service layer: the TeamSpeak server process, Docker containers,
 and Playit tunnel were all online. The connection fragility for end users and
@@ -61,7 +61,7 @@ ServerQuery allowlist.
 | ts-valorant-02 | TeamSpeak 3 container | Online |
 | playit-agent | Shared Playit tunnel agent | Online |
 | ts3-manager | Web-based TeamSpeak administration UI | Online after restart |
-| `<YOUR_BASE_DOMAIN>` | Cloudflare-managed DNS zone | Active |
+| `alphasecunited.com` | Cloudflare-managed DNS zone | Active |
 | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | Community connection endpoint | Active |
 | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | Community connection endpoint | Active |
 
@@ -245,7 +245,7 @@ Effective allowed ServerQuery sources for `ts-valorant-02`:
 Observed state:
 
 ```text
-virtualserver_name=<YOUR_ORG_NAME> x LYON
+virtualserver_name=AlphaSec x LYON
 virtualserver_status=online
 virtualserver_port=9987
 virtualserver_maxclients=32
@@ -258,7 +258,7 @@ virtualserver_weblist_enabled=0
 Observed state:
 
 ```text
-virtualserver_name=<YOUR_ORG_NAME> United - Valorant Community
+virtualserver_name=AlphaSec United - Valorant Community
 virtualserver_status=online
 virtualserver_port=9987
 virtualserver_maxclients=32
