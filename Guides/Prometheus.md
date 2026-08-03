@@ -20,7 +20,7 @@ Prometheus now runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-seco
 
 ## How the Pieces Fit Together
 
-![Prometheus scraping its seven node and API targets](Diagrams/prometheus.svg)
+![Prometheus scraping its seven node and API targets](../Assets/Diagrams/prometheus.svg)
 
 ## Walkthrough
 

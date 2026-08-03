@@ -9,7 +9,7 @@ The whole point is that an agent asks for a box, gets one that's fenced off from
 
 ## Diagram
 
-![Agent Sandbox architecture: AI agents call one broker that holds the only Proxmox & Docker keys; the broker provisions Docker containers & full VMs into an isolated VLAN, trusted boxes reach the internet through ProtonVPN, untrusted boxes get none, & a red barrier blocks any path to my internal network](Diagrams/agent-sandbox.png)
+![Agent Sandbox architecture: AI agents call one broker that holds the only Proxmox & Docker keys; the broker provisions Docker containers & full VMs into an isolated VLAN, trusted boxes reach the internet through ProtonVPN, untrusted boxes get none, & a red barrier blocks any path to my internal network](../../../Assets/Diagrams/agent-sandbox.png)
 
 Agents on the left reach one broker; the broker holds the only keys & drops every box into the isolated VLAN on the right, walled off from my internal network.
 

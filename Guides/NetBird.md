@@ -21,7 +21,7 @@ NetBird v0.74.4 runs on CT 107 `docker-network` at `192.168.85.2`. The dashboard
 
 ## How the Pieces Fit Together
 
-![NetBird control plane published through NPM and routed into VLAN 85](Diagrams/netbird.svg)
+![NetBird control plane published through NPM and routed into VLAN 85](../Assets/Diagrams/netbird.svg)
 
 ## Walkthrough
 

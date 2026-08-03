@@ -1,7 +1,7 @@
 # Preview Server
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-03
 
 A 90-line Node static file server so I can view repository HTML and SVG in the agent browser pane. It exists for one reason: the pane can't drive `file://` URLs. It loads such a page once and then ignores every later navigation, so an agent editing a local HTML file keeps inspecting the version it first loaded. Served over `http://127.0.0.1:8123` the same page navigates, reloads, and picks up edits normally.
 
@@ -13,7 +13,7 @@ Start it through the browser pane, not by hand:
 preview_start {"name": "preview"}
 ```
 
-That reads [.claude/launch.json](../../../.claude/launch.json), which points at `serve.js` in this folder. `http://localhost:8123/` opens `Mission Control/index.html`; anything else is a repo-relative path, so `http://localhost:8123/Guides/Diagrams/galaxy-cluster.svg` renders that diagram.
+That reads [.claude/launch.json](../../../.claude/launch.json), which points at `serve.js` in this folder. `http://localhost:8123/` opens `Mission Control/index.html`; anything else is a repo-relative path, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
 
 To run it outside an agent session:
 
@@ -29,7 +29,7 @@ That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 
 
 On 2026-07-27 I also moved all three history bundles and the private redaction value map out of the Homelab tree to `D:\Documents\Redaction Map`. The preview server still keeps both protections because other private material remains under `Sensitive/`.
 
-**It serves only the folders in `ALLOW`.** That's `Guides` and `Mission Control` today. The old script served the whole repository root, which is how `Sensitive/` became reachable. Requests outside the allow list return 404, and so do dotfiles and any path that resolves outside its allowed folder. After the change, `/Sensitive/Hardware/drive-serials.md`, `/CLAUDE.md`, `/Guides/../Sensitive/Hardware/drive-serials.md`, and `/Mission Control/.hidden` all return 404 while `/Mission Control/index.html` and `/Guides/Diagrams/immich-migration.svg` return 200.
+**It serves only the folders in `ALLOW`.** That's `Guides`, `Mission Control`, and `Assets` today. Assets joined on 2026-08-03 when the diagrams moved there, because a guide that references `../Assets/Diagrams/` would otherwise 404 in preview. The old script served the whole repository root, which is how `Sensitive/` became reachable. Requests outside the allow list return 404, and so do dotfiles and any path that resolves outside its allowed folder. After the change, `/Sensitive/Hardware/drive-serials.md`, `/CLAUDE.md`, `/Guides/../Sensitive/Hardware/drive-serials.md`, and `/Mission Control/.hidden` all return 404 while `/Mission Control/index.html` and `/Assets/Diagrams/immich-migration.svg` return 200.
 
 Add a folder to `ALLOW` only when a preview actually needs it. Never add `Sensitive`.
 

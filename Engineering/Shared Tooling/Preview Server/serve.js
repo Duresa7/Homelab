@@ -17,7 +17,7 @@ const PORT = 8123;
 
 // Top-level folders this server is allowed to read. Add one only when a preview
 // actually needs it, and never add Sensitive/.
-const ALLOW = ["Guides", "Mission Control"];
+const ALLOW = ["Guides", "Mission Control", "Assets"];
 
 const DEFAULT = "/Mission Control/index.html";
 

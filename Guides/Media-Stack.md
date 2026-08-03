@@ -21,7 +21,7 @@ The stack runs on CT 842 `media-01` at `192.168.40.42` on `red-server`. The gues
 
 ## How the Pieces Fit Together
 
-![Media stack request, VPN-isolated download, and playback flow](Diagrams/media-stack.svg)
+![Media stack request, VPN-isolated download, and playback flow](../Assets/Diagrams/media-stack.svg)
 
 ## Walkthrough
 

@@ -7,7 +7,7 @@
 
 Each device that can initiate SSH (Mac, Ansible Control, or Jedi PC) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces the Mac or Ansible Control keys.
 
-![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](Diagrams/automation-flow.svg)
+![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](../../../Assets/Diagrams/automation-flow.svg)
 
 Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation. Three project manifests keep that interface aligned with the controller directories:
 
@@ -31,7 +31,7 @@ Comments such as `jedi-pc` are labels. Exact comparison and removal use the key 
 
 ## Rotation State Machine
 
-![Key rotation state machine for one identity: current key only, then replacement configured, both keys present, verified by me, and old key removed, after which the replacement is promoted back to the current key](Diagrams/key-rotation.svg)
+![Key rotation state machine for one identity: current key only, then replacement configured, both keys present, verified by me, and old key removed, after which the replacement is promoted back to the current key](../../../Assets/Diagrams/key-rotation.svg)
 
 The removal gate stays closed unless all of these are true:
 
@@ -55,7 +55,7 @@ Ansible is a command-line runtime, not a continuously running daemon. The curren
 
 Semaphore is the continuously running part. The systemd unit at `/etc/systemd/system/semaphore.service`, mirrored in `Configuration/semaphore.service`, starts the UI with `/opt/ansible-current/bin` first in `PATH`, the required `C.utf8` locale, automatic restart on failure, and a restrictive file-creation mask.
 
-![Controller boot model: a Proxmox node boots, LXC 100 starts with onboot=1, systemd starts semaphore.service, Semaphore listens on TCP 3000, and tasks resolve into /opt/ansible-current](Diagrams/boot-model.svg)
+![Controller boot model: a Proxmox node boots, LXC 100 starts with onboot=1, systemd starts semaphore.service, Semaphore listens on TCP 3000, and tasks resolve into /opt/ansible-current](../../../Assets/Diagrams/boot-model.svg)
 
 This gives the web UI automatic recovery after a controller or Proxmox-node boot. Direct Ansible commands need no service and are available as soon as the LXC is running.
 

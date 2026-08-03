@@ -24,7 +24,7 @@ This repository documents my four-node Proxmox cluster, segmented UniFi network,
 
 ## Lab architecture
 
-[![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the four-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Architecture/Diagrams/homelab-overview.svg)](Architecture/Diagrams/homelab-overview.svg)
+[![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the four-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
 Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway enforces zone policy across 14 networks and 12 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh watches the app and edge hosts, & Prometheus scrapes the cluster, edge, and security targets.
 

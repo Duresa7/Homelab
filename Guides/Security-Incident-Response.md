@@ -20,7 +20,7 @@ The repository contains one April 2026 application-stack access review & two Tea
 
 ## How the Pieces Fit Together
 
-![Security incident response phases: scope, preserve, contain, correct, verify, close](Diagrams/incident-response.svg)
+![Security incident response phases: scope, preserve, contain, correct, verify, close](../Assets/Diagrams/incident-response.svg)
 
 ## Walkthrough
 

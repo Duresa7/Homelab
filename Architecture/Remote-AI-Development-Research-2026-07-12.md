@@ -13,7 +13,7 @@ The remote machine stays powered on and owns the working state. It can be a VPS,
 
 A Galaxy VM provides that same execution model without adding a public server. The material difference is reachability: I use NetBird or an SSH tunnel instead of publishing the development service to the internet.
 
-![Flow diagram: a thin client connects over a private overlay to an always-on Ubuntu VM that runs Codex against the local repository and tools, with inference traffic going out to a hosted model service](Diagrams/remote-dev-pattern.svg)
+![Flow diagram: a thin client connects over a private overlay to an always-on Ubuntu VM that runs Codex against the local repository and tools, with inference traffic going out to a hosted model service](../Assets/Diagrams/remote-dev-pattern.svg)
 
 ## T3 Code Remote Model
 

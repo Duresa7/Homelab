@@ -16,7 +16,6 @@ Planning. The locked design, the phased build, & the decisions I still owe live 
 | Path | What it holds |
 | --- | --- |
 | [Documentation/Agent Sandbox Plan.md](Documentation/Agent%20Sandbox%20Plan.md) | The locked design, the phased build, & the open decisions |
-| `Documentation/Diagrams/` | The architecture diagram |
 | `Source/` | The broker: the shared core, its MCP server, & its CLI, once I start building |
 | `Documentation/Change Records/` | Dated build & change records, once work starts |
 
