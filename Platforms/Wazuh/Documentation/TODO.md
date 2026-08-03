@@ -1,11 +1,11 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-03
 
-## Agent Enrollment
+## Fleet deployment status
 
-I have no pending enrollments. I freshly installed and enrolled `app-01` and `edge-01` on 2026-07-13 as active IDs `004` and `005`; they are the only intended Wazuh endpoints. Their old `edge-01` and incorrect `wp-01` registrations remain retired.
+I completed the [2026-08-03 fleet deployment](Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md) with 14 active remote agents, zero disconnected or pending agents, and all five Galaxy nodes active in `proxmox`. IDs `006` through `017` run held package 4.14.6-1. The final seven-host run and later Green-only run each changed zero hosts.
 
 ## Decide how edge-01 gets agent updates
 

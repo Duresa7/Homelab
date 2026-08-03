@@ -1,7 +1,7 @@
 ﻿# Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-03
 
 Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.6-1. Those services and the API run on `security-01` / `wazuh-01` at `192.168.72.2` on Security-A/VLAN 72.
 
@@ -10,6 +10,7 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 ## Layout
 
 - `Configuration/`: reader-editable reference to the live endpoints, paths, & agent state.
+- `Source/agent-deployment/`: idempotent Ansible deployment for the expanded Linux fleet.
 - `Documentation/Runbook.md`: routine health checks and enrollment workflow.
 - `Documentation/Change Records/`: dated endpoint and manager changes.
 - `Documentation/Dependencies.md`: network, host, and service dependencies.
@@ -34,7 +35,13 @@ NPM presents the Let's Encrypt wildcard certificate to internal dashboard client
 
 - `app-01` is enrolled as manager ID `004` from `192.168.80.10`; agent 4.14.6-1 is enabled, active, & connected.
 - `edge-01` is enrolled as manager ID `005` from `192.168.90.10`; agent 4.14.5-1 is enabled, active, & connected.
-- `app-01` and `edge-01` are the only intended Wazuh endpoints; no further agent enrollment is planned.
-- Those two versions differ because only `app-01` has the Wazuh apt repository configured. `edge-01` has no repository file, so fleet package maintenance can't move its agent and never will until I add one. The [configuration reference](Configuration/README.md) records what I checked on both hosts.
+- `alpha-prod-01`, `docker-blue`, `media-01`, & `ansible-01` are enrolled as IDs `006` through `009`. Each runs held package 4.14.6-1, has an established TCP 1514 session, & reports synchronized.
+- `monitor-01`, `docker-network`, `kasm-01`, `grey-server`, `purple-server`, `blue-server`, & `red-server` are enrolled as IDs `010` through `016`. Each runs held package 4.14.6-1, has an established TCP 1514 session, & reports synchronized.
+- `green-server` is enrolled as ID `017` with held package 4.14.6-1, an established TCP 1514 session, & synchronized status.
+- Grey, Purple, Blue, Red, & Green also belong to `proxmox`. The Wazuh dashboard returned all five as active when filtered on that group.
+
+The shared `default` policy monitors `/etc/ssh` & `/etc/cron.d`. The `edge` policy adds `/etc/cloudflared` only for `edge-01`. I removed the unused custom WordPress volume policy and its rollback copy on 2026-08-03.
+
+The completed expansion is recorded in [Wazuh Agent Fleet Deployment - 2026-08-03](Documentation/Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md). The [configuration reference](Configuration/README.md) records all 14 live identities and policy fragments.
 
 The completed reinstall is documented in [Wazuh Endpoint Re-enrollment - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md). The preceding clean removal is in [Wazuh Endpoint Agent Removal - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md).

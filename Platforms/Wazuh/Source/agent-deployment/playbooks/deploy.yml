@@ -1,0 +1,196 @@
+---
+- name: Deploy pinned Wazuh agents
+  hosts: wazuh_agent_targets
+  become: true
+  gather_facts: true
+  serial: 3
+
+  vars:
+    wazuh_manager_address: 192.168.72.2
+    wazuh_agent_version: 4.14.6-1
+    wazuh_repository_line: >-
+      deb [signed-by=/usr/share/keyrings/wazuh.gpg]
+      https://packages.wazuh.com/4.x/apt/ stable main
+
+  pre_tasks:
+    - name: Require a supported Debian-family endpoint
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.os_family == "Debian"
+          - ansible_facts.service_mgr == "systemd"
+        fail_msg: >-
+          {{ inventory_hostname }} isn't a supported Debian-family systemd host.
+
+    - name: Verify Wazuh event port reachability
+      ansible.builtin.wait_for:
+        host: "{{ wazuh_manager_address }}"
+        port: 1514
+        state: started
+        timeout: 5
+
+    - name: Verify Wazuh enrollment port reachability
+      ansible.builtin.wait_for:
+        host: "{{ wazuh_manager_address }}"
+        port: 1515
+        state: started
+        timeout: 5
+
+  tasks:
+    - name: Read pre-install package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Decide whether the pinned agent needs installation
+      ansible.builtin.set_fact:
+        wazuh_agent_install_needed: >-
+          {{
+            'wazuh-agent' not in ansible_facts.packages
+            or ansible_facts.packages['wazuh-agent'][0].version != wazuh_agent_version
+          }}
+
+    - name: Install the manager-matched Wazuh agent when needed
+      when: wazuh_agent_install_needed | bool
+      block:
+        - name: Install repository prerequisites
+          ansible.builtin.apt:
+            name:
+              - apt-transport-https
+              - ca-certificates
+              - gnupg
+            state: present
+            update_cache: true
+            cache_valid_time: 3600
+
+        - name: Download the Wazuh repository signing key
+          ansible.builtin.get_url:
+            url: https://packages.wazuh.com/key/GPG-KEY-WAZUH
+            dest: /usr/share/keyrings/wazuh.asc
+            owner: root
+            group: root
+            mode: "0644"
+          register: wazuh_ascii_key
+
+        - name: Check the dearmored Wazuh signing key
+          ansible.builtin.stat:
+            path: /usr/share/keyrings/wazuh.gpg
+          register: wazuh_binary_key
+
+        - name: Dearmor the Wazuh repository signing key
+          ansible.builtin.command:
+            argv:
+              - gpg
+              - --batch
+              - --yes
+              - --dearmor
+              - --output
+              - /usr/share/keyrings/wazuh.gpg
+              - /usr/share/keyrings/wazuh.asc
+          when: wazuh_ascii_key.changed or not wazuh_binary_key.stat.exists
+          changed_when: true
+
+        - name: Enable the Wazuh repository for the pinned install
+          ansible.builtin.copy:
+            content: "{{ wazuh_repository_line }}\n"
+            dest: /etc/apt/sources.list.d/wazuh.list
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Install the pinned Wazuh package
+          ansible.builtin.apt:
+            name: "wazuh-agent={{ wazuh_agent_version }}"
+            state: present
+            update_cache: true
+            allow_downgrade: true
+            allow_change_held_packages: true
+          environment:
+            DEBIAN_FRONTEND: noninteractive
+            WAZUH_MANAGER: "{{ wazuh_manager_address }}"
+            WAZUH_REGISTRATION_SERVER: "{{ wazuh_manager_address }}"
+            WAZUH_AGENT_NAME: "{{ inventory_hostname }}"
+            WAZUH_AGENT_GROUP: "{{ wazuh_agent_groups | default('default') }}"
+
+    - name: Hold the Wazuh agent at the manager-matched version
+      ansible.builtin.dpkg_selections:
+        name: wazuh-agent
+        selection: hold
+
+    - name: Disable the Wazuh repository after installation
+      ansible.builtin.copy:
+        content: "#{{ wazuh_repository_line }}\n"
+        dest: /etc/apt/sources.list.d/wazuh.list
+        owner: root
+        group: root
+        mode: "0644"
+      register: wazuh_repository_disabled
+
+    - name: Refresh APT metadata after disabling the Wazuh repository
+      ansible.builtin.apt:
+        update_cache: true
+      when: wazuh_repository_disabled.changed
+
+    - name: Enable and start the Wazuh agent
+      ansible.builtin.systemd_service:
+        name: wazuh-agent
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Wait for the endpoint enrollment key
+      ansible.builtin.stat:
+        path: /var/ossec/etc/client.keys
+      register: wazuh_client_keys
+      until:
+        - wazuh_client_keys.stat.exists
+        - wazuh_client_keys.stat.size | int > 0
+      retries: 12
+      delay: 5
+
+    - name: Wait for the persistent Wazuh event session
+      ansible.builtin.command:
+        argv:
+          - ss
+          - -Hnt
+          - state
+          - established
+          - "( dport = :1514 )"
+      register: wazuh_event_session
+      changed_when: false
+      failed_when: false
+      until: wazuh_event_session.stdout | trim | length > 0
+      retries: 12
+      delay: 5
+
+    - name: Read installed package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Wait for the Wazuh agent service to become active
+      ansible.builtin.command:
+        argv:
+          - systemctl
+          - is-active
+          - wazuh-agent
+      register: wazuh_agent_active
+      changed_when: false
+      failed_when: false
+      until:
+        - wazuh_agent_active.rc == 0
+        - wazuh_agent_active.stdout | trim == 'active'
+      retries: 12
+      delay: 5
+
+    - name: Read service facts
+      ansible.builtin.service_facts:
+
+    - name: Verify the installed agent
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.packages['wazuh-agent'][0].version == wazuh_agent_version
+          - ansible_facts.services['wazuh-agent.service'].status == 'enabled'
+          - wazuh_agent_active.rc == 0
+          - wazuh_agent_active.stdout | trim == 'active'
+          - wazuh_client_keys.stat.size | int > 0
+          - wazuh_event_session.stdout | trim | length > 0
+        fail_msg: >-
+          {{ inventory_hostname }} failed the Wazuh package, service, enrollment-key, or event-session check.

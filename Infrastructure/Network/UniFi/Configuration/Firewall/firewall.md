@@ -1,11 +1,11 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-03
 
-I verified both Galaxy PXE callback policies against the live controller on 2026-07-31, then moved their shared destination onto `OBJ-Galaxy-PXE-Service` and `PG-Galaxy-PXE-Callback` so neither rule carries a hardcoded service address. Both sides of both policies are now object references. All five Galaxy nodes returned `ok` with HTTP 200 from `http://192.168.40.36:8080/health` afterward. The full baseline remains the 2026-07-28 Kasm readback.
+I added four narrow Wazuh enrollment paths on 2026-08-03. They admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. Source tests passed on both ports. The earlier Galaxy PXE callback verification remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. It has 121 user-defined policies after the two Galaxy PXE callback additions on 2026-07-31. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. It has 125 user-defined policies after the four Wazuh additions on 2026-08-03. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
 
 ## Recorded Custom Policy Inventory
 
@@ -43,6 +43,10 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Block Observability Other External Egress` | Yes | BLOCK | 10002 | All | `<YOUR_ORG_NAME>`-Observability / `OBJ-Observability-Hosts` | External / Any |
 | `Allow <YOUR_ORG_NAME>-Servers to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Servers / Any | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
 | `Allow DMZ to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow monitor-01 to Wazuh - Security-A` | Yes | ALLOW | 10001 | TCP | `<YOUR_ORG_NAME>`-Observability / 192.168.73.2 | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow docker-network to Wazuh - Security-A` | Yes | ALLOW | 10003 | TCP | `<YOUR_ORG_NAME>`-Access / 192.168.85.2 | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow kasm-01 to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | LAB-MGMT / 192.168.78.10 | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
+| `Allow Galaxy nodes to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Mgmt / .10, .11, .12, .13, .14 | `<YOUR_ORG_NAME>`-Observability / 192.168.72.2 / `Wazuh Ports` |
 | `Allow VPN --> Internal Zone` | Yes | ALLOW | 10001 | All | Vpn / Management Access | Internal / Any |
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `<YOUR_ORG_NAME>`-Access / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
@@ -76,7 +80,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `LABMGMT Block to <YOUR_ORG_NAME>-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Servers / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Mgmt / Any |
 | `LABMGMT Block to <YOUR_ORG_NAME>-Access` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Access / Any |
-| `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
+| `LABMGMT Block to <YOUR_ORG_NAME>-Observability` | Yes | BLOCK | 10001 | All / `NEW, INVALID` | LAB-MGMT / Any | `<YOUR_ORG_NAME>`-Observability / Any |
 | `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
 | `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |
 | `LABMGMT Block to KASM-TRUSTED` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-TRUSTED / Any |
@@ -148,6 +152,8 @@ Automatic respond-policy generation is disabled for all six. The observability t
 The KASM-TRUSTED gateway set uses DHCP at 10000, NTP at 10001, and the gateway catchall block at 10002. I read those indexes back from the controller after creation. The external allow and every inter-zone block use index 10000 within their separate source and destination zone pairs.
 
 The monitoring, NPM, break-glass, Wazuh, and automation paths retain response companions where required. A policy update can drop its description without failing, so I verify selectors, action, enabled state, index, protocol, and response behavior rather than treating a description as enforcement.
+
+The exact `kasm-01` Wazuh allow uses index 10000 and precedes `LABMGMT Block to <YOUR_ORG_NAME>-Observability` at 10001. The allow first landed behind that catch-all block, so TCP 1514 stayed closed. I previewed and applied a two-policy reorder, then both Wazuh ports opened without changing either policy's selectors or action.
 
 The two LAB-MGMT inbound allow rules precede their zone-wide catchall blocks. The LAB-MGMT-to-Internal and MALWARE-OFFLINE-to-KASM-BROWSER blocks match only new and invalid connections so established replies to an allowed inbound connection survive. The original source tests and order-sensitive state choices are retained in [Kasm Session Isolation](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). The KASM-TRUSTED policy verification and source tests are retained in [Kasm Workspace Build-Out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
