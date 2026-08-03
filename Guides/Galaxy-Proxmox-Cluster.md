@@ -1,15 +1,15 @@
 # Galaxy Proxmox Cluster Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
-I built Galaxy as a four-node Proxmox VE cluster named `Galaxy`. This walkthrough combines the original cluster join, the `red-server` expansion, the dedicated Corosync link on VLAN 71, Datacenter firewall objects, the `docker-network` LXC, & the Debian 13 development VM.
+Galaxy is a Proxmox VE cluster that runs five nodes today. I built it as four and added `green-server` on 2026-07-31. This walkthrough combines the original cluster join, the `red-server` expansion, the dedicated Corosync link on VLAN 71, Datacenter firewall objects, the `docker-network` LXC, & the Debian 13 development VM.
 
 ## Current Status and Verified Versions
 
-All four nodes reported `pve-manager/9.2.2` with kernel `7.0.2-6-pve` during the recorded cluster check. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster remained quorate after the second link was added.
+All five nodes report `pve-manager/9.2.6` with kernel `7.0.14-8-pve`, checked against the cluster on 2026-08-03. Quorum holds at five votes. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
 
 ## What You Need
 
@@ -21,7 +21,7 @@ All four nodes reported `pve-manager/9.2.2` with kernel `7.0.2-6-pve` during the
 
 ## How the Pieces Fit Together
 
-![Galaxy four-node Proxmox cluster with two Corosync links and example guests](../Assets/Diagrams/galaxy-cluster.svg)
+![Galaxy five-node Proxmox cluster with two Corosync links and example guests](../Assets/Diagrams/galaxy-cluster.svg)
 
 ## Walkthrough
 

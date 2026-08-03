@@ -1,7 +1,7 @@
 # Ansible SSH Identity Automation Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -37,7 +37,7 @@ The validator checks the inventory, identity schema, target references, template
 
 ### Step 2: Build the Inventory
 
-I assign each host to the groups used by its connection method and key policy. The four Proxmox nodes share a cluster-backed authorization file, so `grey-server` is the only writer while the other nodes verify the result.
+I assign each host to the groups used by its connection method and key policy. The five Proxmox nodes share a cluster-backed authorization file, so `grey-server` is the only writer while the other nodes verify the result.
 
 I leave a host in `ssh_key_unknown` until I know its account, path, & connection method. Those hosts can't be selected by the key playbooks.
 
