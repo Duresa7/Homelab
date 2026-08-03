@@ -1,9 +1,9 @@
 # Agent Sandbox Plan
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-03
 
-I want my AI agents to spin up their own test machines & tear them down when they're done. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
+I want an automated caller to provision its own test machine & tear it down when the job finishes, without holding hypervisor credentials to do it. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
 
 The whole point is that an agent asks for a box, gets one that's fenced off from everything I care about, uses it, & the box disappears. No agent ever holds a Proxmox credential, & no sandbox ever reaches my LAN, my hypervisor management plane, or my production guests.
 
@@ -94,7 +94,7 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 - Docker host shape: a dedicated container on purple versus a small VM, & whether nested-Docker-in-VM for the untrusted case is a standing template or built per job.
 - Concurrency ceilings: the exact per-node & per-agent limits above the 10 GiB purple budget.
 - Broker stack & host: Python or Node, & which host runs the broker itself.
-- GPU sandboxes on grey: out of scope for the first version; revisit if an agent needs CUDA.
+- GPU sandboxes on grey: out of scope for the first version; revisit if a sandbox workload needs CUDA.
 
 ## Related records
 

@@ -1,9 +1,9 @@
 # Agent Sandbox
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-03
 
-My AI agents need throwaway machines to test on. This platform is the plan for one tool that spins up a Docker container or a full VM on demand, hands the agent a way in, then destroys it when the task ends so the memory & disk come back. Nothing is built yet as of 2026-07-20: no broker, no sandbox VLAN, & no templates past the two Linux ones already sitting on grey-server.
+This platform is the design for a broker that provisions throwaway machines on demand. A caller asks for a Docker container or a full VM, the broker hands back a way in, then destroys the guest when the task ends so the memory & disk come back. Nothing is built yet as of 2026-07-20: no broker, no sandbox VLAN, & no templates past the two Linux ones already sitting on grey-server.
 
 One broker holds every key. Agents reach it through an MCP interface or a CLI, & the broker is the only thing that talks to the Proxmox API or the Docker host, so an agent never gets direct control of the hypervisor. It enforces the size caps, the 2-hour default lifetime, & the network isolation, & it logs every create, exec, & destroy to Splunk.
 
