@@ -1,0 +1,10 @@
+2026-08-03T00:03:58-04:00
+Target: Docker Main 192.168.40.35:3010
+Execution mechanism: PowerShell Invoke-WebRequest from Jedi PC
+Working directory: D:\Documents\Homelab
+COMMAND: GET /, /docs/intro, /healthz, and a missing route
+uri=http://192.168.40.35:3010/ expected=200 actual=200 bytes=7640 final_uri=http://192.168.40.35:3010/
+uri=http://192.168.40.35:3010/docs/intro expected=200 actual=200 bytes=9968 final_uri=http://192.168.40.35:3010/docs/intro/
+uri=http://192.168.40.35:3010/healthz expected=200 actual=200 bytes=3 final_uri=http://192.168.40.35:3010/healthz
+uri=http://192.168.40.35:3010/route-that-does-not-exist expected=404 actual=404 bytes=6346 final_uri=http://192.168.40.35:3010/route-that-does-not-exist
+EXIT_CODE: 0

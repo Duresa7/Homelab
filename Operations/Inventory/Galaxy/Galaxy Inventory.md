@@ -1,16 +1,16 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-02
 
-This index links the latest complete Galaxy snapshot set. I rolled the node record forward on 2026-07-31 after Green joined as the fifth node and after I redistributed the Blue and Green memory. VM, LXC, and workload configuration did not change, so the current set reuses those verified snapshots.
+This index links the latest complete Galaxy snapshot set. I rolled the workload record forward on 2026-08-02 after deploying Docusaurus 3.10.2 on Docker Main. Node, VM, and LXC configuration did not change, so the current set reuses those verified snapshots.
 
 | File | Contents |
 | --- | --- |
 | [Nodes Post-Green Expansion - 2026-07-31.md](Nodes%20Post-Green%20Expansion%20-%202026-07-31.md) | Current five-node Proxmox hardware and physical-storage snapshot |
 | [VMs Post-Parrot - 2026-07-30.md](VMs%20Post-Parrot%20-%202026-07-30.md) | Current QEMU VM configuration snapshot; unchanged by the PXE deployment |
 | [LXCs Post-Parrot - 2026-07-30.md](LXCs%20Post-Parrot%20-%202026-07-30.md) | Current LXC configuration snapshot; unchanged by the PXE deployment |
-| [Services Post-PXE - 2026-07-30.md](Services%20Post-PXE%20-%202026-07-30.md) | Current workload snapshot |
+| [Services Post-Docusaurus - 2026-08-02.md](Services%20Post-Docusaurus%20-%202026-08-02.md) | Current workload snapshot with Docusaurus on Docker Main |
 
 ## Snapshot sequence
 
@@ -25,5 +25,6 @@ Two complete sets carry the date 2026-07-28 because I changed the fleet twice th
 | `Post-PXE - 2026-07-30` | After deploying the Galaxy PXE and TFTP workloads on `ansible-01` | [Galaxy Inventory Post-PXE - 2026-07-30.md](Galaxy%20Inventory%20Post-PXE%20-%202026-07-30.md) |
 | `Post-Blue SATA Wipe - 2026-07-31` | After adding Blue's WDC disk, resolving its duplicate `pve` VG, & leaving the disk blank | [Galaxy Inventory Post-Blue SATA Wipe - 2026-07-31.md](Galaxy%20Inventory%20Post-Blue%20SATA%20Wipe%20-%202026-07-31.md) |
 | `Post-Green Expansion - 2026-07-31` | After Green joined as the fifth node, the Blue and Green memory change, and the two extended HDD tests | [Galaxy Inventory Post-Green Expansion - 2026-07-31.md](Galaxy%20Inventory%20Post-Green%20Expansion%20-%202026-07-31.md) |
+| `Post-Docusaurus - 2026-08-02` | After adding the Docusaurus 3.10.2 static documentation workload on Docker Main | [Galaxy Inventory Post-Docusaurus - 2026-08-02.md](Galaxy%20Inventory%20Post-Docusaurus%20-%202026-08-02.md) |
 
 I keep both same-day sets rather than folding the later one into the earlier filenames. Each records a state the fleet actually held, and collapsing them would delete the only record of the intermediate one to satisfy a filename.

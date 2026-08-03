@@ -1,0 +1,26 @@
+2026-08-03T03:54:14+00:00
+docker-main
+/opt/docker/docusaurus
+COMMAND: docker compose -p configuration -f Configuration/docker-compose.yml down
+ Container docusaurus Stopping 
+ Container docusaurus Stopped 
+ Container docusaurus Removing 
+ Container docusaurus Removed 
+ Network configuration_default Removing 
+ Network configuration_default Removed 
+DOWN_EXIT_CODE: 0
+COMMAND: docker compose -f Configuration/docker-compose.yml config --quiet
+CONFIG_EXIT_CODE: 0
+COMMAND: docker compose -f Configuration/docker-compose.yml up -d
+ Network docusaurus_default Creating 
+ Network docusaurus_default Created 
+ Container docusaurus Creating 
+ Container docusaurus Created 
+ Container docusaurus Starting 
+ Container docusaurus Started 
+UP_EXIT_CODE: 0
+HEALTH: healthy after 3 checks
+COMMAND: docker compose ls --format json
+[{"Name":"booklore","Status":"running(2)","ConfigFiles":"/opt/docker/booklore/docker-compose.yml"},{"Name":"cadvisor","Status":"running(1)","ConfigFiles":"/opt/docker/cadvisor/docker-compose.yml"},{"Name":"docusaurus","Status":"running(1)","ConfigFiles":"/opt/docker/docusaurus/Configuration/docker-compose.yml"},{"Name":"forgejo","Status":"running(1)","ConfigFiles":"/opt/docker/forgejo/docker-compose.yml"},{"Name":"homelab-dashboard-aio","Status":"running(1)","ConfigFiles":"/opt/docker/homelab-dashboard-aio/docker-compose.yml"},{"Name":"immich","Status":"running(4)","ConfigFiles":"/opt/docker/immich-app/docker-compose.yml"},{"Name":"portainer","Status":"running(1)","ConfigFiles":"/opt/docker/portainer/docker-compose.yml"},{"Name":"syncthing","Status":"running(1)","ConfigFiles":"/opt/docker/syncthing/docker-compose.yml"}]
+HTTP: status=200 bytes=7640
+EXIT_CODE: 0

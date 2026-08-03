@@ -1,9 +1,11 @@
-# Galaxy Services
+# Galaxy Services Post-Docusaurus Snapshot
 
-**Created:** 2026-07-08  
+**Created:** 2026-08-02  
 **Last updated:** 2026-08-02
 
-This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. The final table records node_exporter on all four Proxmox nodes.
+**Snapshot date:** 2026-08-02
+
+I captured this complete workload snapshot after deploying Docusaurus 3.10.2 on Docker Main. The inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state; the final table records node_exporter on all four Proxmox nodes.
 
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |

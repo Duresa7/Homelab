@@ -1,0 +1,143 @@
+2026-08-03T03:51:41+00:00
+docker-main
+/opt/docker/docusaurus
+COMMAND: docker compose -f Configuration/docker-compose.yml build --pull
+ Image homelab/docusaurus:3.10.2 Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 559B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 583B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+#3 DONE 0.4s
+
+#4 [internal] load metadata for docker.io/library/nginx:1.29.5-alpine@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b
+#4 DONE 0.4s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 85B done
+#5 DONE 0.0s
+
+#6 [stage-1 1/3] FROM docker.io/library/nginx:1.29.5-alpine@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b
+#6 resolve docker.io/library/nginx:1.29.5-alpine@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b 0.0s done
+#6 ...
+
+#7 [internal] load build context
+#7 transferring context: 727.41kB done
+#7 DONE 0.0s
+
+#6 [stage-1 1/3] FROM docker.io/library/nginx:1.29.5-alpine@sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b
+#6 sha256:123827f4a105eee4054d59a0080f7860b2a7e29fe138d132af7850843b54c833 2.50kB / 2.50kB done
+#6 sha256:274331e2723726d667f697a57a67a709549aa43f62a6742510967a934a62dcea 12.32kB / 12.32kB done
+#6 sha256:589002ba0eaed121a1dbf42f6648f29e5be55d5c8a6ee0f8eaa0285cc21ac153 3.86MB / 3.86MB 0.1s done
+#6 sha256:1eff5a5f3fcf8431a0abb7eddf5471fec24e5e1905a2581aeacdb07a4479b92b 10.33kB / 10.33kB done
+#6 extracting sha256:589002ba0eaed121a1dbf42f6648f29e5be55d5c8a6ee0f8eaa0285cc21ac153
+#6 sha256:f7323cfb6ecc33af8861cdbf915e9cd25d5040970622c58d3ccee2a28f537da9 627B / 627B 0.2s done
+#6 extracting sha256:565dcd14d83b19745c95328eb7c3cc798f677d35eb19aaaf930d21d2f0674999 0.0s done
+#6 sha256:77c331179be97ce2834fbaf5b9ff4814fc90c516d270e33fb903dae958767b28 1.40kB / 1.40kB 0.3s done
+#6 sha256:15ebc4ca7c9ab451636fc4895c655bf5c1ac72e8b3d6632948de08b97b2c3b87 0B / 20.24MB 0.3s
+#6 sha256:505610f0847fc55d522cbeab5cc38bd5b4e6db6454585e0375e7de78d4feb020 954B / 954B 0.2s done
+#6 sha256:565dcd14d83b19745c95328eb7c3cc798f677d35eb19aaaf930d21d2f0674999 1.86MB / 1.86MB 0.2s done
+#6 sha256:e57772a2914efea6dac5cc146369a161e10a56d7242c89cd3ea2b69723e2948f 404B / 404B 0.2s done
+#6 sha256:8ff6f2f31a3ccec2bdd8d016e30d28b2509c11e1893ec4b399fc3c1d86326211 1.21kB / 1.21kB 0.3s done
+#6 extracting sha256:f7323cfb6ecc33af8861cdbf915e9cd25d5040970622c58d3ccee2a28f537da9 done
+#6 extracting sha256:505610f0847fc55d522cbeab5cc38bd5b4e6db6454585e0375e7de78d4feb020 done
+#6 extracting sha256:e57772a2914efea6dac5cc146369a161e10a56d7242c89cd3ea2b69723e2948f
+#6 sha256:15ebc4ca7c9ab451636fc4895c655bf5c1ac72e8b3d6632948de08b97b2c3b87 13.63MB / 20.24MB 0.4s
+#6 extracting sha256:e57772a2914efea6dac5cc146369a161e10a56d7242c89cd3ea2b69723e2948f done
+#6 extracting sha256:8ff6f2f31a3ccec2bdd8d016e30d28b2509c11e1893ec4b399fc3c1d86326211 done
+#6 extracting sha256:77c331179be97ce2834fbaf5b9ff4814fc90c516d270e33fb903dae958767b28 done
+#6 extracting sha256:15ebc4ca7c9ab451636fc4895c655bf5c1ac72e8b3d6632948de08b97b2c3b87
+#6 extracting sha256:15ebc4ca7c9ab451636fc4895c655bf5c1ac72e8b3d6632948de08b97b2c3b87 0.3s done
+#6 DONE 1.0s
+
+#8 [build 1/6] FROM docker.io/library/node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+#8 resolve docker.io/library/node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 0.0s done
+#8 sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 3.87kB / 3.87kB done
+#8 sha256:e9445c64ace1a9b5cdc60fc98dd82d1e5142985d902f41c2407e8fffe49d46a3 1.72kB / 1.72kB done
+#8 sha256:3d11569681e47fd750815cb990de3b4ce8c63299924f6bc62d656bfee21501e2 6.52kB / 6.52kB done
+#8 sha256:d8573c1c310e7789794576ea96c600be3bb905a6cf0ef787f89922d992d39b78 51.11MB / 51.11MB 0.3s done
+#8 sha256:0653b96c7e89eb8a796a819757fa29a918692669e68f09eac2215c6401407538 1.26MB / 1.26MB 0.1s done
+#8 extracting sha256:589002ba0eaed121a1dbf42f6648f29e5be55d5c8a6ee0f8eaa0285cc21ac153 0.1s done
+#8 sha256:589002ba0eaed121a1dbf42f6648f29e5be55d5c8a6ee0f8eaa0285cc21ac153 3.86MB / 3.86MB 0.1s done
+#8 sha256:867a770c9b3548b3b2357b54112add9711dd53d8679a3c1bb4c3d9ac675a5c02 448B / 448B 0.1s done
+#8 extracting sha256:d8573c1c310e7789794576ea96c600be3bb905a6cf0ef787f89922d992d39b78 0.7s
+#8 ...
+
+#9 [stage-1 2/3] COPY nginx.conf /etc/nginx/nginx.conf
+#9 DONE 0.1s
+
+#8 [build 1/6] FROM docker.io/library/node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114
+#8 extracting sha256:d8573c1c310e7789794576ea96c600be3bb905a6cf0ef787f89922d992d39b78 0.9s done
+#8 extracting sha256:0653b96c7e89eb8a796a819757fa29a918692669e68f09eac2215c6401407538
+#8 extracting sha256:0653b96c7e89eb8a796a819757fa29a918692669e68f09eac2215c6401407538 0.1s done
+#8 extracting sha256:867a770c9b3548b3b2357b54112add9711dd53d8679a3c1bb4c3d9ac675a5c02 done
+#8 DONE 1.5s
+
+#10 [build 2/6] WORKDIR /app
+#10 DONE 0.0s
+
+#11 [build 3/6] COPY package.json package-lock.json ./
+#11 DONE 0.0s
+
+#12 [build 4/6] RUN npm ci
+#12 4.592 npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+#12 12.98 
+#12 12.98 added 1298 packages, and audited 1299 packages in 13s
+#12 12.98 
+#12 12.98 423 packages are looking for funding
+#12 12.98   run `npm fund` for details
+#12 13.16 
+#12 13.16 18 moderate severity vulnerabilities
+#12 13.16 
+#12 13.16 To address issues that do not require attention, run:
+#12 13.16   npm audit fix
+#12 13.16 
+#12 13.16 Some issues need review, and may require choosing
+#12 13.16 a different dependency.
+#12 13.16 
+#12 13.16 Run `npm audit` for details.
+#12 13.16 npm notice
+#12 13.16 npm notice New minor version of npm available! 11.9.0 -> 11.19.0
+#12 13.16 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.19.0
+#12 13.16 npm notice To update run: npm install -g npm@11.19.0
+#12 13.16 npm notice
+#12 DONE 13.8s
+
+#13 [build 5/6] COPY . .
+#13 DONE 0.0s
+
+#14 [build 6/6] RUN npm run build
+#14 0.240 
+#14 0.240 > homelab-documentation@1.0.0 build
+#14 0.240 > docusaurus build
+#14 0.240 
+#14 1.163 [INFO] [en] Creating an optimized production build...
+#14 3.311 [SUCCESS] Generated static files in "build".
+#14 3.311 [INFO] Use `npm run serve` command to test your build locally.
+#14 DONE 3.4s
+
+#15 [stage-1 3/3] COPY --from=build /app/build /usr/share/nginx/html
+#15 DONE 0.0s
+
+#16 exporting to image
+#16 exporting layers 0.0s done
+#16 writing image sha256:4b452421e71e8c6e37bf547d22e294d600fc034525b0d05fcf751e7074feb19e done
+#16 naming to docker.io/homelab/docusaurus:3.10.2 done
+#16 DONE 0.1s
+
+#17 resolving provenance for metadata file
+#17 DONE 0.0s
+ Image homelab/docusaurus:3.10.2 Built 
+BUILD_EXIT_CODE: 0
+COMMAND: docker compose -f Configuration/docker-compose.yml up -d
+ Network configuration_default Creating 
+ Network configuration_default Created 
+ Container docusaurus Creating 
+ Container docusaurus Created 
+ Container docusaurus Starting 
+ Container docusaurus Started 
+UP_EXIT_CODE: 0

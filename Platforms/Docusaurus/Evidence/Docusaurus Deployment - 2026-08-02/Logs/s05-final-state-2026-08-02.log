@@ -1,0 +1,15 @@
+2026-08-03T03:54:41+00:00
+docker-main
+/opt/docker/docusaurus
+CONTAINER_ID_BEFORE: 768079992b81f4c7d80dde78062eaeecd3292cd775c91316301928402f7bbe1a
+COMMAND: docker compose -f Configuration/docker-compose.yml up -d
+ Container docusaurus Running 
+UP_EXIT_CODE: 0
+CONTAINER_ID_AFTER: 768079992b81f4c7d80dde78062eaeecd3292cd775c91316301928402f7bbe1a
+name=docusaurus image=homelab/docusaurus:3.10.2 status=Up 26 seconds (healthy) ports=80/tcp, 0.0.0.0:3010->8080/tcp, [::]:3010->8080/tcp
+image_id=sha256:4b452421e71e8c6e37bf547d22e294d600fc034525b0d05fcf751e7074feb19e size_bytes=62720364 architecture=amd64 os=linux
+name=docusaurus cpu=0.00% memory=4.504MiB / 128MiB pids=5
+NGINX_ERROR_LINES: 0
+curl: (7) Failed to connect to 127.0.0.1 port 8080 after 0 ms: Couldn't connect to server
+DOCS_HTTP: status=301 bytes=0 redirects=1
+EXIT_CODE: 0

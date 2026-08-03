@@ -1,0 +1,14 @@
+.hero {
+  align-items: center;
+  display: flex;
+  min-height: calc(100vh - 60px);
+  overflow: hidden;
+  padding: 4rem 0;
+  text-align: center;
+}
+
+@media screen and (max-width: 996px) {
+  .hero {
+    padding: 2rem;
+  }
+}

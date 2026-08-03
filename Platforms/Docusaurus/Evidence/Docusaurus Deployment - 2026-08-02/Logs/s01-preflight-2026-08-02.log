@@ -1,0 +1,18 @@
+2026-08-03T03:51:24+00:00
+docker-main
+/opt/docker/docusaurus
+COMMAND: docker compose -f Configuration/docker-compose.yml config --quiet
+EXIT_CODE: 0
+FILES
+1b78ee662d645ee4fc803a5ca948d116db4bb2d9a71fb0b93630a52881f9744a  Configuration/docker-compose.yml
+956da900cc95afbf871d1c4760d6b1cdb6d6460e2355d0a3e98f1859aa3cfe9c  Source/.dockerignore
+5230f9ccd1f9fdd588fd7703875656757ceeb3d838e552fb5388879761686442  Source/Dockerfile
+778adaea63249f02fc6eab967bd19b44b5ab5c11f6e8daa7f99a0dd1acd5dbe1  Source/docs/intro.md
+827e6b01f4ab5995828b8412148ed14c52748a0ec79238408f2e9783f58028d2  Source/docusaurus.config.js
+d8bc51fb30fc58296fdf19a591a8411c81c9d5b8359bcd3f83b0875aaa805d60  Source/nginx.conf
+467e7cc054f1e69b35cfab5a0b5b5d7d33267c990b3b41a4086e1bfea77823a6  Source/package-lock.json
+a408fd652c0a2c7e4c8c5b9266aab69fedd794b9b79b5b9ce07f932d1b32f364  Source/package.json
+cc6d5f92dfde3a1aba8d91e6a8ca37f1e7497f0a29d5322ec674919108c100cc  Source/sidebars.js
+09d475fe8501dae9fa9659810804fbf5b84f22547e2d5f957f2a94eea7da8030  Source/src/css/custom.css
+60849b5be03316581d369c440784b8519c0ddbb10f675b776547f9b04b2b411f  Source/src/pages/index.js
+f90d79a339c6d43d90eaef994922aabd5cd12bca46172f1e94fbce8012ba165e  Source/src/pages/index.module.css

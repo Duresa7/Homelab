@@ -210,6 +210,15 @@
 /Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
 
+# Docusaurus deployment evidence records
+!/Platforms/Docusaurus/Evidence/
+/Platforms/Docusaurus/Evidence/*
+!/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/
+/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/*
+!/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/Evidence-Index.md
+!/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/Logs/
+/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/Logs/*
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db
@@ -231,6 +240,7 @@
 # after the *.log rule above, because the last matching pattern wins.
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*.log
 !/Operations/Evidence/Fleet Artifact Sweep - 2026-07-29/Logs/*.log
+!/Platforms/Docusaurus/Evidence/Docusaurus Deployment - 2026-08-02/Logs/*.log
 
 # Private keys, certificates with private material, and credential exports
 *.key
