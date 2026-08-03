@@ -172,7 +172,7 @@ The plan estimated 13 zones. The controller result is 14 because two zones were 
 
 ## Enforcement Boundaries
 
-A UniFi policy is not sufficient for traffic landing on a Proxmox node. The [Galaxy Datacenter firewall](../../../../Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently. I test from the source host after changing a path.
+A UniFi policy is not sufficient for traffic landing on a Proxmox node. The [Galaxy Datacenter firewall](../../../../Compute/Galaxy/Configuration/Datacenter-Firewall.md) enforces independently. I test from the source host after changing a path.
 
 The UniFi zone endpoint still returns no network membership. I read `firewall_zone_id` from each network instead, as recorded in [UniFi zone membership is absent from the zone-matrix endpoint](../../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 

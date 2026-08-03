@@ -67,7 +67,7 @@ Recovering either now means rebuilding from the [Linux Host Baseline Standard](.
 | [Security-A Migration - 2026-07-12](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | `cluster.fw.bak.security-a-20260712-213729` & `cluster.fw.bak.security-a-cleanup-20260712-215806` |
 | [Termix SSH Host Onboarding - 2026-07-14](../../Archive/Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md) | `cluster.fw.pre-termix-2026-07-14` |
 
-The firewall state itself is not lost. [Galaxy Data Center Firewall](../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) carries the IPSets, the full `pve_mgmt` rule table, and the ordering constraint, so the live 49-line file is reconstructable from git without any snapshot. What's gone is the ability to restore a specific earlier state in one copy.
+The firewall state itself is not lost. [Galaxy Data Center Firewall](../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) carries the IPSets, the full `pve_mgmt` rule table, and the ordering constraint, so the live 49-line file is reconstructable from git without any snapshot. What's gone is the ability to restore a specific earlier state in one copy.
 
 ## Verification
 

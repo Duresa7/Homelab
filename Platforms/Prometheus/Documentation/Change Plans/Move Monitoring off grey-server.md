@@ -376,11 +376,11 @@ Same task, per `CLAUDE.md`. First person, no emoji, ISO dates, written through t
 | [Prometheus README](../../README.md) | Host, address, 46 targets, `monitor-01` in the job table, containers-on section retitled |
 | [Runbook](../Runbook.md) | Every `security-01` reference for the monitoring stack, the new 46 and the rollback section, which currently names `.bak` files that no longer exist. Rollback becomes rebuild-from-git |
 | [Platform TODO](../TODO.md) | Close this item |
-| [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md) | Correct the stale 43-policy inventory to the 52-policy starting state, then record 59 after thirteen additions and six deletions. Note the DNS finding and NPM policy edit |
-| [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/VLANs/) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
-| [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/Zones/zone.md) | Add custom zone `<YOUR_ORG_NAME>`-Monitor |
+| [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/firewall.md) | Correct the stale 43-policy inventory to the 52-policy starting state, then record 59 after thirteen additions and six deletions. Note the DNS finding and NPM policy edit |
+| [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
+| [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/zone.md) | Add custom zone `<YOUR_ORG_NAME>`-Monitor |
 | [Kasm Lab Network Simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
-| [Galaxy Data Center Firewall](../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) | The IPSET member swap and the three rule changes |
+| [Galaxy Data Center Firewall](../../../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) | The IPSET member swap and the three rule changes |
 | [Operations inventory](../../../../Operations/Inventory/Galaxy/) | CT 104 in the LXC inventory, `security-01`'s workload list in `Services.md`, the new exporter rows |
 | [monitoring-exporters README](../../../Ansible/Source/monitoring-exporters/README.md) | 8 hosts in both groups |
 | [Root TODO](../../../../TODO.md) | Move to Recently Completed |

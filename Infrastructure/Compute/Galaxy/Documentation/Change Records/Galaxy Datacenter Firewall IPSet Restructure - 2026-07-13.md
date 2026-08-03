@@ -47,7 +47,7 @@ IN DROP -p tcp -dport 22
 IN DROP -p tcp -dport 8006
 ```
 
-IPSet membership is recorded in the [firewall configuration reference](../../Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md).
+IPSet membership is recorded in the [firewall configuration reference](../../Configuration/Datacenter-Firewall.md).
 
 ## Verification
 
@@ -68,7 +68,7 @@ IPSet membership is recorded in the [firewall configuration reference](../../Con
 
 ## Rollback
 
-Git history of the [firewall reference](../../Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) retains the prior flat rule set. A rollback would recreate `zero_access`, including the `192.168.70.0/24` TCP 8006 accept, and point `cluster.fw [RULES]` back to it. Recreating `grey-server/host.fw` would require `enable: 1`, `GROUP zero_access`, & the two disabled Bezel rules (`|IN ACCEPT -source 192.168.40.32 -p tcp -dport 45876 -sport 8090`, `|IN DROP -p tcp -dport 45876`). I removed the temporary host copies after verification.
+Git history of the [firewall reference](../../Configuration/Datacenter-Firewall.md) retains the prior flat rule set. A rollback would recreate `zero_access`, including the `192.168.70.0/24` TCP 8006 accept, and point `cluster.fw [RULES]` back to it. Recreating `grey-server/host.fw` would require `enable: 1`, `GROUP zero_access`, & the two disabled Bezel rules (`|IN ACCEPT -source 192.168.40.32 -p tcp -dport 45876 -sport 8090`, `|IN DROP -p tcp -dport 45876`). I removed the temporary host copies after verification.
 
 ## Unchanged Proxmox Management Set
 

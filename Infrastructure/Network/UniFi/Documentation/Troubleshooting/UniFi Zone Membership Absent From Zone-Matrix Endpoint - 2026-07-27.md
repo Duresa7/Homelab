@@ -41,7 +41,7 @@ I read `firewall_zone_id` from each routed network with `unifi_get_network_detai
 
 ## Verification
 
-The inverted map returned all 12 populated zones with their networks. Eleven matched the membership already recorded in [zone.md](../../Configuration/Zones/zone.md). The twelfth exposed `Secure-V`/VLAN 100 in the built-in `Untrusted` zone, which the prior records had omitted.
+The inverted map returned all 12 populated zones with their networks. Eleven matched the membership already recorded in [zone.md](../../Configuration/zone.md). The twelfth exposed `Secure-V`/VLAN 100 in the built-in `Untrusted` zone, which the prior records had omitted.
 
 ## Related limitation
 

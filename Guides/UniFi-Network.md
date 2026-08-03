@@ -26,7 +26,7 @@ The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net
 
 ### Step 1: Record VLANs and Zones
 
-I start with the current [VLAN inventory](../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md) & [zone inventory](../Infrastructure/Network/UniFi/Configuration/Zones/zone.md). A VLAN ID, subnet, gateway, DHCP state, & zone assignment must agree before I write a policy against it.
+I start with the current [VLAN inventory](../Infrastructure/Network/UniFi/Configuration/network-vlan.md) & [zone inventory](../Infrastructure/Network/UniFi/Configuration/zone.md). A VLAN ID, subnet, gateway, DHCP state, & zone assignment must agree before I write a policy against it.
 
 ### Step 2: Verify Switch Trunks
 

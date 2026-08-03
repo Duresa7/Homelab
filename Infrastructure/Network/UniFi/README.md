@@ -9,13 +9,13 @@ The last full controller count on 2026-07-30 was 28 network objects, 20 routed L
 
 ## Configuration Records
 
-- [Networks and VLANs](Configuration/VLANs/network-vlan.md)
+- [Networks and VLANs](Configuration/network-vlan.md)
 - [Galaxy PXE provisioning service (2026-07-30)](../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md)
-- [Firewall zones](Configuration/Zones/zone.md)
-- [Firewall policies](Configuration/Firewall/firewall.md)
-- [Local DNS](Configuration/DNS/local-dns.md)
-- [Network objects](Configuration/Objects/objects.md)
-- [VPNs, network groups, and port profiles](Configuration/VPN-and-Port-Profiles/vpn-networks-port-profiles.md)
+- [Firewall zones](Configuration/zone.md)
+- [Firewall policies](Configuration/firewall.md)
+- [Local DNS](Configuration/local-dns.md)
+- [Network objects](Configuration/objects.md)
+- [VPNs, network groups, and port profiles](Configuration/vpn-networks-port-profiles.md)
 - [Zone and object consolidation (2026-07-27)](Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
 - [Firewall audit (2026-07-27)](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md)
 - [MGMT-A final lockdown (2026-07-27)](Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md)

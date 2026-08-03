@@ -24,5 +24,5 @@ The dashboard & the apps take different routes on purpose. `coolify-a1.<YOUR_PUB
 ## Security notes
 
 - Only `coolify-a1.<YOUR_PUBLIC_DOMAIN>` sits behind Cloudflare Access. Any other `*.<YOUR_PUBLIC_DOMAIN>` host is public once deployed, so I add Access or app-level auth for anything that shouldn't be open.
-- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.<YOUR_PUBLIC_DOMAIN>/webhooks/source/github/events`; child paths & the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/Access/applications.md).
+- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.<YOUR_PUBLIC_DOMAIN>/webhooks/source/github/events`; child paths & the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/applications.md).
 - The UniFi edge policy limits edge-01 to TCP 80 & 8000 on this host.

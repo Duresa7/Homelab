@@ -317,7 +317,7 @@ Update these:
 
 - `Platforms/Kasm Workspaces/README.md`: the lane table gains VLAN 75, the workspace override section gains the lab75 JSON, & a tile inventory section replaces the closing line about adding workspaces separately.
 - `Platforms/Kasm Workspaces/Documentation/Session-Workflows.md`: add lane 75 to the override table, add a trusted-tools workflow, & record that printing, storage mappings, & sharing are off.
-- `Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md`: add the 17 new policies & correct the policy count from 99.
+- `Infrastructure/Network/UniFi/Configuration/firewall.md`: add the 17 new policies & correct the policy count from 99.
 - `Architecture/Isolated-Security-Lab.md`: add the fourth lane to the boundary model.
 - `Operations/Inventory/Galaxy/Services.md`: record the disk growth from 150 GB to 200 GB.
 - `Infrastructure/Compute/Galaxy/Documentation/TODO.md`: add a watch item for the `ssd-lvm2` thin pool crossing 80 percent data use.

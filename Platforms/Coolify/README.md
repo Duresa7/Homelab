@@ -43,9 +43,9 @@ A UniFi policy lets edge-01 reach this host only on TCP 80 & 8000. See the [Cool
 - [Architecture](Documentation/Architecture.md)
 - [Traefik 3.6 patch update](Documentation/Change%20Records/Coolify%20Traefik%203.6%20Patch%20Update%20-%202026-08-02.md)
 - [External Service Ingress design](../../Architecture/External-Service-Ingress.md)
-- [Cloudflare Tunnel edge-01](../../Infrastructure/Network/Cloudflare/Configuration/Tunnels/edge-01.md)
+- [Cloudflare Tunnel edge-01](../../Infrastructure/Network/Cloudflare/Configuration/edge-01.md)
 - [Caddy edge proxy](../Caddy/README.md)
-- [Cloudflare Access applications](../../Infrastructure/Network/Cloudflare/Configuration/Access/applications.md)
+- [Cloudflare Access applications](../../Infrastructure/Network/Cloudflare/Configuration/applications.md)
 
 ## Layout
 

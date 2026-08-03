@@ -41,7 +41,7 @@ The connector authenticates with `/home/<YOUR_ADMIN_USERNAME>/.cloudflared/<YOUR
 
 ## Access & firewall
 
-Cloudflare Access protects `coolify-a1.<YOUR_PUBLIC_DOMAIN>`; see [Access applications](../Access/applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 & 8000; see the UniFi section of the [Coolify Access Hardening record](../../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
+Cloudflare Access protects `coolify-a1.<YOUR_PUBLIC_DOMAIN>`; see [Access applications](../applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 & 8000; see the UniFi section of the [Coolify Access Hardening record](../../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
 
 ## Account zones
 

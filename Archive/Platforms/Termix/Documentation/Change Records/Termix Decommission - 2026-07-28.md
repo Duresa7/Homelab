@@ -52,7 +52,7 @@ The validator now passes with three identities, 14 supported hosts, zero unknown
 
 I moved `Platforms/Termix/` to `Archive/Platforms/Termix/` and the walkthrough and its Excalidraw diagram to `Archive/Guides/`. I removed the guide's row from the Guides index and repointed the Mission Control project at the archived path.
 
-Dated change records elsewhere keep their Termix references. The [Galaxy Data Center Firewall](../../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) record already showed the TCP 22 exception retired on 2026-07-27. Historical records describe the state I observed when I wrote them.
+Dated change records elsewhere keep their Termix references. The [Galaxy Data Center Firewall](../../../../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) record already showed the TCP 22 exception retired on 2026-07-27. Historical records describe the state I observed when I wrote them.
 
 ## Step 7: Sweep the Ansible LXC and current diagrams
 

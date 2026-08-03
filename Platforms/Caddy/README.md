@@ -44,6 +44,6 @@ http://*.<YOUR_PUBLIC_DOMAIN> {
 
 ## Related
 
-- [Cloudflare Tunnel edge-01](../../Infrastructure/Network/Cloudflare/Configuration/Tunnels/edge-01.md)
+- [Cloudflare Tunnel edge-01](../../Infrastructure/Network/Cloudflare/Configuration/edge-01.md)
 - [Coolify platform](../Coolify/README.md)
 - [Nginx Proxy Manager, the internal proxy](../Nginx%20Proxy%20Manager/README.md)

@@ -34,7 +34,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 
 ## Purpose and Device Placement
 
-I use this table when placing a new device or workload. The **Zone** column names the [firewall zone](../Zones/zone.md) that controls its network paths. Names ending in **`-A`** belong to the segmented `<YOUR_ORG_NAME>` infrastructure tier, while unsuffixed VLANs serve household and general lab devices. The examples reflect controller state but don't list every client.
+I use this table when placing a new device or workload. The **Zone** column names the [firewall zone](../zone.md) that controls its network paths. Names ending in **`-A`** belong to the segmented `<YOUR_ORG_NAME>` infrastructure tier, while unsuffixed VLANs serve household and general lab devices. The examples reflect controller state but don't list every client.
 
 | Network (VLAN) | Zone | Trust tier | What belongs here: device types and examples |
 |---|---|---|---|

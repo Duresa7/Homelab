@@ -37,11 +37,11 @@ One gap follows from this. Only `coolify-a1.<YOUR_PUBLIC_DOMAIN>` sits behind Cl
 
 ## Components
 
-- Cloudflare Tunnel `edge-01`: [tunnel inventory](../Infrastructure/Network/Cloudflare/Configuration/Tunnels/edge-01.md)
+- Cloudflare Tunnel `edge-01`: [tunnel inventory](../Infrastructure/Network/Cloudflare/Configuration/edge-01.md)
 - Caddy edge proxy: [Platforms/Caddy](../Platforms/Caddy/README.md)
 - Coolify & its Traefik proxy: [Platforms/Coolify](../Platforms/Coolify/README.md)
-- Cloudflare Access policies: [applications](../Infrastructure/Network/Cloudflare/Configuration/Access/applications.md) & the [Coolify Access Hardening record](../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md)
-- UniFi edge path restriction: [firewall](../Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md)
+- Cloudflare Access policies: [applications](../Infrastructure/Network/Cloudflare/Configuration/applications.md) & the [Coolify Access Hardening record](../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md)
+- UniFi edge path restriction: [firewall](../Infrastructure/Network/UniFi/Configuration/firewall.md)
 - Visual: [homelab-overview diagram](Diagrams/homelab-overview.svg)
 
 ## Verified 2026-07-24

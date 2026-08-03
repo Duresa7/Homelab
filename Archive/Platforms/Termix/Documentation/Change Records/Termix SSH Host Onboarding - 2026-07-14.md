@@ -101,7 +101,7 @@ To undo only the folder reorganization, restore the prior folder strings through
 
 ### Proxmox
 
-Remove the `+pve_termix` rule from `pve_mgmt`, remove member `192.168.40.35`, then remove IPSet `pve_termix`. The pre-change file was kept at `/root/cluster.fw.pre-termix-2026-07-14` on `grey-server` until 2026-07-26, when it was deleted; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md). The three removal steps above don't need it, and [Galaxy Data Center Firewall](../../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) carries the current rule set.
+Remove the `+pve_termix` rule from `pve_mgmt`, remove member `192.168.40.35`, then remove IPSet `pve_termix`. The pre-change file was kept at `/root/cluster.fw.pre-termix-2026-07-14` on `grey-server` until 2026-07-26, when it was deleted; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md). The three removal steps above don't need it, and [Galaxy Data Center Firewall](../../../../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) carries the current rule set.
 
 ## Remaining Work
 

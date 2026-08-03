@@ -23,5 +23,5 @@ Planning. The locked design, the phased build, & the decisions I still owe live 
 ## Related records
 
 - [Galaxy cluster](../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes that host the sandboxes, purple-server by default & grey-server for the heavy ones.
-- [UniFi network and zone inventories](../../Infrastructure/Network/UniFi/Configuration/VLANs/network-vlan.md): the live state I use to choose the sandbox VLAN and firewall zone.
+- [UniFi network and zone inventories](../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state I use to choose the sandbox VLAN and firewall zone.
 - [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md): the malware-detonation range whose no-egress containment model the untrusted lane reuses.

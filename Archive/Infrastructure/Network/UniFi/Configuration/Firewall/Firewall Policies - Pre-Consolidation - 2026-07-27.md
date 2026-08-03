@@ -5,7 +5,7 @@
 
 **Snapshot date:** 2026-07-27
 
-I archived this pre-consolidation configuration after the zone and object project completed. It records the 61-policy, 16-zone starting state. The current inventory remains under `Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md`.
+I archived this pre-consolidation configuration after the zone and object project completed. It records the 61-policy, 16-zone starting state. The current inventory remains under `Infrastructure/Network/UniFi/Configuration/firewall.md`.
 
 I verified the counts and zone references in this record against the live controller on 2026-07-27.
 
@@ -85,7 +85,7 @@ Zone names and policy descriptions have to be edited in the controller UI. The m
 
 The plugin also can't create, delete, or reassign a zone, and it can't delete a network. `FirewallZone` is modelled read-only and `firewall_zone_id` isn't in its network model at all, so any zone restructuring is UI work. Don't trust `unifi_list_firewall_zones` for membership either: it returns `"networks": []` for every zone because the endpoint behind it carries no membership field. Read `firewall_zone_id` from each network instead, at `summary: false`. The full diagnosis is in [UniFi zone membership is absent from the zone-matrix endpoint](../../../../../../Infrastructure/Network/UniFi/Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
-A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../../../Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md) enforces independently. The NUT path proved that on 2026-07-25, and the monitoring relocation also required the `pve_svc_clients` IPSet member outside the main rule section. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
+A UniFi policy is not sufficient on its own for anything landing on a Proxmox node. The Datacenter firewall in [Galaxy Data Center Firewall](../../../../../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) enforces independently. The NUT path proved that on 2026-07-25, and the monitoring relocation also required the `pve_svc_clients` IPSet member outside the main rule section. Test from the source host after adding a policy rather than assuming the gateway is the only gate.
 
 ## UniFi-Generated Policies
 

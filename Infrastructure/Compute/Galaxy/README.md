@@ -12,7 +12,7 @@ Galaxy is my five-node Proxmox VE 9.2.5 cluster. This directory owns its bridge 
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Galaxy TODO](Documentation/TODO.md)
 - [Green baseline and monitoring change](Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md)
-- [Proxmox Datacenter firewall](Configuration/Firewall/Galaxy%20Data%20Center%20Firewall.md)
+- [Proxmox Datacenter firewall](Configuration/Datacenter-Firewall.md)
 - [Current inventory](../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md)
 - [Hardware inventory](../../Hardware/Nodes.md)
 

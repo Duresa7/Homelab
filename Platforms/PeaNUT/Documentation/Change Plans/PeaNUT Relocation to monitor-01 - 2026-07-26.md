@@ -223,9 +223,9 @@ Every one of these needs its `Last updated` line moved to the execution date.
 | `Platforms/PeaNUT/Documentation/Change Records/PeaNUT Relocation to monitor-01 - 2026-07-26.md` | New record. Observed results and post-change verification, not a restatement of intent |
 | `Platforms/PeaNUT/Documentation/Change Plans/PeaNUT Relocation to monitor-01 - 2026-07-26.md` | This file. Status becomes Completed with a link to the record |
 | `Platforms/Nginx Proxy Manager/Configuration/internal-proxy-hosts.md` | Line 25 upstream `192.168.40.35:8090` becomes `192.168.73.2:8090`, once I've actually made the NPM change in Step 6 and not before |
-| `Infrastructure/Network/UniFi/Configuration/Firewall/firewall.md` | Line 48 drops 8090 and "eight" becomes "seven"; lines 69 and 70 gain 8090; two new policy rows; policy count 59 becomes 61 |
-| `Infrastructure/Network/UniFi/Configuration/Zones/zone.md` or `VLANs/network-vlan.md` | Fix whichever one contradicts the live Trusted (10) zone membership found in Step 4 |
-| `Infrastructure/Compute/Galaxy/Configuration/Firewall/Galaxy Data Center Firewall.md` | Delete table rows 59 and 60; add a History entry for the removal |
+| `Infrastructure/Network/UniFi/Configuration/firewall.md` | Line 48 drops 8090 and "eight" becomes "seven"; lines 69 and 70 gain 8090; two new policy rows; policy count 59 becomes 61 |
+| `Infrastructure/Network/UniFi/Configuration/zone.md` or `network-vlan.md` | Fix whichever one contradicts the live Trusted (10) zone membership found in Step 4 |
+| `Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md` | Delete table rows 59 and 60; add a History entry for the removal |
 | `Operations/Inventory/Galaxy/Services.md` | Line 13 drops PeaNUT from `docker-main`; line 14 adds it to `monitor-01`; the detail row at line 57 moves to the `monitor-01` section with the new address |
 | `Infrastructure/Hardware/Power.md` | Line 30 address `http://192.168.40.35:8090` becomes `http://192.168.73.2:8090` |
 | `TODO.md` | New completed entry |
