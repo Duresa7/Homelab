@@ -43,7 +43,7 @@ The [scoring output](../Evidence/UniFi%20Firewall%20Audit%20-%202026-07-27/Logs/
 | Benchmark | Severity | Finding |
 | --- | --- | --- |
 | SEG-03 | Critical | The base Management network remains in `Internal`. The controller-generated Internal allow therefore permits access from other Internal networks instead of limiting management access to named administrative sources. |
-| HYG-02 | Critical | `Allow VPN to `AlphaSec`-Servers` precedes the Temp VPN block. It would shadow that block if Temp VPN were enabled. Temp VPN is currently disabled, so this is a latent conflict rather than a current active path. |
+| HYG-02 | Critical | `Allow VPN to `AlphaSec-Servers`` precedes the Temp VPN block. It would shadow that block if Temp VPN were enabled. Temp VPN is currently disabled, so this is a latent conflict rather than a current active path. |
 | EGR-01 | Warning | IoT traffic in `Untrusted` retains default External access without an effective restrictive terminal egress policy. |
 | EGR-02 | Warning | The API result does not prove DNS interception or forced resolver use. The signed-in controller tab was present, but the read-only browser connection timed out before the settings page could be inspected. I made no repeated sign-in request. |
 | HYG-05 | Warning | `Block DMZ to LAN` is shadowed by the preceding equivalent `Block DMZ to Internal` policy. |

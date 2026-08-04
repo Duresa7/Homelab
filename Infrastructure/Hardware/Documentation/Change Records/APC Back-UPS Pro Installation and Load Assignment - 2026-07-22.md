@@ -12,7 +12,7 @@ I added two APC Back-UPS Pro BR1500MS2 units, each rated for 1500 VA / 900 W, & 
 
 ## Starting State
 
-The hardware inventory had no UPS record. The [2026-07-20 HA incident record](../../../../Security/Incidents/Galaxy/HA Local Storage Stranding - 2026-07-20.md) mentioned a maintenance window to move `blue-server`, `purple-server`, `red-server`, & `grey-server` onto a UPS, but it didn't identify the UPS model, quantity, or final load split.
+The hardware inventory had no UPS record. The [2026-07-20 HA incident record](../../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md) mentioned a maintenance window to move `blue-server`, `purple-server`, `red-server`, & `grey-server` onto a UPS, but it didn't identify the UPS model, quantity, or final load split.
 
 ## Actions
 

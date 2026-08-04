@@ -16,7 +16,7 @@ I use two APC Back-UPS Pro BR1500MS2 units for the workstation, Galaxy nodes, Un
 
 ## Verification Limits
 
-The 2026-07-22 connected-load statement lists `red-server` on both units. I retained that conflict instead of substituting `purple-server`; the physical connection needs confirmation. The [2026-07-20 HA incident record](../../Security/Incidents/Galaxy/HA Local Storage Stranding - 2026-07-20.md) said I was moving blue, purple, red, & grey onto a UPS, but it didn't identify the final outlet split.
+The 2026-07-22 connected-load statement lists `red-server` on both units. I retained that conflict instead of substituting `purple-server`; the physical connection needs confirmation. The [2026-07-20 HA incident record](../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md) said I was moving blue, purple, red, & grey onto a UPS, but it didn't identify the final outlet split.
 
 I haven't recorded the physical location, purchase date, serial number, battery installation date, exact outlet, battery-backed versus surge-only bank, measured wattage, or runtime estimate for either unit. This inventory doesn't claim those details.
 

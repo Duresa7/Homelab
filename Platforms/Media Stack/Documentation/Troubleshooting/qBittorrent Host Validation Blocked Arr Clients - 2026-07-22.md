@@ -80,6 +80,6 @@ The previous single-domain value is known, but restoring it would reproduce the 
 
 ## Linked Records
 
-- [qBittorrent Arr Client Outage Incident](../../../../Security/Incidents/qBittorrent/Arr Client Outage - 2026-07-22.md)
+- [qBittorrent Arr Client Outage Incident](../../../../Security/Incidents/qBittorrent/Arr%20Client%20Outage%20-%202026-07-22.md)
 - [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
 - [Media Stack configuration reference](../../Configuration/README.md)

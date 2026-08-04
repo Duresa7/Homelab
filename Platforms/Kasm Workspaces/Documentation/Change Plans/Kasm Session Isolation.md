@@ -116,10 +116,10 @@ VLAN tags live in the guest's NIC config & the macvlan parents are guest interfa
 | ALLOW | Internal zone, networks Trusted & Personal-A only | 192.168.78.10 | TCP 443, 22 |
 | ALLOW | Vpn zone, network Management Access | 192.168.78.10 | TCP 443, 22 |
 | BLOCK | LAB-MGMT | Internal | any |
-| BLOCK | LAB-MGMT | `AlphaSec`-Servers | any |
-| BLOCK | LAB-MGMT | `AlphaSec`-Mgmt | any |
-| BLOCK | LAB-MGMT | `AlphaSec`-Access | any |
-| BLOCK | LAB-MGMT | `AlphaSec`-Observability | any |
+| BLOCK | LAB-MGMT | `AlphaSec-Servers` | any |
+| BLOCK | LAB-MGMT | `AlphaSec-Mgmt` | any |
+| BLOCK | LAB-MGMT | `AlphaSec-Access` | any |
+| BLOCK | LAB-MGMT | `AlphaSec-Observability` | any |
 | BLOCK | LAB-MGMT | Gateway | any |
 | BLOCK | LAB-MGMT | KASM-BROWSER, MALWARE-OFFLINE, EVIDENCE-QUARANTINE | any |
 
@@ -203,7 +203,7 @@ Keep the nine existing `KASM` policies. Add these, prefixed the same way:
 | BLOCK | KASM-BROWSER | EVIDENCE-QUARANTINE | Review artifacts stay out of reach of tooling |
 | BLOCK | MALWARE-OFFLINE | EVIDENCE-QUARANTINE | Same, from the lane that holds live samples |
 | BLOCK | each lab zone | LAB-MGMT | A session can't attack the control plane over the network |
-| BLOCK | each lab zone | Internal, `AlphaSec`-Servers, `AlphaSec`-Mgmt, `AlphaSec`-Access, `AlphaSec`-Observability | Written explicitly instead of trusting the zone-matrix default |
+| BLOCK | each lab zone | Internal, `AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Access`, `AlphaSec-Observability` | Written explicitly instead of trusting the zone-matrix default |
 
 EVIDENCE-QUARANTINE gets reached through the Kasm web UI, never from another lane.
 

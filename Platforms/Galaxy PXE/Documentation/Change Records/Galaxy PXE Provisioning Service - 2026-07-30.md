@@ -120,7 +120,7 @@ The dedicated join key authenticated to Grey in batch mode. Grey reported cluste
 
 ## Step 6: Close the Post-Cutover Paths
 
-An independent review found that Green would lose its callback path after changing from VLAN 5 to MGMT-A. I previewed and, after confirmation, created UniFi policy `Allow Galaxy PXE callbacks to ansible-01`. The initial IPv4 policy allowed only `192.168.70.14` in `AlphaSec`-Mgmt to reach `192.168.40.36` in `Internal` on TCP 8080. I read back policy ID `6a6c36cc85e3cf84d3d71363` with the same selectors.
+An independent review found that Green would lose its callback path after changing from VLAN 5 to MGMT-A. I previewed and, after confirmation, created UniFi policy `Allow Galaxy PXE callbacks to ansible-01`. The initial IPv4 policy allowed only `192.168.70.14` in `AlphaSec-Mgmt` to reach `192.168.40.36` in `Internal` on TCP 8080. I read back policy ID `6a6c36cc85e3cf84d3d71363` with the same selectors.
 
 The installed system also needed to call back while Bane port 4 still used native VLAN 5. I previewed and, after confirmation, created `Allow Server-Provision callbacks to Galaxy PXE`. The enabled IPv4 policy allows the `Server-Provision` network to reach only `192.168.40.36` on TCP 8080. I read back policy ID `6a6c927885e3cf84d3d7c033` with the same selectors.
 

@@ -13,10 +13,10 @@
 | Host | IP | VLAN | Role |
 |------|----|------|------|
 | docker-main | 192.168.40.35 | VLAN 40 (Personal-A) | Portainer Server |
-| alpha-prod-01 | 192.168.80.118 | VLAN 80 (`AlphaSec`-Servers) | Edge Agent |
+| alpha-prod-01 | 192.168.80.118 | VLAN 80 (`AlphaSec-Servers`) | Edge Agent |
 | docker-blue | 192.168.40.39 | VLAN 40 (Personal-A) | Edge Agent |
 | media-01 | 192.168.40.42 | VLAN 40 (Personal-A) | Edge Agent |
-| docker-network | 192.168.85.2 | VLAN 85 (`AlphaSec`-Access) | Edge Agent |
+| docker-network | 192.168.85.2 | VLAN 85 (`AlphaSec-Access`) | Edge Agent |
 
 ## Network Diagram
 
@@ -97,9 +97,9 @@ I store one Edge ID & key per environment outside this repository. Live `.env` f
 
 | Field | Value |
 |-------|-------|
-| Name | Allow `AlphaSec`-Servers to Portainer Edge |
-| Description | Allow `AlphaSec`-Servers VMs to reach Portainer Edge tunnel and API on docker-main |
-| Source Zone | `AlphaSec`-Servers |
+| Name | Allow `AlphaSec-Servers` to Portainer Edge |
+| Description | Allow `AlphaSec-Servers` VMs to reach Portainer Edge tunnel and API on docker-main |
+| Source Zone | `AlphaSec-Servers` |
 | Source | Any |
 | Destination Zone | Internal |
 | Destination IP | 192.168.40.35 (docker-main) |

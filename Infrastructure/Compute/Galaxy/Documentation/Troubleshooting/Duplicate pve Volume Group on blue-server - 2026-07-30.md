@@ -70,7 +70,7 @@ I ran a full extended SMART test on that drive on 2026-07-31. It completed witho
 
 ## Related records
 
-- [Galaxy incident report](../../../../../Security/Incidents/Galaxy/Blue Server Duplicate VG - 2026-07-30.md)
-- [Incident evidence index](../../../../../Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Evidence-Index.md)
+- [Galaxy incident report](../../../../../Security/Incidents/Galaxy/Blue%20Server%20Duplicate%20VG%20-%202026-07-30.md)
+- [Incident evidence index](../../../../../Security/Incidents/Galaxy/Evidence/Blue%20Server%20Duplicate%20VG%20-%202026-07-30/Evidence-Index.md)
 - [Current Galaxy inventory](../../../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md)
 - [2026-07-20 HA local-storage stranding](HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md)

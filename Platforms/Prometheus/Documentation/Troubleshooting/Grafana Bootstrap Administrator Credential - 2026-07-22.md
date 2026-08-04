@@ -37,4 +37,4 @@ I removed the variable from Compose, recreated Grafana, rotated the administrato
 
 The live Compose file and recreated container environment contain no `GF_SECURITY_ADMIN_PASSWORD` entry. Grafana reports database `ok`, & current-container logs contained zero failed-authentication matches in the inspected 12-hour window. Those logs begin after recreation, so they don't establish the pre-remediation access history.
 
-The full security assessment and timeline are in [Grafana Plaintext Administrator Credential Incident](../../../../Security/Incidents/Grafana/Plaintext Administrator Credential - 2026-07-22.md).
+The full security assessment and timeline are in [Grafana Plaintext Administrator Credential Incident](../../../../Security/Incidents/Grafana/Plaintext%20Administrator%20Credential%20-%202026-07-22.md).

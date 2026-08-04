@@ -1,4 +1,4 @@
-# `AlphaSec`-Access Network Reference
+# `AlphaSec-Access` Network Reference
 
 **Created:** 2026-07-12  
 **Last updated:** 2026-07-20
@@ -20,7 +20,7 @@ I built this on the Networks model because it is zero-trust by default: a resour
 
 ## Route Behavior
 
-- With masquerade enabled, traffic from a remote peer into Access-A is source-NAT'd to the routing peer's address (`192.168.85.2`). To the UniFi gateway it appears to originate inside the `AlphaSec`-Access zone, so it is governed by that zone's rules; no separate gateway rule was required.
+- With masquerade enabled, traffic from a remote peer into Access-A is source-NAT'd to the routing peer's address (`192.168.85.2`). To the UniFi gateway it appears to originate inside the `AlphaSec-Access` zone, so it is governed by that zone's rules; no separate gateway rule was required.
 - Peers that receive the route install it into NetBird routing table `7120` on `wt0`; because `192.168.85.0/24` is more specific than a peer's default gateway, Access-A traffic prefers the overlay.
 - The routing peer runs with `net.ipv4.ip_forward=1`. Access-A currently contains only CT 107, so forwarding to a second Access-A host is possible but not yet exercised.
 

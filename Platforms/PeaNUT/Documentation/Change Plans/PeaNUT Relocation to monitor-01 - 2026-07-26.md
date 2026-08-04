@@ -155,7 +155,7 @@ Two of the five changes are additions that must land before cutover. All UniFi m
 
 2. Update policy `6a665727052792cd21405892`, `Allow Secure to monitor-01 break-glass`. Destination port list goes from `3000,9090` to `3000,8090,9090`. Source is Jedi PC at `192.168.50.241`, unchanged.
 
-3. Create a new policy, `Allow VPN Management Access to PeaNUT`. Source zone `Vpn` (`68b788c0e9f08f1e1b2a228b`), targeting the `Management Access` WireGuard network by network object; look up its `network_id` with `unifi_list_networks`. That server is WireGuard on UDP 51822 with subnet `10.6.0.1/24`. Destination zone `AlphaSec`-Monitor (`6a665585052792cd214057cb`), IP `192.168.73.2`, TCP 8090. Enable the automatic return policy, matching every sibling. Scope it to 8090 only; widening it to 3000 and 9090 later is a one-field edit.
+3. Create a new policy, `Allow VPN Management Access to PeaNUT`. Source zone `Vpn` (`68b788c0e9f08f1e1b2a228b`), targeting the `Management Access` WireGuard network by network object; look up its `network_id` with `unifi_list_networks`. That server is WireGuard on UDP 51822 with subnet `10.6.0.1/24`. Destination zone `AlphaSec-Monitor` (`6a665585052792cd214057cb`), IP `192.168.73.2`, TCP 8090. Enable the automatic return policy, matching every sibling. Scope it to 8090 only; widening it to 3000 and 9090 later is a one-field edit.
 
 4. Create a new policy, `Allow dkadi MacBook Air M3 to PeaNUT`, source IP `192.168.10.27`, destination `192.168.73.2` TCP 8090. The machine is `dkadi-mb-air3`, controller name `dkadi-MBA-MAIN`. I confirmed on the controller on 2026-07-26 that it holds a fixed IP: `use_fixedip` is true and `fixed_ip` is `192.168.10.27`, so the policy can be pinned to that address safely.
 
