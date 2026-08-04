@@ -127,4 +127,4 @@ I completed the durable fix on 2026-07-27. I moved the three history bundles and
 ## Linked Records
 
 - [Preview Server](../../../Engineering/Shared%20Tooling/Preview%20Server/README.md), the tool and the two limits it now enforces
-- [Mission Control](../../../Mission%20Control/README.md), the dashboard the server was built to preview
+- Mission Control, the local dashboard the server was originally built to preview. I deleted it on 2026-08-04, so there is nothing to link. The server now serves `Guides/` and `Assets/` only.

@@ -10,8 +10,7 @@
 # Local-only private materials
 /Sensitive/
 
-# Local-only dashboard and intentionally private platform content
-/Mission Control/
+# Intentionally private platform content
 /Docs Site/
 /Platforms/Windows Servers/*
 !/Platforms/Windows Servers/README.md

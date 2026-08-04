@@ -17,9 +17,7 @@ const PORT = 8123;
 
 // Top-level folders this server is allowed to read. Add one only when a preview
 // actually needs it, and never add Sensitive/.
-const ALLOW = ["Guides", "Mission Control", "Assets"];
-
-const DEFAULT = "/Mission Control/index.html";
+const ALLOW = ["Guides", "Assets"];
 
 const TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -57,7 +55,14 @@ http
     } catch (e) {
       return deny(res, 400, "bad request");
     }
-    if (urlPath === "/") urlPath = DEFAULT;
+    // There is no default page. `/` lists what this server will serve, so a
+    // bare localhost:8123 is useful rather than a 404.
+    if (urlPath === "/") {
+      res.writeHead(200, { "content-type": "text/plain; charset=utf-8", "cache-control": "no-store" });
+      return res.end("preview server\n\nserving these repository folders:\n" +
+        ALLOW.map(function (a) { return "  /" + a + "/\n"; }).join("") +
+        "\nrequest a repo-relative path, for example /Assets/Diagrams/galaxy-cluster.svg\n");
+    }
 
     const rel = urlPath.replace(/^\/+/, "").replace(/\\/g, "/");
     if (!allowed(rel)) return deny(res, 404, "not found");
@@ -83,5 +88,4 @@ http
   .listen(PORT, HOST, function () {
     console.log("serving " + ALLOW.map(function (a) { return a + "/"; }).join(" and ") +
       " from " + ROOT + " on http://" + HOST + ":" + PORT);
-    console.log("default page: " + DEFAULT);
   });
