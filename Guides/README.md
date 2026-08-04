@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -30,7 +30,7 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
 | [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [Portainer](Portainer.md) | Portainer server 2.39.5, four Edge Agent 2.39.1 hosts, UniFi ports, & environment registration |
+| [Portainer](Portainer.md) | Portainer server 2.39.5 verified 2026-08-04, four Edge Agent 2.39.1 hosts verified 2026-07-28, UniFi ports, & environment registration |
 | [Prometheus](Prometheus.md) | Prometheus 3.13.1, 49 targets across six jobs, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [TeamSpeak](TeamSpeak.md) | Three servers, Playit tunnels, Cloudflare SRV records, TS3 Manager, boot recovery, & outage checks |

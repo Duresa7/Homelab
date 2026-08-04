@@ -1,9 +1,9 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
-This reference records endpoints, paths, package versions, & current agent state.
+I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
 ## Manager
 
@@ -58,10 +58,21 @@ I verified the complete path on 2026-08-03 with a fresh `dkadi` authorization co
 
 The manager-side `proxmox` group contains exactly five active members: Grey, Purple, Blue, Red, & Green. Its generated `agent.conf` passed `verify-agent-conf`. The dashboard returned `default, proxmox` on all five rows, so the nodes keep the common Linux policy and share one Proxmox identity.
 
-## Why edge-01 sits at a different version
+## Agent package state across the fleet
 
-`edge-01` has no Wazuh repository file. Its agent came from a downloaded package, so `apt-cache policy wazuh-agent` reports candidate 4.14.5-1 against installed 4.14.5-1, and no hold is set. `app-01` reached 4.14.6-1 through the repository before this change. The twelve new agents are pinned and held at the manager's 4.14.6-1 version by the deployment play.
+Observed 2026-08-04, after adding the `edge-01` source and correcting two holds:
 
-That means fleet maintenance reports edge-01 as fully patched and it is, for every package apt can see. The agent there will not move again until I either add the repository or install a newer package by hand. A 4.14.5 agent against a 4.14.6 manager is a supported pairing, so nothing is broken today; the part worth knowing is that no scheduled run will ever close the gap on its own.
+| Host | Agent | Held | Wazuh source |
+|---|---|---|---|
+| `alpha-prod-01`, `media-01`, `docker-network`, `docker-blue`, `ansible-01`, `monitor-01` | 4.14.6-1 | yes | yes |
+| `app-01` | 4.14.6-1 | yes, applied 2026-08-04 | yes |
+| `edge-01` | 4.14.5-1 | yes, applied 2026-08-04 | yes, added 2026-08-04 |
+| `docker-main` | 4.14.0-1 | no | no |
+| `security-01` | manager 4.14.6-1 | n/a | yes |
+| `splunk-siem` | none | n/a | no |
 
-I verified the existing version split on 2026-07-29 and the twelve new package holds on 2026-08-03.
+**The manager caps every agent.** `security-01` runs manager `4.14.6-1`, and the Wazuh repository carries only `4.14.7-1`, because it publishes one package per release line rather than a back catalogue. An agent must never be newer than its manager, so `4.14.6-1` cannot be installed from the repository any more and `4.14.7-1` must not be. Every agent version in the fleet is therefore frozen until the manager moves first.
+
+That is what the holds are for. `app-01` had the source without a hold, and a simulated fleet run confirmed it would have installed `4.14.7-1` over its `4.14.6-1`, putting the agent ahead of the manager. Holding it was the fix. `edge-01` received the same hold when it received the source, so adding the source could not create the same exposure.
+
+`edge-01` on 4.14.5-1 against a 4.14.6-1 manager is a supported pairing, so none of this describes an outage. `docker-main` on 4.14.0-1 is the widest gap and is [tracked as open work](../Documentation/TODO.md). I verified the existing version split and absent `edge-01` source on 2026-08-04, and the twelve new package holds on 2026-08-03.

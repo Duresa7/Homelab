@@ -34,7 +34,7 @@ None.
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Remove the Grafana WAL setting measured inert on 2026-08-04 at the next recreate; alert routing then rules; UniFi gateway metrics. Prometheus auto-start closed after it started four seconds after the controlled 2026-08-01 boot with `RestartCount=0` |
-| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Settle how `edge-01` gets agent updates; the 14-agent fleet deployment is complete |
+| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Upgrade manager `security-01` off 4.14.6-1 before any agent can move, then close the `edge-01` and `docker-main` version gaps. The `edge-01` source landed 2026-08-04 and two missing holds are fixed |
 
 ## Recently Completed
 

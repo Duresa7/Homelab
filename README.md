@@ -14,6 +14,10 @@
 
 This repository documents my five-node Proxmox cluster, segmented UniFi network, deployed platforms, automation, monitoring, & security work. The [walkthrough guides](Guides/README.md) are the quickest way to follow a build from its first command to the checks I ran afterward.
 
+## Version figures
+
+A version figure in this repository is a point-in-time observation, not a durable fact. I give it an observation or verification date in the same record. A dated event or snapshot field already supplies that date, so I do not repeat it after every figure in that record.
+
 ## Start Here
 
 - [Guides](Guides/README.md): chronological walkthroughs with commands, screenshots, checks, recovery notes, & links to the original records.

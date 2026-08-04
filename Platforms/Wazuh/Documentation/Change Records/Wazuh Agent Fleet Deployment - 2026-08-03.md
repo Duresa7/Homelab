@@ -1,7 +1,7 @@
 # Wazuh Agent Fleet Deployment
 
 **Created:** 2026-08-03  
-**Last updated:** 2026-08-03  
+**Last updated:** 2026-08-04  
 **Change date:** 2026-08-03  
 **Status:** Complete
 
@@ -167,4 +167,4 @@ The manager's `proxmox` group contains IDs 013 through 017. All five retain the 
 
 ## Remaining Work
 
-1. Decide whether `edge-01` should receive the Wazuh APT repository or remain on deliberate manual upgrades.
+1. Settled after this record. I chose the Wazuh APT source option for `edge-01` on 2026-08-04 and implemented it the same day, in [edge-01 Package Source and Fleet Agent Holds](edge-01%20Package%20Source%20and%20Fleet%20Agent%20Holds%20-%202026-08-04.md). That work found the agent version is capped by the manager rather than by the source, so no agent can move until `security-01` is upgraded.

@@ -39,4 +39,4 @@ I made no live-system or deployment change for this record.
 
 The automated Kasm thin-pool warning remains open. `ssd-lvm2` stood at 69.90 percent data and 3.06 percent metadata against the 80 percent hard stop on 2026-08-04, but this change did not build the alert.
 
-Portainer and NetBird are still deployed from `latest` tags. Their recorded versions are point-in-time observations until the next image pull. I did not change image tags or decide whether to pin them.
+Portainer and NetBird are still deployed from `latest` tags. On 2026-08-04 I decided to keep all 14 tracked image tags at `:latest`: automatic fixes on pull are worth more to me here than reproducible version numbers. The [version-figure rule](../../../../../README.md#version-figures) governs the figures those images report. I changed no image tag or live deployment in this documentation work.
