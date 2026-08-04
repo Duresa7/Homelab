@@ -1,7 +1,7 @@
 # Preview Server LAN-Exposed Repository Root Incident
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-04
 
 ## Incident Metadata
 
@@ -85,6 +85,8 @@ I wrote a single-user tool and never named the interface it should listen on. No
 4. The resolved absolute path is re-checked against the allow list after `path.resolve`, so `..` can't climb out of an allowed folder.
 5. The reasoning is recorded in the [Preview Server README](../../../Engineering/Shared%20Tooling/Preview%20Server/README.md) beside the code, with an explicit instruction never to add `Sensitive` to `ALLOW`.
 
+On 2026-08-04 I replaced the folder allow list with per-request `git ls-files` membership, which follows the repository's publication boundary while retaining the loopback bind, resolved-path re-check, dotfile rejection, and absence of a default page.
+
 ## Validation
 
 I reran the checks on 2026-07-26 with the server up.
@@ -127,4 +129,4 @@ I completed the durable fix on 2026-07-27. I moved the three history bundles and
 ## Linked Records
 
 - [Preview Server](../../../Engineering/Shared%20Tooling/Preview%20Server/README.md), the tool and the two limits it now enforces
-- Mission Control, the local dashboard the server was originally built to preview. I deleted it on 2026-08-04, so there is nothing to link. The server now serves `Guides/` and `Assets/` only.
+- Mission Control, the local dashboard the server was originally built to preview. I deleted it on 2026-08-04, so there is nothing to link. After that deletion and before the tracked-file rule replaced the folder list, the server served `Guides/` and `Assets/` only.

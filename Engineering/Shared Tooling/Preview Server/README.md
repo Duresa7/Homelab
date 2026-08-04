@@ -3,7 +3,7 @@
 **Created:** 2026-07-25  
 **Last updated:** 2026-08-04
 
-A 91-line Node static file server so I can view repository HTML and SVG in the agent browser pane. It exists for one reason: the pane can't drive `file://` URLs. It loads such a page once and then ignores every later navigation, so an agent editing a local HTML file keeps inspecting the version it first loaded. Served over `http://127.0.0.1:8123` the same page navigates, reloads, and picks up edits normally.
+A small Node static file server so I can view repository HTML and SVG in the agent browser pane. It exists for one reason: the pane can't drive `file://` URLs. It loads such a page once and then ignores every later navigation, so an agent editing a local HTML file keeps inspecting the version it first loaded. Served over `http://127.0.0.1:8123` the same page navigates, reloads, and picks up edits normally.
 
 ## Running it
 
@@ -13,7 +13,7 @@ Start it through the browser pane, not by hand:
 preview_start {"name": "preview"}
 ```
 
-That reads the local-only `.claude/launch.json` launch configuration, which points at `serve.js` in this folder. `http://localhost:8123/` prints the folders it will serve; every other path is repo-relative, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
+That reads the local-only `.claude/launch.json` launch configuration, which points at `serve.js` in this folder. `http://localhost:8123/` prints the serving rule and the current number of visible tracked files; every other path is repo-relative, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
 
 To run it outside an agent session:
 
@@ -27,11 +27,11 @@ node "D:\Documents\Homelab\Engineering\Shared Tooling\Preview Server\serve.js"
 
 That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md). It scopes what was reachable, which was all 573 files in `Sensitive/` including the pre-scrub git history bundle, and which zones could reach it, which was Internal & Vpn but not the internet.
 
-On 2026-07-27 I also moved all three history bundles and the private redaction value map out of the Homelab tree to `D:\Documents\Redaction Map`. The preview server still keeps both protections because other private material remains under `Sensitive/`.
+On 2026-07-27 I also moved all three history bundles and the private redaction value map out of the Homelab tree to `D:\Documents\Redaction Map`. The preview server still keeps both protections because other private material remains in the working tree.
 
-**It serves only the folders in `ALLOW`.** That's `Guides` and `Assets`. Assets joined on 2026-08-03 when the diagrams moved there, because a guide that references `../Assets/Diagrams/` would otherwise 404 in preview. `Mission Control` left the list on 2026-08-04 when that dashboard was deleted. The old script served the whole repository root, which is how `Sensitive/` became reachable. Requests outside the allow list return 404, and so do dotfiles and any path that resolves outside its allowed folder. Checked on 2026-08-04: `/Sensitive/Hardware/drive-serials.md`, `/CLAUDE.md`, `/Platforms/README.md`, `/Guides/../Sensitive/Hardware/drive-serials.md`, and `/Guides/.hidden` all return 404, while `/Guides/README.md` and `/Assets/Diagrams/immich-migration.svg` return 200.
+**It serves only non-dotfile files returned by `git ls-files`.** Git is the repository's publication boundary, so an ignored or untracked file returns 404 even when it exists on disk. Tracked guide dependencies under `Platforms/`, `Security/`, and the rest of the published tree remain available without granting access to unpublished neighbours. The resolved path is checked again before the file is opened, so `..` cannot escape the repository.
 
-Add a folder to `ALLOW` only when a preview actually needs it. Never add `Sensitive`.
+The server asks git for the tracked-file list on every request. Starting a local git process adds overhead, but tracking changes take effect without a server restart. If git cannot provide the list, the request fails closed with HTTP 500 and no file is served.
 
 ## Responses carry `cache-control: no-store`
 
@@ -43,5 +43,6 @@ Screenshots fail with `the Browser pane is not displayed, so the page is not com
 
 ## Related records
 
+- [Git-Tracked Publication Boundary - 2026-08-04](Documentation/Change%20Records/Git-Tracked%20Publication%20Boundary%20-%202026-08-04.md), the implementation and request results for the tracked-file rule
 - [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md), the incident that produced both limits above
 - [Assets/Diagrams](../../../Assets/Diagrams/), what this now most often previews
