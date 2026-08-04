@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-03
 
-I route these internal service names through Nginx Proxy Manager at `192.168.85.2`. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I route 21 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 20 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -30,7 +30,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `ts3-manager.alphasecunited.com` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, & Playit ports remain outside NPM. |
 | `kasm.alphasecunited.com` | `192.168.78.10:443` | HTTPS | NPM connects to Kasm's existing HTTPS listener. SSH, exporters, & all four session lanes remain outside NPM. |
 
-The existing `netbird.alphsec.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
+The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 
 The implementation and rollback record is [Internal HTTPS Service Onboarding - 2026-07-22](../Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 

@@ -1,15 +1,15 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-03
 
-I track 21 local A records on the UniFi gateway. They send NetBird and 20 internal application names to Nginx Proxy Manager at `192.168.85.2`. Public authoritative DNS stays in Cloudflare and doesn't contain the 20 application names.
+I track 22 local A records on the UniFi gateway. Twenty-one enabled records send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. The disabled apex record is retained only as controller history. Public authoritative DNS stays in Cloudflare and doesn't contain the internal application names.
 
 ## Host Records
 
 | Hostname | Type | Value | TTL | Enabled | Record ID | Purpose |
 |---|---|---|---:|---|---|---|
-| `netbird.alphsec.com` | A | `192.168.85.2` | 300 | Yes | `<YOUR_NETBIRD_DNS_RECORD_ID>` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
+| `netbird.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a518ca70e10fae1225ad3ba` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
 | `jellyfin.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a834` | Jellyfin through NPM |
 | `seerr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a837` | Seerr through NPM |
 | `sonarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83a` | Sonarr through NPM |
@@ -28,7 +28,9 @@ I track 21 local A records on the UniFi gateway. They send NetBird and 20 intern
 | `grafana.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a862` | Grafana through NPM |
 | `splunk.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a863` | Splunk Web through NPM |
 | `prometheus.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
+| `ts3-manager.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a68b26f052792cd2140bfdc` | TS3 Manager through NPM |
 | `kasm.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a69768d052792cd2140e39f` | Kasm Workspaces through NPM |
+| `alphasecunited.com` | A | `192.168.1.1` | Controller default | No | Not retained | Disabled apex record; no client path depends on it |
 
 ## Verification
 
@@ -37,10 +39,12 @@ I created and verified the record on 2026-07-11:
 - The `docker-network` LXC resolved the record through its configured gateway resolver, `192.168.85.1`, and received `192.168.85.2`.
 - A Windows Internal-zone client resolved the same A record to `192.168.85.2`.
 
-![Enabled UniFi internal DNS record showing the address and 300-second TTL](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
+![Enabled UniFi internal DNS record showing the address and 300-second TTL](../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
-I added and verified the 19 application records on 2026-07-22. An Internal-zone Windows client resolved every name to `192.168.85.2`. Cloudflare DNS-over-HTTPS returned NXDOMAIN for all 19 names. The implementation is documented in the NPM [change record](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+I added and verified the first 19 application records on 2026-07-22. An Internal-zone Windows client resolved every name to `192.168.85.2`. Cloudflare DNS-over-HTTPS returned NXDOMAIN for all 19 names. The implementation is documented in the NPM [change record](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 I added `kasm.alphasecunited.com` on 2026-07-28 as record `6a69768d052792cd2140e39f`. A Windows client resolved it to `192.168.85.2`, & the HTTPS health endpoint returned `{"ok": true}` through NPM.
+
+The 2026-08-03 audit found `ts3-manager.alphasecunited.com` enabled at NPM and UniFi, bringing the enabled set to 21. It also found the disabled apex record. Neither changes public DNS.
 
 These records exist only on the UniFi resolver. They don't change the public Cloudflare zone.

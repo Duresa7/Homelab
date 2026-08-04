@@ -12,4 +12,4 @@
 
 **Corrective action:** I installed `ntpsec-ntpdig` and its `python3-ntp` dependency from Debian. The purpose-built client queried `time.cloudflare.com` over IPv4 with a five-second timeout.
 
-**Verification:** `ntpdig` exited `0` and returned a valid response from `<YOUR_NTP_SERVER_IP>`, stratum 3, with measured delay. UDP 123 egress is therefore verified.
+**Verification:** `ntpdig` exited `0` and returned a valid response from `162.159.200.1`, stratum 3, with measured delay. UDP 123 egress is therefore verified.

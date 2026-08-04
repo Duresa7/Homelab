@@ -5,7 +5,7 @@
 
 - **Date:** 2026-05-11
 - **Filename:** `tnio-bot-fixes-report-2026-05-11.md`
-- **Host:** `<YOUR_TNIO_HOST>` (192.168.40.38, user `aibravo`, Ubuntu Plucky LXC)
+- **Host:** `ai-bravo-02` (192.168.40.38, user `aibravo`, Ubuntu Plucky LXC)
 - **Project root:** `/home/aibravo/lore-rag`
 - **Backup stamp for everything touched:** `bak.structural-fix-20260511`
 

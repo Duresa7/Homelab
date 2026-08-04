@@ -79,19 +79,19 @@ I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01
 +------------------+
 
 DNS Chain (for end-users):
-<YOUR_TEAMSPEAK_ONE_DOMAIN>
+ts01.alphasecunited.com
        | SRV _ts3._udp.ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
        | CNAME ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
        v
     <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9987/udp
 
-<YOUR_TEAMSPEAK_TWO_DOMAIN>
+ts02.alphasecunited.com
        | SRV _ts3._udp.ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810
        | CNAME ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
        v
     <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9988/udp
 
-<YOUR_TEAMSPEAK_THREE_DOMAIN>
+ts03.alphasecunited.com
        | SRV _ts3._udp.ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125
        | CNAME ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>
        v
@@ -111,11 +111,11 @@ DNS Chain (for end-users):
 | CNAME | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
 | SRV | _ts3._udp.ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
 
-**TeamSpeak 1 connect address:** `<YOUR_TEAMSPEAK_ONE_DOMAIN>` (no port needed)
+**TeamSpeak 1 connect address:** `ts01.alphasecunited.com` (no port needed)
 
-**TeamSpeak 2 connect address:** `<YOUR_TEAMSPEAK_TWO_DOMAIN>` (no port needed)
+**TeamSpeak 2 connect address:** `ts02.alphasecunited.com` (no port needed)
 
-**TeamSpeak 3 connect address:** `<YOUR_TEAMSPEAK_THREE_DOMAIN>` (no port needed)
+**TeamSpeak 3 connect address:** `ts03.alphasecunited.com` (no port needed)
 
 **DNS note:** The SRV target points directly to the Playit hostname instead of the
 `ts01` CNAME. SRV targets should not be aliases, and some TeamSpeak clients may
@@ -159,7 +159,7 @@ fail to connect when an SRV record points at a CNAME.
   - `30034/tcp` - File Transfer
 - **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810`
 - **Playit local target**: `127.0.0.1:9988/udp`
-- **Cloudflare connect address**: `<YOUR_TEAMSPEAK_TWO_DOMAIN>`
+- **Cloudflare connect address**: `ts02.alphasecunited.com`
 - **Virtual server name**: `AlphaSec United - Valorant Community`
 - **Server password**: Disabled intentionally; public to users who know the address
 - **Unique ID**: `<YOUR_TEAMSPEAK_ONE_UNIQUE_ID>`
@@ -178,8 +178,8 @@ fail to connect when an SRV record points at a CNAME.
   - `30035/tcp` - File Transfer
 - **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125`
 - **Playit local target**: `127.0.0.1:9989/udp`
-- **Cloudflare connect address**: `<YOUR_TEAMSPEAK_THREE_DOMAIN>`
-- **Cloudflare alternate address**: `<YOUR_TEAMSPEAK_ALTERNATE_DOMAIN>`
+- **Cloudflare connect address**: `ts03.alphasecunited.com`
+- **Cloudflare alternate address**: `ts-valorant-03.alphasecunited.com`
 - **Virtual server name**: `AlphaSec United x Valorant 03`
 - **Server password**: Disabled intentionally; public to users who know the address
 - **Unique ID**: `<YOUR_TEAMSPEAK_THREE_UNIQUE_ID>`
@@ -290,7 +290,7 @@ services:
 # Purpose:
 # - Waits 90 seconds after VM/host boot
 # - Waits for Docker to respond
-# - Waits for <YOUR_PLAYIT_API_DOMAIN> DNS resolution
+# - Waits for api.playit.gg DNS resolution
 # - Restarts TeamSpeak so myTeamSpeak revocation data loads after DNS is ready
 # - Starts playit-agent if missing
 # - Restarts playit-agent so it registers after network/DNS is stable
@@ -358,7 +358,7 @@ services:
 - Playit free plan uses Global Anycast routing
 - After Proxmox VM/host reboot, Playit can start before DNS is ready and log
   `failed to lookup address information: Try again` for
-  `https://<YOUR_PLAYIT_API_DOMAIN>/agents/rundata`. The boot recovery cron job mitigates
+  `https://api.playit.gg/agents/rundata`. The boot recovery cron job mitigates
   this by restarting only `playit-agent` after network and DNS are available.
 - TeamSpeak can also start before DNS is ready and fail to download the
   myTeamSpeak ID revocation list. When this happens, clients can connect but may

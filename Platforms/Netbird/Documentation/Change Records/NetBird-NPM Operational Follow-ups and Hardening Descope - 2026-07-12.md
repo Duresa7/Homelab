@@ -68,7 +68,7 @@ The runbook keeps recovery and update procedures even though those items aren't 
 - NPM returned `healthy`; `nginx -t` succeeded.
 - Direct dashboard and identity-provider probes returned HTTP `200`.
 - NPM-to-NetBird dashboard and identity-provider probes returned HTTP `200`.
-- Internal DNS resolved `netbird.alphsec.com` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
+- Internal DNS resolved `netbird.alphasecunited.com` to `192.168.85.2`, and the HTTPS endpoint returned HTTP `200`.
 - After the upstream-address refresh, `netbird status` returned both `Management: Connected` and `Signal: Connected`, with the Access-A network still advertised.
 - I removed the temporary live Compose rollback copies after successful validation.
 

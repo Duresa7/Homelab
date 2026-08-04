@@ -8,7 +8,7 @@ The live Compose project is `/opt/docker/nginx-proxy-manager` on `docker-network
 ## Files
 
 - `docker-compose.yml` defines the NPM service, persistent bind mounts, published ports, bounded `json-file` logging (`10m` × `3`), health check, restart policy, and fixed address `172.31.85.10` on external Docker network `proxy`.
-- `netbird-advanced-config.conf` is the applied NPM Advanced snippet for `netbird.alphsec.com`. It routes the NetBird API/OAuth2, WebSocket, signal, management, and gRPC paths to `netbird-server:80` while the default proxy host points to `netbird-dashboard:80`.
+- `netbird-advanced-config.conf` is the applied NPM Advanced snippet for `netbird.alphasecunited.com`. It routes the NetBird API/OAuth2, WebSocket, signal, management, and gRPC paths to `netbird-server:80` while the default proxy host points to `netbird-dashboard:80`.
 - `internal-proxy-hosts.md` is the current inventory of the 20 internal application hosts, upstream schemes, addresses, ports, & compatibility notes.
 
 ## Runtime State

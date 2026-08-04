@@ -7,7 +7,7 @@
 
 I compared all 45 active Drive files with the 45-file bot manifest, then added source-authority, policy, alias, & evaluation artifacts to the runtime.
 
-Using the local Google Drive connector, I confirmed the TNIO folder holds 45 active Docs/Sheets. The bot manifest on `<YOUR_TNIO_HOST>` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
+Using the local Google Drive connector, I confirmed the TNIO folder holds 45 active Docs/Sheets. The bot manifest on `ai-bravo-02` also has 45 active files, 3666 chunks, and 5061 records from the same folder ID, so the main issue was not missing Drive coverage. The issue was source selection: policy questions could still be answered from rosters, registries, generic sheet rows, or nearby but wrong sections.
 
 ## Audit Files
 
@@ -50,7 +50,7 @@ I added `/home/aibravo/lore-rag/test_corpus_accuracy.py`.
 
 ## Verification
 
-Passed on `<YOUR_TNIO_HOST>`:
+Passed on `ai-bravo-02`:
 
 - `python3 -m py_compile lore_agent.py lore_mcp_server.py test_accuracy_policy.py test_corpus_accuracy.py`
 - `python3 test_accuracy_policy.py`

@@ -6,7 +6,7 @@
 **Capture window:** 2026-07-20, 16:30-17:15 EDT  
 **Mechanism:** Proxmox web UI screenshots plus `journalctl`, `ha-manager`, `pct`, `lvs`, & `/var/log/pve/tasks` transcripts pulled over SSH from the Galaxy nodes
 
-This set backs the [incident report](../Galaxy-HA-Local-Storage-Stranding-Incident-2026-07-20.md). The four screenshots are a before/after pair around the recovery; the four logs are the verbatim host output the report quotes.
+This set backs the [incident report](../../HA%20Local%20Storage%20Stranding%20-%202026-07-20.md). The four screenshots are a before/after pair around the recovery; the four logs are the verbatim host output the report quotes.
 
 ## Screenshots
 

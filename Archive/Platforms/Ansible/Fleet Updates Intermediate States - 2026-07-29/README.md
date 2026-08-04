@@ -38,10 +38,10 @@ None of these five matches any committed version, so this is the only copy of th
 
 ## Why the rest of that backup directory went
 
-`/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/` also held `README.md`, `inventory/hosts.yml`, `semaphore/task-templates.yml`, and `tests/validate_project.py`. I compared all four against git before deleting anything. Every one is byte-identical to the version committed at `e85c89c~1`, which is the pre-maintenance state. `hosts.yml` matches after substituting the admin username for the placeholder, which is the same substitution the project's publication note already describes.
+`/home/ansible/fleet-update-backups/2026-07-28-pre-maintenance/` also held `README.md`, `inventory/hosts.yml`, `semaphore/task-templates.yml`, and `tests/validate_project.py`. I compared all four against git before deleting anything. Every one is byte-identical to the version committed at `e85c89c~1`, which is the pre-maintenance state.
 
 So git is the rollback path, and a better one than an unversioned directory on the host. `git show e85c89c~1:Platforms/Ansible/Source/fleet-updates/<file>` returns any of them.
 
-## Redaction
+## Publication check
 
-I replaced the admin username with `dkadi` in `hosts.yml.pre-final-review`. Nothing else needed changing, and no file here holds a key, token, or password. Every download was hash-checked against the controller before I removed the original.
+No file here holds a key, token, or password. Every download was hash-checked against the controller before I removed the original.

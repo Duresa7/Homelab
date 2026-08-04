@@ -14,7 +14,7 @@ api.err.FirewallPolicyCreateRespondTrafficPolicyNotAllowed
 Firewall policy create respond traffic not allowed
 ```
 
-**Failed attempt:** My initial payload used the tool's default `create_allow_respond: true` for an `AlphaSec`-Access-to-External policy. UniFi did not create the rule.
+**Failed attempt:** My initial payload used the tool's default `create_allow_respond: true` for an `AlphaSec-Access`-to-External policy. UniFi did not create the rule.
 
 **Hypothesis and test:** Respond-traffic generation is not allowed for this policy direction. I previewed the same payload again with `create_allow_respond: false`.
 
@@ -26,6 +26,6 @@ Firewall policy create respond traffic not allowed
 
 All three policies have logging enabled.
 
-**Verification:** UniFi returned the three policies at indexes 10000, 10001, and 10002. HTTP returned `200`, the Docker Registry HTTPS endpoint returned its expected unauthenticated `401`, and external TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as intended. The final ordered rules show the two Allow policies above the catch-all Block:
+**Verification:** UniFi returned the three policies at indexes 10000, 10001, and 10002. HTTP returned `200`, the Docker Registry HTTPS endpoint returned its expected unauthenticated `401`, and external TCP DNS to `1.1.1.1:53` timed out as intended. The final ordered rules show the two Allow policies above the catch-all Block:
 
-![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block AlphaSec-Access All from the `AlphaSec`-Access zone to External](../../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
+![UniFi policy table showing Allow docker-network UDP 123, Allow docker-network TCP 80,443, and Block AlphaSec-Access All from the `AlphaSec-Access` zone to External](../../Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)

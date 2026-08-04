@@ -16,7 +16,7 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 
 - CT 107 and Docker did not exist before this bounded deployment.
 - No Nginx Proxy Manager instance or shared `proxy` Docker network existed on the new guest.
-- No Cloudflare DNS-01 certificate or proxy host existed for `netbird.alphsec.com`.
+- No Cloudflare DNS-01 certificate or proxy host existed for `netbird.alphasecunited.com`.
 
 ## Implementation
 
@@ -32,7 +32,7 @@ NetBird is the primary owner of the combined job. I keep the combined step evide
 10. I applied the 1,296-character advanced configuration for API, OAuth2, WebSocket, signal, management, and gRPC routing.
 11. `nginx -t` succeeded, and an HTTP Host-header request through NPM returned the NetBird dashboard with status `200`.
 12. NPM obtained a Let's Encrypt DNS-01 certificate for `*.alphasecunited.com` and `alphasecunited.com`. The certificate expires `2026-10-08 23:49:46 UTC`.
-13. I assigned the certificate to `netbird.alphsec.com` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
+13. I assigned the certificate to `netbird.alphasecunited.com` and enabled Force SSL and HTTP/2. I intentionally left HSTS disabled during the initial deployment.
 14. The HTTPS client path presented the expected certificate and loaded the authenticated NetBird dashboard.
 15. I restarted the NPM and NetBird Compose projects in a controlled validation. Both stacks returned healthy, the proxy configuration remained valid, and the authenticated HTTPS dashboard remained reachable.
 
@@ -63,7 +63,7 @@ The intended proxy host is:
 
 | Field | Current value |
 |---|---|
-| Domain | `netbird.alphsec.com` |
+| Domain | `netbird.alphasecunited.com` |
 | Scheme | `http` |
 | Default upstream | `netbird-dashboard:80` |
 | WebSocket support | Enabled |
@@ -87,7 +87,7 @@ The advanced configuration sends dashboard traffic to `netbird-dashboard` and Ne
 - The initialized-administrator dashboard loaded after setup.
 - The wildcard/apex certificate was issued through Cloudflare DNS-01, assigned to the NetBird host, and observed with expiry `2026-10-08 23:49:46 UTC`.
 - The renewal configuration uses the non-interactive `dns-cloudflare` authenticator, NPM's Node backend checks hourly for certificates within 30 days of expiry, and a Let's Encrypt staging dry-run succeeded for lineage `npm-1` on 2026-07-12.
-- Force SSL redirects the client path to HTTPS, HTTP/2 is enabled, and the authenticated NetBird dashboard loads through `https://netbird.alphsec.com`.
+- Force SSL redirects the client path to HTTPS, HTTP/2 is enabled, and the authenticated NetBird dashboard loads through `https://netbird.alphasecunited.com`.
 - After controlled NPM and NetBird Compose restarts, all containers returned healthy and the authenticated HTTPS dashboard remained reachable.
 - Docker inspection confirmed bounded `json-file` logging with `max-size=10m` and `max-file=3` on the NPM container.
 

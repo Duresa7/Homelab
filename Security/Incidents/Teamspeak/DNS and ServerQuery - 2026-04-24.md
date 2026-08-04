@@ -21,13 +21,13 @@
 ## Incident Summary
 
 On 2026-04-24, `AlphaSec` United observed intermittent TeamSpeak client connection
-failures against the community TeamSpeak endpoint `<YOUR_TEAMSPEAK_ONE_DOMAIN>`. I began
+failures against the community TeamSpeak endpoint `ts01.alphasecunited.com`. I began
 triage with the service layer: the TeamSpeak server process, Docker containers,
 and Playit tunnel were all online. The connection fragility for end users and
 administrative tooling traced instead to DNS and management-plane configuration.
 
 I identified the primary issue as a non-compliant SRV DNS chain in Cloudflare.
-The TeamSpeak SRV record pointed to `<YOUR_TEAMSPEAK_ONE_DOMAIN>`, which was
+The TeamSpeak SRV record pointed to `ts01.alphasecunited.com`, which was
 itself a CNAME. SRV targets should resolve directly to the service hostname, not
 to an alias. Some clients and resolvers tolerate this behavior, while others can
 fail resolution or connection setup.
@@ -62,8 +62,8 @@ ServerQuery allowlist.
 | playit-agent | Shared Playit tunnel agent | Online |
 | ts3-manager | Web-based TeamSpeak administration UI | Online after restart |
 | `alphasecunited.com` | Cloudflare-managed DNS zone | Active |
-| `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | Community connection endpoint | Active |
-| `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | Community connection endpoint | Active |
+| `ts01.alphasecunited.com` | Community connection endpoint | Active |
+| `ts02.alphasecunited.com` | Community connection endpoint | Active |
 
 ## Technical Findings
 
@@ -72,8 +72,8 @@ ServerQuery allowlist.
 Previous DNS behavior:
 
 ```text
-_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
-  -> <YOUR_TEAMSPEAK_ONE_DOMAIN>:6255
+_ts3._udp.ts01.alphasecunited.com
+  -> ts01.alphasecunited.com:6255
   -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
@@ -83,17 +83,17 @@ alias. I corrected the record to point directly at the Playit hostname.
 Current DNS behavior:
 
 ```text
-_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
+_ts3._udp.ts01.alphasecunited.com
   -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
 
-<YOUR_TEAMSPEAK_ONE_DOMAIN>
+ts01.alphasecunited.com
   -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
 End users still connect with:
 
 ```text
-<YOUR_TEAMSPEAK_ONE_DOMAIN>
+ts01.alphasecunited.com
 ```
 
 ### Finding 2 - TS3 Manager Triggered ServerQuery Flood Protection
@@ -132,7 +132,7 @@ TS3 Manager must use the LAN ServerQuery endpoint:
 It should not use:
 
 ```text
-<YOUR_TEAMSPEAK_ONE_DOMAIN>
+ts01.alphasecunited.com
 ```
 
 Playit forwards the public UDP voice service. It does not expose TeamSpeak
@@ -282,12 +282,12 @@ tunnel running, 2 tunnels registered
 Observed SRV state:
 
 ```text
-_ts3._udp.<YOUR_TEAMSPEAK_ONE_DOMAIN>
+_ts3._udp.ts01.alphasecunited.com
 NameTarget: <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
 Port: 6255
 TTL: 300
 
-_ts3._udp.<YOUR_TEAMSPEAK_TWO_DOMAIN>
+_ts3._udp.ts02.alphasecunited.com
 NameTarget: <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
 Port: 53810
 TTL: 300
@@ -329,5 +329,5 @@ decoupled Playit into a shared standalone compose project, and updated the
 deployment documentation to reflect the known-good state.
 
 I am keeping the incident in monitoring status until external users confirm
-successful connection through `<YOUR_TEAMSPEAK_ONE_DOMAIN>` and
-`<YOUR_TEAMSPEAK_TWO_DOMAIN>`.
+successful connection through `ts01.alphasecunited.com` and
+`ts02.alphasecunited.com`.

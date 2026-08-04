@@ -1,5 +1,5 @@
 # Grafana dashboard provisioning, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/provisioning/dashboards/ on
+# /home/dkadi/monitoring/grafana/provisioning/dashboards/ on
 # monitor-01.
 #
 # Dashboards under /etc/grafana/dashboards are read from a read-only bind mount

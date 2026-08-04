@@ -7,16 +7,16 @@
 
 I archived this plan after Access-A, Security-A, Cluster-Net, and the MGMT-A lockdown were complete. Their dated change records remain with the active UniFi documentation.
 
-I've built the `AlphaSec`-Access, `AlphaSec`-Security, & `AlphaSec`-Cluster zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. I completed the final MGMT-A rule review and lockdown on 2026-07-27.
+I've built the `AlphaSec-Access`, `AlphaSec-Security`, & `AlphaSec-Cluster` zones and their Access-A/85, Security-A/72, & Cluster-Net/71 networks. I completed the final MGMT-A rule review and lockdown on 2026-07-27.
 
 ## Access-A Deployment
 
 - [x] Deploy network-access / connectivity tooling onto Access-A: Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 now run on LXC 107 `docker-network`
 - [x] Assign a static IP from the reserved range: `192.168.85.2/24` (DHCP pool starts at `.6`)
-- [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
-- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `AlphaSec`-Access-to-External IPv4 traffic
+- [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
+- [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `AlphaSec-Access`-to-External IPv4 traffic
 
-The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
 I left the web and NTP destination addresses dynamic because Debian mirrors, container registries, certificate services, and NTP pools can rotate. Least privilege is enforced through the single-host source match, required ports only, ordered catch-all block, and logging rather than a brittle destination-IP list.
 
@@ -25,26 +25,26 @@ I left the web and NTP destination addresses dynamic because Debian mirrors, con
 - [x] Move the security/monitoring tooling (SIEM, detection, log/metrics tooling) to Security-A
 - [x] Assign static IPs in the 192.168.72.2 – .5 reserved range (DHCP pool starts at .6): `security-01` = `192.168.72.2`, `splunk-siem` = `192.168.72.3`
 - [x] Add narrow inbound firewall policies from every zone that needs to ship logs/metrics in, pointing at the new Security-A IPs (mirror the existing Wazuh-ports pattern)
-- [x] Remove the old rules/references pointing at the previous MGMT-A (`<YOUR_PREVIOUS_MANAGEMENT_SUBNET>`) addresses once the migration is confirmed working
+- [x] Remove the old rules/references pointing at the previous MGMT-A (`192.168.70.0/24`) addresses once the migration is confirmed working
 
-Completed 2026-07-12. The VM cutovers, replacement firewall paths, Security-A egress policy, Galaxy firewall changes, cleanup, rollback points, and verification are recorded in [Security-A Migration - 2026-07-12](../../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
+Completed 2026-07-12. The VM cutovers, replacement firewall paths, Security-A egress policy, Galaxy firewall changes, cleanup, rollback points, and verification are recorded in [Security-A Migration - 2026-07-12](../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md).
 
 I updated the UniFi console SIEM/syslog destination to `192.168.72.3:1514` on 2026-07-12. A fresh CEF event was processed by SC4S, forwarded through HEC without drops, and indexed in Splunk's `netops` index. No additional Gateway-to-Security policy was required.
 
 ### Deferred follow-ups
 
-- [x] Audit and reset the old Wazuh agents: I removed the disconnected `edge-01` and incorrect `wp-01` registrations and repointed/cleared `app-01` and `edge-01` so I can re-enroll them. `supabase-01` and `alpha-prod-01` have no agent installed; fresh enrollment is tracked in the [Wazuh TODO](../../../../../../Platforms/Wazuh/Documentation/TODO.md).
+- [x] Audit and reset the old Wazuh agents: I removed the disconnected `edge-01` and incorrect `wp-01` registrations and repointed/cleared `app-01` and `edge-01` so I can re-enroll them. `supabase-01` and `alpha-prod-01` have no agent installed; fresh enrollment is tracked in the [Wazuh TODO](../../../../../Platforms/Wazuh/Documentation/TODO.md).
 - [x] Install and configure `node_exporter` on `purple-server`, `blue-server`, and `red-server`; all three targets report `UP`.
 - [x] Reconcile stale Prometheus targets: corrected `security-01`, removed unavailable `app-01`/`supabase-01`, and verified exactly seven retained jobs `UP`.
 - [x] Review the Galaxy TCP 8006 access. The old subnet-wide rule had already been replaced with purpose-specific IPSets. I retained the four-node cluster, dashboard, and monitoring API consumers and removed the separate Termix SSH exception.
 
-The three completed follow-ups are recorded in [Security Monitoring Baseline Cleanup - 2026-07-13](../../../../../../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
+The three completed follow-ups are recorded in [Security Monitoring Baseline Cleanup - 2026-07-13](../../../../../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 
 ## MGMT-A Final Lockdown
 
 Completed 2026-07-27. Jedi PC, Pixel, MacBook Air, and `ansible-01` are the approved devices for Proxmox SSH and TCP 8006. The broad WireGuard VPN path remains. I did not add a NetBird management path.
 
-I disabled the broad Internal-to-MGMT policy, narrowed `docker-main` to TCP 8006 for the read-only dashboard, and removed Termix SSH from the Galaxy firewall. Jedi PC and `ansible-01` passed all eight SSH and web probes. `docker-main` failed all four SSH probes while all four API probes and the dashboard stayed healthy. Monitoring passed every retained port check. The implementation and rollback details are in [MGMT-A Final Lockdown - 2026-07-27](../../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
+I disabled the broad Internal-to-MGMT policy, narrowed `docker-main` to TCP 8006 for the read-only dashboard, and removed Termix SSH from the Galaxy firewall. Jedi PC and `ansible-01` passed all eight SSH and web probes. `docker-main` failed all four SSH probes while all four API probes and the dashboard stayed healthy. Monitoring passed every retained port check. The implementation and rollback details are in [MGMT-A Final Lockdown - 2026-07-27](../../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
 
 ## Cluster-Net Corosync Link Addition
 
@@ -55,4 +55,4 @@ I disabled the broad Internal-to-MGMT policy, narrowed `docker-main` to TCP 8006
 - [x] Verify cluster health after the change (`pvecm status` showed all 4 nodes, quorum intact, both links active)
 - [x] Confirm GUI/SSH access via the original 192.168.70.10 – .13 addresses is unaffected
 
-Completed 2026-07-10. The addresses, configuration, commands, checks, & screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
+Completed 2026-07-10. The addresses, configuration, commands, checks, & screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).

@@ -3,7 +3,7 @@
 **Created:** 2026-07-29  
 **Last updated:** 2026-07-30
 
-**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md)
+**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../../Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 
 | Step | Artifact | Demonstrates |
 |---|---|---|

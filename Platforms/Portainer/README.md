@@ -1,9 +1,9 @@
 # Portainer
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-03
 
-I run Portainer CE 2.39.1 on `docker-main` at `192.168.40.35`. The server manages its local Docker socket & uses Edge Agents for Docker hosts that sit on other VLANs.
+I run Portainer CE 2.39.5 on `docker-main` at `192.168.40.35`. The server manages its local Docker socket & four Edge Agent 2.39.1 hosts on other VLANs.
 
 ## Current State
 

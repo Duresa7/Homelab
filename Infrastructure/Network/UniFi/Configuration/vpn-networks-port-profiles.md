@@ -30,9 +30,9 @@ All servers are WireGuard, remote-user-VPN type, bound to the WAN interface.
 | VPN - Proton | ProtonVPN | 1 device | Any Internet destination | Enabled | Disabled |
 | KASM Lab Proton Egress | ProtonVPN | KASM-BROWSER | Any Internet destination | Enabled | Enabled |
 
-On 2026-07-23 I retargeted the Kasm route to KASM-BROWSER/VLAN 74 only, down from four VLANs, during the [Kasm lab network simplification](../../Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md). On 2026-07-27 I deleted `Non-tracking` before deleting Secure-V/VLAN 100. The [consolidation change record](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) holds that dependency order and readback.
+On 2026-07-23 I retargeted the Kasm route to KASM-BROWSER/VLAN 74 only, down from four VLANs, during the [Kasm lab network simplification](../Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md). On 2026-07-27 I deleted `Non-tracking` before deleting Secure-V/VLAN 100. The [consolidation change record](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) holds that dependency order and readback.
 
-I retested the Kasm route on 2026-07-28. An enabled VPN with a failed tunnel blocks VLAN 74 while the Kasm host retains ordinary WAN. Administratively disabling the ProtonVPN object causes UniFi to fall back to WAN, so I keep the client enabled whenever a KASM-BROWSER session may run. The exact test is in [Kasm Session Isolation](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
+I retested the Kasm route on 2026-07-28. An enabled VPN with a failed tunnel blocks VLAN 74 while the Kasm host retains ordinary WAN. Administratively disabling the ProtonVPN object causes UniFi to fall back to WAN, so I keep the client enabled whenever a KASM-BROWSER session may run. The exact test is in [Kasm Session Isolation](../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md).
 
 ## Network List (Firewall Groups)
 
@@ -64,7 +64,7 @@ Reusable port/address groups referenced by firewall policies.
 | Proxmox-Trunk | Uplink | None | Custom exclusion list | All networks except Management, IoT (20), Trusted (10), DMZ (30), and Secure (50) | Off | On (STP Uplink) | Force Authorized | On | On |
 | Server-Provision | Uplink | Server-Provision (VLAN 5) | Custom exclusion list | All networks except Management, IoT (20), Trusted (10), DMZ (30), and Secure (50) | Off | On | Force Authorized | On | On |
 
-The controller stores `Proxmox-Trunk` as an exclusion list, not a positive tagged-VLAN list. It automatically adds a new network to that exclusion list. I removed LAB-MGMT/VLAN 78 during the session-isolation change and KASM-TRUSTED/VLAN 75 during the [workspace build-out](../../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The final list still contains exactly five exclusions: Management, IoT, Trusted, DMZ, and Secure. VLANs 74, 75, 77, 78, and 79 are admitted.
+The controller stores `Proxmox-Trunk` as an exclusion list, not a positive tagged-VLAN list. It automatically adds a new network to that exclusion list. I removed LAB-MGMT/VLAN 78 during the session-isolation change and KASM-TRUSTED/VLAN 75 during the [workspace build-out](../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The final list still contains exactly five exclusions: Management, IoT, Trusted, DMZ, and Secure. VLANs 74, 75, 77, 78, and 79 are admitted.
 
 `Server-Provision` uses the same five exclusions but adds native VLAN 5. I assigned it to Bane switch port 4 for the `green-server` installation. UniFi DHCP advertises `192.168.40.36` and `galaxy-ipxe.efi` on that network. Green completed the installation and cluster join on 2026-07-31, after which I changed Bane port 4 to `Proxmox-Trunk`.
 

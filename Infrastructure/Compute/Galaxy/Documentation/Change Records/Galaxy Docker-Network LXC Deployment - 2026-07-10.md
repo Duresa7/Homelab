@@ -16,7 +16,7 @@ I provisioned a Debian 13 LXC on `blue-server` for network-access services. The 
 - CTID 107 was unused, and no dedicated `docker-network` guest existed.
 - Access-A already existed as VLAN 85 with subnet `192.168.85.0/24`, gateway `192.168.85.1`, and reserved static range `.2` through `.5`.
 - The existing UniFi `Allow Internal to AlphaSec-Access` and `Allow VPN to AlphaSec-Access` policies provided the intended inbound zone paths.
-- There were no workload-specific `AlphaSec`-Access-to-External egress rules and no internal DNS record for `netbird.alphsec.com`.
+- There were no workload-specific `AlphaSec-Access`-to-External egress rules and no internal DNS record for `netbird.alphasecunited.com`.
 
 ## Egress Policy Order
 
@@ -24,9 +24,9 @@ I created three order-sensitive UniFi policies with logging enabled and automati
 
    | Order | Policy | Source | Destination | Protocol / port | Result |
    |---:|---|---|---|---|---|
-   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `AlphaSec`-Access | External | TCP 80, 443 | Allow |
-   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `AlphaSec`-Access | External | UDP 123 | Allow |
-   | 10002 | `Block AlphaSec-Access Other External Egress` | Any, `AlphaSec`-Access | External | Any IPv4 | Block |
+   | 10000 | `Allow docker-network Web Egress` | `192.168.85.2`, `AlphaSec-Access` | External | TCP 80, 443 | Allow |
+   | 10001 | `Allow docker-network NTP Egress` | `192.168.85.2`, `AlphaSec-Access` | External | UDP 123 | Allow |
+   | 10002 | `Block AlphaSec-Access Other External Egress` | Any, `AlphaSec-Access` | External | Any IPv4 | Block |
 
 ## Resulting LXC Configuration
 
@@ -58,10 +58,10 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 - `ha-manager` reported `ct:107` on `blue-server` with state `started`.
 - HTTP to `deb.debian.org` returned 200, and HTTPS to the Docker registry returned the expected unauthenticated 401 response, proving TCP 80/443 egress.
 - `ntpdig` reached `time.cloudflare.com` and returned valid time data, proving UDP 123 egress.
-- A direct TCP DNS attempt to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as expected under the final block rule.
-- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `netbird.alphsec.com`.
+- A direct TCP DNS attempt to `1.1.1.1:53` timed out as expected under the final block rule.
+- The UniFi resolver at `192.168.85.1` and a Windows client both returned `192.168.85.2` for `netbird.alphasecunited.com`.
 - Nginx Proxy Manager, the NetBird dashboard, & the NetBird server containers were running; direct NPM administration and the NetBird identity endpoint returned HTTP 200.
-- The Let's Encrypt wildcard/apex certificate passed validation, `https://netbird.alphsec.com` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
+- The Let's Encrypt wildcard/apex certificate passed validation, `https://netbird.alphasecunited.com` returned HTTP 200, & the existing authenticated NetBird dashboard session loaded through NPM.
 - Both Compose projects restarted; readiness passed on the second check, NPM returned `healthy`, `nginx -t` passed, & direct/HTTPS probes returned 200.
 
 ## Walkthrough
@@ -149,7 +149,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Observed result:** UniFi saved the TCP 80/443 allow, UDP 123 allow, & catch-all IPv4 block in that order, with logging enabled on all three.
 
-**Verification:** HTTP returned 200, the Docker registry returned its expected unauthenticated 401, `ntpdig` returned valid time data, and direct TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out under the block rule.
+**Verification:** HTTP returned 200, the Docker registry returned its expected unauthenticated 401, `ntpdig` returned valid time data, and direct TCP DNS to `1.1.1.1:53` timed out under the block rule.
 
 **Evidence:**
 
@@ -157,7 +157,7 @@ The capture showed the client & server versions, Compose version, active service
 
 ### Step 6: Add internal DNS
 
-**UI action:** I added the UniFi local A record `netbird.alphsec.com` pointing to `192.168.85.2` with TTL 300 seconds.
+**UI action:** I added the UniFi local A record `netbird.alphasecunited.com` pointing to `192.168.85.2` with TTL 300 seconds.
 
 **Observed result:** The controller saved the enabled DNS record.
 
@@ -173,7 +173,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Observed result:** The certificate was issued and the NetBird proxy host reported Online.
 
-**Verification:** `nginx -t` passed & `https://netbird.alphsec.com` returned HTTP 200.
+**Verification:** `nginx -t` passed & `https://netbird.alphasecunited.com` returned HTTP 200.
 
 **Evidence:**
 
@@ -218,8 +218,8 @@ The capture showed the client & server versions, Compose version, active service
 ## Rollback
 
 1. Stop the NetBird and Nginx Proxy Manager Compose projects before removing the guest.
-2. Remove UniFi policies `<YOUR_ACCESS_EGRESS_POLICY_ID_A>`, `<YOUR_ACCESS_EGRESS_POLICY_ID_B>`, and `<YOUR_ACCESS_EGRESS_POLICY_ID_C>` in reverse order if the Access-A egress policy set must be reverted.
-3. Remove local DNS record `<YOUR_NETBIRD_DNS_RECORD_ID>` if the hostname is no longer served by this LXC.
+2. Remove UniFi policies `6a518bdb0e10fae1225ad116`, `6a518bde0e10fae1225ad119`, and `6a518bde0e10fae1225ad11c` in reverse order if the Access-A egress policy set must be reverted.
+3. Remove local DNS record `6a518ca70e10fae1225ad3ba` if the hostname is no longer served by this LXC.
 4. Remove `ct:107` from HA before stopping or destroying the guest.
 5. Remove the `docker_network` SSH Manager entry if LXC 107 is retired.
 

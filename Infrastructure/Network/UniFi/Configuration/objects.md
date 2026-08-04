@@ -82,4 +82,4 @@ I deleted the empty `IOT` group and the obsolete `Game Servers` group after the 
 
 `Device Access to Proxmox` still carries the four administrative MACs inline. The V2 policy selector schema has no client-group target, so I did not replace those selectors with `Admin_Device`.
 
-The exact before-and-after membership and the reference checks are retained with [Zone and Object Consolidation - 2026-07-27](../../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
+The exact before-and-after membership and the reference checks are retained with [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).

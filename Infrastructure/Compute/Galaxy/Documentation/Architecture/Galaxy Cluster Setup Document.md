@@ -1,4 +1,4 @@
-﻿# Galaxy Cluster Setup Document
+# Galaxy Cluster Setup Document
 
 **Created:** 2026-05-30  
 **Last updated:** 2026-07-20
@@ -209,16 +209,16 @@ for every join.
 ## 8. Stale Node Directory Removal
 
 `grey-server` had two stale node folders under `/etc/pve/nodes/` from
-an earlier install: `Grey-Server` (capitalized) and `<YOUR_RETIRED_NODE_NAME>`. Both were empty of
+an earlier install: `Grey-Server` (capitalized) and `sith-server`. Both were empty of
 guest configs and would otherwise appear as offline ghost nodes in the Datacenter
 view. I confirmed they held no guest configs and removed them.
 
 ```bash
 # On grey-server: confirm no guest configs first
 find /etc/pve/nodes/Grey-Server/qemu-server /etc/pve/nodes/Grey-Server/lxc \
-     /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>/qemu-server /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>/lxc -type f | wc -l   # expect 0
+     /etc/pve/nodes/sith-server/qemu-server /etc/pve/nodes/sith-server/lxc -type f | wc -l   # expect 0
 
-rm -rf /etc/pve/nodes/Grey-Server /etc/pve/nodes/<YOUR_RETIRED_NODE_NAME>
+rm -rf /etc/pve/nodes/Grey-Server /etc/pve/nodes/sith-server
 ```
 
 After the May cleanup, `/etc/pve/nodes/` contained only `grey-server`,

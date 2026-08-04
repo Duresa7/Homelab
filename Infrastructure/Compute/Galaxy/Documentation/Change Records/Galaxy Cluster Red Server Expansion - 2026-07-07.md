@@ -195,6 +195,6 @@ red-server:/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js.bak.no-sub
 
 ## Unresolved DNS
 
-`<YOUR_RETIRED_NODE_FQDN>`, `<YOUR_PURPLE_SERVER_FQDN>`, and `<YOUR_BLUE_SERVER_FQDN>` do not
+`red-server.galaxy`, `purple-server.galaxy`, and `blue-server.galaxy` do not
 currently resolve from my Windows admin workstation. I use the management IPs or
 the SSH manager aliases until internal DNS is updated.

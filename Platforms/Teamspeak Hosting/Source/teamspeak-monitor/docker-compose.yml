@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
     network_mode: host
     environment:
-      TS_BASE_DOMAIN: <YOUR_BASE_DOMAIN>
+      TS_BASE_DOMAIN: alphasecunited.com
       TS_HOST_IP: 127.0.0.1
       TS_INTERVAL: "60"
       TS_OUT: /textfile/teamspeak.prom

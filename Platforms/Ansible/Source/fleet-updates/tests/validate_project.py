@@ -10,7 +10,6 @@ playbooks that are present.
 from __future__ import annotations
 
 from pathlib import Path
-import re
 import sys
 
 import yaml
@@ -55,21 +54,21 @@ EXPECTED_COMPOSE_PROJECTS = {
     },
     "alpha-prod-01": {
         "playit-agent": (
-            "/home/<YOUR_ADMIN_USERNAME>/playit-agent",
+            "/home/dkadi/playit-agent",
             (),
         ),
         "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
-        "teamspeak": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak", ()),
-        "teamspeak-02": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-02", ()),
-        "teamspeak-03": ("/home/<YOUR_ADMIN_USERNAME>/teamspeak-03", ()),
+        "teamspeak": ("/home/dkadi/teamspeak", ()),
+        "teamspeak-02": ("/home/dkadi/teamspeak-02", ()),
+        "teamspeak-03": ("/home/dkadi/teamspeak-03", ()),
         "teamspeak-monitor": (
-            "/home/<YOUR_ADMIN_USERNAME>/teamspeak-monitor",
+            "/home/dkadi/teamspeak-monitor",
             (),
         ),
-        "ts3-manager": ("/home/<YOUR_ADMIN_USERNAME>/ts3-manager", ()),
+        "ts3-manager": ("/home/dkadi/ts3-manager", ()),
     },
     "monitor-01": {
-        "monitoring": ("/home/<YOUR_ADMIN_USERNAME>/monitoring", ()),
+        "monitoring": ("/home/dkadi/monitoring", ()),
         "peanut": ("/opt/docker/peanut", ()),
     },
 }
@@ -88,8 +87,6 @@ def collect_hosts(group: dict) -> dict:
 
 def main() -> int:
     errors: list[str] = []
-    deployment_users: set[str] = set()
-
     inventory = yaml.safe_load((ROOT / "inventory" / "hosts.yml").read_text(encoding="utf-8"))
     children = inventory["all"]["children"]
 
@@ -160,20 +157,7 @@ def main() -> int:
                 errors.append(f"{host}: unexpected compose project {name}")
                 continue
             expected_src, expected_profiles = expected
-            if "<YOUR_ADMIN_USERNAME>" in expected_src:
-                expected_pattern = re.escape(expected_src).replace(
-                    re.escape("<YOUR_ADMIN_USERNAME>"),
-                    r"([^/]+)",
-                )
-                match = re.fullmatch(expected_pattern, src)
-                if match:
-                    deployment_users.add(match.group(1))
-                else:
-                    errors.append(
-                        f"{host}/{name}: project_src does not match "
-                        f"{expected_src}"
-                    )
-            elif src != expected_src:
+            if src != expected_src:
                 errors.append(
                     f"{host}/{name}: expected project_src {expected_src}, found {src}"
                 )
@@ -193,12 +177,6 @@ def main() -> int:
             errors.append(
                 f"{host}: missing compose projects {sorted(missing_projects)}"
             )
-    if len(deployment_users) > 1:
-        errors.append(
-            "deployment-owned compose paths use inconsistent usernames: "
-            f"{sorted(deployment_users)}"
-        )
-
     for playbook in PLAYBOOKS:
         if not (ROOT / playbook).is_file():
             errors.append(f"missing playbook {playbook}")

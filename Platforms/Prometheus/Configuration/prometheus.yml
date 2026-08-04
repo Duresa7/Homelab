@@ -1,20 +1,11 @@
 # Prometheus scrape configuration, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/prometheus.yml on monitor-01.
-#
-# DO NOT COPY THIS FILE ONTO monitor-01 AS-IS. This is the scrubbed reference
-# copy: the 19 blackbox probe targets here read `<YOUR_BASE_DOMAIN>`, which
-# resolves to nothing. Uploading it verbatim on 2026-07-28 took all 19 probes
-# down until the real domain was substituted back in. Edit the deployed file in
-# place, or substitute the real base domain before copying.
+# /home/dkadi/monitoring/prometheus.yml on monitor-01.
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
-# hostname. That stopped scaling at 14 node_exporter targets across five
-# exporter types. Changing it breaks graph continuity for series that existed
+# hostname. The current configuration has 17 node_exporter targets and six
+# jobs overall. Changing it breaks graph continuity for series that existed
 # before the switch; with 15-day retention that discontinuity ages out.
-#
-# Publication note: the blackbox target list carries a redaction placeholder in
-# the repository copy and the real internal base domain in the deployed copy.
 global:
   scrape_interval: 15s
 
@@ -125,26 +116,26 @@ scrape_configs:
       module: [http_2xx]
     static_configs:
       - targets:
-          - https://jellyfin.<YOUR_BASE_DOMAIN>/
-          - https://seerr.<YOUR_BASE_DOMAIN>/
-          - https://sonarr.<YOUR_BASE_DOMAIN>/
-          - https://radarr.<YOUR_BASE_DOMAIN>/
-          - https://prowlarr.<YOUR_BASE_DOMAIN>/
-          - https://qbittorrent.<YOUR_BASE_DOMAIN>/
-          - https://semaphore.<YOUR_BASE_DOMAIN>/
-          - https://immich.<YOUR_BASE_DOMAIN>/
-          - https://booklore.<YOUR_BASE_DOMAIN>/
-          - https://dashboard.<YOUR_BASE_DOMAIN>/
-          - https://forgejo.<YOUR_BASE_DOMAIN>/
-          - https://portainer.<YOUR_BASE_DOMAIN>/
-          - https://peanut.<YOUR_BASE_DOMAIN>/
-          - https://syncthing.<YOUR_BASE_DOMAIN>/
-          - https://wazuh.<YOUR_BASE_DOMAIN>/
-          - https://grafana.<YOUR_BASE_DOMAIN>/
-          - https://prometheus.<YOUR_BASE_DOMAIN>/
-          - https://splunk.<YOUR_BASE_DOMAIN>/
-          - https://ts3-manager.<YOUR_BASE_DOMAIN>/
-          - https://kasm.<YOUR_BASE_DOMAIN>/
+          - https://jellyfin.alphasecunited.com/
+          - https://seerr.alphasecunited.com/
+          - https://sonarr.alphasecunited.com/
+          - https://radarr.alphasecunited.com/
+          - https://prowlarr.alphasecunited.com/
+          - https://qbittorrent.alphasecunited.com/
+          - https://semaphore.alphasecunited.com/
+          - https://immich.alphasecunited.com/
+          - https://booklore.alphasecunited.com/
+          - https://dashboard.alphasecunited.com/
+          - https://forgejo.alphasecunited.com/
+          - https://portainer.alphasecunited.com/
+          - https://peanut.alphasecunited.com/
+          - https://syncthing.alphasecunited.com/
+          - https://wazuh.alphasecunited.com/
+          - https://grafana.alphasecunited.com/
+          - https://prometheus.alphasecunited.com/
+          - https://splunk.alphasecunited.com/
+          - https://ts3-manager.alphasecunited.com/
+          - https://kasm.alphasecunited.com/
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

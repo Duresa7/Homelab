@@ -41,12 +41,12 @@ The connector authenticates with `/home/dkadi/.cloudflared/<YOUR_TUNNEL_ID>.json
 
 ## Access & firewall
 
-Cloudflare Access protects `coolify-a1.alphsec.com`; see [Access applications](../applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 & 8000; see the UniFi section of the [Coolify Access Hardening record](../../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
+Cloudflare Access protects `coolify-a1.alphsec.com`; see [Access applications](applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 & 8000; see the UniFi section of the [Coolify Access Hardening record](../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
 
 ## Account zones
 
-I hold four zones in this Cloudflare account: `alphasecunited.com`, `alphsec.com`, `<YOUR_PERSONAL_DOMAIN_NAME>.com`, & `<YOUR_PERSONAL_DOMAIN_NAME>.me`. External service ingress currently uses `alphsec.com`.
+I hold four zones in this Cloudflare account: `alphasecunited.com`, `alphsec.com`, `duresakadi.com`, & `duresakadi.me`. External service ingress currently uses `alphsec.com`.
 
 ## Related
 
-- End-to-end design: [External Service Ingress](../../../../../Architecture/External-Service-Ingress.md)
+- End-to-end design: [External Service Ingress](../../../../Architecture/External-Service-Ingress.md)

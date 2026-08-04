@@ -60,7 +60,7 @@ IPSet membership is recorded in the [firewall configuration reference](../../Con
 | Simulate: random mgmt `70.150 → :8006` and `:22` | DROP; the subnet-wide TCP 8006 accept was gone |
 | Live: purple `70.11 → grey :8006` | HTTP `200` (0.03s); inter-node GUI proxy intact |
 | Live: purple `70.11 → grey :22` | SSH banner returned |
-| Live: my admin session `<YOUR_ADMIN_SOURCE_IP> → :22` | continuous throughout (pve_admins) |
+| Live: my admin session `192.168.50.241 → :22` | continuous throughout (pve_admins) |
 | Cluster | `pvecm status`: 4 nodes, Quorate, 4 votes (corosync unaffected) |
 | host.fw removal | grey `PVEFW-HOST-IN` pve_mgmt jump 2 → 1; no `host.fw` on any node |
 

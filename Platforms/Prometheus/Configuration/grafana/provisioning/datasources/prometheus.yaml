@@ -1,5 +1,5 @@
 # Grafana datasource provisioning, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/grafana/provisioning/datasources/ on
+# /home/dkadi/monitoring/grafana/provisioning/datasources/ on
 # monitor-01.
 #
 # This adopts the datasource that already existed in the grafana_data volume

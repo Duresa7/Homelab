@@ -115,5 +115,5 @@ I closed ASU-QBIT-20260722-001 after the 20:53:48 EDT final audit. No open corre
 
 - [qBittorrent Host Validation Blocked Arr Clients](../../../Platforms/Media%20Stack/Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md)
 - [Internal HTTPS Service Onboarding - 2026-07-22](../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
-- [Step 1 diagnosis](Evidence/qBittorrent%20Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md)
-- [Step 2 correction and verification](Evidence/qBittorrent%20Host%20Validation%20Recovery%20-%202026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md)
+- [Step 1 diagnosis](Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md)
+- [Step 2 correction and verification](Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md)

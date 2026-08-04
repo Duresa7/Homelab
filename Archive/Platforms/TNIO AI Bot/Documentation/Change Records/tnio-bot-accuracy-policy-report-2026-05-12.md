@@ -5,7 +5,7 @@
 
 ## Result
 
-I changed the TNIO Librarian on `<YOUR_TNIO_HOST>` so policy questions prefer guides, codices, faction rules, & progression records over rosters and tracking sheets.
+I changed the TNIO Librarian on `ai-bravo-02` so policy questions prefer guides, codices, faction rules, & progression records over rosters and tracking sheets.
 
 The main issue was not missing Google Drive data. The correct answers were present in the synced TNIO archive, but the bot sometimes selected the wrong source class when answering new phrasings. In the Intel/Sith example, the `Intel Faction Guide` says Sith must be at least Apprentice before joining Imperial Intelligence, but broad `Intel` retrieval could pull in `TNIO Imperial Intelligence Roster` rows and fallback ranking could surface those instead of the authoritative guide.
 

@@ -1,10 +1,5 @@
 # Monitoring stack on monitor-01, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/docker-compose.yml
-#
-# Publication note: the three URL values below carry a redaction placeholder in
-# the repository copy and the real internal base domain in the deployed copy at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/. Same convention as the Ansible
-# fleet-updates inventory.
+# /home/dkadi/monitoring/docker-compose.yml
 #
 # cAdvisor is deliberately absent here. Ansible owns it as its own compose
 # project at /opt/docker/cadvisor so one playbook covers all eight Docker hosts
@@ -17,7 +12,7 @@ services:
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
-      - --web.external-url=https://prometheus.<YOUR_BASE_DOMAIN>
+      - --web.external-url=https://prometheus.alphasecunited.com
     volumes:
       # Single-file bind mount. Replacing the host file requires a container
       # restart, not a SIGHUP: see the 2026-07-13 inode troubleshooting record.
@@ -31,8 +26,8 @@ services:
     container_name: grafana
     restart: unless-stopped
     environment:
-      - GF_SERVER_DOMAIN=grafana.<YOUR_BASE_DOMAIN>
-      - GF_SERVER_ROOT_URL=https://grafana.<YOUR_BASE_DOMAIN>
+      - GF_SERVER_DOMAIN=grafana.alphasecunited.com
+      - GF_SERVER_ROOT_URL=https://grafana.alphasecunited.com
       - GF_SERVER_PROTOCOL=http
       # Write-ahead logging on the SQLite database. Added 2026-07-26 after 25
       # `database is locked` errors in 10 hours, spread across background jobs:

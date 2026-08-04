@@ -122,6 +122,6 @@ The remaining work is one controlled Prometheus restart check, not an open stora
 ## Linked records
 
 - [Galaxy troubleshooting record](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md)
-- [Evidence index](Evidence/Evidence-Index.md)
+- [Evidence index](Evidence/Blue%20Server%20Duplicate%20VG%20-%202026-07-30/Evidence-Index.md)
 - [Current Galaxy inventory](../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md)
 - [Drive inventory](../../../Infrastructure/Hardware/Components/Drives/README.md)

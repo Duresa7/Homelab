@@ -77,7 +77,7 @@ Jul 20 16:30:24 blue-server pve-ha-lrm[6501]: stopping service ct:107
 Jul 20 16:30:24 blue-server pve-ha-lrm[6502]: stopping service ct:108
 ```
 
-Full excerpt: [blue-shutdown-conditional-policy-journal-2026-07-20.txt](Evidence/Logs/blue-shutdown-conditional-policy-journal-2026-07-20.txt).
+Full excerpt: [blue-shutdown-conditional-policy-journal-2026-07-20.txt](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Logs/blue-shutdown-conditional-policy-journal-2026-07-20.txt).
 
 ### Finding 2 - The disks couldn't follow because `local-lvm` is node-local
 
@@ -90,11 +90,11 @@ TASK ERROR: no such logical volume pve/vm-107-disk-0
 
 The stranding was visible in the Proxmox UI: CT 107 sat `stopped` with HA State `error` on purple-server, reporting `No network information`.
 
-![CT 107 stopped and in HA error state on purple-server, with the task pane showing the migrate and start failures](Evidence/Screenshots/S01-CT107-Stopped-HA-Error-Purple-2026-07-20.png)
+![CT 107 stopped and in HA error state on purple-server, with the task pane showing the migrate and start failures](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Screenshots/S01-CT107-Stopped-HA-Error-Purple-2026-07-20.png)
 
 The cluster log shows the full `pve-ha-lrm` cascade: `vzstart` failing with `no such logical volume` and `vzmigrate` returning `migration aborted`.
 
-![Cluster log showing the vzstart no-such-logical-volume errors and vzmigrate migration-aborted entries for 107 and 108](Evidence/Screenshots/S04-Cluster-Log-NoSuchLV-Cascade-2026-07-20.png)
+![Cluster log showing the vzstart no-such-logical-volume errors and vzmigrate migration-aborted entries for 107 and 108](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Screenshots/S04-Cluster-Log-NoSuchLV-Cascade-2026-07-20.png)
 
 ### Finding 3 - The migrate-back failed because the service was already in `error`
 
@@ -106,9 +106,9 @@ service 'ct:107' in error state, must be disabled and fixed first
 TASK ERROR: command 'ha-manager migrate ct:107 blue-server' failed: exit code 255
 ```
 
-![Cluster log showing hamigrate and hastart tasks failing with exit code 255, and the recovery vzstart on blue-server](Evidence/Screenshots/S02-Cluster-Log-HAMigrate-Exit255-2026-07-20.png)
+![Cluster log showing hamigrate and hastart tasks failing with exit code 255, and the recovery vzstart on blue-server](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Screenshots/S02-Cluster-Log-HAMigrate-Exit255-2026-07-20.png)
 
-Full task transcripts: [purple-ha-recovery-attempt-failures-2026-07-20.txt](Evidence/Logs/purple-ha-recovery-attempt-failures-2026-07-20.txt) and [purple-vzmigrate-aborted-2026-07-20.txt](Evidence/Logs/purple-vzmigrate-aborted-2026-07-20.txt).
+Full task transcripts: [purple-ha-recovery-attempt-failures-2026-07-20.txt](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Logs/purple-ha-recovery-attempt-failures-2026-07-20.txt) and [purple-vzmigrate-aborted-2026-07-20.txt](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Logs/purple-vzmigrate-aborted-2026-07-20.txt).
 
 ## Root Cause Analysis
 
@@ -162,9 +162,9 @@ node-affinity: pin-blue-local-storage
 
 The Proxmox UI confirms both containers back under blue-server and both start tasks returning OK.
 
-![Proxmox server view showing 107 and 108 under blue-server, with CT 107 Start and CT 108 Start tasks completing OK at 17:03](Evidence/Screenshots/S03-Both-CTs-Recovered-Blue-2026-07-20.png)
+![Proxmox server view showing 107 and 108 under blue-server, with CT 107 Start and CT 108 Start tasks completing OK at 17:03](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Screenshots/S03-Both-CTs-Recovered-Blue-2026-07-20.png)
 
-Full snapshot: [post-recovery-verification-2026-07-20.txt](Evidence/Logs/post-recovery-verification-2026-07-20.txt). The evidence set is cataloged in the [Evidence Index](Evidence/Evidence-Index.md).
+Full snapshot: [post-recovery-verification-2026-07-20.txt](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Logs/post-recovery-verification-2026-07-20.txt). The evidence set is cataloged in the [Evidence Index](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Evidence-Index.md).
 
 With the strict pin in place, a future blue shutdown or reboot leaves 107 & 108 stopped until blue returns, then they auto-start on blue. That's the correct behavior while their storage is node-local: the HA manager can no longer strand the config on a diskless node.
 
@@ -180,4 +180,4 @@ With the strict pin in place, a future blue shutdown or reboot leaves 107 & 108 
 - [Galaxy HA local-storage troubleshooting record](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/HA%20Local-Storage%20Stranding%20of%20CT%20107%20and%20CT%20108%20After%20a%20Blue-Server%20Shutdown%20-%202026-07-20.md)
 - [Galaxy Docker-Network LXC Deployment](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
 - [Galaxy LXC inventory](../../../Operations/Inventory/Galaxy/LXCs.md)
-- [Evidence Index](Evidence/Evidence-Index.md)
+- [Evidence Index](Evidence/HA%20Local%20Storage%20Stranding%20-%202026-07-20/Evidence-Index.md)

@@ -1,7 +1,7 @@
 # NetBird
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-03
 
 I run NetBird and Nginx Proxy Manager in Debian 13 LXC 107 `docker-network`. The control plane, reverse proxy, & certificate path share one VLAN 85 host instead of the existing `docker-blue` workload container.
 
@@ -12,12 +12,12 @@ I run NetBird and Nginx Proxy Manager in Debian 13 LXC 107 `docker-network`. The
 | Deployment status | Operational over HTTPS; authenticated dashboard, controlled Compose restart, routed VPN path, automated renewal, and bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network` on VLAN 85 |
 | Guest address | `192.168.85.2/24` |
-| NetBird release | v0.74.4 (updated 2026-07-12 from the 0.74.3 initial install); deployed from the official installer |
+| NetBird release | Management server 0.75.1; dashboard 2.90.8; deployed from the official installer |
 | Live path | `/opt/docker/netbird` |
 | Containers | `netbird-dashboard`, `netbird-server` |
 | Direct bindings | Dashboard `127.0.0.1:8080`; server `127.0.0.1:8081`; STUN `3478/udp` |
-| Live URL | `https://netbird.alphsec.com` |
-| Internal DNS | `netbird.alphsec.com` resolves to `192.168.85.2` through UniFi |
+| Live URL | `https://netbird.alphasecunited.com` |
+| Internal DNS | `netbird.alphasecunited.com` resolves to `192.168.85.2` through UniFi |
 | Reverse proxy | Online Nginx Proxy Manager host through `172.31.85.10` on Docker network `proxy` |
 | Routing peer | `docker-network` (CT 107) is a NetBird peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` with masquerade |
 | VPN path | Validated 2026-07-12; a remote peer reaches Access-A through the overlay via the routing peer (`ip route ... dev wt0`, HTTPS `200`) |

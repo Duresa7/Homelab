@@ -3,7 +3,7 @@
 **Created:** 2026-07-29  
 **Last updated:** 2026-07-29
 
-**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../../Kasm-Workspaces-Incident-Report-2026-07-29-Thin-Pool-Exhaustion.md)
+**Incident:** [Kasm Workspaces Thin Pool Exhaustion](../../../Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 
 **Capture time:** 2026-07-29 22:42 through 22:56 EDT  
 **Targets:** `purple-server`, VM 122 `kasm-01`, Kasm NPM hostname  

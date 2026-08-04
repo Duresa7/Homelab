@@ -31,7 +31,7 @@ I replaced each file atomically, confirmed it still parsed as SSH public-key syn
 ## Verification Coverage
 
 - Complete host-wide standard-path coverage: `grey_server`, `purple_server`, `blue_server`, `red_server`, `docker_main`, `docker_network`, and `ws_dc_1_main`.
-- Connected-account coverage: `alpha_prod_01`, `app_01`, `supabase_01`, `ai_alpha_01`, `<YOUR_TNIO_HOST>`, `edge_01`, `security_01`, and `splunk_siem`.
+- Connected-account coverage: `alpha_prod_01`, `app_01`, `supabase_01`, `ai_alpha_01`, `ai-bravo-02`, `edge_01`, `security_01`, and `splunk_siem`.
 - Both removed key blobs returned zero matches in all 15 readable scopes.
 - I kept Kali Pen explicitly out of scope.
 
@@ -52,6 +52,6 @@ Connected-account coverage doesn't prove the absence of keys in unreadable accou
 | Target | Account | Result |
 |---|---|---|
 | `ws_dc_2_secondary` | `Administrator` | Connection reset during the SSH handshake |
-| `obi_pc` | `<YOUR_REMOTE_USERNAME>` | Timed out connecting to TCP/22 |
+| `obi_pc` | `local-obipc` | Timed out connecting to TCP/22 |
 
 Neither Windows target exposed an authorized-key file during this retest, so both remain Unknown in the inventory.

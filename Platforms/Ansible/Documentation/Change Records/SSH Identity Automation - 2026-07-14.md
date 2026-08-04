@@ -87,7 +87,7 @@ The four baseline identities are Mac, Ansible Control, Jedi PC, & Termix. Each r
 ## Rollback
 
 1. Stop using the new playbooks and fall back to the archived legacy project only if immediate recovery is necessary.
-2. Rebuild the legacy directory from [Legacy Controller Project](../../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md), substituting the admin username for the placeholder. This replaces the `/home/ansible/backups/ansible-before-ssh-identity-automation-2026-07-14.tar.gz` step; I removed that tarball on 2026-07-29 after confirming all four files inside it were byte-identical to the archived copies. See the note below before rebuilding it.
+2. Rebuild the legacy directory from [Legacy Controller Project](../../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md). This replaces the `/home/ansible/backups/ansible-before-ssh-identity-automation-2026-07-14.tar.gz` step; I removed that tarball on 2026-07-29 after confirming all four files inside it were byte-identical to the archived copies. See the note below before rebuilding it.
 3. Nothing needs restoring for controller host trust. I removed `/home/ansible/backups/known_hosts-before-ssh-identity-automation-2026-07-14` on 2026-07-29 after proving that none of its 24 host keys were missing from the live `known_hosts`, which holds 75. A redacted copy is archived beside the legacy project as a record of that state, not as a restore source. If a host key ever does need re-accepting, take it fresh from the host.
 4. Use `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json` as the supported Semaphore project-level recovery reference.
 

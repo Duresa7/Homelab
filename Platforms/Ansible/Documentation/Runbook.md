@@ -154,7 +154,7 @@ I check manifest drift with a short-lived API token. The default command is read
 
 ```bash
 sudo sh -c 'umask 077; semaphore --config /root/config.json users token create \
-  --login <YOUR_SEMAPHORE_LOGIN> --name ansible-manifest-check --ttl 15m \
+  --login dkadi --name ansible-manifest-check --ttl 15m \
   > /root/semaphore-api-token.tmp'
 
 sudo python3 /opt/homelab/ansible-tools/reconcile_semaphore.py \
@@ -172,7 +172,7 @@ If Semaphore is unavailable, I run the same playbooks directly; no automation de
 
 ## Recovery
 
-- Controller project before deployment: [Legacy Controller Project](../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md) in this repository. The `/home/ansible/backups/` tarball it replaces is gone as of 2026-07-29; every file inside it was byte-identical to the archived copies, which carry the admin username as a placeholder.
+- Controller project before deployment: [Legacy Controller Project](../../../Archive/Platforms/Ansible/Legacy%20Controller%20Project%20-%202026-07-29/README.md) in this repository. The `/home/ansible/backups/` tarball it replaces is gone as of 2026-07-29; every file inside it was byte-identical to the archived copies.
 - Controller known-hosts before deployment: a redacted copy sits beside that archive as a record. It is not a restore source, and it doesn't need to be: none of its 24 host keys were missing from the live `known_hosts`. Re-accept a host key from the host itself if one is ever needed.
 - Semaphore project export before UI changes: `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json`
 - Runtime-upgrade backup set: `/root/semaphore-backups/upgrade-2026-07-14`

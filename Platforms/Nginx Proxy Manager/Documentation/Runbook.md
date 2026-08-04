@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-03
 
 ## Scope
 
@@ -17,7 +17,7 @@ docker compose ps
 docker inspect -f 'status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}} ip={{(index .NetworkSettings.Networks "proxy").IPAddress}} restart={{.HostConfig.RestartPolicy.Name}}' nginx-proxy-manager
 curl -sS -o /dev/null -w 'admin_http=%{http_code}\n' http://127.0.0.1:81/
 curl -sS -o /dev/null -w 'http_entry=%{http_code}\n' http://127.0.0.1/
-curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://netbird.alphsec.com/
+curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://netbird.alphasecunited.com/
 docker exec nginx-proxy-manager nginx -t
 ```
 
@@ -68,10 +68,10 @@ I don't add database, Redis, exporter, agent, SSH, HEC, syslog, or synchronizati
 
 The current HTTPS proxy host is saved, Online, and validated. I use these settings to verify it or recreate it during recovery.
 
-1. Confirm internal DNS resolves `netbird.alphsec.com` to `192.168.85.2`.
+1. Confirm internal DNS resolves `netbird.alphasecunited.com` to `192.168.85.2`.
 2. Confirm the Cloudflare DNS-01 wildcard/apex certificate exists in NPM and has not expired.
 3. Create a Proxy Host with:
-   - domain `netbird.alphsec.com`;
+   - domain `netbird.alphasecunited.com`;
    - scheme `http`;
    - forward host `netbird-dashboard`;
    - forward port `80`;
@@ -93,7 +93,7 @@ I request one DNS-01 certificate covering:
 alphasecunited.com
 ```
 
-The active certificate covers both names and expires `2026-10-08 23:49:46 UTC`. It is assigned to `netbird.alphsec.com` with Force SSL and HTTP/2 enabled. I verified the non-interactive `dns-cloudflare` renewal path with a successful Let's Encrypt staging dry-run on 2026-07-12. NPM's Node backend initializes an hourly timer and checks immediately at startup for certificates within 30 days of expiry.
+The active certificate covers both names and expires `2026-10-08 23:49:46 UTC`. It is assigned to `netbird.alphasecunited.com` with Force SSL and HTTP/2 enabled. I verified the non-interactive `dns-cloudflare` renewal path with a successful Let's Encrypt staging dry-run on 2026-07-12. NPM's Node backend initializes an hourly timer and checks immediately at startup for certificates within 30 days of expiry.
 
 After issuance or renewal I:
 

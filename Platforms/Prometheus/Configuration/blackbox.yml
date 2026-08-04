@@ -1,5 +1,5 @@
 # blackbox_exporter modules, deployed at
-# /home/<YOUR_ADMIN_USERNAME>/monitoring/blackbox.yml on monitor-01.
+# /home/dkadi/monitoring/blackbox.yml on monitor-01.
 #
 # The probe target list lives in prometheus.yml, not here. This file only
 # defines how a probe behaves.

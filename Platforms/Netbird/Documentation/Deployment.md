@@ -17,7 +17,7 @@ The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infras
 - VLAN 85 already existed and was available to the Proxmox environment.
 - No dedicated NetBird/Nginx Proxy Manager LXC or NetBird platform deployment existed.
 - I had settled on the name, address, and guest ID: `docker-network`, `192.168.85.2/24`, and CT 107.
-- `netbird.alphsec.com` didn't yet have the required internal DNS record, certificate, or reverse-proxy host.
+- `netbird.alphasecunited.com` didn't yet have the required internal DNS record, certificate, or reverse-proxy host.
 
 ## Platform Deployment Summary
 
@@ -58,31 +58,31 @@ After I verified the generated runtime, I removed the downloaded `getting-starte
 
 ### UniFi dependencies
 
-Three ordered `AlphaSec`-Access-to-External policies now govern CT 107 egress:
+Three ordered `AlphaSec-Access`-to-External policies now govern CT 107 egress:
 
 1. Allow `docker-network` TCP 80 and 443.
 2. Allow `docker-network` UDP 123.
-3. Block all other `AlphaSec`-Access IPv4 traffic to External.
+3. Block all other `AlphaSec-Access` IPv4 traffic to External.
 
-I verified HTTP, HTTPS, and NTP. TCP DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out as expected, while DNS through gateway `192.168.85.1` remained available.
+I verified HTTP, HTTPS, and NTP. TCP DNS to `1.1.1.1:53` timed out as expected, while DNS through gateway `192.168.85.1` remained available.
 
 UniFi internal DNS now has an enabled A record with TTL 300:
 
 ```text
-netbird.alphsec.com -> 192.168.85.2
+netbird.alphasecunited.com -> 192.168.85.2
 ```
 
 I verified resolution from both CT 107 and my Windows workstation.
 
 ### Nginx Proxy Manager routing
 
-The proxy host `netbird.alphsec.com` is saved and Online with default upstream `http://netbird-dashboard:80`, Block Common Exploits enabled, and WebSocket Support enabled. I applied the 1,296-character advanced configuration to route NetBird API, OAuth2, WebSocket, signal, management, and gRPC requests to `netbird-server:80`.
+The proxy host `netbird.alphasecunited.com` is saved and Online with default upstream `http://netbird-dashboard:80`, Block Common Exploits enabled, and WebSocket Support enabled. I applied the 1,296-character advanced configuration to route NetBird API, OAuth2, WebSocket, signal, management, and gRPC requests to `netbird-server:80`.
 
-Nginx configuration validation succeeded, and a request through NPM with Host header `netbird.alphsec.com` returned HTTP `200`. Nginx Proxy Manager issued a Let's Encrypt certificate for `*.alphasecunited.com` and `alphasecunited.com` through Cloudflare DNS-01. I assigned it to the NetBird host with Force SSL and HTTP/2 enabled. The intended HTTPS URL returned `200`, and the authenticated administrator dashboard loaded.
+Nginx configuration validation succeeded, and a request through NPM with Host header `netbird.alphasecunited.com` returned HTTP `200`. Nginx Proxy Manager issued a Let's Encrypt certificate for `*.alphasecunited.com` and `alphasecunited.com` through Cloudflare DNS-01. I assigned it to the NetBird host with Force SSL and HTTP/2 enabled. The intended HTTPS URL returned `200`, and the authenticated administrator dashboard loaded.
 
 ### Controlled restart validation
 
-I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Nginx Proxy Manager returned to `healthy`, both NetBird containers returned to the running state, `nginx -t` passed, & `https://netbird.alphsec.com` returned HTTP `200`. The restart reused the saved proxy host, certificate, and NetBird datastore; I didn't recreate configuration.
+I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Nginx Proxy Manager returned to `healthy`, both NetBird containers returned to the running state, `nginx -t` passed, & `https://netbird.alphasecunited.com` returned HTTP `200`. The restart reused the saved proxy host, certificate, and NetBird datastore; I didn't recreate configuration.
 
 ## Resulting Configuration
 
@@ -96,12 +96,12 @@ I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Ngin
 | Direct ports | `127.0.0.1:8080`, `127.0.0.1:8081`, `3478/udp` |
 | Shared proxy network | `proxy`, `172.31.85.0/24` |
 | Trusted HTTP proxy | `172.31.85.10/32` |
-| Internal name | `netbird.alphsec.com` -> `192.168.85.2` |
+| Internal name | `netbird.alphasecunited.com` -> `192.168.85.2` |
 | HTTPS certificate | Let's Encrypt wildcard/apex certificate issued through Cloudflare DNS-01 |
 | Certificate renewal | Non-interactive DNS-01 path verified by staging dry-run; NPM checks hourly and renews within 30 days of expiry |
 | Container logging | `json-file`, `max-size=10m`, `max-file=3` on both NetBird containers |
 | NPM proxy host | Online; advanced routes, Force SSL, and HTTP/2 applied |
-| NetBird administrator | Existing administrator authenticated through `https://netbird.alphsec.com` |
+| NetBird administrator | Existing administrator authenticated through `https://netbird.alphasecunited.com` |
 
 ## Verification Performed
 
@@ -112,11 +112,11 @@ I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Ngin
 - The saved proxy host reports Online, `nginx -t` succeeds, and a Host-header request through NPM returns the NetBird dashboard with HTTP `200`.
 - The Let's Encrypt certificate covers the wildcard and apex names and is assigned to the NetBird proxy host.
 - I inspected the non-interactive Cloudflare DNS-01 renewal configuration and NPM's hourly renewal timer; a Let's Encrypt staging dry-run succeeded for lineage `npm-1` on 2026-07-12.
-- Force SSL & HTTP/2 are enabled, & `https://netbird.alphsec.com` returns HTTP `200` through internal UniFi DNS.
-- I observed an authenticated administrator dashboard at `https://netbird.alphsec.com`.
+- Force SSL & HTTP/2 are enabled, & `https://netbird.alphasecunited.com` returns HTTP `200` through internal UniFi DNS.
+- I observed an authenticated administrator dashboard at `https://netbird.alphasecunited.com`.
 - Controlled restarts returned Nginx Proxy Manager to `healthy`, both NetBird containers to the running state, and the HTTPS endpoint to `200`.
 - Docker inspection confirmed bounded `json-file` logging with `max-size=10m` and `max-file=3` on `netbird-server` and `netbird-dashboard`.
-- Gateway DNS returned `192.168.85.2` for `netbird.alphsec.com`.
+- Gateway DNS returned `192.168.85.2` for `netbird.alphasecunited.com`.
 - Approved web and NTP egress succeeded; a non-approved external TCP DNS test was blocked.
 
 These checks prove the direct control plane, its network dependencies, HTTPS publication, administrator authentication, Compose-level restart persistence, automated certificate-renewal path, and bounded container logging. I validated first-peer enrollment and the routed VPN client path into Access-A on 2026-07-12; see [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md). Renewal and logging follow-ups are recorded in [NetBird/NPM Operational Follow-ups and Hardening Descope - 2026-07-12](Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).

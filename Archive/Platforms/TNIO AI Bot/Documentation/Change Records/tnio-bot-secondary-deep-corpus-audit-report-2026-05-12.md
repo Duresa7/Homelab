@@ -22,7 +22,7 @@ The two files still blocked by the local Google Drive connector were included th
 - TNIO Master Engineers: Droid Codex
 
 ## Rebuilt Runtime State
-The following files were rebuilt on `<YOUR_TNIO_HOST>` under `/home/aibravo/lore-rag/state/`:
+The following files were rebuilt on `ai-bravo-02` under `/home/aibravo/lore-rag/state/`:
 
 - `tnio_deep_source_audit.json`
 - `tnio_source_authority_map.json`
@@ -64,7 +64,7 @@ The deep pass found overlapping source coverage in several areas that can confus
 These areas now have stronger authority hints so the bot can prefer the correct class of source.
 
 ## Validation
-I ran syntax and regression checks on `<YOUR_TNIO_HOST>`:
+I ran syntax and regression checks on `ai-bravo-02`:
 
 ```text
 python3 -m py_compile lore_agent.py lore_mcp_server.py test_accuracy_policy.py test_corpus_accuracy.py

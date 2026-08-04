@@ -29,7 +29,7 @@ In scope: zone consolidation for the observability and cluster segments, reusabl
 
 Out of scope, deliberately: the Kasm lab. `KASM-BROWSER`/74, `MALWARE-OFFLINE`/77, and `EVIDENCE-QUARANTINE`/79 keep their three separate zones, their ten policies, and their `KASM Lab Proton Egress` traffic route. Those three zones can't reach each other, and that non-adjacency is the point of the design. I'm building session isolation separately, so nothing here touches them.
 
-Also out of scope: merging `AlphaSec`-Access into the observability zone. Its egress posture matches, but `docker-network` at `192.168.85.2` fronts internet traffic through Nginx Proxy Manager. Putting it in the same zone as Splunk and Grafana would hand a compromised proxy intra-zone reach into the SIEM. That boundary earns its keep, so Access-A stays on its own zone.
+Also out of scope: merging `AlphaSec-Access` into the observability zone. Its egress posture matches, but `docker-network` at `192.168.85.2` fronts internet traffic through Nginx Proxy Manager. Putting it in the same zone as Splunk and Grafana would hand a compromised proxy intra-zone reach into the SIEM. That boundary earns its keep, so Access-A stays on its own zone.
 
 ## Verified starting state
 
@@ -40,12 +40,12 @@ I read this from the controller on 2026-07-27, not from these records. Zone memb
 | Internal | Management, Trusted/10, Personal-A/40, Secure/50, Secure Client/60 (AD-SERVERS/65 was a member; deleted later on 2026-07-27) |
 | Untrusted | IoT/20, **Secure-V/100** |
 | Dmz | DMZ/30, DMZ-A/90 |
-| `AlphaSec`-Servers | SERVERS-A/80 |
-| `AlphaSec`-Mgmt | MGMT-A/70 |
-| `AlphaSec`-Security | Security-A/72 |
-| `AlphaSec`-Monitor | MONITOR-A/73 |
-| `AlphaSec`-Access | Access-A/85 |
-| `AlphaSec`-Cluster | Cluster-Net/71 |
+| `AlphaSec-Servers` | SERVERS-A/80 |
+| `AlphaSec-Mgmt` | MGMT-A/70 |
+| `AlphaSec-Security` | Security-A/72 |
+| `AlphaSec-Monitor` | MONITOR-A/73 |
+| `AlphaSec-Access` | Access-A/85 |
+| `AlphaSec-Cluster` | Cluster-Net/71 |
 | KASM-BROWSER | KASM-BROWSER/74 |
 | MALWARE-OFFLINE | MALWARE-OFFLINE/77 |
 | EVIDENCE-QUARANTINE | EVIDENCE-QUARANTINE/79 |
@@ -80,10 +80,10 @@ Custom zones drop from 9 to 6, and the total from 16 to 13.
 
 | Zone | Posture | Networks after this plan |
 |---|---|---|
-| `AlphaSec`-Mgmt | Hypervisor plane | MGMT-A/70, Cluster-Net/71 |
-| `AlphaSec`-Servers | Internal app and data | SERVERS-A/80 |
-| `AlphaSec`-Observability | Security, detection, monitoring | Security-A/72, MONITOR-A/73 |
-| `AlphaSec`-Access | Ingress hinge | Access-A/85 |
+| `AlphaSec-Mgmt` | Hypervisor plane | MGMT-A/70, Cluster-Net/71 |
+| `AlphaSec-Servers` | Internal app and data | SERVERS-A/80 |
+| `AlphaSec-Observability` | Security, detection, monitoring | Security-A/72, MONITOR-A/73 |
+| `AlphaSec-Access` | Ingress hinge | Access-A/85 |
 | KASM-BROWSER, MALWARE-OFFLINE, EVIDENCE-QUARANTINE | Lab, untouched | 74, 77, 79 |
 
 13 zones is 169 ordered pairs against today's 256, a third fewer pair-defaults for the controller to generate. I'll record the actual generated count before and after rather than predicting it, since the generated set also holds return companions, invalid-state drops, and gateway-service entries that don't scale with the zone matrix.
@@ -133,9 +133,9 @@ This is cosmetic and carries no traffic risk. It's in the plan because these rec
 
 ### S05: Merge Cluster-Net into the Mgmt zone
 
-I do this before the observability merge because no custom policy references `AlphaSec`-Cluster. Zero. That makes it the safe rehearsal for the UI procedure I need in S06.
+I do this before the observability merge because no custom policy references `AlphaSec-Cluster`. Zero. That makes it the safe rehearsal for the UI procedure I need in S06.
 
-In the UI I move Cluster-Net/71 into `AlphaSec`-Mgmt, then delete the emptied `AlphaSec`-Cluster zone. Corosync link1 is intra-VLAN traffic that never reaches the gateway, so there's no routed dependency to break.
+In the UI I move Cluster-Net/71 into `AlphaSec-Mgmt`, then delete the emptied `AlphaSec-Cluster` zone. Corosync link1 is intra-VLAN traffic that never reaches the gateway, so there's no routed dependency to break.
 
 Two settings to preserve: Cluster-Net has `dhcpd_enabled: false` and `internet_access_enabled: false`. I verify both survived the move.
 
@@ -149,15 +149,15 @@ Stop condition: if the controller refuses to delete the zone, I leave it empty a
 
 This is the risky step. Postures already match: inbound from Internal and VPN, egress default-deny except web and NTP, and Prometheus already scrapes both sides while Wazuh agents ship into them.
 
-I keep `AlphaSec`-Monitor as the surviving zone because 15 policies reference it against 10 for `AlphaSec`-Security, then rename it to `AlphaSec`-Observability. Repointing 9 policies beats repointing 15.
+I keep `AlphaSec-Monitor` as the surviving zone because 15 policies reference it against 10 for `AlphaSec-Security`, then rename it to `AlphaSec-Observability`. Repointing 9 policies beats repointing 15.
 
 Order matters, and it's the opposite of what feels natural:
 
-1. Repoint the 9 `AlphaSec`-Security-only policies to the surviving zone.
+1. Repoint the 9 `AlphaSec-Security`-only policies to the surviving zone.
 2. Move Security-A/72 into the surviving zone in the UI.
 3. Delete `Allow Monitor to A-Security monitoring`. Once both networks share a zone that scrape is intra-zone, and the intra-zone default already permits it.
-4. Delete the emptied `AlphaSec`-Security zone.
-5. Rename the survivor to `AlphaSec`-Observability.
+4. Delete the emptied `AlphaSec-Security` zone.
+5. Rename the survivor to `AlphaSec-Observability`.
 
 Policies must be repointed before the network moves. A policy that still names the old zone after its network has left silently stops matching, and one of those policies is `Block AlphaSec-Security Other External Egress`. A BLOCK that stops matching is a hole, not an outage, so it won't announce itself.
 
@@ -174,7 +174,7 @@ Rollback: recreate the deleted zone, move Security-A back, restore the 10 polici
 
 ### S07: Remove Secure-V
 
-The decision gate this step originally carried is resolved. When I first mapped `Secure-V`/100 it was a working domain wireless network: an enabled SSID, a ProtonVPN traffic route, and a Windows Group Policy WLAN profile naming that SSID as the only one domain machines may join. I decided on 2026-07-27 to retire the whole Windows domain, which dissolves the GPO dependency, and I deleted the `<YOUR_AD_SSID>` SSID the same day. The domain-side teardown lives in the archived [Active Directory Decommission plan](../../../../../Platforms/Windows%20Servers/Documentation/Change%20Plans/Active%20Directory%20Decommission.md).
+The decision gate this step originally carried is resolved. When I first mapped `Secure-V`/100 it was a working domain wireless network: an enabled SSID, a ProtonVPN traffic route, and a Windows Group Policy WLAN profile naming that SSID as the only one domain machines may join. I decided on 2026-07-27 to retire the whole Windows domain, which dissolves the GPO dependency, and I deleted the `Kadi-AP-AD` SSID the same day. The domain-side teardown lives in the archived [Active Directory Decommission plan](../../../../../Platforms/Windows%20Servers/Documentation/Change%20Plans/Active%20Directory%20Decommission.md).
 
 What remains here is two objects, in this order:
 
@@ -185,7 +185,7 @@ The Proxmox-Trunk port profile needs no edit. It stores an exclusion list rather
 
 Check: the network list returns 25 entries, no WLAN references VLAN 100, the traffic-route list holds two routes, and the trunk's exclusion list holds five entries.
 
-Separately, `AlphaSec`-IoT is a disabled SSID bound to the untagged Management network. It's off, so nothing is on the management LAN because of it, but that isn't where an IoT SSID should point even while disabled. Rebind or delete it while in the WLAN screen.
+Separately, `AlphaSec-IoT` is a disabled SSID bound to the untagged Management network. It's off, so nothing is on the management LAN because of it, but that isn't where an IoT SSID should point even while disabled. Rebind or delete it while in the WLAN screen.
 
 ### S08: Client group hygiene
 
@@ -214,8 +214,6 @@ Six corrections were true of the records regardless of whether any step above ru
 - Added the missing traffic-route inventory to the objects record
 - Recorded the address-group gap and the inline-address reuse counts in the firewall record
 - Recorded the zone-name mismatch and the placeholder that hid it
-
-I introduced one new scrub placeholder, `<YOUR_AD_SSID>`, for the domain wireless SSID. It needs adding to the private redaction value map.
 
 ## Open items this plan doesn't resolve
 

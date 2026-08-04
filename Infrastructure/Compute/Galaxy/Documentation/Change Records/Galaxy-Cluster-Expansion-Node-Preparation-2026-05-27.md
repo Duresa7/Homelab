@@ -68,9 +68,9 @@ I left these items for the expansion work that followed:
 
 | Node | Role | Management IP | FQDN |
 | --- | --- | --- | --- |
-| grey-server | Existing primary | 192.168.70.10 | `<YOUR_INTERNAL_DOMAIN>` |
-| purple-server | New node | 192.168.70.11 | `<YOUR_PURPLE_SERVER_FQDN>` |
-| blue-server | New node | 192.168.70.12 | `<YOUR_BLUE_SERVER_FQDN>` |
+| grey-server | Existing primary | 192.168.70.10 | `grey-server.local` |
+| purple-server | New node | 192.168.70.11 | `purple-server.galaxy` |
+| blue-server | New node | 192.168.70.12 | `blue-server.galaxy` |
 
 I targeted three nodes. That gave Corosync an odd vote count and allowed the cluster to retain quorum after losing one node.
 
@@ -141,7 +141,7 @@ Verification:
 
 | Field | purple-server | blue-server |
 | --- | --- | --- |
-| Hostname / FQDN | `<YOUR_PURPLE_SERVER_FQDN>` | `<YOUR_BLUE_SERVER_FQDN>` |
+| Hostname / FQDN | `purple-server.galaxy` | `blue-server.galaxy` |
 | IP address | 192.168.70.11 | 192.168.70.12 |
 | Netmask | 255.255.255.0 (/24) | 255.255.255.0 (/24) |
 | Gateway | 192.168.70.1 | 192.168.70.1 |
@@ -202,7 +202,7 @@ I used grey-server's settings as the baseline for the two new nodes.
 | PermitEmptyPasswords | no |
 | Key exchange | Includes `mlkem768x25519-sha256` |
 
-Authorized keys present for root: mac-air3-`dkadi`, `<RETIRED_ROOT_KEY_LABEL>`-nopass, ansible-control, and a legacy root@`<YOUR_RETIRED_NODE_NAME>` RSA key.
+Authorized keys present for root: mac-air3-`dkadi`, `<RETIRED_ROOT_KEY_LABEL>`-nopass, ansible-control, and a legacy root@`sith-server` RSA key.
 
 ### 8.2 Firewall posture
 
@@ -229,7 +229,7 @@ Authorized keys present for root: mac-air3-`dkadi`, `<RETIRED_ROOT_KEY_LABEL>`-n
 ## 10. Cleanup Left Open
 
 - Remove the stale truenas entry from /etc/hosts on grey-server.
-- Remove the empty node directories Grey-Server and `<YOUR_RETIRED_NODE_NAME>` under /etc/pve/nodes.
+- Remove the empty node directories Grey-Server and `sith-server` under /etc/pve/nodes.
 - Tighten bridge-vids on grey-server from 2-4094 to the in-use set (40, 60, 65, 70, 80, 90).
 - Align grey-server FQDN domain to .galaxy for consistency with the new nodes.
 

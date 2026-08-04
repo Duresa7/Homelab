@@ -49,7 +49,7 @@ Added:
 - `build_feedback_eval_queue.py`
 - `drive_change_monitor.py`
 
-Generated on `<YOUR_TNIO_HOST>`:
+Generated on `ai-bravo-02`:
 
 - `/home/aibravo/lore-rag/state/tnio_golden_eval_suite.json`
 - `/home/aibravo/lore-rag/state/feedback_eval_queue.jsonl`
@@ -114,7 +114,7 @@ The agent-answer cache namespace was bumped to `v34` so stale persisted answers 
 The HTTP server now quietly handles client disconnects during long-running live evaluations, preventing evaluator timeouts from producing noisy `BrokenPipeError` stack traces.
 
 ## Verification
-Passed on `<YOUR_TNIO_HOST>`:
+Passed on `ai-bravo-02`:
 
 ```text
 python3 -m py_compile lore_agent.py lore_mcp_server.py sync_lore.py build_feedback_eval_queue.py build_golden_eval_suite.py drive_change_monitor.py test_accuracy_policy.py test_corpus_accuracy.py test_golden_eval_suite.py

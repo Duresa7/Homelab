@@ -13,9 +13,9 @@ The folder ID must remain `obsidian-the-vault` on every peer. The path doesn't h
 
 | Operating system | Example local path |
 |---|---|
-| Windows | `C:\Users\<YOUR_WINDOWS_USERNAME>\Documents\The Vault` |
-| macOS | `/Users/<YOUR_MAC_USERNAME>/Documents/The Vault` |
-| Linux | `/home/<YOUR_LINUX_USERNAME>/Documents/The Vault` |
+| Windows | `C:\Users\dures\Documents\The Vault` |
+| macOS | `/Users/dkadi/Documents/The Vault` |
+| Linux | `/home/dkadi/Documents/The Vault` |
 
 I don't place this vault inside iCloud Drive, OneDrive, Dropbox, or another synchronized directory. Two file synchronization engines can race on the same deletion, rename, or temporary file.
 
@@ -33,7 +33,7 @@ syncthing --no-browser --no-restart
 If the second command isn't found, I close & reopen PowerShell so it reloads the WinGet command aliases. For sign-in startup, I open `shell:startup` from the Run dialog and create a shortcut with this target:
 
 ```text
-C:\Users\<YOUR_WINDOWS_USERNAME>\AppData\Local\Microsoft\WinGet\Links\syncthing.exe --no-console --no-browser --no-restart
+C:\Users\dures\AppData\Local\Microsoft\WinGet\Links\syncthing.exe --no-console --no-browser --no-restart
 ```
 
 ### macOS
@@ -68,7 +68,7 @@ I make a separate backup if the new computer already contains an Obsidian vault.
 I create the destination directory before accepting the share. The operating-system examples are:
 
 ```powershell
-New-Item -ItemType Directory -Force 'C:\Users\<YOUR_WINDOWS_USERNAME>\Documents\The Vault'
+New-Item -ItemType Directory -Force 'C:\Users\dures\Documents\The Vault'
 ```
 
 ```bash

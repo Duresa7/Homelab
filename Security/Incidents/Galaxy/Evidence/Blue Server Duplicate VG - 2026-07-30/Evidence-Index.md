@@ -12,4 +12,4 @@ These transcripts retain the SSH Manager commands, returned output, standard err
 | S03 | [WDC disk wipe](Logs/S03%20WDC%20Disk%20Wipe%20-%202026-07-31.md) | The guarded destructive command removed the stale LVM layout and GPT from the exact WDC device identity; follow-up returned a blank disk. |
 | S04 | [Final verification](Logs/S04%20Final%20Verification%20-%202026-07-31.md) | The NVMe is the only LVM PV, all three LXCs and workloads run, HA is started, quorum is intact, & no activation error recurred. |
 
-The sanitized WDC SMART output will be linked from the [drive inventory](../../../../Infrastructure/Hardware/Components/Drives/README.md) after its extended test completes.
+The sanitized WDC SMART output will be linked from the [drive inventory](../../../../../Infrastructure/Hardware/Components/Drives/README.md) after its extended test completes.

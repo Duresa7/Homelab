@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-03
 
 ## Health Check
 
@@ -24,16 +24,15 @@ Do not treat a successful file copy or a HUP signal as proof of reload. Verify t
 
 1. Edit [Configuration/prometheus.yml](../Configuration/prometheus.yml) first.
 2. Upload it to a candidate path under `/home/dkadi/monitoring/`.
-3. Replace `alphasecunited.com` with the real internal base domain in the candidate. The versioned copy carries the placeholder; the deployed copy cannot.
-4. `docker cp` the candidate into the container and run `promtool check config` against it.
-5. Confirm a dated backup of the live file exists.
+3. `docker cp` the candidate into the container and run `promtool check config` against it.
+4. Confirm a dated backup of the live file exists.
 6. Write the candidate into the live file with `cat candidate > prometheus.yml`, not `mv`.
 7. Restart the `prometheus` container.
 8. Wait at least one scrape interval for the job in question, then run the target assertion and remove candidate files.
 
 Step 6 matters. `prometheus.yml` is a single-file bind mount, and `mv` replaces the inode while the container stays attached to the old one, which is what cost the 2026-07-13 change a reload. Redirecting into the existing file keeps the inode and removes the failure mode. Restart anyway, because Prometheus still has to re-read the file.
 
-Adding a target on another VLAN needs a UniFi policy from `AlphaSec`-Monitor to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
+Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Monitor` to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
 
 ## Change a Dashboard
 
@@ -48,7 +47,7 @@ Adding a provisioning subdirectory means adding a placeholder file to it. The Co
 
 ## Rollback
 
-The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, substituting the deployed domain and administrator name, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
+The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
 
 `GF_DATABASE_WAL=true` sits in the Compose file but has no effect on Grafana 13.1.1, so `grafana.db` is the whole database and restoring it on its own is complete. Check before you rely on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or you stop the container first so SQLite checkpoints the log back into the main file. Why the setting stopped working is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 

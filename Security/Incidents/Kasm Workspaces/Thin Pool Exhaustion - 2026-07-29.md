@@ -161,7 +161,7 @@ ASU-KASM-20260729-001 is mitigated. Kasm is available, discard is enabled, autom
 
 ## Linked Records
 
-- [Kasm Thin Pool Exhaustion Paused VM 122](../../../../Platforms/Kasm%20Workspaces/Documentation/Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md)
-- [Kasm Workspaces TODO](../../../../Platforms/Kasm%20Workspaces/Documentation/TODO.md)
-- [Evidence index](Evidence/Evidence-Index.md)
-- [Kasm Parrot Workspace Build-Out - 2026-07-30](../../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md)
+- [Kasm Thin Pool Exhaustion Paused VM 122](../../../Platforms/Kasm%20Workspaces/Documentation/Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md)
+- [Kasm Workspaces TODO](../../../Platforms/Kasm%20Workspaces/Documentation/TODO.md)
+- [Evidence index](Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence-Index.md)
+- [Kasm Parrot Workspace Build-Out - 2026-07-30](../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md)

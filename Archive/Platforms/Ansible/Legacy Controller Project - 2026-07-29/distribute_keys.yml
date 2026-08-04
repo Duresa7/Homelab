@@ -9,7 +9,7 @@
         state: present
       loop:
         - "ssh-ed25519 <REDACTED_PUBLIC_KEY> jedi-pc"
-        - "ssh-ed25519 <REDACTED_PUBLIC_KEY> mac-air3-<YOUR_ADMIN_USERNAME>"
+        - "ssh-ed25519 <REDACTED_PUBLIC_KEY> mac-air3-dkadi"
         - "ssh-ed25519 <REDACTED_PUBLIC_KEY> ansible-control"
 
 - hosts: VM
@@ -17,10 +17,10 @@
   tasks:
     - name: Deploy authorized SSH keys
       authorized_key:
-        user: <YOUR_ADMIN_USERNAME>
+        user: dkadi
         key: "{{ item }}"
         state: present
       loop:
         - "ssh-ed25519 <REDACTED_PUBLIC_KEY> jedi-pc"
-        - "ssh-ed25519 <REDACTED_PUBLIC_KEY> mac-air3-<YOUR_ADMIN_USERNAME>"
+        - "ssh-ed25519 <REDACTED_PUBLIC_KEY> mac-air3-dkadi"
         - "ssh-ed25519 <REDACTED_PUBLIC_KEY> ansible-control"

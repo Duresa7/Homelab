@@ -65,7 +65,7 @@ I populated the empty Termix host manager with every machine SSH Manager could r
 |---|---|---|
 | `unifi_ashoka` | 192.168.1.1 | TCP/22 connection refused |
 | `ai_alpha_01` | 192.168.40.37 | TCP/22 timed out |
-| `<YOUR_TNIO_HOST>` | 192.168.40.38 | TCP/22 timed out |
+| `ai-bravo-02` | 192.168.40.38 | TCP/22 timed out |
 | `supabase_01` | 192.168.80.20 | TCP/22 timed out |
 | `ws_dc_1_main` | 192.168.65.10 | TCP/22 timed out |
 | `ws_dc_2_secondary` | 192.168.65.45 | TCP/22 timed out |

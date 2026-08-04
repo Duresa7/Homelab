@@ -83,7 +83,7 @@ sda    8:0    0 465.8G  0 disk
   /dev/nvme0n1p3 pve lvm2 a--  237.47g 16.00g
 ```
 
-This contradicted [S03](../../../../../Security/Incidents/Galaxy-Blue-Server-Duplicate-VG-2026-07-30/Evidence/Logs/S03%20WDC%20Disk%20Wipe%20-%202026-07-31.md), which verified an empty `wipefs` read at about 00:00 EDT. The Proxmox task log explains the gap:
+This contradicted [S03](../../../../../Security/Incidents/Galaxy/Evidence/Blue%20Server%20Duplicate%20VG%20-%202026-07-30/Logs/S03%20WDC%20Disk%20Wipe%20-%202026-07-31.md), which verified an empty `wipefs` read at about 00:00 EDT. The Proxmox task log explains the gap:
 
 ```sh
 grep -riE "sda|initgpt|wipedisk" /var/log/pve/tasks/index | tail

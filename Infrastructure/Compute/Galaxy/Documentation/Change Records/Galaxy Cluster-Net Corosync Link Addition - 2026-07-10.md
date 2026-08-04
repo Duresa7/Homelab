@@ -27,7 +27,7 @@ I completed read-only verification through the SSH manager and the UniFi control
 - All four nodes run `pve-manager/9.2.2` with Corosync `knet` transport.
 - The cluster is quorate with four votes, quorum three, and Corosync configuration version `7`.
 - Only Corosync `link0` exists, using `192.168.70.10` through `192.168.70.13`.
-- No node has a `vmbr0.71` interface or a `<YOUR_PREVIOUS_MANAGEMENT_SUBNET>` address.
+- No node has a `vmbr0.71` interface or a `192.168.71.x` address.
 - `grey-server`, `purple-server`, and `blue-server` persist `bridge-vids 2-4094`; VLAN 71 also appears in each live bridge VLAN table.
 - `red-server` persists `bridge-vids 40 60 65 70 80 90`; VLAN 71 is absent from its live bridge VLAN table.
 - UniFi health reports all inspected subsystems `ok`.

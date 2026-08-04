@@ -37,16 +37,16 @@ the Playit path.
 
 | Service | Public DNS | Playit Endpoint | Host Port |
 |---------|------------|-----------------|-----------|
-| TeamSpeak 1 | `<YOUR_TEAMSPEAK_ONE_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
-| TeamSpeak 2 | `<YOUR_TEAMSPEAK_TWO_DOMAIN>` | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
+| TeamSpeak 1 | `ts01.alphasecunited.com` | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
+| TeamSpeak 2 | `ts02.alphasecunited.com` | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
 
 ## User-Visible Symptoms
 
 Users observed repeated TeamSpeak client failures similar to:
 
 ```text
-Trying to resolve hostname <YOUR_TEAMSPEAK_ONE_DOMAIN>
-Trying to connect to server on <YOUR_TEAMSPEAK_ONE_DOMAIN>
+Trying to resolve hostname ts01.alphasecunited.com
+Trying to connect to server on ts01.alphasecunited.com
 Failed to connect to server
 ```
 
