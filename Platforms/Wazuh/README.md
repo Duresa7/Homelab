@@ -12,6 +12,7 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 - `Configuration/`: reader-editable reference to the live endpoints, paths, & agent state.
 - `Source/agent-deployment/`: idempotent Ansible deployment for the expanded Linux fleet.
 - `Documentation/Runbook.md`: routine health checks and enrollment workflow.
+- `Documentation/Change Plans/`: reviewed future changes that are not yet authorized for execution.
 - `Documentation/Change Records/`: dated endpoint and manager changes.
 - [Dependency map](Documentation/Dependencies.md): network, host, and service dependencies.
 - `Documentation/Recovery.md`: manager and agent recovery procedures.

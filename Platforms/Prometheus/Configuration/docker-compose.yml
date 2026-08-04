@@ -44,7 +44,6 @@ services:
       # 2026-07-27 error count decides between removing it and setting the journal
       # mode on the file directly, because a recreate to drop it now would reset
       # the log that count reads. Detail in Troubleshooting issue 4.
-      - GF_DATABASE_WAL=true
       # 12-hour clock everywhere in the UI. Grafana's [date_formats] defaults are
       # 24-hour (HH:mm), so each interval is overridden explicitly rather than
       # relying on the viewer's browser locale. Added 2026-07-28.

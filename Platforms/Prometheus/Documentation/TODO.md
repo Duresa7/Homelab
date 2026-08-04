@@ -3,11 +3,11 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-08-04
 
-Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The 2026-08-04 database-header and sidecar check proved the configured WAL setting has no effect, so removing it at the next recreate remains open.
+Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting. The host-side removal remains open until I next recreate Grafana.
 
 ## Open
 
-**Remove `GF_DATABASE_WAL=true` at the next Grafana recreate.** I measured the running Grafana 13.1.1 container on 2026-08-04. The environment contains `GF_DATABASE_WAL=true`, but SQLite header bytes 18 and 19 are `1 1`, which is rollback-journal mode, and `/var/lib/grafana/` contains `grafana.db` without `grafana.db-wal` or `grafana.db-shm`. The setting is present and has no effect. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. I left the running container alone because removing the variable provides no service benefit until another recreate is required. Repeat the corrected lock count after alert rules add writes. Measurement and earlier lock evidence are in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+**Repository complete; host pending: retire the inert Grafana WAL setting at the next recreate.** I removed the setting from the versioned Compose file on 2026-08-04. I did not recreate Grafana, so the running Grafana 13.1.1 container keeps the environment value until I next recreate it. This repository change is a no-op for database behavior because the open database was already in rollback-journal mode: header bytes 18 and 19 were `1 1`, and `/var/lib/grafana/` contained `grafana.db` without `grafana.db-wal` or `grafana.db-shm`. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. Repeat the corrected lock count after alert rules add writes. Measurement and earlier lock evidence are in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 

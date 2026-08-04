@@ -33,8 +33,8 @@ None.
 | [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Remove the Grafana WAL setting measured inert on 2026-08-04 at the next recreate; alert routing then rules; UniFi gateway metrics. Prometheus auto-start closed after it started four seconds after the controlled 2026-08-01 boot with `RestartCount=0` |
-| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Upgrade manager `security-01` off 4.14.6-1 before any agent can move, then close the `edge-01` and `docker-main` version gaps. The `edge-01` source landed 2026-08-04 and two missing holds are fixed |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | The repository no longer carries the inert Grafana WAL setting; the running container keeps it until the next recreate I initiate. Alert routing then rules; UniFi gateway metrics. Prometheus auto-start closed after it started four seconds after the controlled 2026-08-01 boot with `RestartCount=0` |
+| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | The 4.14.7 central-stack upgrade is planned and blocked by the missing VM 200 rollback. No agent moves until the manager does; the `edge-01` source landed 2026-08-04 and two missing holds are fixed |
 
 ## Recently Completed
 
