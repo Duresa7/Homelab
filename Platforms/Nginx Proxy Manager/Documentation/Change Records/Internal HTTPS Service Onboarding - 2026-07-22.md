@@ -1,7 +1,7 @@
 # Internal HTTPS Service Onboarding
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-04
 
 **Date:** 2026-07-22  
 **Status:** Complete; authenticated application and VPN-client acceptance closed 2026-07-25
@@ -118,7 +118,7 @@ I verified the complete route set from an Internal-zone Windows client:
 - NPM passed `nginx -t`. A controlled container restart reached `running healthy`; all 19 HTTPS routes still answered afterward.
 - NPM's recent proxy access logs contained zero 502 or 504 responses.
 
-I didn't use application credentials to create permanent test media, upload a photo, open an SSH terminal, run a Semaphore job, or execute a Splunk ES search. Existing application authentication remains the control for those actions. The plan's authenticated acceptance checks stayed open after this session instead of being inferred from route health; I ran them on 2026-07-25.
+I didn't use application credentials to create permanent test media, upload a photo, open an SSH terminal, run a Semaphore job, or execute a Splunk Enterprise Security search. Existing application authentication remains the control for those actions. The plan's authenticated acceptance checks stayed open after this session instead of being inferred from route health; I ran them on 2026-07-25.
 
 I also couldn't originate a test from an actual VPN client in this session. The UniFi VPN-to-Access and VPN-to-Internal policies are enabled, but policy state isn't a substitute for a client-path test. I ran that client test on 2026-07-25.
 
@@ -152,6 +152,6 @@ The infrastructure work finished on 2026-07-22. I ran the remaining acceptance c
 - run a safe Semaphore task and observe live output;
 - verify Grafana Live;
 - confirm Syncthing remains connected and synchronized while using the HTTPS GUI;
-- run a read-only Splunk ES search.
+- run a read-only ES search.
 
 All eight passed. I kept no screenshot or transcript from that pass, so the closure evidence is my confirmation of the observed behavior rather than a retained capture. Nothing on this change remains open.

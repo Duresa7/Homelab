@@ -1,7 +1,7 @@
-# Splunk SIEM Troubleshooting
+# Troubleshooting
 
 **Created:** 2026-07-01  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-04
 
 I record each Splunk and SC4S failure here with its cause, correction, & observed result. The [build log](../Build-Log.md) holds the deployment sequence.
 
@@ -19,4 +19,3 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | <a id="6-unifi-test-event-missing-wrong-sourcetype"></a>[6](UniFi%20test%20event%20missing%20wrong%20sourcetype%20-%202026-07-01.md) | Step 6 | UniFi test event "missing" | Searched the wrong sourcetype | Searched `sourcetype=cef` instead |
 | <a id="7-cef-header-fields-came-back-blank"></a>[7](CEF%20header%20fields%20came%20back%20blank%20-%202026-07-01.md) | Step 6 | CEF header fields blank | Guessed field names; SC4S already parses CEF | Used real field names |
 | <a id="8-only-one-unifi-product-routed-to-netops"></a>[8](Only%20one%20UniFi%20product%20routed%20to%20netops%20-%202026-07-01.md) | Step 6 | Only `UniFi OS` routed to `netops` | UniFi sends 3 product strings; only 1 key defined | Added all 3 routing keys |
-

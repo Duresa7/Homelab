@@ -1,9 +1,9 @@
-# Splunk Enterprise Security: Configuration Log
+# Configuration Log
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-04
 
-I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 SIEM. The [Splunk Enterprise build log](../../Splunk%20Enterprise/Documentation/Build-Log.md) covers the VM, OS, base application, & UniFi ingestion path.
+I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 SIEM. The [Splunk Enterprise build log](../../Enterprise/Documentation/Build-Log.md) covers the VM, OS, base application, & UniFi ingestion path.
 
 ### Related Records
 
@@ -16,7 +16,7 @@ I installed Splunk Enterprise Security on the existing Splunk Enterprise 10.4.0 
 | Field | Value |
 |---|---|
 | Project | Splunk Enterprise Security (home lab) |
-| Runs on | `splunk-siem` VM (VMID 109), same instance as the base build; see [Splunk Enterprise VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) |
+| Runs on | `splunk-siem` VM (VMID 109), same instance as the base build; see [Splunk Enterprise VM specifications](../../Enterprise/Documentation/VM-Specs.md) |
 | Base Splunk | Enterprise 10.4.0 |
 | License | Splunk nonprofit donation program, which explicitly includes an ES entitlement (plus SOAR Community Edition) alongside the 10 GB/day Enterprise license [1] |
 | Started | 2026-07-02 |
@@ -45,7 +45,7 @@ I confirmed before installing: the Splunk nonprofit donation program grant alrea
 
 The index rebuild and CIM data-model acceleration stalled on the VM's original 4 vCPU. I left the SSD-backed storage unchanged and raised the VM to 6 vCPU; setup then completed.
 
-**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. Enterprise Security then loaded **Mission Control → Configure → All configurations** on 2026-07-02. The [troubleshooting record](Troubleshooting/ES%20install-setup%20slow,%20initially%20looked%20disk%20I-O%20bound%20-%202026-07-02.md) records the failure, & [VM specifications](../../Splunk%20Enterprise/Documentation/VM-Specs.md) records the 6-vCPU state. Remaining CIM, index, role, correlation-search, asset, identity, & risk work is in [TODO.md](TODO.md).
+**Fix:** I raised `splunk-siem` from 4 to 6 vCPU on `grey-server`. Enterprise Security then loaded **Mission Control → Configure → All configurations** on 2026-07-02. The [troubleshooting record](Troubleshooting/ES%20install-setup%20slow,%20initially%20looked%20disk%20I-O%20bound%20-%202026-07-02.md) records the failure, & [VM specifications](../../Enterprise/Documentation/VM-Specs.md) records the 6-vCPU state. Remaining CIM, index, role, correlation-search, asset, identity, & risk work is in [TODO.md](TODO.md).
 
 ## References
 

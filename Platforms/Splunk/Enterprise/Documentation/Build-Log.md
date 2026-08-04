@@ -1,7 +1,7 @@
-# Splunk SIEM Home Lab: Build Log
+# Initial Build
 
 **Created:** 2026-06-28  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-04
 
 I built a Splunk Enterprise 10.4.0 SIEM on Rocky Linux 10.2, then connected UniFi CEF through SC4S and HEC. The walkthrough retains the commands, failed attempts, search results, & screenshots from the 2026-06 build.
 
@@ -98,9 +98,9 @@ At initial build I bridged the VM on `vmbr0` & tagged it to **VLAN 70 (MGMT-A)**
 
 **Evidence: Proxmox VM creation settings**
 
-![Proxmox Create VM confirmation tab: 4 cores, host CPU type, 12288 MiB memory, 150 GiB scsi0 disk on ssd-lvm1 with discard, ssd, and iothread on, net0 on vmbr0 with VLAN tag 70 and firewall enabled, VMID 109 on grey-server](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S01-VM-Sizing-and-Network-Configuration.png)
+![Proxmox Create VM confirmation tab: 4 cores, host CPU type, 12288 MiB memory, 150 GiB scsi0 disk on ssd-lvm1 with discard, ssd, and iothread on, net0 on vmbr0 with VLAN tag 70 and firewall enabled, VMID 109 on grey-server](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S01-VM-Sizing-and-Network-Configuration.png)
 
-![Proxmox Create VM confirmation tab scrolled to the top: guest agent enabled, OVMF BIOS, q35 machine, and the Rocky 10.2 boot ISO mounted on ide2](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S01-VM-Firmware-and-Guest-Agent.png)
+![Proxmox Create VM confirmation tab scrolled to the top: guest agent enabled, OVMF BIOS, q35 machine, and the Rocky 10.2 boot ISO mounted on ide2](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S01-VM-Firmware-and-Guest-Agent.png)
 
 ---
 
@@ -135,9 +135,9 @@ sudo hostnamectl set-hostname splunk-siem
 
 **Evidence: Rocky Linux installer**
 
-![Installer Network and Host Name screen: ens18 connected with DHCP address 192.168.70.109/24, default route and DNS 192.168.70.1](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S02-Installer-Network-Configuration.png)
+![Installer Network and Host Name screen: ens18 connected with DHCP address 192.168.70.109/24, default route and DNS 192.168.70.1](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S02-Installer-Network-Configuration.png)
 
-![Installer Create User screen: admin account with wheel-group membership checked and a required password rated Strong](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S02-Installer-Administrator-Account.png)
+![Installer Create User screen: admin account with wheel-group membership checked and a required password rated Strong](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S02-Installer-Administrator-Account.png)
 
 ---
 
@@ -153,9 +153,9 @@ cat /etc/rocky-release # confirm: Rocky Linux 10.2
 
 **Evidence: system update**
 
-![sudo dnf upgrade --refresh -y finishing with Dependencies resolved, Nothing to do, Complete](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S03-Package-Update-Complete.png)
+![sudo dnf upgrade --refresh -y finishing with Dependencies resolved, Nothing to do, Complete](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S03-Package-Update-Complete.png)
 
-![cat /etc/rocky-release returning Rocky Linux release 10.2 (Red Quartz), followed by sudo dnf check-update](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S03-OS-Release-and-Package-Check.png)
+![cat /etc/rocky-release returning Rocky Linux release 10.2 (Red Quartz), followed by sudo dnf check-update](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S03-OS-Release-and-Package-Check.png)
 
 ---
 
@@ -203,11 +203,11 @@ sudo sshd -T | grep -Ei 'permitrootlogin|passwordauth|pubkeyauth'
 
 **Evidence: SSH hardening and service checks**
 
-![systemctl status sshd showing active (running) and firewall-cmd --list-services listing cockpit, dhcpv6-client, and ssh](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S04-SSH-Service-and-Firewall-Services.png)
+![systemctl status sshd showing active (running) and firewall-cmd --list-services listing cockpit, dhcpv6-client, and ssh](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S04-SSH-Service-and-Firewall-Services.png)
 
-![sshd_config open in nano with PermitRootLogin no, PubkeyAuthentication yes, and PasswordAuthentication no set](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S04-SSH-Authentication-Configuration.png)
+![sshd_config open in nano with PermitRootLogin no, PubkeyAuthentication yes, and PasswordAuthentication no set](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S04-SSH-Authentication-Configuration.png)
 
-![Console session showing the Rocky 10.2 release check, sshd active, firewall services, and ip a with ens18 at 192.168.70.109/24](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S04-System-and-Network-Verification.png)
+![Console session showing the Rocky 10.2 release check, sshd active, firewall services, and ip a with ens18 at 192.168.70.109/24](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S04-System-and-Network-Verification.png)
 
 ---
 
@@ -265,13 +265,13 @@ sudo firewall-cmd --reload
 
 **Evidence: Splunk Enterprise installation**
 
-![Install session: splunk service account created, RPM downloaded (1.5 GB at 263 MB/s), the unprivileged rpm -i failing with a transaction lock error, then the sudo install and boot-start enablement ending with Configured as systemd managed service](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S05-Installation-and-Boot-Start.png)
+![Install session: splunk service account created, RPM downloaded (1.5 GB at 263 MB/s), the unprivileged rpm -i failing with a transaction lock error, then the sudo install and boot-start enablement ending with Configured as systemd managed service](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S05-Installation-and-Boot-Start.png)
 
-![Splunkd.service active (running) under systemd, with the startup log ending in splunkd started (build f798d4d49089)](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S05-Service-Startup.png)
+![Splunkd.service active (running) under systemd, with the startup log ending in splunkd started (build f798d4d49089)](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S05-Service-Startup.png)
 
-![systemctl status Splunkd showing the full process tree (splunkd, supervisor, postgres, pgbouncer, traefik) and firewall-cmd opening port 8000/tcp](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S05-Service-Processes-and-Web-Port.png)
+![systemctl status Splunkd showing the full process tree (splunkd, supervisor, postgres, pgbouncer, traefik) and firewall-cmd opening port 8000/tcp](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S05-Service-Processes-and-Web-Port.png)
 
-![Splunk Web login page served at http://192.168.70.109:8000 with the first-time sign-in notice](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S05-Web-Login.png)
+![Splunk Web login page served at http://192.168.70.109:8000 with the first-time sign-in notice](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S05-Web-Login.png)
 
 ---
 
@@ -309,15 +309,15 @@ I created the network-category indexes SC4S routes into, each capped at 5 GB to 
 
 **Evidence: HEC and index setup**
 
-![HEC Edit Global Settings dialog: all tokens enabled, Enable SSL checked, HTTP port 8088](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Global-Settings.png)
+![HEC Edit Global Settings dialog: all tokens enabled, Enable SSL checked, HTTP port 8088](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Global-Settings.png)
 
-![Add Data wizard creating the HEC token named sc4s](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Token-Creation.png)
+![Add Data wizard creating the HEC token named sc4s](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Token-Creation.png)
 
-![Token input settings: allowed indexes left empty, default index main](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Token-Index-Settings.png)
+![Token input settings: allowed indexes left empty, default index main](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Token-Index-Settings.png)
 
-![Indexes page listing the new netauth, netdns, netfw, netids, and netops indexes, each with a 5 GB max size](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-Network-Indexes.png)
+![Indexes page listing the new netauth, netdns, netfw, netids, and netops indexes, each with a 5 GB max size](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06A-Network-Indexes.png)
 
-![Edit Index dialog for netauth showing the 5 GB maximum index size](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-Netauth-Index-Size.png)
+![Edit Index dialog for netauth showing the 5 GB maximum index size](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06A-Netauth-Index-Size.png)
 
 ### Step 6.2: Deploy SC4S with Podman
 
@@ -355,17 +355,17 @@ sudo firewall-cmd --reload
 
 **Evidence: SC4S host and service setup**
 
-![Kernel receive-buffer settings (net.core.rmem 17039360) appended to /etc/sysctl.conf and applied with sysctl -p](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Kernel-Receive-Buffers.png)
+![Kernel receive-buffer settings (net.core.rmem 17039360) appended to /etc/sysctl.conf and applied with sysctl -p](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Kernel-Receive-Buffers.png)
 
-![Podman already present via dnf, the splunk-sc4s-var volume created, and the /opt/sc4s directories made](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Podman-Volume-and-Directories.png)
+![Podman already present via dnf, the splunk-sc4s-var volume created, and the /opt/sc4s directories made](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Podman-Volume-and-Directories.png)
 
-![env_file contents with HEC URL https://127.0.0.1:8088, TLS verification off, and CEF UDP and TCP listeners on 1514](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-SC4S-Environment-Configuration.png)
+![env_file contents with HEC URL https://127.0.0.1:8088, TLS verification off, and CEF UDP and TCP listeners on 1514](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-SC4S-Environment-Configuration.png)
 
-![sc4s.service unit open in nano showing the podman run configuration from the SC4S documentation](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Systemd-Service-Unit.png)
+![sc4s.service unit open in nano showing the podman run configuration from the SC4S documentation](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Systemd-Service-Unit.png)
 
-![systemctl enable --now sc4s failing with Unit sc4s.service does not exist, then the unit written in nano and daemon-reload rerun](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Missing-Service-Unit-Recovery.png)
+![systemctl enable --now sc4s failing with Unit sc4s.service does not exist, then the unit written in nano and daemon-reload rerun](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Missing-Service-Unit-Recovery.png)
 
-![SC4S container logs: Splunk HEC connection test successful, sc4s version 3.45.0, and firewall ports 1514/udp and 1514/tcp opened](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Container-and-Firewall-Verification.png)
+![SC4S container logs: Splunk HEC connection test successful, sc4s version 3.45.0, and firewall ports 1514/udp and 1514/tcp opened](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Container-and-Firewall-Verification.png)
 
 ### Step 6.3: Point UniFi at SC4S and confirm the first events
 
@@ -373,11 +373,11 @@ I pointed UniFi's SIEM Server at `192.168.70.109:1514`, sent a test event, and s
 
 **Evidence: UniFi source configuration and first events**
 
-![UniFi System Logging / SIEM panel pointed at 192.168.70.109 port 1514 with an Event Sent confirmation after Send Test Event](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-SIEM-Destination-and-Test.png)
+![UniFi System Logging / SIEM panel pointed at 192.168.70.109 port 1514 with an Event Sent confirmation after Send Test Event](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-SIEM-Destination-and-Test.png)
 
-![stats count by index, sourcetype, host: CEF events from 192.168.70.1 arriving (still in main at this point) alongside SC4S startup events](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06C-Initial-CEF-Event-Statistics.png)
+![stats count by index, sourcetype, host: CEF events from 192.168.70.1 arriving (still in main at this point) alongside SC4S startup events](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06C-Initial-CEF-Event-Statistics.png)
 
-![UniFi CEF events in Splunk search: the test syslog and an admin-access event with UNIFI extension fields parsed](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-CEF-Events.png)
+![UniFi CEF events in Splunk search: the test syslog and an admin-access event with UNIFI extension fields parsed](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-CEF-Events.png)
 
 ### Step 6.4: Route every UniFi product into netops
 
@@ -402,17 +402,17 @@ Restart with `sudo systemctl restart sc4s`. Routing changes are forward-only; ev
 
 **Evidence: index routing and product discovery**
 
-![splunk_metadata.csv with the initial single routing key Ubiquiti_UniFi OS,index,netops](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-Initial-Index-Routing-Key.png)
+![splunk_metadata.csv with the initial single routing key Ubiquiti_UniFi OS,index,netops](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-Initial-Index-Routing-Key.png)
 
-![SC4S restarted after the metadata edit, container logs showing the HEC connection tests passing again](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-Restart-and-HEC-Verification.png)
+![SC4S restarted after the metadata edit, container logs showing the HEC connection tests passing again](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-Restart-and-HEC-Verification.png)
 
-![index=netops sourcetype=cef Ubiquiti returning the first UniFi OS event routed into netops](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-First-Netops-Event.png)
+![index=netops sourcetype=cef Ubiquiti returning the first UniFi OS event routed into netops](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-First-Netops-Event.png)
 
-![netops over 24 hours: 57 events, all of them UniFi OS admin config-change events, while other products were still missing](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-UniFi-OS-Only-Routing-Result.png)
+![netops over 24 hours: 57 events, all of them UniFi OS admin config-change events, while other products were still missing](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-UniFi-OS-Only-Routing-Result.png)
 
-![stats count by sc4s_vendor and sc4s_product across all indexes: UniFi Network 200, UniFi OS 59, UniFi Protect 83](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-Product-Discovery-Counts.png)
+![stats count by sc4s_vendor and sc4s_product across all indexes: UniFi Network 200, UniFi OS 59, UniFi Protect 83](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-Product-Discovery-Counts.png)
 
-![index=netops stats by sc4s_product returning only UniFi OS (59 events) before the extra routing keys were added](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06D-Netops-UniFi-OS-Only-Before-Fix.png)
+![index=netops stats by sc4s_product returning only UniFi OS (59 events) before the extra routing keys were added](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06D-Netops-UniFi-OS-Only-Before-Fix.png)
 
 ### Step 6.5: Verify the completed ingestion pipeline
 
@@ -426,11 +426,11 @@ The `main` search returned zero new CEF events. A product string without a routi
 
 **Evidence: pipeline verification**
 
-![Search for sourcetype=sc4s:events "starting up" returning two SC4S startup events](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06E-SC4S-Startup-Events.png)
+![Search for sourcetype=sc4s:events "starting up" returning two SC4S startup events](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06E-SC4S-Startup-Events.png)
 
-![index=netops over the last 30 minutes: UniFi Protect events counted by sc4s_product after the routing fix](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06E-UniFi-Protect-Routing-Verification.png)
+![index=netops over the last 30 minutes: UniFi Protect events counted by sc4s_product after the routing fix](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06E-UniFi-Protect-Routing-Verification.png)
 
-![index=main sourcetype=cef over the last 30 minutes returning no results: nothing leaking to main](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06E-Main-Index-Leakage-Check.png)
+![index=main sourcetype=cef over the last 30 minutes returning no results: nothing leaking to main](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06E-Main-Index-Leakage-Check.png)
 
 ### Step 6.6: Confirm the extracted CEF field names
 
@@ -438,13 +438,13 @@ I installed the `cefutils` (CEF Extraction Add-on) [10] on the search head. Beca
 
 **Evidence: CEF field-name investigation**
 
-![Table of guessed CEF field names (device_vendor, device_product, signature) returning rows with only _time filled](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06F-Guessed-CEF-Fields-Blank.png)
+![Table of guessed CEF field names (device_vendor, device_product, signature) returning rows with only _time filled](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06F-Guessed-CEF-Fields-Blank.png)
 
-![REST query against /services/apps/local confirming cefutils 1.5.6 installed and enabled](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06F-CEF-Extraction-Add-on-Installed.png)
+![REST query against /services/apps/local confirming cefutils 1.5.6 installed and enabled](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06F-CEF-Extraction-Add-on-Installed.png)
 
-![fieldsummary limited to the guessed field prefixes returning no results](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06F-Guessed-Field-Prefixes-Empty.png)
+![fieldsummary limited to the guessed field prefixes returning no results](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06F-Guessed-Field-Prefixes-Empty.png)
 
-![fieldsummary listing the real fields on the events: UNIFI* extension keys and sc4s_* metadata fields](../Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06F-Extracted-Field-Names.png)
+![fieldsummary listing the real fields on the events: UNIFI* extension keys and sc4s_* metadata fields](../Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06F-Extracted-Field-Names.png)
 
 ---
 

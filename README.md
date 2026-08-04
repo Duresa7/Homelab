@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-20_routed_LANs,_16_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -37,7 +37,7 @@ The guides provide the reading path. Detailed records stay with the system that 
 | [Guides](Guides/README.md) | Visitor walkthroughs across infrastructure and platforms | [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md) |
 | [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
-| [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) |
+| [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) |
 | [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | Currently empty by design |
 | [Operations](Operations/README.md) | Cross-system inventories and maintenance records | [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md) |
 | [Security](Security/README.md) | Incident reports, hardening standards, assessments | [Linux host baseline](Security/Hardening/Linux-Host-Baseline-Standard.md) |
@@ -47,7 +47,7 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 | Record | What it covers |
 |---|---|
-| [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
+| [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
 | [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | VLAN 72, the Security-A zone, address changes, firewall policy, service moves, & post-migration checks |
 | [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | VLAN 71 interfaces, Corosync `link1`, four-node rollout, quorum checks, & link-failure tests |
 | [April 2026 incident response](Security/Incidents/Vercel/Credential%20Rotation%20After%20Vendor%20Bulletin%20-%202026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |

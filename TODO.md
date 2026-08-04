@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -29,8 +29,8 @@ None.
 | [Kasm Workspaces](Platforms/Kasm%20Workspaces/Documentation/TODO.md) | Add an automated warning below the 80 percent thin-pool hard stop; recovery, Parrot, Debian Malware, update control, capacity gate, and replacement baseline are complete |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Syncthing](Platforms/Syncthing/Documentation/TODO.md) | Pair the laptop and add a recurring independent vault backup |
-| [Splunk Enterprise](Platforms/Splunk/Splunk%20Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
-| [Splunk Enterprise Security](Platforms/Splunk/Splunk%20ES/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
+| [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
+| [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Verify Prometheus auto-start on the next controlled CT 104 restart, remove the inactive Grafana WAL setting at the next recreate, alert routing then rules, & UniFi gateway metrics |
@@ -84,7 +84,7 @@ None.
 - [x] 2026-07-13: [Wazuh endpoint re-enrollment](Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md). Fresh `app-01` and `edge-01` identities active as IDs `004` and `005`.
 - [x] 2026-07-13: [Wazuh endpoint agent removal](Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md). I purged the `app-01` and `edge-01` agent packages and client data for a clean reinstall.
 - [x] 2026-07-13: [Security monitoring baseline cleanup](Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md). Proxmox exporter coverage, Wazuh registration reset, and seven healthy Prometheus jobs.
-- [x] 2026-07-12: [Security-A migration of Wazuh/monitoring and Splunk SIEM from MGMT-A to VLAN 72](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md), including verified UniFi CEF ingestion at the new SIEM address.
+- [x] 2026-07-12: [Security-A migration of Wazuh/monitoring and the SIEM on Splunk Enterprise from MGMT-A to VLAN 72](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md), including verified UniFi CEF ingestion at the new SIEM address.
 - [x] 2026-07-12: [NetBird/NPM operational follow-ups and hardening descope](Platforms/Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 - [x] 2026-07-12: [NetBird first peer and routed VPN path into Access-A](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 - [x] 2026-07-11: [NetBird and Nginx Proxy Manager HTTPS access stack on `docker-network`](Platforms/Netbird/Documentation/Deployment.md).

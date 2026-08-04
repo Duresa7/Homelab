@@ -1,7 +1,7 @@
 # Agent Sandbox Plan
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 I want an automated caller to provision its own test machine & tear it down when the job finishes, without holding hypervisor credentials to do it. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
 
@@ -73,7 +73,7 @@ The broker records every create, exec, extend, & destroy to Splunk: who asked, w
 
 ## OS images
 
-Day-one images are Ubuntu, Debian, & Rocky Linux, prepped as cloud-init templates on both purple & grey & as Docker base images. I picked Rocky for the Red Hat family because I already run it for the Splunk SIEM, so the tooling is familiar. Windows 11 & Kali Linux are supported too; the broker builds those templates the first time they're asked for, since a Windows image is 80 GB & I don't want it sitting idle.
+Day-one images are Ubuntu, Debian, & Rocky Linux, prepped as cloud-init templates on both purple & grey & as Docker base images. I picked Rocky for the Red Hat family because my SIEM already runs on Splunk Enterprise 10.4.0 over Rocky Linux 10.2, so the tooling is familiar. Windows 11 & Kali Linux are supported too; the broker builds those templates the first time they're asked for, since a Windows image is 80 GB & I don't want it sitting idle.
 
 ## Phased build
 

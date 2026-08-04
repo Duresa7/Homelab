@@ -1,7 +1,7 @@
-# Splunk ES: To-Do
+# To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-04
 
 I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
