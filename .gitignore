@@ -19,7 +19,6 @@
 # Raw evidence, artifacts, and diagnostics
 **/Artifacts/
 **/Evidence/
-/Operations/Diagnostics/
 /Infrastructure/Hardware/Images/
 **/Screenshots/
 
@@ -45,7 +44,9 @@
 !/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/Screenshots/
 !/Platforms/Splunk/Splunk Enterprise/Evidence/
 /Platforms/Splunk/Splunk Enterprise/Evidence/*
-!/Platforms/Splunk/Splunk Enterprise/Evidence/Screenshots/
+!/Platforms/Splunk/Splunk Enterprise/Evidence/SIEM Build - 2026-06-28/
+/Platforms/Splunk/Splunk Enterprise/Evidence/SIEM Build - 2026-06-28/*
+!/Platforms/Splunk/Splunk Enterprise/Evidence/SIEM Build - 2026-06-28/Screenshots/
 !/Platforms/Wazuh/Evidence/
 /Platforms/Wazuh/Evidence/*
 !/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/

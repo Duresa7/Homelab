@@ -29,13 +29,13 @@ VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3`. The cur
 
 I created VM 109 with UEFI, q35, a host CPU type, guest agent, SSD emulation, discard, iothread, & Proxmox firewall enabled. I started with 4 vCPU and later raised it to 6 for the Enterprise Security setup.
 
-![Splunk VM configuration](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/vm-config-1%20%281%29.png)
+![Splunk VM configuration](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S01-VM-Sizing-and-Network-Configuration.png)
 
 ### Step 2: Install Rocky Linux
 
 I installed Rocky Linux 10.2 without a desktop, set hostname `splunk-siem`, & configured the administrator account and network. The build later moved from its initial management address to `192.168.72.3` on Security-A.
 
-![Rocky Linux network setup](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-06-28%20175948.png)
+![Rocky Linux network setup](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S02-Installer-Network-Configuration.png)
 
 ### Step 3: Update and Lock Down SSH
 
@@ -53,31 +53,31 @@ sudo /opt/splunk/bin/splunk enable boot-start \
 sudo systemctl start Splunkd
 ```
 
-![Splunk Web login](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-06-29%20212751.png)
+![Splunk Web login](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S05-Web-Login.png)
 
 ### Step 5: Create HEC and the Network Indexes
 
 I created the bounded network indexes and an HEC input for SC4S, then checked the collector health endpoint on 8088.
 
-![Splunk HEC configuration](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-06-30%20000305.png)
+![Splunk HEC configuration](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06A-HEC-Global-Settings.png)
 
 ### Step 6: Deploy SC4S
 
 I ran SC4S 3.45.0 in Podman under systemd, set the receive buffers, opened TCP and UDP 1514, & pointed its HEC output at Splunk. I checked the listeners, container health, HEC reachability, & SC4S logs before sending UniFi data.
 
-![SC4S running](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-06-30%20133108.png)
+![SC4S running](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06B-Container-and-Firewall-Verification.png)
 
 ### Step 7: Send UniFi CEF Events
 
 I enabled Network, UniFi OS, & Protect categories in UniFi's System Logging/SIEM settings and sent them to `192.168.72.3:1514`. I generated a test event and found its parsed CEF fields in Splunk.
 
-![First UniFi CEF event](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-06-30%20134033.png)
+![First UniFi CEF event](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-CEF-Events.png)
 
 ### Step 8: Route Network Data to netops
 
 I updated the SC4S routing so new UniFi Network, OS, & Protect events landed in `netops`. I searched both `netops` and `main` over the same time window to confirm new CEF data stopped leaking into `main`.
 
-![Final netops search](../Platforms/Splunk/Splunk%20Enterprise/Evidence/Screenshots/Screenshot%202026-07-01%20201953.png)
+![Final netops search](../Platforms/Splunk/Splunk%20Enterprise/Evidence/SIEM%20Build%20-%202026-06-28/Screenshots/S06E-UniFi-Protect-Routing-Verification.png)
 
 ### Step 9: Install Enterprise Security
 
