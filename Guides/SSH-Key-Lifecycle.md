@@ -1,7 +1,7 @@
 # SSH Key Lifecycle Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ This guide follows one SSH identity from inventory through onboarding, rotation,
 
 ## Current Status and Verified Versions
 
-The fleet baseline contains three approved ED25519 public keys. The 2026-07-14 cleanup removed two retired keys, found zero remaining matches across 15 readable targets, & left two unreachable Windows targets marked Unknown.
+The fleet baseline contains three approved ED25519 public keys. The 2026-07-14 cleanup removed two retired keys, found zero remaining matches across 15 readable targets, & correctly recorded two unreachable Windows targets as Unknown. I retired those Windows targets from the automation inventory on 2026-07-27; Unknown remains the historical audit result, not a current fleet gap.
 
 ## What You Need
 
@@ -86,7 +86,7 @@ If a staged key can't authenticate, leave the old key installed. Restore a retir
 
 ## Known Limits
 
-Connected-account coverage doesn't prove the absence of keys in an unreadable account or nonstandard `AuthorizedKeysFile`. The two unreachable Windows targets remain Unknown until TCP/22 & their configured accounts can be checked.
+Connected-account coverage doesn't prove the absence of keys in an unreadable account or nonstandard `AuthorizedKeysFile`. The 2026-07-14 Unknown results were never converted into false negatives; the two retired Windows targets were removed from the managed inventory on 2026-07-27.
 
 ## Source Records
 

@@ -9,7 +9,7 @@ I use this sequence for a service-impacting or security incident: define the aff
 
 ## Current Status and Verified Versions
 
-The repository contains one April 2026 application-stack access review & two TeamSpeak incident records from 2026-04-24. The TeamSpeak UDP relay outage was restored through tunnel & DNS checks; the application review rotated primary access paths & disabled legacy values.
+The repository contains nine top-level incident reports across seven service folders: Galaxy, Grafana, Kasm Workspaces, Preview Server, qBittorrent, TeamSpeak, & Vercel. The set spans credential exposure, LAN exposure, local-storage stranding, duplicate storage metadata, thin-pool exhaustion, application-client failure, DNS, ServerQuery, & UDP relay recovery.
 
 ## What You Need
 
@@ -81,6 +81,7 @@ This guide doesn't replace provider-specific incident procedures. A disclosure i
 
 ## Source Records
 
-- [Application-stack incident response](../Security/Incidents/Vercel/Credential Rotation After Vendor Bulletin - 2026-04-19.md)
-- [TeamSpeak service incident](../Security/Incidents/Teamspeak/DNS and ServerQuery - 2026-04-24.md)
-- [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/UDP Relay Outage - 2026-04-24.md)
+- [Application-stack incident response](../Security/Incidents/Vercel/Credential%20Rotation%20After%20Vendor%20Bulletin%20-%202026-04-19.md)
+- [TeamSpeak service incident](../Security/Incidents/Teamspeak/DNS%20and%20ServerQuery%20-%202026-04-24.md)
+- [TeamSpeak UDP relay outage](../Security/Incidents/Teamspeak/UDP%20Relay%20Outage%20-%202026-04-24.md)
+- [Security records index](../Security/README.md)

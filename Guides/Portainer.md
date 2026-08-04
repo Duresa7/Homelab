@@ -1,15 +1,15 @@
 # Portainer Edge Agent Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
-I connected a Docker host on VLAN 80 to the Portainer server on VLAN 40 with an Edge Agent. This guide covers both Compose projects, the cross-VLAN rule, environment registration, & the checks used after enrollment.
+I connected a Docker host on VLAN 80 to the Portainer server on VLAN 40 with an Edge Agent, then expanded the same pattern to three more hosts. This guide covers both Compose projects, cross-VLAN rules, environment registration, & the checks used after enrollment.
 
 ## Current Status and Verified Versions
 
-The Portainer server runs on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. The recorded Edge Agent is version 2.39.1 on `alpha-prod-01` at `192.168.80.118`. It uses `EDGE_INSECURE_POLL=1` because the agent polls the server across the approved internal path.
+Portainer server 2.39.5 runs on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. Four remote hosts run Edge Agent 2.39.1: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network`. They use `EDGE_INSECURE_POLL=1` across their approved internal paths.
 
 ## What You Need
 
@@ -62,12 +62,17 @@ I waited for `alpha-prod-01` to report online in Portainer, opened its container
 
 I restarted the Edge Agent container and confirmed the same environment returned online without creating a second Portainer record.
 
+### Step 7: Repeat the Pattern for the Fleet
+
+I registered `docker-blue`, `media-01`, & `docker-network` as separate environments, stored one Edge ID and key pair per host outside git, deployed the same pinned agent project, & tested both polling ports. `docker-network` required a narrow UniFi rule to `192.168.40.35` on TCP 8000 and 9443. The Portainer API returned each environment online with its remote container list.
+
 ## What I Checked After Each Step
 
 - Portainer listened on TCP 9443 and 8000.
 - The Edge host reached both approved ports across the VLAN boundary.
 - Agent 2.39.1 started without an enrollment error.
 - `alpha-prod-01` reported online in Portainer.
+- `docker-blue`, `media-01`, & `docker-network` reported online with separate environment identities.
 - The remote container list matched the host's Docker state.
 - Restarting the agent preserved the environment registration.
 
@@ -77,8 +82,9 @@ If the agent stays offline, test TCP 8000 and 9443 from the agent, then compare 
 
 ## Known Limits
 
-The source record covers one registered Edge Agent. It doesn't document certificate hardening for `EDGE_INSECURE_POLL=1` or a Portainer server version.
+The agents still use `EDGE_INSECURE_POLL=1`; certificate hardening for that polling path has not been implemented.
 
 ## Source Records
 
 - [Portainer Edge Agent setup](../Platforms/Portainer/Documentation/portainer-edge-agent.md)
+- [Portainer Edge Agent fleet expansion](../Platforms/Portainer/Documentation/Change%20Records/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28.md)

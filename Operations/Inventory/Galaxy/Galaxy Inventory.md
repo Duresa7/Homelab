@@ -3,18 +3,18 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-08-03
 
-This index links the latest complete Galaxy snapshot set. I rolled the workload record forward on 2026-08-03 after deploying Wazuh agents across the guest fleet and all five Proxmox nodes. Node, VM, and LXC configuration did not change, so the current set reuses those verified snapshots.
+This index links the latest complete Galaxy snapshot set. I superseded the first 2026-08-03 service snapshot after a same-day staleness audit found newer workload versions, a larger Prometheus target set, and completed media verification. Node, VM, and LXC configuration did not change, so the current set reuses those verified snapshots.
 
 | File | Contents |
 | --- | --- |
 | [Nodes Post-Green Expansion - 2026-07-31.md](Nodes%20Post-Green%20Expansion%20-%202026-07-31.md) | Current five-node Proxmox hardware and physical-storage snapshot |
 | [VMs Post-Parrot - 2026-07-30.md](VMs%20Post-Parrot%20-%202026-07-30.md) | Current QEMU VM configuration snapshot; unchanged by the PXE deployment |
 | [LXCs Post-Parrot - 2026-07-30.md](LXCs%20Post-Parrot%20-%202026-07-30.md) | Current LXC configuration snapshot; unchanged by the PXE deployment |
-| [Services - 2026-08-03.md](Services%20-%202026-08-03.md) | Current workload snapshot with 14 active Wazuh identities and five `proxmox` members |
+| [Services Post-Staleness Audit - 2026-08-03.md](Services%20Post-Staleness%20Audit%20-%202026-08-03.md) | Current workload snapshot: 19 guest records, 12 running, 49 Prometheus targets, 14 active Wazuh agents, and completed media verification |
 
 ## Snapshot sequence
 
-Two complete sets carry the date 2026-07-28 because I changed the fleet twice that day. Read the sequence in order; the 2026-07-31 set is current.
+Two complete sets carry the date 2026-07-28 because I changed the fleet twice that day. Two also carry 2026-08-03 because the audit superseded the earlier service record without rewriting it. Read the sequence in order; the post-staleness audit set is current.
 
 | Set | Captures | Index |
 | --- | --- | --- |
@@ -27,5 +27,6 @@ Two complete sets carry the date 2026-07-28 because I changed the fleet twice th
 | `Post-Green Expansion - 2026-07-31` | After Green joined as the fifth node, the Blue and Green memory change, and the two extended HDD tests | [Galaxy Inventory Post-Green Expansion - 2026-07-31.md](Galaxy%20Inventory%20Post-Green%20Expansion%20-%202026-07-31.md) |
 | `- 2026-08-02` | After adding the internal documentation workload on Docker Main | [Galaxy Inventory - 2026-08-02.md](Galaxy%20Inventory%20-%202026-08-02.md) |
 | `- 2026-08-03` | After deploying Wazuh agents across twelve new endpoints and all five Galaxy nodes | [Galaxy Inventory - 2026-08-03.md](Galaxy%20Inventory%20-%202026-08-03.md) |
+| `Post-Staleness Audit - 2026-08-03` | After checking current cluster, workload, monitoring, network, media, Portainer, and Wazuh state | [Galaxy Inventory Post-Staleness Audit - 2026-08-03.md](Galaxy%20Inventory%20Post-Staleness%20Audit%20-%202026-08-03.md) |
 
 I keep both same-day sets rather than folding the later one into the earlier filenames. Each records a state the fleet actually held, and collapsing them would delete the only record of the intermediate one to satisfy a filename.

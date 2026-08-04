@@ -4,10 +4,10 @@
 **Last updated:** 2026-08-03
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
-![UniFi](https://img.shields.io/badge/UniFi-14_networks,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
+![UniFi](https://img.shields.io/badge/UniFi-20_routed_LANs,_16_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_SIEM-000000?logo=splunk&logoColor=white)
-![Wazuh](https://img.shields.io/badge/Wazuh-security_monitoring-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-7_scrape_jobs-E6522C?logo=prometheus&logoColor=white)
+![Wazuh](https://img.shields.io/badge/Wazuh-14_active_agents-3585BB)
+![Prometheus](https://img.shields.io/badge/Prometheus-49_targets,_6_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
@@ -26,7 +26,7 @@ This repository documents my five-node Proxmox cluster, segmented UniFi network,
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway enforces zone policy across 14 networks and 12 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh watches the app and edge hosts, & Prometheus scrapes the cluster, edge, and security targets.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 28 network objects, including 20 routed LAN networks, and enforces policy across 16 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 14 active remote agents, & Prometheus reports 49 targets `UP` across six jobs.
 
 ## Repository layout
 
@@ -50,8 +50,8 @@ The guides provide the reading path. Detailed records stay with the system that 
 | [Splunk SIEM build log](Platforms/Splunk/Splunk%20Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
 | [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | VLAN 72, the Security-A zone, address changes, firewall policy, service moves, & post-migration checks |
 | [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | VLAN 71 interfaces, Corosync `link1`, four-node rollout, quorum checks, & link-failure tests |
-| [April 2026 incident response](Security/Incidents/Vercel/Credential Rotation After Vendor Bulletin - 2026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
-| [TeamSpeak UDP relay outage](Security/Incidents/Teamspeak/UDP Relay Outage - 2026-04-24.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
+| [April 2026 incident response](Security/Incidents/Vercel/Credential%20Rotation%20After%20Vendor%20Bulletin%20-%202026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
+| [TeamSpeak UDP relay outage](Security/Incidents/Teamspeak/UDP%20Relay%20Outage%20-%202026-04-24.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
 | [NetBird routed VPN path](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) | First peer enrollment, routed resource, access policy, routing peer, masquerade, & HTTPS tunnel test |
 | [SSH authorized-key cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md) | Nineteen-host inventory, 15 reachable targets, fingerprint comparison, authorized-key cleanup, & final access checks |
 
@@ -59,6 +59,5 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Attach the lab VLAN NICs (74, 77, 79) to `kasm-01`, map each workspace type to its network, & confirm the UniFi zone matrix blocks those zones toward Internal, AlphaSec-Servers, & AlphaSec-Mgmt before any live malware runs. See [Kasm Workspaces](Platforms/Kasm%20Workspaces/README.md).
-2. Configure the permanently installed Samsung 850 EVO on `purple-server` as ordinary Proxmox storage for VM disks and LXC root volumes. Its [boot NVMe replacement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md) is done and Galaxy is back to four votes.
-3. Continue Splunk ES data readiness: scope the CIM data models to the indexes in use.
+1. Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). The manual 80 percent capacity gate remains in force until the alert exists.
+2. Delete stopped Galaxy CT 105 `ai-bravo-02` and its root volume on 2026-08-15 after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md).

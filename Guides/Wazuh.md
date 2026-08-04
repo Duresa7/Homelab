@@ -1,7 +1,7 @@
 # Wazuh Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I run the Wazuh manager, indexer, dashboard, & API on the security host. This gu
 
 ## Current Status and Verified Versions
 
-The Wazuh stack runs on `security-01` / `wazuh-01` at `192.168.72.2`. The dashboard uses HTTPS 443, the API uses 55000, agent events use TCP 1514, & enrollment uses TCP 1515. `app-01` is ID 004 and `edge-01` is ID 005; both run agent 4.14.5-1 and report Active.
+The Wazuh 4.14.6 manager, indexer, & dashboard run on `security-01` / `wazuh-01` at `192.168.72.2`. The dashboard uses HTTPS 443, the API uses 55000, agent events use TCP 1514, & enrollment uses TCP 1515. The manager reports 14 active remote agents. Thirteen run 4.14.6, including `app-01`; `edge-01` alone runs 4.14.5.
 
 ## What You Need
 
@@ -69,8 +69,8 @@ I stop its agent, remove the exact current manager ID, purge endpoint state only
 - Manager, indexer, & dashboard units were active.
 - Ports 443, 55000, 1514, & 1515 were listening.
 - Dashboard 302 and unauthenticated API 401 matched the expected healthy responses.
-- Both endpoint services were enabled and active.
-- `app-01` ID 004 and `edge-01` ID 005 reported Active on `node01`.
+- All 14 remote endpoint services were enabled and active.
+- `app-01` ID 004 reported 4.14.6 and `edge-01` ID 005 reported 4.14.5 on `node01`.
 - The existing internal firewall path allowed only the two Wazuh agent ports.
 
 ## Troubleshooting and Recovery
@@ -79,7 +79,7 @@ If an endpoint stays pending, compare its hostname and manager address, test TCP
 
 ## Known Limits
 
-`app-01` and `edge-01` are the only intended endpoints in the current record. The dashboard uses its existing self-signed certificate.
+The direct dashboard uses its existing self-signed certificate. NPM presents the internal wildcard certificate on the named client path. `edge-01` remains one agent patch behind the 4.14.6 fleet.
 
 ## Source Records
 
@@ -87,4 +87,5 @@ If an endpoint stays pending, compare its hostname and manager address, test TCP
 - [Runbook](../Platforms/Wazuh/Documentation/Runbook.md)
 - [Endpoint removal](../Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md)
 - [Endpoint re-enrollment](../Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md)
+- [Wazuh agent fleet deployment](../Platforms/Wazuh/Documentation/Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md)
 - [Recovery](../Platforms/Wazuh/Documentation/Recovery.md)

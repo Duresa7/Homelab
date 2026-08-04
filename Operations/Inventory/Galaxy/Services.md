@@ -3,16 +3,28 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-08-03
 
-This inventory maps 13 Galaxy guests to their current workloads, versions, listeners, & verification state. Wazuh covers all five Proxmox nodes; the node exporter table records the four currently covered by Prometheus.
+This inventory maps 13 workload guests from the 19 records returned by the cluster API. Twelve guests were running during the 2026-08-03 staleness audit. Wazuh and Prometheus cover all five Proxmox nodes.
+
+## Cluster State
+
+All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowercase `.galaxy` FQDN.
+
+| Node | FQDN | PVE | Kernel |
+| --- | --- | --- | --- |
+| grey-server | `grey-server.galaxy` | 9.2.6 | `7.0.14-8-pve` |
+| purple-server | `purple-server.galaxy` | 9.2.6 | `7.0.14-8-pve` |
+| blue-server | `blue-server.galaxy` | 9.2.6 | `7.0.14-8-pve` |
+| red-server | `red-server.galaxy` | 9.2.6 | `7.0.14-8-pve` |
+| green-server | `green-server.galaxy` | 9.2.6 | `7.0.14-8-pve` |
 
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| debian-dev | VM 102 | grey-server | Development workstation | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
+| db-13-dev / debian-dev | VM 102 | grey-server | Development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>Syncthing |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird 0.74.4 (control plane + Access-A routing peer)<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.6.25<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
@@ -20,14 +32,14 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
-| media-01 | LXC 842 | red-server | Media automation and playback; applications onboarded, end-to-end acquisition test pending | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
 | Workload | Details |
 | --- | --- |
 | Ansible | Control node; community 14.2.0 with ansible-core 2.21.2 selected from `/opt/ansible-current` |
-| Semaphore | 2.18.27; systemd enabled/active; HTTP UI on TCP 3000 |
+| Semaphore | 2.18.27; systemd enabled/active; HTTP UI on TCP 3000; three projects, 23 templates, & 11 views |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `009` as `ansible-01` |
 | System services | Semaphore, SSH, cron |
 | Containers | No Docker or Podman containers detected |
@@ -50,23 +62,23 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Internal documentation site | Static HTML served by an unprivileged Nginx container as UID 101 with a read-only root filesystem, all Linux capabilities dropped, and no writable application volume |
-| Immich | Photo/video stack: server, Postgres, machine learning, Valkey |
+| Immich | 3.0.3 photo/video stack: server, Postgres, machine learning, Valkey |
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
-| Portainer CE | 2.39.1 from `portainer/portainer-ce:latest`; local Docker environment plus Edge environments 7 `docker-blue`, 8 `media-01`, & 9 `docker-network` |
+| Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
 | Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
 
 ## monitor-01
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 46 of 46 targets `up` at relocation completion |
+| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 49 of 49 targets `up` across six jobs: node 17, cAdvisor 8, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
-| blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
+| blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 20 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
-| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; seven named containers |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of eight scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `010` as `monitor-01` |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; UniFi DHCP serves .6 through .254 |
@@ -85,7 +97,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Version 0.74.4; dashboard and server containers deployed under `/opt/docker/netbird`; authenticated dashboard live at `https://netbird.alphsec.com`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
+| NetBird | Management server 0.75.1 and dashboard 2.90.8 under `/opt/docker/netbird`; authenticated dashboard live at `https://netbird.alphasecunited.com`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; Portainer listed all 5 host containers on 2026-07-28 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
@@ -138,7 +150,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | TeamSpeak | Three `teamspeak` containers |
 | TS3 Manager | `joni1802/ts3-manager` |
 | Playit agent | `ghcr.io/playit-cloud/playit-agent:0.17` |
-| Portainer Edge Agent | `portainer/agent:2.39.1` |
+| Portainer Edge Agent | `portainer/agent:2.39.1`; one of four remote Edge Agent hosts managed by Portainer server 2.39.5 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `006` as `alpha-prod-01` |
 
 ## splunk-siem
@@ -153,10 +165,10 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 
 | Workload | Details |
 | --- | --- |
-| Jellyfin | `jellyfin/jellyfin:latest`; Intel Quick Sync render device available; LAN port 8096 |
+| Jellyfin | `jellyfin/jellyfin:latest`; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
 | Seerr | `ghcr.io/seerr-team/seerr:latest` 3.3.0; migrated from Jellyseerr with its existing configuration retained; setup wizard completed 2026-07-17 with confirmed Jellyfin, Sonarr, and Radarr connections |
-| Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr and Radarr linked to qBittorrent using separate categories; first public indexer added to Prowlarr 2026-07-17 with the Standard sync profile; end-to-end acquisition test pending |
-| FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; internal challenge proxy selected only through the `flaresolverr` Prowlarr tag; real-indexer challenge validation pending |
+| Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
+| FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |
 | Download path | LinuxServer qBittorrent `latest` shares `qmcgaw/gluetun:latest` network namespace; Proton WireGuard, kill switch, and provider-side port synchronization verified; qBittorrent rejects the documented 100-pattern executable/script payload baseline for new torrents |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; environment 8; compose under `/opt/docker/portainer-edge-agent`; Portainer listed all 10 host containers on 2026-07-28 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `008` as `media-01` |
@@ -171,6 +183,7 @@ This inventory maps 13 Galaxy guests to their current workloads, versions, liste
 | purple-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.11:9100` | Enabled, active, Prometheus `UP` |
 | blue-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.12:9100` | Enabled, active, Prometheus `UP` |
 | red-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.13:9100` | Enabled, active, Prometheus `UP` |
+| green-server | Debian `prometheus-node-exporter` 1.9.0-1+b4 | `prometheus-node-exporter.service` | `192.168.70.14:9100` | Enabled, active, Prometheus `UP` |
 
 ## Wazuh agent coverage
 
@@ -209,6 +222,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
 | kasm-01 | Upstream binary (Ubuntu 24.04) | `node_exporter.service` | `192.168.78.10:9100`, bound to that address only | Not installed, deliberately |
+| edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.90.10:9100` | No containers |
 
 `security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
 

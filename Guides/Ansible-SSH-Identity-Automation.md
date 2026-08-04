@@ -9,7 +9,7 @@ I use Ansible to audit, add, rotate, & retire SSH public keys across Linux, Prox
 
 ## Current Status and Verified Versions
 
-The controller is CT 100 `ansible-01` at `192.168.40.36`. The recorded stack runs Ansible 14.2.0, ansible-core 2.21.2, & Semaphore 2.18.27 on TCP 3000. The project has 18 Semaphore templates across six views.
+The controller is CT 100 `ansible-01` at `192.168.40.36`. The recorded stack runs Ansible 14.2.0, ansible-core 2.21.2, & Semaphore 2.18.27 on TCP 3000. Semaphore exposes three projects, 23 templates, & 11 views. The SSH identity project contributes 13 of those templates.
 
 ## What You Need
 
@@ -93,7 +93,7 @@ I use `semaphore/task-templates.yml` to create the same audit, onboard, stage, v
 - Audit jobs reported state without writing it.
 - Onboarding and staging preserved existing keys.
 - Retirement stopped unless all four gates passed.
-- Semaphore exposed 18 templates across six views after the recorded upgrade.
+- Semaphore exposed three projects, 23 templates, & 11 views after the 2026-07-30 parity pass.
 
 ## Troubleshooting and Recovery
 
@@ -109,4 +109,5 @@ The public project omits live identity files. I removed the retired domain contr
 - [Architecture](../Platforms/Ansible/Documentation/Architecture.md)
 - [SSH identity automation change record](../Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
 - [Ansible and Semaphore upgrade](../Platforms/Ansible/Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
+- [Semaphore and Ansible project parity](../Platforms/Ansible/Documentation/Change%20Records/Semaphore%20and%20Ansible%20Project%20Parity%20-%202026-07-30.md)
 - [Controller key distribution report](../Platforms/Ansible/Documentation/ansible-01-key-distribution-report.md)

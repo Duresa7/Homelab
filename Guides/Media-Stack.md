@@ -1,7 +1,7 @@
 # Media Stack Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I deployed Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, FlareSolverr, & qBittorren
 
 ## Current Status and Verified Versions
 
-The stack runs on CT 842 `media-01` at `192.168.40.42` on `red-server`. The guest has 4 vCPU, 8 GiB memory, 1 GiB swap, & a 100 GiB root disk. The recorded runtime is Docker 29.6.2 with Compose 5.3.1. Application onboarding is complete, but a full request-to-play acquisition test remains unfinished.
+The stack runs on CT 842 `media-01` at `192.168.40.42` on `red-server`. The guest has 4 vCPU, 8 GiB memory, 1 GiB swap, & a 100 GiB root disk. The recorded runtime is Docker 29.6.2 with Compose 5.3.1. Application onboarding and the bounded request-to-play acquisition pass are complete.
 
 ## What You Need
 
@@ -82,6 +82,10 @@ I linked Seerr to Jellyfin, synchronized the libraries, & added the Sonarr and R
 
 ![Seerr Discover screen](../Platforms/Media%20Stack/Evidence/Media%20Stack%20Application%20Onboarding%20-%202026-07-17/Screenshots/S17-Seerr-Discover-Populated-2026-07-17.png)
 
+### Step 9: Run One Bounded Acquisition Pass
+
+On 2026-07-21 I requested one television episode and one movie, watched both traverse Prowlarr and the VPN-isolated qBittorrent path, checked the transfer contents against the payload filter, confirmed Sonarr and Radarr created hard links, waited for the Jellyfin library scan, & played the result with the GPU active. An indexer that required Cloudflare challenge handling also passed through FlareSolverr.
+
 ## What I Checked After Each Step
 
 - Docker and Compose returned the recorded versions.
@@ -90,6 +94,7 @@ I linked Seerr to Jellyfin, synchronized the libraries, & added the Sonarr and R
 - qBittorrent categories and application connections passed.
 - Sonarr, Radarr, Prowlarr, & Seerr connection tests succeeded.
 - Seerr synchronized the Jellyfin library and populated Discover.
+- The episode and movie completed the request, download, payload, hard-link import, scan, & GPU-active playback path.
 
 ## Troubleshooting and Recovery
 
@@ -97,7 +102,7 @@ If an application can browse a path but can't import a file, compare the contain
 
 ## Known Limits
 
-I haven't recorded a complete Seerr request that moves through an indexer, qBittorrent, import, Jellyfin scan, & playback. The UI and connection checks show that the applications are wired, but they don't close that end-to-end test.
+The one retained acquisition capture shows an acquired movie title, so it stays local under `Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/`. The published record retains the bounded steps and results without that title.
 
 ## Source Records
 

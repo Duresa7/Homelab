@@ -1,15 +1,15 @@
 # Prometheus Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
-I installed the missing node exporters, removed stale scrape jobs, validated the replacement configuration, & proved that seven retained Prometheus jobs were `UP`. This guide also covers the Docker bind-mount behavior that required a restart.
+I installed the missing node exporters, removed stale scrape jobs, validated the replacement configuration, & expanded the same test pattern to the current six-job target set. This guide also covers the Docker bind-mount behavior that required a restart.
 
 ## Current Status and Verified Versions
 
-Prometheus now runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. The original seven-target baseline described below has grown to 46 targets: 15 node exporters, eight cAdvisor endpoints, the Proxmox API exporter, 19 blackbox probes, both NUT sources, and a self-scrape. Purple, blue, and red run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
+Prometheus 3.13.1 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. All 49 targets were `UP` on 2026-08-03 across six jobs: node 17, cAdvisor 8, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1. Purple, blue, red, & green run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
 
 ## What You Need
 
@@ -20,7 +20,7 @@ Prometheus now runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-seco
 
 ## How the Pieces Fit Together
 
-![Prometheus scraping its seven node and API targets](../Assets/Diagrams/prometheus.svg)
+![Prometheus scrape flow from six jobs to 49 targets](../Assets/Diagrams/prometheus.svg)
 
 ## Walkthrough
 
@@ -59,7 +59,7 @@ My first host-path replacement and SIGHUP left the container attached to the old
 
 ### Step 6: Assert the Exact Result
 
-I ran the repository assertion script against the live API. It required exactly seven expected jobs, required every one to be `UP`, & rejected the stale addresses.
+I ran the repository assertion script against the live API. It requires the exact 49-target set, requires every target to be `UP`, checks the expected job and host labels, & rejects stale addresses.
 
 ```sh
 cd <YOUR_HOMELAB_REPO>/Platforms/Prometheus
@@ -71,7 +71,7 @@ python3 Tests/assert_targets.py
 - All four node-exporter endpoints returned HTTP 200 with `node_uname_info`.
 - The candidate and in-container configurations passed `promtool`.
 - Prometheus returned ready after restart.
-- Exactly seven jobs reported `UP`.
+- All 49 targets across six jobs reported `UP`.
 - The retired `.70.20`, `app-01`, & `supabase-01` targets were absent.
 
 ## Troubleshooting and Recovery
@@ -80,7 +80,7 @@ If a valid host-side file doesn't change the running target set after SIGHUP, co
 
 ## Known Limits
 
-This walkthrough records the original baseline procedure. The current target list, dashboard checks, and recovery procedure live in the platform README and runbook. Alert rules remain open.
+This walkthrough preserves the original baseline procedure. The current target list, dashboard checks, and recovery procedure live in the platform README and runbook. The Kasm thin-pool alert remains open.
 
 ## Source Records
 

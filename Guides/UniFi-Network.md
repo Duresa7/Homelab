@@ -1,7 +1,7 @@
 # UniFi Network Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ This guide follows the network work that supports Galaxy & the hosted platforms:
 
 ## Current Status and Verified Versions
 
-The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, VLAN 85 for Access-A, and VLAN 90 for the DMZ. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone.
+The controller has 28 network objects, including 20 routed corporate/LAN networks, and 16 zones. The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, VLAN 85 for Access-A, and VLAN 90 for the DMZ. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 22 local DNS entries: 21 enabled NPM names at `192.168.85.2` plus one disabled apex record.
 
 ## What You Need
 
@@ -52,7 +52,7 @@ The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is 
 
 ### Step 5: Add Local DNS
 
-I added `netbird.alphsec.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address.
+I added `netbird.alphasecunited.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address. The current enabled set contains NetBird and 20 application names. A disabled `alphasecunited.com` apex entry points at `192.168.1.1` but serves no current client path.
 
 ![UniFi local DNS record for the NetBird host](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
@@ -60,7 +60,7 @@ I added `netbird.alphsec.com` as an A record for `192.168.85.2` with TTL 300. Th
 
 - Web traffic returned HTTP `200` or the expected registry `401`.
 - `ntpdig` exited `0` through UDP 123.
-- Direct external DNS to `<YOUR_EXTERNAL_DNS_IP>:53` timed out under the final block.
+- Direct external DNS to `1.1.1.1:53` timed out under the final block.
 - Security-A services returned their expected HTTP codes & listeners.
 - The final UniFi dashboard remained healthy after Cluster-Net was added.
 
@@ -80,3 +80,4 @@ This guide covers the completed Security-A, Cluster-Net, Access-A, and consolida
 - [Security-A migration](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md)
 - [Zone and object consolidation](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
 - [Access-A deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
+- [Local DNS inventory](../Infrastructure/Network/UniFi/Configuration/local-dns.md)

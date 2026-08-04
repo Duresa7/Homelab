@@ -9,7 +9,7 @@ Galaxy is a Proxmox VE cluster that runs five nodes today. I built it as four an
 
 ## Current Status and Verified Versions
 
-All five nodes report `pve-manager/9.2.6` with kernel `7.0.14-8-pve`, checked against the cluster on 2026-08-03. Quorum holds at five votes. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
+All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, & lowercase `.galaxy` FQDNs, checked against the cluster on 2026-08-03. Quorum holds at five votes. The API returned 19 guest records, 12 running; the workload inventory maps 13 guests. VM display name `db-13-dev` belongs to guest hostname `debian-dev`. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
 
 ## What You Need
 
@@ -84,7 +84,7 @@ Stop if quorum drops, a node loses both management paths, or the edited `corosyn
 
 ## Known Limits
 
-CT 107 uses node-local `local-lvm`, so its HA resource doesn't have shared-storage failover. The Debian development VM still had one fresh authenticated desktop-login check pending in the 2026-07-15 record.
+CT 107 uses node-local `local-lvm`, so its HA resource doesn't have shared-storage failover. The Debian development VM's fresh authenticated desktop-login check passed on 2026-07-22: Claude retained sign-in through GNOME Keyring and Cowork opened `/dev/kvm`.
 
 ## Source Records
 
@@ -93,3 +93,4 @@ CT 107 uses node-local `local-lvm`, so its HA resource doesn't have shared-stora
 - [Corosync link1 change](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md)
 - [Docker network LXC](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
 - [Debian development VM](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15.md)
+- [Post-staleness inventory](../Operations/Inventory/Galaxy/Galaxy%20Inventory%20Post-Staleness%20Audit%20-%202026-08-03.md)

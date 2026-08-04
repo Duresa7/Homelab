@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-03
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -15,7 +15,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 | Guide | What it covers |
 |---|---|
-| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Four-node cluster setup, node expansion, Corosync link1, firewall objects, Docker LXC foundation, & Debian development VM |
+| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Five-node cluster, original setup, node expansion, Corosync link1, firewall objects, Docker LXC foundation, & Debian development VM |
 | [UniFi Network](UniFi-Network.md) | VLANs, zones, Security-A migration, DNS, egress policy order, & verification |
 | [Linux Host Baseline](Linux-Host-Baseline.md) | Package updates, administrative account, three SSH keys, key-only SSH, locked root, locale, & checks |
 | [SSH Key Lifecycle](SSH-Key-Lifecycle.md) | Key inventory, fleet cleanup, onboarding, staged rotation, verification, & retirement |
@@ -27,14 +27,14 @@ The original records still own the facts. A guide explains the path; its Source 
 |---|---|
 | [Ansible SSH Identity Automation](Ansible-SSH-Identity-Automation.md) | Controller setup, identity files, audit, onboarding, rotation, Semaphore, & recovery |
 | [Immich Storage Migration](Immich-Storage-Migration.md) | Database backup, replacement pool, file copy, verification, & old-disk retirement |
-| [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & pending acquisition test |
+| [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
 | [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [Portainer](Portainer.md) | Portainer server, Edge Agent Compose project, UniFi ports, & environment registration |
-| [Prometheus](Prometheus.md) | Node exporters, seven scrape jobs, config validation, reload behavior, & target checks |
+| [Portainer](Portainer.md) | Portainer server 2.39.5, four Edge Agent 2.39.1 hosts, UniFi ports, & environment registration |
+| [Prometheus](Prometheus.md) | Prometheus 3.13.1, 49 targets across six jobs, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [TeamSpeak](TeamSpeak.md) | Three servers, Playit tunnels, Cloudflare SRV records, TS3 Manager, boot recovery, & outage checks |
-| [Wazuh](Wazuh.md) | Endpoint removal, fresh enrollment, manager checks, dashboard state, & recovery |
+| [Wazuh](Wazuh.md) | Wazuh 4.14.6, 14 active remote agents, manager checks, dashboard state, & recovery |
 
 ## Archived & Retired Guides
 

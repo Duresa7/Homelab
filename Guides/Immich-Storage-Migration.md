@@ -1,7 +1,7 @@
 # Immich Storage Migration Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I moved Immich library storage from a WD-backed pool to a Toshiba-backed pool. T
 
 ## Current Status and Verified Versions
 
-The migration completed on 2026-05-28 with Immich v2.7.5 in LXC 110 on `grey-server`. The move reduced the dataset from about 1.9 TB to 825 GB, transferred about 886 GB across 32,000 files, & left Immich running on ZFS pool `hddpool-1`.
+Immich currently runs v3.0.3 in LXC 110 on `grey-server`. The migration itself completed on 2026-05-28 under v2.7.5. It reduced the dataset from about 1.9 TB to 825 GB, transferred about 886 GB across 32,000 files, & left Immich running on ZFS pool `hddpool-1`.
 
 ## What You Need
 

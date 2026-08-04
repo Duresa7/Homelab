@@ -1,7 +1,7 @@
 # NetBird Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,12 +9,12 @@ I deployed a self-hosted NetBird control plane, published it through Nginx Proxy
 
 ## Current Status and Verified Versions
 
-NetBird v0.74.4 runs on CT 107 `docker-network` at `192.168.85.2`. The dashboard binds `127.0.0.1:8080`, the combined server binds `127.0.0.1:8081`, & STUN uses UDP 3478. The recorded routed peer uses overlay address `100.121.111.204` to advertise `192.168.85.0/24` with masquerade enabled.
+NetBird management server 0.75.1 and dashboard 2.90.8 run on CT 107 `docker-network` at `192.168.85.2`. The dashboard binds `127.0.0.1:8080`, the combined server binds `127.0.0.1:8081`, & STUN uses UDP 3478. The authenticated entry point is `https://netbird.alphasecunited.com`. The routed peer uses overlay address `100.121.111.204` to advertise `192.168.85.0/24` with masquerade enabled.
 
 ## What You Need
 
 - A Debian Docker host with TCP 80, 443, & UDP 3478 available.
-- An internal DNS name such as `netbird.alphsec.com`.
+- An internal DNS name such as `netbird.alphasecunited.com`.
 - Nginx Proxy Manager on the same external Docker network.
 - One client device for peer enrollment and route testing.
 - Firewall access from the routing peer to the destination subnet.
@@ -33,7 +33,7 @@ I created CT 107 on VLAN 85, applied key-only SSH, installed Docker, & created `
 
 ### Step 2: Run the Verified Installer
 
-I downloaded the official v0.74.3 installer, verified SHA-256 `371ac85e4f56dc8e6d3abf14601f35d0d061b3712f2e60ce76f2e6832f3a1461`, selected the Nginx Proxy Manager integration, & kept the direct HTTP services on loopback. I later updated the running deployment to v0.74.4.
+I downloaded the official v0.74.3 installer, verified SHA-256 `371ac85e4f56dc8e6d3abf14601f35d0d061b3712f2e60ce76f2e6832f3a1461`, selected the Nginx Proxy Manager integration, & kept the direct HTTP services on loopback. The deployment later reached management server 0.75.1 and dashboard 2.90.8; the installer version here remains the historical build input.
 
 ### Step 3: Correct Proxy Trust and Check Containers
 
@@ -41,7 +41,7 @@ I changed the generated trusted-proxy address to Nginx Proxy Manager's fixed `17
 
 ### Step 4: Publish the Control Plane
 
-I created the internal DNS record for `netbird.alphsec.com`, added the Nginx Proxy Manager host and advanced NetBird routes, assigned its certificate, & enabled Force SSL and HTTP/2.
+I created the internal DNS record for `netbird.alphasecunited.com`, added the Nginx Proxy Manager host and advanced NetBird routes, assigned its certificate, & enabled Force SSL and HTTP/2.
 
 ![Authenticated NetBird dashboard](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg)
 

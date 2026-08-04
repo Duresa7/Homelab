@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-03
 
 ## What This Guide Covers
 
@@ -9,13 +9,13 @@ I deployed Nginx Proxy Manager on the NetBird host, gave it a fixed Docker addre
 
 ## Current Status and Verified Versions
 
-Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107 `docker-network`. It owns guest TCP ports 80, 81, & 443 and address `172.31.85.10` on the external `proxy` network. The recorded wildcard/apex certificate expires `2026-10-08 23:49:46 UTC`.
+Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107 `docker-network`. It owns guest TCP ports 80, 81, & 443 and address `172.31.85.10` on the external `proxy` network. It serves 21 enabled internal names, including `netbird.alphasecunited.com`. The recorded wildcard/apex certificate expires `2026-10-08 23:49:46 UTC`.
 
 ## What You Need
 
 - A Docker host with TCP ports 80, 81, & 443 available.
 - A domain managed in Cloudflare and a zone-scoped DNS Write token.
-- A DNS name such as `netbird.alphsec.com` for the upstream service.
+- A DNS name such as `netbird.alphasecunited.com` for the upstream service.
 - The upstream container attached to the same external Docker network.
 
 ## How the Pieces Fit Together
@@ -48,7 +48,7 @@ I opened the management interface on port 81, completed the administrator setup,
 
 ### Step 4: Add the NetBird Proxy Host
 
-I created `netbird.alphsec.com` with upstream `http://netbird-dashboard:80`, WebSocket Support, & Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, & gRPC requests go to `netbird-server:80`.
+I created `netbird.alphasecunited.com` with upstream `http://netbird-dashboard:80`, WebSocket Support, & Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, & gRPC requests go to `netbird-server:80`.
 
 I ran `nginx -t` inside the container and sent a Host-header request through Nginx Proxy Manager. Both checks passed before I added TLS.
 
@@ -86,4 +86,5 @@ HSTS was left disabled during the initial deployment. The recorded certificate e
 - [Deployment record](../Platforms/Nginx%20Proxy%20Manager/Documentation/Deployment.md)
 - [NetBird advanced configuration](../Platforms/Nginx%20Proxy%20Manager/Configuration/netbird-advanced-config.conf)
 - [Runbook](../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md)
+- [Internal proxy-host inventory](../Platforms/Nginx%20Proxy%20Manager/Configuration/internal-proxy-hosts.md)
 - [NetBird and NPM follow-ups](../Platforms/Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

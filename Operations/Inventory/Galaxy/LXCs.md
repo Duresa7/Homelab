@@ -100,7 +100,7 @@ Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, the NUT exporter
 | --- | --- | --- | --- | --- | --- |
 | rootfs | / | local-lvm | vm-107-disk-0 | 32G | default |
 
-The HA resource uses node-local `local-lvm`, so it has no shared-storage failover. After the [2026-07-20 stranding incident](../../../Security/Incidents/Galaxy/HA Local Storage Stranding - 2026-07-20.md) I pinned it to blue-server with the strict node-affinity rule `pin-blue-local-storage` (covering CT 107 & CT 108) so HA can't relocate it to a node without its disk.
+The HA resource uses node-local `local-lvm`, so it has no shared-storage failover. After the [2026-07-20 stranding incident](../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md) I pinned it to blue-server with the strict node-affinity rule `pin-blue-local-storage` (covering CT 107 & CT 108) so HA can't relocate it to a node without its disk.
 
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
