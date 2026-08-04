@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 ## Health Check
 
@@ -49,7 +49,7 @@ Adding a provisioning subdirectory means adding a placeholder file to it. The Co
 
 The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
 
-`GF_DATABASE_WAL=true` sits in the Compose file but has no effect on Grafana 13.1.1, so `grafana.db` is the whole database and restoring it on its own is complete. Check before you rely on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or you stop the container first so SQLite checkpoints the log back into the main file. Why the setting stopped working is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+`GF_DATABASE_WAL=true` sits in the Compose file but has no effect on Grafana 13.1.1. I confirmed that on 2026-08-04: the variable was `true`, SQLite header bytes 18 and 19 were `1 1`, and only `grafana.db` existed, with no `-wal` or `-shm` sidecar. `grafana.db` is therefore the whole current database and restoring it on its own is complete. Check before you rely on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or you stop the container first so SQLite checkpoints the log back into the main file. The measured history is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 The old `grafana.db` and Prometheus TSDB were deleted by design during the relocation and have no project backup. Rebuilding starts with a fresh database and the provisioned datasource and dashboard from git. To roll back only the current provisioning layer, restore the prior versioned files and recreate Grafana.
 

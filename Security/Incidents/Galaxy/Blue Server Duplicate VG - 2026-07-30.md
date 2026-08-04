@@ -1,7 +1,7 @@
 # Galaxy Incident Report: Blue-Server Duplicate VG
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-04
 
 ## Incident metadata
 
@@ -109,7 +109,7 @@ A newly installed disk isn't blank because it isn't mounted. Before the next Pro
 
 Renaming by VG UUID was the safe first repair. It restored service while preserving the stale disk until I made the destructive decision.
 
-Prometheus retained a stopped state across the interrupted CT boot despite `restart: unless-stopped`. Its configuration already has the desired policy, so I changed no Compose setting. The next controlled CT 104 restart must confirm Prometheus returns without a manual `docker start`; that check is tracked in the [Prometheus TODO](../../../Platforms/Prometheus/Documentation/TODO.md).
+Prometheus retained a stopped state across the interrupted CT boot despite `restart: unless-stopped`. Its configuration already had the desired policy, so I changed no Compose setting. I closed the follow-up on 2026-08-04 after reviewing the controlled 2026-08-01 restart: CT 104 booted at 11:11:33 EDT, and Prometheus started four seconds later with `RestartCount=0`. Docker was enabled and active, and all seven containers were running with `unless-stopped`. The completed check is recorded in the [Prometheus TODO](../../../Platforms/Prometheus/Documentation/TODO.md).
 
 ## Closure
 
@@ -117,7 +117,7 @@ GLXY-INC-2026-07-30-001 is resolved. Blue uses the NVMe for its OS, `local-lvm`,
 
 The disk that caused the outage turned out to be healthy. It passed a full extended SMART read on 2026-07-31 at 23,215 power-on hours with reallocated, pending, offline-uncorrectable, & CRC-error counts all at 0. It holds no filesystem and no LVM PV, and it carries an empty GPT written by a Proxmox `diskinit` task at 09:10 EDT that day, nine hours after the wipe. The failure was a volume-group name collision, not failing hardware.
 
-The remaining work is one controlled Prometheus restart check, not an open storage repair.
+The controlled Prometheus restart check completed on 2026-08-01 and was documented on 2026-08-04. No storage repair remains open from this incident.
 
 ## Linked records
 

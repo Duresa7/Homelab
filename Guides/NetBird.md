@@ -1,7 +1,7 @@
 # NetBird Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I deployed a self-hosted NetBird control plane, published it through Nginx Proxy
 
 ## Current Status and Verified Versions
 
-NetBird management server 0.75.1 and dashboard 2.90.8 run on CT 107 `docker-network` at `192.168.85.2`. The dashboard binds `127.0.0.1:8080`, the combined server binds `127.0.0.1:8081`, & STUN uses UDP 3478. The authenticated entry point is `https://netbird.alphasecunited.com`. The routed peer uses overlay address `100.121.111.204` to advertise `192.168.85.0/24` with masquerade enabled.
+NetBird management server 0.75.1 and dashboard 2.90.8 run on CT 107 `docker-network` at `192.168.85.2`. I verified dashboard 2.90.8 on 2026-08-04 from the running image's OCI version and revision labels, without an application login. The dashboard binds `127.0.0.1:8080`, the combined server binds `127.0.0.1:8081`, & STUN uses UDP 3478. The authenticated entry point is `https://netbird.alphasecunited.com`. The routed peer uses overlay address `100.121.111.204` to advertise `192.168.85.0/24` with masquerade enabled.
 
 ## What You Need
 

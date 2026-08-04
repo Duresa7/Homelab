@@ -1,7 +1,7 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.13.1 scrapes 49 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 20 internal service names, both APC UPS units over NUT, and itself. All 49 were `UP` during the 2026-08-03 audit. The count first reached 49 on 2026-07-31 when Green joined Galaxy and entered the node job. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
@@ -34,6 +34,8 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 ## Containers on monitor-01
 
 Six containers run on the host, from two Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, and `nut-exporter` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other seven Docker hosts, so this host gets the identical pinned image & port without a special case.
+
+The controlled 2026-08-01 host restart proved the boot path. CT 104 booted at 11:11:33 EDT, Prometheus and Grafana started at 11:11:37 EDT, and Prometheus reported `RestartCount=0`. Docker was enabled and active, and all seven host containers were running with `unless-stopped`. Prometheus therefore started automatically four seconds after the host rather than through a later manual start.
 
 ## Scrape Jobs
 

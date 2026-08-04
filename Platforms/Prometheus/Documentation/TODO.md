@@ -1,19 +1,17 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-04
 
-Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines; removing the inactive WAL setting at the next recreate replaces that measurement task.
+Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The 2026-08-04 database-header and sidecar check proved the configured WAL setting has no effect, so removing it at the next recreate remains open.
 
 ## Open
 
-**Remove `GF_DATABASE_WAL=true` at the next Grafana recreate.** Grafana 13.1.1 reads the variable but leaves SQLite in rollback-journal mode. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. I left the running container alone because removing an inactive variable provides no service benefit until another recreate is required. Repeat the corrected lock count after alert rules add writes. Reasoning & evidence in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+**Remove `GF_DATABASE_WAL=true` at the next Grafana recreate.** I measured the running Grafana 13.1.1 container on 2026-08-04. The environment contains `GF_DATABASE_WAL=true`, but SQLite header bytes 18 and 19 are `1 1`, which is rollback-journal mode, and `/var/lib/grafana/` contains `grafana.db` without `grafana.db-wal` or `grafana.db-shm`. The setting is present and has no effect. The 24-hour window captured on 2026-07-27 contained one `SQLITE_BUSY` retry lasting 9.963223 milliseconds and zero terminal error lines. I left the running container alone because removing the variable provides no service benefit until another recreate is required. Repeat the corrected lock count after alert rules add writes. Measurement and earlier lock evidence are in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 
 **Decide where alerts go, then write rules.** There are no alert rules and no Alertmanager. I kept alerting out of the 2026-07-25 expansion deliberately, because rules that fire into nothing are worse than no rules, so this starts with picking a notification path rather than with writing conditions. The dashboard already encodes the thresholds worth alerting on: targets down, `probe_success == 0`, certificate expiry, ZFS pool state, `nvme_critical_warning`, NVMe spare below 10%, filesystem above 90%, and a UPS off mains.
-
-**Verify Prometheus auto-start during the next controlled CT 104 restart.** Prometheus exited with code 0 during Blue's 2026-07-30 shutdown but remained stopped when `monitor-01` returned, even though Docker reported restart policy `unless-stopped`. A manual `docker start prometheus` restored the ready endpoint at 00:02:12 EDT on 2026-07-31. I changed no Compose setting because the configured policy already matches the desired behavior. The [Galaxy incident report](../../../Security/Incidents/Galaxy/Blue%20Server%20Duplicate%20VG%20-%202026-07-30.md) carries the shutdown evidence.
 
 ## Known limits, not tracked as work
 
@@ -25,4 +23,5 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 
 ## Completed
 
+- 2026-08-04: Prometheus auto-start verification. During the controlled 2026-08-01 restart, CT 104 booted at 11:11:33 EDT and Prometheus started four seconds later at 11:11:37 EDT with `RestartCount=0`. Grafana started at the same time. Docker was enabled and active, and all seven containers were running with `unless-stopped`, so the boot path rather than a later manual start satisfied the check.
 - 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `AlphaSec-Monitor`, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.

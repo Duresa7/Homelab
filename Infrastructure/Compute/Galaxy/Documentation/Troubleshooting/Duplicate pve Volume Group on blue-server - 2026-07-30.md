@@ -1,7 +1,7 @@
 # Duplicate `pve` Volume Group on `blue-server`
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-04
 
 **Investigated:** 2026-07-30 through 2026-07-31  
 **Owner:** Galaxy / Proxmox storage  
@@ -67,6 +67,12 @@ At 00:04:46 EDT on 2026-07-31:
 The WDC drive's SMART capture reported `PASSED`, 23,204 power-on hours, and zero reallocated, pending, offline-uncorrectable, or CRC-error sectors. I left it blank and unallocated.
 
 I ran a full extended SMART test on that drive on 2026-07-31. It completed without error at 23,215 hours with the same four counters at 0, which rules out failing hardware as a contributor here. The [hardware change record](../../../../Hardware/Documentation/Change%20Records/Galaxy%20Green%20and%20Blue%20Hardware%20Changes%20-%202026-07-31.md) carries the result and the disk's current empty-GPT state.
+
+## Follow-up verification, 2026-08-04
+
+The ten-second `activating LV 'pve/data' failed: Use --select vg_uuid=<uuid> in place of the VG name` messages were a symptom of this duplicate-VG fault, and they are gone. `vgs -o vg_name,vg_uuid,pv_count` reported exactly one `pve` volume group, UUID `bpWw0Q-DQfZ-7fIy-hVqF-z94V-OEzd-11RP2e`, with one physical volume. The last activation error was at 23:58:37 EDT on 2026-07-30, minutes after the repair, and the journal holds none from 2026-07-31 onward. `pvestatd` was `active` with `NRestarts` at `0` and `ActiveEnterTimestamp` of `Sat 2026-08-01 11:11:21 EDT`.
+
+**This does not close the recurring `pvestatd` crashes, which are a different fault.** Those are `SIGSEGV` and `SIGABRT` terminations inside the Perl runtime, tracked in [Recurring `pvestatd` Failure on `blue-server`](Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md), and the earliest retained one predates this disk being installed. A duplicate volume group that did not exist in June cannot explain a June crash. The two share a daemon name and nothing else: this fault made a running `pvestatd` complain, while that one kills it outright and `Restart=no` leaves it dead.
 
 ## Related records
 

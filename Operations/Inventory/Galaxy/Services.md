@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 This inventory maps 13 workload guests from the 19 records returned by the cluster API. Twelve guests were running during the 2026-08-03 staleness audit. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -65,7 +65,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Immich | 3.0.3 photo/video stack: server, Postgres, machine learning, Valkey |
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
-| Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
+| Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`, verified 2026-08-04 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
 | Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
 
 ## monitor-01
@@ -97,7 +97,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Management server 0.75.1 and dashboard 2.90.8 under `/opt/docker/netbird`; authenticated dashboard live at `https://netbird.alphasecunited.com`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
+| NetBird | Management server 0.75.1 and dashboard 2.90.8 under `/opt/docker/netbird`; dashboard version verified 2026-08-04 from the OCI version and revision labels; authenticated dashboard live at `https://netbird.alphasecunited.com`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; Portainer listed all 5 host containers on 2026-07-28 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |

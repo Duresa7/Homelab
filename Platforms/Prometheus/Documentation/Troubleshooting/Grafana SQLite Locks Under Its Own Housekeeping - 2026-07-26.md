@@ -1,13 +1,13 @@
 # Grafana SQLite Locks Under Its Own Housekeeping
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-04
 
 **Issue date:** 2026-07-26  
 **Status:** Monitoring. The 24-hour baseline found one successful retry and no terminal error lines on Grafana 13.1.1  
 **Affected systems:** `security-01` Grafana 12.4.1, retired; `monitor-01` Grafana 13.1.1
 
-I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` came across in the Compose file but stopped taking effect. See [The Mitigation Did Not Survive the Version Change](#the-mitigation-did-not-survive-the-version-change) for the evidence.
+I moved Grafana to `monitor-01` with a fresh database later on 2026-07-26 and deleted the affected database from `security-01`. `GF_DATABASE_WAL=true` came across in the Compose file but stopped taking effect. See [The Mitigation Did Not Survive the Version Change](#the-mitigation-did-not-survive-the-version-change) for the measured state.
 
 ## Symptom
 
@@ -66,7 +66,7 @@ grafana.db-wal     94792
 
 The relocation put Grafana 13.1.1 on `monitor-01`, and the setting stopped doing anything. I found this on 2026-07-26 while reviewing the completed relocation, not from a failure.
 
-Grafana still reads the variable. It logs `Config overridden from Environment variable var="GF_DATABASE_WAL=true"` at container start, and `docker exec grafana env` shows it. What changed is underneath:
+Grafana still reads the variable. It logs `Config overridden from Environment variable var="GF_DATABASE_WAL=true"` at container start, and `docker exec grafana env` shows it. The running service also reports this SQLite driver:
 
 ```
 logger=sqlstore level=info msg="Using SQLite driver" driver=modernc.org/sqlite
@@ -78,7 +78,13 @@ logger=sqlstore level=info msg="Using SQLite driver" driver=modernc.org/sqlite
 - Bytes 18 and 19 of the file header read `1 1`. That's the rollback journal. A WAL database reads `2 2`, & the value is written into the file, so it isn't a timing artifact.
 - `SQLITE_BUSY` came back at `19:29:06Z`, sixteen minutes after start: `Database locked, sleeping then retrying ... retry=0 sleep=9.963223ms`.
 
-The driver switch is the likely cause. Journal mode is passed as a DSN parameter, and the pure-Go `modernc.org/sqlite` driver doesn't use the same parameter syntax as the cgo driver it replaced, so an unrecognised parameter gets dropped without an error. I haven't read Grafana's source to confirm that, so treat the mechanism as probable and the three observations above as fact.
+I did not establish why Grafana reads the variable without changing the database journal mode. The environment value, file header, and sidecar files establish the resulting state without relying on a theory about Grafana's internals.
+
+## Follow-up measurement, 2026-08-04
+
+I repeated the state check inside the running Grafana 13.1.1 container. `GF_DATABASE_WAL` was `true`. SQLite header bytes 18 and 19 were `1 1`, which is rollback-journal mode; WAL mode would read `2 2`. `/var/lib/grafana/` contained `grafana.db` and no `grafana.db-wal` or `grafana.db-shm` sidecar.
+
+Grafana was running and holding the database open, so the missing sidecars were not a clean-shutdown artifact. The setting is present and the database is not in WAL mode. This measurement establishes that the setting has no effect without asserting why.
 
 ## 24-Hour Baseline
 

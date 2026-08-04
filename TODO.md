@@ -24,7 +24,7 @@ None.
 |---|---|
 | [Agent Sandbox](Platforms/Agent%20Sandbox/Documentation/Agent%20Sandbox%20Plan.md) | On-demand throwaway VM & Docker sandbox for AI agents; design locked 2026-07-20, build not started |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; diagnose the recurring `pvestatd` failure on Blue |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Delete archived CT 105 on 2026-08-15; watch Kasm thin-pool use and Purple drive wear; keep watching Blue's recurring `pvestatd` crashes, quiescent since 2026-07-22 with the cause still unestablished |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Kasm Workspaces](Platforms/Kasm%20Workspaces/Documentation/TODO.md) | Add an automated warning below the 80 percent thin-pool hard stop; recovery, Parrot, Debian Malware, update control, capacity gate, and replacement baseline are complete |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
@@ -33,7 +33,7 @@ None.
 | [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Verify Prometheus auto-start on the next controlled CT 104 restart, remove the inactive Grafana WAL setting at the next recreate, alert routing then rules, & UniFi gateway metrics |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Remove the Grafana WAL setting measured inert on 2026-08-04 at the next recreate; alert routing then rules; UniFi gateway metrics. Prometheus auto-start closed after it started four seconds after the controlled 2026-08-01 boot with `RestartCount=0` |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Settle how `edge-01` gets agent updates; the 14-agent fleet deployment is complete |
 
 ## Recently Completed

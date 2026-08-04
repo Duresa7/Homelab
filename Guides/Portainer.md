@@ -1,7 +1,7 @@
 # Portainer Edge Agent Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I connected a Docker host on VLAN 80 to the Portainer server on VLAN 40 with an 
 
 ## Current Status and Verified Versions
 
-Portainer server 2.39.5 runs on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. Four remote hosts run Edge Agent 2.39.1: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network`. They use `EDGE_INSECURE_POLL=1` across their approved internal paths.
+Portainer server 2.39.5 runs on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. I verified the server version on 2026-08-04 from the unauthenticated `https://localhost:9443/api/status` response. Four remote hosts run Edge Agent 2.39.1: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network`. They use `EDGE_INSECURE_POLL=1` across their approved internal paths.
 
 ## What You Need
 

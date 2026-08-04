@@ -1,9 +1,9 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-01
+**Last updated:** 2026-08-04
 
-This backlog contains the scheduled CT 105 deletion, Purple storage correction, the deferred `pvestatd` issue, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog contains the scheduled CT 105 deletion, Purple storage monitoring, the open `pvestatd` crash watch, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
 ## `green-server` PXE Expansion Complete
 
@@ -70,7 +70,7 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 - [ ] Watch the Toshiba's endurance counter along with media errors, filesystem errors, controller resets, and cluster stability. It's a used spare at 30% endurance used and 23,148 power-on hours, not a new drive, so plan its own replacement rather than treating this as permanent.
 - [x] Keep the Samsung SSD 850 EVO 250 GB installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. I made that role decision on 2026-07-27.
 - [x] Create `ssd-lvm2` as LVM-thin on the Samsung 850 EVO, restrict it to `purple-server`, enable VM image and LXC root-directory content, and verify it with a real guest disk. I completed this on 2026-07-28 by migrating Kasm VM 122 onto the pool. The pool was active at 11.03 percent allocated after the move, the guest booted, all eight Kasm services ran, seven Docker health checks reported healthy, and the API health endpoint passed. The unchanged [SMART capture](../../../Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) reports zero reallocated, CRC, and uncorrectable errors.
-- [ ] Monitor `ssd-lvm2` below the Kasm hard stop. A catalog-wide rolling-image refresh filled the pool on 2026-07-29, paused VM 122 with `io-error`, & caused Kasm's NPM route to return `502`. I enabled `discard=on`, removed both old snapshots, pruned unused Docker layers, disabled automatic workspace-image pulls, and installed Parrot by itself. The final readback was 68.25 percent with `baseline-parrot-2026-07-30` as the only snapshot. The [incident record](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md) holds the timeline. Keep 80 percent as the hard stop and add an alert below it. Autoextend can't help because the volume group has 124 MB unallocated.
+- [ ] Monitor `ssd-lvm2` below the Kasm hard stop. A catalog-wide rolling-image refresh filled the pool on 2026-07-29, paused VM 122 with `io-error`, & caused Kasm's NPM route to return `502`. I enabled `discard=on`, removed both old snapshots, pruned unused Docker layers, disabled automatic workspace-image pulls, and installed Parrot by itself. The post-recovery readback was 68.25 percent with `baseline-parrot-2026-07-30` as the only snapshot; on 2026-08-04 the pool stood at 69.90 percent data and 3.06 percent metadata. The [incident record](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md) holds the timeline. Keep 80 percent as the hard stop and add an alert below it. Autoextend can't help because the volume group has 124 MB unallocated.
 - [ ] Watch the 850 EVO's wear counters now that it carries a guest. It has absorbed 332 TB of host writes against a 75 TBW rating, and `Wear_Leveling_Count` normalized sits at 15 of 100 with raw 1801 average erase cycles. The baseline to compare against is that same 2026-07-28 capture. A non-zero `Reallocated_Sector_Ct`, a non-zero `CRC_Error_Count`, or a normalized wear value below 10 means move the pool rather than keep writing to it. Nothing irreplaceable lives there: the lab guest is rebuildable from the Kasm deployment record.
 
 ## Cluster Maintenance Done During Kasm Prep
@@ -84,15 +84,10 @@ This backlog contains the scheduled CT 105 deletion, Purple storage correction, 
 
 ## `blue-server` Recurring `pvestatd` Crashes
 
-**Status:** Deferred known issue  
-**Priority:** Schedule with a maintenance window  
-**Troubleshooting record:** [Recurring `pvestatd` failure on `blue-server`](Troubleshooting/Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md)
+**Status:** Open, quiescent since 2026-07-22; cause still unestablished  
+**Troubleshooting records:** [Recurring `pvestatd` crashes](Troubleshooting/Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md); the separate [duplicate `pve` volume-group fault](Troubleshooting/Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md)
 
-- [ ] Recheck service, cluster, kernel, & package state before recovery; retain the failure window and a core dump if one becomes available.
-- [ ] Record the current Lenovo BIOS settings, confirm the M910q update and rollback procedure, & update BIOS from `M1AKT35A` during a maintenance window.
-- [ ] Run an extended offline memory test after the firmware review; record per-pass results and any failing address or module information.
-- [ ] If memory passes, run a fixed-duration CPU test plus storage health & integrity checks, then compare the results with the other Galaxy nodes.
-- [ ] Restore `pvestatd`, verify node and resource status from a peer, & monitor for another crash beyond the prior failure window.
-- [ ] After finding the root cause, decide whether a systemd restart policy should cover a later daemon crash.
-
-A manual restart isn't resolution. Previous restarts restored status, then `pvestatd` failed again.
+- [x] Separate this from the duplicate-VG fault, which I briefly and wrongly treated as its cause. The duplicate VG made a running `pvestatd` log ten-second `activating LV 'pve/data' failed` messages, and those are fixed. This item is the daemon being killed by `SIGSEGV`, which is a different fault: the disk that carried the duplicate VG went in shortly before the 2026-07-30 shutdown and cannot explain the crash retained from 2026-06-19.
+- [x] Record the fifth crash, 2026-07-22 22:13:26 EDT, `status=11/SEGV`. The original investigation listed four; the journal now reaches back only to 2026-07-09, so the June ones survive only in the record.
+- [ ] Keep watching. On 2026-08-04 the service was `active`, `Result=success`, `NRestarts=0`, up since 2026-08-01 11:11:21 EDT, with no `SIGSEGV` or `SIGABRT` since 2026-07-22. **Thirteen days is not a fix:** the five crashes span a mean interval of about eight days, and nothing was changed on Blue that would plausibly have fixed it.
+- [ ] Capture evidence and run the non-disruptive integrity checks before any BIOS work or extended offline memory testing. The BIOS is `M1AKT35A` from 2018-03-21, below Lenovo's corrected minimum `M1AKT36A`, and that remains the leading hypothesis and remains untested.

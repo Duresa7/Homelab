@@ -1,9 +1,9 @@
 # Portainer
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
-I run Portainer CE 2.39.5 on `docker-main` at `192.168.40.35`. The server manages its local Docker socket & four Edge Agent 2.39.1 hosts on other VLANs.
+I run Portainer CE 2.39.5 on `docker-main` at `192.168.40.35`. I verified the server version on 2026-08-04 when the unauthenticated `https://localhost:9443/api/status` endpoint returned `Version` `2.39.5`. The server manages its local Docker socket & four Edge Agent 2.39.1 hosts on other VLANs.
 
 ## Current State
 
