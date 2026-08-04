@@ -68,11 +68,11 @@ Observed 2026-08-04, after adding the `edge-01` source and correcting two holds:
 | `app-01` | 4.14.6-1 | yes, applied 2026-08-04 | yes |
 | `edge-01` | 4.14.5-1 | yes, applied 2026-08-04 | yes, added 2026-08-04 |
 | `docker-main` | 4.14.0-1 | no | no |
-| `security-01` | manager 4.14.6-1 | n/a | yes |
+| `security-01` | manager 4.14.7-1 | n/a | yes |
 | `splunk-siem` | none | n/a | no |
 
-**The manager caps every agent.** `security-01` runs manager `4.14.6-1`, and the Wazuh repository carries only `4.14.7-1`, because it publishes one package per release line rather than a back catalogue. An agent must never be newer than its manager, so `4.14.6-1` cannot be installed from the repository any more and `4.14.7-1` must not be. Every agent version in the fleet is therefore frozen until the manager moves first.
+**The manager caps every agent.** `security-01` ran manager `4.14.6-1` while the repository carried only `4.14.7-1`, because Wazuh publishes one package per release line rather than a back catalogue. An agent must never be newer than its manager, which froze every agent version until the manager moved. I upgraded the central stack to `4.14.7-1` on 2026-08-04, so the cap is now above every agent and the holds can be released one host at a time.
 
 That is what the holds are for. `app-01` had the source without a hold, and a simulated fleet run confirmed it would have installed `4.14.7-1` over its `4.14.6-1`, putting the agent ahead of the manager. Holding it was the fix. `edge-01` received the same hold when it received the source, so adding the source could not create the same exposure.
 
-`edge-01` on 4.14.5-1 against a 4.14.6-1 manager is a supported pairing, so none of this describes an outage. `docker-main` on 4.14.0-1 is the widest gap and is [tracked as open work](../Documentation/TODO.md). I verified the existing version split and absent `edge-01` source on 2026-08-04, and the twelve new package holds on 2026-08-03.
+`edge-01` on 4.14.5-1 against a 4.14.7-1 manager is a supported pairing, so none of this describes an outage. `docker-main` on 4.14.0-1 is the widest gap and is [tracked as open work](../Documentation/TODO.md).

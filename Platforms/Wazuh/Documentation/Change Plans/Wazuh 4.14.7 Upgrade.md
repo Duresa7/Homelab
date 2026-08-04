@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-04
 
 **Target:** Upgrade the all-in-one Wazuh stack on `security-01` from `4.14.6-1` to `4.14.7-1`  
-**Execution status:** Preflight complete 2026-08-04; executing  
+**Execution status:** Executed 2026-08-04. Outcome in [Wazuh 4.14.7 Central Upgrade](../Change%20Records/Wazuh%204.14.7%20Central%20Upgrade%20-%202026-08-04.md)  
 **Execution owner:** David Kadi
 
 This is a change plan for a future maintenance window I will run. None of its commands ran while I wrote it, and writing this plan changed no live system.
