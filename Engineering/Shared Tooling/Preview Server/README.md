@@ -13,7 +13,7 @@ Start it through the browser pane, not by hand:
 preview_start {"name": "preview"}
 ```
 
-That reads [.claude/launch.json](../../../.claude/launch.json), which points at `serve.js` in this folder. `http://localhost:8123/` prints the folders it will serve; every other path is repo-relative, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
+That reads the local-only `.claude/launch.json` launch configuration, which points at `serve.js` in this folder. `http://localhost:8123/` prints the folders it will serve; every other path is repo-relative, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
 
 To run it outside an agent session:
 

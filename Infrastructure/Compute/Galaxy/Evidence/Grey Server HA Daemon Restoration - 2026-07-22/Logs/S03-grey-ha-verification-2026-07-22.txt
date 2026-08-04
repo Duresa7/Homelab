@@ -1,0 +1,269 @@
+Galaxy Grey Server HA Daemon Restoration
+Step 3: After-change verification
+
+Execution mechanism: SSH Manager MCP, root account, Linux shell, default working directory
+
+=== Grey initial verification ===
+
+Capture timestamp: 2026-07-22T02:22:32-04:00
+Target: grey-server (192.168.70.10)
+
+Command:
+date --iso-8601=seconds
+systemctl show pve-ha-lrm pve-ha-crm -p Id -p ActiveState -p SubState -p UnitFileState -p Result -p ExecMainStartTimestamp
+systemctl show watchdog-mux -p Id -p ActiveState -p SubState -p Result
+stat -c "%n|%s|%y|%U:%G|%a" /etc/pve/nodes/grey-server/lrm_status
+ha-manager status
+pvecm status
+journalctl -u pve-ha-lrm -u pve-ha-crm --since "2026-07-22 02:21:00" --no-pager
+
+Standard output:
+2026-07-22T02:22:32-04:00
+Result=success
+ExecMainStartTimestamp=Wed 2026-07-22 02:22:13 EDT
+Id=pve-ha-lrm.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+
+Result=success
+ExecMainStartTimestamp=Wed 2026-07-22 02:22:12 EDT
+Id=pve-ha-crm.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+Result=success
+Id=watchdog-mux.service
+ActiveState=active
+SubState=running
+/etc/pve/nodes/grey-server/lrm_status|83|2026-07-22 02:22:28.000000000 -0400|root:www-data|640
+quorum OK
+master purple-server (active, Wed Jul 22 02:22:28 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:22:28 2026)
+lrm grey-server (idle, watchdog standby, Wed Jul 22 02:22:28 2026)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:22:29 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:22:29 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+Cluster information
+-------------------
+Name:             Galaxy
+Config Version:   8
+Transport:        knet
+Secure auth:      on
+
+Quorum information
+------------------
+Date:             Wed Jul 22 02:22:33 2026
+Quorum provider:  corosync_votequorum
+Nodes:            4
+Node ID:          0x00000001
+Ring ID:          1.1cc
+Quorate:          Yes
+
+Votequorum information
+----------------------
+Expected votes:   4
+Highest expected: 4
+Total votes:      4
+Quorum:           3
+Flags:            Quorate
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+0x00000001          1 192.168.70.10 (local)
+0x00000002          1 192.168.70.11
+0x00000003          1 192.168.70.12
+0x00000004          1 192.168.70.13
+Jul 22 02:22:12 grey-server systemd[1]: Starting pve-ha-crm.service - PVE Cluster HA Resource Manager Daemon...
+Jul 22 02:22:12 grey-server pve-ha-crm[1752800]: starting server
+Jul 22 02:22:12 grey-server pve-ha-crm[1752800]: status change startup => wait_for_quorum
+Jul 22 02:22:12 grey-server systemd[1]: Started pve-ha-crm.service - PVE Cluster HA Resource Manager Daemon.
+Jul 22 02:22:12 grey-server systemd[1]: Starting pve-ha-lrm.service - PVE Local HA Resource Manager Daemon...
+Jul 22 02:22:13 grey-server pve-ha-lrm[1752818]: starting server
+Jul 22 02:22:13 grey-server pve-ha-lrm[1752818]: status change startup => wait_for_agent_lock
+Jul 22 02:22:13 grey-server systemd[1]: Started pve-ha-lrm.service - PVE Local HA Resource Manager Daemon.
+Jul 22 02:22:17 grey-server pve-ha-crm[1752800]: status change wait_for_quorum => slave
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true
+
+=== Purple cross-node verification ===
+
+Capture timestamp: 2026-07-22T02:22:33-04:00
+Target: purple-server (192.168.70.11)
+
+Command:
+date --iso-8601=seconds
+ha-manager status
+pvecm status
+
+Standard output:
+2026-07-22T02:22:33-04:00
+quorum OK
+master purple-server (active, Wed Jul 22 02:22:28 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:22:28 2026)
+lrm grey-server (idle, watchdog standby, Wed Jul 22 02:22:33 2026)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:22:29 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:22:29 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+Cluster information
+-------------------
+Name:             Galaxy
+Config Version:   8
+Transport:        knet
+Secure auth:      on
+
+Quorum information
+------------------
+Date:             Wed Jul 22 02:22:34 2026
+Quorum provider:  corosync_votequorum
+Nodes:            4
+Node ID:          0x00000002
+Ring ID:          1.1cc
+Quorate:          Yes
+
+Votequorum information
+----------------------
+Expected votes:   4
+Highest expected: 4
+Total votes:      4
+Quorum:           3
+Flags:            Quorate
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+0x00000001          1 192.168.70.10
+0x00000002          1 192.168.70.11 (local)
+0x00000003          1 192.168.70.12
+0x00000004          1 192.168.70.13
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true
+
+=== Blue workload verification ===
+
+Capture timestamp: 2026-07-22T02:22:34-04:00
+Target: blue-server (192.168.70.12)
+
+Command:
+date --iso-8601=seconds
+pct status 107
+pct status 108
+ha-manager status
+
+Standard output:
+2026-07-22T02:22:34-04:00
+status: running
+status: running
+quorum OK
+master purple-server (active, Wed Jul 22 02:22:28 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:22:28 2026)
+lrm grey-server (idle, watchdog standby, Wed Jul 22 02:22:33 2026)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:22:34 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:22:34 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true
+
+=== Sustained verification ===
+
+Capture timestamp: 2026-07-22T02:23:16-04:00
+Target: grey-server (192.168.70.10)
+
+Command:
+date --iso-8601=seconds
+systemctl is-enabled pve-ha-lrm
+systemctl is-enabled pve-ha-crm
+systemctl is-active pve-ha-lrm
+systemctl is-active pve-ha-crm
+systemctl is-active watchdog-mux
+ha-manager status
+journalctl -u pve-ha-lrm -u pve-ha-crm --since "2026-07-22 02:22:00" -p warning..alert --no-pager
+
+Standard output:
+2026-07-22T02:23:16-04:00
+enabled
+enabled
+active
+active
+active
+quorum OK
+master purple-server (active, Wed Jul 22 02:23:08 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:23:07 2026)
+lrm grey-server (idle, watchdog standby, Wed Jul 22 02:23:13 2026)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:23:14 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:23:14 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+-- No entries --
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true
+
+=== Purple sustained cross-node verification ===
+
+Capture timestamp: 2026-07-22T02:23:17-04:00
+Target: purple-server (192.168.70.11)
+
+Command:
+date --iso-8601=seconds
+ha-manager status
+
+Standard output:
+2026-07-22T02:23:17-04:00
+quorum OK
+master purple-server (active, Wed Jul 22 02:23:08 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:23:17 2026)
+lrm grey-server (idle, watchdog standby, Wed Jul 22 02:23:13 2026)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:23:14 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:23:14 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true
+
+=== Blue sustained workload verification ===
+
+Capture timestamp: 2026-07-22T02:23:17-04:00
+Target: blue-server (192.168.70.12)
+
+Command:
+pct status 107
+pct status 108
+
+Standard output:
+status: running
+status: running
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true

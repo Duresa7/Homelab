@@ -1,0 +1,8 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!unifi-firewall-zones-2026-07-22.png
+!unifi-firewall-zones-lab-entries-2026-07-22.png
+!unifi-kasm-firewall-policies-2026-07-22.png
+!unifi-proxmox-trunk-kasm-vlans-preview-2026-07-22.png
+!unifi-proxmox-trunk-kasm-vlans-active-2026-07-22.png

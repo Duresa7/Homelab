@@ -1,0 +1,32 @@
+{
+  "rubric_version": 1,
+  "overall_score": 62,
+  "overall_status": "needs_attention",
+  "categories": {
+    "segmentation": {
+      "score": 20,
+      "max": 25,
+      "deduction": 5,
+      "count": 1
+    },
+    "egress_control": {
+      "score": 20,
+      "max": 25,
+      "deduction": 5,
+      "count": 3
+    },
+    "rule_hygiene": {
+      "score": 0,
+      "max": 25,
+      "deduction": 36,
+      "count": 31
+    },
+    "topology": {
+      "score": 22,
+      "max": 25,
+      "deduction": 3,
+      "count": 3
+    }
+  }
+}
+

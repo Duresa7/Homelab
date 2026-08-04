@@ -1,0 +1,19 @@
+Galaxy Grey Server HA Daemon Restoration
+Step 2: Enable and start HA services
+
+Capture window: 2026-07-22 02:22:12 to 02:22:13 EDT
+Target: grey-server (192.168.70.10)
+Execution mechanism: SSH Manager MCP, root account, Linux shell, default working directory
+
+Command:
+systemctl enable --now pve-ha-lrm pve-ha-crm
+
+Standard output:
+(empty)
+
+Standard error:
+Created symlink '/etc/systemd/system/multi-user.target.wants/pve-ha-lrm.service' → '/usr/lib/systemd/system/pve-ha-lrm.service'.
+Created symlink '/etc/systemd/system/multi-user.target.wants/pve-ha-crm.service' → '/usr/lib/systemd/system/pve-ha-crm.service'.
+
+Exit code: 0
+Structured result: success=true

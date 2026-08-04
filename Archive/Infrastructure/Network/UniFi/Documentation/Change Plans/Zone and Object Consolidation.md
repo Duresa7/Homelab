@@ -1,7 +1,7 @@
 # Zone and Object Consolidation
 
 **Created:** 2026-07-27  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-04
 
 **Status:** Completed 2026-07-27
 
@@ -174,7 +174,7 @@ Rollback: recreate the deleted zone, move Security-A back, restore the 10 polici
 
 ### S07: Remove Secure-V
 
-The decision gate this step originally carried is resolved. When I first mapped `Secure-V`/100 it was a working domain wireless network: an enabled SSID, a ProtonVPN traffic route, and a Windows Group Policy WLAN profile naming that SSID as the only one domain machines may join. I decided on 2026-07-27 to retire the whole Windows domain, which dissolves the GPO dependency, and I deleted the `Kadi-AP-AD` SSID the same day. The domain-side teardown lives in the archived [Active Directory Decommission plan](../../../../../Platforms/Windows%20Servers/Documentation/Change%20Plans/Active%20Directory%20Decommission.md).
+The decision gate this step originally carried is resolved. When I first mapped `Secure-V`/100 it was a working domain wireless network: an enabled SSID, a ProtonVPN traffic route, and a Windows Group Policy WLAN profile naming that SSID as the only one domain machines may join. I decided on 2026-07-27 to retire the whole Windows domain, which dissolves the GPO dependency, and I deleted the `Kadi-AP-AD` SSID the same day. The local-only `Active Directory Decommission.md` plan under `Archive/Platforms/Windows Servers/Documentation/Change Plans/` records the domain-side teardown.
 
 What remains here is two objects, in this order:
 

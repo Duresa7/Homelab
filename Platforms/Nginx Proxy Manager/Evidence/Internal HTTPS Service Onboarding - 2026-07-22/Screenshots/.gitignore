@@ -1,0 +1,6 @@
+# Only the listed evidence images are tracked
+*
+!.gitignore
+!S04A-NPM-Proxy-Hosts-2026-07-22.png
+!S04B-NPM-Proxy-Hosts-2026-07-22.png
+!S04C-NPM-Proxy-Hosts-2026-07-22.png

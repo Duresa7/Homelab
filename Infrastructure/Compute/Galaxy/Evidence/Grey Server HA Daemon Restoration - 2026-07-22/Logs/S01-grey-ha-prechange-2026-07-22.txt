@@ -1,0 +1,89 @@
+Galaxy Grey Server HA Daemon Restoration
+Step 1: Pre-change state
+
+Capture timestamp: 2026-07-22T02:21:54-04:00
+Target: grey-server (192.168.70.10)
+Execution mechanism: SSH Manager MCP, root account, Linux shell, default working directory
+
+Command:
+hostname
+date --iso-8601=seconds
+pvecm status
+systemctl show pve-ha-lrm pve-ha-crm -p Id -p LoadState -p ActiveState -p SubState -p UnitFileState -p Result
+ha-manager status
+ha-manager config
+ha-manager rules list
+
+Standard output:
+grey-server
+2026-07-22T02:21:54-04:00
+Cluster information
+-------------------
+Name:             Galaxy
+Config Version:   8
+Transport:        knet
+Secure auth:      on
+
+Quorum information
+------------------
+Date:             Wed Jul 22 02:21:54 2026
+Quorum provider:  corosync_votequorum
+Nodes:            4
+Node ID:          0x00000001
+Ring ID:          1.1cc
+Quorate:          Yes
+
+Votequorum information
+----------------------
+Expected votes:   4
+Highest expected: 4
+Total votes:      4
+Quorum:           3
+Flags:            Quorate
+
+Membership information
+----------------------
+    Nodeid      Votes Name
+0x00000001          1 192.168.70.10 (local)
+0x00000002          1 192.168.70.11
+0x00000003          1 192.168.70.12
+0x00000004          1 192.168.70.13
+Result=success
+Id=pve-ha-lrm.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=disabled
+
+Result=success
+Id=pve-ha-crm.service
+LoadState=loaded
+ActiveState=inactive
+SubState=dead
+UnitFileState=disabled
+quorum OK
+master purple-server (active, Wed Jul 22 02:21:48 2026)
+fencing armed (CRM watchdog active)
+lrm blue-server (active, watchdog active, Wed Jul 22 02:21:47 2026)
+lrm grey-server (old timestamp - dead?, watchdog standby, Fri Aug 22 23:47:05 2025)
+lrm purple-server (idle, watchdog standby, Wed Jul 22 02:21:54 2026)
+lrm red-server (idle, watchdog standby, Wed Jul 22 02:21:54 2026)
+service ct:107 (blue-server, started)
+service ct:108 (blue-server, started)
+ct:107
+	state started
+
+ct:108
+	state started
+
+┌────────────────────────┐
+│ rule                   │
+╞════════════════════════╡
+│ pin-blue-local-storage │
+└────────────────────────┘
+
+Standard error:
+(empty)
+
+Exit code: 0
+Structured result: success=true

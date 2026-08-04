@@ -224,6 +224,121 @@
 /Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
 
+# Reviewed evidence for the public-link repair
+!/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/
+/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/*
+!/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/Logs/S01-grey-ha-prechange-2026-07-22.txt
+!/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/Logs/S02-grey-ha-enable-services-2026-07-22.txt
+!/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/Logs/S03-grey-ha-verification-2026-07-22.txt
+
+!/Infrastructure/Network/UniFi/Evidence/
+/Infrastructure/Network/UniFi/Evidence/*
+!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/
+/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/*
+!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/Evidence-Index.md
+!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/Screenshots/
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/
+/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/*
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Evidence-Index.md
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/
+/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/*
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/S01-Preflight.md
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/S02-UniFi-Changes.md
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/S03-Proxmox-Firewall.md
+!/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Logs/S04-Validation.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/
+/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/*
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Evidence-Index.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/
+/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/*
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S01-Snapshot-and-Reference-Inventory.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S02-Firewall-Group-Creation.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S03-Policy-Selector-Migration.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S04-Zone-Name-Corrections.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S05-Cluster-Net-Zone-Merge.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S06-Observability-Zone-Merge.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S07-Secure-V-Removal.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S08-Client-Group-Hygiene.md
+!/Infrastructure/Network/UniFi/Evidence/Zone and Object Consolidation - 2026-07-27/Logs/S09-Final-Verification.md
+
+!/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/
+/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/*
+!/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/
+/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/*
+!/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/S01-Diagnosis-and-Repair-2026-07-22.md
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/
+/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/*
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/
+/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/*
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S01-Preflight-2026-07-22.md
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S02-Ext4-Provisioning-2026-07-22.md
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S03-Copy-and-Cutover-2026-07-22.md
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S04-Functional-Validation-2026-07-22.md
+!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S05-Fail-Closed-Cleanup-and-Final-Audit-2026-07-22.md
+
+!/Platforms/Nginx Proxy Manager/Evidence/
+/Platforms/Nginx Proxy Manager/Evidence/*
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/
+/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/*
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Evidence-Index.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/
+/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/*
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S01-Recovery-Points-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S02-Backend-Compatibility-Verification-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S03-UniFi-Readback-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S04-NPM-State-Readback-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S05-Route-and-Restart-Verification-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S06-Backup-Removal-2026-07-22.md
+!/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Screenshots/
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/
+/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/*
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/
+/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/*
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S01-UniFi-Path-and-Packet-Trace-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S02-Return-Path-Repair-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S03-NPM-Host-and-Route-Verification-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S04-Prometheus-Probe-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/
+/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/*
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/
+/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/*
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S01-Preflight-and-Recovery-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S02-UniFi-DNS-and-Firewall-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S03-NPM-Proxy-Host-2026-07-28.md
+!/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S04-Monitoring-and-Final-Verification-2026-07-28.md
+
+!/Platforms/Portainer/Evidence/
+/Platforms/Portainer/Evidence/*
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/
+/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/*
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/
+/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/*
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S01-Preflight-and-Pattern-2026-07-28.md
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S02-Portainer-Registrations-and-Credential-Storage-2026-07-28.md
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S03-Agent-Deployment-and-Verification-2026-07-28.md
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S04-docker-blue-Containerd-Failure-2026-07-28.md
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S05-docker-network-Firewall-and-Tunnel-2026-07-28.md
+!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S06-docker-blue-Runtime-Repair-and-Fleet-Verification-2026-07-28.md
+
+!/Security/Evidence/
+/Security/Evidence/*
+!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/
+/Security/Evidence/UniFi Firewall Audit - 2026-07-27/*
+!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/
+/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/*
+!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/Firewall-Audit-Score.json
+
+!/Security/Incidents/qBittorrent/Evidence/
+/Security/Incidents/qBittorrent/Evidence/*
+!/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/
+/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/*
+!/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/Logs/
+/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/Logs/*
+!/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/Logs/S01-Diagnosis-2026-07-22.md
+!/Security/Incidents/qBittorrent/Evidence/Host Validation Recovery - 2026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md
+
 # Generated logs, databases, state, backups, and archives
 *.log
 *.db
