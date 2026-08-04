@@ -1,7 +1,7 @@
 # TNIO AI Bot
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-04
 
 I preserved the TNIO lore-retrieval source snapshots, evaluation tests, runtime configuration, product description, & dated accuracy work formerly operated on `ai-bravo-02`. I moved the stopped CT 105 records out of the active tree on 2026-07-25; its [guest record](../../Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md) schedules deletion for 2026-08-15.
 
@@ -24,4 +24,5 @@ Source files that reference `/home/aibravo/lore-rag` describe the former Linux r
 ## Key Records
 
 - [Product overview](Documentation/Product/TNIO-Librarian-Product-Overview.md)
+- [Secondary deep corpus audit](Documentation/Change%20Records/tnio-bot-secondary-deep-corpus-audit-report-2026-05-12.md), the 2026-05-12 source-authority and overlap analysis
 - [Change records](Documentation/Change%20Records/)

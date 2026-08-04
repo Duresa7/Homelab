@@ -1,4 +1,4 @@
-﻿# Security Monitoring Baseline Cleanup
+# Security Monitoring Baseline Cleanup
 
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-22

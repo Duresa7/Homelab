@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-04
 
 I keep retired records under their original category so the old owner & date remain obvious. Current records stay with their owner; this directory isn't a holding area for files that lack a clear location.
 
@@ -18,7 +18,7 @@ I keep retired records under their original category so the old owner & date rem
 
 | Record | Replacement |
 |---|---|
-| UniFi network segmentation plan | The completed Access-A, Security-A, Cluster-Net, and MGMT-A work remains in dated change records under `Infrastructure/Network/UniFi/Documentation/Change Records/` |
+| [UniFi network segmentation plan](Infrastructure/Network/UniFi/Documentation/Network%20Segmentation%20Backlog.md) | The completed Access-A, Security-A, Cluster-Net, and MGMT-A work remains in dated change records under `Infrastructure/Network/UniFi/Documentation/Change Records/` |
 | UniFi zone and object consolidation plan | [Zone and Object Consolidation - 2026-07-27](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
 | 61-policy pre-consolidation inventory | [Current firewall inventory](../Infrastructure/Network/UniFi/Configuration/firewall.md) |
 | Galaxy VM inventory before the Active Directory retirement | [Pre-decommission VM snapshot](Operations/Inventory/Galaxy/VMs%20-%20Pre-AD-Decommission%20-%202026-07-27.md) |

@@ -1,4 +1,4 @@
-﻿# UniFi System Logs / SIEM: CEF Reference
+# UniFi System Logs / SIEM: CEF Reference
 
 **Created:** 2026-07-01  
 **Last updated:** 2026-07-20

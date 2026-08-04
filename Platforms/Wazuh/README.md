@@ -1,7 +1,7 @@
-﻿# Wazuh
+# Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
 Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.6-1. Those services and the API run on `security-01` / `wazuh-01` at `192.168.72.2` on Security-A/VLAN 72.
 
@@ -13,9 +13,9 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 - `Source/agent-deployment/`: idempotent Ansible deployment for the expanded Linux fleet.
 - `Documentation/Runbook.md`: routine health checks and enrollment workflow.
 - `Documentation/Change Records/`: dated endpoint and manager changes.
-- `Documentation/Dependencies.md`: network, host, and service dependencies.
+- [Dependency map](Documentation/Dependencies.md): network, host, and service dependencies.
 - `Documentation/Recovery.md`: manager and agent recovery procedures.
-- `Documentation/Resources.md`: verified VM and package specifications.
+- [Resource specification](Documentation/Resources.md): verified VM and package specifications.
 - `Documentation/Troubleshooting/`: issue index and one dated record per operational problem.
 - `Documentation/TODO.md`: agent enrollment backlog.
 - `Evidence/`: step-based verification transcripts for bounded changes.

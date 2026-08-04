@@ -1,4 +1,4 @@
-﻿# Wazuh Endpoint Agent Removal - 2026-07-13
+# Wazuh Endpoint Agent Removal - 2026-07-13
 
 **Created:** 2026-07-13  
 **Last updated:** 2026-07-20

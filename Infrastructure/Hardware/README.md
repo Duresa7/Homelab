@@ -1,13 +1,13 @@
 # Physical Hardware
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-04
 
 I keep the specifications & power relationships for physical homelab equipment here. Virtual-machine, container, & service inventories remain under `Operations/Inventory/`.
 
 | Record | Contents |
 | --- | --- |
-| [Galaxy node specifications](Nodes.md) | Four Proxmox nodes, their processors, memory, graphics, storage, addresses, & current UPS assignments |
+| [Galaxy node specifications](Nodes.md) | Five Proxmox nodes, their processors, memory, graphics, storage, addresses, & current UPS assignments |
 | [Component inventory](Components/README.md) | Individual components, slotted or spare, one folder per type: drives now, GPUs, CPUs, & memory as I record them. Each type carries a quick-glance README & its raw evidence |
 | [Jedi PC specifications](Jedi_Specs.md) | Windows administration workstation hardware & power source |
 | [Power equipment](Power.md) | UPS models, inventory identifiers, connected loads, & unresolved outlet details |

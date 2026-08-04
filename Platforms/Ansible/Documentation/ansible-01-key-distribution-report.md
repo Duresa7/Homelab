@@ -1,4 +1,4 @@
-﻿# ansible-01 Key Distribution Report
+# ansible-01 Key Distribution Report
 
 **Created:** 2026-04-17  
 **Last updated:** 2026-07-20

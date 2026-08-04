@@ -1,4 +1,4 @@
-﻿# Immich Storage Migration: WD Red Plus to Toshiba (Proxmox Grey Server)
+# Immich Storage Migration: WD Red Plus to Toshiba (Proxmox Grey Server)
 
 **Created:** 2026-05-28  
 **Last updated:** 2026-07-20

@@ -1,20 +1,22 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-04
 
-This index links the latest complete Galaxy snapshot set. I superseded the first 2026-08-03 service snapshot after a same-day staleness audit found newer workload versions, a larger Prometheus target set, and completed media verification. Node, VM, and LXC configuration did not change, so the current set reuses those verified snapshots.
+This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
+
+## Current state
 
 | File | Contents |
 | --- | --- |
-| [Nodes Post-Green Expansion - 2026-07-31.md](Nodes%20Post-Green%20Expansion%20-%202026-07-31.md) | Current five-node Proxmox hardware and physical-storage snapshot |
-| [VMs Post-Parrot - 2026-07-30.md](VMs%20Post-Parrot%20-%202026-07-30.md) | Current QEMU VM configuration snapshot; unchanged by the PXE deployment |
-| [LXCs Post-Parrot - 2026-07-30.md](LXCs%20Post-Parrot%20-%202026-07-30.md) | Current LXC configuration snapshot; unchanged by the PXE deployment |
-| [Services Post-Staleness Audit - 2026-08-03.md](Services%20Post-Staleness%20Audit%20-%202026-08-03.md) | Current workload snapshot: 19 guest records, 12 running, 49 Prometheus targets, 14 active Wazuh agents, and completed media verification |
+| [Nodes](../../../Infrastructure/Hardware/Nodes.md) | Current Galaxy node hardware, physical storage, and cluster-storage state |
+| [VMs](VMs.md) | Current QEMU virtual machines and templates |
+| [LXCs](LXCs.md) | Current Linux containers |
+| [Services](Services.md) | Current workloads, monitoring targets, and service versions |
 
 ## Snapshot sequence
 
-Two complete sets carry the date 2026-07-28 because I changed the fleet twice that day. Two also carry 2026-08-03 because the audit superseded the earlier service record without rewriting it. Read the sequence in order; the post-staleness audit set is current.
+Two complete sets carry the date 2026-07-28 because I changed the fleet twice that day. Two also carry 2026-08-03 because the audit superseded the earlier service record without rewriting it. Read the sequence in order; the post-staleness audit set is the most recent capture. For current state, use the living records above rather than the last snapshot in this list.
 
 | Set | Captures | Index |
 | --- | --- | --- |

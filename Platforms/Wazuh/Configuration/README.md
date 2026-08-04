@@ -1,4 +1,4 @@
-﻿# Wazuh Configuration Reference
+# Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
 **Last updated:** 2026-08-03

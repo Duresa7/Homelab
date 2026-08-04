@@ -1,4 +1,4 @@
-﻿# Windows Servers
+# Windows Servers
 
 **Created:** 2026-07-09  
 **Last updated:** 2026-07-27
