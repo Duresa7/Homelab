@@ -136,13 +136,13 @@ findmnt -T "$MEDIA_DATA_MOUNT/data"
 systemctl status "$MEDIA_DATA_MOUNT_UNIT" "$MEDIA_DATA_AUTOMOUNT_UNIT"
 ```
 
-`MEDIA_DATA_DISK` carries the drive's full serial deliberately. The `by-id` link addresses that specific disk without trusting `/dev/sda` enumeration order, and a `<YOUR_DRIVE_SERIAL>` placeholder resolves to nothing, so `lsblk -f` and `smartctl -H -A` would both fail here. This is the accepted exception to the last-4 serial convention in the [drive inventory](../../../Infrastructure/Hardware/Components/Drives/README.md); don't scrub it.
+`MEDIA_DATA_DISK` carries the drive's full serial deliberately. The `by-id` link addresses that specific disk without trusting `/dev/sda` enumeration order, and a `<REDACTED_DRIVE_SERIAL>` placeholder resolves to nothing, so `lsblk -f` and `smartctl -H -A` would both fail here. This is the accepted exception to the last-4 serial convention in the [drive inventory](../../../Infrastructure/Hardware/Components/Drives/README.md); don't scrub it.
 
 Do not create `/mnt/bindmounts/media-01-hdd/data` on the NVMe-backed host directory. That child belongs on the mounted HDD; creating it underneath the absent mount defeats the startup guard.
 
 ## qBittorrent Login
 
-Use `<YOUR_QBITTORRENT_USERNAME>` & `<YOUR_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
+Use `<REDACTED_QBITTORRENT_USERNAME>` & `<REDACTED_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
 
 ## Recording a Failure
 

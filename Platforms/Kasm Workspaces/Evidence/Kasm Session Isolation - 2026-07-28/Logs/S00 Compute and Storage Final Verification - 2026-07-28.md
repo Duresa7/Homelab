@@ -30,10 +30,10 @@ ipconfig0: ip=192.168.78.10/24,gw=192.168.78.1
 memory: 8192
 name: kasm-01
 nameserver: 9.9.9.9
-net0: virtio=<YOUR_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78
-net1: virtio=<YOUR_KASM_LANE_74_MAC>,bridge=vmbr0,firewall=0,tag=74
-net2: virtio=<YOUR_KASM_LANE_77_MAC>,bridge=vmbr0,firewall=0,tag=77
-net3: virtio=<YOUR_KASM_LANE_79_MAC>,bridge=vmbr0,firewall=0,tag=79
+net0: virtio=<REDACTED_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78
+net1: virtio=<REDACTED_KASM_LANE_74_MAC>,bridge=vmbr0,firewall=0,tag=74
+net2: virtio=<REDACTED_KASM_LANE_77_MAC>,bridge=vmbr0,firewall=0,tag=77
+net3: virtio=<REDACTED_KASM_LANE_79_MAC>,bridge=vmbr0,firewall=0,tag=79
 onboot: 1
 scsi0: ssd-lvm2:vm-122-disk-1,iothread=1,size=100G,ssd=1
 Name            Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %

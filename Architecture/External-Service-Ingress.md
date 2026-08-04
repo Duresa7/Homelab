@@ -11,7 +11,7 @@ A request to `foo.alphsec.com` travels:
 
 `Cloudflare edge (TLS) -> Tunnel edge-01 -> cloudflared on edge-01 -> Caddy :80 -> VLAN 90-to-80 firewall -> Traefik on app-01 :80 -> app container`
 
-1. DNS. `*.alphsec.com` is a proxied CNAME to `<YOUR_TUNNEL_ID>.cfargotunnel.com`. Cloudflare terminates TLS at its edge, so the certificate is Cloudflare's & nothing downstream serves HTTPS.
+1. DNS. `*.alphsec.com` is a proxied CNAME to `<REDACTED_TUNNEL_ID>.cfargotunnel.com`. Cloudflare terminates TLS at its edge, so the certificate is Cloudflare's & nothing downstream serves HTTPS.
 2. Tunnel. Cloudflare hands the request to the `edge-01` tunnel. The ingress rule `*.alphsec.com` sends it to `http://localhost:80` on edge-01.
 3. Caddy. The `http://*.alphsec.com` site block reverse-proxies to `192.168.80.10:80` & keeps the original Host header. Caddy runs with `auto_https off` because TLS already happened at the edge.
 4. Firewall. edge-01 sits on VLAN 90 (`192.168.90.10`) & app-01 on VLAN 80 (`192.168.80.10`). A UniFi policy lets edge-01 reach app-01 only on TCP 80 & 8000.

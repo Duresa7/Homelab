@@ -1,6 +1,6 @@
 {
   "machines": {
-    "<YOUR_NODE_MAC>": {
+    "<REDACTED_NODE_MAC>": {
       "hostname": "<YOUR_NODE_HOSTNAME>",
       "domain": "<YOUR_CLUSTER_DOMAIN>",
       "install_disk": "<YOUR_INSTALL_DISK>",

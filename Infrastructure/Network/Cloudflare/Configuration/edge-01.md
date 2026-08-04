@@ -10,7 +10,7 @@ I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Clou
 | Field | Value |
 |---|---|
 | Name | edge-01 |
-| Tunnel ID | `<YOUR_TUNNEL_ID>` |
+| Tunnel ID | `<REDACTED_TUNNEL_ID>` |
 | Created | 2026-02-14 |
 | Configuration source | Remote (dashboard-managed) |
 | Connector host | edge-01, `192.168.90.10`, VLAN 90, Debian 13 |
@@ -32,12 +32,12 @@ Cloudflare evaluates these in order. I edit them in the dashboard. The local `/e
 
 Both hostnames are proxied CNAMEs into the tunnel in the `alphsec.com` zone:
 
-- `*.alphsec.com` CNAME `<YOUR_TUNNEL_ID>.cfargotunnel.com`, proxied
+- `*.alphsec.com` CNAME `<REDACTED_TUNNEL_ID>.cfargotunnel.com`, proxied
 - `coolify-a1.alphsec.com` CNAME the same target, proxied
 
 ## Credentials
 
-The connector authenticates with `/home/dkadi/.cloudflared/<YOUR_TUNNEL_ID>.json` on edge-01. I don't store that file or its contents in this repository.
+The connector authenticates with `/home/dkadi/.cloudflared/<REDACTED_TUNNEL_ID>.json` on edge-01. I don't store that file or its contents in this repository.
 
 ## Access & firewall
 

@@ -217,7 +217,7 @@ Six corrections were true of the records regardless of whether any step above ru
 
 ## Open items this plan doesn't resolve
 
-An unnamed Proxmox VM at `<YOUR_UNNAMED_LAB_VM_MAC>` has been online on KASM-BROWSER/74 since 2026-07-23. Its address, 192.168.74.49, sits outside the .100 through .199 DHCP pool and it has no fixed-IP reservation, so something is configuring that address by hand. Identifying it is Kasm work and stays with the Kasm effort; I'm recording it here only because it contradicts what my records claim about VLAN 74.
+An unnamed Proxmox VM at `<REDACTED_UNNAMED_LAB_VM_MAC>` has been online on KASM-BROWSER/74 since 2026-07-23. Its address, 192.168.74.49, sits outside the .100 through .199 DHCP pool and it has no fixed-IP reservation, so something is configuring that address by hand. Identifying it is Kasm work and stays with the Kasm effort; I'm recording it here only because it contradicts what my records claim about VLAN 74.
 
 ## Risks
 

@@ -15,7 +15,7 @@ CT 107 `docker-network` is the recorded reference implementation. The same basel
 
 - Hypervisor console access.
 - A hostname, address, gateway, DNS server, & time zone.
-- Three public keys: `<YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>`, `<YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>`, & `<YOUR_ADMIN_KEY_THREE_PUBLIC_KEY>`.
+- Three public keys: `<REDACTED_ADMIN_KEY_ONE_PUBLIC_KEY>`, `<REDACTED_ADMIN_KEY_TWO_PUBLIC_KEY>`, & `<REDACTED_ADMIN_KEY_THREE_PUBLIC_KEY>`.
 - The intended administrative username, shown here as `dkadi`.
 
 ## How the Pieces Fit Together

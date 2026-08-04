@@ -124,7 +124,7 @@ I did a **Minimal Install with no desktop environment** to keep the footprint sm
 | Interface | `ens18` |
 | IP address | `192.168.70.109/24` (DHCP) |
 | Gateway / DNS | `192.168.70.1` |
-| MAC | `<YOUR_SPLUNK_VM_MAC>` |
+| MAC | `<REDACTED_SPLUNK_VM_MAC>` |
 | Hostname | `splunk-siem` |
 
 I set the hostname from the terminal (it can also be set on the installer's Network and Host Name screen):

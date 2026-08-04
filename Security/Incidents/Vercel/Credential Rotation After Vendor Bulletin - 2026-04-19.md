@@ -29,7 +29,7 @@ In response to Vercel's April 2026 security bulletin, I rotated the affected app
 
 ### In-scope systems
 - **Hosting platform:** Vercel (primary deployment of the `AlphaSec` web application)
-- **Backend-as-a-service:** Supabase (project `<YOUR_SUPABASE_PROJECT_REF>`, organization `<YOUR_SUPABASE_ORGANIZATION_ID>`)
+- **Backend-as-a-service:** Supabase (project `<REDACTED_SUPABASE_PROJECT_REF>`, organization `<REDACTED_SUPABASE_ORGANIZATION_ID>`)
 - **Source control:** GitHub (auto-deploy integration to Vercel)
 - **Edge Functions:** Supabase `delete-account` function and its configuration
 

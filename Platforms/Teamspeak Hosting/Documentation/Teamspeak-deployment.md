@@ -23,9 +23,9 @@ I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01
        | UDP voice via Cloudflare SRV records
        v
 +------------------+
-|   <YOUR_PLAYIT_RELAY_DOMAIN>      |  TS1: <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
-|   Free Network   |  TS2: <YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810
-|   NYC, New York  |  TS3: <YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125
+|   <REDACTED_PLAYIT_RELAY_DOMAIN>      |  TS1: <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255
+|   Free Network   |  TS2: <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810
+|   NYC, New York  |  TS3: <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125
 +------------------+
        |
        | UDP forwarded to alpha-prod-01 host ports
@@ -80,36 +80,36 @@ I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01
 
 DNS Chain (for end-users):
 ts01.alphasecunited.com
-       | SRV _ts3._udp.ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
-       | CNAME ts01 -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
+       | SRV _ts3._udp.ts01 -> <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255
+       | CNAME ts01 -> <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>
        v
-    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9987/udp
+    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9987/udp
 
 ts02.alphasecunited.com
-       | SRV _ts3._udp.ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810
-       | CNAME ts02 -> <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
+       | SRV _ts3._udp.ts02 -> <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810
+       | CNAME ts02 -> <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>
        v
-    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9988/udp
+    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9988/udp
 
 ts03.alphasecunited.com
-       | SRV _ts3._udp.ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125
-       | CNAME ts03 -> <YOUR_TEAMSPEAK_RELAY_THREE_HOST>
+       | SRV _ts3._udp.ts03 -> <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125
+       | CNAME ts03 -> <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>
        v
-    <YOUR_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
+    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
 ```
 
 ## DNS Records (`alphasecunited.com`)
 
 | Type | Name | Target | Port | Proxy |
 |------|------|--------|------|-------|
-| CNAME | ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
-| CNAME | ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
-| CNAME | ts03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
-| CNAME | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
+| CNAME | ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
+| CNAME | ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
+| CNAME | ts03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
+| CNAME | ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
+| SRV | _ts3._udp.ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
 
 **TeamSpeak 1 connect address:** `ts01.alphasecunited.com` (no port needed)
 
@@ -125,9 +125,9 @@ fail to connect when an SRV record points at a CNAME.
 
 | TeamSpeak Server | Tunnel Name | Public Address | Local Host Port |
 |------------------|-------------|----------------|-----------------|
-| ts-valorant-01 | ts-valorant-01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 127.0.0.1:9987/udp |
-| ts-valorant-02 | ts-valorant-02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 127.0.0.1:9988/udp |
-| ts-valorant-03 | ts-valorant-03 | `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | 127.0.0.1:9989/udp |
+| ts-valorant-01 | ts-valorant-01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 127.0.0.1:9987/udp |
+| ts-valorant-02 | ts-valorant-02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 127.0.0.1:9988/udp |
+| ts-valorant-03 | ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | 127.0.0.1:9989/udp |
 
 ## Services
 
@@ -157,12 +157,12 @@ fail to connect when an SRV record points at a CNAME.
   - `9988/udp` - Voice
   - `10012/tcp` - ServerQuery
   - `30034/tcp` - File Transfer
-- **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>:53810`
+- **Public Playit address**: `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810`
 - **Playit local target**: `127.0.0.1:9988/udp`
 - **Cloudflare connect address**: `ts02.alphasecunited.com`
 - **Virtual server name**: `AlphaSec United - Valorant Community`
 - **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `<YOUR_TEAMSPEAK_ONE_UNIQUE_ID>`
+- **Unique ID**: `<REDACTED_TEAMSPEAK_ONE_UNIQUE_ID>`
 
 ### TeamSpeak 3 (ts-valorant-03)
 - **Image**: `teamspeak`
@@ -176,13 +176,13 @@ fail to connect when an SRV record points at a CNAME.
   - `9989/udp` - Voice
   - `10013/tcp` - ServerQuery
   - `30035/tcp` - File Transfer
-- **Public Playit address**: `<YOUR_TEAMSPEAK_RELAY_THREE_HOST>:49125`
+- **Public Playit address**: `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125`
 - **Playit local target**: `127.0.0.1:9989/udp`
 - **Cloudflare connect address**: `ts03.alphasecunited.com`
 - **Cloudflare alternate address**: `ts-valorant-03.alphasecunited.com`
 - **Virtual server name**: `AlphaSec United x Valorant 03`
 - **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `<YOUR_TEAMSPEAK_THREE_UNIQUE_ID>`
+- **Unique ID**: `<REDACTED_TEAMSPEAK_THREE_UNIQUE_ID>`
 
 ### Playit Agent (playit-agent)
 - **Image**: `ghcr.io/playit-cloud/playit-agent:0.17`

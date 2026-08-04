@@ -9,7 +9,7 @@
 
 ## Action
 
-I added VM 122 `net4` as a VirtIO interface on `vmbr0`, tagged VLAN 75, with Proxmox firewall filtering disabled. The controller assigned MAC `<YOUR_KASM_LANE_75_MAC>`, and Ubuntu named the interface `enp6s22`.
+I added VM 122 `net4` as a VirtIO interface on `vmbr0`, tagged VLAN 75, with Proxmox firewall filtering disabled. The controller assigned MAC `<REDACTED_KASM_LANE_75_MAC>`, and Ubuntu named the interface `enp6s22`.
 
 I added an addressless, optional netplan stanza for `enp6s22`, extended `kasm-lab-shims.service` with `shim75` at `192.168.75.201/32`, and created Docker macvlan network `lab75`:
 

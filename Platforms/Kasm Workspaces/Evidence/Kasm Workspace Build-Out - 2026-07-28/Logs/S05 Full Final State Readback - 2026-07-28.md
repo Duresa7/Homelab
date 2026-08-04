@@ -69,11 +69,11 @@ status: running
 cores: 4
 memory: 8192
 name: kasm-01
-net0: virtio=<YOUR_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78
-net1: virtio=<YOUR_KASM_LANE_74_MAC>,bridge=vmbr0,firewall=0,tag=74
-net2: virtio=<YOUR_KASM_LANE_77_MAC>,bridge=vmbr0,firewall=0,tag=77
-net3: virtio=<YOUR_KASM_LANE_79_MAC>,bridge=vmbr0,firewall=0,tag=79
-net4: virtio=<YOUR_KASM_LANE_75_MAC>,bridge=vmbr0,firewall=0,tag=75
+net0: virtio=<REDACTED_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78
+net1: virtio=<REDACTED_KASM_LANE_74_MAC>,bridge=vmbr0,firewall=0,tag=74
+net2: virtio=<REDACTED_KASM_LANE_77_MAC>,bridge=vmbr0,firewall=0,tag=77
+net3: virtio=<REDACTED_KASM_LANE_79_MAC>,bridge=vmbr0,firewall=0,tag=79
+net4: virtio=<REDACTED_KASM_LANE_75_MAC>,bridge=vmbr0,firewall=0,tag=75
 scsi0: ssd-lvm2:vm-122-disk-1,iothread=1,size=200G,ssd=1
 pre-workspace-buildout-2026-07-28  2026-07-28 19:35:27  no-description
 baseline-tiles-2026-07-28           2026-07-28 20:45:45  Accepted Kasm workspace build-out baseline after lane, policy, persistence-mode, reboot, and launch verification

@@ -147,7 +147,7 @@ I ran a short SMART self-test on red's M.2 NVMe disk:
 | --- | --- |
 | Device | `/dev/nvme0n1` |
 | Model | `SAMSUNG MZVLB256HAHQ-000L7` |
-| Serial | `<YOUR_DRIVE_SERIAL>` |
+| Serial | `<REDACTED_DRIVE_SERIAL>` |
 | SMART overall health | `PASSED` |
 | Short self-test | `Completed without error` |
 | Percentage used | `6%` |

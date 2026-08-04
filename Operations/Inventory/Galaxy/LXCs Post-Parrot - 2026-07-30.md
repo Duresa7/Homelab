@@ -39,7 +39,7 @@ I carried the complete LXC inventory forward after the Kasm Parrot build-out. No
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<YOUR_ANSIBLE_CONTROLLER_MAC>` |
+| eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<REDACTED_ANSIBLE_CONTROLLER_MAC>` |
 
 ## LXC 104 - monitor-01
 
@@ -67,7 +67,7 @@ I carried the complete LXC inventory forward after the Kasm Parrot build-out. No
 
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 73 | 192.168.73.2/24 | 192.168.73.1 | enabled | `<YOUR_MONITOR_HOST_MAC>` |
+| eth0 | vmbr0 | 73 | 192.168.73.2/24 | 192.168.73.1 | enabled | `<REDACTED_MONITOR_HOST_MAC>` |
 
 The LXC keeps its address static in the Proxmox network configuration. UniFi DHCP remains enabled for `MONITOR-A` from 192.168.73.6 through 192.168.73.254.
 
@@ -106,7 +106,7 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 85 | 192.168.85.2/24 | 192.168.85.1 | enabled | `<YOUR_DOCKER_NETWORK_MAC>` |
+| eth0 | vmbr0 | 85 | 192.168.85.2/24 | 192.168.85.1 | enabled | `<REDACTED_DOCKER_NETWORK_MAC>` |
 
 ### Administrative Access
 
@@ -136,7 +136,7 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.39/24 | 192.168.40.1 | enabled | `<YOUR_DOCKER_BLUE_MAC>` |
+| eth0 | vmbr0 | 40 | 192.168.40.39/24 | 192.168.40.1 | enabled | `<REDACTED_DOCKER_BLUE_MAC>` |
 
 ## LXC 110 - docker-main
 
@@ -162,7 +162,7 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | `<YOUR_DOCKER_MAIN_MAC>` |
+| eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | `<REDACTED_DOCKER_MAIN_MAC>` |
 
 ## LXC 842 - media-01
 
@@ -202,7 +202,7 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.42 | 192.168.40.1 | enabled | `<YOUR_MEDIA_HOST_MAC>` |
+| eth0 | vmbr0 | 40 | 192.168.40.42 | 192.168.40.1 | enabled | `<REDACTED_MEDIA_HOST_MAC>` |
 
 ### Administrative Access
 

@@ -33,9 +33,9 @@ I upgraded OpenClaw from `2026.4.15` to `2026.4.25`, enabled the gateway service
 
 - Restricted Discord operation to one server and one channel:
   - Server: `Home Base`
-  - Guild ID: `<YOUR_DISCORD_GUILD_ID>`
+  - Guild ID: `<REDACTED_DISCORD_GUILD_ID>`
   - Channel: `#alpha-ai`
-  - Channel ID: `<YOUR_DISCORD_CHANNEL_ID>`
+  - Channel ID: `<REDACTED_DISCORD_CHANNEL_ID>`
 - Configured the Discord channel policy to require a bot mention.
 - Disabled Discord DMs for the bot.
 - Configured non-allowed guilds and channels to be denied.

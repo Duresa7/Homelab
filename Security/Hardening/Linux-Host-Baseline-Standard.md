@@ -13,8 +13,8 @@ Every Linux VM or LXC I provision gets this baseline before it carries a workloa
 4. **Human authorized keys.** Install the approved human public keys into `/home/dkadi/.ssh/authorized_keys` (file `0600`, dir `0700`, owned by `dkadi`):
 
    ```text
-   <YOUR_ADMIN_KEY_ONE_PUBLIC_KEY>
-   <YOUR_ADMIN_KEY_TWO_PUBLIC_KEY>
+   <REDACTED_ADMIN_KEY_ONE_PUBLIC_KEY>
+   <REDACTED_ADMIN_KEY_TWO_PUBLIC_KEY>
    ```
 
    The Ansible controller key doesn't belong in this file.

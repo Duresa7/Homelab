@@ -44,7 +44,7 @@ sudo python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
   --json \
-  <YOUR_NODE_MAC>
+  <REDACTED_NODE_MAC>
 ```
 
 I authorize one install with:
@@ -53,7 +53,7 @@ I authorize one install with:
 sudo python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
-  <YOUR_NODE_MAC> ready
+  <REDACTED_NODE_MAC> ready
 ```
 
 Rearming an active, completed, or failed attempt requires the same command with `--force`. I use that flag only after deciding another NVMe erase is intended. Setting `disabled` makes later network boots exit without loading the installer.

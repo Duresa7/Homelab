@@ -61,7 +61,7 @@ My SSH Manager client timed out after five minutes, but the package transaction 
 | IPv4 configuration | Static `192.168.40.135/24`; gateway and DNS `192.168.40.1` |
 | Connectivity probe | Disabled; Debian's packaged probe endpoint did not resolve from this network |
 | GNOME Polkit policy | `/etc/polkit-1/rules.d/49-dkadi-gnome-nopasswd.rules`; `dkadi` + active + local only |
-| Password-manager APT source | `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.sources`; stable/main AMD64 with the vendor keyring |
+| Password-manager APT source | `/etc/apt/sources.list.d/<REDACTED_PASSWORD_MANAGER>.sources`; stable/main AMD64 with the vendor keyring |
 | Claude credential backend | GNOME Keyring 48 / Secret Service; login collection created on Claude's first launch and exported by the 2026-07-22 fresh session |
 | Claude Cowork virtualization | `/dev/kvm` via supplementary group `kvm`; `dkadi` is a persistent member, with `svm`, `kvm_amd`, and `kvm` present |
 | Rollback point | `pre-gnome-20260715` |
@@ -89,7 +89,7 @@ If GNOME causes a regression, I'll place VM 102 in maintenance, restore Proxmox 
 
 To restore GNOME's ordinary Polkit authentication prompts without rolling back the VM, remove `/etc/polkit-1/rules.d/49-dkadi-gnome-nopasswd.rules` and restart `polkit.service`. The prior state had no file at that path.
 
-To restore the retired legacy password-manager source for troubleshooting, copy `/root/apt-source-backups/<YOUR_PASSWORD_MANAGER>.list.pre-dedup-20260715` back to `/etc/apt/sources.list.d/<YOUR_PASSWORD_MANAGER>.list` with mode 0644. Doing so while `<YOUR_PASSWORD_MANAGER>.sources` remains enabled will intentionally restore the duplicate warnings.
+To restore the retired legacy password-manager source for troubleshooting, copy `/root/apt-source-backups/<REDACTED_PASSWORD_MANAGER>.list.pre-dedup-20260715` back to `/etc/apt/sources.list.d/<REDACTED_PASSWORD_MANAGER>.list` with mode 0644. Doing so while `<REDACTED_PASSWORD_MANAGER>.sources` remains enabled will intentionally restore the duplicate warnings.
 
 To remove Claude Cowork's KVM permission, run `gpasswd -d dkadi kvm` and start a new login session. The keyring diagnosis did not delete or rewrite any stored keyring data.
 

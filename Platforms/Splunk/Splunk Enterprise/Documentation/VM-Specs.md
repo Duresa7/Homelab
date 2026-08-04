@@ -50,7 +50,7 @@
 | Bridge | `vmbr0` | |
 | VLAN tag | **72** (Security-A / `AlphaSec-Security`) | Dedicated security and monitoring tier |
 | Subnet | 192.168.72.0/24 | Static workload range `.2`–`.5`; DHCP pool starts at `.6` |
-| MAC address | `<YOUR_SPLUNK_VM_MAC>` | |
+| MAC address | `<REDACTED_SPLUNK_VM_MAC>` | |
 | IP address | 192.168.72.3/24 | Static NetworkManager profile |
 | Default route | 192.168.72.1 | |
 | DNS | 192.168.72.1 | |

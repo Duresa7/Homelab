@@ -37,8 +37,8 @@ the Playit path.
 
 | Service | Public DNS | Playit Endpoint | Host Port |
 |---------|------------|-----------------|-----------|
-| TeamSpeak 1 | `ts01.alphasecunited.com` | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
-| TeamSpeak 2 | `ts02.alphasecunited.com` | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
+| TeamSpeak 1 | `ts01.alphasecunited.com` | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
+| TeamSpeak 2 | `ts02.alphasecunited.com` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
 
 ## User-Visible Symptoms
 
@@ -53,7 +53,7 @@ Failed to connect to server
 My direct Playit IPv4 testing also failed before mitigation:
 
 ```text
-Trying to connect to server on <YOUR_RELAY_IP>:6255
+Trying to connect to server on <REDACTED_RELAY_IP>:6255
 Failed to connect to server
 ```
 

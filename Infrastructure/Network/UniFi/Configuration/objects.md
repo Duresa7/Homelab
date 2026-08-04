@@ -15,8 +15,8 @@ On 2026-07-31 I reused `OBJ-Proxmox-Nodes` as the source for `Allow Proxmox Node
 
 | Policy | Enabled | Target Type | Applies To | Action |
 |---|---|---|---|---|
-| Proton OON | Disabled | Clients | 3 MACs: `<YOUR_VPN_CLIENT_MAC_C>`, `<YOUR_VPN_CLIENT_MAC_A>`, `<YOUR_VPN_CLIENT_MAC_B>` | Route all traffic → ProtonVPN (kill switch on) |
-| PC 1 | Disabled | Client | 1 MAC: `<YOUR_MEDIA_HOST_MAC>` | QoS: prioritize all traffic (always) |
+| Proton OON | Disabled | Clients | 3 MACs: `<REDACTED_VPN_CLIENT_MAC_C>`, `<REDACTED_VPN_CLIENT_MAC_A>`, `<REDACTED_VPN_CLIENT_MAC_B>` | Route all traffic → ProtonVPN (kill switch on) |
+| PC 1 | Disabled | Client | 1 MAC: `<REDACTED_MEDIA_HOST_MAC>` | QoS: prioritize all traffic (always) |
 | isolate | Disabled | Network | DMZ (VLAN 30) | Route all traffic → ProtonVPN (kill switch on) |
 | QoS for D | Enabled | Group | D_devices (5 clients) | QoS: prioritize all traffic (always) |
 

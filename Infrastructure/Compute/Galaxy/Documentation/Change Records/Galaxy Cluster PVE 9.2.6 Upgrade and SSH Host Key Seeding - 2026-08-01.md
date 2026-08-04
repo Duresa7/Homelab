@@ -83,7 +83,7 @@ NUT came back healthy on Red after its reboot, with `ups01` reporting 100 percen
 
 ## Serial Redactions Now Follow One Scheme
 
-The drive captures under [Components/Drives](../../../../Hardware/Components/Drives/) used three redaction styles at once. Most files showed `****` plus the last four characters for serials and `[redacted]` for WWN and EUI-64 values, but four files broke that pattern with `<YOUR_DRIVE_SERIAL>`, `<YOUR_DRIVE_WWN>`, or `[redacted; suffix 2896]`.
+The drive captures under [Components/Drives](../../../../Hardware/Components/Drives/) used three redaction styles at once. Most files showed `****` plus the last four characters for serials and `[redacted]` for WWN and EUI-64 values, but four files broke that pattern with `<REDACTED_DRIVE_SERIAL>`, `<REDACTED_DRIVE_WWN>`, or `[redacted; suffix 2896]`.
 
 I normalised those four to the dominant scheme, preserving smartctl's own column alignment: `****252T`, `****6NSN`, `****G91N`, & `****2896` for serials, `[redacted]` for the WWN lines. All 20 serial and WWN lines across the drive captures now match.
 

@@ -42,7 +42,7 @@ Windows samples can't run in a Linux container at all, so this lab covers Linux 
 
 I checked all of this live before writing the plan and used it as the execution baseline.
 
-`kasm-01` is VM 122 on `grey-server`: 4 cores, 8192 MiB, 100 GiB on `ssd-lvm1`, one NIC `net0 virtio=<YOUR_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=80`, static 192.168.80.30/24 set through cloud-init `ipconfig0`. Kasm 1.19.0 CE with all 8 service containers up 3 days. The `licenses` table is empty, so the 5-concurrent-session cap applies.
+`kasm-01` is VM 122 on `grey-server`: 4 cores, 8192 MiB, 100 GiB on `ssd-lvm1`, one NIC `net0 virtio=<REDACTED_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=80`, static 192.168.80.30/24 set through cloud-init `ipconfig0`. Kasm 1.19.0 CE with all 8 service containers up 3 days. The `licenses` table is empty, so the 5-concurrent-session cap applies.
 
 Two things differ from the [deployment record](../Deployment.md) state of 2026-07-25. The `images` table holds **zero workspace definitions**, & the three test workspace images are gone from Docker. Root filesystem use dropped from 26 GiB to 16 GiB of 96 GiB, & `docker images -a` returns only the 8 `kasmweb` service images. That makes this the cheapest moment to rearrange the networking, because there's nothing to break.
 
@@ -130,7 +130,7 @@ Blocking LAB-MGMT toward the three lab lanes does not break sessions. The Kasm a
 LAB-MGMT keeps plain internet through the External zone so Kasm can pull workspace images from Docker Hub. Set the guest's resolver to 9.9.9.9 so DNS leaves through External rather than needing a Gateway allow.
 
 - [ ] Snapshot VM 122 before touching the NIC. I skipped this step; no snapshot was created
-- [x] `qm set 122 -net0 virtio=<YOUR_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78 -ipconfig0 ip=192.168.78.10/24,gw=192.168.78.1`
+- [x] `qm set 122 -net0 virtio=<REDACTED_KASM_HOST_MAC>,bridge=vmbr0,firewall=1,tag=78 -ipconfig0 ip=192.168.78.10/24,gw=192.168.78.1`
 - [x] Edit `/etc/netplan/50-cloud-init.yaml` in the guest to the same address & apply it, so netplan & `ipconfig0` agree no matter which one wins at boot
 - [x] Reboot & verify: all 8 containers healthy, `GET https://192.168.78.10/api/__healthcheck` returns `{"ok": true}`, the admin credential authenticates from the Trusted VLAN, & `docker pull hello-world` succeeds
 

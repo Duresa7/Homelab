@@ -49,7 +49,7 @@ I copied the former active inventory tables without dropping the storage, networ
 
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | `<YOUR_AI_BRAVO_MAC>` |
+| eth0 | vmbr0 | 40 | 192.168.40.38/24 | 192.168.40.1 | enabled | `<REDACTED_AI_BRAVO_MAC>` |
 
 ### Account & Workload
 

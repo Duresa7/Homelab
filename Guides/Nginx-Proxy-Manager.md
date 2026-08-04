@@ -56,7 +56,7 @@ I ran `nginx -t` inside the container and sent a Host-header request through Ngi
 
 ### Step 5: Issue and Assign the Certificate
 
-I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, & supplied `<YOUR_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
+I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, & supplied `<REDACTED_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
 
 ![Wildcard certificate issued](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 

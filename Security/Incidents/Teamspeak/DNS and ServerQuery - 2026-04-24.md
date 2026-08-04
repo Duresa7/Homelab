@@ -74,7 +74,7 @@ Previous DNS behavior:
 ```text
 _ts3._udp.ts01.alphasecunited.com
   -> ts01.alphasecunited.com:6255
-  -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
+  -> CNAME <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
 This introduced resolver/client compatibility risk because the SRV target was an
@@ -84,10 +84,10 @@ Current DNS behavior:
 
 ```text
 _ts3._udp.ts01.alphasecunited.com
-  -> <YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255
+  -> <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255
 
 ts01.alphasecunited.com
-  -> CNAME <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
+  -> CNAME <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>
 ```
 
 End users still connect with:
@@ -174,7 +174,7 @@ I checked the following and ruled each out as the primary cause:
 |--------|--------|-------|
 | Verified Docker service state | Complete | `ts-valorant-01`, `playit-agent`, and `ts3-manager` were checked. |
 | Verified TeamSpeak virtual server state | Complete | Virtual server reported `online`. |
-| Corrected Cloudflare SRV target | Complete | SRV now targets `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>:6255`. |
+| Corrected Cloudflare SRV target | Complete | SRV now targets `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255`. |
 | Confirmed DNS propagation | Complete | Public resolvers returned corrected SRV target. |
 | Added TS3 Manager Docker gateway to ServerQuery allowlist | Complete | Added `172.18.0.1`. |
 | Confirmed allowlist reload | Complete | TeamSpeak logged updated allowlist with `172.18.0.1/32`. |
@@ -188,10 +188,10 @@ I checked the following and ruled each out as the primary cause:
 
 | Type | Name | Target | Port | Proxy |
 |------|------|--------|------|-------|
-| CNAME | ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | N/A | DNS only |
-| SRV | _ts3._udp.ts01 | `<YOUR_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
-| CNAME | ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | N/A | DNS only |
-| SRV | _ts3._udp.ts02 | `<YOUR_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
+| CNAME | ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | N/A | DNS only |
+| SRV | _ts3._udp.ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
+| CNAME | ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | N/A | DNS only |
+| SRV | _ts3._udp.ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
 
 ### Runtime Services
 
@@ -283,12 +283,12 @@ Observed SRV state:
 
 ```text
 _ts3._udp.ts01.alphasecunited.com
-NameTarget: <YOUR_TEAMSPEAK_RELAY_ONE_HOST>
+NameTarget: <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>
 Port: 6255
 TTL: 300
 
 _ts3._udp.ts02.alphasecunited.com
-NameTarget: <YOUR_TEAMSPEAK_RELAY_TWO_HOST>
+NameTarget: <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>
 Port: 53810
 TTL: 300
 ```

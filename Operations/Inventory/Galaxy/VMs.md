@@ -68,7 +68,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | 192.168.40.135/24 | 192.168.40.1 | enabled | `<YOUR_DEBIAN_DEV_MAC>` |
+| net0 | virtio | vmbr0 | 40 | 192.168.40.135/24 | 192.168.40.1 | enabled | `<REDACTED_DEBIAN_DEV_MAC>` |
 
 ### VM 106 - kali-pen
 
@@ -106,7 +106,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | none | 192.168.40.226/24 | 192.168.40.1 | enabled | `<YOUR_KALI_VM_MAC>` |
+| net0 | virtio | vmbr0 | none | 192.168.40.226/24 | 192.168.40.1 | enabled | `<REDACTED_KALI_VM_MAC>` |
 
 ### VM 109 - splunk-siem
 
@@ -144,7 +144,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | `<YOUR_SPLUNK_VM_MAC>` |
+| net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | `<REDACTED_SPLUNK_VM_MAC>` |
 
 ### VM 111 - fedora-dev
 
@@ -190,7 +190,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | none recorded | 192.168.40.1 | enabled | `<YOUR_FEDORA_DEV_MAC>` |
+| net0 | virtio | vmbr0 | 40 | none recorded | 192.168.40.1 | enabled | `<REDACTED_FEDORA_DEV_MAC>` |
 
 ### VM 116 - app-01
 
@@ -227,7 +227,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | `<YOUR_APP_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | `<REDACTED_APP_HOST_MAC>` |
 
 ### VM 117 - supabase-01
 
@@ -265,7 +265,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.20/24 | 192.168.80.1 | enabled | `<YOUR_SUPABASE_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.20/24 | 192.168.80.1 | enabled | `<REDACTED_SUPABASE_HOST_MAC>` |
 
 ### VM 121 - edge-01
 
@@ -302,7 +302,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | `<YOUR_EDGE_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | `<REDACTED_EDGE_HOST_MAC>` |
 
 ### VM 122 - kasm-01
 
@@ -342,11 +342,11 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 78 | 192.168.78.10/24 | 192.168.78.1 | enabled | <YOUR_KASM_HOST_MAC> |
-| net1 | virtio | vmbr0 | 74 | none | none | disabled | <YOUR_KASM_LANE_74_MAC> |
-| net2 | virtio | vmbr0 | 77 | none | none | disabled | <YOUR_KASM_LANE_77_MAC> |
-| net3 | virtio | vmbr0 | 79 | none | none | disabled | <YOUR_KASM_LANE_79_MAC> |
-| net4 | virtio | vmbr0 | 75 | none | none | disabled | <YOUR_KASM_LANE_75_MAC> |
+| net0 | virtio | vmbr0 | 78 | 192.168.78.10/24 | 192.168.78.1 | enabled | <REDACTED_KASM_HOST_MAC> |
+| net1 | virtio | vmbr0 | 74 | none | none | disabled | <REDACTED_KASM_LANE_74_MAC> |
+| net2 | virtio | vmbr0 | 77 | none | none | disabled | <REDACTED_KASM_LANE_77_MAC> |
+| net3 | virtio | vmbr0 | 79 | none | none | disabled | <REDACTED_KASM_LANE_79_MAC> |
+| net4 | virtio | vmbr0 | 75 | none | none | disabled | <REDACTED_KASM_LANE_75_MAC> |
 
 Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. I moved it to Purple, attached four session NICs, expanded `scsi0` from 100G through 150G to 200G on 2026-07-28, and enabled discard on 2026-07-29. The guest reports a 193G root partition and ext4 filesystem. `baseline-parrot-2026-07-30` is the only VM snapshot. The parents carry no host address; Docker networks `lab74`, `lab75`, `lab77`, and `lab79` own the session ranges.
 
@@ -385,7 +385,7 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | `<YOUR_SECURITY_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | `<REDACTED_SECURITY_HOST_MAC>` |
 
 ### VM 401 - alpha-prod-01
 
@@ -422,7 +422,7 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.118/24 | 192.168.80.1 | enabled | `<YOUR_TEAMSPEAK_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 80 | 192.168.80.118/24 | 192.168.80.1 | enabled | `<REDACTED_TEAMSPEAK_HOST_MAC>` |
 
 ## Template Details
 
@@ -461,7 +461,7 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | none | none | enabled | `<YOUR_DEBIAN_TEMPLATE_MAC>` |
+| net0 | virtio | vmbr0 | 40 | none | none | enabled | `<REDACTED_DEBIAN_TEMPLATE_MAC>` |
 
 ### Template 9000 - ubuntu-cloud-template
 
@@ -499,4 +499,4 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | none | none | disabled | `<YOUR_UBUNTU_TEMPLATE_MAC>` |
+| net0 | virtio | vmbr0 | 80 | none | none | disabled | `<REDACTED_UBUNTU_TEMPLATE_MAC>` |

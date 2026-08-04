@@ -44,7 +44,7 @@ I checked that the process listened on `127.0.0.1:18789`, not a LAN address.
 
 ### Step 3: Restrict Discord Scope
 
-I added `<YOUR_DISCORD_GUILD_ID>` and `<YOUR_DISCORD_CHANNEL_ID>` to the allowlist, disabled direct messages, & required a mention before the bot responds. I used real Discord IDs rather than names because names can change.
+I added `<REDACTED_DISCORD_GUILD_ID>` and `<REDACTED_DISCORD_CHANNEL_ID>` to the allowlist, disabled direct messages, & required a mention before the bot responds. I used real Discord IDs rather than names because names can change.
 
 ### Step 4: Set the Public-Channel Rules
 

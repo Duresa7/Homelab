@@ -13,7 +13,7 @@
 ```sh
 set -eu
 blue_disk=/dev/sda
-blue_expected_serial=<YOUR_BLUE_HDD_SERIAL>
+blue_expected_serial=<REDACTED_BLUE_HDD_SERIAL>
 blue_expected_vg_uuid=bJedeb-vXMR-NNKr-T3JG-LNCa-tgwK-yDjMGj
 blue_serial=$(lsblk -dn -o SERIAL "$blue_disk" | xargs)
 blue_model=$(lsblk -dn -o MODEL "$blue_disk" | xargs)
@@ -40,7 +40,7 @@ udevadm settle
 ## Standard output
 
 ```text
-Validated target: /dev/sda | WDC WD5000LPVX-08V0TT5 | 465.8G | serial <YOUR_BLUE_HDD_SERIAL>
+Validated target: /dev/sda | WDC WD5000LPVX-08V0TT5 | 465.8G | serial <REDACTED_BLUE_HDD_SERIAL>
   Logical volume "data" successfully removed.
   Logical volume "swap" successfully removed.
   Logical volume "root" successfully removed.

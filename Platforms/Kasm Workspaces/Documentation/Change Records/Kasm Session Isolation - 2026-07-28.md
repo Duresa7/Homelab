@@ -32,10 +32,10 @@ VM 122 has four VirtIO NICs:
 
 | NIC | VLAN | MAC | Proxmox firewall |
 | --- | ---: | --- | --- |
-| `net0` | 78 | `<YOUR_KASM_HOST_MAC>` | enabled |
-| `net1` | 74 | `<YOUR_KASM_LANE_74_MAC>` | disabled |
-| `net2` | 77 | `<YOUR_KASM_LANE_77_MAC>` | disabled |
-| `net3` | 79 | `<YOUR_KASM_LANE_79_MAC>` | disabled |
+| `net0` | 78 | `<REDACTED_KASM_HOST_MAC>` | enabled |
+| `net1` | 74 | `<REDACTED_KASM_LANE_74_MAC>` | disabled |
+| `net2` | 77 | `<REDACTED_KASM_LANE_77_MAC>` | disabled |
+| `net3` | 79 | `<REDACTED_KASM_LANE_79_MAC>` | disabled |
 
 I disabled the Proxmox firewall on the three macvlan parents because each session container uses its own MAC address. Enabling it would make the bridge filter discard valid session traffic.
 

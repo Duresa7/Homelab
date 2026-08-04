@@ -99,7 +99,7 @@ UPID:blue-server:000956A9:00350FE2:6A6C9ED1:diskinit:sda:root@pam: 6A6C9ED3 OK
 ## Retained Capture
 
 ```sh
-smartctl -x /dev/sda | sed -E 's/^Serial Number:.*/Serial Number: <YOUR_DRIVE_SERIAL>/; s/^LU WWN Device Id:.*/LU WWN Device Id: <YOUR_DRIVE_WWN>/'
+smartctl -x /dev/sda | sed -E 's/^Serial Number:.*/Serial Number: <REDACTED_DRIVE_SERIAL>/; s/^LU WWN Device Id:.*/LU WWN Device Id: <REDACTED_DRIVE_WWN>/'
 ```
 
 The sanitized 202-line result is stored as [smartctl-a_WD5000LPVX_6NSN_2026-07-31.txt](../../../Components/Drives/HDD/smartctl-a_WD5000LPVX_6NSN_2026-07-31.txt). I confirmed the stored file carries no serial or WWN string and that its tab-delimited layout matches the drive's own output.

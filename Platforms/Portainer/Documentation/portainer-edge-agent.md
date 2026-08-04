@@ -87,8 +87,8 @@ volumes:
 
 **.env** requires the generated Edge ID and key:
 ```env
-EDGE_ID=<YOUR_PORTAINER_EDGE_ID>
-EDGE_KEY=<YOUR_PORTAINER_EDGE_KEY>
+EDGE_ID=<REDACTED_PORTAINER_EDGE_ID>
+EDGE_KEY=<REDACTED_PORTAINER_EDGE_KEY>
 ```
 
 I store one Edge ID & key per environment outside this repository. Live `.env` files are `root:root` mode 0600; the workspace holds no generated value.

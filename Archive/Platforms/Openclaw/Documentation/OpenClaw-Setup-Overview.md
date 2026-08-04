@@ -36,9 +36,9 @@ The bot is configured for one Discord server and channel only:
 | Item | Value |
 |---|---|
 | Discord Server | Home Base |
-| Guild ID | `<YOUR_DISCORD_GUILD_ID>` |
+| Guild ID | `<REDACTED_DISCORD_GUILD_ID>` |
 | Allowed Channel | #alpha-ai |
-| Channel ID | `<YOUR_DISCORD_CHANNEL_ID>` |
+| Channel ID | `<REDACTED_DISCORD_CHANNEL_ID>` |
 | Direct Messages | Disabled |
 | Channel Access | Allowlist |
 | Mention Required | Yes |
@@ -158,9 +158,9 @@ Expected behavior:
 | Gateway Port | 18789 |
 | Gateway Bind | 127.0.0.1 / loopback |
 | Discord Server | Home Base |
-| Discord Guild ID | `<YOUR_DISCORD_GUILD_ID>` |
+| Discord Guild ID | `<REDACTED_DISCORD_GUILD_ID>` |
 | Discord Channel | #alpha-ai |
-| Discord Channel ID | `<YOUR_DISCORD_CHANNEL_ID>` |
+| Discord Channel ID | `<REDACTED_DISCORD_CHANNEL_ID>` |
 | OpenClaw Version | 2026.4.25 |
 | MCP SSH Manager Version | 3.2.2 |
 | Sandbox Container Image | openclaw-sandbox:bookworm-slim |

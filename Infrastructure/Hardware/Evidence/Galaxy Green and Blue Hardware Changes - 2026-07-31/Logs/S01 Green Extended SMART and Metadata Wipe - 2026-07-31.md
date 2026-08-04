@@ -28,8 +28,8 @@ The top-level assessment did not detect the failed read. I classified the disk f
 
 ```bash
 set -euo pipefail
-disk_id=<YOUR_GREEN_HDD_BY_ID>
-expected_serial=<YOUR_GREEN_HDD_SERIAL>
+disk_id=<REDACTED_GREEN_HDD_BY_ID>
+expected_serial=<REDACTED_GREEN_HDD_SERIAL>
 expected_bytes=320072933376
 disk=$(readlink -f "$disk_id")
 serial=$(lsblk -dn -o SERIAL "$disk" | xargs)
@@ -63,7 +63,7 @@ test -z "$(lsblk -nr -o PTTYPE,FSTYPE "$disk" | tr -d '[:space:]')"
 ```
 
 ```text
-validated_target=<YOUR_GREEN_HDD_BY_ID> model=HTS723232A7A364 serial_suffix=G91N bytes=320072933376 in_use=no
+validated_target=<REDACTED_GREEN_HDD_BY_ID> model=HTS723232A7A364 serial_suffix=G91N bytes=320072933376 in_use=no
 GPT data structures destroyed! You may now partition the disk using fdisk or other utilities.
 verification=blank_no_pttype_no_fstype_no_signature
 NAME TYPE   SIZE PTTYPE FSTYPE MOUNTPOINTS
