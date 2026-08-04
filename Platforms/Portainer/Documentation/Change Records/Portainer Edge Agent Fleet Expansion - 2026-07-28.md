@@ -46,7 +46,7 @@ I authenticated to the Portainer API with the stored login. After restoring `Enf
 
 I created three login items through JSON templates on standard input, so no value passed through a command line. A second comparison returned a match for all six protected values.
 
-[Registration and credential-storage evidence](../../Evidence/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28/Logs/S02-Portainer-Registrations-and-Credential-Storage-2026-07-28.md)
+[Registration and credential-storage evidence](../../Evidence/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28/Logs/S02-Portainer-Registrations-2026-07-28.md)
 
 ### Step 3: Deploy the common compose project
 

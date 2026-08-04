@@ -1,15 +1,15 @@
-# Step 2 Portainer Registrations and Credential Storage
+# Step 2 Portainer Registrations
 
 **Created:** 2026-07-28  
 **Last updated:** 2026-08-04
 
 **Capture date:** 2026-07-28  
-**Execution mechanism:** PowerShell 7, Portainer HTTPS API, `<REDACTED_PASSWORD_MANAGER_CLI>` service account  
+**Execution mechanism:** PowerShell 7, Portainer HTTPS API  
 **Working directory:** `D:\Documents\Homelab`
 
 ## API Requests
 
-Authentication used `<REDACTED_SECRET_REFERENCE>` for the username and password. The values and returned JWT were held in memory and aren't retained.
+Authentication used a stored secret reference rather than a typed password. The values and the returned JWT were held in memory and aren't retained.
 
 ```http
 PUT /api/settings
@@ -41,8 +41,6 @@ ContainerEngine=docker
 
 Each Edge ID was 36 characters. Each Edge key was 123 characters.
 
-## Credential Storage
+## Edge Credential Handling
 
-I sent a Login JSON template through standard input to `<REDACTED_PASSWORD_MANAGER_CLI> item create --vault "<REDACTED_VAULT_NAME>" -`, once for each of `docker-blue`, `media-01`, and `docker-network`.
-
-The Login username holds the Edge ID and the password holds the Edge key. A protected comparison read each field through `<REDACTED_SECRET_REFERENCE>` and returned `credential_match=true` for all three targets. No reveal command or secret-bearing output was retained.
+Each target's Edge ID and Edge key were stored outside this repository and never written to any file in it. A protected comparison read each stored value back and returned `credential_match=true` for `docker-blue`, `media-01`, and `docker-network`. No reveal command and no secret-bearing output was retained.

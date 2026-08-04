@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-04
 
 **Capture date:** 2026-07-28  
-**Execution mechanism:** SSH Manager MCP through `blue_server`, `pct exec 108`, `<REDACTED_PASSWORD_MANAGER_CLI>`, and Portainer API  
+**Execution mechanism:** SSH Manager MCP through `blue_server`, `pct exec 108`, and Portainer API  
 **Target:** `docker-blue` and Portainer environments 7 through 9
 
 ## Pre-Change State
