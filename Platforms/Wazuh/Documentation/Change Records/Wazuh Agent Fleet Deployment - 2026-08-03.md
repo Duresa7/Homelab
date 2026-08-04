@@ -9,7 +9,7 @@
 
 I added host-level Wazuh agents to `monitor-01`, `docker-network`, `docker-blue`, `alpha-prod-01`, `kasm-01`, `media-01`, `ansible-01`, `grey-server`, `purple-server`, `blue-server`, `red-server`, & `green-server`. I first scoped four Proxmox nodes, then added Green after the four-node deployment passed.
 
-I also added missing SSH Manager records for `docker_blue`, `media_01`, `kasm_01`, & `green_server` in Codex. Claude already had the first three; I added Green to both managers. This record doesn't contain the private-key material referenced by either local manager.
+I also added missing SSH Manager records for `docker_blue`, `media_01`, `kasm_01`, & `green_server`. My TOML manager configuration was missing all four; the `.env` one already carried the first three, so it needed only Green. This record doesn't contain the private-key material referenced by either local manager.
 
 ## Starting State
 
@@ -43,9 +43,9 @@ The existing LAB-MGMT catch-all block evaluated before the new `kasm-01` allow. 
 
 ### Step 2: Register the missing SSH Manager hosts
 
-**Action:** I added `docker_blue`, `media_01`, & `kasm_01` to Codex's TOML configuration. I verified Claude's `.env` already had one record for each & corrected its media host description from VM to LXC.
+**Action:** I added `docker_blue`, `media_01`, & `kasm_01` to the TOML manager configuration. I verified the `.env` manager already had one record for each & corrected its media host description from VM to LXC.
 
-**Observed result:** Codex reloaded all three records without an MCP restart.
+**Observed result:** The TOML manager reloaded all three records without an MCP restart.
 
 **Verification:** SSH Manager listed the three exact IPs & completed the read-only preflight on each.
 
@@ -105,7 +105,7 @@ I checked Docker state on the active workload hosts as a separate removal check.
 
 ### Step 8: Verify the dashboard and prepare the Proxmox group
 
-**Action:** I signed into the internal dashboard as `dkadi` through the Codex in-app browser, opened the active endpoint table, & opened agent group management. I created manager group `proxmox` through `agent_groups` and set Grey, Purple, Blue, & Red to enroll into `default,proxmox` in the versioned Ansible inventory.
+**Action:** I signed into the internal dashboard as `dkadi` through the in-app browser, opened the active endpoint table, & opened agent group management. I created manager group `proxmox` through `agent_groups` and set Grey, Purple, Blue, & Red to enroll into `default,proxmox` in the versioned Ansible inventory.
 
 **Observed result:** The dashboard showed six active agents, zero disconnected, zero pending, & zero never connected. Its Groups page showed `default` with six agents, `edge` with one, & `proxmox` with zero.
 

@@ -5,11 +5,11 @@
 
 **Captured:** 2026-08-03 07:46 through 07:51 EDT  
 **Target:** `https://wazuh.alphasecunited.com/`; `security-01:/var/ossec/etc/shared/proxmox`  
-**Mechanism:** Codex in-app browser; SSH Manager MCP through `ansible-01`; Wazuh `agent_groups`
+**Mechanism:** In-app browser; SSH Manager MCP through `ansible-01`; Wazuh `agent_groups`
 
 ## Dashboard sign-in
 
-The in-app browser opened the internal Wazuh login page. I retrieved the `Wazuh: dkadi` credential through a 1Password secret reference, filled it directly into the internal dashboard, & cleared the local value without printing it or retaining it in this record.
+The in-app browser opened the internal Wazuh login page. I filled the `dkadi` password straight into the form, then cleared the local value without printing it or retaining it in this record.
 
 The dashboard authenticated as `dkadi`, selected API host `default`, & completed its API, alert-index, monitoring-index, and statistics-index checks. The Overview page reported:
 

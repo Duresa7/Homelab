@@ -364,7 +364,7 @@ curl -fsS http://127.0.0.1:9101/metrics | grep -c 'name="'   # expect 1 after th
 
 ## Phase 9. Documentation
 
-Same task, per `CLAUDE.md`. First person, no emoji, ISO dates, written through the `no-ai-slop` and `rossmann-voice` skills.
+Written in the same task as the work, in my first person, with ISO dates.
 
 **New:** a change record at `Documentation/Change Records/Monitoring Relocation to monitor-01 - 2026-07-26.md`, or the real completion date. It must carry the twenty-three firewall changes, the DNS finding, the `pve_svc_clients` finding, and the measured before-and-after target counts.
 

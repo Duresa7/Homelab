@@ -5,7 +5,7 @@
 
 **Captured:** 2026-08-03 07:59 through 13:52 EDT  
 **Targets:** UniFi site `default`; `/home/ansible/wazuh-agent-deployment` on `ansible-01`; Wazuh manager `security-01`; internal Wazuh dashboard  
-**Mechanism:** UniFi Network MCP, SSH Manager MCP, Ansible Core 2.21.2, Wazuh CLI, & Codex in-app browser
+**Mechanism:** UniFi Network MCP, SSH Manager MCP, Ansible Core 2.21.2, Wazuh CLI, & in-app browser
 
 ## Firewall application
 
@@ -113,7 +113,7 @@ Grey, Purple, Blue, & Red needed service-poll retries before `systemctl is-activ
 
 ## Dashboard verification
 
-I signed into the internal dashboard as `dkadi` through a 1Password secret reference. The password wasn't printed, retained in this record, or left in a temporary file.
+I signed into the internal dashboard as `dkadi`. The password wasn't printed, retained in this record, or left in a temporary file.
 
 The Endpoints page reported:
 

@@ -9,7 +9,7 @@ Usage:
   python ts3_import_channels.py \
       --in channels.json \
       --host 192.168.80.118 --port 10012 \
-      --user serveradmin --password 'YOUR_QUERY_PASSWORD' \
+      --user serveradmin --password '<YOUR_QUERY_PASSWORD>' \
       --sid 1
 
 Add --dry-run to preview without making changes.

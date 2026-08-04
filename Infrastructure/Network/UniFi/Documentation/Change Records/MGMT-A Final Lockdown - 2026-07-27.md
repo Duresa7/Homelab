@@ -79,7 +79,7 @@ The retained evidence is indexed in [MGMT-A Final Lockdown evidence](../../Evide
 
 ## Rollback
 
-To restore the controller state, I can re-enable `Allow Internal to AlphaSec-Mgmt` and change `Docker-main Allowed -> Server` back to its prior all-protocol port-group target. The pre-change UniFi snapshot is retained outside the repository at `C:\Users\dures\.codex\state\unifi-mcp\skills\firewall-snapshots\firewall_20260727T122034Z_before.json`.
+To restore the controller state, I can re-enable `Allow Internal to AlphaSec-Mgmt` and change `Docker-main Allowed -> Server` back to its prior all-protocol port-group target. The pre-change UniFi snapshot is retained on my workstation outside this repository as `firewall_20260727T122034Z_before.json`.
 
 To restore the Galaxy firewall, I can copy the retained before export from the evidence folder to `/etc/pve/firewall/cluster.fw`, run `pve-firewall compile`, and verify `pve-firewall status` on all four nodes.
 

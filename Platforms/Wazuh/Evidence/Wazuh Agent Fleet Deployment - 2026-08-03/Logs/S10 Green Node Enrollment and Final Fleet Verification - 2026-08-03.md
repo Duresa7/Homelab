@@ -5,7 +5,7 @@
 
 **Captured:** 2026-08-03 13:54 through 14:16 EDT  
 **Targets:** `green-server`, UniFi site `default`, `ansible-01`, Wazuh dashboard  
-**Mechanism:** SSH Manager MCP, UniFi Network MCP, Ansible Core 2.21.2, & Codex in-app browser
+**Mechanism:** SSH Manager MCP, UniFi Network MCP, Ansible Core 2.21.2, & in-app browser
 
 ## Scope extension
 
@@ -22,7 +22,7 @@ The applied readback kept `ALLOW`, IPv4 TCP, index 10000, logging enabled, respo
 
 ## SSH and deployment
 
-I added `green_server` as `root@192.168.70.14` to the Codex TOML manager and Claude `.env` manager. Codex reloaded the record, and the first SSH command returned hostname `green-server`.
+I added `green_server` as `root@192.168.70.14` to both the TOML manager and the `.env` manager. The TOML manager reloaded the record, and the first SSH command returned hostname `green-server`.
 
 I added `green-server` to the versioned Ansible inventory with groups `default,proxmox`, deployed the inventory to `/home/ansible/wazuh-agent-deployment`, and passed the syntax check. The bounded first run completed:
 

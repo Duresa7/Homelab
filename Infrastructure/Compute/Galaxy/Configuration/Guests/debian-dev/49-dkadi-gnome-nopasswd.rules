@@ -1,0 +1,7 @@
+// Permit the active local GNOME session for dkadi to perform Polkit actions
+// without an authentication prompt. Remote/inactive sessions are excluded.
+polkit.addRule(function(action, subject) {
+    if (subject.user === "dkadi" && subject.local && subject.active) {
+        return polkit.Result.YES;
+    }
+});

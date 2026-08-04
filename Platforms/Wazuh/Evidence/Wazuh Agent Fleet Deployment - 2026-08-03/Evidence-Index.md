@@ -6,7 +6,7 @@
 | Step | Artifact | Result |
 |---:|---|---|
 | 1 | [S01 Live Preflight and Manager State - 2026-08-03](Logs/S01%20Live%20Preflight%20and%20Manager%20State%20-%202026-08-03.md) | Manager `4.14.6-1` was healthy; IDs 004 & 005 were active; seven requested paths couldn't reach TCP 1514/1515. |
-| 2 | [S02 SSH Manager Registration - 2026-08-03](Logs/S02%20SSH%20Manager%20Registration%20-%202026-08-03.md) | Codex gained `docker_blue`, `media_01`, & `kasm_01`; Claude already carried all three. |
+| 2 | [S02 SSH Manager Registration - 2026-08-03](Logs/S02%20SSH%20Manager%20Registration%20-%202026-08-03.md) | The TOML manager gained `docker_blue`, `media_01`, & `kasm_01`; the `.env` manager already carried all three. |
 | 3 | [S03 Reachable Host Deployment - 2026-08-03](Logs/S03%20Reachable%20Host%20Deployment%20-%202026-08-03.md) | The first pass stopped before installation; the corrected play enrolled four hosts. |
 | 4 | [S04 Active Agent and Idempotency Check - 2026-08-03](Logs/S04%20Active%20Agent%20and%20Idempotency%20Check%20-%202026-08-03.md) | IDs 006 through 009 became active, & the second playbook run changed nothing. |
 | 5 | [S05 Shared Agent Policy Correction - 2026-08-03](Logs/S05%20Shared%20Agent%20Policy%20Correction%20-%202026-08-03.md) | The default group stopped monitoring a nonexistent WordPress path; only `edge-01` retained `/etc/cloudflared`. |

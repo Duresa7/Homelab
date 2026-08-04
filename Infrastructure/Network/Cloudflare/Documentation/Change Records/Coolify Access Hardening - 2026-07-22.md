@@ -9,7 +9,7 @@ I replaced the reusable `Webhook Bypass` policy that exposed the entire `coolify
 
 ## Change
 
-1. I saved the pre-change Access application and policy state to `C:\Users\dures\.codex\state\cloudflare-snapshots\access-coolify-20260722T215406Z.json`.
+1. I saved the pre-change Access application and policy state to `access-coolify-20260722T215406Z.json`, retained on my workstation outside this repository.
 2. I created `Coolify GitHub Webhook` for `coolify-a1.alphsec.com/webhooks/source/github/events` with a bypass policy.
 3. I removed the reusable `Webhook Bypass` policy from the root Coolify application and deleted the unused reusable policy.
 4. I created `Coolify GitHub Webhook Child Paths` for `coolify-a1.alphsec.com/webhooks/source/github/events/*` with the same allow policy as the root application. This protects every child route while leaving the exact GitHub endpoint reachable.
@@ -30,7 +30,7 @@ The pre-change JSON snapshot contains the original application and reusable poli
 
 I changed policy `699d0001c9d00a2842ccf453` from the entire Servers-A network on any TCP port to app-01 at `192.168.80.10` through the `App Access` port group. That group contains TCP 80 and 8000. The source remains the edge-01 client, and the policy's protocol, index, logging, connection state, and automatic response setting are unchanged.
 
-I saved the complete pre-change state to `C:\Users\dures\.codex\state\unifi-mcp\skills\firewall-snapshots\firewall_20260722T220050Z.json`. Its SHA-256 digest is `7456B8E21D16A9D3BC96C1038B9C4CDB2D981FF40310C4253892AEBFE8A03C44`.
+I saved the complete pre-change state to `firewall_20260722T220050Z.json`, retained on my workstation outside this repository. Its SHA-256 digest is `7456B8E21D16A9D3BC96C1038B9C4CDB2D981FF40310C4253892AEBFE8A03C44`.
 
 ### Verification
 
@@ -42,7 +42,7 @@ I saved the complete pre-change state to `C:\Users\dures\.codex\state\unifi-mcp\
 - An HTTP request from edge-01 to app-01 TCP 80 returned an application-layer 404, and the Coolify login on TCP 8000 returned 200. Both results prove the two required backend paths crossed the firewall.
 - The public Coolify login remained behind Cloudflare Access, while the exact GitHub webhook continued to reach Coolify.
 
-I saved the post-change state to `C:\Users\dures\.codex\state\unifi-mcp\skills\firewall-snapshots\firewall_20260722T221119Z.json`. Its SHA-256 digest is `920EA04A0E2A1775BCE7FFB91B60A1C3E19CCDBD094C7040D631F47508ED95D1`.
+I saved the post-change state to `firewall_20260722T221119Z.json`, retained the same way. Its SHA-256 digest is `920EA04A0E2A1775BCE7FFB91B60A1C3E19CCDBD094C7040D631F47508ED95D1`.
 
 ### Rollback
 
