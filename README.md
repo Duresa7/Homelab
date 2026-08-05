@@ -42,9 +42,10 @@ The guides provide the reading path. Detailed records stay with the system that 
 | [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
 | [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) |
-| [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | Currently empty by design |
+| [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | [Preview server](Engineering/Preview%20Server/README.md) |
 | [Operations](Operations/README.md) | Cross-system inventories and maintenance records | [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md) |
-| [Security](Security/README.md) | Incident reports, hardening standards, assessments | [Linux host baseline](Security/Hardening/Linux-Host-Baseline-Standard.md) |
+| [Security](Security/README.md) | Incident reports and assessments | [UniFi firewall audit](Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md) |
+| [Backups](Backups/README.md) | Config files copied off a host before an edit | [How a file gets here](Backups/README.md#how-a-file-gets-here) |
 | [Archive](Archive/README.md) | Superseded records kept for history | [Retired ai-alpha-01 record](Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md) |
 
 ## Build and Change Records

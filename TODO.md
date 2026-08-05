@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-05
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO.
 
@@ -12,6 +12,7 @@ None.
 ## Active Priorities
 
 - [x] 2026-08-03: Governance and structure rewrite. I replaced the documentation standard, dropped the tier system, retired 1,010 of 1,262 Markdown placeholder substitutions while retaining 252 legitimate reader or withheld-value substitutions, gave incidents one naming convention, centralised 47 diagrams under `Assets/`, and took `Governance/` out of the published tree. The record is local-only with the rest of that folder.
+- [ ] Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md), which I corrected on 2026-08-05 so that only unattended accounts carry `NOPASSWD`. A minority of hosts still hold the old policy, and one restores it from cloud-init on every boot. Order matters: provision the new `ai-agent` automation account first so unattended `sudo -n` keeps working, then remove the drop-ins, then stop cloud-init reapplying the change. I ran the preflight on 2026-08-05 and every affected host keeps working sudo afterward. The per-host detail sits with the hardening standard, which is not published.
 - [ ] Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). I completed the storage recovery, controlled Parrot installation, Parrot Full/Normal/VPN, Debian Malware, manual capacity gate, automatic-pull control, and `baseline-parrot-2026-07-30`. Kasm returns HTTP `200`; the alert is the only open item.
 
 ## Scheduled

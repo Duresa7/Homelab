@@ -1,7 +1,7 @@
 # Linux Host Baseline Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-05
 
 ## What This Guide Covers
 
@@ -38,10 +38,9 @@ On an RHEL-family host, use `dnf upgrade -y`. I don't install the workload until
 ```sh
 adduser dkadi
 usermod -aG sudo dkadi
-printf 'dkadi ALL=(ALL:ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/90-dkadi
-chmod 0440 /etc/sudoers.d/90-dkadi
-visudo -cf /etc/sudoers.d/90-dkadi
 ```
+
+Group membership is the whole policy. `%sudo ALL=(ALL:ALL) ALL` already ships in `/etc/sudoers`, so `dkadi` gets sudo and is asked for its own password. I don't write a `NOPASSWD` drop-in for a human account: the reason automation needs one is that it runs unattended, and a person at a keyboard doesn't. It also means a stolen key alone is not root.
 
 ### Step 3: Install the Three Public Keys
 
@@ -73,7 +72,7 @@ Generate `en_US.UTF-8` & make it active through the distribution's locale tools.
 
 ```sh
 id dkadi
-sudo -n true
+sudo -n true; echo "expect exit 1: $?"
 sudo sshd -T | grep -E 'permitrootlogin|pubkeyauthentication|passwordauthentication|kbdinteractiveauthentication'
 ssh-keygen -lf /home/dkadi/.ssh/authorized_keys
 passwd -S root
@@ -81,7 +80,7 @@ timedatectl
 locale
 ```
 
-The expected state is membership in `sudo`, non-interactive sudo exit `0`, three fingerprints, `permitrootlogin no`, both password methods disabled, & root status `L`.
+The expected state is membership in `sudo`, non-interactive sudo exit `1` because a human account is asked for its password, three fingerprints, `permitrootlogin no`, both password methods disabled, & root status `L`.
 
 ## Troubleshooting and Recovery
 
@@ -89,10 +88,9 @@ If `sshd -t` fails, do not restart SSH. Fix the reported file & line from the co
 
 ## Known Limits
 
-Windows hosts follow separate records. A higher-risk Linux host can replace NOPASSWD with another privilege model, but its runbook must also replace the unattended Ansible & SSH Manager steps that depend on `sudo -n`.
+Windows hosts follow separate records. This guide covers the human administrative account only. The unattended automation accounts are the ones that carry `NOPASSWD`, and any host that drops it has to replace every Ansible and SSH Manager step that depends on `sudo -n` succeeding.
 
 ## Source Records
 
-- [Linux Host Baseline Standard](../Security/Hardening/Linux-Host-Baseline-Standard.md)
 - [docker-network LXC deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
 - [Media Stack deployment](../Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Deployment%20-%202026-07-17.md)

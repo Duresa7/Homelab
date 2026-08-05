@@ -233,7 +233,7 @@ pct create 104 local:vztmpl/debian-13-standard_13.1-2_amd64.tar.zst \
 
 The `qm set --delete cicustom` trap does not apply here. That is a VM-clone problem with template 9000, and this is an LXC built from a distribution template.
 
-Then apply the [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) before the host carries a workload: admin user, keys installed, key-only SSH, root locked.
+Then apply the [Linux Host Baseline](../../../../Guides/Linux-Host-Baseline.md) before the host carries a workload: admin user, keys installed, key-only SSH, root locked.
 
 Install Docker from Docker's own repository, matching the other Docker hosts.
 

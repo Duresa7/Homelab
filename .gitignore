@@ -10,6 +10,12 @@
 # Local-only private materials
 /Sensitive/
 
+# Hardening standards describe my exact per-host privilege model and name the
+# credential item each account comes from. The public walkthrough of the same
+# baseline is Guides/Linux-Host-Baseline.md. History before 2026-08-05 is
+# already published and this rule does not retract it.
+/Security/Hardening/
+
 # Intentionally private platform content
 /Docs Site/
 /Platforms/Windows Servers/*

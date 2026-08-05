@@ -63,7 +63,7 @@ Cloning as-is would have produced a VM with `PasswordAuthentication no`, no auth
 
 ## Host baseline
 
-I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) before installing anything.
+I applied the [Linux Host Baseline](../../../Guides/Linux-Host-Baseline.md) before installing anything.
 
 Cloud-init installed the four fleet public keys & created `dkadi` in `sudo`. I then patched the host, added `qemu-guest-agent`, wrote a validated `/etc/sudoers.d/90-dkadi` drop-in, wrote `/etc/ssh/sshd_config.d/99-hardening.conf`, locked root, & set timezone & locale.
 

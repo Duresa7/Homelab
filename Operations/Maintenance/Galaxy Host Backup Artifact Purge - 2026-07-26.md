@@ -55,7 +55,7 @@ I checked for other copies first. `find /var/lib/vz /mnt/pve -name "*qemu-100*"`
 
 Red held `sshd_config.bak.pre-keyonly-20260707-105303` and `interfaces.bak`. The first is the SSH daemon config from before key-only authentication went in on 2026-07-07; the second is a network config snapshot from the same window. Both are lockout and network-recovery fallbacks on a hypervisor, and I flagged them as worth keeping. I was told to remove them regardless, so they're gone.
 
-Recovering either now means rebuilding from the [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md) and the [Red server expansion record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md) rather than restoring a file. Console access through the Proxmox GUI remains the path back in if SSH ever refuses on Red.
+Recovering either now means rebuilding from the [Linux Host Baseline](../../Guides/Linux-Host-Baseline.md) and the [Red server expansion record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md) rather than restoring a file. Console access through the Proxmox GUI remains the path back in if SSH ever refuses on Red.
 
 ## Rollback Points This Voids
 

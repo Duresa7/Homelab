@@ -77,7 +77,7 @@ Pixel-level control is separate. Anthropic documents computer use as screen capt
 
 My proof of concept starts with 4 vCPU, 8 to 16 GiB RAM, & 80 to 150 GiB of SSD-backed storage. Those are starting allocations for web development, several agent processes, tests, & a few containers; Proxmox metrics decide whether I resize them.
 
-I will apply the [Linux Host Baseline Standard](../Security/Hardening/Linux-Host-Baseline-Standard.md), enroll the VM as a NetBird peer, & allow only the developer-device group. SSH, T3 Code, & the Codex app server stay off public listeners. Each concurrent agent gets its own Git worktree and branch, while VM snapshots cover machine recovery and Git commits cover code history.
+I will apply my Linux host baseline, walked through at [Linux Host Baseline](../Guides/Linux-Host-Baseline.md), enroll the VM as a NetBird peer, & allow only the developer-device group. SSH, T3 Code, & the Codex app server stay off public listeners. Each concurrent agent gets its own Git worktree and branch. Git commits cover code history, and machine recovery is a rebuild from the baseline rather than a snapshot, because I keep no snapshots.
 
 Ubuntu is the first target because SSH, `tmux`, systemd, containers, & the required development tools run natively. VS Code supports Windows SSH hosts and Codex runs on Windows, but I don't need a Windows VM until a project requires Windows builds or a native Windows application.
 
