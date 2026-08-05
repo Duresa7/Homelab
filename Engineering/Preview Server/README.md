@@ -18,14 +18,14 @@ That reads the local-only `.claude/launch.json` launch configuration, which poin
 To run it outside an agent session:
 
 ```bash
-node "D:\Documents\Homelab\Engineering\Shared Tooling\Preview Server\serve.js"
+node "D:\Documents\Homelab\Engineering\Preview Server\serve.js"
 ```
 
 ## The two limits, and why they're there
 
 **It binds `127.0.0.1` only.** The version I ran before 2026-07-25 called `.listen(8123)` with no host, so Node bound `0.0.0.0` and `[::]`. `netstat` confirmed both. While that server was up, `curl http://192.168.50.241:8123/Sensitive/Hardware/drive-serials.md` from anywhere on the LAN returned HTTP 200 and 2,082 bytes of full drive serial numbers. Nothing suggests anyone fetched it, but the path was open every time a preview ran.
 
-That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md). It scopes what was reachable, which was all 573 files in `Sensitive/` including the pre-scrub git history bundle, and which zones could reach it, which was Internal & Vpn but not the internet.
+That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md). It scopes what was reachable, which was all 573 files in `Sensitive/` including the pre-scrub git history bundle, and which zones could reach it, which was Internal & Vpn but not the internet.
 
 On 2026-07-27 I also moved all three history bundles and the private redaction value map out of the Homelab tree to `D:\Documents\Redaction Map`. The preview server still keeps both protections because other private material remains in the working tree.
 
@@ -44,5 +44,5 @@ Screenshots fail with `the Browser pane is not displayed, so the page is not com
 ## Related records
 
 - [Git-Tracked Publication Boundary - 2026-08-04](Documentation/Change%20Records/Git-Tracked%20Publication%20Boundary%20-%202026-08-04.md), the implementation and request results for the tracked-file rule
-- [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md), the incident that produced both limits above
-- [Assets/Diagrams](../../../Assets/Diagrams/), what this now most often previews
+- [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md), the incident that produced both limits above
+- [Assets/Diagrams](../../Assets/Diagrams/), what this now most often previews
