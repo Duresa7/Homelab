@@ -13,7 +13,17 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.resolve(__dirname, "..", "..", "..");
+// Ask git where the repository starts rather than counting "..". Counting broke
+// on 2026-08-05 when this file moved up one level: ROOT resolved to the parent of
+// the repository, git ls-files failed there, and every request fail-closed to
+// HTTP 500 with "unable to read tracked files". git answers correctly from any
+// depth, so moving this file again cannot reintroduce that.
+const ROOT = childProcess
+  .execFileSync("git", ["-C", __dirname, "rev-parse", "--show-toplevel"], {
+    encoding: "utf8",
+    windowsHide: true,
+  })
+  .trim();
 const HOST = "127.0.0.1";
 const PORT = 8123;
 
