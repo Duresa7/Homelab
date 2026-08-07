@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-30  
+**Last updated:** 2026-08-07  
 
 Galaxy currently has 10 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -18,7 +18,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 | 111 | fedora-dev | grey-server | Fedora (l26 ostype; release not captured while stopped) | 6 | 8 GiB | 80G | none recorded, stopped since 2026-07-15 | 192.168.40.1 | 40 | disabled |
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 24 GiB | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
-| 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.90.10/24 | 192.168.90.1 | 90 | disabled |
+| 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 6 | 12 GiB | 200G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/75/77/79 sessions | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
@@ -277,8 +277,8 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 | Template | no |
 | OS family | Linux |
 | Guest OS | Debian GNU/Linux 13 (trixie) |
-| IPv4 | 192.168.90.10/24 |
-| Gateway | 192.168.90.1 |
+| IPv4 | 192.168.30.10/24 |
+| Gateway | 192.168.30.1 |
 
 #### Hardware
 | Setting | Value |
@@ -302,7 +302,7 @@ I decided to retain this VM on 2026-07-27. Its exact development workload still 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 90 | 192.168.90.10/24 | 192.168.90.1 | enabled | `<REDACTED_EDGE_HOST_MAC>` |
+| net0 | virtio | vmbr0 | 30 | 192.168.30.10/24 | 192.168.30.1 | enabled | `<REDACTED_EDGE_HOST_MAC>` |
 
 ### VM 122 - kasm-01
 

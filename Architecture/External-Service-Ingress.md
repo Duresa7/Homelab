@@ -1,7 +1,7 @@
 # External Service Ingress
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-08-07
 
 Every service I publish to the Internet reaches its container through the same chain: Cloudflare's edge, the `edge-01` Cloudflare Tunnel, Caddy on edge-01, & Traefik on app-01. No ports are forwarded on the router; the tunnel is the only inbound path. This design crosses four owners, so the full path lives here & each component keeps its own record, linked at the bottom.
 
@@ -9,12 +9,12 @@ Every service I publish to the Internet reaches its container through the same c
 
 A request to `foo.alphsec.com` travels:
 
-`Cloudflare edge (TLS) -> Tunnel edge-01 -> cloudflared on edge-01 -> Caddy :80 -> VLAN 90-to-80 firewall -> Traefik on app-01 :80 -> app container`
+`Cloudflare edge (TLS) -> Tunnel edge-01 -> cloudflared on edge-01 -> Caddy :80 -> VLAN 30-to-80 firewall -> Traefik on app-01 :80 -> app container`
 
 1. DNS. `*.alphsec.com` is a proxied CNAME to `<REDACTED_TUNNEL_ID>.cfargotunnel.com`. Cloudflare terminates TLS at its edge, so the certificate is Cloudflare's & nothing downstream serves HTTPS.
 2. Tunnel. Cloudflare hands the request to the `edge-01` tunnel. The ingress rule `*.alphsec.com` sends it to `http://localhost:80` on edge-01.
 3. Caddy. The `http://*.alphsec.com` site block reverse-proxies to `192.168.80.10:80` & keeps the original Host header. Caddy runs with `auto_https off` because TLS already happened at the edge.
-4. Firewall. edge-01 sits on VLAN 90 (`192.168.90.10`) & app-01 on VLAN 80 (`192.168.80.10`). A UniFi policy lets edge-01 reach app-01 only on TCP 80 & 8000.
+4. Firewall. edge-01 sits on VLAN 30 (`192.168.30.10`) & app-01 on VLAN 80 (`192.168.80.10`). A UniFi policy lets edge-01 reach app-01 only on TCP 80 & 8000.
 5. Traefik. `coolify-proxy` (Traefik v3.6) listens on app-01 port 80 & routes by Host header to the container Coolify labeled when I deployed it.
 
 ## Two branches at the tunnel

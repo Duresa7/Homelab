@@ -29,7 +29,7 @@ EXPECTED_TARGETS = {
     "http://192.168.70.14:9100/metrics": ("node", "green-server"),
     "http://192.168.72.2:9100/metrics": ("node", "security-01"),
     "http://192.168.72.3:9100/metrics": ("node", "splunk-siem"),
-    "http://192.168.90.10:9100/metrics": ("node", "edge-01"),
+    "http://192.168.30.10:9100/metrics": ("node", "edge-01"),
     "http://192.168.40.35:9100/metrics": ("node", "docker-main"),
     "http://192.168.40.36:9100/metrics": ("node", "ansible-01"),
     "http://192.168.40.39:9100/metrics": ("node", "docker-blue"),

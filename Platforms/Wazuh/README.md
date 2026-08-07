@@ -1,7 +1,7 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-07
 
 Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.6-1. Those services and the API run on `security-01` / `wazuh-01` at `192.168.72.2` on Security-A/VLAN 72.
 
@@ -35,7 +35,7 @@ NPM presents the Let's Encrypt wildcard certificate to internal dashboard client
 ## Current Agent State
 
 - `app-01` is enrolled as manager ID `004` from `192.168.80.10`; agent 4.14.6-1 is enabled, active, & connected.
-- `edge-01` is enrolled as manager ID `005` from `192.168.90.10`; agent 4.14.5-1 is enabled, active, & connected.
+- `edge-01` is enrolled as manager ID `005` from `192.168.30.10`; agent 4.14.5-1 is enabled, active, & connected.
 - `alpha-prod-01`, `docker-blue`, `media-01`, & `ansible-01` are enrolled as IDs `006` through `009`. Each runs held package 4.14.6-1, has an established TCP 1514 session, & reports synchronized.
 - `monitor-01`, `docker-network`, `kasm-01`, `grey-server`, `purple-server`, `blue-server`, & `red-server` are enrolled as IDs `010` through `016`. Each runs held package 4.14.6-1, has an established TCP 1514 session, & reports synchronized.
 - `green-server` is enrolled as ID `017` with held package 4.14.6-1, an established TCP 1514 session, & synchronized status.

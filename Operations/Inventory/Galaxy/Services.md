@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-07
 
 This inventory maps 13 workload guests from the 19 records returned by the cluster API. Twelve guests were running during the 2026-08-03 staleness audit. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -222,7 +222,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
 | kasm-01 | Upstream binary (Ubuntu 24.04) | `node_exporter.service` | `192.168.78.10:9100`, bound to that address only | Not installed, deliberately |
-| edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.90.10:9100` | No containers |
+| edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.30.10:9100` | No containers |
 
 `security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
 

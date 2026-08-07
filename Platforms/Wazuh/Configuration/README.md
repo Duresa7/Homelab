@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-07
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -24,7 +24,7 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 | Host | Package | Manager identity | Address | Service state |
 |---|---|---|---|---|
 | `app-01` | 4.14.6-1 | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
-| `edge-01` | 4.14.5-1 | ID `005`, `edge-01` | `192.168.90.10` | Enabled/active; TCP 1514 established |
+| `edge-01` | 4.14.5-1 | ID `005`, `edge-01` | `192.168.30.10` | Enabled/active; TCP 1514 established |
 | `alpha-prod-01` | 4.14.6-1, held | ID `006`, `alpha-prod-01` | `192.168.80.118` | Enabled/active; TCP 1514 established |
 | `docker-blue` | 4.14.6-1, held | ID `007`, `docker-blue` | `192.168.40.39` | Enabled/active; TCP 1514 established |
 | `media-01` | 4.14.6-1, held | ID `008`, `media-01` | `192.168.40.42` | Enabled/active; TCP 1514 established |

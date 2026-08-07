@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-07
 
 I added four narrow Wazuh enrollment paths on 2026-08-03. They admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. Source tests passed on both ports. The earlier Galaxy PXE callback verification remains current.
 
@@ -126,7 +126,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42 / `PG-Node-Exporter` |
 | `Allow Monitor to AlphaSec-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Servers` / .10, .118 / `PG-Node-Exporter` |
 | `Allow Monitor to AlphaSec-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Access` / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
-| `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Dmz / 192.168.90.10 / 9100 |
+| `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Dmz / 192.168.30.10 / 9100 |
 | `Allow Monitor to Proxmox monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Mgmt` / `OBJ-Proxmox-Nodes` / 9100, 8006 |
 | `Allow Monitor to Proxmox NUT` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Mgmt` / .10, .13 / 3493 |
 | `Allow Observability Web Egress` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Observability-Hosts` | External / `PG-Egress-Web` |

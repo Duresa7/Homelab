@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-07
 
 I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. Twenty routed LAN networks remain. The controller reports 28 network objects when I include two WANs, the ProtonVPN client, and five remote-user VPN networks. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
 
@@ -15,7 +15,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 | Server-Provision | 5 | 192.168.5.0/24 | 192.168.5.1 | .6 – .254 | Ahsoka Gateway |
 | Trusted | 10 | 192.168.10.0/24 | 192.168.10.1 | .6 – .254 | Ahsoka Gateway |
 | IoT | 20 | 192.168.20.0/24 | 192.168.20.1 | .6 – .254 | Ahsoka Gateway |
-| DMZ | 30 | 192.168.30.0/24 | 192.168.30.1 | .6 – .254 | Ahsoka Gateway |
+| DMZ | 30 | 192.168.30.0/24 | 192.168.30.1 | .50 – .100 | Ahsoka Gateway |
 | Personal-A | 40 | 192.168.40.0/24 | 192.168.40.1 | .100 – .254 | Ahsoka Gateway |
 | Secure | 50 | 192.168.50.0/24 | 192.168.50.1 | .6 – .254 | Ahsoka Gateway |
 | Secure Client | 60 | 192.168.60.0/24 | 192.168.60.1 | .6 – .254 | Ahsoka Gateway |
@@ -30,7 +30,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 | EVIDENCE-QUARANTINE | 79 | 192.168.79.0/24 | 192.168.79.1 | .100 – .199 | Ahsoka Gateway |
 | SERVERS-A | 80 | 192.168.80.0/24 | 192.168.80.1 | .6 – .254 | Ahsoka Gateway |
 | Access-A | 85 | 192.168.85.0/24 | 192.168.85.1 | .6 – .254 | Ahsoka Gateway |
-| DMZ-A | 90 | 192.168.90.0/24 | 192.168.90.1 | .50 – .100 | Ahsoka Gateway |
+| DMZ-A (empty; pending removal) | 90 | 192.168.90.0/24 | 192.168.90.1 | .50 – .100 | Ahsoka Gateway |
 
 ## Purpose and Device Placement
 
@@ -42,7 +42,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Server-Provision (5) | Internal | Temporary deployment lane | Bare-metal Galaxy nodes use DHCP and UEFI PXE here before first boot moves them to tagged MGMT-A and Cluster-Net. DHCP network boot advertises `192.168.40.36` and `galaxy-ipxe.efi`. |
 | Trusted (10) | Internal | Trusted personal | Personal devices I trust but that are not admin machines: household phones, tablets, laptops, watches, and personal streaming/voice devices (iPhones, Pixels, MacBooks, Galaxy Watch, personal Fire TV / Alexa). Blocked from reaching Personal-A. |
 | IoT (20) | Untrusted | Untrusted appliance | Smart-home and appliance-class gear with no admin need and no reason to reach the LAN: smart cameras (Wyze, Ring), thermostats (Nest), smart TVs and streamers (Samsung TV, Roku), smart appliances (Samsung FamilyHub), plugs and sensors. Isolated from Internal. |
-| DMZ (30) | Dmz | Internet-facing (legacy) | General internet-exposed / untrusted workloads kept off the LAN. Blocked from Internal; can be pinned to ProtonVPN egress via the `isolate` policy. I prefer DMZ-A for new `AlphaSec` edge hosts. |
+| DMZ (30) | Dmz | Internet-facing edge | I place internet-exposed / untrusted workloads here, including `edge-01` at static `192.168.30.10` with gateway `192.168.30.1`. I block this network from Internal and can pin it to ProtonVPN egress via the `isolate` policy. On 2026-08-07 I removed DMZ from the `Proxmox-Trunk` exclusions and left only Management, IoT (20), Trusted (10), and Secure (50) excluded. Before that change, I could not place virtualised workloads on VLAN 30 because the trunk did not carry it. That restriction was likely why I created DMZ-A. |
 | Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `debian-dev`). Reachable only from a defined admin device allow-list. |
 | Secure (50) | Internal | Primary admin workstation | The trusted workstation I administer the homelab from: my main management PC, Jedi PC. Part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | Secondary trusted workstation | Additional trusted desktops or workstations for specific users that need LAN trust but are not my primary admin box. |
@@ -57,7 +57,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review sessions use `192.168.79.208/28` through `lab79`. They have no Internet and no routed path to another session lane. |
 | SERVERS-A (80) | `AlphaSec-Servers` | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers, databases (app-01 = .10, supabase-01 = .20, db-13-host = .228). |
 | Access-A (85) | `AlphaSec-Access` | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
-| DMZ-A (90) | Dmz | Internet-facing edge | `AlphaSec` public-facing edge workloads that accept inbound from the internet (edge-01 = .10), monitored from Security-A. Blocked from reaching Internal. |
+| DMZ-A (90) | Dmz | Empty; pending removal | I moved `edge-01` to DMZ (30) on 2026-08-07. I am keeping this empty VLAN through a soak period and will remove it in a later, separate change. |
 
 ### Placement by Workload
 
@@ -69,7 +69,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `AlphaSec-Observability` zone.
 - Kasm control plane → **LAB-MGMT (78)**; Kasm sessions → **KASM-BROWSER (74)**, **KASM-TRUSTED (75)**, **MALWARE-OFFLINE (77)**, or **EVIDENCE-QUARANTINE (79)** according to their workspace override
 - Reverse proxy, VPN, or remote-access ingress → **Access-A (85)**
-- Public / internet-facing service → **DMZ-A (90)** (legacy: **DMZ (30)**)
+- Public / internet-facing service → **DMZ (30)**
 - General lab, automation, or utility VM/container → **Personal-A (40)**
 - Switch, AP, gateway, or Protect camera → **Management (untagged)**
 - Bare-metal Galaxy node during automated installation → **Server-Provision (5)**; the installed node moves to **MGMT-A (70)** and **Cluster-Net (71)**

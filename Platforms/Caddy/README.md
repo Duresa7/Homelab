@@ -1,7 +1,7 @@
 # Caddy
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-07
 
 I run Caddy as the edge reverse proxy on edge-01. It gives the Cloudflare Tunnel a single wildcard origin & forwards every `*.alphsec.com` request to the Coolify proxy on app-01. It's the external counterpart to Nginx Proxy Manager, which handles internal services; Caddy only sees traffic that already arrived through the tunnel.
 
@@ -9,7 +9,7 @@ I run Caddy as the edge reverse proxy on edge-01. It gives the Cloudflare Tunnel
 
 | Item | Value |
 |---|---|
-| Host | edge-01, `192.168.90.10`, VLAN 90, Debian 13 |
+| Host | edge-01, `192.168.30.10`, VLAN 30, Debian 13 |
 | Caddy version | 2.6.2 |
 | Service | `caddy.service`, systemd, enabled & active |
 | Config | `/etc/caddy/Caddyfile`, root-owned, mode 644 |
@@ -27,7 +27,7 @@ The live file is versioned at [Configuration/Caddyfile](Configuration/Caddyfile)
 
 ## Where Caddy sits
 
-`Cloudflare edge -> Tunnel edge-01 -> Caddy :80 (this host) -> Traefik on app-01 :80 -> app container`. The [External Service Ingress design](../../Architecture/External-Service-Ingress.md) covers the full path & the firewall boundary between VLAN 90 & VLAN 80.
+`Cloudflare edge -> Tunnel edge-01 -> Caddy :80 (this host) -> Traefik on app-01 :80 -> app container`. The [External Service Ingress design](../../Architecture/External-Service-Ingress.md) covers the full path & the firewall boundary between VLAN 30 & VLAN 80.
 
 ## Related
 
