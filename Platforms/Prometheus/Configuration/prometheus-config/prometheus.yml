@@ -1,5 +1,5 @@
 # Prometheus scrape configuration, deployed at
-# /home/dkadi/monitoring/prometheus.yml on monitor-01.
+# /home/dkadi/monitoring/prometheus-config/prometheus.yml on monitor-01.
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
@@ -32,7 +32,7 @@ scrape_configs:
         labels: {host: security-01, role: security}
       - targets: ["192.168.72.3:9100"]
         labels: {host: splunk-siem, role: security}
-      - targets: ["192.168.90.10:9100"]
+      - targets: ["192.168.30.10:9100"]
         labels: {host: edge-01, role: edge}
       - targets: ["192.168.40.35:9100"]
         labels: {host: docker-main, role: docker}
@@ -52,6 +52,8 @@ scrape_configs:
         labels: {host: monitor-01, role: monitoring}
       - targets: ["192.168.78.10:9100"]
         labels: {host: kasm-01, role: lab}
+      - targets: ["192.168.80.30:9100"]
+        labels: {host: game-01, role: game}
 
   # -------------------------------------------------------------- cadvisor
   # Per-container CPU, memory and restart detection across all eight Docker
@@ -87,6 +89,8 @@ scrape_configs:
         labels: {host: security-01, role: security}
       - targets: ["192.168.73.2:9101"]
         labels: {host: monitor-01, role: monitoring}
+      - targets: ["192.168.80.30:9101"]
+        labels: {host: game-01, role: game}
 
   # --------------------------------------------------------------- proxmox
   # The PVE API exporter. This one job covers the whole cluster: every guest's
@@ -129,13 +133,13 @@ scrape_configs:
           - https://forgejo.alphasecunited.com/
           - https://portainer.alphasecunited.com/
           - https://peanut.alphasecunited.com/
-          - https://syncthing.alphasecunited.com/
           - https://wazuh.alphasecunited.com/
           - https://grafana.alphasecunited.com/
           - https://prometheus.alphasecunited.com/
           - https://splunk.alphasecunited.com/
           - https://ts3-manager.alphasecunited.com/
           - https://kasm.alphasecunited.com/
+          - https://games.alphasecunited.com/
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

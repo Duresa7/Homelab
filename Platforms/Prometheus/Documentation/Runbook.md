@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-06
 
 ## Health Check
 
@@ -16,21 +16,20 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 49 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 51 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
 ## Change the Target Set
 
-1. Edit [Configuration/prometheus.yml](../Configuration/prometheus.yml) first.
+1. Edit [Configuration/prometheus-config/prometheus.yml](../Configuration/prometheus-config/prometheus.yml) first.
 2. Upload it to a candidate path under `/home/dkadi/monitoring/`.
 3. `docker cp` the candidate into the container and run `promtool check config` against it.
-4. Confirm a dated backup of the live file exists.
-6. Write the candidate into the live file with `cat candidate > prometheus.yml`, not `mv`.
-7. Restart the `prometheus` container.
-8. Wait at least one scrape interval for the job in question, then run the target assertion and remove candidate files.
+4. Write the candidate into `/home/dkadi/monitoring/prometheus-config/prometheus.yml`.
+5. Send `docker kill -s HUP prometheus`.
+6. Wait at least one scrape interval for the job in question, then run the target assertion and remove candidate files.
 
-Step 6 matters. `prometheus.yml` is a single-file bind mount, and `mv` replaces the inode while the container stays attached to the old one, which is what cost the 2026-07-13 change a reload. Redirecting into the existing file keeps the inode and removes the failure mode. Restart anyway, because Prometheus still has to re-read the file.
+The inode dance this runbook used to prescribe is gone. `/home/dkadi/monitoring/prometheus-config/` is bind-mounted as a **directory**, so a replaced file is visible to the container and `mv`, `sed -i`, and redirection all work. The single-file mount it replaced pinned the inode at container start and swallowed three reloads: 2026-07-13, again on 2026-07-28, and again on 2026-08-06, each time reporting success while serving the old configuration. A restart is no longer required for a configuration change, but still verify through the target API rather than trusting the HUP.
 
 Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Monitor` to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
 

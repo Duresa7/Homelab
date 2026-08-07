@@ -14,9 +14,10 @@ services:
       - --storage.tsdb.path=/prometheus
       - --web.external-url=https://prometheus.alphasecunited.com
     volumes:
-      # Single-file bind mount. Replacing the host file requires a container
-      # restart, not a SIGHUP: see the 2026-07-13 inode troubleshooting record.
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # Directory bind mount, not a single file. A single-file mount pins the
+      # inode at container start, so a replaced prometheus.yml stayed invisible
+      # to Prometheus and SIGHUP was a silent no-op. The directory fixes that.
+      - ./prometheus-config:/etc/prometheus:ro
       - prometheus_data:/prometheus
     ports:
       - "9090:9090"
