@@ -3,9 +3,13 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-08-07
 
-I added four narrow Wazuh enrollment paths on 2026-08-03. They admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. Source tests passed on both ports. The earlier Galaxy PXE callback verification remains current.
+I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The earlier four narrow Wazuh enrollment paths from 2026-08-03 remain current: they admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. It has 125 user-defined policies after the four Wazuh additions on 2026-08-03. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. It has 128 user-defined policies after the three `game-01` additions on 2026-08-07. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+
+`game-01` needed no policy for game traffic. `Allow Internal to AlphaSec-Servers` already permits every Internal network to that zone on every port, so Trusted, Secure, and Secure Client reach TCP 25565 and the Pelican SFTP port 2022 without a new rule. That also admits Management, Server-Provision, and Personal-A, which is wider than the three networks the host was built for.
+
+What did need policies is the reverse direction. Both the panel and Wings call *out* to `192.168.85.2:443`, because Wings fetches its server list from the panel's published URL and the panel reaches Wings at the node FQDN. Both paths hairpin through NPM. Wings refuses to start without that return path and exits with `dial tcp 192.168.85.2:443: i/o timeout`.
 
 ## Recorded Custom Policy Inventory
 
@@ -51,9 +55,12 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
-| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 8080, 8384, 9443 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 9443 |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
+| `Allow NPM to game-01 Panel` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 80 |
+| `Allow NPM to game-01 Wings` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 8080 |
+| `Allow game-01 to NPM HTTPS` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Servers` / 192.168.80.30 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to kasm-01 web UI` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | LAB-MGMT / 192.168.78.10 / 443 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
@@ -124,7 +131,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `KASM Block KASM-TRUSTED to AlphaSec-Access` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Access` / Any |
 | `KASM Block KASM-TRUSTED to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Observability` / Any |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42 / `PG-Node-Exporter` |
-| `Allow Monitor to AlphaSec-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Servers` / .10, .118 / `PG-Node-Exporter` |
+| `Allow Monitor to A-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Servers` / .10, .30, .118 / `PG-Node-Exporter` |
 | `Allow Monitor to AlphaSec-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Access` / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
 | `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Dmz / 192.168.30.10 / 9100 |
 | `Allow Monitor to Proxmox monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Mgmt` / `OBJ-Proxmox-Nodes` / 9100, 8006 |

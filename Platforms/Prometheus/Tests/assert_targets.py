@@ -41,6 +41,8 @@ EXPECTED_TARGETS = {
     # kasm-01 answers on its control-plane address only, never 0.0.0.0, so this
     # URL is the sole way to reach its exporter.
     "http://192.168.78.10:9100/metrics": ("node", "kasm-01"),
+    # game-01, added 2026-08-07 with the Pelican game server platform.
+    "http://192.168.80.30:9100/metrics": ("node", "game-01"),
     # cAdvisor, all 8 Docker hosts. This was docker-main alone until 2026-07-26,
     # while v0.52.1 could not register containers under Docker 29's overlayfs
     # driver. v0.60.5 handles the containerd snapshotter.
@@ -52,6 +54,9 @@ EXPECTED_TARGETS = {
     "http://192.168.80.10:9101/metrics": ("cadvisor", "app-01"),
     "http://192.168.72.2:9101/metrics": ("cadvisor", "security-01"),
     "http://192.168.73.2:9101/metrics": ("cadvisor", "monitor-01"),
+    # game-01 runs one container per game server, so per-container metrics are
+    # the only view of a single server against its assigned limit.
+    "http://192.168.80.30:9101/metrics": ("cadvisor", "game-01"),
     # Proxmox API exporter
     "http://pve-exporter:9221/pve?module=default&target=192.168.70.10": (
         "proxmox",
@@ -67,6 +72,10 @@ EXPECTED_TARGETS = {
 
 # The 20 internal service names probed through NPM. Host label is absent; the
 # instance label carries the probed URL.
+#
+# wings.alphasecunited.com is deliberately absent. The Wings API answers 401 on
+# every path without a node token, so an http_2xx probe would report a healthy
+# daemon as down.
 EXPECTED_BLACKBOX_SERVICES = {
     "jellyfin",
     "seerr",
@@ -82,12 +91,12 @@ EXPECTED_BLACKBOX_SERVICES = {
     "forgejo",
     "portainer",
     "peanut",
-    "syncthing",
     "wazuh",
     "grafana",
     "prometheus",
     "splunk",
     "ts3-manager",
+    "games",
 }
 
 # Retired addresses that must never reappear. 192.168.70.20 is the pre-migration

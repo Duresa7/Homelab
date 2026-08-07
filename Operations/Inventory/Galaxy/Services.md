@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-08-07
 
-This inventory maps 13 workload guests from the 19 records returned by the cluster API. Twelve guests were running during the 2026-08-03 staleness audit. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 14 workload guests. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 ## Cluster State
 
@@ -22,7 +22,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | db-13-dev / debian-dev | VM 102 | grey-server | Development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>Syncthing |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -33,6 +33,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Minecraft 26.1.2 / NeoForge 26.1.2.78<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
@@ -66,13 +67,12 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
 | Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`, verified 2026-08-04 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
-| Syncthing | 2.1.2; direct TLS peer for the Obsidian vault; Compose under `/opt/docker/syncthing`; persistent vault under `/data/syncthing/vaults/the-vault`; GUI bound to `127.0.0.1:8384` |
 
 ## monitor-01
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 49 of 49 targets `up` across six jobs: node 17, cAdvisor 8, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
+| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 51 of 51 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 20 internal NPM names |
@@ -174,6 +174,20 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `008` as `media-01` |
 | Storage | One 100 GiB local LVM root volume contains configuration, downloads, media, and transcodes |
 | Network | Static `192.168.40.42` on VLAN 40; no gateway inbound port forward |
+
+## game-01
+
+| Workload | Details |
+| --- | --- |
+| Pelican Panel | `ghcr.io/pelican-dev/panel:latest`, running v1.0.0-beta36 on Laravel 13.23.0; SQLite in the `pelican-panel_pelican-data` volume; compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
+| Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
+| Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; allocations `192.168.80.30:25565` through `25575` |
+| Best Vanilla World 2 | `Serverpack MC 26.1.2-2.1.0`: Minecraft 26.1.2 on NeoForge 26.1.2.78, Java 25, 103 active mods of 122 shipped; 10240 MiB and 500 percent CPU on `192.168.80.30:25565`; heap pinned `-Xms8G -Xmx8G` instead of the egg's `MaxRAMPercentage=95.0`; reached `Done (1.375s)` and idles at 5.74 GiB. The serverpack release has to match the client release players installed, not just the Minecraft version, or the loader mismatch rejects every join; see the platform deployment record |
+| node_exporter | 1.9.0 from APT, held; `:9100` |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on `:9101`; registered 3 of 3 running containers |
+| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `018` as `game-01` |
+| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and all server files; 4.2 GB used at deployment |
+| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; no gateway inbound port forward |
 
 ## Galaxy Proxmox node monitoring
 

@@ -1,0 +1,61 @@
+name: pelican-panel
+
+# Pelican Panel on game-01. Wings runs as a native systemd binary on the same
+# host and keeps its server volumes under /var/lib/pelican/volumes, which is
+# deliberately separate from the panel's named volumes below.
+#
+# TLS terminates at Nginx Proxy Manager (192.168.85.2). The panel serves plain
+# HTTP on the LXC address only, so 443 is not published here.
+
+services:
+  panel:
+    image: ghcr.io/pelican-dev/panel:latest
+    container_name: pelican-panel
+    restart: unless-stopped
+    ports:
+      - 192.168.80.30:80:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - pelican-data:/pelican-data
+      - pelican-logs:/var/www/html/storage/logs
+      - type: volume
+        source: pelican-data
+        target: /var/www/html/plugins
+        volume:
+          subpath: plugins
+    environment:
+      TZ: America/New_York
+      APP_TIMEZONE: America/New_York
+      APP_URL: https://games.alphasecunited.com
+      APP_ENV: production
+      APP_DEBUG: "false"
+      MAIL_DRIVER: log
+      XDG_DATA_HOME: /pelican-data
+      # Required, not optional. Laravel defaults this to sqlite in PHP config,
+      # but the entrypoint is shell: once APP_INSTALLED=true it runs
+      # `if [ "${DB_CONNECTION}" != "sqlite" ]` and an unset value takes the
+      # TCP branch, looping forever on `nc: bad port ''`.
+      DB_CONNECTION: sqlite
+      # NPM terminates TLS. This makes the bundled Caddy listen on :80 with
+      # auto_https off instead of demanding a Let's Encrypt email, and sets
+      # ASSET_URL to APP_URL so generated asset links stay https.
+      BEHIND_PROXY: "true"
+      # The panel sits behind NPM. Trust that proxy and the compose bridge so
+      # generated URLs stay https and client IPs are read from the real header.
+      TRUSTED_PROXIES: "192.168.85.2,172.20.0.0/16"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  pelican-data:
+  pelican-logs:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -32,6 +32,8 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     # because the host holds macvlan shim addresses inside three sealed lab
     # lanes; see the inventory comment.
     "kasm-01",
+    # Added 2026-08-07 with the Pelican game server platform.
+    "game-01",
 }
 # All eight Docker hosts. The set was docker-main alone from 2026-07-25 to
 # 2026-07-26, while cAdvisor v0.52.1 could not register containers under the
@@ -46,6 +48,7 @@ EXPECTED_CADVISOR_HOSTS = {
     "app-01",
     "security-01",
     "monitor-01",
+    "game-01",
 }
 
 # Hosts that must never appear under node_exporter_targets, with the reason.
@@ -83,6 +86,7 @@ EXPECTED_IPS = {
     "ansible-01": "192.168.40.36",
     "monitor-01": "192.168.73.2",
     "kasm-01": "192.168.78.10",
+    "game-01": "192.168.80.30",
 }
 
 

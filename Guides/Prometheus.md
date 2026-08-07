@@ -9,7 +9,7 @@ I installed the missing node exporters, removed stale scrape jobs, validated the
 
 ## Current Status and Verified Versions
 
-Prometheus 3.13.1 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. All 49 targets were `UP` on 2026-08-03 across six jobs: node 17, cAdvisor 8, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1. Purple, blue, red, & green run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
+Prometheus 3.13.1 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. All 51 targets were `UP` on 2026-08-07 across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1. The blackbox job dropped from 20 to 19 when I retired Syncthing on 2026-08-06, then returned to 20 when `game-01` arrived the next day. Purple, blue, red, & green run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
 
 ## What You Need
 
@@ -20,7 +20,7 @@ Prometheus 3.13.1 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-s
 
 ## How the Pieces Fit Together
 
-![Prometheus scrape flow from six jobs to 49 targets](../Assets/Diagrams/prometheus.svg)
+![Prometheus scrape flow from six jobs to 51 targets](../Assets/Diagrams/prometheus.svg)
 
 ## Walkthrough
 
@@ -76,17 +76,17 @@ python3 Tests/assert_targets.py
 
 ## Troubleshooting and Recovery
 
-If a valid host-side file doesn't change the running target set after SIGHUP, compare its inode with the container mount and perform a controlled restart. If one target stays down, test its `/metrics` endpoint from the Prometheus host before changing the scrape job.
+If a valid host-side file doesn't change the running target set after SIGHUP, check that the Compose volume still mounts the `prometheus-config` directory rather than the file inside it. A single-file mount pins the inode and swallows the reload without an error; that cost me three reloads before I changed it on 2026-08-06. If one target stays down, test its `/metrics` endpoint from the Prometheus host before changing the scrape job.
 
 ## Known Limits
 
-This walkthrough preserves the original baseline procedure. The current target list, dashboard checks, and recovery procedure live in the platform README and runbook. The Kasm thin-pool alert remains open.
+This walkthrough preserves the original baseline procedure, so the 49-target figures above are what I saw on the day rather than the current count. The current target list, dashboard checks, and recovery procedure live in the platform README and runbook. Nothing here alerts: the platform has no alert rules and no Alertmanager.
 
 ## Source Records
 
 - [Prometheus overview](../Platforms/Prometheus/README.md)
 - [Baseline cleanup](../Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md)
 - [Relocation to monitor-01](../Platforms/Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md)
-- [Versioned configuration](../Platforms/Prometheus/Configuration/prometheus.yml)
+- [Versioned configuration](../Platforms/Prometheus/Configuration/prometheus-config/prometheus.yml)
 - [Runbook](../Platforms/Prometheus/Documentation/Runbook.md)
 - [Troubleshooting index](../Platforms/Prometheus/Documentation/Troubleshooting/README.md)

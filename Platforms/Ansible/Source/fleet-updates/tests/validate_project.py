@@ -29,6 +29,10 @@ EXPECTED_OS_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
+    # Added 2026-08-07. OS updates only: it is absent from the compose set on
+    # purpose, because the Pelican panel image and the Wings binary must move
+    # together and this automation would move only one of them.
+    "game-01",
 }
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {
@@ -37,7 +41,6 @@ EXPECTED_COMPOSE_PROJECTS = {
         "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
         "immich": ("/opt/docker/immich-app", ()),
         "portainer": ("/opt/docker/portainer", ()),
-        "syncthing": ("/opt/docker/syncthing", ()),
     },
     "docker-network": {
         "netbird": ("/opt/docker/netbird", ()),
@@ -202,8 +205,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 22:
-        errors.append(f"expected 22 compose projects, found {project_count}")
+    if project_count != 21:
+        errors.append(f"expected 21 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

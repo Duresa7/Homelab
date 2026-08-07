@@ -1,9 +1,9 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-08-07
 
-Galaxy currently has six active LXCs on grey, blue, or red for automation, Docker, monitoring, remote access, & media. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
+Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
@@ -13,6 +13,7 @@ Galaxy currently has six active LXCs on grey, blue, or red for automation, Docke
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
 | 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 10 | 23.44 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
+| 123 | game-01 | green-server | disabled | Debian GNU/Linux 13 (trixie) | 6 | 12 GiB | 192.168.80.30/24 | 192.168.80.1 | 80 |
 | 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
 
 ## LXC 100 - ansible-01
@@ -162,6 +163,31 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | `<REDACTED_DOCKER_MAIN_MAC>` |
+
+## LXC 123 - game-01
+
+### Configuration
+| Setting | Value |
+| --- | --- |
+| Node | green-server |
+| High availability | disabled |
+| OS | Debian GNU/Linux 13 (trixie) |
+| vCPU | 6 |
+| Memory | 12 GiB |
+| Swap | 2 GiB |
+| Unprivileged | yes |
+| Features | nesting=1,keyctl=1 |
+| On boot | yes |
+
+### Storage
+| Device | Mount | Storage | Volume | Size | Backup |
+| --- | --- | --- | --- | --- | --- |
+| rootfs | / | local-lvm | vm-123-disk-0 | 80G | default |
+
+### Network
+| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- |
+| eth0 | vmbr0 | 80 | 192.168.80.30/24 | 192.168.80.1 | enabled | `<REDACTED_GAME_01_MAC>` |
 
 ## LXC 842 - media-01
 

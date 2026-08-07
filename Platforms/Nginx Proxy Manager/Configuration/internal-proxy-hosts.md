@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-07
 
-I route 21 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 20 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I route 22 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 21 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -22,13 +22,14 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `forgejo.alphasecunited.com` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | `portainer.alphasecunited.com` | `192.168.40.35:9443` | HTTPS | NPM connects to Portainer's existing HTTPS listener. |
 | `peanut.alphasecunited.com` | `192.168.73.2:8090` | HTTP | Existing application authentication remains in place. |
-| `syncthing.alphasecunited.com` | `192.168.40.35:8384` | HTTP | The server GUI binds on `0.0.0.0:8384`; synchronization stays on TCP/UDP 22000. |
 | `wazuh.alphasecunited.com` | `192.168.72.2:443` | HTTPS | NPM connects to Wazuh's existing HTTPS listener. |
 | `grafana.alphasecunited.com` | `192.168.73.2:3000` | HTTP | Grafana's domain & root URL use the HTTPS name. |
 | `prometheus.alphasecunited.com` | `192.168.73.2:9090` | HTTP | Prometheus starts with this HTTPS external URL. No added NPM authentication. |
 | `splunk.alphasecunited.com` | `192.168.72.3:8000` | HTTPS | NPM connects to Splunk Web's existing HTTPS listener. HEC, syslog, & management ports remain direct backend services. |
 | `ts3-manager.alphasecunited.com` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, & Playit ports remain outside NPM. |
 | `kasm.alphasecunited.com` | `192.168.78.10:443` | HTTPS | NPM connects to Kasm's existing HTTPS listener. SSH, exporters, & all four session lanes remain outside NPM. |
+| `games.alphasecunited.com` | `192.168.80.30:80` | HTTP | Pelican Panel. Its `BEHIND_PROXY` mode makes the bundled Caddy listen on plain `:80` with auto-HTTPS off, so NPM owns TLS. Game ports stay outside NPM. |
+| `wings.alphasecunited.com` | `192.168.80.30:8080` | HTTP | Pelican Wings API. It exists as a separate host because the browser opens the server console websocket directly to the daemon, and an HTTPS panel talking to a plain-HTTP daemon is blocked as mixed content. Pelican SFTP on 2022 bypasses NPM through a node alias pointing at `192.168.80.30`. |
 
 The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 

@@ -30,7 +30,7 @@ A version figure in this repository is a point-in-time observation, not a durabl
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 28 network objects, including 20 routed LAN networks, and enforces policy across 16 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 14 active remote agents, & Prometheus reports 49 targets `UP` across six jobs.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 28 network objects, including 20 routed LAN networks, and enforces policy across 16 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 51 targets `UP` across six jobs.
 
 ## Repository layout
 
@@ -64,5 +64,5 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Add the automated thin-pool warning in the [Kasm storage backlog](Platforms/Kasm%20Workspaces/Documentation/TODO.md). The manual 80 percent capacity gate remains in force until the alert exists.
+1. Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md): provision the `ai-agent` automation account, remove the old `NOPASSWD` drop-ins, then stop cloud-init reapplying them.
 2. Delete stopped Galaxy CT 105 `ai-bravo-02` and its root volume on 2026-08-15 after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
