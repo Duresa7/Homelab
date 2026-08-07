@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-07
 
-**Last verified:** 2026-07-31 after Green joined Galaxy. `pve-firewall compile` exited `0`, the live file held SHA256 `c3a5836e5ac37399ed0ca507a7c1191a892f953d4cab7a1d3f7588e3c6726656`, Grey reported the firewall enabled and running, and Galaxy reported five nodes with quorum.
+**Last verified:** 2026-08-07 after the SPICE port addition. `pve-firewall compile` exited `0`, the live file held SHA256 `10a2ff822eeb7ba30881362111a56695e1c666bb144474324defa99b88758858` across 45 lines, Grey reported the firewall enabled and running, and Galaxy reported five nodes with quorum.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -47,7 +47,7 @@
 | Type | Action | Protocol | Source | Destination | Dest. Port | Log Level | Comment |
 |------|--------|----------|--------|-------------|------------|-----------|---------|
 | in | ACCEPT | tcp | +pve_cluster | - | 22,8006 | nolog | inter-node SSH + GUI proxy |
-| in | ACCEPT | tcp | +pve_admins | - | 22,8006 | nolog | personal admin devices |
+| in | ACCEPT | tcp | +pve_admins | - | 22,8006,3128 | nolog | personal admin devices (3128 = SPICE proxy) |
 | in | ACCEPT | tcp | +pve_automation | - | 22,8006 | nolog | ansible control node |
 | in | ACCEPT | tcp | +pve_svc_clients | - | 8006 | nolog | dashboards / API consumers |
 | in | ACCEPT | tcp | 192.168.73.2/32 | - | 9100 | nolog | monitor-01 Prometheus node_exporter |
@@ -62,7 +62,11 @@ I replaced the former `192.168.70.0/24` TCP 8006 accept with `pve_cluster`, whic
 
 Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`, SPICE `3128`, migration `60000:60050`, SSH 22, & GUI 8006. The explicit `pve_mgmt` drops for 22 and 8006 run first, so they take precedence. I left the generated set unchanged.
 
+That generated set holds exactly one member, `192.168.70.0/24`, so its accepts only ever admit a node. Anything a client off MGMT-A needs, `pve_mgmt` has to grant by name. This is not obvious from the rule list, because the generated 3128 and `5900:5999` accepts read as though the ports are open. They are open between nodes and closed to everything else. That is what cost me the SPICE console on 2026-08-07.
+
 ## History
+
+- On 2026-08-07 I added `3128` to the `+pve_admins` accept so the SPICE console reaches Virt-Viewer from an admin device. The UniFi port group `Proxmox-Admin-Ports` needed the same port, and neither firewall alone was enough. The file stayed at 45 lines because the change edits one line. The complete record is [SPICE Console Firewall Access - 2026-08-07](../Documentation/Change%20Records/SPICE%20Console%20Firewall%20Access%20-%202026-08-07.md).
 
 - On 2026-07-30 I added `192.168.70.14 # green-server` before the first PXE install. Both the API and cluster file showed five `pve_cluster` members, `pve-firewall compile` passed, and the firewall remained enabled and running. Green completed the repaired PXE run and joined as the fifth node on 2026-07-31. The service build and repair are in [Galaxy PXE Provisioning Service - 2026-07-30](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md).
 

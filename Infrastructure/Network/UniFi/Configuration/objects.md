@@ -1,7 +1,7 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-07
 
 ## How I Use UniFi Objects
 
@@ -47,7 +47,7 @@ Fifteen reusable firewall groups exist: six IPv4 address groups and nine port gr
 | OBJ-Galaxy-PXE-Service | IPv4 | 192.168.40.36 |
 | Wazuh Ports | Port | 1514, 1515 |
 | App Access | Port | 80, 8000 |
-| Proxmox-Admin-Ports | Port | 22, 8006 |
+| Proxmox-Admin-Ports | Port | 22, 8006, 3128 |
 | Portainer Edge Agents | Port | 8000, 9443 |
 | Allow Identity Sync Service Connection-9543 | Port | 9543 |
 | PG-Node-Exporter | Port | 9100, 9101 |
@@ -81,5 +81,7 @@ Twelve client groups remain.
 I deleted the empty `IOT` group and the obsolete `Game Servers` group after the S01 and final reference scans found no firewall or OON dependency. I renamed `server` to `docker-blue` and `grey-server` to `grey-node-and-guests` without changing membership.
 
 `Device Access to Proxmox` still carries the four administrative MACs inline. The V2 policy selector schema has no client-group target, so I did not replace those selectors with `Admin_Device`.
+
+On 2026-08-07 I added `3128` to `Proxmox-Admin-Ports` for the Proxmox SPICE proxy. This is the payoff for the group existing: one edit gave all four administrative devices the port, with no new policy and no reordering. The Proxmox datacenter firewall needed the same port separately, because these two firewalls are enforced independently. The complete record is [SPICE Console Firewall Access - 2026-08-07](../../../Compute/Galaxy/Documentation/Change%20Records/SPICE%20Console%20Firewall%20Access%20-%202026-08-07.md).
 
 The exact before-and-after membership and the reference checks are retained with [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
