@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-06
 
 I keep retired records under their original category so the old owner & date remain obvious. Current records stay with their owner; this directory isn't a holding area for files that lack a clear location.
 
@@ -13,6 +13,7 @@ I keep retired records under their original category so the old owner & date rem
 | `ai-bravo-02` / TNIO AI Bot | [Archived guest record](Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md), [platform source & records](Platforms/TNIO%20AI%20Bot/README.md), & [walkthrough](Guides/TNIO-AI-Bot.md); CT 105 remains stopped pending deletion on 2026-08-15 |
 | Windows Active Directory domain | Private plan, dated change record, and evidence under `Platforms/Windows Servers/`; all three guests and their backups were destroyed on 2026-07-27 |
 | Termix web SSH | [Decommission record](Platforms/Termix/Documentation/Change%20Records/Termix%20Decommission%20-%202026-07-28.md), [platform records](Platforms/Termix/README.md), & [walkthrough](Guides/Termix.md); the service, its data, & both tarballs were destroyed on 2026-07-28 with no backup. Its five [Semaphore templates](Platforms/Termix/Configuration/Semaphore%20Templates%20-%202026-07-29.md) outlived it on `ansible-01` and came out on 2026-07-29 |
+| Syncthing | [Decommission record](Platforms/Syncthing/Documentation/Change%20Records/Syncthing%20Decommission%20-%202026-08-06.md) & [platform records](Platforms/Syncthing/README.md); the service, its configuration, the 17-file server copy of the Obsidian vault, and its version history were destroyed on 2026-08-06 with no backup. The Windows vault was untouched and is now the only copy |
 
 ## Superseded Network Records
 
@@ -28,6 +29,7 @@ I keep retired records under their original category so the old owner & date rem
 | Record | Why it stopped |
 |---|---|
 | [Galaxy cluster node rename](Infrastructure/Compute/Galaxy/Documentation/Change%20Plans/Galaxy%20Cluster%20Node%20Rename%20Rolling%20Replacement%20Plan%20-%202026-07-31.md) & its [Green pilot](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31.md) | I cancelled the `*-server` to `*-node` rename on 2026-07-31 and kept the current names. Clustered Proxmox node names can't be edited in place, and Galaxy has no shared storage, so four of five nodes would have needed a backup and restore cycle. The [preflight evidence](Infrastructure/Compute/Galaxy/Evidence/Galaxy%20Green%20Node%20Rolling%20Replacement%20-%202026-07-31/Evidence-Index.md) is a valid 2026-07-31 snapshot of Green |
+| [Agent Sandbox](Platforms/Agent%20Sandbox/README.md) | I dropped the on-demand sandbox broker on 2026-08-06. The design was locked on 2026-07-20 and nothing was ever built, so there was no broker, no sandbox VLAN, no template, and no guest to remove |
 
 ## Superseded Automation Copies
 

@@ -1,7 +1,9 @@
 # Agent Sandbox Plan
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-06
+
+> Cancelled on 2026-08-06 with none of it built. Read this as a design I decided against, not as work in progress. The [platform README](../README.md) has the archive note.
 
 I want an automated caller to provision its own test machine & tear it down when the job finishes, without holding hypervisor credentials to do it. Sometimes a job needs a Docker container, sometimes a full Linux VM, sometimes Windows. This record is the design I've locked, the order I'll build it in, & the decisions I still owe. Nothing is built as of 2026-07-20.
 
@@ -9,7 +11,7 @@ The whole point is that an agent asks for a box, gets one that's fenced off from
 
 ## Diagram
 
-![Agent Sandbox architecture: AI agents call one broker that holds the only Proxmox & Docker keys; the broker provisions Docker containers & full VMs into an isolated VLAN, trusted boxes reach the internet through ProtonVPN, untrusted boxes get none, & a red barrier blocks any path to my internal network](../../../Assets/Diagrams/agent-sandbox.png)
+![Agent Sandbox architecture: AI agents call one broker that holds the only Proxmox & Docker keys; the broker provisions Docker containers & full VMs into an isolated VLAN, trusted boxes reach the internet through ProtonVPN, untrusted boxes get none, & a red barrier blocks any path to my internal network](../../../../Assets/Diagrams/agent-sandbox.png)
 
 Agents on the left reach one broker; the broker holds the only keys & drops every box into the isolated VLAN on the right, walled off from my internal network.
 
@@ -41,11 +43,11 @@ The broker owns a scoped Proxmox API token whose role reaches only a dedicated `
 
 The general agent sandboxes still need their own VLAN and custom firewall zone. They remain cut off from every Internal network: my workstations on Secure (VLAN 50) and Secure Client (VLAN 60), the app and data servers on SERVERS-A (VLAN 80), and the Proxmox management plane on MGMT-A (VLAN 70). AD-SERVERS/VLAN 65 and its domain controllers were retired on 2026-07-27. The Kasm security lab holds VLANs 74, 77, and 79, while MONITOR-A uses VLAN 73, so the Agent Sandbox must use another unused VLAN such as 75, 76, or 78. The firewall runs default-deny outward to anything internal and drops sandbox-to-8006 on the nodes and sandbox-to-gateway on the locked net. Sandboxes can't see each other unless a job explicitly needs a small attacker-victim network.
 
-Internet egress splits by lane. The trusted lane gets normal outbound so apt, pip, & npm work, routed through my existing ProtonVPN egress so sandbox traffic doesn't leave on my real WAN IP. The locked lane gets no internet at all by default, so unvetted code can't phone home or leak; when a specific untrusted job legitimately needs to fetch something, I open a filtered, logged path scoped to that one box. I choose the VLAN ID and subnet from the live [UniFi network inventory](../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md).
+Internet egress splits by lane. The trusted lane gets normal outbound so apt, pip, & npm work, routed through my existing ProtonVPN egress so sandbox traffic doesn't leave on my real WAN IP. The locked lane gets no internet at all by default, so unvetted code can't phone home or leak; when a specific untrusted job legitimately needs to fetch something, I open a filtered, logged path scoped to that one box. I choose the VLAN ID and subnet from the live [UniFi network inventory](../../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md).
 
 ## Lifetime & cleanup
 
-Every box is throwaway. The default lifetime is 2 hours from the task finishing or going idle, an agent can request up to 24 hours for a longer job & extend while it's still working, & an idle box gets reclaimed early. A sweeper runs on a schedule & destroys anything past its lifetime or orphaned, so no sandbox strands the way CT 107 & CT 108 did in the [2026-07-20 HA stranding incident](../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md).
+Every box is throwaway. The default lifetime is 2 hours from the task finishing or going idle, an agent can request up to 24 hours for a longer job & extend while it's still working, & an idle box gets reclaimed early. A sweeper runs on a schedule & destroys anything past its lifetime or orphaned, so no sandbox strands the way CT 107 & CT 108 did in the [2026-07-20 HA stranding incident](../../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md).
 
 Boxes are always freshly cloned from a template & never backed up, so they don't bloat my backup jobs & there's no stale state to roll back. Reclaim is destroy-and-reclone, not snapshot-and-restore.
 
@@ -98,7 +100,7 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 
 ## Related records
 
-- [Galaxy cluster](../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes, storage, & templates the sandboxes clone from.
-- [UniFi network and zone inventories](../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state used to assign the sandbox VLAN and firewall zone.
-- [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
-- [Galaxy HA local-storage stranding incident](../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.
+- [Galaxy cluster](../../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes, storage, & templates the sandboxes clone from.
+- [UniFi network and zone inventories](../../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state used to assign the sandbox VLAN and firewall zone.
+- [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
+- [Galaxy HA local-storage stranding incident](../../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.

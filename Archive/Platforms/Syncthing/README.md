@@ -1,9 +1,11 @@
 # Syncthing
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-06
 
-I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vault. The Windows working copy stays at `D:\Documents\Vault-DK\The Vault`; `docker-main` stores the synchronized copy under `/data/syncthing/vaults/the-vault`.
+> Retired on 2026-08-06. I destroyed the container, the image, the configuration, the 17-file server vault copy, and its version history, and I cleared the DNS record, NPM proxy host, and Prometheus probe. Nothing below is live and there is no backup. The Windows vault at `D:\Documents\Vault-DK\The Vault` was untouched and is now the only copy. See the [decommission record](Documentation/Change%20Records/Syncthing%20Decommission%20-%202026-08-06.md).
+
+I ran Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vault. The Windows working copy stayed at `D:\Documents\Vault-DK\The Vault`; `docker-main` stored the synchronized copy under `/data/syncthing/vaults/the-vault`.
 
 ## Deployment
 
@@ -25,14 +27,14 @@ I run Syncthing 2.1.2 on `docker-main` as an always-on peer for my Obsidian vaul
 ## Layout
 
 - `Configuration/` contains the versioned Compose definition.
-- `Documentation/` contains the deployment, operating procedure, troubleshooting index, & backlog.
+- `Documentation/` contains the deployment, operating procedure, troubleshooting index, & decommission record.
 - `Evidence/` contains the retained verification result from the first deployment.
 
 ## Key Records
 
+- [Decommission](Documentation/Change%20Records/Syncthing%20Decommission%20-%202026-08-06.md)
 - [Deployment and operations](Documentation/Deployment.md)
 - [Add another Windows, macOS, or Linux device](Documentation/Adding%20a%20Device.md)
 - [Obsidian sync alternatives research](Documentation/Obsidian%20Sync%20Alternatives%20-%202026-07-27.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
-- [Platform TODO](Documentation/TODO.md)
-- [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
+- [Internal HTTPS onboarding](../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

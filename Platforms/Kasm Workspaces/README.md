@@ -1,7 +1,7 @@
 # Kasm Workspaces
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-01
+**Last updated:** 2026-08-06
 
 Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
 
@@ -108,7 +108,6 @@ The `KASM Lab Proton Egress` route must stay enabled while a VLAN 74 session run
 | [Kasm Workspaces Internal HTTPS](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md) | NPM host, DNS, firewall return path, monitoring, & route verification |
 | [Kasm Session Isolation plan](Documentation/Change%20Plans/Kasm%20Session%20Isolation.md) | Executed plan and settled design |
 | [Kasm Workspace Build-Out plan](Documentation/Change%20Plans/Kasm%20Workspace%20Build-Out.md) | Executed plan for the 19 tiles, VLAN 75 trusted lane, and 200 GiB disk |
-| [Kasm Workspaces TODO](Documentation/TODO.md) | Thin-pool alert and controlled image-maintenance follow-up |
 | [Thin-pool exhaustion troubleshooting](Documentation/Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md) | `502` diagnosis, baseline rollback, discard enablement, trim, & verification |
-| [Thin-pool exhaustion incident](../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md) | Availability impact, timeline, root cause, evidence, & open prevention work |
+| [Thin-pool exhaustion incident](../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md) | Availability impact, timeline, root cause, & evidence |
 | [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md) | Cross-system boundary model |

@@ -1,7 +1,7 @@
 # Kasm Workspaces Thin Pool Exhaustion
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-06
 
 ## Incident Metadata
 
@@ -13,7 +13,7 @@
 | Mitigated | 2026-07-29 22:56:13 EDT |
 | Validated | Service restored 2026-07-29 22:56:13 EDT; prevention validated 2026-07-30 01:05:48 EDT |
 | Duration | About 32 minutes |
-| Status | Mitigated; controlled image maintenance and replacement baseline complete; automated alert open |
+| Status | Closed 2026-08-06; controlled image maintenance and replacement baseline complete; the automated alert was dropped rather than built |
 | Severity | SEV-3 |
 | Impact type | Availability of the Kasm Workspaces control plane and sessions |
 | Affected services | Kasm Workspaces 1.19.0, VM 122, NPM proxy host 23 |
@@ -149,7 +149,7 @@ Docker's image-inspection size did not predict ext4 consumption. Parrot reported
 | Keep Parrot and new workspace images blocked until storage correction passes | Complete: Parrot installed under the measured gate; current state blocks another new image |
 | Decide which snapshots remain on `ssd-lvm2` | Complete: retain only `baseline-parrot-2026-07-30` |
 | Enable discard, reboot under control, run `fstrim`, & measure reclaimed blocks | Complete: 54.91 to 54.78 percent immediately after trim |
-| Add a thin-pool alert below the 80 percent action threshold | Open |
+| Add a thin-pool alert below the 80 percent action threshold | Dropped 2026-08-06: I decided against building the alert. The manual 80 percent hard stop and the image-install gate stand on their own |
 | Use guest free space and thin-pool `data_percent` for future image-install gates | Complete: require pool at or below 55 percent and at least 70 GB guest free before a new image |
 | Stop unattended moving-tag refreshes | Complete: Docker Registry is null on all Kasm workspace rows |
 | Add and verify Parrot Full, Normal, VPN, and Debian Malware | Complete |
@@ -157,11 +157,10 @@ Docker's image-inspection size did not predict ext4 consumption. Parrot reported
 
 ## Closure Status
 
-ASU-KASM-20260729-001 is mitigated. Kasm is available, discard is enabled, automatic catalog pulls are disabled, the manual capacity gate is recorded, and one verified baseline remains. The automated thin-pool alert is the only open prevention item.
+ASU-KASM-20260729-001 is closed. Kasm is available, discard is enabled, automatic catalog pulls are disabled, the manual capacity gate is recorded, and one verified baseline remains. I dropped the automated thin-pool alert on 2026-08-06 and closed the Kasm backlog with it, so the manual 80 percent hard stop is the standing control rather than an interim one. The pool stood at 69.90 percent on 2026-08-04.
 
 ## Linked Records
 
 - [Kasm Thin Pool Exhaustion Paused VM 122](../../../Platforms/Kasm%20Workspaces/Documentation/Troubleshooting/Kasm%20Thin%20Pool%20Exhaustion%20Paused%20VM%20122%20-%202026-07-29.md)
-- [Kasm Workspaces TODO](../../../Platforms/Kasm%20Workspaces/Documentation/TODO.md)
 - [Evidence index](Evidence/Thin%20Pool%20Exhaustion%20-%202026-07-29/Evidence-Index.md)
 - [Kasm Parrot Workspace Build-Out - 2026-07-30](../../../Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md)

@@ -111,7 +111,7 @@ The first post-rollback API checks still returned `502` while PostgreSQL replaye
 
 ## Remaining Work
 
-The Parrot retry, automatic-pull control, capacity gate, tile changes, and replacement snapshot are complete. The open work in the [Kasm Workspaces TODO](../TODO.md) is an automated alert below the existing 80 percent action threshold. The current pool and guest free space fail the new-image gate, so another large image remains blocked.
+The Parrot retry, automatic-pull control, capacity gate, tile changes, and replacement snapshot are complete. The automated alert below the 80 percent action threshold was dropped on 2026-08-06 rather than built, so the manual hard stop is the standing control. The current pool and guest free space fail the new-image gate, so another large image remains blocked.
 
 ## Rollback
 

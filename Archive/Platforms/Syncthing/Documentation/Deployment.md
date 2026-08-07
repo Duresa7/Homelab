@@ -27,7 +27,7 @@ I deployed Syncthing 2.1.2 on `docker-main`, installed the same version on my Wi
 - I configured direct peer addresses across VLANs. The peers connected between `192.168.50.241:22000` & `192.168.40.35:22000`, so I made no UniFi firewall change.
 - I excluded `.obsidian/workspace.json` & `.obsidian/workspace-mobile.json` because these device-specific interface-state files change often. Plugins, themes, hotkeys, & the remaining `.obsidian` files stay synchronized.
 - I enabled staggered versioning only on `docker-main`, with a 7,776,000-second maximum age. That equals 90 days.
-- I created a pre-sync ZIP before pairing. Sync still isn't a backup, so a recurring independent backup remains in the [platform TODO](TODO.md).
+- I created a pre-sync ZIP before pairing. Sync still isn't a backup, and the recurring independent backup this record called for was never built: the platform was retired on 2026-08-06 with that item still open.
 
 ## Step 1: Inspect the Source and Target
 
@@ -88,7 +88,7 @@ The server GUI is available internally through NPM at `https://syncthing.alphase
 ssh -L 8385:127.0.0.1:8384 root@192.168.40.35
 ```
 
-Then open `http://127.0.0.1:8385`. The Windows GUI remains at `http://127.0.0.1:8384`. The NPM change and verification are in [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+Then open `http://127.0.0.1:8385`. The Windows GUI remains at `http://127.0.0.1:8384`. The NPM change and verification are in [Internal HTTPS Service Onboarding - 2026-07-22](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 Upgrade only after reviewing the target release. Change the image tag in the versioned repository Compose file, copy that same file to `/opt/docker/syncthing/docker-compose.yml`, then pull & recreate the service:
 
