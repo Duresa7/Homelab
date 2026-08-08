@@ -103,6 +103,22 @@ Read back on 2026-08-08, after every change:
 | Non-login SSH `node -v` | `v24.19.0`, matching the login shell for the first time |
 | Non-login SSH tool sweep | 27 of 27 binaries resolved: node, npm, go, gofmt, gopls, dlv, staticcheck, golangci-lint, ruff, mypy, pre-commit, poetry, ansible-lint, yamllint, ipython, nvim, code, clang, clang-format, clang-tidy, shellcheck, shfmt, cppcheck, bear, docker, gh, git |
 
+## Post-change audit
+
+I swept the host afterwards for anything else the day's work had broken. Two findings, one of them mine.
+
+**The node_exporter install pulled in a package this project deliberately excludes.** The inventory header states that `prometheus-node-exporter-collectors` is not installed on these hosts, because its smartmon script finds no block devices on a virtio disk and would pin `node_textfile_scrape_error` at 1. Nothing in the playbook enforced that. The apt task ran with apt's default recommendation handling, and `prometheus-node-exporter` recommends the collectors package, so `db-13-dev` got it along with `smartmontools`, `nvme-cli`, `ipmitool`, `moreutils` and `openipmi`.
+
+The predicted fault did not appear. `node_textfile_scrape_error` read `0` here, not `1`, because this is a full VM whose disk `smartctl` can read enough of to write a `.prom` file. What did appear is `openipmi.service` failing at every boot, on a guest with one virtio disk and no BMC. `docker-main` confirmed the divergence: same fleet, same playbook, no collectors package.
+
+I purged the collectors package and let autoremove take the twelve dependencies with it, then removed `nvme-cli` separately because apt had marked it manual. `openipmi.service` is now `not-found`, `systemctl --failed` is empty, the three `.prom` files are gone, and the exporter still answers `200` with `node_textfile_scrape_error 0`. Then I fixed the cause rather than only the symptom: the apt task now carries `install_recommends: false`, so the next apt-path host cannot repeat it, and a re-run against `db-13-dev` reported `changed=0` with the collectors package staying away.
+
+The project validator needed two changes to pass again, and one of them was already broken before today. Its expected host set had never been updated for `game-01` on 2026-08-07, so the count in its own error message said nine while the set held ten. I added `db-13-dev` to the host set and the address map, replaced the hard-coded count in that message with the constant's name so it cannot go stale again, and added a `NON_STANDARD_USERS` map so this host's `ai-agent` account is an explicit, commented exception rather than a validation failure. It now reports `11 node_exporter hosts, 9 cAdvisor hosts`.
+
+**Check mode does not work on this playbook, and that is not new.** `--check` against `db-13-dev` fails an assert with `reports node_exporter unknown, expected 1.9.0`, because check mode skips the version probe and then asserts on its result. I ran the same check against `docker-main`, a host I never touched, and it fails too, on a different task. The limitation belongs to the playbook and predates this work.
+
+Everything else came back clean: no failed units, no dangling symlinks outside browser lock files and two Debian Maven jars that ship that way, no reference to `/home/dkadi` anywhere in system or user configuration, `dpkg -C` and `apt-get check` both clean, and zero upgradable packages. A real signed commit verified with `Good "git" signature`. `ssh -G` still sends a fleet host to the machine key with no agent and `github.com` to the 1Password agent. `mcp-ssh-manager` 3.7.0 loads under Node 24.19.0, and `docker run hello-world` succeeded.
+
 ## What I did not do
 
 - **I did not checksum-verify the Neovim tarball.** The release publishes no checksum asset at either conventional path: `shasum256.txt` and `nvim-linux-x86_64.tar.gz.sha256sum` both returned `404`. The download came over HTTPS from the GitHub release, and I re-downloaded and re-extracted once to confirm the tree came from that artifact. Go, by contrast, was verified against its published `sha256` before extraction.
