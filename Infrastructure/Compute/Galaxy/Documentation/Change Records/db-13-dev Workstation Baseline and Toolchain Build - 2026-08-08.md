@@ -37,6 +37,12 @@ Two Node runtimes were installed & which one answered depended on the kind of sh
 ### Baseline
 
 1. I checked what referenced `/home/dkadi` before removing it. Nothing under `/etc`, `/usr/local/etc`, or `/opt` matched. The only hits were Chrome and Codex log files, which record the old path as history and don't resolve it.
+
+   **That check was incomplete, and removing the symlink broke `claude` and `codex`.** I searched file contents for the string. I never searched for symlinks whose *target* names `/home/dkadi`, which is what `find / -xdev -type l -lname "*/home/dkadi*"` returns in one command. Three links resolved through the old path: `~/.local/bin/claude`, `~/.local/bin/codex`, and `~/.codex/packages/standalone/current`. Both installers had written the path they saw at install time, which was the symlink rather than the real directory.
+
+   The symptom is misleading. Bash reports a dangling symlink found on `PATH` as `command not found`, not as a missing file, so it reads like the directory left `PATH` rather than like a broken link. No data was lost: every target existed the whole time under `/home/ai-agent`. I repointed all three at their real paths with `ln -sfn`, and both commands returned their versions, `2.1.226` and `0.147.0`. The same `find` now returns nothing.
+
+   The lesson generalises. Retiring a path that a home directory was once reachable through means checking link targets, not only file contents.
 2. I wrote `/etc/sudoers.d/90-ai-agent` as `ai-agent ALL=(ALL:ALL) NOPASSWD: ALL`, root-owned at mode 0440, and `visudo -cf` parsed it. I then built a candidate `/etc/sudoers` with the inline line stripped, diffed it to confirm the change was that one line and nothing else, and validated the candidate before installing it. After install, `visudo -c` passed on all three files, `grep -c "^ai-agent" /etc/sudoers` returned `0`, and `sudo -l -U ai-agent` still reported `(ALL : ALL) NOPASSWD: ALL`.
 3. I wrote `/etc/ssh/sshd_config.d/99-hardening.conf` with `PermitRootLogin no`, `PubkeyAuthentication yes`, `PasswordAuthentication no`, `KbdInteractiveAuthentication no`, `X11Forwarding no`, and `AllowUsers ai-agent`. The `Include` sits at line 12 of the main config, above `PermitRootLogin` at line 33, and sshd takes the first value it reads, so the drop-in wins. `sshd -t` passed and `sshd -T` returned all six.
 4. I reloaded `ssh` and locked root. `passwd -S root` moved from `P` to `L`.
