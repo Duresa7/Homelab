@@ -14,4 +14,5 @@ Future controller runtime, Semaphore, SSH identity, or fleet-update tasks start 
 
 ## Completed
 
+- [x] 2026-08-08: Removed four stale `.bak` copies from `wazuh-agent-deployment` on the controller: one `inventory/hosts.yml.bak.20260803_180246` and three `playbooks/deploy.yml.bak.*` from 2026-08-03. A config copy belongs in the repository's `Backups/` folder and not on the host, and the current version of both files is versioned under `Platforms/Wazuh/Source/`, so git already holds the history these copies duplicated. `hosts.yml` and `deploy.yml` are the only files left in those two directories.
 - [x] 2026-07-30: [Semaphore & Ansible project parity](Change%20Records/Semaphore%20and%20Ansible%20Project%20Parity%20-%202026-07-30.md). I added `Fleet-Updates` & `Monitoring-Exporters`, reconciled all 3 projects from versioned manifests, & verified the final API check at zero actions.
