@@ -54,6 +54,8 @@ scrape_configs:
         labels: {host: kasm-01, role: lab}
       - targets: ["192.168.80.30:9100"]
         labels: {host: game-01, role: game}
+      - targets: ["192.168.40.135:9100"]
+        labels: {host: db-13-dev, role: workstation}
 
   # -------------------------------------------------------------- cadvisor
   # Per-container CPU, memory and restart detection across all eight Docker
