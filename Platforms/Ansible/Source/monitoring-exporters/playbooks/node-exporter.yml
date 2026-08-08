@@ -113,11 +113,22 @@
         quiet: true
 
     # -------------------------------------------------------- APT-managed path
+    #
+    # install_recommends is false on purpose. prometheus-node-exporter
+    # recommends prometheus-node-exporter-collectors, which the inventory
+    # header says is deliberately absent from this fleet, and nothing here
+    # enforced that until 2026-08-08. Installing db-13-dev that day pulled the
+    # collectors package in, and with it smartmontools, nvme-cli and ipmitool,
+    # which in turn pulled openipmi. That guest holds one virtio disk and no
+    # BMC, so openipmi.service failed at every boot for a device that does not
+    # exist. I removed all of it from that host and added this line so the
+    # next apt-path host cannot repeat it.
     - name: Install the pinned Debian node_exporter package
       when: install_method == 'apt'
       ansible.builtin.apt:
         name: "prometheus-node-exporter={{ node_exporter_apt_version }}"
         state: present
+        install_recommends: false
       register: apt_install
 
     - name: Enable and start the Debian exporter service
