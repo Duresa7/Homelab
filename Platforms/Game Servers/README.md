@@ -1,7 +1,7 @@
 # Game Servers
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-08
 
 I host my own game servers on `game-01`, an unprivileged LXC on `green-server`. Pelican Panel manages them through a web UI, and its Wings daemon runs each game server in its own Docker container with a memory, CPU and disk limit taken from the panel.
 
@@ -60,6 +60,10 @@ Nothing is published to the internet. There are no WAN port forwards and no tunn
 
 ## Known limits, not tracked as work
 
+I closed this platform's backlog on 2026-08-08. It runs the workload I built it for, and everything below is a property of the build I have accepted rather than work I owe.
+
 - **No backups.** A lost world is lost. Pelican's own per-server backup feature writes into `/var/lib/pelican/backups` on the same host, so it survives a bad world edit but not the host. This is the standing no-backup rule, and it bites harder here than on a service whose state is rebuildable from `Configuration/`.
 - **One heavy pack at a time.** Green has 8.2 GiB free with this server idle. A second 231-mod pack needs roughly the same again, which means replacing green's two 8 GB DIMMs.
+- **Only the NeoForge egg is imported.** Vanilla, Paper and Valheim are one import call each in the panel, done at the moment I want one of them. There is nothing to prepare in advance.
+- **Wings `check_permissions_on_boot` is on.** It walks every server's files at start, so boot time grows as worlds are added. With one server it costs nothing. Turn it off if that changes.
 - **The image tracks `latest`.** Panel and Wings versions should move together, so a panel update without a matching Wings update can break the node. I record the deployed versions above instead of pinning, and check both after any pull.
