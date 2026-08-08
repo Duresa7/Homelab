@@ -1,11 +1,13 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-08
+
+On 2026-08-08 I made two changes for `db-13-dev`, which is now the machine I develop on. I added its MAC to `Device Access --> Proxmox`, taking that policy from four client MACs to five, and I added `Allow VPN Management Access to DMZ` so the Management Access VPN reaches `edge-01` from outside the network. Before that policy existed, the controller returned no user rule at all for the VPN-to-DMZ zone pair, which is why the DMZ was the one zone the VPN could not reach. The new rule names the Management Access network rather than the whole `Vpn` zone, so Game-Access still cannot reach the DMZ, and it does not weaken `Block DMZ to Internal`, which governs the opposite direction.
 
 I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The earlier four narrow Wazuh enrollment paths from 2026-08-03 remain current: they admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. It has 128 user-defined policies after the three `game-01` additions on 2026-08-07. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. The controller reported 130 user-defined policies on 2026-08-08, after the one DMZ addition described above. This file had recorded 128, so it was already one short before that change and I have not traced which policy went unrecorded. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
 
 `game-01` needed no policy for game traffic. `Allow Internal to AlphaSec-Servers` already permits every Internal network to that zone on every port, so Trusted, Secure, and Secure Client reach TCP 25565 and the Pelican SFTP port 2022 without a new rule. That also admits Management, Server-Provision, and Personal-A, which is wider than the three networks the host was built for.
 
@@ -30,7 +32,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow edge-01 to app-01 Web` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `AlphaSec-Servers` / 192.168.80.10 / `App Access` |
 | `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 9 MACs | Internal / Personal-A |
 | `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
-| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 4 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
+| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 5 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
 | `Allow AlphaSec-Servers to Portainer Edge` | Yes | ALLOW | 10000 | All | `AlphaSec-Servers` / Any | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
@@ -41,6 +43,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow VPN to AlphaSec-Access` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Access` / Any |
 | `Allow Internal to AlphaSec-Security` | Yes | ALLOW | 10003 | All | Internal / Any | `AlphaSec-Observability` / Any |
 | `Allow VPN to AlphaSec-Security` | Yes | ALLOW | 10001 | All | Vpn / Any | `AlphaSec-Observability` / Any |
+| `Allow VPN Management Access to DMZ` | Yes | ALLOW | 10000 | All | Vpn / Management Access | Dmz / Any |
 | `Allow Access Services Web Egress` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / .2, .3, .6 | External / `PG-Egress-Web` |
 | `Allow Access Services NTP Egress` | Yes | ALLOW | 10001 | UDP | `AlphaSec-Access` / .2, .3, .6 | External / `PG-NTP` |
 | `Block AlphaSec-Access Other External Egress` | Yes | BLOCK | 10002 | All | `AlphaSec-Access` / Any | External / Any |
