@@ -2,7 +2,8 @@
 """Validate the monitoring-exporters project structure without contacting a host.
 
 Checks that the inventory parses, both target groups exist and hold exactly the
-approved host sets, every host connects as the ansible account, the referenced
+approved host sets, every host connects as the ansible account unless it is
+listed in NON_STANDARD_USERS with a reason, the referenced
 playbooks exist, the Semaphore manifest references only valid playbooks and
 views, and that hosts deliberately excluded from collection have not crept back
 in.
@@ -34,6 +35,10 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "kasm-01",
     # Added 2026-08-07 with the Pelican game server platform.
     "game-01",
+    # Added 2026-08-08, when this guest became the development workstation.
+    # It stays out of EXPECTED_CADVISOR_HOSTS: the containers there are
+    # throwaway development builds, so per-container history is noise.
+    "db-13-dev",
 }
 # All eight Docker hosts. The set was docker-main alone from 2026-07-25 to
 # 2026-07-26, while cAdvisor v0.52.1 could not register containers under the
@@ -87,6 +92,16 @@ EXPECTED_IPS = {
     "monitor-01": "192.168.73.2",
     "kasm-01": "192.168.78.10",
     "game-01": "192.168.80.30",
+    "db-13-dev": "192.168.40.135",
+}
+
+# Hosts that connect as an account other than `ansible`, with that account.
+# Everything else must use the dedicated automation account.
+NON_STANDARD_USERS = {
+    # This host runs one account for me and for agent work by decision, so no
+    # separate `ansible` account exists to target. The exception is recorded in
+    # the Linux Host Baseline Standard, which is not published.
+    "db-13-dev": "ai-agent",
 }
 
 
@@ -115,7 +130,7 @@ def main() -> int:
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
-            "node_exporter host set differs from the approved nine-host set: "
+            "node_exporter host set differs from EXPECTED_NODE_EXPORTER_HOSTS: "
             f"{sorted(node_hosts)}"
         )
     if set(cadvisor_hosts) != EXPECTED_CADVISOR_HOSTS:
@@ -143,8 +158,11 @@ def main() -> int:
     ):
         for host, host_vars in hosts.items():
             host_vars = host_vars or {}
-            if host_vars.get("ansible_user") != "ansible":
-                errors.append(f"{group_name}/{host}: ansible_user must be ansible")
+            expected_user = NON_STANDARD_USERS.get(host, "ansible")
+            if host_vars.get("ansible_user") != expected_user:
+                errors.append(
+                    f"{group_name}/{host}: ansible_user must be {expected_user}"
+                )
             expected_ip = EXPECTED_IPS.get(host)
             if expected_ip and host_vars.get("ansible_host") != expected_ip:
                 errors.append(
