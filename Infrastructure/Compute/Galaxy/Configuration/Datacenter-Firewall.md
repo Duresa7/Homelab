@@ -26,6 +26,7 @@
 | 192.168.10.27 | `dkadi` Mac Air |
 | 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
+| 192.168.40.135 | `db-13-dev` |
 
 ### `pve_automation`: automation control node (GUI + SSH)
 
@@ -66,6 +67,7 @@ That generated set holds exactly one member, `192.168.70.0/24`, so its accepts o
 
 ## History
 
+- On 2026-08-08 I added `192.168.40.135` `db-13-dev` to `pve_admins`, which gives it the same TCP 22, 8006, and 3128 access as Jedi PC. That guest is now the machine I develop on, so it needs the access a workstation has rather than the access a workload guest has. Neither firewall was enough on its own: UniFi's `Device Access --> Proxmox` matches by MAC, so its client list needed VM 102's address as well, and I added it there first. Before the change, both TCP 22 and 8006 from `192.168.40.135` timed out silently against every node. After it, all 15 paths across the five nodes and three ports opened, and `red-server` read the new IPSet member back, so pmxcfs carried the file cluster-wide.
 - On 2026-08-07 I added `3128` to the `+pve_admins` accept so the SPICE console reaches Virt-Viewer from an admin device. The UniFi port group `Proxmox-Admin-Ports` needed the same port, and neither firewall alone was enough. The file stayed at 45 lines because the change edits one line. The complete record is [SPICE Console Firewall Access - 2026-08-07](../Documentation/Change%20Records/SPICE%20Console%20Firewall%20Access%20-%202026-08-07.md).
 
 - On 2026-07-30 I added `192.168.70.14 # green-server` before the first PXE install. Both the API and cluster file showed five `pve_cluster` members, `pve-firewall compile` passed, and the firewall remained enabled and running. Green completed the repaired PXE run and joined as the fifth node on 2026-07-31. The service build and repair are in [Galaxy PXE Provisioning Service - 2026-07-30](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md).
