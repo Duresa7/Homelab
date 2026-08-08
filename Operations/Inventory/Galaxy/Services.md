@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-08
 
 This inventory maps 14 workload guests. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -21,7 +21,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| db-13-dev / debian-dev | VM 102 | grey-server | Development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
+| db-13-dev / debian-dev | VM 102 | grey-server | Primary development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>Docker<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -47,16 +47,22 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 
 ## debian-dev
 
+This is the machine I develop on. It holds that role by itself since I deleted VM 111 `fedora-dev`.
+
+The login account is `ai-agent`, not `dkadi`. I made that change on 2026-08-08 and left `/home/dkadi` behind as a symlink to `/home/ai-agent` so existing paths keep resolving. `dkadi` is no longer a user on this host, and an SSH attempt as `dkadi` is refused with `Invalid user`.
+
 | Workload | Details |
 | --- | --- |
 | GNOME desktop | Debian GNOME metapackages `gnome` and `gnome-core` 48; GNOME Shell 48.7-0+deb13u2 |
+| Container runtime | Docker; `ai-agent` is a member of group `docker`; no containers running at the 2026-08-08 capture |
 | Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
 | Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
-| Desktop privilege policy | Polkit grants all actions without authentication to user `dkadi` only from an active local session; remote Polkit requests remain subject to normal policy |
+| Desktop privilege policy | `/etc/polkit-1/rules.d/49-ai-agent-gnome-nopasswd.rules` grants all actions without authentication to user `ai-agent` only from an active local session; remote Polkit requests remain subject to normal policy |
 | Claude Desktop | 1.21459.0 from Anthropic's APT repository; sign-in persists through the GNOME Keyring login collection since the 2026-07-22 fresh session |
-| Cowork virtualization | `/dev/kvm` available through AMD KVM; `dkadi` is a persistent member of group `kvm`, active since the 2026-07-22 login |
-| Remote administration | SSH Manager target `debian_dev` (`dkadi@192.168.40.135`) using the Jedi-PC Ed25519 identity; compatibility alias `db_13_test` |
-| Rollback | Proxmox snapshot `pre-gnome-20260715` retained on VM 102; post-reboot validation passed |
+| Cowork virtualization | `/dev/kvm` available through AMD KVM; `ai-agent` is the sole member of group `kvm` |
+| Remote administration | SSH Manager target `db_13_dev` (`ai-agent@192.168.40.135`) using the Jedi-PC Ed25519 identity. It replaced the target `debian_dev`, which pointed at the removed `dkadi` account and had stopped working |
+| Privilege | `/etc/sudoers` line 56 grants `ai-agent ALL=(ALL:ALL) NOPASSWD: ALL`. `/etc/sudoers.d/` holds only its `README`, so there is no drop-in on this host. `ai-agent` is an unattended account, so the baseline expects it to carry `NOPASSWD` |
+| Rollback | None. I deleted the `pre-gnome-20260715` snapshot on 2026-08-08 under the standing rule, because the 2026-07-15 GNOME work was long finished and verified |
 
 ## docker-main
 
