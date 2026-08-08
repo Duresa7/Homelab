@@ -21,7 +21,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| db-13-dev / debian-dev | VM 102 | grey-server | Primary development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>Docker<br>SSH |
+| db-13-dev / debian-dev | VM 102 | grey-server | Primary development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.26832.0<br>Docker 29.7.2<br>VS Code 1.132.0<br>Neovim 0.12.4 with LazyVim<br>Wazuh agent 4.14.6<br>node_exporter 1.9.0<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -49,19 +49,29 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 
 This is the machine I develop on. It holds that role by itself since I deleted VM 111 `fedora-dev`.
 
-The login account is `ai-agent`, not `dkadi`. I made that change on 2026-08-08 and left `/home/dkadi` behind as a symlink to `/home/ai-agent` so existing paths keep resolving. `dkadi` is no longer a user on this host, and an SSH attempt as `dkadi` is refused with `Invalid user`.
+The login account is `ai-agent`, and it is the only login account. I made that change on 2026-08-08. `/home/dkadi` survived the morning as a symlink to `/home/ai-agent` so existing paths kept resolving, and I removed the symlink the same afternoon. One account carries both my own work and the work agents do for me, which is a deliberate departure from the baseline standard's three-account model and the reason it is written down here.
+
+`dkadi` is not a user on this host. Nothing on the host referenced the old path outside Chrome and Codex log files, which only recorded it as history.
 
 | Workload | Details |
 | --- | --- |
 | GNOME desktop | Debian GNOME metapackages `gnome` and `gnome-core` 48; GNOME Shell 48.7-0+deb13u2 |
-| Container runtime | Docker; `ai-agent` is a member of group `docker`; no containers running at the 2026-08-08 capture |
+| Container runtime | Docker 29.7.2 with Compose v5.4.0 and buildx 0.36.1; `ai-agent` is a member of group `docker` |
 | Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
 | Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
 | Desktop privilege policy | `/etc/polkit-1/rules.d/49-ai-agent-gnome-nopasswd.rules` grants all actions without authentication to user `ai-agent` only from an active local session; remote Polkit requests remain subject to normal policy |
-| Claude Desktop | 1.21459.0 from Anthropic's APT repository; sign-in persists through the GNOME Keyring login collection since the 2026-07-22 fresh session |
+| Claude Desktop | 1.26832.0 from Anthropic's APT repository; sign-in persists through the GNOME Keyring login collection since the 2026-07-22 fresh session |
 | Cowork virtualization | `/dev/kvm` available through AMD KVM; `ai-agent` is the sole member of group `kvm` |
 | Remote administration | SSH Manager target `db_13_dev` (`ai-agent@192.168.40.135`) using the Jedi-PC Ed25519 identity. It replaced the target `debian_dev`, which pointed at the removed `dkadi` account and had stopped working |
-| Privilege | `/etc/sudoers` line 56 grants `ai-agent ALL=(ALL:ALL) NOPASSWD: ALL`. `/etc/sudoers.d/` holds only its `README`, so there is no drop-in on this host. `ai-agent` is an unattended account, so the baseline expects it to carry `NOPASSWD` |
+| SSH hardening | `/etc/ssh/sshd_config.d/99-hardening.conf` sets `PermitRootLogin no`, `PubkeyAuthentication yes`, `PasswordAuthentication no`, `KbdInteractiveAuthentication no`, `X11Forwarding no`, and `AllowUsers ai-agent`. `sshd -T` reads all six back, and root is password-locked, so `passwd -S root` returns `L` |
+| Authorized keys | Three identities in `/home/ai-agent/.ssh/authorized_keys`: `jedi-pc`, `mac-air3-dkadi`, and `ansible-control`. I set no `from=` restriction on purpose, because over the Management VPN a device answers from `10.6.0.0/24` rather than its LAN address, and a source lock would close the path I use from outside the house |
+| Privilege | `/etc/sudoers.d/90-ai-agent` at mode 0440 grants `ai-agent ALL=(ALL:ALL) NOPASSWD: ALL`. It replaced an inline grant that sat in `/etc/sudoers` itself, below `@includedir`, where one syntax error would have taken sudo out entirely |
+| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `019` as `db-13-dev`; groups `default,workstation` |
+| node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project; Prometheus scrapes it with label `role=workstation` |
+| Unattended upgrades | `unattended-upgrades` with `/etc/apt/apt.conf.d/20auto-upgrades` enabling daily list refresh and unattended install; `apt-daily-upgrade.timer` is armed |
+| Language toolchains | GCC 14.2.0 and Clang 19.1.7 with clang-format, clang-tidy, cppcheck, bear, gdb, lldb and valgrind; Go 1.26.5 from upstream at `/usr/local/go` with gopls, dlv, staticcheck and golangci-lint; Rust 1.97.1 with clippy, rustfmt and rust-analyzer; Python 3.13.5 with ruff, mypy, pytest through poetry, pre-commit, ansible-lint, yamllint and IPython; Node 24.19.0 with npm 11.17.0; OpenJDK 21.0.11 with Maven 3.9.9 |
+| Toolchain environment | `/etc/profile.d/dev-toolchains.sh` sets `GOPATH`, `GOBIN`, `JAVA_HOME`, `EDITOR` and `VISUAL`. Every shared binary lives in `/usr/local/bin`, which the default non-login `PATH` already carries, so a command run over SSH resolves the same tool the desktop session resolves |
+| Editors | VS Code 1.132.0 from Microsoft's APT repository; Neovim 0.12.4 from the upstream release with LazyVim, 57 plugins and 20 extras covering C, Go, Rust, Python, TypeScript, Java, SQL, YAML, JSON, TOML, Docker, Markdown and Git; JetBrainsMono Nerd Font 48 faces installed for its glyphs |
 | Rollback | None. I deleted the `pre-gnome-20260715` snapshot on 2026-08-08 under the standing rule, because the 2026-07-15 GNOME work was long finished and verified |
 
 ## docker-main
@@ -78,7 +88,7 @@ The login account is `ai-agent`, not `dkadi`. I made that change on 2026-08-08 a
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 51 of 51 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
+| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 52 of 52 targets `up` across six jobs: node 19, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 20 internal NPM names |

@@ -36,7 +36,9 @@ This is the machine I develop on. It took that role outright when I deleted VM 1
 
 It carries no snapshot. It held `pre-gnome-20260715`, taken before the 2026-07-15 GNOME installation, and I deleted that on 2026-08-08 under the standing rule: the work it protected was finished and verified. `qm delsnapshot` removed `snap_vm-102-disk-1_pre-gnome-20260715` and `snap_vm-102-disk-0_pre-gnome-20260715`, and `qm listsnapshot 102` now returns `current` alone.
 
-Its login account is `ai-agent`, not `dkadi`. `/home/dkadi` remains as a symlink to `/home/ai-agent`.
+Its login account is `ai-agent`, and it is the only one. I removed the `/home/dkadi` symlink on 2026-08-08, so one account now carries both my own work and the work agents do here. That is a deliberate exception to the baseline's three-account model and is written up in the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which is not published.
+
+The rest of the baseline landed the same day: a `0440` sudoers drop-in in place of the inline grant, an SSH hardening drop-in that turns off root login and X11 forwarding and limits logins to `ai-agent`, and a locked root password. It also joined the fleet services it had been missing, as Wazuh agent `019` in the new `workstation` group and as the nineteenth node_exporter target. The complete job is in [db-13-dev Workstation Baseline and Toolchain Build - 2026-08-08](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/db-13-dev%20Workstation%20Baseline%20and%20Toolchain%20Build%20-%202026-08-08.md).
 
 #### Identity
 | Setting | Value |
