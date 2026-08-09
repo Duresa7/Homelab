@@ -1,12 +1,14 @@
 # Game Servers Deployment
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-09
 
 **Implemented:** 2026-08-07  
 **Owner:** Platforms / Game Servers  
 **Host:** `game-01`, LXC 123 on `green-server`, `192.168.80.30`  
-**Status:** Complete. Pelican Panel v1.0.0-beta36 and Wings v1.0.0-beta27, one Minecraft 26.1.2 server running a NeoForge modpack, reachable from the Internal zone and monitored.
+**Status:** Complete. Pelican Panel v1.0.0-beta36 and Wings v1.0.0-beta27 remain the live platform. The original NeoForge workload documented below was retired and replaced on 2026-08-09; the current workload and public path are recorded in [Better Realism MC and Playit Publication - 2026-08-09](Change%20Records/Better%20Realism%20MC%20and%20Playit%20Publication%20-%202026-08-09.md).
+
+This record preserves the original 2026-08-07 platform deployment and its troubleshooting trail. It is not the current server inventory.
 
 ## Scope
 
@@ -216,6 +218,6 @@ The panel administrator is `dkadi`, with a generated 32-character password. Neit
 
 ## Follow-up state
 
-- Only the NeoForge egg is imported. Vanilla, Paper and Valheim are one `EggImporterService::fromUrl` call each.
+- The Fabric egg was added on 2026-08-09. Vanilla, Paper and Valheim remain one `EggImporterService::fromUrl` call each.
 - No alert rules, because the platform has none anywhere yet.
-- `check_permissions_on_boot` is still `true`. It chowns every server volume on start, which is fine at 4.2 GB and will not be once several worlds exist.
+- `check_permissions_on_boot` is still `true`. It chowns every server volume on start, which is acceptable with one server and should be reviewed if several worlds are added.

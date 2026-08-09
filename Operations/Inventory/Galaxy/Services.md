@@ -33,7 +33,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
-| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Minecraft 26.1.2 / NeoForge 26.1.2.78<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
+| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Better Realism 7.2.0: Minecraft 1.21.1 / Fabric 0.19.3<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
@@ -198,12 +198,14 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 | Pelican Panel | `ghcr.io/pelican-dev/panel:latest`, running v1.0.0-beta36 on Laravel 13.23.0; SQLite in the `pelican-panel_pelican-data` volume; compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
 | Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
 | Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; allocations `192.168.80.30:25565` through `25575` |
-| Best Vanilla World 2 | `Serverpack MC 26.1.2-2.1.0`: Minecraft 26.1.2 on NeoForge 26.1.2.78, Java 25, 103 active mods of 122 shipped; 10240 MiB and 500 percent CPU on `192.168.80.30:25565`; heap pinned `-Xms8G -Xmx8G` instead of the egg's `MaxRAMPercentage=95.0`; reached `Done (1.375s)` and idles at 5.74 GiB. The serverpack release has to match the client release players installed, not just the Minecraft version, or the loader mismatch rejects every join; see the platform deployment record |
+| Better Realism MC 7.2.0 | CurseForge server file 8570131: Minecraft 1.21.1 on Fabric 0.19.3 with Fabric Installer 1.1.2 and Java 21; 83 top-level mod jars and 163 runtime mods; 10240 MiB and 500 percent CPU on `192.168.80.30:25565`; heap `-Xms4G -Xmx8G`; reached `Done (11.261s)!` and used 3.163 GiB of its 10.5 GiB container limit at final check. The retired Best Vanilla World 2 server and world were deleted without a backup on 2026-08-09 |
+| Playit agent | Native package 1.0.9; enabled/active; the one assigned Minecraft tunnel forwards to `127.0.0.1:25565`; persistent secret at `/etc/playit/playit.toml`, mode 0600 and not versioned |
+| Minecraft Playit relay | `minecraft-playit-relay.service`; enabled/active; dynamic user; loopback-only `127.0.0.1:25565` to Pelican allocation `192.168.80.30:25565` |
 | node_exporter | 1.9.0 from APT, held; `:9100` |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on `:9101`; registered 3 of 3 running containers |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `018` as `game-01` |
-| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and all server files; 4.2 GB used at deployment |
-| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; no gateway inbound port forward |
+| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and all server files; root used 5.8 GiB of 79 GiB at the final 2026-08-09 check |
+| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; `minecraft.alphasecunited.com` reaches only Minecraft through DNS-only Cloudflare CNAME/SRV records and Playit; no gateway inbound port forward and no Pelican interface in the tunnel |
 
 ## Galaxy Proxmox node monitoring
 

@@ -1,0 +1,23 @@
+[Unit]
+Description=Loopback relay from Playit to game-01 Minecraft
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+ExecStart=/usr/bin/socat -d -d TCP4-LISTEN:25565,bind=127.0.0.1,reuseaddr,fork TCP4:192.168.80.30:25565
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateDevices=true
+PrivateTmp=true
+ProtectControlGroups=true
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectSystem=strict
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

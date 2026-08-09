@@ -1,9 +1,9 @@
 # Cloudflare
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-08-09
 
-I manage four DNS zones & one Cloudflare Tunnel here. The tunnel, `edge-01`, is the only inbound path from the Internet to my homelab, & I configure it from the Cloudflare Zero Trust dashboard rather than a local file. I keep the live Access application inventory in this component because those policies control administrative entry to Coolify.
+I manage four DNS zones, one Cloudflare Tunnel, and one DNS-only Minecraft alias to an independent Playit tunnel here. `edge-01` remains the inbound web/application path and is configured from the Cloudflare Zero Trust dashboard rather than a local file. Playit carries only Minecraft for `minecraft.alphasecunited.com`; Cloudflare supplies the CNAME and SRV records but does not proxy the game stream. I keep the live Access application inventory in this component because those policies control administrative entry to Coolify.
 
 - [Domain and DNS inventory](Configuration/domains.md)
 - [Cloudflare Tunnel edge-01](Configuration/edge-01.md)
