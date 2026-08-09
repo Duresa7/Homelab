@@ -32,8 +32,6 @@ Both containers use host networking. Playit forwards only the two UDP voice port
 | SRV | `_ts3._udp.ts02` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
 | CNAME | `ts03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | | DNS only |
 | SRV | `_ts3._udp.ts03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
-| CNAME | `ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | | DNS only |
-| SRV | `_ts3._udp.ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
 
 The SRV records target the Playit hostnames directly. They don't target the `ts02` or `ts03` CNAME because some TeamSpeak clients reject an alias in the SRV target.
 
@@ -75,7 +73,6 @@ The `playit-agent` Compose project is independent of both TeamSpeak projects. Re
 | ServerQuery | 10013/tcp |
 | File transfer | 30035/tcp |
 | Public address | `ts03.alphasecunited.com` |
-| Alternate address | `ts-valorant-03.alphasecunited.com` |
 
 ## Shared Services
 
