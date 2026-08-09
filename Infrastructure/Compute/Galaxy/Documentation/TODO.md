@@ -82,6 +82,20 @@ This backlog contains Purple storage monitoring, the open `pvestatd` crash watch
 - [x] Update guest-free Purple to Proxmox VE 9.2.5 and verify quorum, HA, services, storage, networking, and package state after reboot.
 - [x] Resume and finish the one-node-at-a-time updates. Red, Grey, and Blue reached Proxmox VE 9.2.5 on 2026-07-23 after I accepted the Purple risk.
 
+## `green-server` Cross-Process Faults and Status Loss
+
+**Status:** Mitigated 2026-08-09; node online after service recovery and a controlled reboot, hardware cause still open  
+**Troubleshooting record:** [Status Unknown and Cross-Process Faults](Troubleshooting/Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md)
+
+- [x] Confirm the `unknown` status with a cluster-side pass/fail loop. `pvestatd` had aborted and stayed failed because its unit has `Restart=no`.
+- [x] Separate the status symptom from the broader host fault. The same boot recorded 37 faults across Python, PHP, Perl, and `pve-firewall`; the other four matching nodes recorded none.
+- [x] Verify package files, storage health, OOM state, machine-check reporting, Corosync, quorum, and the unaffected Proxmox services. None exposed a package, disk, or cluster-network cause.
+- [x] Run a bounded online memory test without stopping CT 123. Two locked 1 GiB passes completed with exit status 0, no new kernel fault, no swap pressure, and no guest interruption.
+- [x] Compile the firewall, restart `pvestatd` and `pve-firewall`, and verify the original cluster-status loop changed from `unknown` to `online`.
+- [x] Reboot Green normally and verify CT 123 returned, all status and firewall daemons stayed active, and a 12-sample burn-in kept the new boot at zero faults.
+- [ ] Run bootable Memtest86+ across the full 16 GB. If any error appears, power Green down and isolate the two modules, beginning with the SK Hynix 8 GB module added on 2026-07-31.
+- [ ] Keep watching the current-boot process-fault count and both recovered daemons. Another cross-process fault makes hardware isolation the next action even if the bootable test has not run yet.
+
 ## `blue-server` Recurring `pvestatd` Crashes
 
 **Status:** Open, quiescent since 2026-07-22; cause still unestablished  

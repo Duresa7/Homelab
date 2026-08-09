@@ -24,7 +24,7 @@ None.
 | Backlog | Open items |
 |---|---|
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | Register the `db-13-dev` identity in `ssh-key-automation`; tidy the duplicate entries in `/etc/pve/priv/authorized_keys`; watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Watch Kasm thin-pool use and Purple drive wear; keep watching Blue's recurring `pvestatd` crashes, quiescent since 2026-07-22 with the cause still unestablished |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Run Green's full offline memory test and watch its recovered daemons; watch Kasm thin-pool use and Purple drive wear; keep watching Blue's recurring `pvestatd` crashes, quiescent since 2026-07-22 with the cause still unestablished |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
