@@ -1,9 +1,9 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-09
 
-Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Stopped CT 105 `ai-bravo-02` remains defined on grey pending its scheduled 2026-08-15 deletion, but its configuration now lives in the archive instead of this active inventory.
+Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
@@ -239,4 +239,4 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 
 CT 104 `ai-alpha-01` no longer exists in Galaxy. I preserved its last recorded configuration, OpenClaw deployment records, & retirement verification in the [2026-07-25 retired guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md).
 
-CT 105 `ai-bravo-02` remains defined but stopped on `grey-server`, with autostart disabled. I moved its TNIO source, tests, configuration, records, walkthrough, & live configuration snapshot into the [2026-07-25 archived guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md); deletion is scheduled for 2026-08-15.
+CT 105 `ai-bravo-02` no longer exists in Galaxy. I deleted it and its 100 GiB root volume on 2026-08-09 after preserving its TNIO source, tests, configuration, records, walkthrough, diagrams, OpenClaw-backed inference records, and final configuration in the [retired guest record](../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md). The [retirement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) records the deletion and external cleanup.

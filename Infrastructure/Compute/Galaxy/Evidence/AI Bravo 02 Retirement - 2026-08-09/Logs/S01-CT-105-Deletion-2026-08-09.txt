@@ -1,0 +1,68 @@
+AI Bravo 02 CT 105 deletion evidence
+Created: 2026-08-09
+Last updated: 2026-08-09
+Target: grey-server, Galaxy LXC 105
+Captured: 2026-08-09 12:31:57 PM EDT
+
+Command:
+set -eu
+printf 'timestamp='; date '+%Y-%m-%d %I:%M:%S %p %Z'
+printf 'pre_destroy_status\n'; pct status 105
+printf 'pre_destroy_config_redacted\n'; pct config 105 | sed -E 's/(hwaddr=)[^,]+/\1<REDACTED_AI_BRAVO_MAC>/'
+[ "$(pct status 105)" = 'status: stopped' ]
+[ "$(pct config 105 | sed -n 's/^onboot: //p')" = '0' ]
+pct config 105 | grep -Fqx 'rootfs: ssd-lvm1:vm-105-disk-0,size=100G'
+printf 'destroy\n'; pct destroy 105 --purge 1 --destroy-unreferenced-disks 1
+printf 'post_destroy_pct_status\n'; if pct status 105; then exit 1; else code=$?; printf 'pct_status_exit=%s\n' "$code"; fi
+printf 'post_destroy_cluster_resource\n'; pvesh get /cluster/resources --type vm | awk 'NR == 1 || $0 ~ /(^|[[:space:]])105([[:space:]]|$)/'
+printf 'post_destroy_volume\n'; pvesm list ssd-lvm1 --vmid 105
+printf 'post_destroy_config_path\n'; find /etc/pve/nodes -path '*/lxc/105.conf' -print
+printf 'post_destroy_cluster_status\n'; pvecm status | sed -n '1,25p'
+printf 'post_destroy_storage_status\n'; pvesm status | awk 'NR == 1 || $1 == "ssd-lvm1"'
+printf 'result=ct_105_and_root_volume_absent\n'
+
+Redacted result:
+timestamp=2026-08-09 12:31:57 PM EDT
+pre_destroy_status
+status: stopped
+pre_destroy_config_redacted
+arch: amd64
+cores: 6
+dev0: /dev/nvidia0,gid=0,mode=0666
+dev1: /dev/nvidiactl,gid=0,mode=0666
+dev2: /dev/nvidia-modeset,gid=0,mode=0666
+dev3: /dev/nvidia-uvm,gid=0,mode=0666
+dev4: /dev/nvidia-uvm-tools,gid=0,mode=0666
+dev5: /dev/nvidia-caps/nvidia-cap1,gid=0,mode=0666
+dev6: /dev/nvidia-caps/nvidia-cap2,gid=0,mode=0666
+features: nesting=1,keyctl=1,fuse=1
+hostname: ai-bravo-02
+memory: 24384
+net0: name=eth0,bridge=vmbr0,firewall=1,gw=192.168.40.1,hwaddr=<REDACTED_AI_BRAVO_MAC>,ip=192.168.40.38/24,tag=40,type=veth
+onboot: 0
+ostype: ubuntu
+rootfs: ssd-lvm1:vm-105-disk-0,size=100G
+swap: 8192
+unprivileged: 1
+destroy
+  Logical volume "vm-105-disk-0" successfully removed.
+purging CT 105 from related configurations..
+post_destroy_pct_status
+pct_status_exit=2
+post_destroy_cluster_resource
+No resource row for VMID 105.
+post_destroy_volume
+Volid Format Type Size VMID
+post_destroy_config_path
+No configuration path returned.
+post_destroy_cluster_status
+Quorate: Yes
+Total votes: 5
+post_destroy_storage_status
+ssd-lvm1 lvmthin active 13.05%
+result=ct_105_and_root_volume_absent
+
+stderr:
+Configuration file 'nodes/grey-server/lxc/105.conf' does not exist
+
+Exit code: 0

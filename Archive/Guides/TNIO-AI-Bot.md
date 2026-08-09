@@ -1,11 +1,11 @@
 # TNIO AI Bot Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-09
 
 ## What This Guide Covers
 
-I operated TNIO as a Discord bot backed by a lore retrieval service on `ai-bravo-02`. I archived the stopped guest & this walkthrough on 2026-07-25; the steps below preserve how I compared the repository source with the deployed tree, updated the corpus & source map, ran policy & corpus tests, restarted the services, & tested the live answer endpoint.
+I operated TNIO as a Discord bot backed by a lore retrieval service and OpenClaw inference layer on `ai-bravo-02`. I archived the stopped guest & this walkthrough on 2026-07-25, then deleted the guest and its root volume on 2026-08-09. The steps below preserve how I compared the repository source with the deployed tree, updated the corpus & source map, ran policy & corpus tests, restarted the services, & tested the live answer endpoint.
 
 ## Current Status and Verified Versions
 

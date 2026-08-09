@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-09
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -43,14 +43,14 @@ I added Green's Hitachi HDD during the five-node expansion. Its extended SMART t
 
 **`pvesm status` answers for the node you ask.** Three of these storages are restricted to one node, so each reads `active` on its own node and `disabled` everywhere else. There is no cluster-wide view, and no `disable` flag is set on anything in `/etc/pve/storage.cfg`. Reading one node's output as the cluster's answer is how `ssd-lvm2` came to be recorded as disabled with no cause; it was never disabled.
 
-From `grey-server` on 2026-08-04:
+From `grey-server` on 2026-08-09:
 
 | Storage | Type | Status | Total | Used |
 | --- | --- | --- | ---: | ---: |
-| `hddpool-1` | zfspool | active | 1.76 TiB | 79.08% |
-| `local` | dir | active | 93.93 GiB | 34.18% |
-| `local-lvm` | lvmthin | active | 793.79 GiB | 11.43% |
-| `ssd-lvm1` | lvmthin | active | 1.79 TiB | 12.75% |
+| `hddpool-1` | zfspool | active | 1.76 TiB | 80.08% |
+| `local` | dir | active | 93.93 GiB | 34.15% |
+| `local-lvm` | lvmthin | active | 793.79 GiB | 11.47% |
+| `ssd-lvm1` | lvmthin | active | 1.79 TiB | 13.05% |
 | `ssd-lvm2` | lvmthin | disabled | Not reported | Not reported |
 
 From `purple-server` the same day, which shows the pattern reversing:
@@ -66,6 +66,8 @@ From `purple-server` the same day, which shows the pattern reversing:
 `ssd-lvm2` is restricted to Purple by `nodes purple-server`, and `ssd-lvm1` and `hddpool-1` both live on Grey, which is why each side reports the other's pools as disabled. `local` and `local-lvm` are per-node storages, so their capacities differ between the two tables rather than disagreeing.
 
 `ssd-lvm2` backs Kasm VM 122 and stood at 69.90 percent data and 3.06 percent metadata on 2026-08-04, against the 80 percent hard stop. The [purple 850 EVO SMART baseline](../../Platforms/Kasm%20Workspaces/Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/Purple%20850%20EVO%20SMART%20Baseline.md) shows the underlying disk healthy, with 15 normalized wear against a stop condition of 10.
+
+The 2026-08-09 `ssd-lvm1` reading follows the deletion of retired CT 105 and its 100 GiB root volume. The pool read 15.72 percent immediately before the deletion and 13.05 percent immediately afterward; the [retirement record](../Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) records the guarded removal.
 
 ## Memory Modules
 

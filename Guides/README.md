@@ -38,7 +38,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 ## Archived & Retired Guides
 
-I preserved the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01` in the [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md). I preserved the lore-retrieval & Discord-bot workflow from stopped CT 105 `ai-bravo-02` in the [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md).
+I preserved the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01` in the [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md). I preserved the lore-retrieval & Discord-bot workflow from deleted CT 105 `ai-bravo-02` in the [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md).
 
 ## Status Language
 

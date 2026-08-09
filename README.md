@@ -1,7 +1,7 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-09
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-20_routed_LANs,_16_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -25,6 +25,7 @@ A version figure in this repository is a point-in-time observation, not a durabl
 - [Repository layout](#repository-layout): where the detailed records and configuration live.
 - [Build and change records](#build-and-change-records): longer records for several completed projects.
 - [Roadmap](#roadmap): the current work queue.
+- [Completed work](COMPLETED.md): the public history separated from the active backlog.
 
 ## Lab architecture
 
@@ -65,4 +66,5 @@ The guides provide the reading path. Detailed records stay with the system that 
 Current priorities from my [central TODO](TODO.md):
 
 1. Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md): provision the `ai-agent` automation account, remove the old `NOPASSWD` drop-ins, then stop cloud-init reapplying them.
-2. Delete stopped Galaxy CT 105 `ai-bravo-02` and its root volume on 2026-08-15 after completing the [Galaxy deletion checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+
+I keep closed work in [Completed Work](COMPLETED.md), separate from the roadmap and system backlogs.
