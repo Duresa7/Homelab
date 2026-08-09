@@ -1,0 +1,65 @@
+Capture 1
+Captured at: 2026-08-09 9:42:20 AM EDT
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'CAPTURED_AT='; date -u +%Y-%m-%dT%H:%M:%SZ
+printf 'RUNNING_VERSION='; docker exec coolify-proxy traefik version | awk -F: '/^Version/{gsub(/ /,"",$2); print $2}'
+printf 'RUNNING_IMAGE='; docker inspect coolify-proxy --format '{{.Image}}|{{.Config.Image}}'
+printf 'RUNNING_STATE='; docker inspect coolify-proxy --format '{{.State.Status}}|{{.State.Health.Status}}|{{.State.StartedAt}}'
+printf 'ROLLBACK_IMAGE='; docker image inspect traefik:rollback-v3.6.25-2026-08-09 --format '{{.Id}}'
+printf 'COMPOSE_IMAGE='; docker run --rm -v /data/coolify/proxy:/data/coolify/proxy:ro docker:cli sh -c "grep -E '^[[:space:]]*image:' /data/coolify/proxy/docker-compose.yml"
+printf 'COMPOSE_SHA256='; docker run --rm -v /data/coolify/proxy:/data/coolify/proxy:ro docker:cli sha256sum /data/coolify/proxy/docker-compose.yml | awk '{print $1}'
+printf 'TEMP_CONFIG_FILES='; docker run --rm -v /data/coolify/proxy:/data/coolify/proxy:ro docker:cli sh -c "find /data/coolify/proxy -maxdepth 1 -type f -name '.*.tmp' -print | wc -l"
+printf 'PROVIDERS='; docker inspect coolify-proxy --format '{{range .Args}}{{println .}}{{end}}' | awk -F= '/^--providers\.(docker|file|kubernetes|kubernetescrd|kubernetesgateway|kubernetesingressnginx)(=|\.)/{split($1,parts,"."); seen[parts[2]]=1} END{sep=""; for (key in seen){printf "%s%s",sep,key; sep=","} print ""}'
+printf 'CORE_HEALTHY='; docker ps --format '{{.Names}}|{{.Status}}' | grep -E '^(coolify|coolify-proxy|coolify-db|coolify-redis|coolify-realtime|coolify-sentinel)\|' | grep -c '(healthy)'
+printf 'CORE_BAD='; count=$(docker ps -a --format '{{.Names}}|{{.Status}}' | grep -E '^(coolify|coolify-proxy|coolify-db|coolify-redis|coolify-realtime|coolify-sentinel)\|' | grep -ciE 'unhealthy|restarting|exited|dead' || true); printf '%s\n' "$count"
+printf 'CONTROL_PANEL='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:8000
+printf 'PROXY_FALLBACK='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:80
+printf 'PROXY_ERRORS='; count=$(docker logs --since 2026-08-09T13:41:21Z coolify-proxy 2>&1 | grep -ciE 'level=(error|fatal|panic)' || true); printf '%s\n' "$count"
+
+Standard output:
+CAPTURED_AT=2026-08-09T13:42:20Z
+RUNNING_VERSION=3.7.10
+RUNNING_IMAGE=sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac|traefik:v3.7
+RUNNING_STATE=running|healthy|2026-08-09T13:41:24.434683895Z
+ROLLBACK_IMAGE=sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d
+COMPOSE_IMAGE=    image: 'traefik:v3.7'
+COMPOSE_SHA256=09e4e66796084887f110f1687c6b009647e9cf091f0752ded26f336e885d1c06
+TEMP_CONFIG_FILES=0
+PROVIDERS=file,docker
+CORE_HEALTHY=6
+CORE_BAD=0
+CONTROL_PANEL=302
+PROXY_FALLBACK=404
+PROXY_ERRORS=0
+
+Standard error:
+(empty)
+
+Exit code: 0
+
+Capture 2
+Captured at: 2026-08-09 9:42:22 AM EDT
+Target: edge_01 (SSH Manager profile for edge-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'CAPTURED_AT='; date -u +%Y-%m-%dT%H:%M:%SZ
+printf 'EDGE_TO_TRAEFIK='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 -H 'Host: proxy-health.invalid' http://192.168.80.10:80
+
+Standard output:
+CAPTURED_AT=2026-08-09T13:42:22Z
+EDGE_TO_TRAEFIK=404
+
+Standard error:
+(empty)
+
+Exit code: 0

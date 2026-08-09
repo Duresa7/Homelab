@@ -1,0 +1,62 @@
+Captured at: 2026-08-09 9:40:45 AM EDT
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'CAPTURED_AT='; date -u +%Y-%m-%dT%H:%M:%SZ
+old_id=$(docker inspect coolify-proxy --format '{{.Image}}')
+old_version=$(docker exec coolify-proxy traefik version | awk -F: '/^Version/{gsub(/ /,"",$2); print $2}')
+rollback_ref="traefik:rollback-v${old_version}-2026-08-09"
+existing_id=$(docker image inspect "$rollback_ref" --format '{{.Id}}' 2>/dev/null || true)
+if [ -n "$existing_id" ] && [ "$existing_id" != "$old_id" ]; then
+  printf 'ROLLBACK_TAG_CONFLICT=%s|%s\n' "$rollback_ref" "$existing_id" >&2
+  exit 1
+fi
+docker tag "$old_id" "$rollback_ref"
+printf 'ROLLBACK_REF=%s|%s\n' "$rollback_ref" "$old_id"
+docker pull traefik:v3.7
+new_id=$(docker image inspect traefik:v3.7 --format '{{.Id}}')
+printf 'CANDIDATE_IMAGE=%s\n' "$new_id"
+printf 'CANDIDATE_REPO_DIGEST='; docker image inspect traefik:v3.7 --format '{{index .RepoDigests 0}}'
+printf 'CANDIDATE_VERSION\n'; docker run --rm --network none traefik:v3.7 version
+printf 'COMPOSE_CANDIDATE\n'
+docker run --rm -v /data/coolify/proxy:/source:ro docker:cli sh -ceu 'sed "s/traefik:v3.6/traefik:v3.7/" /source/docker-compose.yml > /tmp/docker-compose.yml; grep -nE "^[[:space:]]*image:" /tmp/docker-compose.yml; docker compose -f /tmp/docker-compose.yml config -q'
+printf 'RUNNING_UNCHANGED='; docker inspect coolify-proxy --format '{{.Image}}|{{.Config.Image}}|{{.State.Status}}|{{.State.Health.Status}}'
+
+Standard output:
+CAPTURED_AT=2026-08-09T13:40:45Z
+ROLLBACK_REF=traefik:rollback-v3.6.25-2026-08-09|sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d
+v3.7: Pulling from library/traefik
+4891df4d00d9: Pulling fs layer
+9a302a9822e2: Pulling fs layer
+ed984ba8e0bd: Pulling fs layer
+9a302a9822e2: Download complete
+ed984ba8e0bd: Download complete
+80ffb866a8d9: Download complete
+835d403dbc96: Download complete
+9a302a9822e2: Pull complete
+4891df4d00d9: Download complete
+ed984ba8e0bd: Pull complete
+4891df4d00d9: Pull complete
+Digest: sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac
+Status: Downloaded newer image for traefik:v3.7
+docker.io/library/traefik:v3.7
+CANDIDATE_IMAGE=sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac
+CANDIDATE_REPO_DIGEST=traefik@sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac
+CANDIDATE_VERSION
+Version:      3.7.10
+Codename:     langres
+Go version:   go1.26.5
+Built:        2026-07-31T12:42:19Z
+OS/Arch:      linux/amd64
+COMPOSE_CANDIDATE
+8:    image: 'traefik:v3.7'
+RUNNING_UNCHANGED=sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d|traefik:v3.6|running|healthy
+
+Standard error:
+(empty)
+
+Exit code: 0
