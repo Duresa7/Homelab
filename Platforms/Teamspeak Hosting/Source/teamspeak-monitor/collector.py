@@ -14,8 +14,8 @@ rotation follows DNS instead of needing an edit here.
 
 ServerQuery metrics appear only when credentials are supplied. Each instance
 keeps its own serveradmin account, so the passwords differ: set
-TS_QUERY_PASS_TS01, TS_QUERY_PASS_TS02, and TS_QUERY_PASS_TS03, or a single
-TS_QUERY_PASS if they are ever unified.
+TS_QUERY_PASS_TS02 and TS_QUERY_PASS_TS03, or a single TS_QUERY_PASS if they
+are ever unified.
 
 Publication note: BASE_DOMAIN comes from the environment. The deployed Compose
 file carries the real internal domain; the repository copy carries a placeholder.
@@ -37,7 +37,6 @@ HOST_IP = os.environ.get("TS_HOST_IP", "172.17.0.1")
 
 # name, host voice port, host ServerQuery port
 SERVERS = [
-    ("ts01", 9987, 10011),
     ("ts02", 9988, 10012),
     ("ts03", 9989, 10013),
 ]

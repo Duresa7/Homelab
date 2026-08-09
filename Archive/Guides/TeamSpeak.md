@@ -1,7 +1,9 @@
-# TeamSpeak Hosting Walkthrough
+# TeamSpeak Three-Server Hosting Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-09
+
+I retired `ts-valorant-01` on 2026-08-09. This guide preserves the former three-server layout; the [current deployment record](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md) covers the two servers that remain.
 
 ## What This Guide Covers
 
@@ -82,4 +84,4 @@ The document tracks three public voice servers and a fourth registered Playit tu
 
 ## Source Records
 
-- [TeamSpeak deployment record](../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)
+- [TeamSpeak deployment record](../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)

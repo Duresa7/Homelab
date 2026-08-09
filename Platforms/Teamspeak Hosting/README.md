@@ -1,17 +1,17 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-09
 
-I run three TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
+I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
 ## Deployment
 
 | Item | Value |
 |---|---|
 | Host | `alpha-prod-01` (`192.168.80.118`), Debian 13 |
-| Voice containers | `ts-valorant-01`, `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`) |
-| Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:0.17`), four registered tunnels |
+| Voice containers | `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`) |
+| Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:0.17`) |
 | Administration | `https://ts3-manager.alphasecunited.com` through internal NPM; direct fallback `http://192.168.80.118:9000` |
 | Networking | Host networking, so each container needs a unique port set |
 
@@ -19,7 +19,6 @@ I run three TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN
 
 | Server | Voice | ServerQuery | File transfer | Public name |
 |---|---:|---:|---:|---|
-| `ts-valorant-01` | 9987/udp | 10011/tcp | 30033/tcp | `ts01.alphasecunited.com` |
 | `ts-valorant-02` | 9988/udp | 10012/tcp | 30034/tcp | `ts02.alphasecunited.com` |
 | `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.alphasecunited.com` |
 
@@ -33,7 +32,6 @@ Each server is a separate Compose project with its own named volume, which is wh
 
 | Server | Virtual server name | Compose project | Data volume |
 |---|---|---|---|
-| `ts-valorant-01` | `AlphaSec` x LYON | `teamspeak` | `teamspeak_ts-data` |
 | `ts-valorant-02` | `AlphaSec` United x HomeBase | `teamspeak-02` | `teamspeak-02_ts-data` |
 | `ts-valorant-03` | `AlphaSec` United x Valorant 03 | `teamspeak-03` | `teamspeak-03_ts-data` |
 
@@ -54,7 +52,7 @@ The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each serve
 - [Deployment record](Documentation/Teamspeak-deployment.md)
 - [Reachability monitoring (2026-07-28)](Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md)
 - [Scripts](Scripts/README.md)
-- [Hosting walkthrough](../../Guides/TeamSpeak.md)
+- [Archived three-server walkthrough](../../Archive/Guides/TeamSpeak.md)
 
 ## Boot Recovery
 

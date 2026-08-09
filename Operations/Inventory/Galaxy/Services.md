@@ -163,7 +163,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 
 | Workload | Details |
 | --- | --- |
-| TeamSpeak | Three `teamspeak` containers |
+| TeamSpeak | Two `teamspeak` containers |
 | TS3 Manager | `joni1802/ts3-manager` |
 | Playit agent | `ghcr.io/playit-cloud/playit-agent:0.17` |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; one of four remote Edge Agent hosts managed by Portainer server 2.39.5 |

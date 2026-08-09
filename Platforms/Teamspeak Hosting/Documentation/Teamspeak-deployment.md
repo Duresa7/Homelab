@@ -1,232 +1,113 @@
 # TeamSpeak Hosting on alpha-prod-01
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-09
 
-I run three TeamSpeak servers, one Playit agent, & TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, & Compose projects.
+I run two TeamSpeak servers, one shared Playit agent, & TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, Compose projects, & boot recovery.
 
 ## VM Details
 
 | Property | Value |
-|----------|-------|
-| Hostname | alpha-prod-01 |
+|---|---|
+| Hostname | `alpha-prod-01` |
 | OS | Debian 13 |
-| IP | 192.168.80.118 |
+| IP | `192.168.80.118` |
 | VLAN | SERVERS-A (80) |
-| Subnet | 192.168.80.0/24 |
+| Subnet | `192.168.80.0/24` |
 
-## Architecture Diagram
+## Service Map
 
-```
-    End Users
-       |
-       | UDP voice via Cloudflare SRV records
-       v
-+------------------+
-|   <REDACTED_PLAYIT_RELAY_DOMAIN>      |  TS1: <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255
-|   Free Network   |  TS2: <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810
-|   NYC, New York  |  TS3: <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125
-+------------------+
-       |
-       | UDP forwarded to alpha-prod-01 host ports
-       | TS1 -> 9987/udp, TS2 -> 9988/udp, TS3 -> 9989/udp
-       v
-+-----------------------------------------------+
-|              alpha-prod-01                    |
-|           192.168.80.118 (VLAN 80)            |
-|                                               |
-|  +----------------+                          |
-|  | ts-valorant-01 |                          |
-|  | TeamSpeak      |                          |
-|  | UDP 9987       |                          |
-|  | TCP 10011      |                          |
-|  | TCP 30033      |                          |
-|  +----------------+                          |
-|                                               |
-|  +----------------+                          |
-|  | ts-valorant-02 |                          |
-|  | TeamSpeak      |                          |
-|  | UDP 9988       |                          |
-|  | TCP 10012      |                          |
-|  | TCP 30034      |                          |
-|  +----------------+                          |
-|                                               |
-|  +----------------+                          |
-|  | ts-valorant-03 |                          |
-|  | TeamSpeak      |                          |
-|  | UDP 9989       |                          |
-|  | TCP 10013      |                          |
-|  | TCP 30035      |                          |
-|  +----------------+                          |
-|                                               |
-|  +----------------+                          |
-|  | playit-agent   |  Shared Playit Docker    |
-|  | host network   |  project: playit-agent   |
-|  +----------------+                          |
-|                                               |
-|  +----------------+                          |
-|  | ts3-manager    |                          |
-|  | Web Admin UI   |                          |
-|  | Port 9000      |                          |
-|  +----------------+                          |
-+-----------------------------------------------+
-       |
-       | ServerQuery TCP 10011
-       v
-+------------------+
-|   ts3-manager    |  http://192.168.80.118:9000
-|   Local access   |  
-+------------------+
+| Server | Voice | ServerQuery | File transfer | Public name |
+|---|---:|---:|---:|---|
+| `ts-valorant-02` | 9988/udp | 10012/tcp | 30034/tcp | `ts02.alphasecunited.com` |
+| `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.alphasecunited.com` |
 
-DNS Chain (for end-users):
-ts01.alphasecunited.com
-       | SRV _ts3._udp.ts01 -> <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>:6255
-       | CNAME ts01 -> <REDACTED_TEAMSPEAK_RELAY_ONE_HOST>
-       v
-    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9987/udp
+Both containers use host networking. Playit forwards only the two UDP voice ports to loopback; ServerQuery & file transfer remain on the LAN.
 
-ts02.alphasecunited.com
-       | SRV _ts3._udp.ts02 -> <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810
-       | CNAME ts02 -> <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>
-       v
-    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9988/udp
-
-ts03.alphasecunited.com
-       | SRV _ts3._udp.ts03 -> <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125
-       | CNAME ts03 -> <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>
-       v
-    <REDACTED_PLAYIT_RELAY_DOMAIN> -> alpha-prod-01:9989/udp
-```
-
-## DNS Records (`alphasecunited.com`)
+## DNS Records
 
 | Type | Name | Target | Port | Proxy |
-|------|------|--------|------|-------|
-| CNAME | ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>` | 6255 | DNS only |
-| CNAME | ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
-| CNAME | ts03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
-| CNAME | ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | - | DNS only |
-| SRV | _ts3._udp.ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
+|---|---|---|---:|---|
+| CNAME | `ts02` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | | DNS only |
+| SRV | `_ts3._udp.ts02` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>` | 53810 | DNS only |
+| CNAME | `ts03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | | DNS only |
+| SRV | `_ts3._udp.ts03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
+| CNAME | `ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | | DNS only |
+| SRV | `_ts3._udp.ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>` | 49125 | DNS only |
 
-**TeamSpeak 1 connect address:** `ts01.alphasecunited.com` (no port needed)
-
-**TeamSpeak 2 connect address:** `ts02.alphasecunited.com` (no port needed)
-
-**TeamSpeak 3 connect address:** `ts03.alphasecunited.com` (no port needed)
-
-**DNS note:** The SRV target points directly to the Playit hostname instead of the
-`ts01` CNAME. SRV targets should not be aliases, and some TeamSpeak clients may
-fail to connect when an SRV record points at a CNAME.
+The SRV records target the Playit hostnames directly. They don't target the `ts02` or `ts03` CNAME because some TeamSpeak clients reject an alias in the SRV target.
 
 ## Playit Tunnels
 
-| TeamSpeak Server | Tunnel Name | Public Address | Local Host Port |
-|------------------|-------------|----------------|-----------------|
-| ts-valorant-01 | ts-valorant-01 | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 127.0.0.1:9987/udp |
-| ts-valorant-02 | ts-valorant-02 | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 127.0.0.1:9988/udp |
-| ts-valorant-03 | ts-valorant-03 | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | 127.0.0.1:9989/udp |
+| TeamSpeak server | Tunnel name | Public address | Local target |
+|---|---|---|---|
+| `ts-valorant-02` | `ts-valorant-02` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | `127.0.0.1:9988/udp` |
+| `ts-valorant-03` | `ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | `127.0.0.1:9989/udp` |
 
-## Services
+The `playit-agent` Compose project is independent of both TeamSpeak projects. Restarting or removing one voice server doesn't stop the agent or the other tunnel.
 
-### TeamSpeak 3 (ts-valorant-01)
-- **Image**: `teamspeak`
-- **Container**: `ts-valorant-01`
-- **License**: Free (32 slots, expires July 2027)
-- **Database**: SQLite (stored in named volume `ts-data`)
-- **Network mode**: host
-- **Ports**:
-  - `9987/udp` - Voice
-  - `10011/tcp` - ServerQuery
-  - `30033/tcp` - File Transfer
-- **Public server listing**: Disabled
-- **Virtual server name**: `AlphaSec x LYON`
-- **Server password**: Enabled
+## TeamSpeak Containers
 
-### TeamSpeak 3 (ts-valorant-02)
-- **Image**: `teamspeak`
-- **Container**: `ts-valorant-02`
-- **Compose project**: `teamspeak-02`
-- **Location**: `~/teamspeak-02/docker-compose.yml`
-- **Database**: SQLite (stored in named volume `ts-data` under the
-  `teamspeak-02` compose project)
-- **Network mode**: host
-- **Ports**:
-  - `9988/udp` - Voice
-  - `10012/tcp` - ServerQuery
-  - `30034/tcp` - File Transfer
-- **Public Playit address**: `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810`
-- **Playit local target**: `127.0.0.1:9988/udp`
-- **Cloudflare connect address**: `ts02.alphasecunited.com`
-- **Virtual server name**: `AlphaSec United - Valorant Community`
-- **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `<REDACTED_TEAMSPEAK_ONE_UNIQUE_ID>`
+### ts-valorant-02
 
-### TeamSpeak 3 (ts-valorant-03)
-- **Image**: `teamspeak`
-- **Container**: `ts-valorant-03`
-- **Compose project**: `teamspeak-03`
-- **Location**: `~/teamspeak-03/docker-compose.yml`
-- **Database**: SQLite (stored in named volume `ts-data` under the
-  `teamspeak-03` compose project)
-- **Network mode**: host
-- **Ports**:
-  - `9989/udp` - Voice
-  - `10013/tcp` - ServerQuery
-  - `30035/tcp` - File Transfer
-- **Public Playit address**: `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125`
-- **Playit local target**: `127.0.0.1:9989/udp`
-- **Cloudflare connect address**: `ts03.alphasecunited.com`
-- **Cloudflare alternate address**: `ts-valorant-03.alphasecunited.com`
-- **Virtual server name**: `AlphaSec United x Valorant 03`
-- **Server password**: Disabled intentionally; public to users who know the address
-- **Unique ID**: `<REDACTED_TEAMSPEAK_THREE_UNIQUE_ID>`
+| Property | Value |
+|---|---|
+| Image | `teamspeak` |
+| Compose project | `teamspeak-02` |
+| Compose file | `~/teamspeak-02/docker-compose.yml` |
+| Data volume | `teamspeak-02_ts-data` |
+| Network mode | host |
+| Voice | 9988/udp |
+| ServerQuery | 10012/tcp |
+| File transfer | 30034/tcp |
+| Public address | `ts02.alphasecunited.com` |
 
-### Playit Agent (playit-agent)
-- **Image**: `ghcr.io/playit-cloud/playit-agent:0.17`
-- **Container**: `playit-agent`
-- **Compose project**: `playit-agent`
-- **Location**: `~/playit-agent/docker-compose.yml`
-- **Network mode**: host
-- **Lifecycle**: independent from individual TeamSpeak compose projects
-- **Purpose**: shared Playit agent for TeamSpeak tunnels
-- **Current tunnel count**: 4 registered tunnels
-- **Boot recovery**: user crontab runs
-  `~/playit-agent/playit-boot-recover.sh` at reboot to wait for Docker/DNS,
-  then restart TeamSpeak and `playit-agent`
+### ts-valorant-03
 
-### TS3 Manager (ts3-manager)
-- **Image**: `joni1802/ts3-manager`
-- **Host port**: `9000`
-- **Container port**: `8080`
-- **Access**: `https://ts3-manager.alphasecunited.com` through internal NPM; direct fallback `http://192.168.80.118:9000`
-- **Location**: `~/ts3-manager/docker-compose.yml`
-- **ServerQuery targets**: use LAN/internal host ports, not public Playit DNS.
-  - TeamSpeak 1: `192.168.80.118:10011`
-  - TeamSpeak 2: `192.168.80.118:10012`
-  - TeamSpeak 3: `192.168.80.118:10013`
-- **Query allowlists**: each TeamSpeak server includes trusted local and
-  management sources so TS3 Manager does not trigger ServerQuery flood
-  protection.
+| Property | Value |
+|---|---|
+| Image | `teamspeak` |
+| Compose project | `teamspeak-03` |
+| Compose file | `~/teamspeak-03/docker-compose.yml` |
+| Data volume | `teamspeak-03_ts-data` |
+| Network mode | host |
+| Voice | 9989/udp |
+| ServerQuery | 10013/tcp |
+| File transfer | 30035/tcp |
+| Public address | `ts03.alphasecunited.com` |
+| Alternate address | `ts-valorant-03.alphasecunited.com` |
 
-### TeamSpeak 1 ServerQuery Allowlist
-Effective allowed ServerQuery sources for `ts-valorant-01`:
-```text
-127.0.0.1
-::1
-192.168.80.118
-192.168.50.241
-172.18.0.1
-172.19.0.2
-```
+## Shared Services
 
-`172.19.0.2` is the current TS3 Manager container address. `172.18.0.1`
-is retained from the earlier bridge-mode TeamSpeak deployment.
+### Playit Agent
 
-### TeamSpeak 2 ServerQuery Allowlist
-Effective allowed ServerQuery sources for `ts-valorant-02`:
+| Property | Value |
+|---|---|
+| Image | `ghcr.io/playit-cloud/playit-agent:0.17` |
+| Container | `playit-agent` |
+| Compose project | `playit-agent` |
+| Compose file | `~/playit-agent/docker-compose.yml` |
+| Network mode | host |
+
+The `dkadi` crontab runs `~/playit-agent/playit-boot-recover.sh` at reboot. The script waits 90 seconds, waits for Docker & `api.playit.gg` DNS, restarts `teamspeak-02` & `teamspeak-03`, then restarts `playit-agent`.
+
+### TS3 Manager
+
+| Property | Value |
+|---|---|
+| Image | `joni1802/ts3-manager` |
+| Container | `ts3-manager` |
+| Host port | 9000/tcp |
+| Container port | 8080/tcp |
+| Internal address | `https://ts3-manager.alphasecunited.com` |
+| Direct fallback | `http://192.168.80.118:9000` |
+
+TS3 Manager connects to `192.168.80.118:10012` & `192.168.80.118:10013`. It doesn't use either public Playit address.
+
+## ServerQuery Allowlists
+
+### ts-valorant-02
+
 ```text
 127.0.0.1
 ::1
@@ -236,11 +117,8 @@ Effective allowed ServerQuery sources for `ts-valorant-02`:
 172.19.0.2
 ```
 
-`172.19.0.2` is the current TS3 Manager container address. `172.21.0.1`
-is retained from the earlier bridge-mode TeamSpeak 2 deployment.
+### ts-valorant-03
 
-### TeamSpeak 3 ServerQuery Allowlist
-Effective allowed ServerQuery sources for `ts-valorant-03`:
 ```text
 127.0.0.1
 ::1
@@ -249,55 +127,12 @@ Effective allowed ServerQuery sources for `ts-valorant-03`:
 172.19.0.2
 ```
 
-`172.19.0.2` is the current TS3 Manager container address.
+`172.19.0.2` is the TS3 Manager container address. `172.21.0.1` remains from the earlier bridge-mode TeamSpeak 2 deployment.
 
-## Docker Compose Files
-
-### ~/teamspeak/docker-compose.yml
-```yaml
-services:
-  teamspeak:
-    image: teamspeak
-    container_name: ts-valorant-01
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      TS3SERVER_LICENSE: accept
-    volumes:
-      - ts-data:/var/ts3server
-
-volumes:
-  ts-data:
-```
-
-### ~/playit-agent/docker-compose.yml
-```yaml
-services:
-  playit:
-    image: ghcr.io/playit-cloud/playit-agent:0.17
-    container_name: playit-agent
-    restart: unless-stopped
-    network_mode: host
-    environment:
-      - SECRET_KEY=${PLAYIT_SECRET_KEY}
-```
-
-### ~/playit-agent/playit-boot-recover.sh
-```sh
-# Runs from dkadi's crontab at reboot:
-# @reboot /home/dkadi/playit-agent/playit-boot-recover.sh
-#
-# Purpose:
-# - Waits 90 seconds after VM/host boot
-# - Waits for Docker to respond
-# - Waits for api.playit.gg DNS resolution
-# - Restarts TeamSpeak so myTeamSpeak revocation data loads after DNS is ready
-# - Starts playit-agent if missing
-# - Restarts playit-agent so it registers after network/DNS is stable
-# - Logs to ~/playit-agent/boot-recover.log
-```
+## Compose Files
 
 ### ~/teamspeak-02/docker-compose.yml
+
 ```yaml
 services:
   teamspeak:
@@ -318,6 +153,7 @@ volumes:
 ```
 
 ### ~/teamspeak-03/docker-compose.yml
+
 ```yaml
 services:
   teamspeak:
@@ -337,34 +173,15 @@ volumes:
   ts-data:
 ```
 
-### ~/ts3-manager/docker-compose.yml
-```yaml
-services:
-  ts3-manager:
-    image: joni1802/ts3-manager
-    container_name: ts3-manager
-    restart: unless-stopped
-    ports:
-      - "9000:8080"
-```
+## Monitoring
 
-## Behavior and Constraints
-- Playit is intentionally decoupled from `~/teamspeak/docker-compose.yml`; running `docker compose down` in `~/teamspeak` will stop TeamSpeak 1 but will not stop `playit-agent`
-- Playit tunnels TeamSpeak UDP voice only; TCP services such as ServerQuery and file transfer stay LAN/internal only
-- ts3-manager is not exposed through Playit or public DNS. I access it through internal NPM at `https://ts3-manager.alphasecunited.com` or use `http://192.168.80.118:9000` as the direct fallback.
-- To add future TeamSpeak servers to ts3-manager, connect via the host VLAN 80 IP and that server's unique ServerQuery host port
-- Future TeamSpeak servers must use unique host ports. TeamSpeak 2 currently uses `9988/udp`, `10012/tcp`, and `30034/tcp`; TeamSpeak 3 uses `9989/udp`, `10013/tcp`, and `30035/tcp`
-- Use normal/raw ServerQuery in TS3 Manager, not SSH
-- Playit free plan uses Global Anycast routing
-- After Proxmox VM/host reboot, Playit can start before DNS is ready and log
-  `failed to lookup address information: Try again` for
-  `https://api.playit.gg/agents/rundata`. The boot recovery cron job mitigates
-  this by restarting only `playit-agent` after network and DNS are available.
-- TeamSpeak can also start before DNS is ready and fail to download the
-  myTeamSpeak ID revocation list. When this happens, clients can connect but may
-  see `myTeamSpeak ID is invalid`. The boot recovery cron job restarts the
-  TeamSpeak containers after DNS is available so the revocation list is loaded.
-- I moved the TeamSpeak containers to `network_mode: host` on 2026-04-24 to keep
-  Playit UDP voice traffic out of Docker's UDP userland proxy. That resolved
-  TS3 client timeouts where packets reached the container but the client
-  handshake never completed.
+The `teamspeak-monitor` collector probes `ts02` & `ts03` every 60 seconds through their public SRV path & their local UDP ports. It also reads ServerQuery statistics on TCP 10012 & 10013. The collector writes Prometheus textfile metrics through the existing node_exporter scrape on port 9100; the provisioned Grafana dashboard uses metric labels rather than a fixed server list.
+
+The [reachability monitoring record](Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md) preserves the original three-server implementation. The [server 01 retirement record](Change%20Records/Server%2001%20Retirement%20-%202026-08-09.md) records its removal from Docker, monitoring, boot recovery, & Cloudflare DNS.
+
+## Constraints
+
+- Future TeamSpeak servers need unique voice, ServerQuery, & file-transfer ports because every voice container uses host networking.
+- Playit forwards UDP voice only. ServerQuery & file transfer stay on the LAN.
+- TS3 Manager uses normal ServerQuery, not SSH.
+- The boot-recovery script restarts TeamSpeak only after DNS answers so the containers can download the myTeamSpeak ID revocation list.

@@ -8,9 +8,9 @@ it has no UDP prober.
 Use it to answer "is the address my users type actually up" from any host with
 outbound UDP, and to compare that against the local port on the Docker host.
 
-    ./ts3-probe.py --public ts01 ts02 ts03 --domain example.com
-    ./ts3-probe.py --local 9987 9988 9989
-    ./ts3-probe.py --host 192.168.80.118 --local 9987
+    ./ts3-probe.py --public ts02 ts03 --domain example.com
+    ./ts3-probe.py --local 9988 9989
+    ./ts3-probe.py --host 192.168.80.118 --local 9988
 
 Exit code is 0 when every probed endpoint answered, 1 otherwise, so it also
 works as a check in a pipeline.

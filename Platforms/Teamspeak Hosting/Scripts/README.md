@@ -1,9 +1,9 @@
 # TeamSpeak Scripts
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-09
 
-Operational helpers for the three TeamSpeak instances on `alpha-prod-01`. No script contains a credential, an address, or a domain: every value comes from an argument or the environment. The rotation script stays out of git because it invokes my credential store's CLI directly, so the table below names it without linking it.
+Operational helpers for the two TeamSpeak instances on `alpha-prod-01`. No script contains a credential, an address, or a domain: every value comes from an argument or the environment. The rotation script stays out of git because it invokes my credential store's CLI directly, so the table below names it without linking it.
 
 | Script | Purpose |
 |---|---|
@@ -18,8 +18,8 @@ Operational helpers for the three TeamSpeak instances on `alpha-prod-01`. No scr
 Compare the two paths to place a fault:
 
 ```bash
-./ts3-probe.py --public ts01 ts02 ts03 --domain alphasecunited.com
-./ts3-probe.py --local 9987 9988 9989
+./ts3-probe.py --public ts02 ts03 --domain alphasecunited.com
+./ts3-probe.py --local 9988 9989
 ```
 
 Public failing while local passes means the Playit tunnel or DNS broke. Both failing means the TeamSpeak server did. Exit status is 0 only when every probed endpoint answered.
