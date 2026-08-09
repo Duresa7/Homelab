@@ -33,7 +33,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
-| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Better Realism 7.2.0: Minecraft 1.21.1 / Fabric 0.19.3<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
+| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
@@ -197,15 +197,16 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 | --- | --- |
 | Pelican Panel | `ghcr.io/pelican-dev/panel:latest`, running v1.0.0-beta36 on Laravel 13.23.0; SQLite in the `pelican-panel_pelican-data` volume; compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
 | Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
-| Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; allocations `192.168.80.30:25565` through `25575` |
-| Better Realism MC 7.2.0 | CurseForge server file 8570131: Minecraft 1.21.1 on Fabric 0.19.3 with Fabric Installer 1.1.2 and Java 21; 83 top-level mod jars and 163 runtime mods; 10240 MiB and 500 percent CPU on `192.168.80.30:25565`; heap `-Xms4G -Xmx8G`; reached `Done (11.261s)!` and used 3.163 GiB of its 10.5 GiB container limit at final check. The retired Best Vanilla World 2 server and world were deleted without a backup on 2026-08-09 |
+| Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; current assignments total 9216 MiB memory, 51200 MiB disk, and 500 percent CPU; allocations `192.168.80.30:25565` through `25575` |
+| Vanilla Minecraft 26.2 | Pelican server ID 3; official Vanilla egg; Java 25; `VANILLA_VERSION=26.2`; 8192 MiB memory, 400 percent CPU, and 20480 MiB disk on `192.168.80.30:25565`; running and public; reached `Done (0.257s)!` after a controlled restart; public status returned 26.2, protocol 776, 0 of 20 players |
+| Better Realism MC 7.2.0 | Pelican server ID 2; CurseForge server file 8570131; Minecraft 1.21.1 on Fabric 0.19.3 with Fabric Installer 1.1.2 and Java 21; stopped on 2026-08-09 and retained with its 363 MiB volume and world intact; 1024 MiB memory, 100 percent CPU, and 30720 MiB disk on `192.168.80.30:25566`; not public; its `-Xms4G` startup requires a limit restore before reactivation |
 | Playit agent | Native package 1.0.9; enabled/active; the one assigned Minecraft tunnel forwards to `127.0.0.1:25565`; persistent secret at `/etc/playit/playit.toml`, mode 0600 and not versioned |
 | Minecraft Playit relay | `minecraft-playit-relay.service`; enabled/active; dynamic user; loopback-only `127.0.0.1:25565` to Pelican allocation `192.168.80.30:25565` |
 | node_exporter | 1.9.0 from APT, held; `:9100` |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on `:9101`; registered 3 of 3 running containers |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `018` as `game-01` |
-| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and all server files; root used 5.8 GiB of 79 GiB at the final 2026-08-09 check |
-| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; `minecraft.alphasecunited.com` reaches only Minecraft through DNS-only Cloudflare CNAME/SRV records and Playit; no gateway inbound port forward and no Pelican interface in the tunnel |
+| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and both server volumes; root used 6.0 GiB of 79 GiB at the final 2026-08-09 check; no world backup or snapshot exists |
+| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; `minecraft.alphasecunited.com` reaches only Vanilla Minecraft 26.2 through DNS-only Cloudflare CNAME/SRV records and Playit; no gateway inbound port forward and no Pelican interface in the tunnel |
 
 ## Galaxy Proxmox node monitoring
 
