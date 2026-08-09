@@ -222,7 +222,7 @@
 !/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/
 !/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png
 
-# Coolify Traefik patch update evidence records
+# Coolify Traefik update evidence records
 !/Platforms/Coolify/Evidence/
 /Platforms/Coolify/Evidence/*
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/
@@ -231,6 +231,12 @@
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/
 /Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/
+/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/*
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Evidence-Index.md
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/
+/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/*
+!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/*.txt
 
 # Reviewed evidence for the public-link repair
 !/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/

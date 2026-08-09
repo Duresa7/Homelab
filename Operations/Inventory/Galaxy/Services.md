@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-08
+**Last updated:** 2026-08-09
 
 This inventory maps 14 workload guests. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -26,7 +26,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
-| app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.6.25<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
+| app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | kasm-01 | VM 122 | purple-server | Isolated disposable desktops (`192.168.78.10`, VLAN 78 control plane) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2<br>macvlan session lanes 74, 75, 77, 79<br>Wazuh agent 4.14.6 |
 | security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
@@ -124,7 +124,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 | Workload | Details |
 | --- | --- |
 | Coolify | Coolify app, Sentinel, Realtime, Postgres, Redis |
-| Traefik | Coolify ingress proxy: `traefik:v3.6`; runtime 3.6.25 verified 2026-08-02; [change record](../../../Platforms/Coolify/Documentation/Change%20Records/Coolify%20Traefik%203.6%20Patch%20Update%20-%202026-08-02.md) |
+| Traefik | Coolify ingress proxy: `traefik:v3.7`; runtime 3.7.10 verified 2026-08-09; [change record](../../../Platforms/Coolify/Documentation/Change%20Records/Coolify%20Traefik%203.7%20Minor%20Update%20-%202026-08-09.md) |
 | Generated apps | Coolify-managed application containers |
 | Wazuh agent | 4.14.6-1; enabled/active; fresh manager ID `004` as `app-01`; connected to `192.168.72.2:1514` |
 

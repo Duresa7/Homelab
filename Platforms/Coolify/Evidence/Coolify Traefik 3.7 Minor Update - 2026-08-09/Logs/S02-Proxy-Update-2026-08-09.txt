@@ -1,0 +1,86 @@
+Captured at: 2026-08-09 9:41:21 AM EDT
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+started_epoch=$(date +%s)
+before_id=$(docker inspect coolify-proxy --format '{{.Image}}')
+printf 'CAPTURED_AT=%s\n' "$started_at"
+printf 'CONFIG_UPDATE\n'
+docker run --rm -v /data/coolify/proxy:/data/coolify/proxy docker:cli sh -ceu '
+  source=/data/coolify/proxy/docker-compose.yml
+  candidate=/data/coolify/proxy/.docker-compose.yml.traefik-v3.7.tmp
+  old_count=$(grep -cF "traefik:v3.6" "$source" || true)
+  [ "$old_count" -eq 1 ] || { echo "EXPECTED_ONE_V3_6_REFERENCE_FOUND=$old_count" >&2; exit 1; }
+  sed "s/traefik:v3.6/traefik:v3.7/" "$source" > "$candidate"
+  new_count=$(grep -cF "traefik:v3.7" "$candidate" || true)
+  [ "$new_count" -eq 1 ] || { echo "EXPECTED_ONE_V3_7_REFERENCE_FOUND=$new_count" >&2; exit 1; }
+  docker compose -f "$candidate" config -q
+  mv "$candidate" "$source"
+  grep -nE "^[[:space:]]*image:" "$source"
+  sha256sum "$source"
+'
+printf 'PROXY_RECREATE\n'
+if ! docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /data/coolify/proxy:/data/coolify/proxy:ro -w /data/coolify/proxy docker:cli docker compose -p coolify-proxy up -d --no-deps --force-recreate --pull never traefik; then
+  printf 'RECREATE_FAILED_ROLLING_BACK\n' >&2
+  docker run --rm -v /data/coolify/proxy:/data/coolify/proxy docker:cli sh -ceu 'source=/data/coolify/proxy/docker-compose.yml; candidate=/data/coolify/proxy/.docker-compose.yml.rollback.tmp; sed "s/traefik:v3.7/traefik:v3.6/" "$source" > "$candidate"; docker compose -f "$candidate" config -q; mv "$candidate" "$source"'
+  docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /data/coolify/proxy:/data/coolify/proxy:ro -w /data/coolify/proxy docker:cli docker compose -p coolify-proxy up -d --no-deps --force-recreate --pull never traefik
+  exit 1
+fi
+health=unknown
+for attempt in $(seq 1 30); do
+  health=$(docker inspect coolify-proxy --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' 2>/dev/null || true)
+  [ "$health" = healthy ] && break
+  sleep 2
+done
+if [ "$health" != healthy ]; then
+  printf 'PROXY_HEALTH=%s_ROLLING_BACK\n' "$health" >&2
+  docker logs --since "$started_at" coolify-proxy >&2 || true
+  docker run --rm -v /data/coolify/proxy:/data/coolify/proxy docker:cli sh -ceu 'source=/data/coolify/proxy/docker-compose.yml; candidate=/data/coolify/proxy/.docker-compose.yml.rollback.tmp; sed "s/traefik:v3.7/traefik:v3.6/" "$source" > "$candidate"; docker compose -f "$candidate" config -q; mv "$candidate" "$source"'
+  docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /data/coolify/proxy:/data/coolify/proxy:ro -w /data/coolify/proxy docker:cli docker compose -p coolify-proxy up -d --no-deps --force-recreate --pull never traefik
+  exit 1
+fi
+ended_epoch=$(date +%s)
+printf 'IMAGE_CHANGE=%s|%s\n' "$before_id" "$(docker inspect coolify-proxy --format '{{.Image}}')"
+printf 'RECREATE_SECONDS=%s\n' "$((ended_epoch-started_epoch))"
+printf 'PROXY_VERSION='; docker exec coolify-proxy traefik version | awk -F: '/^Version/{gsub(/ /,"",$2); print $2}'
+printf 'PROXY_STATE='; docker inspect coolify-proxy --format '{{.State.Status}}|{{.State.Health.Status}}|{{.Config.Image}}'
+printf 'CORE_CONTAINERS\n'; docker ps --format '{{.Names}}|{{.Image}}|{{.Status}}' | grep -E '^(coolify|coolify-proxy|coolify-db|coolify-redis|coolify-realtime|coolify-sentinel)\|' | sort
+printf 'CONTROL_PANEL='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:8000
+printf 'PROXY_FALLBACK='; curl -sS -o /dev/null -w '%{http_code}\n' --max-time 10 http://127.0.0.1:80
+printf 'POST_CHANGE_ERRORS='; count=$(docker logs --since "$started_at" coolify-proxy 2>&1 | grep -ciE 'level=(error|fatal|panic)' || true); printf '%s\n' "$count"
+printf 'BAD_CONTAINER_STATES='; count=$(docker ps -a --format '{{.Names}}|{{.Status}}' | grep -E '^(coolify|coolify-proxy|coolify-db|coolify-redis|coolify-realtime|coolify-sentinel)\|' | grep -ciE 'unhealthy|restarting|exited|dead' || true); printf '%s\n' "$count"
+
+Standard output:
+CAPTURED_AT=2026-08-09T13:41:21Z
+CONFIG_UPDATE
+8:    image: 'traefik:v3.7'
+09e4e66796084887f110f1687c6b009647e9cf091f0752ded26f336e885d1c06  /data/coolify/proxy/docker-compose.yml
+PROXY_RECREATE
+IMAGE_CHANGE=sha256:31267173a15b4944e797a76ffd9c419707c8d8b32fe5b610f80cd0cfa05f372d|sha256:9c3b91d5fb7770853ca5c1124a23c34bf2d9b47ffaebeab2614cbaf410dcb2ac
+RECREATE_SECONDS=7
+PROXY_VERSION=3.7.10
+PROXY_STATE=running|healthy|traefik:v3.7
+CORE_CONTAINERS
+coolify-db|postgres:15-alpine|Up 7 days (healthy)
+coolify|ghcr.io/coollabsio/coolify:4.1.2|Up 7 days (healthy)
+coolify-proxy|traefik:v3.7|Up 4 seconds (healthy)
+coolify-realtime|ghcr.io/coollabsio/coolify-realtime:1.0.16|Up 7 days (healthy)
+coolify-redis|redis:7-alpine|Up 7 days (healthy)
+coolify-sentinel|ghcr.io/coollabsio/sentinel:0.0.21|Up 7 days (healthy)
+CONTROL_PANEL=302
+PROXY_FALLBACK=404
+POST_CHANGE_ERRORS=0
+BAD_CONTAINER_STATES=0
+
+Standard error:
+ Container coolify-proxy Recreate
+ Container coolify-proxy Recreated
+ Container coolify-proxy Starting
+ Container coolify-proxy Started
+
+Exit code: 0

@@ -1,7 +1,7 @@
 # Coolify Architecture
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-08-09
 
 Coolify runs as a six-container stack on app-01 & manages a Traefik proxy that routes public traffic to the applications I deploy. This document covers how the pieces fit & how a deployment turns into a working URL. The live state table is in the [platform README](../README.md); the end-to-end ingress path is in the [External Service Ingress design](../../../Architecture/External-Service-Ingress.md).
 
@@ -11,7 +11,7 @@ Coolify installs itself with Docker Compose & keeps everything on the `coolify` 
 
 ## Traefik & per-app routing
 
-`coolify-proxy` is Traefik v3.6, listening on host ports 80, 443, & 8080. When I deploy an application & give it a domain, Coolify writes Traefik router labels on that container so Traefik forwards requests with a matching Host header to it. Traefik holds the routing table for every deployed app. Caddy on edge-01 doesn't know the individual hostnames; it hands the whole wildcard to Traefik on port 80.
+`coolify-proxy` is Traefik v3.7, listening on host ports 80, 443, & 8080. When I deploy an application & give it a domain, Coolify writes Traefik router labels on that container so Traefik forwards requests with a matching Host header to it. Traefik holds the routing table for every deployed app. Caddy on edge-01 doesn't know the individual hostnames; it hands the whole wildcard to Traefik on port 80.
 
 ## How a deployment becomes a URL
 

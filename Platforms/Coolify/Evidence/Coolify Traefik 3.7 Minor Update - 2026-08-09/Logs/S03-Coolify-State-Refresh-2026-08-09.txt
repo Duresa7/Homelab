@@ -1,0 +1,33 @@
+Captured at: 2026-08-09 9:41:50 AM EDT
+Target: app_01 (SSH Manager profile for app-01)
+Execution: SSH Manager MCP ssh_execute
+Shell: POSIX sh
+Working directory: server default
+
+Command:
+set -eu
+printf 'CAPTURED_AT='; date -u +%Y-%m-%dT%H:%M:%SZ
+printf 'VERSION_CHECK\n'; docker exec coolify php artisan traefik:check-version
+sleep 5
+printf 'COOLIFY_DETECTED_STATE\n'; docker exec coolify php artisan tinker --execute='dump(App\Models\Server::where("name","localhost")->first(["detected_traefik_version","traefik_outdated_info"])->toArray());'
+
+Standard output:
+CAPTURED_AT=2026-08-09T13:41:50Z
+VERSION_CHECK
+Checking Traefik versions on all servers...
+Traefik version check job dispatched successfully.
+Notifications will be sent to teams with outdated Traefik versions.
+COOLIFY_DETECTED_STATE
+array:4 [
+  "detected_traefik_version" => "3.7.10"
+  "traefik_outdated_info" => null
+  "proxy" => array:1 [
+    "redirect_enabled" => true
+  ]
+  "is_coolify_host" => false
+] // vendor/psy/psysh/src/ExecutionClosure.php(41) : eval()'d code:1
+
+Standard error:
+(empty)
+
+Exit code: 0
