@@ -1,7 +1,7 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-10
 
 Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting. The host-side removal remains open until I next recreate Grafana.
 
@@ -23,5 +23,6 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 
 ## Completed
 
+- 2026-08-10: Prometheus restart-policy repair. After CT 104 restarted, Docker skipped Prometheus because its persisted metadata held `HasBeenManuallyStopped=true` under `unless-stopped`. I changed the deployed and live policy to `always`, started it, and verified 52 healthy targets and 20 passing probes. The complete diagnosis is [issue 5](Troubleshooting/Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md).
 - 2026-08-04: Prometheus auto-start verification. During the controlled 2026-08-01 restart, CT 104 booted at 11:11:33 EDT and Prometheus started four seconds later at 11:11:37 EDT with `RestartCount=0`. Grafana started at the same time. Docker was enabled and active, and all seven containers were running with `unless-stopped`, so the boot path rather than a later manual start satisfied the check.
 - 2026-07-26: [Monitoring Relocation to monitor-01](Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md). I moved the six-container stack to CT 104 on `blue-server`, added VLAN 73 and `AlphaSec-Monitor`, repointed NPM, retired the old stack, and finished with 46 of 46 targets `up`.

@@ -1,9 +1,11 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-10
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
+
+I refreshed the living VM, LXC, and service records on 2026-08-10 after reducing guest allocations and completing the post-restart workload check. I did not create another dated inventory snapshot because the living files are the current-state view.
 
 ## Current state
 

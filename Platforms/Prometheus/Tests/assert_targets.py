@@ -21,7 +21,7 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 17 hosts
+    # node_exporter, 19 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
@@ -32,6 +32,7 @@ EXPECTED_TARGETS = {
     "http://192.168.30.10:9100/metrics": ("node", "edge-01"),
     "http://192.168.40.35:9100/metrics": ("node", "docker-main"),
     "http://192.168.40.36:9100/metrics": ("node", "ansible-01"),
+    "http://192.168.40.135:9100/metrics": ("node", "db-13-dev"),
     "http://192.168.40.39:9100/metrics": ("node", "docker-blue"),
     "http://192.168.40.42:9100/metrics": ("node", "media-01"),
     "http://192.168.80.10:9100/metrics": ("node", "app-01"),
@@ -43,7 +44,7 @@ EXPECTED_TARGETS = {
     "http://192.168.78.10:9100/metrics": ("node", "kasm-01"),
     # game-01, added 2026-08-07 with the Pelican game server platform.
     "http://192.168.80.30:9100/metrics": ("node", "game-01"),
-    # cAdvisor, all 8 Docker hosts. This was docker-main alone until 2026-07-26,
+    # cAdvisor, all 9 Docker hosts. This was docker-main alone until 2026-07-26,
     # while v0.52.1 could not register containers under Docker 29's overlayfs
     # driver. v0.60.5 handles the containerd snapshotter.
     "http://192.168.40.35:9101/metrics": ("cadvisor", "docker-main"),

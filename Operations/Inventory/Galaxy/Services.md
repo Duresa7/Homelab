@@ -1,9 +1,11 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-10
 
 This inventory maps 14 workload guests. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+
+I repeated the workload check after the 2026-08-10 guest resource changes. Every expected production guest and primary workload was running. Prometheus reported 52 active targets with none unhealthy, and all 20 blackbox probes passed after its restart policy was repaired.
 
 ## Cluster State
 
@@ -88,7 +90,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; 15-day retention; 52 of 52 targets `up` across six jobs: node 19, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
+| Prometheus | 3.13.1 on TCP 9090; `restart: always`; 15-day retention; 52 of 52 targets `up` across six jobs: node 19, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 20 internal NPM names |

@@ -1,26 +1,28 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-08  
+**Last updated:** 2026-08-10  
 
 Galaxy currently has 9 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
+
+On 2026-08-10 I recaptured the active VMs after the [guest resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). Five VMs now use a maximum and a lower ballooning minimum, while Splunk and Kasm remain fixed. The table and hardware blocks below show the post-restart state.
 
 VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this file on 2026-07-26 after the PVE API surfaced a guest I had never written down, and I decided to keep it on 2026-07-27. I reversed that decision: `db-13-dev` (VM 102) is the machine I develop on, so a second development guest that had been stopped since 2026-07-15 was paying for nothing. I confirmed the deletion against the cluster on 2026-08-08. `pvesh get /cluster/resources` returns no VMID 111, `/etc/pve/qemu-server/111.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-111-*` volume, so its 80 GiB is back.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 102 | db-13-dev | grey-server | Debian GNU/Linux 13.6 (trixie), GNOME 48 | 6 | 16 GiB | 120G | 192.168.40.135/24 | 192.168.40.1 | 40 | disabled |
+| 102 | db-13-dev | grey-server | Debian GNU/Linux 13.6 (trixie), GNOME 48 | 6 | 16 GiB maximum / 12 GiB minimum | 120G | 192.168.40.135/24 | 192.168.40.1 | 40 | disabled |
 | 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB configured, 24 GiB running | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
+| 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
-| 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 6.53 GiB | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
+| 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 6 | 12 GiB | 200G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/75/77/79 sessions | disabled |
-| 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 12 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
-| 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 16 GiB | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
+| 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -60,7 +62,8 @@ The rest of the baseline landed the same day: a `0440` sudoers drop-in in place 
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 16 GiB |
+| Memory | 16 GiB maximum; 12 GiB minimum |
+| Ballooning | on (`balloon: 12288`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -136,6 +139,7 @@ The rest of the baseline landed the same day: a `0440` sudoers drop-in in place 
 | vCPU | 6 |
 | CPU type | host |
 | Memory | 12 GiB |
+| Ballooning | off; fixed memory |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -157,7 +161,7 @@ The rest of the baseline landed the same day: a `0440` sudoers drop-in in place 
 
 ### VM 116 - app-01
 
-I set this guest to 16 GiB, down from 24 GiB. The two live values disagree only because the change is waiting on a restart. `qm config 116` reads `memory: 16384` with `balloon: 0`, while `qm status 116 --verbose` reports `maxmem` of 25769803776 bytes, which is 24 GiB. The guest has run for 7 days, so it still holds the memory it was given at start. It takes the new value the next time it stops and starts. A reboot from inside the guest does not do it, because the QEMU process keeps running.
+I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB QEMU allocation. Its active and configured maximum is now 8 GiB, with a 4 GiB ballooning minimum.
 
 #### Identity
 | Setting | Value |
@@ -173,10 +177,10 @@ I set this guest to 16 GiB, down from 24 GiB. The two live values disagree only 
 #### Hardware
 | Setting | Value |
 | --- | --- |
-| vCPU | 6 |
+| vCPU | 4 |
 | CPU type | host |
-| Memory | 16 GiB configured; 24 GiB in the running guest until it stops and starts |
-| Ballooning | off (`balloon: 0`) |
+| Memory | 8 GiB maximum; 4 GiB minimum |
+| Ballooning | on (`balloon: 4096`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -251,7 +255,8 @@ I set this guest to 16 GiB, down from 24 GiB. The two live values disagree only 
 | --- | --- |
 | vCPU | 2 |
 | CPU type | host |
-| Memory | 6.53 GiB |
+| Memory | 4 GiB maximum; 2 GiB minimum |
+| Ballooning | on (`balloon: 2048`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -291,6 +296,7 @@ I set this guest to 16 GiB, down from 24 GiB. The two live values disagree only 
 | vCPU | 6 |
 | CPU type | host |
 | Memory | 12 GiB |
+| Ballooning | off; fixed memory |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -334,7 +340,8 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 | --- | --- |
 | vCPU | 4 |
 | CPU type | host |
-| Memory | 12 GiB |
+| Memory | 10 GiB maximum; 8 GiB minimum |
+| Ballooning | on (`balloon: 8192`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -371,7 +378,8 @@ Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap fil
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 16 GiB |
+| Memory | 4 GiB maximum; 2 GiB minimum |
+| Ballooning | on (`balloon: 2048`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |

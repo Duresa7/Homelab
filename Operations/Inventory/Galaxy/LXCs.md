@@ -1,20 +1,22 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-10
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
+
+I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). The active LXC allocation now totals 18 vCPUs, 30 GiB of memory, and 10 GiB of swap. The values below are the live post-restart settings.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
 | 104 | monitor-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.73.2/24 | 192.168.73.1 | 73 |
-| 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
-| 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
-| 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 10 | 23.44 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
+| 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
+| 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
+| 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 4 | 8 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
 | 123 | game-01 | green-server | disabled | Debian GNU/Linux 13 (trixie) | 6 | 12 GiB | 192.168.80.30/24 | 192.168.80.1 | 80 |
-| 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
+| 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
 
 ## LXC 100 - ansible-01
 
@@ -89,7 +91,7 @@ Prometheus, Grafana, the Proxmox exporter, `blackbox_exporter`, the NUT exporter
 | High availability | enabled; desired/runtime state `started` |
 | OS | Debian GNU/Linux 13 (trixie) |
 | vCPU | 2 |
-| Memory | 4 GiB |
+| Memory | 2 GiB |
 | Swap | 1 GiB |
 | Unprivileged | yes |
 | Features | nesting=1,keyctl=1 |
@@ -122,9 +124,9 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Node | blue-server |
 | High availability | enabled; pinned to blue-server via strict node-affinity rule `pin-blue-local-storage` |
 | OS | Debian GNU/Linux 13 (trixie) |
-| vCPU | 2 |
-| Memory | 4 GiB |
-| Swap | 1 GiB |
+| vCPU | 1 |
+| Memory | 1 GiB |
+| Swap | 0.50 GiB |
 | Unprivileged | yes |
 | Features | nesting=1 |
 
@@ -146,9 +148,9 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Node | grey-server |
 | High availability | disabled |
 | OS | Debian GNU/Linux 12 (bookworm) |
-| vCPU | 10 |
-| Memory | 23.44 GiB |
-| Swap | 15.71 GiB |
+| vCPU | 4 |
+| Memory | 8 GiB |
+| Swap | 4 GiB |
 | Unprivileged | yes |
 | Features | nesting=1 |
 | Tags | docker |
@@ -198,8 +200,8 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Node | red-server |
 | High availability | disabled |
 | OS | Debian GNU/Linux 13 (trixie) |
-| vCPU | 4 |
-| Memory | 8 GiB |
+| vCPU | 2 |
+| Memory | 4 GiB |
 | Swap | 1 GiB |
 | Unprivileged | yes |
 | Features | nesting=1,keyctl=1 |
