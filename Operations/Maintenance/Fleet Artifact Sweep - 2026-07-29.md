@@ -51,7 +51,7 @@ Sixteen machines are active: four Proxmox nodes and twelve running guests. I rea
 | Ansible from `ansible-01` | `docker-blue`, `media-01` |
 | QEMU guest agent from `purple-server` | `kasm-01` |
 
-Three SSH Manager profiles timed out. All three point at guests that are stopped, not gone, so the profiles are correct and the hosts are simply off: `debian_dev` is VM 102 `db-13-dev`, `ai_bravo_02` is CT 105 `ai-bravo-02` which is due for deletion on 2026-08-15, and `supabase_01` is VM 117 `supabase-01`. Nothing in this document covers them, and their disks may hold artifacts of their own.
+Three SSH Manager profiles timed out. All three point at guests that are stopped, not gone, so the profiles are correct and the hosts are simply off: `debian_dev` is VM 102 `debian-dev`, `ai_bravo_02` is CT 105 `ai-bravo-02` which is due for deletion on 2026-08-15, and `supabase_01` is VM 117 `supabase-01`. Nothing in this document covers them, and their disks may hold artifacts of their own.
 
 `kasm-01`, `docker-blue`, and `media-01` have no SSH Manager profile at all. That is a gap worth closing separately, since a fleet sweep that only trusts the profile list misses three running guests.
 

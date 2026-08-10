@@ -1,16 +1,16 @@
-# db-13-dev Workstation Baseline and Toolchain Build - 2026-08-08
+# debian-dev Workstation Baseline and Toolchain Build - 2026-08-08
 
 **Created:** 2026-08-08  
 **Last updated:** 2026-08-08
 
 **Implementation date:** 2026-08-08  
 **Status:** Complete, with two items carried forward  
-**Primary owner:** Infrastructure/Compute/Galaxy (VM 102 `db-13-dev`)  
+**Primary owner:** Infrastructure/Compute/Galaxy (VM 102 `debian-dev`)  
 **Affected systems:** VM 102 guest OS, Wazuh manager on `security-01`, Prometheus on `monitor-01`, UniFi policy `Allow Monitor to Personal-A monitoring`, the `wazuh-agent-deployment` and `monitoring-exporters` Ansible projects on `ansible-01`
 
 ## Scope
 
-VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
+VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The [Linux Host Baseline Standard](../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
 
 Nothing here changed another guest. The Wazuh manager gained one group and one agent, Prometheus gained one target, and one UniFi policy gained one destination address.
 
@@ -29,7 +29,7 @@ Two Node runtimes were installed & which one answered depended on the kind of sh
 - **One system-wide Node instead of nvm.** Putting 24.19.0 in `/usr/bin` means every shell resolves the same binary, which is the whole point. Per-project version switching is worth less to me than agents and I building against the same runtime.
 - **Shared binaries go in `/usr/local/bin`.** A non-login SSH session gets `PATH=/usr/local/bin:/usr/bin:/bin:/usr/games` and reads no startup file. Anything an agent needs over SSH therefore has to live on that path, so Go, its four tools, and every Python linter went there rather than into a home directory. `/etc/profile.d/dev-toolchains.sh` carries only the variables build tools read.
 - **The agent is pinned at 4.14.6-1, matching the fleet, not the 4.14.7-1 manager.** Every other agent is held at 4.14.6-1 and an agent must never lead its manager. Enrolling this one at 4.14.7-1 would have made it the only host on a different line for no benefit.
-- **`db-13-dev` stays out of the cAdvisor job.** Its containers are throwaway development builds. Per-container history there is noise, and a second listener buys nothing.
+- **`debian-dev` stays out of the cAdvisor job.** Its containers are throwaway development builds. Per-container history there is noise, and a second listener buys nothing.
 - **Prometheus reloaded by signal, not restart.** `POST /-/reload` returned `403` because `--web.enable-lifecycle` isn't set, so `docker kill -s HUP prometheus` picked up the config with no downtime and no container restart.
 
 ## Actions and Observed Results
@@ -52,11 +52,11 @@ Two Node runtimes were installed & which one answered depended on the kind of sh
 ### Fleet services
 
 7. I created the `workstation` group on the manager with `agent_groups -a -g workstation`. The manager went from three groups to four: `default`, `edge`, `proxmox`, `workstation`.
-8. I added `db-13-dev` to `wazuh-agent-deployment/inventory/hosts.yml` with `ansible_user: ai-agent` and `wazuh_agent_groups: default,workstation`, taking that inventory to 14 hosts, and ran `deploy.yml --limit db-13-dev`. The play finished `ok=22 changed=9 failed=0` and its final assert block passed: package `4.14.6-1`, service enabled and active, a non-empty `client.keys`, and an established TCP 1514 session.
-9. `agent_control -l` on the manager then listed the manager plus IDs `004` through `019`, all Active. `db-13-dev` is ID `019` in `default (16)` and `workstation (1)`.
-10. I added `db-13-dev` to `monitoring-exporters/inventory/hosts.yml` under `node_exporter_targets` only, and ran `node-exporter.yml --limit db-13-dev`. It reported `os=Debian 13.6 method=apt version=1.9.0 listen=:9100`.
+8. I added `debian-dev` to `wazuh-agent-deployment/inventory/hosts.yml` under the inventory alias `db-13-dev`, with `ansible_user: ai-agent` and `wazuh_agent_groups: default,workstation`, taking that inventory to 14 hosts, and ran `deploy.yml --limit db-13-dev`. The play finished `ok=22 changed=9 failed=0` and its final assert block passed: package `4.14.6-1`, service enabled and active, a non-empty `client.keys`, and an established TCP 1514 session.
+9. `agent_control -l` on the manager then listed the manager plus IDs `004` through `019`, all Active. `debian-dev` is ID `019`, still enrolled as `db-13-dev`, in `default (16)` and `workstation (1)`.
+10. I added `debian-dev` to `monitoring-exporters/inventory/hosts.yml` under the inventory alias `db-13-dev` and `node_exporter_targets` only, then ran `node-exporter.yml --limit db-13-dev`. It reported `os=Debian 13.6 method=apt version=1.9.0 listen=:9100`.
 11. TCP 9100 from `monitor-01` timed out at that point, while 1514 and 1515 to the Wazuh manager already worked. `Allow Internal to AlphaSec-Security` covers the whole zone, but `Allow Monitor to Personal-A monitoring` matches named addresses. I added `192.168.40.135` to that policy's destination list through the plugin's preview-then-confirm flow, taking it from four addresses to five. `curl` from `monitor-01` then returned metrics.
-12. I appended the target to `prometheus.yml` with `labels: {host: db-13-dev, role: workstation}`, `promtool check config` returned `SUCCESS`, and `docker kill -s HUP prometheus` loaded it. Prometheus went to 52 of 52 targets `up`, with the node job at 19.
+12. I appended the `debian-dev` target to `prometheus.yml` with `labels: {host: db-13-dev, role: workstation}`, `promtool check config` returned `SUCCESS`, and `docker kill -s HUP prometheus` loaded it. Prometheus went to 52 of 52 targets `up`, with the node job at 19. The `host` label is an independent monitoring label and still carries the original name.
 13. I installed `unattended-upgrades` and wrote `/etc/apt/apt.conf.d/20auto-upgrades`, which the package doesn't create on its own. Without it the service is enabled but never invoked. `unattended-upgrade --dry-run -v` then ran clean and `apt-daily-upgrade.timer` is armed.
 
 ### Toolchains
@@ -95,7 +95,7 @@ Read back on 2026-08-08, after every change:
 | `visudo -c` | `/etc/sudoers`, `/etc/sudoers.d/90-ai-agent`, `/etc/sudoers.d/README` all parsed OK |
 | `agent_control -l` | manager plus IDs `004` through `019`, all Active |
 | `agent_groups -l` | `default (16)`, `edge (1)`, `proxmox (5)`, `workstation (1)` |
-| Prometheus `/api/v1/targets` | 52 of 52 up; `db-13-dev` up with `role=workstation` |
+| Prometheus `/api/v1/targets` | 52 of 52 up; `debian-dev` target labelled `host=db-13-dev`, `role=workstation` |
 | `promtool check config` | SUCCESS |
 | `apt list --upgradable` | 0 |
 | `unattended-upgrade --dry-run -v` | ran clean; `apt-daily-upgrade.timer` armed |
@@ -107,15 +107,15 @@ Read back on 2026-08-08, after every change:
 
 I swept the host afterwards for anything else the day's work had broken. Two findings, one of them mine.
 
-**The node_exporter install pulled in a package this project deliberately excludes.** The inventory header states that `prometheus-node-exporter-collectors` is not installed on these hosts, because its smartmon script finds no block devices on a virtio disk and would pin `node_textfile_scrape_error` at 1. Nothing in the playbook enforced that. The apt task ran with apt's default recommendation handling, and `prometheus-node-exporter` recommends the collectors package, so `db-13-dev` got it along with `smartmontools`, `nvme-cli`, `ipmitool`, `moreutils` and `openipmi`.
+**The node_exporter install pulled in a package this project deliberately excludes.** The inventory header states that `prometheus-node-exporter-collectors` is not installed on these hosts, because its smartmon script finds no block devices on a virtio disk and would pin `node_textfile_scrape_error` at 1. Nothing in the playbook enforced that. The apt task ran with apt's default recommendation handling, and `prometheus-node-exporter` recommends the collectors package, so `debian-dev` got it along with `smartmontools`, `nvme-cli`, `ipmitool`, `moreutils` and `openipmi`.
 
 The predicted fault did not appear. `node_textfile_scrape_error` read `0` here, not `1`, because this is a full VM whose disk `smartctl` can read enough of to write a `.prom` file. What did appear is `openipmi.service` failing at every boot, on a guest with one virtio disk and no BMC. `docker-main` confirmed the divergence: same fleet, same playbook, no collectors package.
 
-I purged the collectors package and let autoremove take the twelve dependencies with it, then removed `nvme-cli` separately because apt had marked it manual. `openipmi.service` is now `not-found`, `systemctl --failed` is empty, the three `.prom` files are gone, and the exporter still answers `200` with `node_textfile_scrape_error 0`. Then I fixed the cause rather than only the symptom: the apt task now carries `install_recommends: false`, so the next apt-path host cannot repeat it, and a re-run against `db-13-dev` reported `changed=0` with the collectors package staying away.
+I purged the collectors package and let autoremove take the twelve dependencies with it, then removed `nvme-cli` separately because apt had marked it manual. `openipmi.service` is now `not-found`, `systemctl --failed` is empty, the three `.prom` files are gone, and the exporter still answers `200` with `node_textfile_scrape_error 0`. Then I fixed the cause rather than only the symptom: the apt task now carries `install_recommends: false`, so the next apt-path host cannot repeat it, and a re-run against the `db-13-dev` inventory alias reported `changed=0` with the collectors package staying away.
 
-The project validator needed two changes to pass again, and one of them was already broken before today. Its expected host set had never been updated for `game-01` on 2026-08-07, so the count in its own error message said nine while the set held ten. I added `db-13-dev` to the host set and the address map, replaced the hard-coded count in that message with the constant's name so it cannot go stale again, and added a `NON_STANDARD_USERS` map so this host's `ai-agent` account is an explicit, commented exception rather than a validation failure. It now reports `11 node_exporter hosts, 9 cAdvisor hosts`.
+The project validator needed two changes to pass again, and one of them was already broken before today. Its expected host set had never been updated for `game-01` on 2026-08-07, so the count in its own error message said nine while the set held ten. I added the `db-13-dev` inventory alias to the host set and the address map, replaced the hard-coded count in that message with the constant's name so it cannot go stale again, and added a `NON_STANDARD_USERS` map so `debian-dev`'s `ai-agent` account is an explicit, commented exception rather than a validation failure. It now reports `11 node_exporter hosts, 9 cAdvisor hosts`.
 
-**Check mode does not work on this playbook, and that is not new.** `--check` against `db-13-dev` fails an assert with `reports node_exporter unknown, expected 1.9.0`, because check mode skips the version probe and then asserts on its result. I ran the same check against `docker-main`, a host I never touched, and it fails too, on a different task. The limitation belongs to the playbook and predates this work.
+**Check mode does not work on this playbook, and that is not new.** `--check` against the `db-13-dev` inventory alias fails an assert with `reports node_exporter unknown, expected 1.9.0`, because check mode skips the version probe and then asserts on its result. I ran the same check against `docker-main`, a host I never touched, and it fails too, on a different task. The limitation belongs to the playbook and predates this work.
 
 Everything else came back clean: no failed units, no dangling symlinks outside browser lock files and two Debian Maven jars that ship that way, no reference to `/home/dkadi` anywhere in system or user configuration, `dpkg -C` and `apt-get check` both clean, and zero upgradable packages. A real signed commit verified with `Good "git" signature`. `ssh -G` still sends a fleet host to the machine key with no agent and `github.com` to the 1Password agent. `mcp-ssh-manager` 3.7.0 loads under Node 24.19.0, and `docker run hello-world` succeeded.
 
@@ -124,11 +124,11 @@ Everything else came back clean: no failed units, no dangling symlinks outside b
 - **I did not checksum-verify the Neovim tarball.** The release publishes no checksum asset at either conventional path: `shasum256.txt` and `nvim-linux-x86_64.tar.gz.sha256sum` both returned `404`. The download came over HTTPS from the GitHub release, and I re-downloaded and re-extracted once to confirm the tree came from that artifact. Go, by contrast, was verified against its published `sha256` before extraction.
 - **I did not get a real `delve` package into Mason.** `mason-registry.is_installed("delve")` returns true, but no `packages/delve` directory exists. I stopped chasing it because `dlv` `1.27.1` is on `/usr/local/bin` and `nvim-dap-go` takes `dlv` from `PATH`, so Go debugging works. The Mason entry would be a duplicate.
 - **I did not confirm the GitHub signing key.** The `gh` token carries `gist`, `read:org`, `repo`, and `workflow`, and listing signing keys needs `admin:ssh_signing_key`, so `gh api /user/ssh_signing_keys` returned `404`. The key was added through the web UI, and I have no way to read that back from here.
-- **I did not register the `db-13-dev` identity in `ssh-key-automation`.** That remains open in the [Ansible TODO](../../../../Platforms/Ansible/Documentation/TODO.md). The key works on every reachable host; the project simply doesn't know the identity exists, so `ssh-key-audit.yml` won't report on it.
+- **I did not register the `debian-dev` identity in `ssh-key-automation`.** That remains open in the [Ansible TODO](../../../../../Platforms/Ansible/Documentation/TODO.md). The key works on every reachable host; the project simply doesn't know the identity exists, so `ssh-key-audit.yml` won't report on it.
 
 ## Related records
 
-- [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which now names this host's single-account exception. Not published.
-- [Galaxy VM inventory](../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../Operations/Inventory/Galaxy/Services.md).
-- [Wazuh configuration reference](../../../../Platforms/Wazuh/Configuration/README.md) for the new group and agent `019`.
-- [UniFi firewall policies](../../../Network/UniFi/Configuration/firewall.md) for the monitoring destination change.
+- [Linux Host Baseline Standard](../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which now names this host's single-account exception. Not published.
+- [Galaxy VM inventory](../../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../../Operations/Inventory/Galaxy/Services.md).
+- [Wazuh configuration reference](../../../../../Platforms/Wazuh/Configuration/README.md) for the new group and agent `019`.
+- [UniFi firewall policies](../../../../Network/UniFi/Configuration/firewall.md) for the monitoring destination change.

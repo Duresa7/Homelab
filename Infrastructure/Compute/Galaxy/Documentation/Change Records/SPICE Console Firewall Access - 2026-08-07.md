@@ -14,7 +14,7 @@ I opened TCP 3128 to my admin devices so the SPICE console works from the Proxmo
 
 ## Symptom
 
-Clicking **Console** then **SPICE** on VM 102 `db-13-dev` downloaded the `.vv` file, and Virt-Viewer on Jedi PC (192.168.50.241) failed with `Unable to connect to the graphic server`. The VM was configured correctly: `vga: qxl,memory=256`, `agent: 1`, and the running QEMU process carried `-spice tls-port=61000,addr=127.0.0.1,tls-ciphers=HIGH,seamless-migration=on`. `spiceproxy` was active on grey-server and listening on `*:3128`. `pvesh create /nodes/grey-server/qemu/102/spiceproxy` returned a well-formed ticket whose `host-subject` matched the node certificate.
+Clicking **Console** then **SPICE** on VM 102 `debian-dev` downloaded the `.vv` file, and Virt-Viewer on Jedi PC (192.168.50.241) failed with `Unable to connect to the graphic server`. The VM was configured correctly: `vga: qxl,memory=256`, `agent: 1`, and the running QEMU process carried `-spice tls-port=61000,addr=127.0.0.1,tls-ciphers=HIGH,seamless-migration=on`. `spiceproxy` was active on grey-server and listening on `*:3128`. `pvesh create /nodes/grey-server/qemu/102/spiceproxy` returned a well-formed ticket whose `host-subject` matched the node certificate.
 
 ## Root Cause
 

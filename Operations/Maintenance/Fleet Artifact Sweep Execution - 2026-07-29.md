@@ -13,7 +13,7 @@ I completed the bounded artifact sweep across all 16 active machines. Measured r
 
 I covered the four active Proxmox nodes and twelve running Linux guests. I reached 13 machines through SSH Manager, `docker-blue` and `media-01` through Ansible from `ansible-01`, and `kasm-01` through the QEMU guest agent on `purple-server`.
 
-Five stopped guests kept their disks untouched: `db-13-dev` (VM 102), `ai-bravo-02` (105), `kali-pen` (106), `fedora-dev` (111), and `supabase-01` (117). Only the first, second, and fifth have SSH Manager profiles, so a sweep driven off the profile list never sees `kali-pen` or `fedora-dev` at all. Those two stay out of scope by choice: cleaning them would mean booting a guest to tidy it, which costs more than the 130 GiB of provisioned disk they hold is worth.
+Five stopped guests kept their disks untouched: `debian-dev` (VM 102), `ai-bravo-02` (105), `kali-pen` (106), `fedora-dev` (111), and `supabase-01` (117). Only the first, second, and fifth have SSH Manager profiles, so a sweep driven off the profile list never sees `kali-pen` or `fedora-dev` at all. Those two stay out of scope by choice: cleaning them would mean booting a guest to tidy it, which costs more than the 130 GiB of provisioned disk they hold is worth.
 
 `kasm-01`, `docker-blue`, and `media-01` had no SSH Manager profile when the sweep ran, which is why I reached them through Ansible and the guest agent. The follow-up section adds all three. I deleted the temporary 16-profile SSH Manager group after verification because it included stopped guests and omitted those three.
 

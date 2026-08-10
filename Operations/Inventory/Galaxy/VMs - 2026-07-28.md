@@ -13,7 +13,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 102 | db-13-dev | grey-server | Debian GNU/Linux 13.6 (trixie), GNOME 48 | 4 | 4 GiB | 60G | 192.168.40.135/24 | 192.168.40.1 | 40 | disabled |
+| 102 | debian-dev | grey-server | Debian GNU/Linux 13.6 (trixie), GNOME 48 | 4 | 4 GiB | 60G | 192.168.40.135/24 | 192.168.40.1 | 40 | disabled |
 | 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 111 | fedora-dev | grey-server | Fedora (l26 ostype; release not captured while stopped) | 6 | 8 GiB | 80G | none recorded, stopped since 2026-07-15 | 192.168.40.1 | 40 | disabled |
@@ -32,7 +32,7 @@ VM 111 `fedora-dev` was missing from this file until 2026-07-26. I found it in t
 
 ## VM Details
 
-### VM 102 - db-13-dev
+### VM 102 - debian-dev
 
 #### Identity
 | Setting | Value |

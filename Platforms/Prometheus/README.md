@@ -43,7 +43,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 
 | Job | Targets |
 |---|---|
-| `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, kasm-01, db-13-dev, game-01 |
+| `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, kasm-01, debian-dev (configured `host` label `db-13-dev`), game-01 |
 | `cadvisor` | all 9 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01, game-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 20 service names published through NPM |

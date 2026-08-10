@@ -9,7 +9,7 @@ Galaxy is a Proxmox VE cluster that runs five nodes today. I built it as four an
 
 ## Current Status and Verified Versions
 
-All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, & lowercase `.galaxy` FQDNs, checked against the cluster on 2026-08-03. Quorum holds at five votes. The API returned 19 guest records, 12 running; the workload inventory maps 13 guests. VM display name `db-13-dev` belongs to guest hostname `debian-dev`. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
+All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, & lowercase `.galaxy` FQDNs, checked against the cluster on 2026-08-03. Quorum holds at five votes. The API returned 19 guest records, 12 running; the workload inventory maps 13 guests. VM 102's Proxmox display name and guest hostname are both `debian-dev`. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
 
 ## What You Need
 

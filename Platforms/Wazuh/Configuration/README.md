@@ -38,11 +38,11 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 | `red-server` | 4.14.6-1, held | ID `016`, `red-server` | `192.168.70.13` | Enabled/active; TCP 1514 established |
 | `green-server` | 4.14.6-1, held | ID `017`, `green-server` | `192.168.70.14` | Enabled/active; TCP 1514 established |
 | `game-01` | 4.14.6-1, held | ID `018`, `game-01` | `192.168.80.30` | Enabled/active; TCP 1514 established |
-| `db-13-dev` | 4.14.6-1, held | ID `019`, `db-13-dev` | `192.168.40.135` | Enabled/active; TCP 1514 established |
+| `debian-dev` | 4.14.6-1, held | ID `019`, `db-13-dev` | `192.168.40.135` | Enabled/active; TCP 1514 established; enrollment name predates the Proxmox rename |
 
 The manager and dashboard verified IDs `004` through `017` active and synchronized on 2026-08-03. Both interfaces reported zero disconnected, pending, or never-connected agents.
 
-`game-01` enrolled on 2026-08-07 with the game server platform and was missing from this table until 2026-08-08. `db-13-dev` enrolled on 2026-08-08. `agent_control -l` on that date listed the manager plus IDs `004` through `019`, all Active, so the table and the manager now agree at sixteen endpoint agents.
+`game-01` enrolled on 2026-08-07 with the game server platform and was missing from this table until 2026-08-08. `debian-dev` enrolled on 2026-08-08 under the manager identity `db-13-dev`. `agent_control -l` on that date listed the manager plus IDs `004` through `019`, all Active, so the table and the manager now agree at sixteen endpoint agents.
 
 ## Shared Agent Groups
 
@@ -51,7 +51,7 @@ The manager and dashboard verified IDs `004` through `017` active and synchroniz
 | `default` | [default-agent.conf](Agent%20Groups/default-agent.conf) | All agents; real-time `/etc/ssh` and `/etc/cron.d` monitoring |
 | `edge` | [edge-agent.conf](Agent%20Groups/edge-agent.conf) | ID `005` only; adds real-time `/etc/cloudflared` monitoring |
 | `proxmox` | No extra fragment | IDs `013` through `017`: Grey, Purple, Blue, Red, & Green; membership is `default,proxmox` |
-| `workstation` | No extra fragment | ID `019` only, `db-13-dev`; membership is `default,workstation`. Created 2026-08-08 so the one machine I sit at is separable from the servers in a dashboard filter, even before it carries rules of its own |
+| `workstation` | No extra fragment | ID `019` only, `debian-dev`, enrolled as `db-13-dev`; membership is `default,workstation`. Created 2026-08-08 so the one machine I sit at is separable from the servers in a dashboard filter, even before it carries rules of its own |
 
 I removed the former custom `/var/lib/docker/volumes/wordpress_wp_data/_data` entry and its rollback copy on 2026-08-03. The exact path has zero matches under the manager's shared configuration. Wazuh's package-owned generic audit signatures remain unchanged.
 

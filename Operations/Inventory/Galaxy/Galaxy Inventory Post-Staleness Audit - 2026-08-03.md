@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-03  
 **Snapshot date:** 2026-08-03
 
-I captured this set after checking all five Proxmox nodes, the cluster guest list, and the living service records. Every node reports `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and its lowercase `.galaxy` FQDN. The cluster API returned 19 guest records, 12 running. The service snapshot maps 13 workload guests and distinguishes VM display name `db-13-dev` from guest hostname `debian-dev`.
+I captured this set after checking all five Proxmox nodes, the cluster guest list, and the living service records. Every node reports `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and its lowercase `.galaxy` FQDN. The cluster API returned 19 guest records, 12 running. The service snapshot maps 13 workload guests; VM 102's display name and guest hostname are both `debian-dev`.
 
 Node hardware, QEMU allocation, and LXC allocation did not change during the audit, so this set reuses the latest verified configuration snapshots. The workload record is new.
 

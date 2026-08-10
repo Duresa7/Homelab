@@ -23,7 +23,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| db-13-dev / debian-dev | VM 102 | grey-server | Development workstation; VM display name `db-13-dev`, guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
+| debian-dev | VM 102 | grey-server | Development workstation; VM display name and guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.21459.0<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>Syncthing |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |

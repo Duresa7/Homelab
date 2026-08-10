@@ -19,7 +19,7 @@ The memory values below are the Proxmox GUI values in MiB. `Dynamic` means the V
 
 | VMID | Guest | Before | Final vCPU | Final memory | Mode | Reason |
 | ---: | --- | --- | ---: | --- | --- | --- |
-| 102 | `db-13-dev` | 6 vCPU, 16 GiB fixed | 6 | 16,384 maximum; 12,288 minimum | Dynamic | The development workstation keeps its 16 GiB ceiling while Proxmox can reclaim 4 GiB when it is idle. |
+| 102 | `debian-dev` | 6 vCPU, 16 GiB fixed | 6 | 16,384 maximum; 12,288 minimum | Dynamic | The development workstation keeps its 16 GiB ceiling while Proxmox can reclaim 4 GiB when it is idle. |
 | 109 | `splunk-siem` | 6 vCPU, 12 GiB fixed | 6 | 12,288 fixed | Fixed | Splunk indexing and JVM memory are steadier with the existing fixed allocation. |
 | 116 | `app-01` | 6 vCPU, 16 GiB configured; 24 GiB still active before the stop/start | 4 | 8,192 maximum; 4,096 minimum | Dynamic | The Coolify stack had enough measured headroom at 8 GiB, and the stop/start cleared the stale 24 GiB QEMU process. |
 | 121 | `edge-01` | 2 vCPU, 6.53 GiB fixed | 2 | 4,096 maximum; 2,048 minimum | Dynamic | Caddy and cloudflared use little memory, while a 2 GiB floor leaves recovery headroom. |

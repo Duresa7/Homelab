@@ -14,7 +14,7 @@ I added the renamed Debian development VM to SSH Manager with the existing Jedi-
 
 ## Starting State
 
-- Proxmox reported VM 102 running with the object name `db-13-dev`; the guest reported hostname `debian-dev`.
+- Proxmox reported VM 102 running as `debian-dev`, matching the guest hostname.
 - The guest ran Debian GNU/Linux 13.6 with 4 vCPU, 4 GiB RAM, a 60 GiB disk, and 51 GiB free.
 - SSH listened on TCP/22 and the documented Jedi-PC public key was already authorized, but the guest was absent from SSH Manager.
 - No GNOME desktop, GNOME Shell, or GDM package was installed.
