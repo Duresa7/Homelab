@@ -1,9 +1,11 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-11
 
-I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. Twenty routed LAN networks remain. The controller reports 28 network objects when I include two WANs, the ProtonVPN client, and five remote-user VPN networks. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
+I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
+
+I added `Proton-WiFi`/VLAN 45 on 2026-08-10 for wireless clients that egress through ProtonVPN. Twenty-one routed LAN networks now remain, out of 28 network objects the controller reports when I include two WANs, the ProtonVPN client, and four remote-user VPN networks. The build is in [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
 I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory retirement removed VLAN 65 and its three guests. The consolidation removed the `Non-tracking` route before deleting VLAN 100. Neither network is part of current placement.
 
@@ -17,6 +19,7 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 | IoT | 20 | 192.168.20.0/24 | 192.168.20.1 | .6 – .254 | Ahsoka Gateway |
 | DMZ | 30 | 192.168.30.0/24 | 192.168.30.1 | .50 – .100 | Ahsoka Gateway |
 | Personal-A | 40 | 192.168.40.0/24 | 192.168.40.1 | .100 – .254 | Ahsoka Gateway |
+| Proton-WiFi | 45 | 192.168.45.0/24 | 192.168.45.1 | .100 – .199 | Ahsoka Gateway |
 | Secure | 50 | 192.168.50.0/24 | 192.168.50.1 | .6 – .254 | Ahsoka Gateway |
 | Secure Client | 60 | 192.168.60.0/24 | 192.168.60.1 | .6 – .254 | Ahsoka Gateway |
 | MGMT-A | 70 | 192.168.70.0/24 | 192.168.70.1 | .50 – .200 | Ahsoka Gateway |
@@ -44,6 +47,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | IoT (20) | Untrusted | Untrusted appliance | Smart-home and appliance-class gear with no admin need and no reason to reach the LAN: smart cameras (Wyze, Ring), thermostats (Nest), smart TVs and streamers (Samsung TV, Roku), smart appliances (Samsung FamilyHub), plugs and sensors. Isolated from Internal. |
 | DMZ (30) | Dmz | Internet-facing edge | I place internet-exposed / untrusted workloads here, including `edge-01` at static `192.168.30.10` with gateway `192.168.30.1`. I block this network from Internal and can pin it to ProtonVPN egress via the `isolate` policy. On 2026-08-07 I removed DMZ from the `Proxmox-Trunk` exclusions and left only Management, IoT (20), Trusted (10), and Secure (50) excluded. Before that change, I could not place virtualised workloads on VLAN 30 because the trunk did not carry it. That restriction was likely why I created DMZ-A. |
 | Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `debian-dev`). Reachable only from a defined admin device allow-list. |
+| Proton-WiFi (45) | Internal | Isolated VPN egress | Wireless clients whose traffic must leave through ProtonVPN rather than the WAN. Network isolation blocks it from every other network, the SSID carries L2 isolation so its own clients cannot address each other, and DHCP hands out Quad9 so lookups travel the tunnel. Egress and the kill switch come from the `VPN - Proton` route. No servers and no wired ports. |
 | Secure (50) | Internal | Primary admin workstation | The trusted workstation I administer the homelab from: my main management PC, Jedi PC. Part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | Secondary trusted workstation | Additional trusted desktops or workstations for specific users that need LAN trust but are not my primary admin box. |
 | MGMT-A (70) | `AlphaSec-Mgmt` | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the registered cluster node IPs from `.10` through `.14`, PVE GUI/API/SSH, and Corosync link0. Out-of-band / IPMI belongs here. |
@@ -61,7 +65,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 
 ### Placement by Workload
 
-- Phone, tablet, or personal laptop (mine or family) → **Trusted (10)**
+- Phone, tablet, or personal laptop (mine or family) → **Trusted (10)**; the same device when it must egress through ProtonVPN instead → **Proton-WiFi (45)**
 - Smart-home gadget, camera, TV, or appliance → **IoT (20)**
 - Workstation I manage the lab from → **Secure (50)**; another user's trusted desktop → **Secure Client (60)**
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**

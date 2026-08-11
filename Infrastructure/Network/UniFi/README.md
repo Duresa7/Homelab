@@ -1,11 +1,13 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-11
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
 The last full controller count on 2026-07-30 was 28 network objects, 20 routed LAN networks, 14 firewall zones, 361 policies, 13 reusable firewall groups, 12 client groups, four OON policies, two traffic routes, four WLANs, and five switch port profiles. The user-defined firewall inventory reached 131 on 2026-08-10 after I added the narrow NPM-to-CLI-Proxy path. The local DNS inventory now contains 23 enabled internal NPM names and one disabled apex record.
+
+Adding `Proton-WiFi`/VLAN 45 on 2026-08-10 moved three of those counts: 28 network objects, 21 routed LAN networks, and five WLANs. Both traffic routes are now enabled, where `VPN - Proton` had been disabled since its creation.
 
 ## Configuration Records
 
@@ -16,6 +18,8 @@ The last full controller count on 2026-07-30 was 28 network objects, 20 routed L
 - [Local DNS](Configuration/local-dns.md)
 - [Network objects](Configuration/objects.md)
 - [VPNs, network groups, and port profiles](Configuration/vpn-networks-port-profiles.md)
+- [Proton-WiFi VLAN 45 (2026-08-10)](Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md)
+- [edge-01 move to DMZ VLAN 30 (2026-08-07)](Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md)
 - [Zone and object consolidation (2026-07-27)](Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
 - [Firewall audit (2026-07-27)](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md)
 - [MGMT-A final lockdown (2026-07-27)](Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md)

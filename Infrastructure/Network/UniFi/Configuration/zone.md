@@ -1,7 +1,7 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-11
 
 I track 16 firewall zones and their assigned networks here.
 
@@ -11,7 +11,7 @@ I verified every LAN row against the controller on 2026-07-28 by reading `firewa
 
 | Zone | Type | Networks (interfaces) in zone |
 |---|---|---|
-| Internal | Built-in | Management, Trusted (VLAN 10), Personal-A (VLAN 40), Secure (VLAN 50), Secure Client (VLAN 60) |
+| Internal | Built-in | Management, Trusted (VLAN 10), Personal-A (VLAN 40), Proton-WiFi (VLAN 45), Secure (VLAN 50), Secure Client (VLAN 60) |
 | Untrusted | Built-in | IoT (VLAN 20) |
 | Dmz | Built-in | DMZ (VLAN 30), DMZ-A (VLAN 90) |
 | External | Built-in | Internet 1 (WAN), Internet 2 (WAN), ProtonVPN (VPN client) |
@@ -29,6 +29,8 @@ I verified every LAN row against the controller on 2026-07-28 by reading `firewa
 | EVIDENCE-QUARANTINE | Custom | EVIDENCE-QUARANTINE (VLAN 79) |
 
 The controller has seven built-in and nine custom zones. The custom set is `AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, KASM-BROWSER, KASM-TRUSTED, MALWARE-OFFLINE, LAB-MGMT, and EVIDENCE-QUARANTINE.
+
+`Proton-WiFi`/VLAN 45 joined `Internal` on 2026-08-10 and added no zone. Its containment is the network isolation toggle rather than a zone relationship, so it needs no policy of its own and nothing else in `Internal` changed. See [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
 ## Consolidation Result
 
