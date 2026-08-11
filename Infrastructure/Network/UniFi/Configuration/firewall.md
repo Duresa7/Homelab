@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-08
+**Last updated:** 2026-08-10
+
+On 2026-08-10 I added `Allow NPM to debian-dev CLI Proxy API`. It admits only `192.168.85.2` in Access-A to `192.168.40.135:8317` in Personal-A over TCP, logs matches, and permits the response path. I verified the route through NPM and the internal HTTPS name.
 
 On 2026-08-08 I made three changes for `debian-dev`, which is now the machine I develop on. I added its MAC to `Device Access --> Proxmox`, taking that policy from four client MACs to five. I added `Allow VPN Management Access to DMZ` so the Management Access VPN reaches `edge-01` from outside the network. Before that policy existed, the controller returned no user rule at all for the VPN-to-DMZ zone pair, which is why the DMZ was the one zone the VPN could not reach. The new rule names the Management Access network rather than the whole `Vpn` zone, so Game-Access still cannot reach the DMZ, and it does not weaken `Block DMZ to Internal`, which governs the opposite direction.
 
@@ -9,7 +11,7 @@ The third change added `192.168.40.135` to the destination list of `Allow Monito
 
 I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The earlier four narrow Wazuh enrollment paths from 2026-08-03 remain current: they admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. The controller reported 130 user-defined policies on 2026-08-08, after the one DMZ addition described above. This file had recorded 128, so it was already one short before that change and I have not traced which policy went unrecorded. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. The controller reported 131 user-defined policies on 2026-08-10 after the CLI Proxy API addition. This file had recorded 128 before the 2026-08-08 DMZ addition, so it was already one short before these changes and I have not traced which policy went unrecorded. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
 
 `game-01` needed no policy for game traffic. `Allow Internal to AlphaSec-Servers` already permits every Internal network to that zone on every port, so Trusted, Secure, and Secure Client reach TCP 25565 and the Pelican SFTP port 2022 without a new rule. That also admits Management, Server-Provision, and Personal-A, which is wider than the three networks the host was built for.
 
@@ -61,6 +63,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 9443 |
+| `Allow NPM to debian-dev CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.135 / 8317 |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
 | `Allow NPM to game-01 Panel` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 80 |

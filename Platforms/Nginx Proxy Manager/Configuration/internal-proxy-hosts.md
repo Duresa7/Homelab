@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-10
 
-I route 22 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 21 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I route 23 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 22 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -30,6 +30,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `kasm.alphasecunited.com` | `192.168.78.10:443` | HTTPS | NPM connects to Kasm's existing HTTPS listener. SSH, exporters, & all four session lanes remain outside NPM. |
 | `games.alphasecunited.com` | `192.168.80.30:80` | HTTP | Pelican Panel. Its `BEHIND_PROXY` mode makes the bundled Caddy listen on plain `:80` with auto-HTTPS off, so NPM owns TLS. Game ports stay outside NPM. |
 | `wings.alphasecunited.com` | `192.168.80.30:8080` | HTTP | Pelican Wings API. It exists as a separate host because the browser opens the server console websocket directly to the daemon, and an HTTPS panel talking to a plain-HTTP daemon is blocked as mixed content. Pelican SFTP on 2022 bypasses NPM through a node alias pointing at `192.168.80.30`. |
+| `aiproxy.alphasecunited.com` | `192.168.40.135:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The route is healthy, but no provider authentication files exist yet. |
 
 The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 

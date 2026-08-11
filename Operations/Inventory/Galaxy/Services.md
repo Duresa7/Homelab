@@ -23,7 +23,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| debian-dev | VM 102 | grey-server | Primary development workstation; VM display name and guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.26832.0<br>Docker 29.7.2<br>VS Code 1.132.0<br>Neovim 0.12.4 with LazyVim<br>Wazuh agent 4.14.6<br>node_exporter 1.9.0<br>SSH |
+| debian-dev | VM 102 | grey-server | Primary development workstation; VM display name and guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.26832.0<br>Docker 29.7.2<br>CLI Proxy API<br>VS Code 1.132.0<br>Neovim 0.12.4 with LazyVim<br>Wazuh agent 4.14.6<br>node_exporter 1.9.0<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -59,6 +59,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 | --- | --- |
 | GNOME desktop | Debian GNOME metapackages `gnome` and `gnome-core` 48; GNOME Shell 48.7-0+deb13u2 |
 | Container runtime | Docker 29.7.2 with Compose v5.4.0 and buildx 0.36.1; `ai-agent` is a member of group `docker` |
+| CLI Proxy API | `eceasy/cli-proxy-api:latest` under `/home/ai-agent/docker/cli-proxy-api`; main listener TCP 8317; `unless-stopped`; available internally at `https://aiproxy.alphasecunited.com`; domain route verified, provider authentication still empty |
 | Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
 | Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
 | Desktop privilege policy | `/etc/polkit-1/rules.d/49-ai-agent-gnome-nopasswd.rules` grants all actions without authentication to user `ai-agent` only from an active local session; remote Polkit requests remain subject to normal policy |

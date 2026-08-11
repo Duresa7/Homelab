@@ -1,15 +1,15 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-10
 
-I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 20 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
+I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 22 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
 ## Current State
 
 | Item | Current value |
 |---|---|
-| Deployment status | Runtime healthy; 21 proxy hosts Online, automated renewal path, restart recovery, & bounded logging verified |
+| Deployment status | Runtime healthy; 23 proxy hosts Online, automated renewal path, restart recovery, & bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network`, Debian 13, `192.168.85.2` |
 | NPM release | 2.15.1 |
 | Live path | `/opt/docker/nginx-proxy-manager` |
@@ -21,7 +21,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 | Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
 | Shared TLS policy | Certificate assigned; Force SSL and HTTP/2 enabled; HSTS disabled |
 
-The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 20 internal application hosts report Online. Eighteen remain from the 2026-07-22 onboarding after I retired Termix; TS3 Manager replaced that route count and Kasm raised it to 20 on 2026-07-28. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS returns NXDOMAIN for the application names.
+The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 22 internal application hosts report Online. Eighteen remain from the 2026-07-22 onboarding after I retired Termix; TS3 Manager, Kasm, the two Pelican interfaces, and CLI Proxy API brought the set to 22. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
 
 ## Records
 
@@ -33,6 +33,7 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 - [Internal proxy-host inventory](Configuration/internal-proxy-hosts.md)
 - [Internal HTTPS service onboarding (2026-07-22)](Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
 - [Kasm Workspaces internal HTTPS (2026-07-28)](Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md)
+- [CLI Proxy API internal HTTPS (2026-08-10)](../CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md)
 - [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
 - [NetBird platform](../Netbird/README.md)
 
@@ -45,5 +46,5 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 
 - NPM holds fixed address `172.31.85.10`; NetBird trusts only `172.31.85.10/32` as its HTTP proxy.
 - TCP 80, 81, & 443 bind on `192.168.85.2`; no WAN ingress points at the guest.
-- UniFi resolves the 20 internal application names to `192.168.85.2` and permits NPM only to their approved backend web ports.
+- UniFi resolves the 22 internal application names to `192.168.85.2` and permits NPM to their approved backend web ports.
 - NPM's `Public` access-list label means no NPM access list is assigned. The new names still have no public DNS record or Internet path.
