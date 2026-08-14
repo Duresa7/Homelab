@@ -10,7 +10,7 @@
 
 ## Scope
 
-VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The [Linux Host Baseline Standard](../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
+VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The [Linux Host Baseline Standard](../../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
 
 Nothing here changed another guest. The Wazuh manager gained one group and one agent, Prometheus gained one target, and one UniFi policy gained one destination address.
 
@@ -124,11 +124,12 @@ Everything else came back clean: no failed units, no dangling symlinks outside b
 - **I did not checksum-verify the Neovim tarball.** The release publishes no checksum asset at either conventional path: `shasum256.txt` and `nvim-linux-x86_64.tar.gz.sha256sum` both returned `404`. The download came over HTTPS from the GitHub release, and I re-downloaded and re-extracted once to confirm the tree came from that artifact. Go, by contrast, was verified against its published `sha256` before extraction.
 - **I did not get a real `delve` package into Mason.** `mason-registry.is_installed("delve")` returns true, but no `packages/delve` directory exists. I stopped chasing it because `dlv` `1.27.1` is on `/usr/local/bin` and `nvim-dap-go` takes `dlv` from `PATH`, so Go debugging works. The Mason entry would be a duplicate.
 - **I did not confirm the GitHub signing key.** The `gh` token carries `gist`, `read:org`, `repo`, and `workflow`, and listing signing keys needs `admin:ssh_signing_key`, so `gh api /user/ssh_signing_keys` returned `404`. The key was added through the web UI, and I have no way to read that back from here.
-- **I did not register the `debian-dev` identity in `ssh-key-automation`.** That remains open in the [Ansible TODO](../../../../../Platforms/Ansible/Documentation/TODO.md). The key works on every reachable host; the project simply doesn't know the identity exists, so `ssh-key-audit.yml` won't report on it.
+- **I did not register the `debian-dev` identity in `ssh-key-automation`.** That remained open in the Ansible TODO until the host was decommissioned; the key worked on every reachable host, but the project never knew the identity existed.
 
 ## Related records
 
-- [Linux Host Baseline Standard](../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which now names this host's single-account exception. Not published.
-- [Galaxy VM inventory](../../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../../Operations/Inventory/Galaxy/Services.md).
-- [Wazuh configuration reference](../../../../../Platforms/Wazuh/Configuration/README.md) for the new group and agent `019`.
-- [UniFi firewall policies](../../../../Network/UniFi/Configuration/firewall.md) for the monitoring destination change.
+- [Linux Host Baseline Standard](../../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which named this host's single-account exception. Not published.
+- [Galaxy VM inventory](../../../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../../../Operations/Inventory/Galaxy/Services.md).
+- [Wazuh configuration reference](../../../../../../Platforms/Wazuh/Configuration/README.md) for the group and agent `019` this build created.
+- [UniFi firewall policies](../../../../../../Infrastructure/Network/UniFi/Configuration/firewall.md) for the monitoring destination change.
+- [debian-dev Decommission - 2026-08-14](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md) for the host's retirement and this record's archival.

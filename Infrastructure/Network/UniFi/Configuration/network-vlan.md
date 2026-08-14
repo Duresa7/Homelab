@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-11
+**Last updated:** 2026-08-14
 
 I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
 
@@ -46,7 +46,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Trusted (10) | Internal | Trusted personal | Personal devices I trust but that are not admin machines: household phones, tablets, laptops, watches, and personal streaming/voice devices (iPhones, Pixels, MacBooks, Galaxy Watch, personal Fire TV / Alexa). Blocked from reaching Personal-A. |
 | IoT (20) | Untrusted | Untrusted appliance | Smart-home and appliance-class gear with no admin need and no reason to reach the LAN: smart cameras (Wyze, Ring), thermostats (Nest), smart TVs and streamers (Samsung TV, Roku), smart appliances (Samsung FamilyHub), plugs and sensors. Isolated from Internal. |
 | DMZ (30) | Dmz | Internet-facing edge | I place internet-exposed / untrusted workloads here, including `edge-01` at static `192.168.30.10` with gateway `192.168.30.1`. I block this network from Internal and can pin it to ProtonVPN egress via the `isolate` policy. On 2026-08-07 I removed DMZ from the `Proxmox-Trunk` exclusions and left only Management, IoT (20), Trusted (10), and Secure (50) excluded. Before that change, I could not place virtualised workloads on VLAN 30 because the trunk did not carry it. That restriction was likely why I created DMZ-A. |
-| Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `debian-dev`). Reachable only from a defined admin device allow-list. |
+| Personal-A (40) | Internal | My lab / utility | My general-purpose lab and utility VMs and containers, **not** household user devices: Docker hosts (`docker-main`, `docker-blue`, `media-01`), automation (`ansible-01`), & pentest or development VMs (`kali-pen`, `ubuntu-dev`). Reachable only from a defined admin device allow-list. |
 | Proton-WiFi (45) | Internal | Isolated VPN egress | Wireless clients whose traffic must leave through ProtonVPN rather than the WAN. Network isolation blocks it from every other network, the SSID carries L2 isolation so its own clients cannot address each other, and DHCP hands out Quad9 so lookups travel the tunnel. Egress and the kill switch come from the `VPN - Proton` route. No servers and no wired ports. |
 | Secure (50) | Internal | Primary admin workstation | The trusted workstation I administer the homelab from: my main management PC, Jedi PC. Part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | Secondary trusted workstation | Additional trusted desktops or workstations for specific users that need LAN trust but are not my primary admin box. |

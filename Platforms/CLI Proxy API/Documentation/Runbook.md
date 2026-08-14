@@ -1,11 +1,11 @@
 # CLI Proxy API Operations Runbook
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-13
 
 ## Routine Check
 
-I run these commands on `debian-dev` from the live project:
+I run these commands on `ubuntu-dev` from the live project:
 
 ```sh
 cd /home/ai-agent/docker/cli-proxy-api
@@ -33,7 +33,7 @@ After a restart I test the local listener, the internal HTTPS route, and one aut
 
 ## Provider Authentication
 
-The reverse-proxy route is complete, but the service currently has no provider authentication files and returns an empty authenticated model list. I must complete at least one provider login before the proxy can serve model traffic.
+The service holds five provider authentication files under `auths/` and loads five clients at startup, which the container log reports as `5 clients (5 auth files ...)`. Adding a provider means repeating the login flow below.
 
 I use `https://aiproxy.alphasecunited.com/management.html`, supply the existing management credential without placing it in a command or this repository, and complete the chosen provider's login flow. I then verify that a new file exists under `auths/` without reading its contents and that an authenticated `/v1/models` request returns the expected models.
 
@@ -61,4 +61,4 @@ I repeat the routine check and authenticated model check before treating an upda
 
 ## Rollback
 
-If NPM or UniFi routing fails, direct access remains at `http://192.168.40.135:8317`. Route rollback means deleting NPM proxy host ID 26, UniFi DNS record `6a7a605fdee8c70a32dec053`, and UniFi firewall policy `6a7a6060dee8c70a32dec069`. That does not stop or alter the container.
+If NPM or UniFi routing fails, direct access remains at `http://192.168.40.179:8317`. Route rollback means deleting NPM proxy host ID 26, UniFi DNS record `6a7a605fdee8c70a32dec053`, and UniFi firewall policy `6a7a6060dee8c70a32dec069`. That does not stop or alter the container.

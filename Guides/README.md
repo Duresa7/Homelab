@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-14
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -15,7 +15,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 | Guide | What it covers |
 |---|---|
-| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Five-node cluster, original setup, node expansion, Corosync link1, firewall objects, Docker LXC foundation, & Debian development VM |
+| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Five-node cluster, original setup, node expansion, Corosync link1, firewall objects, Docker LXC foundation, & the original Debian development VM (retired 2026-08-14; `ubuntu-dev` took over) |
 | [UniFi Network](UniFi-Network.md) | VLANs, zones, Security-A migration, DNS, egress policy order, & verification |
 | [Linux Host Baseline](Linux-Host-Baseline.md) | Package updates, administrative account, three SSH keys, key-only SSH, locked root, locale, & checks |
 | [SSH Key Lifecycle](SSH-Key-Lifecycle.md) | Key inventory, fleet cleanup, onboarding, staged rotation, verification, & retirement |

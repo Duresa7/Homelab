@@ -1,7 +1,7 @@
 # Galaxy Proxmox Cluster Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-14
 
 ## What This Guide Covers
 
@@ -9,7 +9,9 @@ Galaxy is a Proxmox VE cluster that runs five nodes today. I built it as four an
 
 ## Current Status and Verified Versions
 
-All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, & lowercase `.galaxy` FQDNs, checked against the cluster on 2026-08-03. Quorum holds at five votes. The API returned 19 guest records, 12 running; the workload inventory maps 13 guests. VM 102's Proxmox display name and guest hostname are both `debian-dev`. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
+All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, & lowercase `.galaxy` FQDNs, checked against the cluster on 2026-08-03. Quorum holds at five votes. The API returned 19 guest records, 12 running; the workload inventory maps 13 guests. Corosync has `link0` on the management network & `link1` on `10.71.0.0/24`; the cluster stayed quorate when the second link was added. The versions recorded during the original four-node build were `pve-manager/9.2.2` and kernel `7.0.2-6-pve`.
+
+VM 102 `debian-dev`, built in Step 6 below, was decommissioned on 2026-08-14 once `ubuntu-dev` (VM 105) took over as the machine I develop on. The step stays as a record of how the original guest was built; see [debian-dev Decommission - 2026-08-14](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md) for its retirement.
 
 ## What You Need
 
@@ -92,5 +94,5 @@ CT 107 uses node-local `local-lvm`, so its HA resource doesn't have shared-stora
 - [red-server expansion](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md)
 - [Corosync link1 change](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md)
 - [Docker network LXC](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
-- [Debian development VM](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15.md)
+- [Debian development VM (archived; VM decommissioned 2026-08-14)](../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15.md)
 - [Post-staleness inventory](../Operations/Inventory/Galaxy/Galaxy%20Inventory%20Post-Staleness%20Audit%20-%202026-08-03.md)

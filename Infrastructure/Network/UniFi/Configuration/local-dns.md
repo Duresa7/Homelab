@@ -1,7 +1,7 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-13
 
 I track 24 local A records on the UniFi gateway. Twenty-three enabled records send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. The disabled apex record is retained only as controller history. Public authoritative DNS stays in Cloudflare and doesn't contain the internal application names.
 
@@ -31,7 +31,7 @@ I track 24 local A records on the UniFi gateway. Twenty-three enabled records se
 | `kasm.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a69768d052792cd2140e39f` | Kasm Workspaces through NPM |
 | `games.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e27dee8c70a32d41e33` | Pelican Panel on `game-01` through NPM |
 | `wings.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e29dee8c70a32d41e41` | Pelican Wings API on `game-01` through NPM; the browser opens a console websocket straight to this name, so it needs its own HTTPS host rather than a path under `games` |
-| `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `debian-dev` through NPM |
+| `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `ubuntu-dev` through NPM |
 | `alphasecunited.com` | A | `192.168.1.1` | Controller default | No | Not retained | Disabled apex record; no client path depends on it |
 
 ## Verification

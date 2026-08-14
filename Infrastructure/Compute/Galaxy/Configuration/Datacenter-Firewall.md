@@ -26,7 +26,7 @@
 | 192.168.10.27 | `dkadi` Mac Air |
 | 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
-| 192.168.40.135 | `debian-dev` |
+| 192.168.40.179 | `ubuntu-dev` |
 
 ### `pve_automation`: automation control node (GUI + SSH)
 
@@ -66,6 +66,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 That generated set holds exactly one member, `192.168.70.0/24`, so its accepts only ever admit a node. Anything a client off MGMT-A needs, `pve_mgmt` has to grant by name. This is not obvious from the rule list, because the generated 3128 and `5900:5999` accepts read as though the ports are open. They are open between nodes and closed to everything else. That is what cost me the SPICE console on 2026-08-07.
 
 ## History
+
+- On 2026-08-13 I replaced `192.168.40.135` `debian-dev` with `192.168.40.179` `ubuntu-dev` in `pve_admins`, as development moved to the new workstation. The same two-firewall lesson held: adding the address here was necessary but not sufficient, and on the UniFi side a client-MAC entry never produced a working rule for the new guest, so an explicit `Allow ubuntu-dev to Proxmox` policy carries that half. After both changes all five nodes answered TCP 22 from the new address, and I removed the old one.
 
 - On 2026-08-08 I added `192.168.40.135` `debian-dev` to `pve_admins`, which gives it the same TCP 22, 8006, and 3128 access as Jedi PC. That guest is now the machine I develop on, so it needs the access a workstation has rather than the access a workload guest has. Neither firewall was enough on its own: UniFi's `Device Access --> Proxmox` matches by MAC, so its client list needed VM 102's address as well, and I added it there first. Before the change, both TCP 22 and 8006 from `192.168.40.135` timed out silently against every node. After it, all 15 paths across the five nodes and three ports opened, and `red-server` read the new IPSet member back, so pmxcfs carried the file cluster-wide.
 - On 2026-08-07 I added `3128` to the `+pve_admins` accept so the SPICE console reaches Virt-Viewer from an admin device. The UniFi port group `Proxmox-Admin-Ports` needed the same port, and neither firewall alone was enough. The file stayed at 45 lines because the change edits one line. The complete record is [SPICE Console Firewall Access - 2026-08-07](../Documentation/Change%20Records/SPICE%20Console%20Firewall%20Access%20-%202026-08-07.md).

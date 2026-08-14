@@ -1,9 +1,9 @@
 # CLI Proxy API Configuration
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-13
 
-The live Compose project is `/home/ai-agent/docker/cli-proxy-api` on `debian-dev`. This folder contains only safe, reader-editable references.
+The live Compose project is `/home/ai-agent/docker/cli-proxy-api` on `ubuntu-dev`. This folder contains only safe, reader-editable references.
 
 ## Files
 

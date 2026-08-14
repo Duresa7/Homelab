@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-14
 
-This inventory maps 14 workload guests. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 14 workload guests. I added `ubuntu-dev` on 2026-08-13 when CLI Proxy API moved onto it, and removed `debian-dev` on 2026-08-14 when I decommissioned it. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the workload check after the 2026-08-10 guest resource changes. Every expected production guest and primary workload was running. Prometheus reported 52 active targets with none unhealthy, and all 20 blackbox probes passed after its restart policy was repaired.
 
@@ -23,7 +23,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| debian-dev | VM 102 | grey-server | Primary development workstation; VM display name and guest hostname `debian-dev` | GNOME Shell 48.7<br>GDM 48.0<br>Claude Desktop 1.26832.0<br>Docker 29.7.2<br>CLI Proxy API<br>VS Code 1.132.0<br>Neovim 0.12.4 with LazyVim<br>Wazuh agent 4.14.6<br>node_exporter 1.9.0<br>SSH |
+| ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>CLI Proxy API<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -47,35 +47,27 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | System services | Semaphore, SSH, cron |
 | Containers | No Docker or Podman containers detected |
 
-## debian-dev
+## ubuntu-dev
 
-This is the machine I develop on. It holds that role by itself since I deleted VM 111 `fedora-dev`.
+This is the Ubuntu development workstation on VM 105, and it is where I now develop. I added it to this inventory on 2026-08-13; it had been running since 2026-08-12 with no record here.
 
-The login account is `ai-agent`, and it is the only login account. I made that change on 2026-08-08. `/home/dkadi` survived the morning as a symlink to `/home/ai-agent` so existing paths kept resolving, and I removed the symlink the same afternoon. One account carries both my own work and the work agents do for me, which is a deliberate departure from the baseline standard's three-account model and the reason it is written down here.
+It took CLI Proxy API from `debian-dev` on 2026-08-13. The Compose project, `config.yaml`, the five provider authentication files, the logs, and the plugins directory moved with it, and I transferred the image itself so the new host runs the same digest rather than whatever `latest` resolved to that day.
 
-`dkadi` is not a user on this host. Nothing on the host referenced the old path outside Chrome and Codex log files, which only recorded it as history.
+The login account is `ai-agent`, matching the single-account arrangement on `debian-dev`, and it carries the same approved single-account exception. I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) on 2026-08-13: the sudo grant moved out of `/etc/sudoers` into a `0440` drop-in, SSH took the six hardening settings, root is locked, the clock and locale are `America/New_York` and `en_US.UTF-8`, and cloud-init is disabled. It joined fleet monitoring the same day as Wazuh agent `020` and node_exporter target.
+
+Node.js is installed per-user through nvm rather than system-wide. It resolves in an interactive shell but not in a non-interactive one, so scripts, cron jobs, and remote commands do not find `node` on PATH.
 
 | Workload | Details |
 | --- | --- |
-| GNOME desktop | Debian GNOME metapackages `gnome` and `gnome-core` 48; GNOME Shell 48.7-0+deb13u2 |
-| Container runtime | Docker 29.7.2 with Compose v5.4.0 and buildx 0.36.1; `ai-agent` is a member of group `docker` |
-| CLI Proxy API | `eceasy/cli-proxy-api:latest` under `/home/ai-agent/docker/cli-proxy-api`; main listener TCP 8317; `unless-stopped`; available internally at `https://aiproxy.alphasecunited.com`; domain route verified, provider authentication still empty |
-| Display manager | GDM 48.0-2; Wayland greeter active; graphical target is the default boot target |
-| Network | NetworkManager profile `Wired connection 1` owns `ens18`; autoconnect; static `192.168.40.135/24`; gateway/DNS `192.168.40.1` |
-| Desktop privilege policy | `/etc/polkit-1/rules.d/49-ai-agent-gnome-nopasswd.rules` grants all actions without authentication to user `ai-agent` only from an active local session; remote Polkit requests remain subject to normal policy |
-| Claude Desktop | 1.26832.0 from Anthropic's APT repository; sign-in persists through the GNOME Keyring login collection since the 2026-07-22 fresh session |
-| Cowork virtualization | `/dev/kvm` available through AMD KVM; `ai-agent` is the sole member of group `kvm` |
-| Remote administration | SSH Manager target `db_13_dev` (`ai-agent@192.168.40.135`) using the Jedi-PC Ed25519 identity. This independent profile name did not change with the Proxmox display name. It replaced the target `debian_dev`, which pointed at the removed `dkadi` account and had stopped working |
-| SSH hardening | `/etc/ssh/sshd_config.d/99-hardening.conf` sets `PermitRootLogin no`, `PubkeyAuthentication yes`, `PasswordAuthentication no`, `KbdInteractiveAuthentication no`, `X11Forwarding no`, and `AllowUsers ai-agent`. `sshd -T` reads all six back, and root is password-locked, so `passwd -S root` returns `L` |
-| Authorized keys | Three identities in `/home/ai-agent/.ssh/authorized_keys`: `jedi-pc`, `mac-air3-dkadi`, and `ansible-control`. I set no `from=` restriction on purpose, because over the Management VPN a device answers from `10.6.0.0/24` rather than its LAN address, and a source lock would close the path I use from outside the house |
-| Privilege | `/etc/sudoers.d/90-ai-agent` at mode 0440 grants `ai-agent ALL=(ALL:ALL) NOPASSWD: ALL`. It replaced an inline grant that sat in `/etc/sudoers` itself, below `@includedir`, where one syntax error would have taken sudo out entirely |
-| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `019` remains enrolled as `db-13-dev`; groups `default,workstation` |
-| node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project; Prometheus scrapes it with label `role=workstation` |
-| Unattended upgrades | `unattended-upgrades` with `/etc/apt/apt.conf.d/20auto-upgrades` enabling daily list refresh and unattended install; `apt-daily-upgrade.timer` is armed |
-| Language toolchains | GCC 14.2.0 and Clang 19.1.7 with clang-format, clang-tidy, cppcheck, bear, gdb, lldb and valgrind; Go 1.26.5 from upstream at `/usr/local/go` with gopls, dlv, staticcheck and golangci-lint; Rust 1.97.1 with clippy, rustfmt and rust-analyzer; Python 3.13.5 with ruff, mypy, pytest through poetry, pre-commit, ansible-lint, yamllint and IPython; Node 24.19.0 with npm 11.17.0; OpenJDK 21.0.11 with Maven 3.9.9 |
-| Toolchain environment | `/etc/profile.d/dev-toolchains.sh` sets `GOPATH`, `GOBIN`, `JAVA_HOME`, `EDITOR` and `VISUAL`. Every shared binary lives in `/usr/local/bin`, which the default non-login `PATH` already carries, so a command run over SSH resolves the same tool the desktop session resolves |
-| Editors | VS Code 1.132.0 from Microsoft's APT repository; Neovim 0.12.4 from the upstream release with LazyVim, 57 plugins and 20 extras covering C, Go, Rust, Python, TypeScript, Java, SQL, YAML, JSON, TOML, Docker, Markdown and Git; JetBrainsMono Nerd Font 48 faces installed for its glyphs |
-| Rollback | None. I deleted the `pre-gnome-20260715` snapshot on 2026-08-08 under the standing rule, because the 2026-07-15 GNOME work was long finished and verified |
+| GNOME desktop | Ubuntu GNOME; GNOME Shell 50.1, GDM 50.1 |
+| Docker | Docker CE 29.7.2 with Compose v5.4.0; installed 2026-08-13 |
+| CLI Proxy API | Container `cli-proxy-api`, image digest begins `sha256:3f7a734784f4`; published internally as `https://aiproxy.alphasecunited.com` |
+| VS Code | 1.133.0 |
+| Node.js | 24.19.0 via nvm, user scope |
+| GitHub CLI | 2.97.0, authenticated as `Duresa7` |
+| Wazuh agent | 4.14.6, manager ID `020`, manager `192.168.72.2`; version held in apt |
+| node_exporter | `prometheus-node-exporter` 1.10.2, `192.168.40.179:9100` |
+| SSH | key-based login; host signing key registered on GitHub for verified commits |
 
 ## docker-main
 
@@ -201,7 +193,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 | Pelican Panel | `ghcr.io/pelican-dev/panel:latest`, running v1.0.0-beta36 on Laravel 13.23.0; SQLite in the `pelican-panel_pelican-data` volume; compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
 | Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
 | Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; current assignments total 9216 MiB memory, 51200 MiB disk, and 500 percent CPU; allocations `192.168.80.30:25565` through `25575` |
-| Vanilla Minecraft 26.2 | Pelican server ID 3; official Vanilla egg; Java 25; `VANILLA_VERSION=26.2`; 8192 MiB memory, 400 percent CPU, and 20480 MiB disk on `192.168.80.30:25565`; running and public; reached `Done (0.257s)!` after a controlled restart; public status returned 26.2, protocol 776, 0 of 20 players |
+| Vanilla Minecraft 26.2 | Pelican server ID 3; official Vanilla egg; Java 25; `VANILLA_VERSION=26.2`; 8192 MiB memory, 400 percent CPU, and 20480 MiB disk on `192.168.80.30:25565`; running and public; `keep_inventory=true`, read back from the console and flushed to the world on 2026-08-11; reached `Done (0.257s)!` after a controlled restart; public status returned 26.2 and protocol 776 after the game-rule change |
 | Better Realism MC 7.2.0 | Pelican server ID 2; CurseForge server file 8570131; Minecraft 1.21.1 on Fabric 0.19.3 with Fabric Installer 1.1.2 and Java 21; stopped on 2026-08-09 and retained with its 363 MiB volume and world intact; 1024 MiB memory, 100 percent CPU, and 30720 MiB disk on `192.168.80.30:25566`; not public; its `-Xms4G` startup requires a limit restore before reactivation |
 | Playit agent | Native package 1.0.9; enabled/active; the one assigned Minecraft tunnel forwards to `127.0.0.1:25565`; persistent secret at `/etc/playit/playit.toml`, mode 0600 and not versioned |
 | Minecraft Playit relay | `minecraft-playit-relay.service`; enabled/active; dynamic user; loopback-only `127.0.0.1:25565` to Pelican allocation `192.168.80.30:25565` |
@@ -223,7 +215,7 @@ The login account is `ai-agent`, and it is the only login account. I made that c
 
 ## Wazuh agent coverage
 
-The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. All five Proxmox nodes share `default, proxmox`.
+The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. All five Proxmox nodes share `default, proxmox`. I enrolled `ubuntu-dev` as `020` on 2026-08-13. `debian-dev` held `019` from 2026-08-08 and was never added to this table; I decommissioned that VM on 2026-08-14 and removed agent `019` from the manager the same day via `manage_agents`, so `agent_control -l` no longer lists it.
 
 | Host | Manager ID | Version | Group | State |
 |---|---:|---|---|---|
@@ -241,10 +233,11 @@ The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. 
 | blue-server | 015 | 4.14.6 | default, proxmox | Active |
 | red-server | 016 | 4.14.6 | default, proxmox | Active |
 | green-server | 017 | 4.14.6 | default, proxmox | Active |
+| ubuntu-dev | 020 | 4.14.6 | workstation | Active |
 
 ## Guest exporter coverage
 
-Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on 9100, all at `node_exporter` 1.9.0. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
+Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on 9100, all at `node_exporter` 1.9.0 except `ubuntu-dev`, added 2026-08-13, where Ubuntu 26.04 ships 1.10.2. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
 
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
@@ -259,6 +252,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
 | kasm-01 | Upstream binary (Ubuntu 24.04) | `node_exporter.service` | `192.168.78.10:9100`, bound to that address only | Not installed, deliberately |
 | edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.30.10:9100` | No containers |
+| ubuntu-dev | Ubuntu package | `prometheus-node-exporter.service` | `192.168.40.179:9100` | Not installed |
 
 `security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
 

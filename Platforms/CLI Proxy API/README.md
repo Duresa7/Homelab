@@ -1,16 +1,16 @@
 # CLI Proxy API
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-13
 
-I run CLI Proxy API as a Docker Compose service on `debian-dev`. It is available to internal clients at `https://aiproxy.alphasecunited.com`; UniFi resolves that name to Nginx Proxy Manager, and NPM forwards the request to the service's main HTTP listener.
+I run CLI Proxy API as a Docker Compose service on `ubuntu-dev`. It moved there from `debian-dev` on 2026-08-13, ahead of that host's decommission on 2026-08-14. It is available to internal clients at `https://aiproxy.alphasecunited.com`; UniFi resolves that name to Nginx Proxy Manager, and NPM forwards the request to the service's main HTTP listener.
 
 ## Current State
 
 | Item | Current value |
 |---|---|
 | Deployment status | Container running; internal HTTP redirect, HTTPS route, certificate, management page, and authenticated API path verified |
-| Compute | Galaxy VM 102 `debian-dev`; guest hostname `debian-dev`; `192.168.40.135` on Personal-A |
+| Compute | Galaxy VM 105 `ubuntu-dev`; guest hostname `ubuntu-dev`; `192.168.40.179` on Personal-A |
 | Live Compose path | `/home/ai-agent/docker/cli-proxy-api` |
 | Container | `cli-proxy-api` |
 | Image | `eceasy/cli-proxy-api:latest`; deployed digest begins `sha256:3f7a734784f4` |
@@ -18,12 +18,12 @@ I run CLI Proxy API as a Docker Compose service on `debian-dev`. It is available
 | Main listener | HTTP on TCP 8317 |
 | Internal URL | `https://aiproxy.alphasecunited.com` |
 | Management page | `https://aiproxy.alphasecunited.com/management.html` |
-| Direct fallback | `http://192.168.40.135:8317` |
-| Provider state | No provider authentication files; an authenticated `/v1/models` request returns zero models |
+| Direct fallback | `http://192.168.40.179:8317` |
+| Provider state | Five provider authentication files under `auths/`; the service loads five clients at startup |
 
 ## Request Path
 
-Internal DNS maps `aiproxy.alphasecunited.com` to NPM at `192.168.85.2`. NPM proxy host ID 26 terminates the wildcard certificate and forwards plain HTTP to `192.168.40.135:8317`. UniFi policy `Allow NPM to debian-dev CLI Proxy API` admits that TCP path and logs matches.
+Internal DNS maps `aiproxy.alphasecunited.com` to NPM at `192.168.85.2`. NPM proxy host ID 26 terminates the wildcard certificate and forwards plain HTTP to `192.168.40.179:8317`. UniFi policy `Allow NPM to ubuntu-dev CLI Proxy API` admits that TCP path and logs matches.
 
 The name has no public A record and I added no WAN ingress. HTTP redirects to HTTPS, the HTTPS endpoint returns `200`, and the presented wildcard certificate expires `2026-10-08 23:49:46 UTC`.
 
@@ -32,7 +32,7 @@ The name has no public A record and I added no WAN ingress. HTTP redirects to HT
 The live project bind-mounts these paths:
 
 - `config.yaml` supplies the server configuration and contains secret-bearing fields, so I keep it out of this repository and at mode `0600`.
-- `auths/` holds provider authentication files. It currently contains only its placeholder and no provider authentication file.
+- `auths/` holds provider authentication files. It holds five: one Antigravity account, two Claude accounts, and two Codex team accounts. They are live credentials, so they stay out of this repository and I do not read their contents.
 - `logs/` holds application logs.
 - `plugins/` holds optional plugins.
 
