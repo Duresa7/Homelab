@@ -1,0 +1,61 @@
+# grey-server's standalone root authorized_keys, as it stood before the 2026-08-15 repair
+#
+# Source: grey-server, /root/.ssh/authorized_keys
+# Taken:  2026-08-15, before ticket 10 of the Fleet Access Model change
+# State:  28 lines, 23 key lines, 5 blank, 11 unique keys, mode 600 root:root,
+#         mtime 2026-08-13 22:12
+#
+# On the other four nodes this path is a symlink to /etc/pve/priv/authorized_keys.
+# On grey-server it was a standalone regular file, so inbound root SSH to this
+# node read the content below and never read the cluster file. That is why the
+# 2026-08-15 cluster key cleanup did not take effect here, and why
+# SHA256:Utepy… (line 6) still authorised root on this node afterwards.
+#
+# REDACTED. Every key blob is replaced by a redaction token. Approved identity
+# labels are published as they are in the SSH Authorized Key Cleanup -
+# 2026-07-14 record. This is a structural record of what the file held and in
+# what order. It is not restorable material, by design.
+#
+# A token is stable within this file: the same token always means the same key,
+# which is what makes the duplication below legible.
+#
+# Line 2 is grey-server's own node key, carrying the hostname the machine had
+# before it was renamed. The sibling file
+# grey-server-pve-authorized_keys-2026-08-15 renders that same key as
+# <REMOVED_STALE_ROOT_KEY>, on the mistaken reading that it belonged to no
+# current node. Ticket 10 corrected that and reinstated the key in the cluster
+# file under the comment root@grey-server.
+#
+# The content is the pre-cleanup cluster file minus the
+# codex-vgpu-lab-transfer-20260813 key, which the cluster file gained after
+# this copy diverged from it.
+#
+# Line  Type            Key                              Label
+ 1  (blank line)
+ 2  ssh-rsa <REDACTED_NODE_RSA_KEY_GREY> root@Kadi
+ 3  ssh-rsa <REDACTED_NODE_RSA_KEY_PURPLE> root@purple-server
+ 4  ssh-rsa <REDACTED_NODE_RSA_KEY_BLUE> root@blue-server
+ 5  ssh-rsa <REDACTED_NODE_RSA_KEY_RED> root@red-server
+ 6  ssh-ed25519 <REDACTED_UNIDENTIFIED_KEY> (no comment)
+ 7  ssh-ed25519 <REDACTED_IDENTITY_KEY_MAC> mac-air3-dkadi
+ 8  ssh-ed25519 <REDACTED_IDENTITY_KEY_ANSIBLE_CONTROL> ansible-control
+ 9  ssh-ed25519 <REDACTED_IDENTITY_KEY_JEDI_PC> jedi-pc
+10  (blank line)
+11  ssh-ed25519 <REDACTED_IDENTITY_KEY_MAC> mac-air3-dkadi
+12  ssh-ed25519 <REDACTED_IDENTITY_KEY_ANSIBLE_CONTROL> ansible-control
+13  ssh-ed25519 <REDACTED_IDENTITY_KEY_JEDI_PC> jedi-pc
+14  ssh-rsa <REDACTED_NODE_RSA_KEY_GREEN> root@green-server
+15  (blank line)
+16  ssh-ed25519 <REDACTED_IDENTITY_KEY_MAC> mac-air3-dkadi
+17  ssh-ed25519 <REDACTED_IDENTITY_KEY_ANSIBLE_CONTROL> ansible-control
+18  ssh-ed25519 <REDACTED_IDENTITY_KEY_JEDI_PC> jedi-pc
+19  (blank line)
+20  ssh-ed25519 <REDACTED_IDENTITY_KEY_MAC> mac-air3-dkadi
+21  ssh-ed25519 <REDACTED_IDENTITY_KEY_ANSIBLE_CONTROL> ansible-control
+22  ssh-ed25519 <REDACTED_IDENTITY_KEY_JEDI_PC> jedi-pc
+23  (blank line)
+24  ssh-ed25519 <REDACTED_IDENTITY_KEY_MAC> mac-air3-dkadi
+25  ssh-ed25519 <REDACTED_IDENTITY_KEY_ANSIBLE_CONTROL> ansible-control
+26  ssh-ed25519 <REDACTED_IDENTITY_KEY_JEDI_PC> jedi-pc
+27  ssh-ed25519 <REDACTED_IDENTITY_KEY_PXE_JOIN> galaxy-pxe-join
+28  ssh-ed25519 <REDACTED_IDENTITY_KEY_UBUNTU_DEV> ai-agent@ubuntu-dev

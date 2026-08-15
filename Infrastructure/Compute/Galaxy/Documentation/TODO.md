@@ -3,7 +3,14 @@
 **Created:** 2026-07-14  
 **Last updated:** 2026-08-15
 
-This backlog retains completed Green recovery, CT 105 retirement evidence, Purple storage work, & the accepted-risk cluster maintenance done during the earlier Kasm prep. Its one open item is the root SSH setting on Purple and Blue. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog retains completed Green recovery, CT 105 retirement evidence, Purple storage work, & the accepted-risk cluster maintenance done during the earlier Kasm prep. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+
+## Scope of the `galaxy-pxe-join` Key
+
+**Status:** Open, found 2026-08-15 while repairing Grey's root key file  
+**Troubleshooting record:** [Broken Node Shell and Standalone authorized_keys on grey-server](Troubleshooting/Broken%20Node%20Shell%20and%20Standalone%20authorized_keys%20on%20grey-server%20-%202026-08-15.md)
+
+- [ ] Decide whether `galaxy-pxe-join` stays trusted for root on all five nodes or is re-scoped to `grey-server` alone. On 2026-07-31 that key was trusted on Grey only, and [Galaxy Artifact Cleanup and Green SSH Parity](../../../../Operations/Maintenance/Galaxy%20Artifact%20Cleanup%20and%20Green%20SSH%20Parity%20-%202026-07-31.md) records the standalone `authorized_keys` on Grey as the mechanism that kept it that way, calling a widening to five nodes a downgrade. The key was already in `/etc/pve/priv/authorized_keys` before the 2026-08-15 repair, so it reached all five nodes while the file that was supposed to scope it had stopped doing so. Symlinking Grey's file on 2026-08-15 removed that mechanism for good. Its private half is what lets a newly installed node run `pvecm add --use_ssh`, and `cluster_peer: 192.168.70.10` in the PXE registry means only Grey needs to accept it. Re-scoping it means holding it outside the cluster-backed file, which is the arrangement that just caused a silent divergence, so the decision is which of the two costs to carry.
 
 ## Root SSH Setting Split Across the Nodes
 

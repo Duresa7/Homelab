@@ -1,7 +1,7 @@
 # Galaxy Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-15
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](../TODO.md).
 
@@ -22,3 +22,4 @@ One 2026-07-15 record covering a duplicate APT source on `debian-dev` stays loca
 | <a id="7-purple-nvme-reliability-failure"></a>[7](Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md) | 2026-07-22 | Purple's boot log reported NVMe critical warning `0x04` after the Proxmox 9.2.5 canary reboot | The 256 GB boot NVMe was worn out: overall health `FAILED` at 169% endurance used | Resolved 2026-07-25; Toshiba clone in, health `PASSED`, four votes |
 | <a id="8-duplicate-pve-volume-group-on-blue-server"></a>[8](Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md) | 2026-07-30 | `local-lvm` stayed inactive and CTs 104, 107, & 108 couldn't start after Blue booted | A newly connected WDC SATA disk retained an older Proxmox VG also named `pve`, which made the NVMe `pve/data` activation ambiguous | Resolved 2026-07-31; WDC layout wiped, NVMe storage and guests verified |
 | <a id="9-status-unknown-and-cross-process-faults-on-green-server"></a>[9](Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md) | 2026-08-09 | Proxmox reported `green-server` as `unknown`; `pvestatd` and `pve-firewall` were failed after 37 cross-process faults | Restarting `pvestatd` restored status; the cross-process pattern points to Green's physical memory path, but the bounded online test passed and the exact hardware cause remains open | Mitigated; offline full-memory test remains |
+| <a id="10-broken-node-shell-and-standalone-authorized-keys-on-grey-server"></a>[10](Broken%20Node%20Shell%20and%20Standalone%20authorized_keys%20on%20grey-server%20-%202026-08-15.md) | 2026-08-15 | The web interface **Shell** on every node other than `grey-server` returned `Permission denied (publickey)` when served from Grey | Grey's own node key had been removed from the cluster key file as a stale `root@Kadi` entry, and Grey's `/root/.ssh/authorized_keys` was a standalone file rather than the symlink the other four carry | Resolved 2026-08-15; key reinstated as `root@grey-server` and the file symlinked |
