@@ -1,13 +1,13 @@
 # Ansible TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-15
 
 ## Open Items
 
 - Register the `ubuntu-dev` SSH identity in `ssh-key-automation`, now that it has replaced `debian-dev` as the machine I develop on. The equivalent item for `debian-dev` closed on its own when I decommissioned that VM on 2026-08-14 without ever writing `identities/debian-dev.yml`; the project never knew that identity existed. I also corrected two defects in `inventory/hosts.yml` that would have made any run fail or skip a node: `edge-01` still carried `192.168.90.10` after it moved to `192.168.30.10` on 2026-08-07, and `green-server` had never been added although it joined the cluster on 2026-07-31. Both are fixed and the file now lists all five nodes.
+- Set `ansible-01`'s clock to `America/New_York`. `timedatectl` reports `Time zone: Etc/UTC (UTC, +0000)`, where step 8 of the Linux host baseline requires Eastern so timestamps compare across hosts without conversion. Found on 2026-08-15 while turning root SSH off on the host, and recorded in [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md). That record also carries the reason `systemctl reload ssh` is unsafe here: `ssh.socket` owns port 22, so a re-execing sshd dies on `Cannot bind any address` and the unit has to be restarted instead.
 - Tidy `/etc/pve/priv/authorized_keys`. It holds `jedi-pc`, `mac-air3-dkadi`, and `ansible-control` five times each, one copy per node join, plus an `no comment` Ed25519 entry I have not identified. Nothing is broken by this, but the duplication makes the file hard to audit by eye.
-- Watch the first real automatic reboot after the 2026-07-29 fix. I added a wait for the guest's SSH listener to drop before the reconnect, so the boot-ID check can't race the shutdown. The validator, both syntax checks, `--list-tasks`, and a two-host check-mode run all pass, but the reboot block is skipped under `--check` and no guest currently reports `reboot_required=True`, so the new wait itself is unexercised. The reasoning is in [Reboot action did not finish after the guest returned](Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md).
 
 Future controller runtime, Semaphore, SSH identity, or fleet-update tasks start here before I move them into an active change record.
 

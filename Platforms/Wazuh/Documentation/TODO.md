@@ -1,11 +1,18 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-15
 
 ## Fleet deployment status
 
 I completed the [2026-08-03 fleet deployment](Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md) with 14 active remote agents, zero disconnected or pending agents, and all five Galaxy nodes active in `proxmox`. I described IDs `006` through `017` as held because the [deployment play](../Source/agent-deployment/playbooks/deploy.yml) installs exact package `4.14.6-1` and separately applies `dpkg_selections: hold` to its twelve targets. Existing IDs `004` and `005` are not in that inventory, so the empty `apt-mark showhold` results from `app-01` and `edge-01` on 2026-08-04 do not contradict the record. The final seven-host run and later Green-only run each changed zero hosts.
+
+## Two host deviations found on 2026-08-15
+
+Both turned up while I turned root SSH off on `security-01` and neither affects Wazuh itself. See [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md).
+
+- [ ] The guest answers to the hostname `wazuh-01`, but it is `security-01` in [VMs.md](../../../Operations/Inventory/Galaxy/VMs.md), in the Ansible inventory, and in the SSH Manager configuration. Every shell prompt and journal line from the host disagrees with the name every record uses. Decide which name is canonical and make `/etc/hostname` match it.
+- [ ] `timedatectl` reports `Time zone: Etc/UTC (UTC, +0000)`. Step 8 of the Linux host baseline requires `America/New_York` so timestamps compare across hosts without conversion.
 
 ## Agent versions are gated on the manager, not on the sources
 
