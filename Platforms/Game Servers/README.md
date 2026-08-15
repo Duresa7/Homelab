@@ -1,7 +1,7 @@
 # Game Servers
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-11
 
 I host my own game servers on `game-01`, an unprivileged LXC on `green-server`. Pelican Panel manages them through a web UI, and its Wings daemon runs each game server in its own Docker container with a memory, CPU and disk limit taken from the panel.
 
@@ -16,6 +16,7 @@ The current public workload is Vanilla Minecraft Java Edition 26.2 on Java 25. B
 - [Documentation/Deployment.md](Documentation/Deployment.md) preserves the original platform build and first workload.
 - [Better Realism MC and Playit Publication - 2026-08-09](Documentation/Change%20Records/Better%20Realism%20MC%20and%20Playit%20Publication%20-%202026-08-09.md) records the destructive workload replacement and public game path.
 - [Better Realism Shutdown and Vanilla Minecraft Deployment - 2026-08-09](Documentation/Change%20Records/Better%20Realism%20Shutdown%20and%20Vanilla%20Minecraft%20Deployment%20-%202026-08-09.md) records the retained shutdown, capacity rebalance, and current Vanilla server.
+- [Vanilla Keep Inventory and Host Sudo Policy - 2026-08-11](Documentation/Change%20Records/Vanilla%20Keep%20Inventory%20and%20Host%20Sudo%20Policy%20-%202026-08-11.md) records the saved `keep_inventory=true` rule and the newly authorized passwordless sudo policy for `dkadi` on `game-01`.
 
 The guest itself belongs to Galaxy, not here. Its creation record is [Galaxy Game-01 LXC Deployment - 2026-08-07](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Game-01%20LXC%20Deployment%20-%202026-08-07.md).
 
@@ -51,7 +52,7 @@ The panel enforces these against the 12 GiB LXC. They are what stops one server 
 | Vanilla Minecraft 26.2 | Vanilla Minecraft | Minecraft Java Edition 26.2 | Running | Yes | `192.168.80.30:25565` | 8192 MiB | 400 percent | 20480 MiB |
 | Better Realism MC 7.2.0 | Fabric | Better Realism server pack 7.2.0 | Stopped and retained | No | `192.168.80.30:25566` | 1024 MiB | 100 percent | 30720 MiB |
 
-Vanilla uses the official Pelican egg, the Java 25 image, and the pinned installer value `VANILLA_VERSION=26.2`. Its Mojang server JAR matched the official SHA-1, it reached `Done (4.934s)!` on first boot, and it returned after a controlled restart in 0.257 seconds. The public status response is Minecraft 26.2, protocol 776, 0 of 20 players, with online authentication enabled.
+Vanilla uses the official Pelican egg, the Java 25 image, and the pinned installer value `VANILLA_VERSION=26.2`. Its Mojang server JAR matched the official SHA-1, it reached `Done (4.934s)!` on first boot, and it returned after a controlled restart in 0.257 seconds. The public status response is Minecraft 26.2, protocol 776, with online authentication enabled. The saved `keep_inventory` game rule is `true`, so players keep their items when they die.
 
 The retained Better Realism server is Minecraft 1.21.1, Fabric Loader 0.19.3, Fabric Installer 1.1.2, and Java 21. Its UUID, 363 MiB volume, and world remain present. Its parked 1 GiB limit is below the 4 GiB initial heap in its startup command, so I must stop or shrink Vanilla and restore Better Realism's limits before trying to start it.
 

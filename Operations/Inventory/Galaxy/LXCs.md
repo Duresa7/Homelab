@@ -1,7 +1,7 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-11
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
@@ -190,6 +190,12 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 80 | 192.168.80.30/24 | 192.168.80.1 | enabled | `<REDACTED_GAME_01_MAC>` |
+
+### Administrative Access
+
+- SSH is public-key only. Root login, password authentication, and keyboard-interactive authentication are disabled.
+- SSH Manager reaches the normal administrative account as `dkadi`. `/etc/sudoers.d/90-dkadi` has granted it NOPASSWD sudo since 2026-08-11; the complete sudoers configuration parsed successfully, and `sudo -n` worked through the normal SSH path. This is a deliberate deviation from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md) awaiting the fleet sudo decision, not baseline-conforming state.
+- `ansible` and `ai-agent` retain their separate NOPASSWD drop-ins. `ai-agent` has no authorized SSH key and cannot use the key-only SSH path. The policy change is recorded with the game-rule work in [Vanilla Keep Inventory and Host Sudo Policy - 2026-08-11](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Vanilla%20Keep%20Inventory%20and%20Host%20Sudo%20Policy%20-%202026-08-11.md).
 
 ## LXC 842 - media-01
 
