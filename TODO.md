@@ -1,17 +1,34 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-15
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
 
-None.
+- [ ] **Move Coolify off root SSH on `app-01`, and clear out its leftover keys.** Coolify 4.3.2 manages the host it runs on by connecting to it over SSH as `root`, which is why `app-01` logged 735 root logins in the 30 days to 2026-08-15 against 70 for `dkadi`. That blocks the rule that a VM carries no root account, so `app-01` stays an exception until this is done. Read Coolify's own guidance on running against a non-root user before changing anything. Two loose ends belong to the same job: `/root/.ssh/authorized_keys` holds `SHA256:rmcpwm…` with no comment, written 2026-03-13 at 16:37 — twenty-six minutes after `/data/coolify` was created, and not one of the four keys Coolify holds today, so it is probably an install-time key that was rotated and never removed. Coolify also stores a private key commented `dkadi@wp-01`, and no host named `wp-01` exists anywhere in the environment.
+
+- [ ] **Revisit `kasm-01`'s cloud-init and its two `dkadi` sudo grants.** Deferred on 2026-08-15 rather than decided. The host carries both my `/etc/sudoers.d/90-dkadi` and cloud-init's `90-cloud-init-users`, which reads `dkadi ALL=(ALL) NOPASSWD:ALL` and was written by cloud-init v25.3 on 2026-07-24. `cloud-init status` reports `done` and `/etc/cloud/cloud-init.disabled` is absent, so cloud-init re-applies the user configuration it finds on the Proxmox drive and can restore a grant I remove. `kasm-01` is also the only host whose `/root/.ssh/authorized_keys` still carries the unidentified `SHA256:Utepy…` key, there wrapped in the cloud image's "log in as dkadi" forced command. Decide the host's sudo policy and whether cloud-init is disabled in the same pass.
 
 ## Active Priorities
 
-- [ ] Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md), which I corrected on 2026-08-05 so that only unattended accounts carry `NOPASSWD`. A minority of hosts still hold the old policy, and one restores it from cloud-init on every boot. Order matters: provision the new `ai-agent` automation account first so unattended `sudo -n` keeps working, then remove the drop-ins, then stop cloud-init reapplying the change. I ran the preflight on 2026-08-05 and every affected host keeps working sudo afterward. The per-host detail sits with the hardening standard, which is not published. `ubuntu-dev` carries the same approved single-account exception `debian-dev` held before its 2026-08-14 decommission.
+- [ ] **This priority was inverted on 2026-08-14 and is being replaced, not continued.** A live audit that day showed the original goal — removing `dkadi`'s passwordless sudo so a stolen human key is not root by itself — was already unreachable by that route, because the human keys reach root on the Proxmox nodes and on `ansible-01` regardless. I chose convenience instead: `dkadi` keeps passwordless sudo and gains it on the six hosts that still ask for a password. The security work that remains is key hygiene, not sudo policy. The sub-items below describe the superseded model and stay only until the standard rewrite replaces them. Do not work them as written.
+  - [x] Key hygiene landed 2026-08-15. The Proxmox cluster root key file went from 29 lines to 9, dropping an unidentified key, a stale `root@Kadi` key and a one-off transfer key that still held root on all five hypervisors; the same unidentified key came off eight guest accounts. A 17-scope sweep finds zero copies left. `ubuntu-dev` is now a registered identity in `ssh-key-automation`.
+  - [x] `ai-agent` now exists and accepts a key login on all twelve target hosts, provisioned by the new [host-access-baseline](Platforms/Ansible/Source/host-access-baseline/README.md) Ansible project. It has no sudo yet anywhere except `game-01`.
+  - [x] The five Proxmox nodes now share one known root password, set 2026-08-15 and proven by a `root@pam` login on each node. They sit outside the guest credential model on purpose. [Node Root Password Reset](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Node%20Root%20Password%20Reset%20-%202026-08-15.md).
+  - [ ] Write the `NOPASSWD` drop-ins for `ai-agent` and for `dkadi` on the six hosts that lack it, through the same project.
+  - [ ] Rewrite the unpublished Linux host baseline standard to describe the new model, including the accepted risk that a stolen key is root fleet-wide, then replace this priority with one that matches it.
+  - [ ] Decide whether `ansible-01` gets a `dkadi` account. It has none, and the default is to leave it alongside `docker-main` and `ubuntu-dev` as a host outside the `dkadi` model.
+
+- [ ] Superseded detail from the original plan, kept for reference until the standard rewrite lands. Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md), where only unattended accounts carry `NOPASSWD`. The per-host findings and account details stay in the unpublished hardening standard.
+  - [ ] Refresh the read-only fleet audit before changing anything. The last full preflight was 2026-08-05, before `ubuntu-dev` and `game-01` reached their current states.
+  - [ ] Confirm the exception list. `ubuntu-dev` keeps the approved single-account `ai-agent` model. `game-01` received a human `NOPASSWD` grant on 2026-08-11; either approve and document it as another exception or remove it with the other nonconforming grants.
+  - [ ] On each ordinary host that still gives `dkadi` passwordless sudo, provision `ai-agent` first: create the account and home, install only its restricted key, add its validated mode-`0440` `NOPASSWD` drop-in, and add Docker access only where automation needs the socket.
+  - [ ] Prove the new automation path through its real SSH key. `sudo -n true` must exit `0`, and approved Compose hosts must also pass `docker info`, before changing human access.
+  - [ ] Disable cloud-init on any provisioned guest that can restore its old user configuration. On `kasm-01`, remove both the manual and cloud-init-generated human grants only after the disablement is in place.
+  - [ ] Remove every remaining `dkadi` `NOPASSWD` grant from ordinary hosts while leaving `dkadi` in the `sudo` group. Validate the complete sudoers configuration before ending each host session.
+  - [ ] Verify the final state per host: `dkadi` passwordless sudo fails, password-backed sudo succeeds, unattended accounts retain `sudo -n`, SSH remains key-only with root login disabled, and cloud-init cannot recreate a removed grant. Update the private per-host findings and close this priority only when every ordinary host passes.
 
 - [ ] **Low priority.** Review the 22 diagrams under [Assets/Diagrams](Assets/Diagrams) and redraw the ones that no longer match the environment. Two are known: [prometheus.svg](Assets/Diagrams/prometheus.svg) still shows 51 targets against a live 52, and `agent-sandbox.png` illustrates the Agent Sandbox design I dropped on 2026-08-06 without ever building it. I did not audit the other 20. Excalidraw stores coordinates and colours as plain numbers in both the `.excalidraw` JSON and the exported SVG, so searching for a figure like `51` matches geometry as often as label text and proves nothing either way. Each diagram has to be opened. Every diagram is Excalidraw with its source beside the SVG, so a redraw edits the `.excalidraw` file and re-exports.
 
@@ -23,8 +40,8 @@ None.
 
 | Backlog | Open items |
 |---|---|
-| [Ansible](Platforms/Ansible/Documentation/TODO.md) | Tidy the duplicate entries in `/etc/pve/priv/authorized_keys`; watch the first real automatic reboot after the 2026-07-29 reconnect-race fix |
-| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | Run Green's full offline memory test and watch its recovered daemons; watch Kasm thin-pool use and Purple drive wear; keep watching Blue's recurring `pvestatd` crashes, quiescent since 2026-07-22 with the cause still unestablished |
+| [Ansible](Platforms/Ansible/Documentation/TODO.md) | `ubuntu-dev` registered and the cluster key file deduplicated, both 2026-08-15. New `host-access-baseline` project holds accounts and sudo; its sudoers drop-ins are still to run. `jedi-pc`, `mac` and `ansible-control` need `green-server` on their allowlists, and `monitor-01`, `kasm-01`, `game-01` and `ansible-01` are absent from the `ssh-key-automation` inventory |
+| [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | `purple-server` and `blue-server` run `permitrootlogin yes` where the other three run `without-password`. Keys only on all five either way |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
 | [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |

@@ -1,9 +1,16 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-15
 
-This backlog contains Purple storage monitoring, the open `pvestatd` crash watch, completed CT 105 retirement evidence, & the accepted-risk cluster maintenance done during the earlier Kasm prep. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog retains completed Green recovery, CT 105 retirement evidence, Purple storage work, & the accepted-risk cluster maintenance done during the earlier Kasm prep. Its one open item is the root SSH setting on Purple and Blue. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+
+## Root SSH Setting Split Across the Nodes
+
+**Status:** Open, found 2026-08-15 while resetting the node root passwords  
+**Change record:** [Node Root Password Reset](Change%20Records/Node%20Root%20Password%20Reset%20-%202026-08-15.md)
+
+- [ ] Decide whether `purple-server` and `blue-server` move from `permitrootlogin yes` to `without-password`, which is what grey, red and green run. Nothing is exposed by the difference today: `passwordauthentication` is `no` on all five, so both nodes accept keys only either way. The setting still says something untrue about intent, and the two that differ are the two built on 2026-05-27. Proxmox needs root SSH between nodes for the web interface **Shell** button and for migrations, so `no` is not an option on any of them.
 
 ## `green-server` PXE Expansion Complete
 
@@ -67,11 +74,8 @@ This backlog contains Purple storage monitoring, the open `pvestatd` crash watch
 - [x] Avoid taking Grey, Blue, or Red offline until Purple rejoins. Held for the whole 19-hour-33-minute window; Purple rejoined at `07:19:56 EDT` on 2026-07-25 and the cluster is back to four votes.
 - [x] Reassess the remaining rolling reboot order after the failed-device risk is removed or explicitly accepted.
 - [x] After replacement, verify storage, Proxmox VE 9.2.5, kernel, bridges, Corosync, HA, and a controlled reboot. The cold boot off the cloned drive is the reboot check: `local` and `local-lvm` active, `pve-manager/9.2.5/20242970da7fbcef` on kernel `7.0.14-6-pve` with nothing pending, both rings connected, all seven units active, fencing armed.
-- [ ] Watch the Toshiba's endurance counter along with media errors, filesystem errors, controller resets, and cluster stability. It's a used spare at 30% endurance used and 23,148 power-on hours, not a new drive, so plan its own replacement rather than treating this as permanent.
 - [x] Keep the Samsung SSD 850 EVO 250 GB installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. I made that role decision on 2026-07-27.
 - [x] Create `ssd-lvm2` as LVM-thin on the Samsung 850 EVO, restrict it to `purple-server`, enable VM image and LXC root-directory content, and verify it with a real guest disk. I completed this on 2026-07-28 by migrating Kasm VM 122 onto the pool. The pool was active at 11.03 percent allocated after the move, the guest booted, all eight Kasm services ran, seven Docker health checks reported healthy, and the API health endpoint passed. The unchanged [SMART capture](../../../Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) reports zero reallocated, CRC, and uncorrectable errors.
-- [ ] Monitor `ssd-lvm2` below the Kasm hard stop. A catalog-wide rolling-image refresh filled the pool on 2026-07-29, paused VM 122 with `io-error`, & caused Kasm's NPM route to return `502`. I enabled `discard=on`, removed both old snapshots, pruned unused Docker layers, disabled automatic workspace-image pulls, and installed Parrot by itself. The post-recovery readback was 68.25 percent with `baseline-parrot-2026-07-30` as the only snapshot; on 2026-08-04 the pool stood at 69.90 percent data and 3.06 percent metadata. The [incident record](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md) holds the timeline. 80 percent is the hard stop and I check it by hand: I dropped the automated alert on 2026-08-06 rather than build it. Autoextend can't help because the volume group has 124 MB unallocated.
-- [ ] Watch the 850 EVO's wear counters now that it carries a guest. It has absorbed 332 TB of host writes against a 75 TBW rating, and `Wear_Leveling_Count` normalized sits at 15 of 100 with raw 1801 average erase cycles. The baseline to compare against is that same 2026-07-28 capture. A non-zero `Reallocated_Sector_Ct`, a non-zero `CRC_Error_Count`, or a normalized wear value below 10 means move the pool rather than keep writing to it. Nothing irreplaceable lives there: the lab guest is rebuildable from the Kasm deployment record.
 
 ## Cluster Maintenance Done During Kasm Prep
 
@@ -84,7 +88,7 @@ This backlog contains Purple storage monitoring, the open `pvestatd` crash watch
 
 ## `green-server` Cross-Process Faults and Status Loss
 
-**Status:** Mitigated 2026-08-09; node online after service recovery and a controlled reboot, hardware cause still open  
+**Status:** Closed after service recovery and a controlled reboot on 2026-08-09; no further investigation is planned  
 **Troubleshooting record:** [Status Unknown and Cross-Process Faults](Troubleshooting/Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md)
 
 - [x] Confirm the `unknown` status with a cluster-side pass/fail loop. `pvestatd` had aborted and stayed failed because its unit has `Restart=no`.
@@ -93,15 +97,3 @@ This backlog contains Purple storage monitoring, the open `pvestatd` crash watch
 - [x] Run a bounded online memory test without stopping CT 123. Two locked 1 GiB passes completed with exit status 0, no new kernel fault, no swap pressure, and no guest interruption.
 - [x] Compile the firewall, restart `pvestatd` and `pve-firewall`, and verify the original cluster-status loop changed from `unknown` to `online`.
 - [x] Reboot Green normally and verify CT 123 returned, all status and firewall daemons stayed active, and a 12-sample burn-in kept the new boot at zero faults.
-- [ ] Run bootable Memtest86+ across the full 16 GB. If any error appears, power Green down and isolate the two modules, beginning with the SK Hynix 8 GB module added on 2026-07-31.
-- [ ] Keep watching the current-boot process-fault count and both recovered daemons. Another cross-process fault makes hardware isolation the next action even if the bootable test has not run yet.
-
-## `blue-server` Recurring `pvestatd` Crashes
-
-**Status:** Open, quiescent since 2026-07-22; cause still unestablished  
-**Troubleshooting records:** [Recurring `pvestatd` crashes](Troubleshooting/Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md); the separate [duplicate `pve` volume-group fault](Troubleshooting/Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md)
-
-- [x] Separate this from the duplicate-VG fault, which I briefly and wrongly treated as its cause. The duplicate VG made a running `pvestatd` log ten-second `activating LV 'pve/data' failed` messages, and those are fixed. This item is the daemon being killed by `SIGSEGV`, which is a different fault: the disk that carried the duplicate VG went in shortly before the 2026-07-30 shutdown and cannot explain the crash retained from 2026-06-19.
-- [x] Record the fifth crash, 2026-07-22 22:13:26 EDT, `status=11/SEGV`. The original investigation listed four; the journal now reaches back only to 2026-07-09, so the June ones survive only in the record.
-- [ ] Keep watching. On 2026-08-04 the service was `active`, `Result=success`, `NRestarts=0`, up since 2026-08-01 11:11:21 EDT, with no `SIGSEGV` or `SIGABRT` since 2026-07-22. **Thirteen days is not a fix:** the five crashes span a mean interval of about eight days, and nothing was changed on Blue that would plausibly have fixed it.
-- [ ] Capture evidence and run the non-disruptive integrity checks before any BIOS work or extended offline memory testing. The BIOS is `M1AKT35A` from 2018-03-21, below Lenovo's corrected minimum `M1AKT36A`, and that remains the leading hypothesis and remains untested.
