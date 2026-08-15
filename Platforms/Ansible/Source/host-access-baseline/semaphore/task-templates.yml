@@ -1,0 +1,124 @@
+---
+project:
+  name: Host-Access-Baseline
+  repository:
+    name: host-access-baseline
+    path: /home/ansible/host-access-baseline
+  inventory:
+    name: homelab-host-access-hosts
+    path: /home/ansible/host-access-baseline/inventory/hosts.yml
+    credential: ansible-key
+  environment:
+    name: C UTF-8
+    variables:
+      LANG: C.utf8
+      LC_ALL: C.utf8
+
+views:
+  - All
+  - AI Agent Account
+  - Sudo Policy
+  - Account Passwords
+
+templates:
+  - name: "AI Agent: Create Accounts and Install Key (dry run)"
+    view: AI Agent Account
+    playbook: playbooks/ai-agent-account.yml
+    arguments: ["--check"]
+  - name: "AI Agent: Create Accounts and Install Key"
+    view: AI Agent Account
+    playbook: playbooks/ai-agent-account.yml
+    arguments: []
+    survey:
+      - name: ai_agent_password
+        title: Console password for ai-agent
+        description: >-
+          From the credential item the Linux Host Baseline Standard names. Only
+          applied when the account is created; leave empty to create a key-only
+          account with a locked password.
+        type: secret
+        required: false
+        values: []
+  - name: "AI Agent: Single Host"
+    view: AI Agent Account
+    playbook: playbooks/ai-agent-account.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host or group
+        description: Inventory host name such as kasm-01, or a group name.
+        type: ""
+        required: true
+        values: []
+
+  - name: "Sudo Policy: Write NOPASSWD Drop-ins (dry run)"
+    view: Sudo Policy
+    playbook: playbooks/sudoers-nopasswd.yml
+    arguments: ["--check"]
+  - name: "Sudo Policy: Write NOPASSWD Drop-ins"
+    view: Sudo Policy
+    playbook: playbooks/sudoers-nopasswd.yml
+    arguments: []
+  - name: "Sudo Policy: Single Host"
+    view: Sudo Policy
+    playbook: playbooks/sudoers-nopasswd.yml
+    arguments: []
+    survey:
+      - name: target
+        title: Target host or group
+        description: Inventory host name, or a group name such as dkadi_nopasswd_targets.
+        type: ""
+        required: true
+        values: []
+
+  # Both passwords are required. The play refuses to run without them rather
+  # than hashing an empty string into /etc/shadow, so there is no dry run that
+  # is useful without supplying them.
+  - name: "Account Passwords: Set root and dkadi (dry run)"
+    view: Account Passwords
+    playbook: playbooks/account-passwords.yml
+    arguments: ["--check"]
+    survey:
+      - name: root_password
+        title: Root password
+        description: >-
+          The credential item's `sudo password #1`. Becomes root's password on
+          all twelve guests, and therefore what every sudo prompt asks for once
+          Defaults rootpw lands.
+        type: secret
+        required: true
+        values: []
+      - name: dkadi_password
+        title: dkadi password
+        description: The credential item's `Standard Password`.
+        type: secret
+        required: true
+        values: []
+  - name: "Account Passwords: Set root and dkadi"
+    view: Account Passwords
+    playbook: playbooks/account-passwords.yml
+    arguments: []
+    survey:
+      - name: root_password
+        title: Root password
+        description: >-
+          The credential item's `sudo password #1`. Becomes root's password on
+          all twelve guests, and therefore what every sudo prompt asks for once
+          Defaults rootpw lands.
+        type: secret
+        required: true
+        values: []
+      - name: dkadi_password
+        title: dkadi password
+        description: The credential item's `Standard Password`.
+        type: secret
+        required: true
+        values: []
+      - name: target
+        title: Target host or group
+        description: >-
+          Leave at the default to run all twelve. An inventory host name such
+          as kasm-01 limits the run to one host.
+        type: ""
+        required: false
+        values: []

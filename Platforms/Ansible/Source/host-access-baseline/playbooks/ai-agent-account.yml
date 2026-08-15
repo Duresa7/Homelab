@@ -1,0 +1,259 @@
+---
+- name: Create the ai-agent account and install its key
+  hosts: "{{ target | default('ai_agent_targets:ai_agent_key_only') }}"
+  gather_facts: true
+  become: true
+  # One host at a time. Every host in this inventory is reached through the
+  # ansible account, and a mistake that breaks an account should stop at the
+  # first host rather than run the length of the fleet.
+  serial: "{{ host_access_serial | default(1) }}"
+  any_errors_fatal: true
+  vars:
+    ai_agent_user: ai-agent
+    ai_agent_home: /home/ai-agent
+    # The ubuntu-dev workstation's public key comes from vars/ai-agent-key.yml,
+    # which is gitignored. This repository is public and publishes no key
+    # material, so the tracked copy is only the .example. See
+    # vars/PUBLICATION-NOTICE.md. The key is registered in ssh-key-automation as
+    # identity `ubuntu-dev`; that project audits and rotates it, this one only
+    # places it on the account it creates.
+    ai_agent_key_file: "{{ playbook_dir }}/../vars/ai-agent-key.yml"
+    # Plaintext console password, supplied at run time from the credential
+    # item. Never commit a value here and never put one in the inventory. When
+    # it is absent the account is created with a locked password and is
+    # reachable by key only.
+    ai_agent_password: ""
+  tasks:
+    - name: Check that the deployed key file exists
+      ansible.builtin.stat:
+        path: "{{ ai_agent_key_file }}"
+      delegate_to: localhost
+      become: false
+      run_once: true
+      register: ai_agent_key_file_stat
+
+    - name: Require the deployed key file
+      ansible.builtin.assert:
+        that:
+          - ai_agent_key_file_stat.stat.exists
+          - ai_agent_key_file_stat.stat.isreg
+        fail_msg: >-
+          vars/ai-agent-key.yml is missing. Copy
+          vars/ai-agent-key.yml.example and put the real public key in it.
+          The repository carries only the example, because it is public and
+          publishes no key material.
+        quiet: true
+
+    - name: Load the public key
+      ansible.builtin.include_vars:
+        file: "{{ ai_agent_key_file }}"
+
+    - name: Confirm a local controller run is on ansible-01
+      when:
+        - inventory_hostname == 'ansible-01'
+        - (ansible_connection | default('ssh')) == 'local'
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.hostname == 'ansible-01'
+        fail_msg: >-
+          The ansible-01 inventory entry uses a local connection, but this
+          runner reports hostname {{ ansible_facts.hostname }}. Run the project
+          from ansible-01 or use an explicit SSH connection.
+        quiet: true
+
+    - name: Confirm the host is in exactly one ai-agent group
+      ansible.builtin.assert:
+        that:
+          - (inventory_hostname in groups['ai_agent_targets'])
+            != (inventory_hostname in groups['ai_agent_key_only'])
+        fail_msg: >-
+          {{ inventory_hostname }} must be in ai_agent_targets or
+          ai_agent_key_only, not both and not neither.
+        quiet: true
+
+    - name: Normalise the public key onto one line
+      ansible.builtin.set_fact:
+        ai_agent_public_key_line: "{{ ai_agent_public_key | regex_replace('\\s+', ' ') | trim }}"
+
+    - name: Reject a key that carries option or restriction fields
+      ansible.builtin.assert:
+        that:
+          - ai_agent_public_key_line.split()[0] in ['ssh-ed25519', 'ssh-rsa']
+          - ai_agent_public_key_line.split() | length == 3
+          - "'REPLACE_WITH_PUBLIC_KEY_DATA' not in ai_agent_public_key_line"
+        fail_msg: >-
+          ai_agent_public_key must be a bare `type data comment` line. This
+          account's key carries no from= or forwarding restrictions by
+          decision, so an options prefix here is a mistake.
+        quiet: true
+
+    # Creating the account is skipped on game-01, where it already exists.
+    - name: Create the ai-agent account
+      when: inventory_hostname in groups['ai_agent_targets']
+      ansible.builtin.user:
+        name: "{{ ai_agent_user }}"
+        shell: /bin/bash
+        home: "{{ ai_agent_home }}"
+        create_home: true
+        password: "{{ (ai_agent_password | password_hash('sha512')) if (ai_agent_password | length > 0) else '!' }}"
+        # Only ever set the password at creation. Without this a fresh salt on
+        # every run would report the account changed each time, and a later run
+        # without the credential would silently lock an account that has one.
+        update_password: on_create
+        state: present
+      no_log: true
+
+    - name: Confirm the account exists before writing its key
+      ansible.builtin.getent:
+        database: passwd
+        key: "{{ ai_agent_user }}"
+      failed_when: false
+      register: ai_agent_passwd
+
+    - name: Record whether the account exists
+      ansible.builtin.set_fact:
+        ai_agent_account_present: "{{ ai_agent_user in (ai_agent_passwd.ansible_facts.getent_passwd | default({})) }}"
+
+    # Only the key-only hosts are asserted against. On an ai_agent_targets host
+    # the account was just created above, so its absence here would already
+    # have failed the user task.
+    - name: Fail when the account is missing on a key-only host
+      when: inventory_hostname in groups['ai_agent_key_only']
+      ansible.builtin.assert:
+        that:
+          - ai_agent_account_present | bool
+        fail_msg: >-
+          {{ inventory_hostname }} is in ai_agent_key_only but has no
+          {{ ai_agent_user }} account. This project only writes the key file
+          there; create the account first or move the host to
+          ai_agent_targets.
+        quiet: true
+
+    # Under --check the account was never really created, so there is no user
+    # to own the directory or the key file. Skipping is honest: check mode
+    # cannot validate what depends on an account it did not create.
+    - name: Report what check mode cannot verify
+      when:
+        - ansible_check_mode
+        - not (ai_agent_account_present | bool)
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}: the account does not exist yet, so the key
+          file tasks are skipped under --check. Run without --check to create
+          the account and install the key.
+
+    - name: Create the .ssh directory
+      when: ai_agent_account_present | bool
+      ansible.builtin.file:
+        path: "{{ ai_agent_home }}/.ssh"
+        state: directory
+        owner: "{{ ai_agent_user }}"
+        group: "{{ ai_agent_user }}"
+        mode: "0700"
+
+    - name: Install the workstation key as the only authorized key
+      when: ai_agent_account_present | bool
+      ansible.posix.authorized_key:
+        user: "{{ ai_agent_user }}"
+        key: "{{ ai_agent_public_key_line }}"
+        path: "{{ ai_agent_home }}/.ssh/authorized_keys"
+        # exclusive makes the file exactly this one key, which is what turns
+        # game-01's 0-byte file into a working one and keeps every other host
+        # to the single fingerprint the verification below expects.
+        exclusive: true
+        manage_dir: false
+        state: present
+
+    - name: Enforce ownership and mode on the key file
+      when: ai_agent_account_present | bool
+      ansible.builtin.file:
+        path: "{{ ai_agent_home }}/.ssh/authorized_keys"
+        owner: "{{ ai_agent_user }}"
+        group: "{{ ai_agent_user }}"
+        mode: "0600"
+
+    - name: Read back the installed key fingerprints
+      when: ai_agent_account_present | bool
+      ansible.builtin.command:
+        argv:
+          - ssh-keygen
+          - -lf
+          - "{{ ai_agent_home }}/.ssh/authorized_keys"
+      register: ai_agent_key_fingerprints
+      changed_when: false
+      check_mode: false
+      failed_when: false
+
+    - name: Confirm the file holds exactly one key and it is the expected one
+      when:
+        - not ansible_check_mode
+        - ai_agent_account_present | bool
+      ansible.builtin.assert:
+        that:
+          - ai_agent_key_fingerprints.rc == 0
+          - ai_agent_key_fingerprints.stdout_lines | length == 1
+          - ai_agent_public_key_line.split()[2] in ai_agent_key_fingerprints.stdout
+        fail_msg: >-
+          {{ inventory_hostname }}: expected one key for
+          {{ ai_agent_public_key_line.split()[2] }}, got
+          {{ ai_agent_key_fingerprints.stdout_lines | default([]) | length }}
+          entries.
+        quiet: true
+
+    # This project never enables SSH password authentication. The check is here
+    # so a run proves the setting was left alone rather than assuming it.
+    - name: Read the effective sshd configuration
+      ansible.builtin.command:
+        argv: [sshd, -T]
+      register: ai_agent_sshd_effective
+      changed_when: false
+      check_mode: false
+      failed_when: false
+
+    # media-01 carried `AllowUsers dkadi ansible` on 2026-08-15. The account and
+    # key installed correctly and this play reported success, but sshd refused
+    # the login before it ever read the key. Without this check a run can look
+    # clean while the account is unreachable, which is the worst outcome here.
+    - name: Collect sshd account allowlists
+      ansible.builtin.set_fact:
+        ai_agent_sshd_allowusers: >-
+          {{ ai_agent_sshd_effective.stdout_lines | default([])
+             | select('match', '^allowusers ') | map('regex_replace', '^allowusers ', '')
+             | map('split') | flatten }}
+        ai_agent_sshd_allowgroups: >-
+          {{ ai_agent_sshd_effective.stdout_lines | default([])
+             | select('match', '^allowgroups ') | map('regex_replace', '^allowgroups ', '')
+             | map('split') | flatten }}
+
+    - name: Confirm sshd will actually admit the account
+      when:
+        - ai_agent_sshd_effective.rc == 0
+        - (ai_agent_sshd_allowusers | length > 0) or (ai_agent_sshd_allowgroups | length > 0)
+      ansible.builtin.assert:
+        that:
+          - (ai_agent_sshd_allowusers | length == 0) or (ai_agent_user in ai_agent_sshd_allowusers)
+          - (ai_agent_sshd_allowgroups | length == 0) or (ai_agent_user in ai_agent_sshd_allowgroups)
+        fail_msg: >-
+          {{ inventory_hostname }} restricts SSH by account and does not list
+          {{ ai_agent_user }}.
+          AllowUsers={{ ai_agent_sshd_allowusers | join(' ') | default('none', true) }}
+          AllowGroups={{ ai_agent_sshd_allowgroups | join(' ') | default('none', true) }}.
+          The key is installed but the login will be refused. Add
+          {{ ai_agent_user }} to the allowlist, validate with `sshd -t`, and
+          reload sshd.
+        quiet: true
+
+    - name: Report the per-host result
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}:
+          account={{ 'present' if (ai_agent_account_present | bool) else 'MISSING' }}
+          keys={{ ai_agent_key_fingerprints.stdout_lines | default([]) | length }}
+          sshd_password_auth={{
+            (ai_agent_sshd_effective.stdout_lines | default([])
+             | select('match', '^passwordauthentication ') | list | first
+             | default('unreadable')).split(' ') | last
+          }}
+          sshd_allowlist={{ 'none' if (ai_agent_sshd_allowusers | length == 0
+                                       and ai_agent_sshd_allowgroups | length == 0)
+                            else 'admits ' ~ ai_agent_user }}

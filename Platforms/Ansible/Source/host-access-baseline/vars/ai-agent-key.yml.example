@@ -1,0 +1,9 @@
+---
+# Copy this file to vars/ai-agent-key.yml on the controller and replace the
+# placeholder with the real public key. Only a public key belongs here; never
+# paste a private key.
+#
+# One line, three fields: `type data comment`. No `from=`, no forwarding
+# limits, no `no-pty`. The absence of a restriction prefix is a decision taken
+# on 2026-08-14, and the playbook rejects a key that carries one.
+ai_agent_public_key: ssh-ed25519 REPLACE_WITH_PUBLIC_KEY_DATA ai-agent@ubuntu-dev

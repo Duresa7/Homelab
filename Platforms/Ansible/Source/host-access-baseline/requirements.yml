@@ -1,0 +1,6 @@
+---
+# authorized_key comes from ansible.posix. Everything else the playbooks use
+# (user, file, copy, command, stat) ships with ansible-core.
+collections:
+  - name: ansible.posix
+    version: 2.1.0

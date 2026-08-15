@@ -1,0 +1,102 @@
+---
+- name: Write the NOPASSWD sudoers drop-ins
+  hosts: "{{ target | default('ai_agent_targets:ai_agent_key_only:dkadi_nopasswd_targets') }}"
+  gather_facts: true
+  become: true
+  # One host at a time, and stop the whole play on the first failure. A broken
+  # sudoers file is the one mistake here that locks an account out of root, so
+  # it must never reach a second host.
+  serial: "{{ host_access_serial | default(1) }}"
+  any_errors_fatal: true
+  vars:
+    ai_agent_user: ai-agent
+    dkadi_user: dkadi
+  tasks:
+    - name: Confirm a local controller run is on ansible-01
+      when:
+        - inventory_hostname == 'ansible-01'
+        - (ansible_connection | default('ssh')) == 'local'
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.hostname == 'ansible-01'
+        fail_msg: >-
+          The ansible-01 inventory entry uses a local connection, but this
+          runner reports hostname {{ ansible_facts.hostname }}. Run the project
+          from ansible-01 or use an explicit SSH connection.
+        quiet: true
+
+    - name: Confirm the sudoers configuration parses before any change
+      ansible.builtin.command:
+        argv: [visudo, -c]
+      register: sudoers_precheck
+      changed_when: false
+      check_mode: false
+
+    - name: Read the account database
+      ansible.builtin.getent:
+        database: passwd
+
+    # copy with validate writes a temp file, runs visudo -cf against that temp
+    # path, and only moves it into place when visudo exits 0. That is the
+    # temp-path-then-validate rule, enforced by the module rather than by hand.
+    - name: Grant ai-agent passwordless sudo
+      when:
+        - inventory_hostname in (groups['ai_agent_targets'] + groups['ai_agent_key_only'])
+        - ai_agent_user in ansible_facts.getent_passwd
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/90-ai-agent
+        content: "{{ ai_agent_user }} ALL=(ALL:ALL) NOPASSWD: ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Grant dkadi passwordless sudo
+      when:
+        - inventory_hostname in groups['dkadi_nopasswd_targets']
+        - dkadi_user in ansible_facts.getent_passwd
+      ansible.builtin.copy:
+        dest: /etc/sudoers.d/90-dkadi
+        content: "{{ dkadi_user }} ALL=(ALL:ALL) NOPASSWD: ALL\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Confirm the whole sudoers configuration still parses
+      ansible.builtin.command:
+        argv: [visudo, -c]
+      register: sudoers_postcheck
+      changed_when: false
+      check_mode: false
+
+    - name: Prove each granted account resolves sudo without a password
+      when: not ansible_check_mode
+      become: true
+      become_user: "{{ item }}"
+      # sudo -n exits non-zero rather than prompting, so a still-password-gated
+      # account fails here instead of hanging the play.
+      #
+      # "true" stays quoted. Unquoted, YAML reads it as a boolean and Ansible
+      # passes the string True to sudo, which is not a command. This play had
+      # that bug until 2026-08-15; it had never been run, so it never surfaced.
+      ansible.builtin.command:
+        argv: [sudo, -n, "true"]
+      loop: "{{ sudoers_expected_accounts }}"
+      vars:
+        sudoers_expected_accounts: >-
+          {{
+            ([ai_agent_user] if (inventory_hostname in (groups['ai_agent_targets'] + groups['ai_agent_key_only'])
+                                 and ai_agent_user in ansible_facts.getent_passwd) else [])
+            + ([dkadi_user] if (inventory_hostname in groups['dkadi_nopasswd_targets']
+                                and dkadi_user in ansible_facts.getent_passwd) else [])
+          }}
+      changed_when: false
+
+    - name: Report the per-host result
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}:
+          visudo={{ 'ok' if sudoers_postcheck.rc == 0 else 'FAILED' }}
+          ai_agent_grant={{ inventory_hostname in (groups['ai_agent_targets'] + groups['ai_agent_key_only']) }}
+          dkadi_grant={{ inventory_hostname in groups['dkadi_nopasswd_targets'] }}

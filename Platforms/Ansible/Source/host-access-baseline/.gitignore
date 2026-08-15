@@ -1,0 +1,6 @@
+*.retry
+.ansible/
+.cache/
+
+# The deployed key file. See vars/PUBLICATION-NOTICE.md.
+vars/ai-agent-key.yml
