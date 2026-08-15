@@ -1,7 +1,9 @@
 # Persistent Remote Development Research
 
 **Created:** 2026-07-12  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-08-14
+
+> Archived on 2026-08-14. The research served its purpose: I built the VM it selected, ran it as `debian-dev`, then replaced it with `ubuntu-dev` and decommissioned `debian-dev` on 2026-08-14. The comparison and the 13 sources below are kept as a record of how I chose the design; the machine that resulted is documented with the Galaxy guests, not here.
 
 I wanted an always-on development machine without renting another VPS. The design I selected puts the repository, CLI tools, builds, tests, containers, & agent sessions on one Ubuntu VM in Galaxy; a laptop or phone supplies only the terminal, editor, or web interface.
 
@@ -77,7 +79,7 @@ Pixel-level control is separate. Anthropic documents computer use as screen capt
 
 My proof of concept starts with 4 vCPU, 8 to 16 GiB RAM, & 80 to 150 GiB of SSD-backed storage. Those are starting allocations for web development, several agent processes, tests, & a few containers; Proxmox metrics decide whether I resize them.
 
-I will apply my Linux host baseline, walked through at [Linux Host Baseline](../Guides/Linux-Host-Baseline.md), enroll the VM as a NetBird peer, & allow only the developer-device group. SSH, T3 Code, & the Codex app server stay off public listeners. Each concurrent agent gets its own Git worktree and branch. Git commits cover code history, and machine recovery is a rebuild from the baseline rather than a snapshot, because I keep no snapshots.
+I will apply my Linux host baseline, walked through at [Linux Host Baseline](../../Guides/Linux-Host-Baseline.md), enroll the VM as a NetBird peer, & allow only the developer-device group. SSH, T3 Code, & the Codex app server stay off public listeners. Each concurrent agent gets its own Git worktree and branch. Git commits cover code history, and machine recovery is a rebuild from the baseline rather than a snapshot, because I keep no snapshots.
 
 Ubuntu is the first target because SSH, `tmux`, systemd, containers, & the required development tools run natively. VS Code supports Windows SSH hosts and Codex runs on Windows, but I don't need a Windows VM until a project requires Windows builds or a native Windows application.
 

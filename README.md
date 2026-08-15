@@ -40,7 +40,7 @@ The guides provide the reading path. Detailed records stay with the system that 
 | Category | What it holds | Example |
 |---|---|---|
 | [Guides](Guides/README.md) | Visitor walkthroughs across infrastructure and platforms | [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md) |
-| [Architecture](Architecture/README.md) | Environment-wide designs and research | [Persistent remote development research](Architecture/Remote-AI-Development-Research-2026-07-12.md) |
+| [Architecture](Architecture/README.md) | Environment-wide designs and research | [External service ingress](Architecture/External-Service-Ingress.md) |
 | [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
 | [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) |
 | [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | [Preview server](Engineering/Preview%20Server/README.md) |
