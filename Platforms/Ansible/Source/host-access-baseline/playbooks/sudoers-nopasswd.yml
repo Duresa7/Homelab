@@ -1,4 +1,18 @@
 ---
+# SUPERSEDED 2026-08-15. Do not run this play.
+#
+# It grants ai-agent passwordless sudo on twelve hosts and dkadi passwordless
+# sudo on six more. On 2026-08-15 I reversed the decision it rests on: dkadi
+# and ai-agent are both password-gated now, and a sudo prompt asks for root's
+# password by way of Defaults rootpw. Running this would undo that on eighteen
+# grants at once, and it would do it quietly, because every task here succeeds.
+#
+# The file stays because the change record has to show what was planned before
+# the reversal. It has never been run against a host. It is not the thing to
+# reach for when writing the replacement: that is a play removing the drop-ins
+# this one would write.
+#
+# The guard below is what stops an accidental run, including from Semaphore.
 - name: Write the NOPASSWD sudoers drop-ins
   hosts: "{{ target | default('ai_agent_targets:ai_agent_key_only:dkadi_nopasswd_targets') }}"
   gather_facts: true
@@ -12,6 +26,23 @@
     ai_agent_user: ai-agent
     dkadi_user: dkadi
   tasks:
+    # First task, before facts are used and before anything is read, so a
+    # mistaken run costs nothing. --check does not exempt it: a dry run of a
+    # superseded play still reports a plan I do not want anyone acting on.
+    - name: Refuse to run unless the reversal has been acknowledged
+      run_once: true
+      ansible.builtin.assert:
+        that:
+          - sudoers_nopasswd_acknowledged | default(false) | bool
+        fail_msg: >-
+          This play is superseded and grants passwordless sudo to dkadi and
+          ai-agent, which is the opposite of the model adopted on 2026-08-15.
+          If you are removing drop-ins, you want a different play. If you
+          genuinely intend to restore NOPASSWD grants, re-read the fleet access
+          priority in the root TODO first, then pass
+          -e sudoers_nopasswd_acknowledged=true.
+        quiet: true
+
     - name: Confirm a local controller run is on ansible-01
       when:
         - inventory_hostname == 'ansible-01'

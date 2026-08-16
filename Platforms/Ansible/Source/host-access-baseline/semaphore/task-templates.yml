@@ -51,22 +51,29 @@ templates:
         required: true
         values: []
 
-  - name: "Sudo Policy: Write NOPASSWD Drop-ins (dry run)"
+  # SUPERSEDED 2026-08-15. The play these point at grants passwordless sudo to
+  # dkadi and ai-agent, which the 2026-08-15 decision reverses. The play now
+  # refuses to run without an explicit acknowledgement variable, so these
+  # templates fail on their first task rather than doing anything. They are
+  # kept, and kept named, so nobody re-creates them from the old plan.
+  - name: "Sudo Policy: SUPERSEDED — Write NOPASSWD Drop-ins (dry run)"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: ["--check"]
-  - name: "Sudo Policy: Write NOPASSWD Drop-ins"
+  - name: "Sudo Policy: SUPERSEDED — Write NOPASSWD Drop-ins"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: []
-  - name: "Sudo Policy: Single Host"
+  - name: "Sudo Policy: SUPERSEDED — Single Host"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: []
     survey:
       - name: target
         title: Target host or group
-        description: Inventory host name, or a group name such as dkadi_nopasswd_targets.
+        description: >-
+          Superseded. This play is not the current sudo policy; see the fleet
+          access priority in the root TODO before running anything here.
         type: ""
         required: true
         values: []
@@ -82,15 +89,17 @@ templates:
       - name: root_password
         title: Root password
         description: >-
-          The credential item's `sudo password #1`. Becomes root's password on
-          all twelve guests, and therefore what every sudo prompt asks for once
-          Defaults rootpw lands.
+          Root's password, from the field the Linux Host Baseline Standard
+          names. Becomes root's password on all twelve guests, and therefore
+          what every sudo prompt asks for once Defaults rootpw lands.
         type: secret
         required: true
         values: []
       - name: dkadi_password
         title: dkadi password
-        description: The credential item's `Standard Password`.
+        description: >-
+          The standard login password, from the field the Linux Host Baseline
+          Standard names.
         type: secret
         required: true
         values: []
@@ -102,15 +111,17 @@ templates:
       - name: root_password
         title: Root password
         description: >-
-          The credential item's `sudo password #1`. Becomes root's password on
-          all twelve guests, and therefore what every sudo prompt asks for once
-          Defaults rootpw lands.
+          Root's password, from the field the Linux Host Baseline Standard
+          names. Becomes root's password on all twelve guests, and therefore
+          what every sudo prompt asks for once Defaults rootpw lands.
         type: secret
         required: true
         values: []
       - name: dkadi_password
         title: dkadi password
-        description: The credential item's `Standard Password`.
+        description: >-
+          The standard login password, from the field the Linux Host Baseline
+          Standard names.
         type: secret
         required: true
         values: []

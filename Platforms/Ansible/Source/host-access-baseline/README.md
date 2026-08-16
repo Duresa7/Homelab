@@ -25,7 +25,7 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - Reading a hash back only proves a hash landed. The play proves both passwords **authenticate**, by becoming the account through `su` with the value passed via the become plugin rather than any command string. `become` always escalates from the connection user, so this really is `su` from the unprivileged `ansible` account and really does answer a password prompt.
 - `splunk-siem` is the one Rocky host and has no `sudo` group; its administrative group is `wheel`. The play reads the group database and asserts against whichever of the two exists, rather than assuming Debian.
 - Nothing here writes to sshd. The account playbook reads `sshd -T` and reports the effective `PasswordAuthentication` value, so a run proves the setting was left alone rather than assuming it.
-- It also fails the host if sshd carries an `AllowUsers` or `AllowGroups` list that does not admit `ai-agent`. media-01 had `AllowUsers dkadi ansible` on 2026-08-15: the account and key installed correctly, the play reported success, and the login was still refused before sshd ever read the key. A run that looks clean while the account is unreachable is the worst outcome available here, so it is now a hard failure with the fix spelled out in the message. Adding the account to that list is a manual step — validate with `sshd -t`, reload, and keep a second session open.
+- It also fails the host if sshd carries an `AllowUsers` or `AllowGroups` list that does not admit `ai-agent`. media-01 had `AllowUsers dkadi ansible` on 2026-08-15: the account and key installed correctly, the play reported success, and the login was still refused before sshd ever read the key. A run that looks clean while the account is unreachable is the worst outcome available here, so it is now a hard failure with the fix spelled out in the message. Adding the account to that list is a manual step — validate with `sshd -t`, reload, and keep a second session open. The pre-edit copy of that file is committed at `Backups/media-01-sshd-60-hardening-2026-08-15.conf`, verbatim because it holds no withheld values, and the copy on media-01 is deleted. The file is now `60-media-01-hardening.conf` and its `AllowUsers` line reads `dkadi ansible ai-agent`.
 
 ## Inventory Groups
 
@@ -33,9 +33,9 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 |---|---|---|
 | `ai_agent_targets` | media-01, docker-network, monitor-01, kasm-01, edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue, ansible-01 | Account created, key installed |
 | `ai_agent_key_only` | game-01 | Key file written, nothing created |
-| `dkadi_nopasswd_targets` | edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue | `dkadi` gains a NOPASSWD drop-in |
+| `dkadi_nopasswd_targets` | edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue | **Superseded.** Would have given `dkadi` a NOPASSWD drop-in |
 
-The six `dkadi` hosts are the ones that still authenticate for sudo. The rest already have the drop-in.
+The six `dkadi` hosts are the ones that still authenticate for sudo, and under the 2026-08-15 model they stay that way. The group is kept because the superseded play still refers to it, not because anything should be run against it.
 
 ## Direct Ansible Commands
 
@@ -62,14 +62,9 @@ ansible-playbook playbooks/ai-agent-account.yml \
 
 Leave `ai_agent_password` unset to create a key-only account with a locked password. That is the supported outcome when no console credential is available, not a failure.
 
-Write the sudoers drop-ins:
+**`sudoers-nopasswd.yml` is superseded and refuses to run.** It writes NOPASSWD grants for `dkadi` and `ai-agent`, which the 2026-08-15 decision reverses: both accounts are password-gated now, and a sudo prompt asks for root's password by way of `Defaults rootpw`. The play is kept as the record of what was planned, and it asserts on its first task unless `sudoers_nopasswd_acknowledged=true` is passed. Do not pass it without re-reading the fleet access priority in the root [TODO](../../../../TODO.md).
 
-```bash
-ansible-playbook playbooks/sudoers-nopasswd.yml --check
-ansible-playbook playbooks/sudoers-nopasswd.yml
-```
-
-Hold a second root session open on any host you are about to change, and keep it open until `sudo -n true` has passed on the new configuration.
+Hold a second root session open on any host you are about to change, and keep it open until the new configuration has been proven.
 
 Set the `root` and `dkadi` passwords. Neither value may reach a command string, the inventory, a log or a tracked file, so they go into a mode-`0600` vars file that is destroyed afterwards:
 
@@ -84,13 +79,12 @@ ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json
 shred -u -z ~/.hab-run/vars.json && rmdir ~/.hab-run
 ```
 
-`RP` is the credential item's `sudo password #1` and `SP` its `Standard Password`, both read straight out of the item rather than typed. JSON is what makes the file safe to build from a value containing quotes or backslashes.
+`RP` is root's password and `SP` is the standard login password, both read straight out of the credential item rather than typed. Which fields those are is in the unpublished [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), the one file allowed to say where a host account's credentials come from. JSON is what makes the file safe to build from a value containing quotes or backslashes.
 
 One host or one group:
 
 ```bash
 ansible-playbook playbooks/ai-agent-account.yml -e target=kasm-01
-ansible-playbook playbooks/sudoers-nopasswd.yml -e target=dkadi_nopasswd_targets
 ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json -e target=kasm-01
 ```
 
@@ -98,7 +92,7 @@ ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json -e tar
 
 Every playbook verifies its own work and fails the host rather than reporting success.
 
-`ai-agent-account.yml` reads back `ssh-keygen -lf` on the file it wrote and asserts exactly one key, matching the expected comment. `sudoers-nopasswd.yml` runs `visudo -c` before and after, then proves each granted account with `sudo -n true`, which exits non-zero instead of prompting.
+`ai-agent-account.yml` reads back `ssh-keygen -lf` on the file it wrote and asserts exactly one key, matching the expected comment. `sudoers-nopasswd.yml` runs `visudo -c` before and after, then proves each granted account with `sudo -n true`, which exits non-zero instead of prompting. It is superseded and guarded, so none of that runs without an explicit acknowledgement.
 
 `account-passwords.yml` asserts `passwd -S root` reports a usable password, asserts `dkadi` holds administrative group membership, then proves both passwords by authenticating as the account through `su`. It also confirms `sudo -n true` still works for `ansible` on every host, so a run that disturbed automation fails instead of finishing quietly.
 

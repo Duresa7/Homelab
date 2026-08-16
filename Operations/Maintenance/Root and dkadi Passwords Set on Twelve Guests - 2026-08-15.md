@@ -102,7 +102,7 @@ game-01:       root=P root_auth=ok dkadi_groups=dkadi sudo users             dka
 
 Neither value entered a command string, an inventory, a playbook, a log or a repository file. Both were read out of the credential item into a JSON file written with `umask 077`, transferred into a mode-`0700` directory on `ansible-01`, tightened to mode `0600`, and consumed with `-e @file`. Every task that touches a password carries `no_log: true`.
 
-Before the run I confirmed by SHA-256 digest, without reading or printing either value, that the file carried the two values I intended. That check also confirmed the field the owner renamed recently still holds what this work expected: `password for root account` and `sudo password #1` are the same value, and `standard password`, `console password` and `sudo password #2` are the same different value.
+Before the run I confirmed by SHA-256 digest, without reading or printing either value, that the staging file carried the two values I intended and that they were distinct from one another. I had renamed a field in the credential item shortly beforehand, so that check was worth making rather than assuming: it proved the rename had not moved this work onto the wrong value. Which fields those are stays in the unpublished [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md), which is the one file permitted to describe where a host account's credentials come from.
 
 Both copies of the staging file are gone. The local copy and the copy on `ansible-01` were removed with `shred -u -z`, and the staging directory was removed. `ls` confirms neither path exists. Neither host keeps a credential from this work.
 
