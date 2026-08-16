@@ -19,6 +19,7 @@ views:
   - Mac
   - Ansible Control
   - Jedi PC
+  - Ubuntu Dev
   - Onboarding
 
 templates:
@@ -101,6 +102,30 @@ templates:
     survey:
       - name: ssh_retire_confirmation
         title: Type RETIRE jedi-pc
+        description: Exact confirmation phrase required before the old key can be removed.
+        type: ""
+        required: true
+        values: []
+
+  - name: Ubuntu Dev — Audit
+    view: Ubuntu Dev
+    playbook: playbooks/ssh-key-audit.yml
+    arguments: [-e, ssh_identity=ubuntu-dev]
+  - name: Ubuntu Dev — Stage Replacement
+    view: Ubuntu Dev
+    playbook: playbooks/ssh-key-stage.yml
+    arguments: [-e, ssh_identity=ubuntu-dev]
+  - name: Ubuntu Dev — Verify Staged Key
+    view: Ubuntu Dev
+    playbook: playbooks/ssh-key-verify.yml
+    arguments: [-e, ssh_identity=ubuntu-dev]
+  - name: Ubuntu Dev — Retire Old Key
+    view: Ubuntu Dev
+    playbook: playbooks/ssh-key-retire.yml
+    arguments: [-e, ssh_identity=ubuntu-dev]
+    survey:
+      - name: ssh_retire_confirmation
+        title: Type RETIRE ubuntu-dev
         description: Exact confirmation phrase required before the old key can be removed.
         type: ""
         required: true

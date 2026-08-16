@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-08-15
 
 I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -12,10 +12,12 @@ I use this project to onboard and rotate SSH public-key identities. Semaphore ca
 - The public source includes the schema example and `identities/PUBLICATION-NOTICE.md` instead of the environment-specific identity files. The validator detects that layout.
 - Onboarding and staging use additive operations and never delete other keys.
 - Retirement requires a staged replacement, `operator_verified: true`, successful prechecks on every selected target, and the confirmation phrase `RETIRE <identity-id>`.
-- The four Proxmox nodes share one cluster-backed file. Only `grey-server` writes it; the other nodes independently verify the resulting state.
+- The five Proxmox nodes share one cluster-backed file. Only `grey-server` writes it; the other four independently verify the resulting state.
 - The nine running workload guests connect as `ansible`. Human identities still resolve to their original `root` or administrative-user key stores through passwordless privilege escalation.
 - `docker-blue` & `media-01` are supported Linux targets. Their identity allowlists remain explicit, like every other host.
 - I removed the retired domain controllers and `obi-pc` from the inventory on 2026-07-27. No Windows host remains in this project.
+- I registered `ubuntu-dev` on 2026-08-15. Its key was installed by hand before the project existed, so registration brought an already-present key under management and installed nothing. `supabase-01` stays off its allowlist while that guest is powered off.
+- I added `green-server` to the inventory on 2026-08-15. The public copy had drifted from the live one, which had carried the node for some time.
 
 ## Direct Ansible Commands
 
