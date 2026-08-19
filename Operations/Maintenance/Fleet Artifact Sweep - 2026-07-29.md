@@ -35,7 +35,7 @@ Kasm sessions are ephemeral. Between sessions no container references a workspac
 | `kasmweb/chrome:1.19.0-rolling-daily` | 4.77 GB |
 | `kasmweb/tor-browser:1.19.0-rolling-daily` | 4.47 GB |
 
-Those 15 map one to one onto the registry originals in the [Kasm tile inventory](../../Platforms/Kasm%20Workspaces/README.md). Pruning them deletes every workspace image on the host, and the next launch of any tile has to pull 4 to 32 GB back over the WAN before a desktop appears.
+Those 15 map one to one onto the registry originals in the [Kasm tile inventory](../../Archive/Platforms/Kasm%20Workspaces/README.md). Pruning them deletes every workspace image on the host, and the next launch of any tile has to pull 4 to 32 GB back over the WAN before a desktop appears.
 
 The only genuinely dead space here is **31.83 MB of build cache**, with zero stopped containers and zero unused volumes. `docker builder prune -f` is safe. Nothing else on this host is worth the risk, and the guest still has 76 GB free of 193 GB.
 

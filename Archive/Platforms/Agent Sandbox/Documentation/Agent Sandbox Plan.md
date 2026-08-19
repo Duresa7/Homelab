@@ -102,5 +102,5 @@ Config isn't proof; I test from inside a box before any agent uses it. A ping to
 
 - [Galaxy cluster](../../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes, storage, & templates the sandboxes clone from.
 - [UniFi network and zone inventories](../../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state used to assign the sandbox VLAN and firewall zone.
-- [Isolated Security Lab](../../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
+- [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range; the untrusted lane reuses its no-egress containment rules.
 - [Galaxy HA local-storage stranding incident](../../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md): why the sweeper & destroy-and-reclone matter on a cluster with no shared storage.

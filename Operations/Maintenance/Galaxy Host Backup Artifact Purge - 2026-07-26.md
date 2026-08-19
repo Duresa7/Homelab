@@ -62,7 +62,7 @@ Recovering either now means rebuilding from the [Linux Host Baseline](../../Guid
 | Record | Named artifact |
 |---|---|
 | [PeaNUT UPS Dashboard Deployment - 2026-07-22](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) | `cluster.fw.bak.peanut-20260722` & both `pre-peanut-nut-config` SSH Manager files |
-| [Kasm Lab Proxmox Teardown - 2026-07-23](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md) | `cluster.fw.bak-20260723` |
+| [Kasm Lab Proxmox Teardown - 2026-07-23](../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md) | `cluster.fw.bak-20260723` |
 | [Galaxy Cluster Red Server Expansion - 2026-07-07](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md) | `cluster.fw.bak.pre-red-20260707-105114` |
 | [Security-A Migration - 2026-07-12](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | `cluster.fw.bak.security-a-20260712-213729` & `cluster.fw.bak.security-a-cleanup-20260712-215806` |
 | [Termix SSH Host Onboarding - 2026-07-14](../../Archive/Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md) | `cluster.fw.pre-termix-2026-07-14` |

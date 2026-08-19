@@ -56,4 +56,4 @@ SMART overall-health self-assessment test result: PASSED
 **Exit code:** 0  
 **Structured result:** `success: true`
 
-The follow-up query itself verifies four-node quorum, VM state and placement, pool state, the absence of a named snapshot, and the final SMART counters. The unchanged full SMART output is stored with the [drive inventory](../../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt).
+The follow-up query itself verifies four-node quorum, VM state and placement, pool state, the absence of a named snapshot, and the final SMART counters. The unchanged full SMART output is stored with the [drive inventory](../../../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt).

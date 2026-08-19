@@ -63,7 +63,7 @@ Cloning as-is would have produced a VM with `PasswordAuthentication no`, no auth
 
 ## Host baseline
 
-I applied the [Linux Host Baseline](../../../Guides/Linux-Host-Baseline.md) before installing anything.
+I applied the [Linux Host Baseline](../../../../Guides/Linux-Host-Baseline.md) before installing anything.
 
 Cloud-init installed the four fleet public keys & created `dkadi` in `sudo`. I then patched the host, added `qemu-guest-agent`, wrote a validated `/etc/sudoers.d/90-dkadi` drop-in, wrote `/etc/ssh/sshd_config.d/99-hardening.conf`, locked root, & set timezone & locale.
 
@@ -158,7 +158,7 @@ The installer generated passwords for `admin@kasm.local`, `user@kasm.local`, the
 
 ## Cluster state during the build
 
-Galaxy was quorate throughout. `purple-server` was offline for its planned boot NVMe replacement, which left 3 of 4 votes against an expected 3, so the cluster held quorum with no margin to spare. Corosync showed nodeid 2 `disconnected` on both `LINK ID 0` (`192.168.70.10`) & `LINK ID 1` (`192.168.71.10`), matching a powered-down node rather than a link fault. All work in this record happened on `grey-server`, so the offline node never touched it. The failed device is tracked in [Purple NVMe Reliability Failure](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md).
+Galaxy was quorate throughout. `purple-server` was offline for its planned boot NVMe replacement, which left 3 of 4 votes against an expected 3, so the cluster held quorum with no margin to spare. Corosync showed nodeid 2 `disconnected` on both `LINK ID 0` (`192.168.70.10`) & `LINK ID 1` (`192.168.71.10`), matching a powered-down node rather than a link fault. All work in this record happened on `grey-server`, so the offline node never touched it. The failed device is tracked in [Purple NVMe Reliability Failure](../../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md).
 
 ## State on 2026-07-25
 

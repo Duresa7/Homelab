@@ -23,4 +23,4 @@ Cancelled. The design was locked on 2026-07-20 and the build never started. Noth
 
 - [Galaxy cluster](../../../Infrastructure/Compute/Galaxy/README.md): the Proxmox nodes that host the sandboxes, purple-server by default & grey-server for the heavy ones.
 - [UniFi network and zone inventories](../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md): the live state I use to choose the sandbox VLAN and firewall zone.
-- [Isolated Security Lab](../../../Architecture/Isolated-Security-Lab.md): the malware-detonation range whose no-egress containment model the untrusted lane reuses.
+- [Isolated Security Lab](../../Architecture/Isolated-Security-Lab.md): the malware-detonation range whose no-egress containment model the untrusted lane reuses.

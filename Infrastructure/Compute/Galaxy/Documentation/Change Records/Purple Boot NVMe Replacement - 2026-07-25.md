@@ -78,4 +78,4 @@ Purple is still guest-free and can now take a workload again. Both open items ar
 - [Purple NVMe Reliability Failure](../Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md), the investigation this closes
 - [Drive Inventory](../../../../Hardware/Components/Drives/README.md), which holds every SMART capture named here
 - [Galaxy node specifications](../../../../Hardware/Nodes.md), updated for Purple's new boot device and added SSD
-- [Kasm Lab Proxmox Teardown](Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md), which left Purple guest-free for this swap
+- [Kasm Lab Proxmox Teardown](../../../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md), which left Purple guest-free for this swap

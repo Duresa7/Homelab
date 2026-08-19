@@ -32,7 +32,7 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 - [Configuration reference](Configuration/README.md)
 - [Internal proxy-host inventory](Configuration/internal-proxy-hosts.md)
 - [Internal HTTPS service onboarding (2026-07-22)](Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
-- [Kasm Workspaces internal HTTPS (2026-07-28)](Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md)
+- [Kasm Workspaces internal HTTPS (2026-07-28)](../../Archive/Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md)
 - [CLI Proxy API internal HTTPS (2026-08-10)](../CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md)
 - [CLI Proxy API relocation to docker-main (2026-08-19)](../CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md)
 - [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

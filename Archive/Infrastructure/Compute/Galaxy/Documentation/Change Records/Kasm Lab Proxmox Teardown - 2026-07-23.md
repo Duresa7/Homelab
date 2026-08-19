@@ -14,7 +14,7 @@ I removed every agent-built Kasm object from the Galaxy cluster after deciding t
 - **Pool:** `KASM-AUTOSCALE`.
 - **SDN:** vnets `KASM75` through `KASM79` and the `KASMLAB` vlan zone, followed by a config apply.
 - **Storage:** the `kasm-snippets` dir storage and `/var/lib/vz/kasm-snippets`, which held the `kasm_guest_hook.sh` snippet.
-- **Host firewall:** the `192.168.85.3 # kasm-core Proxmox API` line in `/etc/pve/firewall/cluster.fw`. I saved the prior file to `/root/cluster.fw.bak-20260723` on grey. That snapshot was deleted on 2026-07-26; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md).
+- **Host firewall:** the `192.168.85.3 # kasm-core Proxmox API` line in `/etc/pve/firewall/cluster.fw`. I saved the prior file to `/root/cluster.fw.bak-20260723` on grey. That snapshot was deleted on 2026-07-26; see [Galaxy Host Backup Artifact Purge - 2026-07-26](../../../../../../Operations/Maintenance/Galaxy%20Host%20Backup%20Artifact%20Purge%20-%202026-07-26.md).
 - **Node files:** `/root/kasm-preflight-20260722/` on all four nodes, which held the staged control scripts and the pre-maintenance `/etc` config archives.
 
 ## Verification
@@ -23,7 +23,7 @@ After the teardown, `pvecm status` reported Quorate Yes, expected votes 4, total
 
 ## Left in place
 
-Proxmox VE 9.2.5, the running kernel, the `ssd-lvm1` and `hddpool-1` storages, VM 9000 (`ubuntu-cloud-template`, pre-existing), and every non-Kasm guest and setting. `purple-server` is guest-free again; its failed boot NVMe stays an open hardware item in the [Purple NVMe record](../Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md).
+Proxmox VE 9.2.5, the running kernel, the `ssd-lvm1` and `hddpool-1` storages, VM 9000 (`ubuntu-cloud-template`, pre-existing), and every non-Kasm guest and setting. `purple-server` is guest-free again; its failed boot NVMe stays an open hardware item in the [Purple NVMe record](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md).
 
 ## Scope
 

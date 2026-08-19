@@ -226,7 +226,7 @@ One cosmetic side effect: the session Control Panel gains an "Install PWA" entry
 
 ## Remaining Work
 
-- Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).
+- Watch `ssd-lvm2` data use and act before it reaches 80 percent. The owning item is in the [Galaxy TODO](../../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md).
 - Closed on 2026-07-28 by publishing the UI through NPM. See the follow-up below and the current-state note in [Deployment](../Deployment.md).
 
 ## Evidence

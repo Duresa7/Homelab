@@ -84,6 +84,6 @@ The post-update verification captured the exact command, standard output, and ex
 
 - [Purple Boot NVMe Replacement (2026-07-25)](../Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md), the change record that closes this issue
 - [Drive Inventory](../../../../Hardware/Components/Drives/README.md), which holds the retired Samsung and the new boot drive
-- [Kasm lab network simplification (2026-07-23)](../../../../Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
+- [Kasm lab network simplification (2026-07-23)](../../../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 
 I removed the earlier Kasm preflight and deployment records from the repository on 2026-07-23 while rebuilding Kasm from scratch. The failed NVMe is a hardware issue independent of that work.

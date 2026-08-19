@@ -1,19 +1,21 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-14  
+**Last updated:** 2026-08-19  
 
-Galaxy currently has 9 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 8 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
 
-On 2026-08-10 I recaptured the active VMs after the [guest resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). Five VMs now use a maximum and a lower ballooning minimum, while Splunk and Kasm remain fixed. The table and hardware blocks below show the post-restart state.
+On 2026-08-10 I recaptured the active VMs after the [guest resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). Five VMs now use a maximum and a lower ballooning minimum, while Splunk remains fixed. The table and hardware blocks below show the post-restart state.
 
 On 2026-08-13 I added VM 105 `ubuntu-dev`, which had been running since 2026-08-12 without an entry here. I found the gap while moving CLI Proxy API onto it, so this file was one guest short of the cluster for a day.
 
 VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this file on 2026-07-26 after the PVE API surfaced a guest I had never written down, and I decided to keep it on 2026-07-27. I reversed that decision: `debian-dev` (VM 102) is the machine I develop on, so a second development guest that had been stopped since 2026-07-15 was paying for nothing. I confirmed the deletion against the cluster on 2026-08-08. `pvesh get /cluster/resources` returns no VMID 111, `/etc/pve/qemu-server/111.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-111-*` volume, so its 80 GiB is back.
 
 `debian-dev` (VM 102) is also gone now. `ubuntu-dev` (VM 105) took over as the machine I develop on when CLI Proxy API moved across on 2026-08-13, and VM 102 sat idle from that point. I shut it down cleanly on 2026-08-14 and destroyed it with `qm destroy 102 --purge`. It carried no snapshot, backup job, HA resource, or replication job, so there was nothing to reconcile first. `pvesh get /cluster/resources` returns no VMID 102, `/etc/pve/qemu-server/102.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-102-*` volume; its 120 GiB is back. The full decommission record, including the documentation archival, is [debian-dev Decommission - 2026-08-14](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md), and the final configuration snapshot is [Debian Dev Archived Guest - 2026-08-14](../../../Archive/Operations/Inventory/Galaxy/Debian%20Dev%20Archived%20Guest%20-%202026-08-14.md).
+
+`kasm-01` (VM 122) is gone. On 2026-08-19 I shut it down cleanly and destroyed it with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes. The cluster resource API returns no VMID 122 and `pvesm list ssd-lvm2 --vmid 122` returns no volumes. The [decommission record](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) tracks the remaining monitoring, proxy, and network cleanup.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -24,7 +26,6 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
-| 122 | kasm-01 | purple-server | Ubuntu 24.04.4 LTS | 6 | 12 GiB | 200G | 192.168.78.10/24 | 192.168.78.1 | 78 control, 74/75/77/79 sessions | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
@@ -276,53 +277,6 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 30 | 192.168.30.10/24 | 192.168.30.1 | enabled | `<REDACTED_EDGE_HOST_MAC>` |
-
-### VM 122 - kasm-01
-
-#### Identity
-| Setting | Value |
-| --- | --- |
-| Node | purple-server |
-| Guest hostname | kasm-01 |
-| Role | Kasm Workspaces 1.19.0 Community Edition control plane |
-| High availability | disabled |
-| Template | no |
-| OS family | Linux |
-| Guest OS | Ubuntu 24.04.4 LTS |
-| IPv4 | 192.168.78.10/24 |
-| Gateway | 192.168.78.1 |
-
-#### Hardware
-| Setting | Value |
-| --- | --- |
-| vCPU | 6 |
-| CPU type | host |
-| Memory | 12 GiB |
-| Ballooning | off; fixed memory |
-| BIOS | ovmf |
-| Machine | q35 |
-| SCSI controller | virtio-scsi-single |
-| Display | default |
-| QEMU agent | enabled |
-| TPM | disabled |
-
-#### Storage
-| Device | Bus | Storage | Volume | Size | Media | Options |
-| --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm2 | vm-122-disk-1 | 200G | disk | discard, I/O thread, SSD emulation |
-| ide2 | ide | ssd-lvm2 | vm-122-cloudinit | 4M | cdrom | default |
-| efidisk0 | efidisk | ssd-lvm2 | vm-122-disk-0 | 4M | disk | default |
-
-#### Network
-| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 78 | 192.168.78.10/24 | 192.168.78.1 | enabled | <REDACTED_KASM_HOST_MAC> |
-| net1 | virtio | vmbr0 | 74 | none | none | disabled | <REDACTED_KASM_LANE_74_MAC> |
-| net2 | virtio | vmbr0 | 77 | none | none | disabled | <REDACTED_KASM_LANE_77_MAC> |
-| net3 | virtio | vmbr0 | 79 | none | none | disabled | <REDACTED_KASM_LANE_79_MAC> |
-| net4 | virtio | vmbr0 | 75 | none | none | disabled | <REDACTED_KASM_LANE_75_MAC> |
-
-Cloned from template 9000 on 2026-07-24. Boots with `onboot=1`. A 4 GiB swap file at `/mnt/Kasm.swap` satisfies Kasm's swap requirement. I moved it to Purple, attached four session NICs, expanded `scsi0` from 100G through 150G to 200G on 2026-07-28, and enabled discard on 2026-07-29. The guest reports a 193G root partition and ext4 filesystem. `baseline-parrot-2026-07-30` is the only VM snapshot. The parents carry no host address; Docker networks `lab74`, `lab75`, `lab77`, and `lab79` own the session ranges.
 
 ### VM 200 - security-01
 

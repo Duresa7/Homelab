@@ -378,7 +378,7 @@ Written in the same task as the work, in my first person, with ISO dates.
 | [UniFi firewall inventory](../../../../Infrastructure/Network/UniFi/Configuration/firewall.md) | Correct the stale 43-policy inventory to the 52-policy starting state, then record 59 after thirteen additions and six deletions. Note the DNS finding and NPM policy edit |
 | [UniFi VLAN inventory](../../../../Infrastructure/Network/UniFi/Configuration/network-vlan.md) | Add VLAN 73 `MONITOR-A`, and note that 73 was previously part of the seven-VLAN Kasm lab range retired on 2026-07-23 |
 | [UniFi zone inventory](../../../../Infrastructure/Network/UniFi/Configuration/zone.md) | Add custom zone `AlphaSec-Monitor` |
-| [Kasm Lab Network Simplification](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
+| [Kasm Lab Network Simplification](../../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md) | One line: VLAN 73 was reused for `MONITOR-A` on 2026-07-26, so a later reader does not think the lab VLAN returned |
 | [Galaxy Data Center Firewall](../../../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) | The IPSET member swap and the three rule changes |
 | [Operations inventory](../../../../Operations/Inventory/Galaxy/) | CT 104 in the LXC inventory, `security-01`'s workload list in `Services.md`, the new exporter rows |
 | [monitoring-exporters README](../../../Ansible/Source/monitoring-exporters/README.md) | 8 hosts in both groups |

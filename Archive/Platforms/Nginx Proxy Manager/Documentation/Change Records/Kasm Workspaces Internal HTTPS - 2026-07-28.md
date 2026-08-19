@@ -52,7 +52,7 @@ I added `https://kasm.alphasecunited.com/` to the 60-second blackbox job. This r
 
 Prometheus accepted the changed host file after `promtool check config`, but the host-side `sed -i` replaced its inode. The running container retained an older inode with 19 placeholder targets, so `up=1` only proved blackbox_exporter answered while `probe_success=0` proved those service probes failed. I wrote the validated host file through the existing mount, matched the host and container SHA-256 digests, passed `promtool` again, & reloaded without a container restart.
 
-The active-target check returned 20 blackbox targets, each with `probe_success=1`. The [existing inode troubleshooting record](../../../Prometheus/Documentation/Troubleshooting/Single-File%20Bind%20Mount%20Retained%20the%20Old%20Inode%20-%202026-07-13.md) now records the recurrence and the no-restart correction.
+The active-target check returned 20 blackbox targets, each with `probe_success=1`. The [existing inode troubleshooting record](../../../../../Platforms/Prometheus/Documentation/Troubleshooting/Single-File%20Bind%20Mount%20Retained%20the%20Old%20Inode%20-%202026-07-13.md) now records the recurrence and the no-restart correction.
 
 Evidence: [Prometheus probe](../../Evidence/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28/Logs/S04-Prometheus-Probe-2026-07-28.md).
 

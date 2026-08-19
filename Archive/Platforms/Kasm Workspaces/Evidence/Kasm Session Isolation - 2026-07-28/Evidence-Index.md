@@ -20,4 +20,4 @@ I retained the exact final verification commands, structured requests, complete 
 | [Implementation Results](Logs/Implementation%20Results.md) | Migration, service health, network state, containment, Proton failure, and cleanup results |
 | [Purple 850 EVO SMART Baseline](Logs/Purple%20850%20EVO%20SMART%20Baseline.md) | Before and after storage-health counters |
 
-The unchanged raw `smartctl -a` capture is stored with the [drive inventory](../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt). The [change record](../../Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) maps each material step to its retained evidence.
+The unchanged raw `smartctl -a` capture is stored with the [drive inventory](../../../../../Infrastructure/Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt). The [change record](../../Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) maps each material step to its retained evidence.

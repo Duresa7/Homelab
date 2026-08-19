@@ -122,4 +122,4 @@ The current rollback point is `baseline-parrot-2026-07-30`, created after the co
 - [Kasm Workspaces Thin Pool Exhaustion Incident](../../../../Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md)
 - [Kasm Workspace Build-Out - 2026-07-28](../Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md)
 - [Kasm Parrot Workspace Build-Out - 2026-07-30](../Change%20Records/Kasm%20Parrot%20Workspace%20Build-Out%20-%202026-07-30.md)
-- [Galaxy TODO](../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md)
+- [Galaxy TODO](../../../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md)

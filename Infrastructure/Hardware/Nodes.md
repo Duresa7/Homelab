@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-19
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -27,11 +27,11 @@ I verified the node and physical-storage state against all five nodes on 2026-08
 | grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin |
 | grey-server | /dev/sdb | HDD | TOSHIBA_DT01ACA200 | 1.82 TiB | `hddpool-1` ZFS |
 | purple-server | /dev/nvme0n1 | NVMe | THNSF5256GPUK TOSHIBA | 238.47 GiB | Proxmox boot |
-| purple-server | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 232.89 GiB | `ssd-lvm2` LVM-thin, restricted to Purple; VM and LXC images; VM 122 |
+| purple-server | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 232.89 GiB | `ssd-lvm2` LVM-thin, restricted to Purple; currently empty |
 | red-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot |
 | red-server | /dev/sda | HDD | ST1000LM035-1RK172 | 931.51 GiB | CT 842 `/data` through host ext4 bind mount |
 
-Purple's boot device changed on 2026-07-25. The Samsung MZVLB256HAHQ-000L7 that shipped in it wore out at 169% of rated endurance, so I cloned it onto the Toshiba THNSF5256GPUK listed above & added the 850 EVO on the SATA port at the same time. On 2026-07-28 I configured the 850 EVO as `ssd-lvm2`, restricted the pool to Purple, and moved Kasm VM 122 onto it. On 2026-08-04 the pool was active on Purple at 69.90 percent of 228.11 GiB. Both drives and the retired Samsung are in the [drive inventory](Components/Drives/README.md); the swap is written up in [Purple Boot NVMe Replacement](../Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md).
+Purple's boot device changed on 2026-07-25. The Samsung MZVLB256HAHQ-000L7 that shipped in it wore out at 169% of rated endurance, so I cloned it onto the Toshiba THNSF5256GPUK listed above & added the 850 EVO on the SATA port at the same time. On 2026-07-28 I configured the 850 EVO as `ssd-lvm2`, restricted the pool to Purple, and moved Kasm VM 122 onto it. The pool returned to 0.00 percent after I destroyed VM 122 and all of its volumes on 2026-08-19. Both drives and the retired Samsung are in the [drive inventory](Components/Drives/README.md); the swap is written up in [Purple Boot NVMe Replacement](../Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md).
 
 I added Blue's WDC HDD before the 2026-07-30 shutdown. It retained an older Proxmox VG named `pve`, which collided with Blue's live NVMe VG at the next boot. I verified the NVMe held the mounted root and all three guest volumes, then wiped the WDC partition table and signatures after confirming its old layout wasn't needed. The [duplicate VG troubleshooting record](../Compute/Galaxy/Documentation/Troubleshooting/Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md) records the repair.
 
@@ -53,7 +53,7 @@ From `grey-server` on 2026-08-09:
 | `ssd-lvm1` | lvmthin | active | 1.79 TiB | 13.05% |
 | `ssd-lvm2` | lvmthin | disabled | Not reported | Not reported |
 
-From `purple-server` the same day, which shows the pattern reversing:
+From `purple-server` on 2026-08-19, after destroying VM 122:
 
 | Storage | Type | Status | Total | Used |
 | --- | --- | --- | ---: | ---: |
@@ -61,11 +61,11 @@ From `purple-server` the same day, which shows the pattern reversing:
 | `local` | dir | active | 67.61 GiB | 10.05% |
 | `local-lvm` | lvmthin | active | 140.87 GiB | 0.00% |
 | `ssd-lvm1` | lvmthin | disabled | Not reported | Not reported |
-| `ssd-lvm2` | lvmthin | active | 228.11 GiB | 69.90% |
+| `ssd-lvm2` | lvmthin | active | 228.11 GiB | 0.00% |
 
 `ssd-lvm2` is restricted to Purple by `nodes purple-server`, and `ssd-lvm1` and `hddpool-1` both live on Grey, which is why each side reports the other's pools as disabled. `local` and `local-lvm` are per-node storages, so their capacities differ between the two tables rather than disagreeing.
 
-`ssd-lvm2` backs Kasm VM 122 and stood at 69.90 percent data and 3.06 percent metadata on 2026-08-04, against the 80 percent hard stop. The [purple 850 EVO SMART baseline](../../Platforms/Kasm%20Workspaces/Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/Purple%20850%20EVO%20SMART%20Baseline.md) shows the underlying disk healthy, with 15 normalized wear against a stop condition of 10.
+`ssd-lvm2` is empty after the Kasm retirement. `pvesm list ssd-lvm2 --vmid 122` returned no volumes and `pvesm status --storage ssd-lvm2` reported 0.00 percent used on 2026-08-19. The [purple 850 EVO SMART baseline](../../Archive/Platforms/Kasm%20Workspaces/Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/Purple%20850%20EVO%20SMART%20Baseline.md) remains the retained health record for the underlying disk.
 
 The 2026-08-09 `ssd-lvm1` reading follows the deletion of retired CT 105 and its 100 GiB root volume. The pool read 15.72 percent immediately before the deletion and 13.05 percent immediately afterward; the [retirement record](../Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) records the guarded removal.
 

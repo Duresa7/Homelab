@@ -35,7 +35,7 @@ I did not enable a lab client or run malware during this assessment.
 
 ## Material Finding
 
-The existing Internal-to-management and VPN-to-management policies permitted broad paths into MGMT-A. That did not come from the Kasm change, but it conflicted with the benchmark's admin-only management requirement. I completed the correction in [MGMT-A Final Lockdown - 2026-07-27](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
+The existing Internal-to-management and VPN-to-management policies permitted broad paths into MGMT-A. That did not come from the Kasm change, but it conflicted with the benchmark's admin-only management requirement. I completed the correction in [MGMT-A Final Lockdown - 2026-07-27](../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md).
 
 ## Kasm Interpretation
 
