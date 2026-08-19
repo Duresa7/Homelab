@@ -38,13 +38,29 @@ I removed `kasm-01` from the deployed host-access, monitoring-exporter, and Wazu
 
 I removed the `kasm_01` block from the SSH Manager source configuration. The source file and the loaded connector inventory both returned zero matching profiles afterward.
 
-The Prometheus configuration in this repository no longer contains the Kasm node-exporter target or blackbox probe. I built the same narrow change against the live configuration and validated the candidate with the running Prometheus image. Its deployment remains pending because the deployment safety guard requires separate explicit approval to overwrite the live file; the candidate preserves the unrelated live `ubuntu-dev` target.
+The Prometheus configuration in this repository no longer contains the Kasm node-exporter target or blackbox probe. I built the same narrow change against the live configuration, preserved the unrelated `ubuntu-dev` target, validated it with the running Prometheus image, deployed it after approval, and restarted Prometheus. The final API readback returned 50 active targets with all 50 up: 18 node exporters, nine cAdvisor exporters, 19 blackbox probes, two NUT exporters, the Proxmox exporter, and Prometheus itself. No label or scrape URL matched Kasm.
 
-## Step 4: Inventory the UniFi dependencies
+## Step 4: Remove the UniFi dependencies
 
-The live controller inventory found five routed networks (`KASM-BROWSER`, `KASM-TRUSTED`, `MALWARE-OFFLINE`, `LAB-MGMT`, and `EVIDENCE-QUARANTINE`), five same-purpose custom zones, 68 policies that name or reference them, the `kasm.alphasecunited.com` DNS record, and the `KASM Lab Proton Egress` traffic route. No Kasm firewall group, client group, OON policy, or dedicated port profile exists.
+The live controller inventory found five routed networks (`KASM-BROWSER`, `KASM-TRUSTED`, `MALWARE-OFFLINE`, `LAB-MGMT`, and `EVIDENCE-QUARANTINE`), five same-purpose custom zones, 68 policies that named or referenced them, the `kasm.alphasecunited.com` DNS record, and the `KASM Lab Proton Egress` traffic route. No Kasm firewall group, OON policy, or dedicated port profile existed.
 
-The ProtonVPN client is shared: `KASM Lab Proton Egress` targets `KASM-BROWSER`, while the separate `VPN - Proton` route targets the retained Proton WiFi network. I will remove only the Kasm route and keep the shared client and unrelated route.
+I deleted the 68 policies one at a time through the controller's preview-and-confirm flow. I saved a full policy snapshot before the first deletion and a before-and-after snapshot for every step. Each comparison removed exactly the approved policy. The final firewall inventory contains 64 policies: 57 allows and seven blocks.
+
+I deleted the Kasm DNS record, disabled and deleted its traffic route, and then deleted the five networks. I deleted the five empty zones after their networks were gone. The final controller inventory contains 23 network objects, 11 zones, one traffic route, and 27 enabled DNS records. It also contains 15 firewall groups, 15 client groups, four OON policies, five switch port profiles, and one VPN client.
+
+The ProtonVPN client is shared, so I kept it. The separate `VPN - Proton` route remains enabled with its kill switch on and still targets the retained Proton WiFi network.
+
+The generic `VM` client group contained both `security-01` and the retired Kasm VM by MAC. I removed only the retired member, reducing the group from two members to one. I also used the controller's forget action on the offline `kasm-01` client. UniFi returned success, although its historical-client listing continued to serve the old offline telemetry row with a last-seen time of 10:44 AM Eastern. No current group, policy, route, DNS record, network, zone, OON policy, or port profile references that row.
+
+## Final verification
+
+- Proxmox returns no VM 122 configuration, resource, or storage volume.
+- Nginx Proxy Manager has no Kasm proxy host or generated configuration, and `nginx -t` passes.
+- Wazuh has no agent 012 or Kasm identity.
+- The deployed Ansible projects and SSH Manager profile inventory contain no Kasm target.
+- Prometheus reports 50 of 50 targets up and no Kasm target.
+- The UniFi configuration readback returns no Kasm match across firewall policies, zones, firewall groups, networks, traffic routes, DNS records, port profiles, VPN clients, client-group names, or OON policies. The `VM` group has one retained member.
+- The repository keeps the retired platform and dedicated records under `Archive/`; no active deployment source or configuration references Kasm.
 
 ## Rollback
 
@@ -52,6 +68,4 @@ None. The guest, workspace state, system disk, cloud-init disk, EFI disk, and sn
 
 ## Remaining work
 
-- Deploy the validated Prometheus change after explicit approval and verify that both live Kasm targets disappear.
-- Preview, approve, and remove the 68 UniFi policies, DNS record, traffic route, five networks, and five zones. Keep the shared ProtonVPN client and unrelated Proton WiFi route.
-- Update the living UniFi records from the final controller readback, run the repository-wide artifact and link sweeps, and record the final verification here.
+None. The controller has accepted the historical-client forget request; the read-only client-history endpoint may retain its unreferenced offline telemetry row until controller retention expires.

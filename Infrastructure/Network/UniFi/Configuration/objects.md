@@ -1,7 +1,7 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-19
 
 ## How I Use UniFi Objects
 
@@ -24,14 +24,13 @@ Four policies exist, and only `QoS for D` is enabled. `Proton OON` and `isolate`
 
 ## Traffic Routes
 
-Traffic routes are separate from the OON policies above. Two remain. Both point to the `ProtonVPN` client network with the kill switch on.
+Traffic routes are separate from the OON policies above. One remains and points to the `ProtonVPN` client network with the kill switch on.
 
 | Route | Enabled | Match | Target |
 |---|---|---|---|
-| VPN - Proton | No | Internet | 1 device |
-| KASM Lab Proton Egress | Yes | Internet | Network: KASM-BROWSER (VLAN 74) |
+| VPN - Proton | Yes | Internet | Network: Proton-WiFi (VLAN 45) |
 
-I deleted `Non-tracking` before deleting Secure-V/VLAN 100. The controller now returns two traffic routes and no reference to the retired network.
+I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab Proton Egress` before removing its target network on 2026-08-19. The controller now returns one traffic route and no reference to either retired network.
 
 ## Address and Port Groups
 
@@ -61,7 +60,7 @@ I moved 35 exact selectors across 24 policies onto these objects. I kept 11 part
 
 ## Client Groups
 
-Twelve client groups remain.
+Fifteen client groups remain.
 
 | Group | Members | Current use or decision |
 |---|---:|---|
@@ -76,9 +75,14 @@ Twelve client groups remain.
 | guest_device | 1 | Guest group |
 | Admin_Device | 4 | Approved administrative devices |
 | docker-blue | 1 | LXC 108 |
-| VM | 2 | `security-01` and `kasm-01`; retained because Kasm is out of scope |
+| VM | 1 | `security-01`; I removed the retired Kasm VM member on 2026-08-19 |
+| blue server | 0 | Empty retained group |
+| green-server | 1 | Physical Green node |
+| LXC | 1 | LXC member group |
 
 I deleted the empty `IOT` group and the obsolete `Game Servers` group after the S01 and final reference scans found no firewall or OON dependency. I renamed `server` to `docker-blue` and `grey-server` to `grey-node-and-guests` without changing membership.
+
+On 2026-08-19 I removed the retired Kasm client from `VM`, reducing that group from two members to one, and used the controller's forget action on the offline historical client record. No policy or OON object depended on that member.
 
 `Device Access to Proxmox` still carries the four administrative MACs inline. The V2 policy selector schema has no client-group target, so I did not replace those selectors with `Admin_Device`.
 

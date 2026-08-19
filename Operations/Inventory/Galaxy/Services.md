@@ -5,7 +5,7 @@
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
-I repeated the workload check after the 2026-08-10 guest resource changes. Every expected production guest and primary workload was running. Prometheus reported 52 active targets with none unhealthy, and all 20 blackbox probes passed after its restart policy was repaired.
+I repeated the monitoring check after the 2026-08-19 Kasm retirement. Prometheus reported 50 active targets with all 50 up: 18 node exporters, nine cAdvisor exporters, 19 blackbox probes, two NUT exporters, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
 ## Cluster State
 
@@ -82,13 +82,13 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; `restart: always`; 15-day retention; 52 of 52 targets `up` across six jobs: node 19, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1 |
+| Prometheus | 3.13.1 on TCP 9090; `restart: always`; 15-day retention; 50 of 50 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 19, NUT 2, & self-scrape 1 |
 | Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
-| blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 20 internal NPM names |
+| blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
-| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of eight scraped cAdvisor endpoints |
+| cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of nine scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `010` as `monitor-01` |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; UniFi DHCP serves .6 through .254 |

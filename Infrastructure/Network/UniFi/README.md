@@ -1,13 +1,13 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-11
+**Last updated:** 2026-08-19
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
-The last full controller count on 2026-07-30 was 28 network objects, 20 routed LAN networks, 14 firewall zones, 361 policies, 13 reusable firewall groups, 12 client groups, four OON policies, two traffic routes, four WLANs, and five switch port profiles. The user-defined firewall inventory reached 131 on 2026-08-10 after I added the narrow NPM-to-CLI-Proxy path. The local DNS inventory now contains 23 enabled internal NPM names and one disabled apex record.
+The final 2026-08-19 controller readback after the Kasm retirement returned 23 network objects: 16 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 64 user-defined policies, 15 reusable firewall groups, 15 client groups, four OON policies, one traffic route, five WLANs, five switch port profiles, and 27 enabled local DNS records. The policy set contains 57 allows and seven blocks. Three WLANs are enabled and two are disabled.
 
-Adding `Proton-WiFi`/VLAN 45 on 2026-08-10 moved three of those counts: 28 network objects, 21 routed LAN networks, and five WLANs. Both traffic routes are now enabled, where `VPN - Proton` had been disabled since its creation.
+The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
 
 ## Configuration Records
 
@@ -24,6 +24,10 @@ Adding `Proton-WiFi`/VLAN 45 on 2026-08-10 moved three of those counts: 28 netwo
 - [Firewall audit (2026-07-27)](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md)
 - [MGMT-A final lockdown (2026-07-27)](Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
+
+## Retired Kasm Records
+
+- [Kasm Workspaces decommission (2026-08-19)](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md)
 - [Kasm lab network simplification (2026-07-23)](../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
 - [Kasm network build evidence (2026-07-22, superseded)](../../../Archive/Infrastructure/Network/UniFi/Evidence/Kasm%20Security%20Lab%20Network%20-%202026-07-22/Evidence-Index.md)
 - [Kasm firewall audit (2026-07-22, superseded)](../../../Archive/Security/Assessments/UniFi%20Kasm%20Firewall%20Audit%20-%202026-07-22.md)

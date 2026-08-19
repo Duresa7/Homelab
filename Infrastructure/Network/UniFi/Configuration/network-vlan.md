@@ -1,11 +1,11 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-19
 
 I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
 
-I added `Proton-WiFi`/VLAN 45 on 2026-08-10 for wireless clients that egress through ProtonVPN. Twenty-one routed LAN networks now remain, out of 28 network objects the controller reports when I include two WANs, the ProtonVPN client, and four remote-user VPN networks. The build is in [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
+I added `Proton-WiFi`/VLAN 45 on 2026-08-10 for wireless clients that egress through ProtonVPN. After I retired the five Kasm networks on 2026-08-19, 16 routed LAN networks remain out of 23 controller network objects. The other seven objects are two WANs, the ProtonVPN client, and four remote-user VPN networks. The Proton WiFi build is in [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
 I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory retirement removed VLAN 65 and its three guests. The consolidation removed the `Non-tracking` route before deleting VLAN 100. Neither network is part of current placement.
 
@@ -26,11 +26,6 @@ I deleted AD-SERVERS/65 and `Secure-V`/100 on 2026-07-27. The Active Directory r
 | Cluster-Net | 71 | 192.168.71.0/24 | 192.168.71.1 | none | Ahsoka Gateway |
 | Security-A | 72 | 192.168.72.0/24 | 192.168.72.1 | .6 – .254 | Ahsoka Gateway |
 | MONITOR-A | 73 | 192.168.73.0/24 | 192.168.73.1 | .6 – .254 | Ahsoka Gateway |
-| KASM-BROWSER | 74 | 192.168.74.0/24 | 192.168.74.1 | .100 – .199 | Ahsoka Gateway |
-| KASM-TRUSTED | 75 | 192.168.75.0/24 | 192.168.75.1 | .100 – .199 | Ahsoka Gateway |
-| MALWARE-OFFLINE | 77 | 192.168.77.0/24 | 192.168.77.1 | .100 – .199 | Ahsoka Gateway |
-| LAB-MGMT | 78 | 192.168.78.0/24 | 192.168.78.1 | none | Ahsoka Gateway |
-| EVIDENCE-QUARANTINE | 79 | 192.168.79.0/24 | 192.168.79.1 | .100 – .199 | Ahsoka Gateway |
 | SERVERS-A | 80 | 192.168.80.0/24 | 192.168.80.1 | .6 – .254 | Ahsoka Gateway |
 | Access-A | 85 | 192.168.85.0/24 | 192.168.85.1 | .6 – .254 | Ahsoka Gateway |
 | DMZ-A (empty; pending removal) | 90 | 192.168.90.0/24 | 192.168.90.1 | .50 – .100 | Ahsoka Gateway |
@@ -54,11 +49,6 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Cluster-Net (71) | `AlphaSec-Mgmt` | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication on node IPs `.10` through `.14`. No DHCP, no Internet access, and no general hosts. It shares the management trust zone with MGMT-A but remains a separate broadcast domain. |
 | Security-A (72) | `AlphaSec-Observability` | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to approved web and NTP from the three-member observability object. |
 | MONITOR-A (73) | `AlphaSec-Observability` | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
-| KASM-BROWSER (74) | KASM-BROWSER | Lab tools | Kasm browser containers and pentest tooling use `192.168.74.208/28` through the `lab74` macvlan network. Proton egress with the kill switch on is supplied by `KASM Lab Proton Egress`. |
-| KASM-TRUSTED (75) | KASM-TRUSTED | Trusted disposable sessions | Claude Code, Codex CLI, and Terminal sessions use `192.168.75.208/28` through `lab75`. They have ordinary WAN egress, no access to the other session lanes, and persistent storage only through their assigned per-user profile directories. |
-| MALWARE-OFFLINE (77) | MALWARE-OFFLINE | Detonation & targets | Disposable Linux samples and targets use `192.168.77.208/28` through `lab77`. External egress is blocked and DHCP no longer advertises the retired `.10` resolver. |
-| LAB-MGMT (78) | LAB-MGMT | Isolated control plane | VM 122 `kasm-01` uses static `192.168.78.10/24`. DHCP is disabled. Only Trusted, Personal-A, and the Management Access VPN may reach TCP 22 and 443. |
-| EVIDENCE-QUARANTINE (79) | EVIDENCE-QUARANTINE | Evidence review | Disposable review sessions use `192.168.79.208/28` through `lab79`. They have no Internet and no routed path to another session lane. |
 | SERVERS-A (80) | `AlphaSec-Servers` | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers, databases (app-01 = .10, supabase-01 = .20, db-13-host = .228). |
 | Access-A (85) | `AlphaSec-Access` | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
 | DMZ-A (90) | Dmz | Empty; pending removal | I moved `edge-01` to DMZ (30) on 2026-08-07. I am keeping this empty VLAN through a soak period and will remove it in a later, separate change. |
@@ -71,7 +61,6 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**
 - Internal application or database VM → **SERVERS-A (80)**
 - Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `AlphaSec-Observability` zone.
-- Kasm control plane → **LAB-MGMT (78)**; Kasm sessions → **KASM-BROWSER (74)**, **KASM-TRUSTED (75)**, **MALWARE-OFFLINE (77)**, or **EVIDENCE-QUARANTINE (79)** according to their workspace override
 - Reverse proxy, VPN, or remote-access ingress → **Access-A (85)**
 - Public / internet-facing service → **DMZ (30)**
 - General lab, automation, or utility VM/container → **Personal-A (40)**
@@ -84,5 +73,10 @@ I use this table when placing a new device or workload. The **Zone** column name
 |---|---|---|---|
 | AD-SERVERS (65) | 2026-07-27 | The Windows domain, both domain controllers, and the domain-joined test VM were retired. | [Windows Servers retirement](../../../../Platforms/Windows%20Servers/README.md) |
 | Secure-V (100) | 2026-07-27 | Its domain SSID was already gone. I deleted the `Non-tracking` ProtonVPN route first, then removed the unused network. | [Zone and Object Consolidation](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
+| KASM-BROWSER (74) | 2026-08-19 | The disposable browser lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
+| KASM-TRUSTED (75) | 2026-08-19 | The trusted disposable-session lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
+| MALWARE-OFFLINE (77) | 2026-08-19 | The offline detonation lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
+| LAB-MGMT (78) | 2026-08-19 | VM 122 and its isolated control-plane network were destroyed. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
+| EVIDENCE-QUARANTINE (79) | 2026-08-19 | The evidence-review lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
 
 The disabled `AlphaSec-IoT` WLAN now points to IoT/VLAN 20. It stayed disabled during the correction.

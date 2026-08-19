@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-08-19
 
-I track 24 local A records on the UniFi gateway. Twenty-three enabled records send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. The disabled apex record is retained only as controller history. Public authoritative DNS stays in Cloudflare and doesn't contain the internal application names.
+I track 27 enabled local A records on the UniFi gateway. Twenty-two send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. Five resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
 
 ## Host Records
 
@@ -28,11 +28,14 @@ I track 24 local A records on the UniFi gateway. Twenty-three enabled records se
 | `splunk.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a863` | Splunk Web through NPM |
 | `prometheus.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
 | `ts3-manager.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a68b26f052792cd2140bfdc` | TS3 Manager through NPM |
-| `kasm.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a69768d052792cd2140e39f` | Kasm Workspaces through NPM |
 | `games.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e27dee8c70a32d41e33` | Pelican Panel on `game-01` through NPM |
 | `wings.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e29dee8c70a32d41e41` | Pelican Wings API on `game-01` through NPM; the browser opens a console websocket straight to this name, so it needs its own HTTPS host rather than a path under `games` |
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
-| `alphasecunited.com` | A | `192.168.1.1` | Controller default | No | Not retained | Disabled apex record; no client path depends on it |
+| `grey.alphasecunited.com` | A | `192.168.70.10` | Controller default | Yes | `6a7dee01dee8c70a32e6ba96` | Proxmox GUI on `grey-server` |
+| `purple.alphasecunited.com` | A | `192.168.70.11` | Controller default | Yes | `6a7dee43dee8c70a32e6bb43` | Proxmox GUI on `purple-server` |
+| `blue.alphasecunited.com` | A | `192.168.70.12` | Controller default | Yes | `6a7deeabdee8c70a32e6bc70` | Proxmox GUI on `blue-server` |
+| `red.alphasecunited.com` | A | `192.168.70.13` | Controller default | Yes | `6a7deee9dee8c70a32e6bd39` | Proxmox GUI on `red-server` |
+| `green.alphasecunited.com` | A | `192.168.70.14` | Controller default | Yes | `6a7deefddee8c70a32e6bd6d` | Proxmox GUI on `green-server` |
 
 ## Verification
 
@@ -45,8 +48,6 @@ I created and verified the record on 2026-07-11:
 
 I added and verified the first 19 application records on 2026-07-22. An Internal-zone Windows client resolved every name to `192.168.85.2`. Cloudflare DNS-over-HTTPS returned NXDOMAIN for all 19 names. The implementation is documented in the NPM [change record](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
-I added `kasm.alphasecunited.com` on 2026-07-28 as record `6a69768d052792cd2140e39f`. A Windows client resolved it to `192.168.85.2`, & the HTTPS health endpoint returned `{"ok": true}` through NPM.
-
 The 2026-08-03 audit found `ts3-manager.alphasecunited.com` enabled at NPM and UniFi, bringing the enabled set to 21. It also found the disabled apex record. Neither changes public DNS.
 
 I added `games.alphasecunited.com` and `wings.alphasecunited.com` on 2026-08-07 for the game server platform, bringing the enabled set to 22. A Windows client on VLAN 50 resolved both to `192.168.85.2`. `games` returns HTTP 200 through NPM and `wings` returns 401, which is the Wings API rejecting an unauthenticated request rather than a proxy fault.
@@ -54,5 +55,7 @@ I added `games.alphasecunited.com` and `wings.alphasecunited.com` on 2026-08-07 
 I added `aiproxy.alphasecunited.com` on 2026-08-10 for CLI Proxy API, bringing the enabled set to 23. `debian-dev` resolved it to `192.168.85.2`; HTTP redirected to HTTPS and HTTPS returned `200`. A public resolver returned no A record.
 
 The record stayed unchanged when I moved the backend from `ubuntu-dev` to `docker-main` on 2026-08-19 because NPM remained the DNS target. After the move the HTTPS root and management page returned `200`, an unauthenticated model request returned `401`, and certificate verification returned `0`.
+
+On 2026-08-19 I deleted the Kasm record with the retired platform. The same final controller readback showed that the disabled apex record was no longer present and captured five enabled Proxmox node records, leaving 27 enabled records and none disabled.
 
 These records exist only on the UniFi resolver. They don't change the public Cloudflare zone.

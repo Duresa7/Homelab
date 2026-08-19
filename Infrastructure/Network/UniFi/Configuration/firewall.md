@@ -15,9 +15,9 @@ On 2026-08-08 I made three changes for `debian-dev`, which is now the machine I 
 
 The third change added `192.168.40.135` to the destination list of `Allow Monitor to Personal-A monitoring`, so `monitor-01` can scrape the node_exporter that host now runs. That policy matches specific addresses rather than the whole Internal zone, so a new exporter on Personal-A stays unreachable until its address is named here. Before the edit, TCP 9100 from `192.168.73.2` to `192.168.40.135` timed out while TCP 1514 and 1515 to the Wazuh manager already worked, because `Allow Internal to AlphaSec-Security` covers the whole zone and the monitoring policy does not.
 
-I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The earlier four narrow Wazuh enrollment paths from 2026-08-03 remain current: they admit only `monitor-01`, `docker-network`, `kasm-01`, and the five Galaxy nodes to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
+I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The remaining narrow Wazuh enrollment paths admit `monitor-01`, `docker-network`, the five Galaxy nodes, the server zone, and `edge-01` to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. The controller reported 131 user-defined policies on 2026-08-10 after the CLI Proxy API addition. This file had recorded 128 before the 2026-08-08 DMZ addition, so it was already one short before these changes and I have not traced which policy went unrecorded. The list below contains the durable custom policy inventory, including 56 LAB-MGMT and Kasm isolation policies.
+The gateway runs UniFi's zone-based V2 firewall. After I deleted the 68 Kasm policies on 2026-08-19, the controller returned 64 user-defined policies: 57 allows and seven blocks. The list below now contains all 64.
 
 `game-01` needed no policy for game traffic. `Allow Internal to AlphaSec-Servers` already permits every Internal network to that zone on every port, so Trusted, Secure, and Secure Client reach TCP 25565 and the Pelican SFTP port 2022 without a new rule. That also admits Management, Server-Provision, and Personal-A, which is wider than the three networks the host was built for.
 
@@ -25,7 +25,7 @@ What did need policies is the reverse direction. Both the panel and Wings call *
 
 ## Recorded Custom Policy Inventory
 
-Every custom policy uses the `Always` schedule. Three stateful isolation blocks use `NEW, INVALID`; the rest use connection state `ALL`. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
+Every custom policy uses the `Always` schedule. The source and destination columns name the live zone and selector. Policy names retain their historical wording even when a target zone has been consolidated.
 
 | Policy | Enabled | Action | Index | Protocol | Source | Destination |
 |---|---|---|---:|---|---|---|
@@ -43,6 +43,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 9 MACs | Internal / Personal-A |
 | `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
 | `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 5 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
+| `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / 1 MAC | Internal / Management |
 | `Allow AlphaSec-Servers to Portainer Edge` | Yes | ALLOW | 10000 | All | `AlphaSec-Servers` / Any | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
@@ -62,7 +63,6 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow DMZ to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
 | `Allow monitor-01 to Wazuh - Security-A` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Observability` / 192.168.73.2 | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
 | `Allow docker-network to Wazuh - Security-A` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
-| `Allow kasm-01 to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | LAB-MGMT / 192.168.78.10 | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
 | `Allow Galaxy nodes to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
 | `Allow VPN --> Internal Zone` | Yes | ALLOW | 10001 | All | Vpn / Management Access | Internal / Any |
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
@@ -76,76 +76,9 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow NPM to game-01 Panel` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 80 |
 | `Allow NPM to game-01 Wings` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 8080 |
 | `Allow game-01 to NPM HTTPS` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Servers` / 192.168.80.30 | `AlphaSec-Access` / 192.168.85.2 / 443 |
-| `Allow NPM to kasm-01 web UI` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | LAB-MGMT / 192.168.78.10 / 443 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
-| `KASM Allow KASM-BROWSER DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | KASM-BROWSER / 68 | Gateway / 67 |
-| `KASM Allow KASM-BROWSER NTP to Gateway` | Yes | ALLOW | 10002 | UDP | KASM-BROWSER / Any | Gateway / 123 |
-| `KASM Block KASM-BROWSER Other Gateway` | Yes | BLOCK | 10003 | All | KASM-BROWSER / Any | Gateway / Any |
-| `KASM Allow KASM-TRUSTED DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | KASM-TRUSTED / 68 | Gateway / 67 |
-| `KASM Allow KASM-TRUSTED NTP to Gateway` | Yes | ALLOW | 10001 | UDP | KASM-TRUSTED / Any | Gateway / 123 |
-| `KASM Block KASM-TRUSTED Other Gateway` | Yes | BLOCK | 10002 | All | KASM-TRUSTED / Any | Gateway / Any |
-| `KASM Allow MALWARE-OFFLINE DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | MALWARE-OFFLINE / 68 | Gateway / 67 |
-| `KASM Block MALWARE-OFFLINE Other Gateway` | Yes | BLOCK | 10001 | All | MALWARE-OFFLINE / Any | Gateway / Any |
-| `KASM Allow EVIDENCE-QUARANTINE DHCP to Gateway` | Yes | ALLOW | 10000 | UDP | EVIDENCE-QUARANTINE / 68 | Gateway / 67 |
-| `KASM Block EVIDENCE-QUARANTINE Other Gateway` | Yes | BLOCK | 10001 | All | EVIDENCE-QUARANTINE / Any | Gateway / Any |
-| `KASM Block MALWARE-OFFLINE External` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | External / Any |
-| `KASM Block EVIDENCE-QUARANTINE External` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | External / Any |
-| `KASM Allow KASM-TRUSTED to External` | Yes | ALLOW | 10000 | All | KASM-TRUSTED / Any | External / Any |
-| `LABMGMT Allow Trusted and Personal-A to kasm-01` | Yes | ALLOW | 10000 | TCP | Internal / Trusted, Personal-A | LAB-MGMT / 192.168.78.10 / 22, 443 |
-| `LABMGMT Allow Management Access to kasm-01` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | LAB-MGMT / 192.168.78.10 / 22, 443 |
-| `LABMGMT Allow Jedi PC to kasm-01` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.50.241 | LAB-MGMT / 192.168.78.10 / 22, 443 |
-| `LABMGMT Allow monitor-01 to kasm-01 node_exporter` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / 192.168.73.2 | LAB-MGMT / 192.168.78.10 / 9100 |
-| `LABMGMT Block Other Internal to LAB-MGMT` | Yes | BLOCK | 10002 | All | Internal / Any | LAB-MGMT / Any |
-| `LABMGMT Block Other VPN to LAB-MGMT` | Yes | BLOCK | 10001 | All | Vpn / Any | LAB-MGMT / Any |
-| `LABMGMT Block to Internal` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | Internal / Any |
-| `LABMGMT Block to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `AlphaSec-Servers` / Any |
-| `LABMGMT Block to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | `AlphaSec-Mgmt` / Any |
-| `LABMGMT Block to AlphaSec-Access` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | LAB-MGMT / Any | `AlphaSec-Access` / Any |
-| `LABMGMT Block to AlphaSec-Observability` | Yes | BLOCK | 10001 | All / `NEW, INVALID` | LAB-MGMT / Any | `AlphaSec-Observability` / Any |
-| `LABMGMT Block to Gateway` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | Gateway / Any |
-| `LABMGMT Block to KASM-BROWSER` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-BROWSER / Any |
-| `LABMGMT Block to KASM-TRUSTED` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | KASM-TRUSTED / Any |
-| `LABMGMT Block to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | MALWARE-OFFLINE / Any |
-| `LABMGMT Block to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | LAB-MGMT / Any | EVIDENCE-QUARANTINE / Any |
-| `LABMGMT Allow to External` | Yes | ALLOW | 10000 | All | LAB-MGMT / Any | External / Any |
-| `KASM Allow KASM-BROWSER to MALWARE-OFFLINE` | Yes | ALLOW | 10000 | All | KASM-BROWSER / Any | MALWARE-OFFLINE / Any |
-| `KASM Block MALWARE-OFFLINE to KASM-BROWSER` | Yes | BLOCK | 10000 | All / `NEW, INVALID` | MALWARE-OFFLINE / Any | KASM-BROWSER / Any |
-| `KASM Block KASM-BROWSER to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | EVIDENCE-QUARANTINE / Any |
-| `KASM Block MALWARE-OFFLINE to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | EVIDENCE-QUARANTINE / Any |
-| `KASM Block EVIDENCE-QUARANTINE to KASM-BROWSER` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | KASM-BROWSER / Any |
-| `KASM Block EVIDENCE-QUARANTINE to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | MALWARE-OFFLINE / Any |
-| `KASM Block KASM-BROWSER to LAB-MGMT` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | LAB-MGMT / Any |
-| `KASM Block KASM-BROWSER to KASM-TRUSTED` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | KASM-TRUSTED / Any |
-| `KASM Block KASM-BROWSER to Internal` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | Internal / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `AlphaSec-Servers` / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `AlphaSec-Mgmt` / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Access` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `AlphaSec-Access` / Any |
-| `KASM Block KASM-BROWSER to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | KASM-BROWSER / Any | `AlphaSec-Observability` / Any |
-| `KASM Block MALWARE-OFFLINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | LAB-MGMT / Any |
-| `KASM Block MALWARE-OFFLINE to KASM-TRUSTED` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | KASM-TRUSTED / Any |
-| `KASM Block MALWARE-OFFLINE to Internal` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | Internal / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `AlphaSec-Servers` / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `AlphaSec-Mgmt` / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `AlphaSec-Access` / Any |
-| `KASM Block MALWARE-OFFLINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | MALWARE-OFFLINE / Any | `AlphaSec-Observability` / Any |
-| `KASM Block EVIDENCE-QUARANTINE to LAB-MGMT` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | LAB-MGMT / Any |
-| `KASM Block EVIDENCE-QUARANTINE to KASM-TRUSTED` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | KASM-TRUSTED / Any |
-| `KASM Block EVIDENCE-QUARANTINE to Internal` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | Internal / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `AlphaSec-Servers` / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `AlphaSec-Mgmt` / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Access` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `AlphaSec-Access` / Any |
-| `KASM Block EVIDENCE-QUARANTINE to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | EVIDENCE-QUARANTINE / Any | `AlphaSec-Observability` / Any |
-| `KASM Block KASM-TRUSTED to KASM-BROWSER` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | KASM-BROWSER / Any |
-| `KASM Block KASM-TRUSTED to MALWARE-OFFLINE` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | MALWARE-OFFLINE / Any |
-| `KASM Block KASM-TRUSTED to EVIDENCE-QUARANTINE` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | EVIDENCE-QUARANTINE / Any |
-| `KASM Block KASM-TRUSTED to LAB-MGMT` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | LAB-MGMT / Any |
-| `KASM Block KASM-TRUSTED to Internal` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | Internal / Any |
-| `KASM Block KASM-TRUSTED to AlphaSec-Servers` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Servers` / Any |
-| `KASM Block KASM-TRUSTED to AlphaSec-Mgmt` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Mgmt` / Any |
-| `KASM Block KASM-TRUSTED to AlphaSec-Access` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Access` / Any |
-| `KASM Block KASM-TRUSTED to AlphaSec-Observability` | Yes | BLOCK | 10000 | All | KASM-TRUSTED / Any | `AlphaSec-Observability` / Any |
-| `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42, .135 / `PG-Node-Exporter` |
+| `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42, .179 / `PG-Node-Exporter` |
 | `Allow Monitor to A-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Servers` / .10, .30, .118 / `PG-Node-Exporter` |
 | `Allow Monitor to AlphaSec-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Access` / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
 | `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Dmz / 192.168.30.10 / 9100 |
@@ -161,6 +94,10 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow dkadi MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27 | `AlphaSec-Observability` / `OBJ-Monitor-Collector` / 8090 |
 | `Allow Monitor to Security monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Observability` / `OBJ-Security-Stack` / `PG-Node-Exporter` |
 
+## Kasm Retirement Result
+
+On 2026-08-19 I deleted 68 Kasm and LAB-MGMT policies one at a time after reviewing each mutation preview. Every before-and-after comparison removed exactly the approved policy and changed nothing else. The final controller readback returned 64 policies and no policy name or selector matching Kasm, LAB-MGMT, KASM-BROWSER, KASM-TRUSTED, MALWARE-OFFLINE, or EVIDENCE-QUARANTINE. The full dependency order and final counts are in [Kasm Workspaces Decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md).
+
 ## Order-Sensitive Policy Sets
 
 The Access-to-External trio and Observability-to-External trio use indexes 10000, 10001, and 10002:
@@ -171,13 +108,10 @@ The Access-to-External trio and Observability-to-External trio use indexes 10000
 
 Automatic respond-policy generation is disabled for all six. The observability trio uses `OBJ-Observability-Hosts`, `PG-Egress-Web`, and `PG-NTP`. The final controller ordering readback matched those indexes.
 
-The KASM-TRUSTED gateway set uses DHCP at 10000, NTP at 10001, and the gateway catchall block at 10002. I read those indexes back from the controller after creation. The external allow and every inter-zone block use index 10000 within their separate source and destination zone pairs.
 
 The monitoring, NPM, break-glass, Wazuh, and automation paths retain response companions where required. A policy update can drop its description without failing, so I verify selectors, action, enabled state, index, protocol, and response behavior rather than treating a description as enforcement.
 
-The exact `kasm-01` Wazuh allow uses index 10000 and precedes `LABMGMT Block to AlphaSec-Observability` at 10001. The allow first landed behind that catch-all block, so TCP 1514 stayed closed. I previewed and applied a two-policy reorder, then both Wazuh ports opened without changing either policy's selectors or action.
 
-The two LAB-MGMT inbound allow rules precede their zone-wide catchall blocks. The LAB-MGMT-to-Internal and MALWARE-OFFLINE-to-KASM-BROWSER blocks match only new and invalid connections so established replies to an allowed inbound connection survive. The original source tests and order-sensitive state choices are retained in [Kasm Session Isolation](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md). The KASM-TRUSTED policy verification and source tests are retained in [Kasm Workspace Build-Out](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md).
 
 ## Post-Consolidation Baseline
 

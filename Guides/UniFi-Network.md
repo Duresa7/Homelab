@@ -1,7 +1,7 @@
 # UniFi Network Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-19
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ This guide follows the network work that supports Galaxy & the hosted platforms:
 
 ## Current Status and Verified Versions
 
-The controller has 28 network objects, including 20 routed corporate/LAN networks, and 16 zones. The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, VLAN 85 for Access-A, and VLAN 90 for the DMZ. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 22 local DNS entries: 21 enabled NPM names at `192.168.85.2` plus one disabled apex record.
+The controller has 23 network objects, including 16 routed corporate LANs, and 11 zones. The active records cover VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, VLAN 85 for Access-A, and VLAN 90 for the DMZ. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 27 enabled local DNS entries: 22 NPM names at `192.168.85.2` plus five Proxmox node names on MGMT-A.
 
 ## What You Need
 
@@ -52,7 +52,7 @@ The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is 
 
 ### Step 5: Add Local DNS
 
-I added `netbird.alphasecunited.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address. The current enabled set contains NetBird and 20 application names. A disabled `alphasecunited.com` apex entry points at `192.168.1.1` but serves no current client path.
+I added `netbird.alphasecunited.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, & NetBird HTTPS check all depend on clients resolving that internal address. The current enabled set contains NetBird, 21 application names, and five Proxmox node names. No disabled record remains.
 
 ![UniFi local DNS record for the NetBird host](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
@@ -72,7 +72,7 @@ Rule order matters. If the catch-all block sits above the two allows, HTTPS & NT
 
 ## Known Limits
 
-This guide covers the completed Security-A, Cluster-Net, Access-A, and consolidation work. The three Kasm zones remain separate by design.
+This guide covers the completed Security-A, Cluster-Net, Access-A, and consolidation work. The retired Kasm networks and zones are not part of the current topology.
 
 ## Source Records
 
