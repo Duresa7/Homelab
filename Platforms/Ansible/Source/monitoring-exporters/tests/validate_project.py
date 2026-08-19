@@ -29,10 +29,6 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
-    # Added 2026-07-28. Its exporter binds one address instead of 0.0.0.0,
-    # because the host holds macvlan shim addresses inside three sealed lab
-    # lanes; see the inventory comment.
-    "kasm-01",
     # Added 2026-08-07 with the Pelican game server platform.
     "game-01",
     # Added 2026-08-08, when this guest became the development workstation.
@@ -90,7 +86,6 @@ EXPECTED_IPS = {
     "splunk-siem": "192.168.72.3",
     "ansible-01": "192.168.40.36",
     "monitor-01": "192.168.73.2",
-    "kasm-01": "192.168.78.10",
     "game-01": "192.168.80.30",
     "db-13-dev": "192.168.40.135",
 }

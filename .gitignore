@@ -181,40 +181,6 @@
 !/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Screenshots/
 !/Platforms/Media Stack/Evidence/Media Stack Refresh and Payload Filtering - 2026-07-17/
 
-# Kasm session isolation evidence records
-!/Platforms/Kasm Workspaces/Evidence/
-/Platforms/Kasm Workspaces/Evidence/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/
-/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Evidence-Index.md
-!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/
-/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Session Isolation - 2026-07-28/Logs/*.md
-!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/
-/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Evidence-Index.md
-!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/
-/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Workspace Build-Out - 2026-07-28/Logs/*.md
-
-# Kasm thin-pool exhaustion incident evidence records
-!/Security/Incidents/Kasm Workspaces/Evidence/
-/Security/Incidents/Kasm Workspaces/Evidence/*
-!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/
-/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/*
-!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Evidence-Index.md
-!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/
-/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/*
-!/Security/Incidents/Kasm Workspaces/Evidence/Thin Pool Exhaustion - 2026-07-29/Logs/*.md
-
-# Kasm Parrot workspace build-out evidence records
-!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/
-/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Evidence-Index.md
-!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/
-/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*
-!/Platforms/Kasm Workspaces/Evidence/Kasm Parrot Workspace Build-Out - 2026-07-30/Logs/*.md
-
 # PeaNUT UPS dashboard deployment evidence records
 !/Platforms/PeaNUT/Evidence/
 /Platforms/PeaNUT/Evidence/*
@@ -254,10 +220,6 @@
 
 !/Infrastructure/Network/UniFi/Evidence/
 /Infrastructure/Network/UniFi/Evidence/*
-!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/
-/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/*
-!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/Evidence-Index.md
-!/Infrastructure/Network/UniFi/Evidence/Kasm Security Lab Network - 2026-07-22/Screenshots/
 !/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/
 /Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/*
 !/Infrastructure/Network/UniFi/Evidence/MGMT-A Final Lockdown - 2026-07-27/Evidence-Index.md
@@ -311,14 +273,6 @@
 !/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S05-Route-and-Restart-Verification-2026-07-22.md
 !/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Logs/S06-Backup-Removal-2026-07-22.md
 !/Platforms/Nginx Proxy Manager/Evidence/Internal HTTPS Service Onboarding - 2026-07-22/Screenshots/
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/
-/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/*
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/
-/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/*
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S01-UniFi-Path-and-Packet-Trace-2026-07-28.md
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S02-Return-Path-Repair-2026-07-28.md
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S03-NPM-Host-and-Route-Verification-2026-07-28.md
-!/Platforms/Nginx Proxy Manager/Evidence/Kasm Workspaces Internal HTTPS - 2026-07-28/Logs/S04-Prometheus-Probe-2026-07-28.md
 !/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/
 /Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/*
 !/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/

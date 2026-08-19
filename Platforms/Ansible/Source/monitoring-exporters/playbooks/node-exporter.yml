@@ -13,14 +13,7 @@
     node_exporter_port: 9100
     node_exporter_staging: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64"
     # Every host listens on all interfaces, which is what the fleet has always
-    # done. kasm-01 overrides both of these in the inventory: it carries macvlan
-    # shim addresses inside three sealed lab lanes, and an exporter bound to
-    # 0.0.0.0 would answer a session container on the same subnet, where the
-    # gateway has no say. Binding it to the control-plane address alone keeps
-    # host metrics out of the lab. A host that overrides the listen address must
-    # override the probe host to match, or verification checks an address the
-    # exporter no longer answers on.
-    # These read an optional inventory override rather than being set directly.
+    # done. These still read optional inventory overrides rather than being set directly.
     # A play-level var outranks an inventory host var in Ansible's precedence,
     # so setting these literally here would silently ignore the host that needs
     # them.

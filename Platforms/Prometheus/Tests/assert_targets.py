@@ -21,7 +21,7 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 19 hosts
+    # node_exporter, 18 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
@@ -39,9 +39,6 @@ EXPECTED_TARGETS = {
     "http://192.168.80.118:9100/metrics": ("node", "alpha-prod-01"),
     "http://192.168.85.2:9100/metrics": ("node", "docker-network"),
     "http://192.168.73.2:9100/metrics": ("node", "monitor-01"),
-    # kasm-01 answers on its control-plane address only, never 0.0.0.0, so this
-    # URL is the sole way to reach its exporter.
-    "http://192.168.78.10:9100/metrics": ("node", "kasm-01"),
     # game-01, added 2026-08-07 with the Pelican game server platform.
     "http://192.168.80.30:9100/metrics": ("node", "game-01"),
     # cAdvisor, all 9 Docker hosts. This was docker-main alone until 2026-07-26,
@@ -71,7 +68,7 @@ EXPECTED_TARGETS = {
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 
-# The 20 internal service names probed through NPM. Host label is absent; the
+# The 19 internal service names probed through NPM. Host label is absent; the
 # instance label carries the probed URL.
 #
 # wings.alphasecunited.com is deliberately absent. The Wings API answers 401 on
@@ -87,7 +84,6 @@ EXPECTED_BLACKBOX_SERVICES = {
     "semaphore",
     "immich",
     "booklore",
-    "kasm",
     "dashboard",
     "forgejo",
     "portainer",

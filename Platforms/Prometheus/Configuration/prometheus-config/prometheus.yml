@@ -3,7 +3,7 @@
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
-# hostname. The current configuration has 17 node_exporter targets and six
+# hostname. The current configuration has 18 node_exporter targets and six
 # jobs overall. Changing it breaks graph continuity for series that existed
 # before the switch; with 15-day retention that discontinuity ages out.
 global:
@@ -11,11 +11,7 @@ global:
 
 scrape_configs:
   # ------------------------------------------------------------------ node
-  # Every running Linux host that carries a workload. kasm-01 joined on
-  # 2026-07-28; its exporter binds 192.168.78.10 alone rather than 0.0.0.0,
-  # because that host also holds macvlan shim addresses inside three sealed lab
-  # lanes and a session container on one of those subnets would otherwise read
-  # host metrics with no gateway in the path.
+  # Every running Linux host that carries a workload.
   - job_name: node
     static_configs:
       - targets: ["192.168.70.10:9100"]
@@ -50,8 +46,6 @@ scrape_configs:
         labels: {host: docker-network, role: docker}
       - targets: ["192.168.73.2:9100"]
         labels: {host: monitor-01, role: monitoring}
-      - targets: ["192.168.78.10:9100"]
-        labels: {host: kasm-01, role: lab}
       - targets: ["192.168.80.30:9100"]
         labels: {host: game-01, role: game}
       - targets: ["192.168.40.135:9100"]
@@ -140,7 +134,6 @@ scrape_configs:
           - https://prometheus.alphasecunited.com/
           - https://splunk.alphasecunited.com/
           - https://ts3-manager.alphasecunited.com/
-          - https://kasm.alphasecunited.com/
           - https://games.alphasecunited.com/
     relabel_configs:
       - source_labels: [__address__]

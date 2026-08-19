@@ -46,7 +46,7 @@ templates:
     survey:
       - name: target
         title: Target host or group
-        description: Inventory host name such as kasm-01, or a group name.
+        description: Inventory host name such as media-01, or a group name.
         type: ""
         required: true
         values: []
@@ -128,8 +128,8 @@ templates:
       - name: target
         title: Target host or group
         description: >-
-          Leave at the default to run all twelve. An inventory host name such
-          as kasm-01 limits the run to one host.
+          Leave at the default to run all retained targets. An inventory host
+          name such as media-01 limits the run to one host.
         type: ""
         required: false
         values: []

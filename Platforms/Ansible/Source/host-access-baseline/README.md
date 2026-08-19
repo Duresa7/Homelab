@@ -1,7 +1,7 @@
 # Host Access Baseline
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-19
 
 I use this project to own accounts and sudo policy on the Linux guests. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -31,7 +31,7 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 
 | Group | Hosts | What happens |
 |---|---|---|
-| `ai_agent_targets` | media-01, docker-network, monitor-01, kasm-01, edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue, ansible-01 | Account created, key installed |
+| `ai_agent_targets` | media-01, docker-network, monitor-01, edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue, ansible-01 | Account created, key installed |
 | `ai_agent_key_only` | game-01 | Key file written, nothing created |
 | `dkadi_nopasswd_targets` | edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue | **Superseded.** Would have given `dkadi` a NOPASSWD drop-in |
 
@@ -84,8 +84,8 @@ shred -u -z ~/.hab-run/vars.json && rmdir ~/.hab-run
 One host or one group:
 
 ```bash
-ansible-playbook playbooks/ai-agent-account.yml -e target=kasm-01
-ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json -e target=kasm-01
+ansible-playbook playbooks/ai-agent-account.yml -e target=media-01
+ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json -e target=media-01
 ```
 
 ## Verification

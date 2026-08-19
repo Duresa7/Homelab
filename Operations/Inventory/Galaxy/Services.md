@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-08-19
 
-This inventory maps 14 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, and moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the workload check after the 2026-08-10 guest resource changes. Every expected production guest and primary workload was running. Prometheus reported 52 active targets with none unhealthy, and all 20 blackbox probes passed after its restart policy was repaired.
 
@@ -30,7 +30,6 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
-| kasm-01 | VM 122 | purple-server | Isolated disposable desktops (`192.168.78.10`, VLAN 78 control plane) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2<br>macvlan session lanes 74, 75, 77, 79<br>Wazuh agent 4.14.6 |
 | security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
@@ -132,19 +131,6 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Wazuh agent | 4.14.5-1; enabled/active; fresh manager ID `005` as `edge-01`; connected to `192.168.72.2:1514` |
 | Containers | No Docker or Podman runtime detected |
 
-## kasm-01
-
-| Workload | Details |
-| --- | --- |
-| Kasm Workspaces | 1.19.0 Community Edition, `--role all` single-server install under `/opt/kasm/1.19.0`; eight containers running, seven Docker health checks healthy, and `kasm_proxy` running without a Docker health check; HTTPS on TCP 443 with the installer's self-signed certificate; RDP gateway on TCP 3389 |
-| Docker | 29.6.2 with containerd 2.2.6, installed by the Kasm dependency script from `download.docker.com` |
-| Workspace images | 19 lane workspaces and 14 Full workspaces across 15 local Docker image names; Parrot has Full, Normal, and VPN variants; Debian Malware uses lane 77; Docker Registry is null on all rows, so updates are manual instead of hourly rolling-tag pulls |
-| Session isolation | `lab74`, `lab75`, `lab77`, and `lab79` macvlan networks on addressless VLAN parents; host shims persist before Docker; the `Lab Sessions` group limits sessions to one hour and three concurrent sessions with upload and selective persistent profiles enabled while download, clipboard, printing, sharing, and user storage mappings remain disabled |
-| Storage | VM disk is 200 GiB on `ssd-lvm2` with discard enabled; guest ext4 reports 193 GB total, 154 GB used, and 39 GB available; the thin pool reports 68.25 percent data use; `baseline-parrot-2026-07-30` is the only VM snapshot |
-| Swap | 4 GiB file at `/mnt/Kasm.swap`, required by Kasm's own guidance |
-| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `012` as `kasm-01` |
-| Network | Static `192.168.78.10/24` on LAB-MGMT/VLAN 78; sessions use `192.168.74.208/28`, `192.168.75.208/28`, `192.168.77.208/28`, or `192.168.79.208/28`; VLAN 74 exits through Proton, VLAN 75 uses ordinary WAN, and VLANs 77 and 79 have no Internet |
-
 ## security-01 / wazuh-01
 
 | Workload | Details |
@@ -227,7 +213,6 @@ The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. 
 | ansible-01 | 009 | 4.14.6 | default | Active |
 | monitor-01 | 010 | 4.14.6 | default | Active |
 | docker-network | 011 | 4.14.6 | default | Active |
-| kasm-01 | 012 | 4.14.6 | default | Active |
 | grey-server | 013 | 4.14.6 | default, proxmox | Active |
 | purple-server | 014 | 4.14.6 | default, proxmox | Active |
 | blue-server | 015 | 4.14.6 | default, proxmox | Active |
@@ -250,13 +235,10 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
-| kasm-01 | Upstream binary (Ubuntu 24.04) | `node_exporter.service` | `192.168.78.10:9100`, bound to that address only | Not installed, deliberately |
 | edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.30.10:9100` | No containers |
 | ubuntu-dev | Ubuntu package | `prometheus-node-exporter.service` | `192.168.40.179:9100` | Not installed |
 
 `security-01` also carries cAdvisor on 9101 with one container; its row is in the guest table above.
-
-`kasm-01` is the one host whose exporter binds a single address instead of every interface. It holds macvlan shim addresses in VLANs 74, 75, 77, and 79, so an exporter on 0.0.0.0 would answer a lab session container on the same subnet with no gateway in the path. cAdvisor stays off that host for the same reason: a second listener is a second way into the lane holding the sessions.
 
 `app-01` had been serving on 9100 since before this change and simply wasn't scraped. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. A Prometheus query on 2026-07-28 returned 53 named containers across all eight Docker hosts; eight are the cAdvisor containers. See [the troubleshooting record](../../../Platforms/Prometheus/Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 

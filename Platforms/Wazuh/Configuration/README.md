@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-19
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -31,7 +31,6 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 | `ansible-01` | 4.14.6-1, held | ID `009`, `ansible-01` | `192.168.40.36` | Enabled/active; TCP 1514 established |
 | `monitor-01` | 4.14.6-1, held | ID `010`, `monitor-01` | `192.168.73.2` | Enabled/active; TCP 1514 established |
 | `docker-network` | 4.14.6-1, held | ID `011`, `docker-network` | `192.168.85.2` | Enabled/active; TCP 1514 established |
-| `kasm-01` | 4.14.6-1, held | ID `012`, `kasm-01` | `192.168.78.10` | Enabled/active; TCP 1514 established |
 | `grey-server` | 4.14.6-1, held | ID `013`, `grey-server` | `192.168.70.10` | Enabled/active; TCP 1514 established |
 | `purple-server` | 4.14.6-1, held | ID `014`, `purple-server` | `192.168.70.11` | Enabled/active; TCP 1514 established |
 | `blue-server` | 4.14.6-1, held | ID `015`, `blue-server` | `192.168.70.12` | Enabled/active; TCP 1514 established |
@@ -43,6 +42,8 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 The manager and dashboard verified IDs `004` through `017` active and synchronized on 2026-08-03. Both interfaces reported zero disconnected, pending, or never-connected agents.
 
 `game-01` enrolled on 2026-08-07 with the game server platform and was missing from this table until 2026-08-08. `debian-dev` enrolled on 2026-08-08 under the manager identity `db-13-dev`. `agent_control -l` on that date listed the manager plus IDs `004` through `019`, all Active, so the table and the manager now agree at sixteen endpoint agents.
+
+I removed Kasm identity 012 through `manage_agents` on 2026-08-19 after destroying VM 122. `agent_control -l` returned no ID 012 or `kasm-01` match afterward.
 
 ## Shared Agent Groups
 

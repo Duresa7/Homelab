@@ -28,7 +28,6 @@ EXPECTED_AI_AGENT_TARGETS = {
     "media-01",
     "docker-network",
     "monitor-01",
-    "kasm-01",
     "edge-01",
     "app-01",
     "alpha-prod-01",

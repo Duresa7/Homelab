@@ -64,6 +64,5 @@ This gives the web UI automatic recovery after a controller or Proxmox-node boot
 - I removed the retired domain controllers and `obi-pc` from the deployed and repository inventories on 2026-07-27. No Windows host remains in this automation.
 - `nas-family` is retired and is absent from the inventory and validator.
 - Stopped guests remain in the general SSH-key inventory only when an existing identity record still references them. They aren't targets of the active fleet update playbooks.
-- `kasm-01` is excluded from fleet package and compose updates.
 - The fleet-update playbooks don't target `grey-server`, `purple-server`, `blue-server`, or `red-server`. Proxmox node maintenance remains a separate operation.
 - I generate replacements on the device that owns the identity. Ansible stages, checks, & retires the public-key entries.
