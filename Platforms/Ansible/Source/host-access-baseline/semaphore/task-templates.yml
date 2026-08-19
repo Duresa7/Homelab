@@ -90,7 +90,7 @@ templates:
         title: Root password
         description: >-
           Root's password, from the field the Linux Host Baseline Standard
-          names. Becomes root's password on all twelve guests, and therefore
+          names. Becomes root's password on all eleven guests, and therefore
           what every sudo prompt asks for once Defaults rootpw lands.
         type: secret
         required: true
@@ -112,7 +112,7 @@ templates:
         title: Root password
         description: >-
           Root's password, from the field the Linux Host Baseline Standard
-          names. Becomes root's password on all twelve guests, and therefore
+          names. Becomes root's password on all eleven guests, and therefore
           what every sudo prompt asks for once Defaults rootpw lands.
         type: secret
         required: true

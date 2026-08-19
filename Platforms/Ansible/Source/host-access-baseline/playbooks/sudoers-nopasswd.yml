@@ -1,7 +1,7 @@
 ---
 # SUPERSEDED 2026-08-15. Do not run this play.
 #
-# It grants ai-agent passwordless sudo on twelve hosts and dkadi passwordless
+# It grants ai-agent passwordless sudo on eleven hosts and dkadi passwordless
 # sudo on six more. On 2026-08-15 I reversed the decision it rests on: dkadi
 # and ai-agent are both password-gated now, and a sudo prompt asks for root's
 # password by way of Defaults rootpw. Running this would undo that on eighteen

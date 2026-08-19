@@ -219,7 +219,7 @@ def main() -> int:
         errors.append("the account-password tasks must suppress passwords from logs")
     if "any_errors_fatal: true" not in passwords_text:
         errors.append("the account-password play must abort on the first host that fails")
-    # This play writes to /etc/shadow on all twelve. Both values are supplied at
+    # This play writes to /etc/shadow on all eleven. Both values are supplied at
     # run time; a literal reaching this public repository is a publication
     # failure, and a default that is not empty would set a password nobody
     # chose.
@@ -236,7 +236,7 @@ def main() -> int:
     if "$6$" in passwords_text:
         errors.append("playbooks/account-passwords.yml carries a password hash")
     # An empty value hashes to a valid crypt string, so the play has to refuse
-    # to run rather than set an empty root password on twelve hosts.
+    # to run rather than set an empty root password on eleven hosts.
     if "root_password | length > 0" not in passwords_text:
         errors.append("the account-password play must refuse to run without both credentials")
 
