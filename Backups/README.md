@@ -1,7 +1,7 @@
 # Backups
 
 **Created:** 2026-08-05  
-**Last updated:** 2026-08-05
+**Last updated:** 2026-08-19
 
 This folder holds config files I copied off a host before editing them. It exists so a host does not have to keep the copy.
 
@@ -18,7 +18,7 @@ The change record for that work says the copy was made, where it landed, and tha
 
 A tracked file under a platform's `Configuration/` is the configuration a service actually reads. That is a versioned reference, not a backup, and it is never moved or deleted by this process. If you are looking for what a service runs today, read its `Configuration/` folder, not this one.
 
-This is also not a home for hypervisor snapshots or disk images. I keep none, other than on the Kasm hosts, where a rollback point is part of what that lab is for.
+This is also not a home for hypervisor snapshots or disk images. I keep none.
 
 ## Naming
 

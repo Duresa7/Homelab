@@ -1,9 +1,9 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-19
 
-This backlog retains completed Green recovery, CT 105 retirement evidence, Purple storage work, & the accepted-risk cluster maintenance done during the earlier Kasm prep. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog retains completed Green recovery, CT 105 retirement evidence, and Purple storage work. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
 ## Scope of the `galaxy-pxe-join` Key
 
@@ -76,22 +76,12 @@ This backlog retains completed Green recovery, CT 105 retirement evidence, Purpl
 **Change record:** [Purple Boot NVMe Replacement](Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md)  
 **Troubleshooting record:** [Purple NVMe Reliability Failure](Troubleshooting/Purple%20NVMe%20Reliability%20Failure%20-%202026-07-22.md)
 
-- [x] Choose whether the failed device blocks Kasm placement. Moot after the 2026-07-23 teardown removed the Kasm guests from Purple.
 - [x] Take Purple offline for the NVMe replacement. Done 2026-07-24. Corosync showed nodeid 2 `disconnected` on both links, consistent with a powered-down node.
 - [x] Avoid taking Grey, Blue, or Red offline until Purple rejoins. Held for the whole 19-hour-33-minute window; Purple rejoined at `07:19:56 EDT` on 2026-07-25 and the cluster is back to four votes.
 - [x] Reassess the remaining rolling reboot order after the failed-device risk is removed or explicitly accepted.
 - [x] After replacement, verify storage, Proxmox VE 9.2.5, kernel, bridges, Corosync, HA, and a controlled reboot. The cold boot off the cloned drive is the reboot check: `local` and `local-lvm` active, `pve-manager/9.2.5/20242970da7fbcef` on kernel `7.0.14-6-pve` with nothing pending, both rings connected, all seven units active, fencing armed.
 - [x] Keep the Samsung SSD 850 EVO 250 GB installed permanently and use it as ordinary Proxmox storage for VM disks and LXC root volumes. I made that role decision on 2026-07-27.
-- [x] Create `ssd-lvm2` as LVM-thin on the Samsung 850 EVO, restrict it to `purple-server`, enable VM image and LXC root-directory content, and verify it with a real guest disk. I completed this on 2026-07-28 by migrating Kasm VM 122 onto the pool. The pool was active at 11.03 percent allocated after the move, the guest booted, all eight Kasm services ran, seven Docker health checks reported healthy, and the API health endpoint passed. The unchanged [SMART capture](../../../Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) reports zero reallocated, CRC, and uncorrectable errors.
-
-## Cluster Maintenance Done During Kasm Prep
-
-**Status:** Complete. All four nodes run Proxmox VE 9.2.5. I removed the preflight change record from the repository on 2026-07-23 while rebuilding Kasm from scratch; a copy is in the cleanup backup outside the repository.
-
-- [x] Capture and verify root-only Proxmox configuration archives on Grey, Purple, Blue, and Red.
-- [x] Record that I waived the guest-backup target and accepted that the node-local configuration archives cannot restore guest disks.
-- [x] Update guest-free Purple to Proxmox VE 9.2.5 and verify quorum, HA, services, storage, networking, and package state after reboot.
-- [x] Resume and finish the one-node-at-a-time updates. Red, Grey, and Blue reached Proxmox VE 9.2.5 on 2026-07-23 after I accepted the Purple risk.
+- [x] Create `ssd-lvm2` as LVM-thin on the Samsung 850 EVO, restrict it to `purple-server`, enable VM image and LXC root-directory content, and verify it with a real guest disk. I completed this on 2026-07-28. The pool returned to 0.00 percent used after I retired its first workload on 2026-08-19. The unchanged [SMART capture](../../../Hardware/Components/Drives/SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) reports zero reallocated, CRC, and uncorrectable errors.
 
 ## `green-server` Cross-Process Faults and Status Loss
 

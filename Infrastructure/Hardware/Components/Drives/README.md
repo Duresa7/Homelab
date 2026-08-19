@@ -1,7 +1,7 @@
 # Drive Inventory
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-08-19
 
 I track every physical drive I own here, whether it's slotted in a node, sitting on the shelf as a spare, or retired and kept for a rollback. Each drive's raw SMART capture goes in a type subfolder (`NVMe/`, `SSD/`, `HDD/`), and this README is the quick-glance view: model, last-4 serial, capacity, power-on hours, wear, and health. For which drive does what job in which node, see [Galaxy node specifications](../../Nodes.md).
 
@@ -28,7 +28,7 @@ The third spare left the shelf on 2026-07-25. The Toshiba THNSF5256GPUK (`****TA
 | grey | /dev/sda | SSD | Crucial CT2000BX500SSD1 | B600 | 2 TB | 8,023 | 2% | PASSED | LVM | [log](SSD/smartctl-a_CT2000BX500SSD1_B600_2026-07-24.txt) |
 | grey | /dev/sdb | HDD | Toshiba DT01ACA200 | JVTS | 2 TB | 45,831 | n/a (HDD) | PASSED | ZFS | [log](HDD/smartctl-a_DT01ACA200_JVTS_2026-07-24.txt) |
 | purple | /dev/nvme0n1 | NVMe | Toshiba THNSF5256GPUK | TALT | 256 GB | 23,148 | 30% | PASSED | BIOS boot | [log](NVMe/smartctl-a_THNSF5256GPUK_TALT_2026-07-25.txt) |
-| purple | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 252T | 250 GB | 45,242 | see note | PASSED | `ssd-lvm2` LVM-thin; VM 122 | [log](SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) |
+| purple | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 252T | 250 GB | 45,242 | see note | PASSED | `ssd-lvm2` LVM-thin; empty | [log](SSD/smartctl-a_Samsung-850EVO-250GB_252T_2026-07-28.txt) |
 | blue | /dev/nvme0n1 | NVMe | Samsung MZVLW256HEHP-000L7 | 1210 | 256 GB | 48,293 | 9% | PASSED | BIOS boot | [log](NVMe/smartctl-a_MZVLW256HEHP_1210_2026-07-24.txt) |
 | blue | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 6NSN | 500 GB | 23,215 | n/a (HDD) | PASSED | Unused; empty GPT | [log](HDD/smartctl-a_WD5000LPVX_6NSN_2026-07-31.txt) |
 | green | /dev/nvme0n1 | NVMe | Samsung MZVLB256HAHQ-000L7 | 2896 | 256 GB | 36,965 | 11% | PASSED | Proxmox boot | [log](NVMe/smartctl-a_MZVLB256HAHQ_2896_2026-07-31.txt) |
@@ -36,7 +36,7 @@ The third spare left the shelf on 2026-07-25. The Toshiba THNSF5256GPUK (`****TA
 | red | /dev/nvme0n1 | NVMe | Samsung MZVLB256HAHQ-000L7 | 5609 | 256 GB | 25,783 | 7% | PASSED | BIOS boot | [log](NVMe/smartctl-a_MZVLB256HAHQ_5609_2026-07-24.txt) |
 | red | /dev/sda | HDD | Seagate ST1000LM035-1RK172 | SRHK | 1 TB | 24,007 | n/a (HDD) | PASSED | CT 842 `/data` bind mount | [log](HDD/smartctl-a_ST1000LM035_SRHK_2026-07-24.txt) |
 
-The top-level SMART assessment still says `PASSED` on every slotted drive, but Green's Hitachi HDD failed its 2026-07-31 extended self-test at LBA `246502720` and now has two pending sectors. I classify that disk from the completed test instead of the top-level flag. Six drives passed a short self-test on 2026-07-24; Purple's Toshiba and Samsung 850 EVO passed their own on 2026-07-25. I captured the 850 EVO again after creating `ssd-lvm2` and moving VM 122 on 2026-07-28. Blue's WDC finished its own extended test without error at 23,215 power-on hours on 2026-07-31, at zero reallocated, pending, offline-uncorrectable, & CRC-error sectors. Two 320 GB and 500 GB HDDs went in on the same day; only one of them came back clean.
+The top-level SMART assessment still says `PASSED` on every slotted drive, but Green's Hitachi HDD failed its 2026-07-31 extended self-test at LBA `246502720` and now has two pending sectors. I classify that disk from the completed test instead of the top-level flag. Six drives passed a short self-test on 2026-07-24; Purple's Toshiba and Samsung 850 EVO passed their own on 2026-07-25. I captured the 850 EVO again after creating `ssd-lvm2` and moving VM 122 on 2026-07-28; the pool returned to 0.00 percent used when I destroyed that guest and its volumes on 2026-08-19. Blue's WDC finished its own extended test without error at 23,215 power-on hours on 2026-07-31, at zero reallocated, pending, offline-uncorrectable, & CRC-error sectors. Two 320 GB and 500 GB HDDs went in on the same day; only one of them came back clean.
 
 Wear percentage is the drive's own SMART endurance counter, reported by NVMe and by SATA SSDs that expose it. The 850 EVO doesn't publish a percentage-used field: its 2026-07-28 capture reports `Wear_Leveling_Count` raw 1,801 with a normalized value of 15 out of 100, alongside 0 reallocated sectors, 0 uncorrectable errors, and 0 CRC errors. Its 2026-07-25 short self-test completed without error with no failing LBA. Spinning HDDs report no wear counter at all.
 

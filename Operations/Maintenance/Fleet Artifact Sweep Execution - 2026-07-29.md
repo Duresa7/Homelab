@@ -58,7 +58,7 @@ I removed these deployment artifacts after checking that live configuration did 
 
 I preserved the Windows 11 25H2 and VirtIO ISOs for the planned Agent Sandbox. I also kept the current Debian 13, Fedora 44, Kali 2025.2, Ubuntu 24.04.3, Rocky Linux 10.2, and OpenMediaVault 7.4.17 installers.
 
-The two unversioned template scripts under `/root` contained reusable build logic. I moved sanitized versions into [the Debian template script](../../Infrastructure/Compute/Galaxy/Scripts/configure-debian-kasm-lab-template.sh) and [the Kali template script](../../Infrastructure/Compute/Galaxy/Scripts/configure-kali-kasm-ops.sh), replaced the fixed desktop username with a required argument, and deleted the host copies.
+The two unversioned template scripts under `/root` contained reusable build logic. I committed sanitized Debian and Kali copies, replaced the fixed desktop username with a required argument, and deleted the host copies. I later removed both repository copies during the 2026-08-19 Kasm retirement; their history remains in Git.
 
 I removed smaller stale files on the other machines after checking their contents or installed versions. These included superseded Wazuh packages, stale `.bak` and `.save` files, old known-host backups, and completed-job archives. I preserved the root-only Wazuh installer bundle on `security-01`, the matching 4.14.5 Wazuh package on `edge-01`, the inactive Coolify database volume, and the current Ansible recovery material. The follow-up section below revisits that bundle and reverses the decision.
 

@@ -1,7 +1,7 @@
 # Security Incident Response Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-08-19
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I use this sequence for a service-impacting or security incident: define the aff
 
 ## Current Status and Verified Versions
 
-The repository contains nine top-level incident reports across seven service folders: Galaxy, Grafana, Kasm Workspaces, Preview Server, qBittorrent, TeamSpeak, & Vercel. The set spans credential exposure, LAN exposure, local-storage stranding, duplicate storage metadata, thin-pool exhaustion, application-client failure, DNS, ServerQuery, & UDP relay recovery.
+The active repository contains eight top-level incident reports across six service folders: Galaxy, Grafana, Preview Server, qBittorrent, TeamSpeak, & Vercel. The set spans credential exposure, LAN exposure, local-storage stranding, duplicate storage metadata, application-client failure, DNS, ServerQuery, & UDP relay recovery. Retired-platform incidents remain under `Archive/Security/Incidents/`.
 
 ## What You Need
 
