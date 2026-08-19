@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-19
 
-This inventory maps 14 workload guests. I added `ubuntu-dev` on 2026-08-13 when CLI Proxy API moved onto it, and removed `debian-dev` on 2026-08-14 when I decommissioned it. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 14 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, and moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the workload check after the 2026-08-10 guest resource changes. Every expected production guest and primary workload was running. Prometheus reported 52 active targets with none unhealthy, and all 20 blackbox probes passed after its restart policy was repaired.
 
@@ -23,8 +23,8 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>CLI Proxy API<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer |
+| ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
@@ -51,7 +51,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 
 This is the Ubuntu development workstation on VM 105, and it is where I now develop. I added it to this inventory on 2026-08-13; it had been running since 2026-08-12 with no record here.
 
-It took CLI Proxy API from `debian-dev` on 2026-08-13. The Compose project, `config.yaml`, the five provider authentication files, the logs, and the plugins directory moved with it, and I transferred the image itself so the new host runs the same digest rather than whatever `latest` resolved to that day.
+It took CLI Proxy API from `debian-dev` on 2026-08-13 and hosted it until I moved the deployment to `docker-main` on 2026-08-19. After the new HTTPS and authenticated model paths passed, I removed the old container, Compose network, project files, credential state, logs, plugins, and migration cache from this VM.
 
 The login account is `ai-agent`, matching the single-account arrangement on `debian-dev`, and it carries the same approved single-account exception. I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) on 2026-08-13: the sudo grant moved out of `/etc/sudoers` into a `0440` drop-in, SSH took the six hardening settings, root is locked, the clock and locale are `America/New_York` and `en_US.UTF-8`, and cloud-init is disabled. It joined fleet monitoring the same day as Wazuh agent `020` and node_exporter target.
 
@@ -61,7 +61,6 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | --- | --- |
 | GNOME desktop | Ubuntu GNOME; GNOME Shell 50.1, GDM 50.1 |
 | Docker | Docker CE 29.7.2 with Compose v5.4.0; installed 2026-08-13 |
-| CLI Proxy API | Container `cli-proxy-api`, image digest begins `sha256:3f7a734784f4`; published internally as `https://aiproxy.alphasecunited.com` |
 | VS Code | 1.133.0 |
 | Node.js | 24.19.0 via nvm, user scope |
 | GitHub CLI | 2.97.0, authenticated as `Duresa7` |
@@ -78,6 +77,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
 | Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`, verified 2026-08-04 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
+| CLI Proxy API | Version 7.2.128 from a digest-pinned image; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
 
 ## monitor-01
 

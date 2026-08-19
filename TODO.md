@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-19
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -57,6 +57,6 @@ None.
 | [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Kasm internal HTTPS completed 2026-07-28 |
-| [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | Complete one provider login and verify the authenticated model list; container and internal HTTPS route are complete |
+| [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | No open items; provider state and the authenticated model list are verified, and the deployment moved to `docker-main` on 2026-08-19 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | The repository no longer carries the inert Grafana WAL setting; the running container keeps it until the next recreate I initiate. Alert routing then rules; UniFi gateway metrics. Prometheus now uses `restart: always` after Docker's manual-stop flag caused `unless-stopped` to skip the 2026-08-10 boot |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Central stack upgraded to 4.14.7 on 2026-08-04. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5 and `docker-main` off 4.14.0. Two host deviations found 2026-08-15: the guest answers to `wazuh-01` where every record calls it `security-01`, and its clock is on `Etc/UTC` |

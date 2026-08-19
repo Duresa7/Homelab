@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-13
+**Last updated:** 2026-08-19
+
+On 2026-08-19 I repointed the dedicated CLI Proxy API policy from `ubuntu-dev` to `docker-main` and renamed it `Allow NPM to docker-main CLI Proxy API`. It now admits only `192.168.85.2` in Access-A to `192.168.40.35:8317` in Personal-A over TCP. The source, port, protocol, action, logging, index, and policy ID stayed in place; the before-and-after policy comparison found no other firewall change.
 
 Also on 2026-08-13 I moved workstation access from `debian-dev` to `ubuntu-dev`. I swapped the client MAC in `Device Access --> Proxmox`, but a MAC entry alone never produced a working rule for the new guest, so I added `Allow ubuntu-dev to Proxmox`, which admits `192.168.40.179` in Internal to the `AlphaSec-Mgmt` zone on the same port group the MAC policy uses. That policy is what carries the access today. I also swapped `192.168.40.135` for `192.168.40.179` in the destination list of `Allow Monitor to Personal-A monitoring`, so `monitor-01` scrapes the new host's exporter. Neither firewall was sufficient by itself here either: the Proxmox cluster firewall needed the new address in `pve_admins` before any of the five nodes answered.
 
@@ -67,7 +69,7 @@ Every custom policy uses the `Always` schedule. Three stateful isolation blocks 
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 9443 |
-| `Allow NPM to ubuntu-dev CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.179 / 8317 |
+| `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |

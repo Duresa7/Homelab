@@ -1,7 +1,6 @@
 services:
   cli-proxy-api:
-    image: eceasy/cli-proxy-api:latest
-    pull_policy: always
+    image: eceasy/cli-proxy-api@sha256:3f7a734784f4cc2c86f6268929caff1b0c178fe600fdaa12cefe884dc4cae841
     container_name: cli-proxy-api
     restart: unless-stopped
 
@@ -18,6 +17,7 @@ services:
 
     volumes:
       - ./config.yaml:/CLIProxyAPI/config.yaml
+      - ./management.html:/CLIProxyAPI/static/management.html:ro
       - ./auths:/root/.cli-proxy-api
       - ./logs:/CLIProxyAPI/logs
       - ./plugins:/CLIProxyAPI/plugins

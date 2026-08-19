@@ -1,12 +1,13 @@
 # Completed Work
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-19
 
 This is my public history of work closed from [TODO.md](TODO.md). Active priorities, scheduled work, and system backlogs stay in that file.
 
 ## Completed
 
+- [x] 2026-08-19: [CLI Proxy API relocation to docker-main](Platforms/CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md). I moved the Compose project and all runtime state from `ubuntu-dev` to `/opt/docker/cli-proxy-api` on `docker-main`, pinned version 7.2.128 by digest, and repointed the existing UniFi policy and NPM proxy host. TLS, root, management, unauthenticated rejection, and an authenticated 14-model response passed through the production name. I then removed the old container, network, project files, credential state, and migration cache from `ubuntu-dev`.
 - [x] 2026-08-09: [Better Realism shutdown and Vanilla Minecraft deployment](Platforms/Game%20Servers/Documentation/Change%20Records/Better%20Realism%20Shutdown%20and%20Vanilla%20Minecraft%20Deployment%20-%202026-08-09.md). I stopped Better Realism cleanly and retained its Pelican record, container, 363 MiB volume, and world on the non-public 25566 allocation. I imported the official Vanilla egg and deployed the current stable Minecraft Java Edition 26.2 on Java 25 at the existing public 25565 backend. The Mojang server JAR checksum, controlled restart, direct status, and public SRV status all passed; the final public response was version 26.2, protocol 776, 0 of 20 players in 117.7 ms.
 - [x] 2026-08-09: [Better Realism MC and Playit publication](Platforms/Game%20Servers/Documentation/Change%20Records/Better%20Realism%20MC%20and%20Playit%20Publication%20-%202026-08-09.md). I permanently deleted the Best Vanilla World 2 server and world without a backup, imported Pelican's Fabric egg, and deployed Better Realism 7.2.0 on Minecraft 1.21.1, Fabric 0.19.3, and Java 21. Playit agent 1.0.9 now runs on `game-01`; a hardened loopback relay carries its one Minecraft origin to the Pelican allocation. DNS-only Cloudflare CNAME and SRV records let players enter `minecraft.alphasecunited.com` without exposing the panel or Wings. The final SRV-aware status check returned Minecraft 1.21.1, protocol 767, 0 of 20 players in 114.5 ms. I removed every claim file, temporary browser profile, archive, and cross-host test relay afterward.
 - [x] 2026-08-09: [ai-bravo-02 retirement](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md). I deleted stopped Galaxy LXC 105 and its 100 GiB root volume after confirming the archived TNIO and OpenClaw-backed records were readable and that no restorable guest backup existed. I removed its durable SSH Manager definition, found no live UniFi, automation, monitoring, or Wazuh dependency, and removed its generated host page from the deployed documentation site.
