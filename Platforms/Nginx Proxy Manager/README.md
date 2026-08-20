@@ -21,7 +21,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 | Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
 | Shared TLS policy | Certificate assigned; Force SSL and HTTP/2 enabled; HSTS disabled |
 
-The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 21 internal application hosts report Online. The set excludes retired Termix, Syncthing, and Kasm; TS3 Manager, both Pelican interfaces, and CLI Proxy API remain. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
+The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 21 internal application hosts report Online. TS3 Manager, both Pelican interfaces, and CLI Proxy API are in the retained set. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
 
 ## Records
 
@@ -32,7 +32,7 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 - [Configuration reference](Configuration/README.md)
 - [Internal proxy-host inventory](Configuration/internal-proxy-hosts.md)
 - [Internal HTTPS service onboarding (2026-07-22)](Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)
-- [Kasm Workspaces internal HTTPS (2026-07-28)](../../Archive/Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Kasm%20Workspaces%20Internal%20HTTPS%20-%202026-07-28.md)
+- [Error log cleanup (2026-08-19)](Documentation/Change%20Records/Error%20Log%20Cleanup%20-%202026-08-19.md)
 - [CLI Proxy API internal HTTPS (2026-08-10)](../CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md)
 - [CLI Proxy API relocation to docker-main (2026-08-19)](../CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md)
 - [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

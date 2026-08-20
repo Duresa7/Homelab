@@ -79,7 +79,9 @@ passed with 10 node-exporter hosts and nine cAdvisor hosts.
 
 I removed eight current and rotated NPM access and error logs belonging to retired
 proxy host 23, reclaiming 911,271 bytes. No other proxy log was touched. Nginx
-configuration validation passed and the NPM container remained healthy.
+configuration validation passed and the NPM container remained healthy. I handled
+the separate [platform-wide error-log cleanup](../../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Error%20Log%20Cleanup%20-%202026-08-19.md)
+afterward.
 
 Prometheus still retained two historical instance series after their targets were
 removed. I recreated Prometheus briefly with its administrative API enabled, used
