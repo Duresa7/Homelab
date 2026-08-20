@@ -1,7 +1,7 @@
 # Host Access Baseline
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-20
 
 I use this project to own accounts and sudo policy on the Linux guests. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -19,6 +19,10 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - The console password is only ever applied at account creation. A run without the credential will not lock an account that already has one.
 - Every playbook here runs one host at a time and aborts the whole play on the first failure. A broken sudoers file is the one mistake here that removes an account's own route to root, so it must never reach a second host.
 - Sudoers files are written through `visudo -cf` against a temp path and moved into place only on exit 0. `ansible.builtin.copy` with `validate` does exactly that, so the rule is enforced by the module rather than by hand.
+- `sudoers-rootpw.yml` writes `/etc/sudoers.d/00-rootpw` holding `Defaults rootpw`, which makes every sudo prompt on the host ask for **root's** password instead of the invoking user's. Stock sudo authenticates the invoking user's own password, so this is the only mechanism that makes the login password and the sudo password two different values. The `00-` prefix keeps the file first in the lexical order `/etc/sudoers.d` is read in.
+- That play will not write to a host it has not cleared. `Defaults rootpw` where root's password is locked removes sudo from every account at once, and the way back is the Proxmox console, so the play proves root's password **authenticates** on the host in front of it before writing anything there, and stops the whole run on the first host that cannot prove it. A status letter from `passwd -S` is not that proof: it says a hash is present, not that the hash is the value you hold.
+- It reads the resulting policy with `sudo -l -U <user>` as root rather than `sudo -l` as the user. Once `rootpw` is in force, `sudo -l` authenticates too, so a password-gated account cannot run it unattended. This caught the play out on the first host it ran against, and the replacement is the better check anyway: `sudo -l -U` reports the Defaults sudo actually resolved, so finding `rootpw` there proves the setting is in force where a file that parses only proves a file that parses.
+- Its negative proof reports `untestable` rather than passing on the four hosts where `dkadi` still holds a `NOPASSWD` drop-in. `NOPASSWD` skips authentication entirely, so the login password would be "refused" there only in the sense that it was never read. The play detects the grant by testing it, not by looking for a filename — `media-01` calls its drop-in `dkadi` where the others use `90-dkadi`, so a filename sweep reports that host as compliant when it is not.
 - `account-passwords.yml` is the only play here that writes to `/etc/shadow`. It owns `root` and `dkadi` on all eleven and touches nothing else: `ai-agent` already carries the standard password everywhere, and `ansible` is a key-only service account that keeps its `NOPASSWD` grant and stays the route back in.
 - That play **reports `changed` on every run, by design.** It uses `update_password: always` because its job is to converge hosts that drifted between the credential item's two sudo password fields, and a fresh salt produces a new hash each time. Reverting it to `on_create` to make the run look idempotent would skip every host that already has a password, which is every host it exists to fix. The validator fails if the setting changes.
 - An empty password variable hashes to a perfectly valid crypt string, so the play asserts both values are present before it touches an account. A run without credentials fails on the first task instead of giving root an empty password on eleven hosts.
@@ -36,6 +40,8 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 | `dkadi_nopasswd_targets` | edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue | **Superseded.** Would have given `dkadi` a NOPASSWD drop-in |
 
 The six `dkadi` hosts are the ones that still authenticate for sudo, and under the 2026-08-15 model they stay that way. The group is kept because the superseded play still refers to it, not because anything should be run against it.
+
+`sudoers-rootpw.yml` targets all eleven — `ai_agent_targets` and `ai_agent_key_only` together — because the sudo prompt changes everywhere, not only where `dkadi` authenticates.
 
 ## Direct Ansible Commands
 
@@ -81,6 +87,15 @@ shred -u -z ~/.hab-run/vars.json && rmdir ~/.hab-run
 
 `RP` is root's password and `SP` is the standard login password, both read straight out of the credential item rather than typed. Which fields those are is in the unpublished [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), the one file allowed to say where a host account's credentials come from. JSON is what makes the file safe to build from a value containing quotes or backslashes.
 
+Point sudo at the root password. Same staging pattern, and both values are required: root's because it is what the prompt will ask for, the login password because the play proves it is now refused. Run one host first and read the result before the rest:
+
+```bash
+ansible-playbook playbooks/sudoers-rootpw.yml -e @~/.hab-run/vars.json -e target=docker-blue
+ansible-playbook playbooks/sudoers-rootpw.yml -e @~/.hab-run/vars.json
+```
+
+A host whose root password is locked is refused rather than written to, so this is also the safe way to bring a newly provisioned guest onto the policy: run `account-passwords.yml` against it first, confirm `root=P` and `root_auth=ok`, then run this.
+
 One host or one group:
 
 ```bash
@@ -93,6 +108,8 @@ ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json -e tar
 Every playbook verifies its own work and fails the host rather than reporting success.
 
 `ai-agent-account.yml` reads back `ssh-keygen -lf` on the file it wrote and asserts exactly one key, matching the expected comment. `sudoers-nopasswd.yml` runs `visudo -c` before and after, then proves each granted account with `sudo -n true`, which exits non-zero instead of prompting. It is superseded and guarded, so none of that runs without an explicit acknowledgement.
+
+`sudoers-rootpw.yml` parses the sudoers configuration before and after, proves root's password authenticates before it writes, then proves what the prompt accepts and refuses afterwards by feeding each value to `sudo -S` on stdin. It asserts `rootpw` appears among the Defaults `sudo -l -U` resolves, and reconfirms `sudo -n true` for `ansible` on every host. A second run reports no changes.
 
 `account-passwords.yml` asserts `passwd -S root` reports a usable password, asserts `dkadi` holds administrative group membership, then proves both passwords by authenticating as the account through `su`. It also confirms `sudo -n true` still works for `ansible` on every host, so a run that disturbed automation fails instead of finishing quietly.
 

@@ -1,0 +1,301 @@
+---
+# Makes a sudo prompt ask for root's password instead of the invoking user's.
+#
+# Stock sudo authenticates the invoking user's own password, so on a stock host
+# the login password and the sudo password are necessarily the same value.
+# `Defaults rootpw` is the only mechanism that separates them: it points every
+# sudo prompt at root's password.
+#
+# The failure mode is the reason this play is shaped the way it is. `Defaults
+# rootpw` on a host whose root password is locked removes sudo from every
+# account there at once, and the only way back is the Proxmox console. So the
+# play proves root's password authenticates on the host in front of it before
+# it writes anything, one host at a time, and stops the whole run on the first
+# host that cannot prove it.
+#
+# `ansible` keeps its NOPASSWD grant throughout and is checked again at the end
+# of every host, because it is the route back in if this play is ever wrong.
+- name: Make sudo authenticate against the root password
+  hosts: "{{ target | default('ai_agent_targets:ai_agent_key_only') }}"
+  gather_facts: true
+  become: true
+  # One host at a time. A host that cannot prove root's password must stop the
+  # run before the file reaches the next one.
+  serial: "{{ host_access_serial | default(1) }}"
+  any_errors_fatal: true
+  vars:
+    dkadi_user: dkadi
+    # Both values are supplied at run time out of the credential item and never
+    # live in this file, the inventory, or any tracked file. root_password is
+    # root's password, which this play makes the answer to every sudo prompt.
+    # dkadi_password is the standard login password, needed here only to prove
+    # that it is now *refused* at a sudo prompt. Which fields those are is in
+    # the unpublished Linux Host Baseline Standard, the one file allowed to say
+    # where a host account's credentials come from.
+    root_password: ""
+    dkadi_password: ""
+    # /etc/sudoers.d is read in lexical order. The 00- prefix keeps this file
+    # first, ahead of every grant it governs.
+    rootpw_dropin: /etc/sudoers.d/00-rootpw
+  tasks:
+    # Before a single host is touched. Running without root_password would walk
+    # the fleet writing a file whose prerequisite was never checked, and
+    # running without dkadi_password would silently skip the proof that the
+    # login password stops working at a sudo prompt, which is the whole point.
+    - name: Require both credentials before touching any host
+      run_once: true
+      ansible.builtin.assert:
+        that:
+          - root_password | length > 0
+          - dkadi_password | length > 0
+        fail_msg: >-
+          root_password and dkadi_password must both be supplied. Read them out
+          of the credential item into a mode-0600 vars file and pass it with
+          -e @file. root_password is what this play makes every sudo prompt
+          ask for; dkadi_password is needed to prove the login password is
+          refused there afterwards.
+        quiet: true
+
+    - name: Confirm a local controller run is on ansible-01
+      when:
+        - inventory_hostname == 'ansible-01'
+        - (ansible_connection | default('ssh')) == 'local'
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.hostname == 'ansible-01'
+        fail_msg: >-
+          The ansible-01 inventory entry uses a local connection, but this
+          runner reports hostname {{ ansible_facts.hostname }}. Run the project
+          from ansible-01 or use an explicit SSH connection.
+        quiet: true
+
+    - name: Confirm the sudoers configuration parses before any change
+      ansible.builtin.command:
+        argv: [visudo, -c]
+      register: sudoers_precheck
+      changed_when: false
+      check_mode: false
+
+    - name: Read back the root password status
+      ansible.builtin.command:
+        argv: [passwd, -S, root]
+      register: root_passwd_status
+      changed_when: false
+      check_mode: false
+
+    # Debian's shadow-utils prints P, L or NP; the Rocky host's passwd prints
+    # the same first letter for a usable password. Matching on a leading P
+    # accepts both and still rejects L, LK and NP.
+    - name: Confirm root has a usable password on this host
+      ansible.builtin.assert:
+        that:
+          - root_passwd_status.stdout.split() | length > 1
+          - root_passwd_status.stdout.split()[1] is match('^P')
+        fail_msg: >-
+          {{ inventory_hostname }}: root reports
+          {{ root_passwd_status.stdout.split()[1] | default('unreadable') }}
+          rather than a usable password. Writing Defaults rootpw here would
+          remove sudo from every account on this host, recoverable only from
+          the Proxmox console. Run account-passwords.yml against it first.
+        quiet: true
+
+    # A status letter only proves a hash is present. This proves the value in
+    # the credential item is the value that authenticates, which is the actual
+    # prerequisite. become always escalates from the connection user, which is
+    # the unprivileged `ansible` account, so this really is su answering a
+    # password prompt rather than root becoming root.
+    #
+    # raw rather than command: becoming an unprivileged user needs no remote
+    # temporary file this way, and the password reaches su through the become
+    # plugin rather than through any command string.
+    - name: Prove root's password authenticates before writing anything
+      when: not ansible_check_mode
+      become: true
+      become_method: su
+      become_user: root
+      vars:
+        ansible_become_password: "{{ root_password }}"
+      ansible.builtin.raw: id -un
+      register: root_auth
+      changed_when: false
+      failed_when: false
+      no_log: true
+
+    - name: Confirm root authenticated
+      when: not ansible_check_mode
+      ansible.builtin.assert:
+        that:
+          - root_auth.stdout is defined
+          - "'root' in root_auth.stdout"
+        fail_msg: >-
+          {{ inventory_hostname }}: su to root did not authenticate with the
+          supplied password. A hash is present but it is not this value, so
+          pointing sudo at it would lock every account out of sudo here. Run
+          account-passwords.yml against this host first.
+        quiet: true
+
+    # copy with validate writes a temp file, runs visudo -cf against that temp
+    # path, and moves it into place only when visudo exits 0. That is the
+    # temp-path-then-validate rule, enforced by the module rather than by hand.
+    #
+    # The header is not decoration. Without it this file is one unexplained
+    # line, and deleting it silently returns every sudo prompt on the host to
+    # the login password with nothing to show that anything changed.
+    - name: Point sudo at the root password
+      ansible.builtin.copy:
+        dest: "{{ rootpw_dropin }}"
+        content: |
+          # Managed by host-access-baseline (playbooks/sudoers-rootpw.yml).
+          # sudo asks for root's password here, not the invoking user's.
+          # Removing this line silently returns every sudo prompt on this host
+          # to the login password.
+          Defaults rootpw
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Confirm the whole sudoers configuration still parses
+      ansible.builtin.command:
+        argv: [visudo, -c]
+      register: sudoers_postcheck
+      changed_when: false
+      check_mode: false
+
+    # NOPASSWD skips authentication entirely, so on a host where dkadi still
+    # holds a drop-in there is no prompt to point anywhere and the negative
+    # proof below cannot mean anything. Detect it rather than assume it: the
+    # drop-in filenames are not consistent across the fleet, so a check that
+    # looks for a filename reports the wrong answer on at least one host.
+    - name: Find out whether dkadi still holds a NOPASSWD grant here
+      when: not ansible_check_mode
+      ansible.builtin.command:
+        argv: [runuser, -u, "{{ dkadi_user }}", --, sudo, -k, -n, --, "true"]
+      register: dkadi_nopasswd_probe
+      changed_when: false
+      failed_when: false
+
+    - name: Record whether dkadi is password-gated on this host
+      when: not ansible_check_mode
+      ansible.builtin.set_fact:
+        dkadi_password_gated: "{{ dkadi_nopasswd_probe.rc != 0 }}"
+
+    # sudo -S reads the password from stdin, so the value never reaches a
+    # command string, an argument list or a shell history. Pipelining is on, so
+    # the module and its arguments are piped to the remote interpreter and no
+    # temporary file carrying it is written to the host either.
+    #
+    # -k discards any cached credential first, so this really authenticates.
+    # On a host where dkadi is still NOPASSWD this succeeds without reading
+    # stdin at all, which is correct and is why it is not gated.
+    - name: Prove root's password is accepted at a dkadi sudo prompt
+      when: not ansible_check_mode
+      ansible.builtin.command:
+        argv: [runuser, -u, "{{ dkadi_user }}", --, sudo, -S, -k, -p, "", --, id, -un]
+        stdin: "{{ root_password }}"
+      register: dkadi_sudo_rootpw
+      changed_when: false
+      failed_when: false
+      no_log: true
+
+    - name: Confirm dkadi reached root with root's password
+      when: not ansible_check_mode
+      ansible.builtin.assert:
+        that:
+          - dkadi_sudo_rootpw.rc == 0
+          - "'root' in (dkadi_sudo_rootpw.stdout | default(''))"
+        fail_msg: >-
+          {{ inventory_hostname }}: dkadi could not reach root by answering the
+          sudo prompt with root's password. The drop-in is written and visudo
+          passes, so check that dkadi still holds administrative group
+          membership here before removing anything.
+        quiet: true
+
+    # The other half of the proof, and the half that shows the change did
+    # something. Skipped where dkadi is still NOPASSWD, because there sudo
+    # authenticates nothing and the login password would be "accepted" only in
+    # the sense that it was never read.
+    - name: Prove the login password is now refused at a dkadi sudo prompt
+      when:
+        - not ansible_check_mode
+        - dkadi_password_gated | bool
+      ansible.builtin.command:
+        argv: [runuser, -u, "{{ dkadi_user }}", --, sudo, -S, -k, -p, "", --, id, -un]
+        stdin: "{{ dkadi_password }}"
+      register: dkadi_sudo_loginpw
+      changed_when: false
+      failed_when: false
+      no_log: true
+
+    - name: Confirm the login password no longer works at a sudo prompt
+      when:
+        - not ansible_check_mode
+        - dkadi_password_gated | bool
+      ansible.builtin.assert:
+        that:
+          - dkadi_sudo_loginpw.rc != 0
+          - "'root' not in (dkadi_sudo_loginpw.stdout | default(''))"
+        fail_msg: >-
+          {{ inventory_hostname }}: the login password still gets dkadi to root
+          through sudo, so Defaults rootpw is not in force here even though the
+          file was written. Check that nothing later in /etc/sudoers.d unsets
+          it before treating this host as done.
+        quiet: true
+
+    # Read the grant as root with -U rather than as dkadi. Once rootpw is in
+    # force, `sudo -l` run as a password-gated account authenticates before it
+    # will tell you anything, so it is no longer a check you can run to find
+    # out where you stand. That caught this play out on the first host it ran
+    # against: the drop-in was correct and both proofs above had already
+    # passed. As root, -U needs no authentication and reads the same policy.
+    - name: Read back what sudo grants dkadi
+      when: not ansible_check_mode
+      ansible.builtin.command:
+        argv: [sudo, -l, -U, "{{ dkadi_user }}"]
+      register: dkadi_sudo_list
+      changed_when: false
+      failed_when: false
+
+    # sudo -l prints the Defaults it actually resolved for this user on this
+    # host, so finding rootpw there proves the setting is in force as sudo sees
+    # it. A file on disk that parses only proves a file on disk that parses.
+    - name: Confirm dkadi still holds a sudo grant and that rootpw is in force
+      when: not ansible_check_mode
+      ansible.builtin.assert:
+        that:
+          - dkadi_sudo_list.rc == 0
+          - dkadi_sudo_list.stdout is search('ALL')
+          - dkadi_sudo_list.stdout is search('rootpw')
+        fail_msg: >-
+          {{ inventory_hostname }}: sudo -l -U {{ dkadi_user }} did not report
+          both a grant and rootpw among the Defaults it resolved. The drop-in
+          may be present without being in force. Read back:
+          {{ dkadi_sudo_list.stdout | default('nothing') }}
+        quiet: true
+
+    # Automation must not have been disturbed. sudo -n exits non-zero rather
+    # than prompting, so a host whose ansible grant broke fails here instead of
+    # hanging, and any_errors_fatal stops the run before the next host. If this
+    # ever fails, the fleet has lost the route that fixes a bad sudoers file.
+    - name: Confirm the ansible account still holds passwordless sudo
+      when: not ansible_check_mode
+      become: false
+      # "true" stays quoted. Unquoted, YAML reads it as a boolean and Ansible
+      # passes the string True to sudo, which is not a command.
+      ansible.builtin.command:
+        argv: [sudo, -n, "true"]
+      changed_when: false
+
+    - name: Report the per-host result
+      ansible.builtin.debug:
+        msg: >-
+          {{ inventory_hostname }}:
+          root={{ root_passwd_status.stdout.split()[1] | default('unknown') }}
+          root_auth={{ 'ok' if (root_auth.stdout | default('') is search('root')) else 'not tested' }}
+          visudo={{ 'ok' if sudoers_postcheck.rc == 0 else 'FAILED' }}
+          rootpw_in_force={{ 'ok' if (dkadi_sudo_list.stdout | default('') is search('rootpw')) else 'not tested' }}
+          rootpw_accepted={{ 'ok' if (dkadi_sudo_rootpw.rc | default(1)) == 0 else 'not tested' }}
+          loginpw_refused={{
+            'ok' if (dkadi_password_gated | default(false) | bool and (dkadi_sudo_loginpw.rc | default(0)) != 0)
+            else ('untestable - dkadi still NOPASSWD, ticket 17 removes it'
+                  if not (dkadi_password_gated | default(true) | bool) else 'not tested') }}

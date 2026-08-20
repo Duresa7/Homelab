@@ -3,8 +3,9 @@
 
 Checks that the inventory parses, the three target groups hold exactly the
 approved host sets, every host connects as `ansible`, only ansible-01 uses a
-local connection, the referenced playbooks exist, the sudoers playbook writes
-through visudo validation, the ai-agent key carries no restriction options, the
+local connection, the referenced playbooks exist, the sudoers playbooks write
+through visudo validation, the rootpw play proves root's password before it
+writes anything, the ai-agent key carries no restriction options, the
 account-password play carries no credential and converges rather than skipping,
 and the Semaphore manifest points only at playbooks that are present.
 """
@@ -22,6 +23,7 @@ PLAYBOOKS = (
     "playbooks/ai-agent-account.yml",
     "playbooks/sudoers-nopasswd.yml",
     "playbooks/account-passwords.yml",
+    "playbooks/sudoers-rootpw.yml",
 )
 
 EXPECTED_AI_AGENT_TARGETS = {
@@ -254,6 +256,65 @@ def main() -> int:
         errors.append("sudoers drop-ins must be mode 0440")
     if "any_errors_fatal: true" not in sudoers_text:
         errors.append("the sudoers play must abort on the first host that fails")
+
+    # Defaults rootpw points every sudo prompt on the host at root's password.
+    # On a host whose root password is locked that removes sudo from every
+    # account at once and the way back is the Proxmox console, so the checks
+    # below are about the play refusing to run rather than about its content.
+    rootpw_text = (ROOT / "playbooks" / "sudoers-rootpw.yml").read_text(encoding="utf-8")
+    if "Defaults rootpw" not in rootpw_text:
+        errors.append("the rootpw play must write Defaults rootpw")
+    if rootpw_text.count("validate: visudo -cf %s") != 1:
+        errors.append("the rootpw drop-in must be written through visudo validation")
+    if 'mode: "0440"' not in rootpw_text:
+        errors.append("the rootpw drop-in must be mode 0440")
+    if "/etc/sudoers.d/00-rootpw" not in rootpw_text:
+        errors.append(
+            "the rootpw drop-in must be 00-rootpw; /etc/sudoers.d is read in "
+            "lexical order and a later filename parses after the grants"
+        )
+    if "any_errors_fatal: true" not in rootpw_text:
+        errors.append("the rootpw play must abort on the first host that fails")
+    if "no_log: true" not in rootpw_text:
+        errors.append("the rootpw tasks must suppress passwords from logs")
+    # The prerequisite is not that a hash exists, it is that this value is the
+    # one that authenticates. Both checks have to run before the copy task, or
+    # the play writes the file on a host it has not cleared.
+    for marker, message in (
+        (
+            "root_passwd_status.stdout.split()[1] is match('^P')",
+            "the rootpw play must refuse a host whose root password is locked",
+        ),
+        (
+            "Prove root's password authenticates before writing anything",
+            "the rootpw play must prove root's password authenticates, not just that a hash landed",
+        ),
+    ):
+        if marker not in rootpw_text:
+            errors.append(message)
+        elif rootpw_text.index(marker) > rootpw_text.index("Point sudo at the root password"):
+            errors.append(f"{message} — the check runs after the file is written")
+    if "root_password | length > 0" not in rootpw_text:
+        errors.append("the rootpw play must refuse to run without both credentials")
+    if "$6$" in rootpw_text:
+        errors.append("playbooks/sudoers-rootpw.yml carries a password hash")
+    rootpw_play = yaml.safe_load(rootpw_text)[0]
+    rootpw_vars = rootpw_play.get("vars") or {}
+    for name in ("root_password", "dkadi_password"):
+        if name not in rootpw_vars:
+            errors.append(f"the rootpw play must declare {name}")
+        elif rootpw_vars[name] != "":
+            errors.append(
+                f"{name} must default to an empty string and be supplied at run "
+                "time; this repository publishes no credential"
+            )
+    # ansible is the only account that keeps NOPASSWD, so it is the only way to
+    # repair a sudoers file this play got wrong. Every host must be rechecked.
+    if 'argv: [sudo, -n, "true"]' not in rootpw_text:
+        errors.append(
+            "the rootpw play must reconfirm the ansible NOPASSWD grant on every "
+            "host; it is the route back in if the drop-in is wrong"
+        )
 
     semaphore_path = ROOT / "semaphore" / "task-templates.yml"
     if semaphore_path.is_file():

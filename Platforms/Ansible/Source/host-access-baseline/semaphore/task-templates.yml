@@ -51,6 +51,65 @@ templates:
         required: true
         values: []
 
+  # The current sudo policy. Defaults rootpw points every sudo prompt on the
+  # host at root's password, so both values are required: root's to prove the
+  # prompt accepts it, the login password to prove the prompt now refuses it.
+  # The play proves root's password authenticates on each host before it writes
+  # anything there, and stops the run on the first host that cannot prove it.
+  - name: "Sudo Policy: Point sudo at the root password (dry run)"
+    view: Sudo Policy
+    playbook: playbooks/sudoers-rootpw.yml
+    arguments: ["--check"]
+    survey:
+      - name: root_password
+        title: Root password
+        description: >-
+          Root's password, from the field the Linux Host Baseline Standard
+          names. This is what every sudo prompt on the eleven guests asks for
+          once this play has run.
+        type: secret
+        required: true
+        values: []
+      - name: dkadi_password
+        title: dkadi password
+        description: >-
+          The standard login password, from the field the Linux Host Baseline
+          Standard names. Used only to prove it is refused at a sudo prompt.
+        type: secret
+        required: true
+        values: []
+  - name: "Sudo Policy: Point sudo at the root password"
+    view: Sudo Policy
+    playbook: playbooks/sudoers-rootpw.yml
+    arguments: []
+    survey:
+      - name: root_password
+        title: Root password
+        description: >-
+          Root's password, from the field the Linux Host Baseline Standard
+          names. This is what every sudo prompt on the eleven guests asks for
+          once this play has run.
+        type: secret
+        required: true
+        values: []
+      - name: dkadi_password
+        title: dkadi password
+        description: >-
+          The standard login password, from the field the Linux Host Baseline
+          Standard names. Used only to prove it is refused at a sudo prompt.
+        type: secret
+        required: true
+        values: []
+      - name: target
+        title: Target host or group
+        description: >-
+          Leave at the default to run all eleven guests. An inventory host name
+          such as media-01 limits the run to one host, which is how a rebuilt
+          host is brought back to the policy.
+        type: ""
+        required: false
+        values: []
+
   # SUPERSEDED 2026-08-15. The play these point at grants passwordless sudo to
   # dkadi and ai-agent, which the 2026-08-15 decision reverses. The play now
   # refuses to run without an explicit acknowledgement variable, so these
