@@ -50,7 +50,10 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
 | `prometheus` | self-scrape |
 
-The Kasm retirement removed its node-exporter target and internal HTTPS probe on 2026-08-19. The other node-exporter targets retain the all-interface listener expected by the automation.
+The current target set has no retired lab endpoints. The retained node-exporter
+targets use the all-interface listener expected by the automation. Prometheus has
+its administrative API disabled, no historical label from the retired lab
+workload, and all 50 targets up.
 
 cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. A 2026-07-28 Prometheus query returned 11 on `docker-main`, 5 on `docker-network`, 4 on `docker-blue`, 10 on `media-01`, 8 on `alpha-prod-01`, 7 on `app-01`, 1 on `security-01`, & 7 on `monitor-01`. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 

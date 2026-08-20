@@ -68,6 +68,10 @@ Both plays verify their own work. `node-exporter.yml` probes the exporter and as
 
 A `--check` run of `node-exporter.yml` isn't a pass/fail gate. On a binary-managed host, `get_url` predicts the download without creating the staging archive, then `unarchive` & `copy` can't read that missing file. Ansible also skips the `uri` & shell verification modules in check mode, so installed package-managed hosts report an unknown version. I keep that command as a command-line preview of package decisions, but I don't expose it as a Semaphore template that looks like a health check.
 
+The deployed SHA256 matches this repository, and
+`python3 tests/validate_project.py` passes with 10 node-exporter hosts and nine
+cAdvisor hosts.
+
 ## Adding a host
 
 Add it under `node_exporter_targets` or `cadvisor_targets` with its `ansible_host` & `ansible_user`, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.

@@ -1,7 +1,7 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-11
+**Last updated:** 2026-08-19
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
@@ -42,6 +42,11 @@ I recaptured all seven containers after the [2026-08-10 resource efficiency chan
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.36/24 | 192.168.40.1 | enabled | `<REDACTED_ANSIBLE_CONTROLLER_MAC>` |
+
+I removed the stale `net1` VLAN 74 interface on 2026-08-19 after retiring the
+workload that had required that lab lane. The running container now has only
+`eth0`, no `192.168.74.0/24` route, and its automation and monitoring services
+remain healthy.
 
 ## LXC 104 - monitor-01
 

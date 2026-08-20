@@ -52,14 +52,66 @@ The ProtonVPN client is shared, so I kept it. The separate `VPN - Proton` route 
 
 The generic `VM` client group contained both `security-01` and the retired Kasm VM by MAC. I removed only the retired member, reducing the group from two members to one. I also used the controller's forget action on the offline `kasm-01` client. UniFi returned success, although its historical-client listing continued to serve the old offline telemetry row with a last-seen time of 10:44 AM Eastern. No current group, policy, route, DNS record, network, zone, OON policy, or port profile references that row.
 
+## Step 5: Remove residual artifacts
+
+A follow-up audit found four active remnants that the first pass missed: CT 100
+`ansible-01` still had a VLAN 74 interface at `192.168.74.49/24`, the private
+Proxmox token registry retained an orphaned autoscaler entry with no matching user
+or ACL, the deployed monitoring-exporter validator still expected `kasm-01`, and
+the internal documentation site still published the retired host and service
+pages.
+
+I removed `net1` from CT 100 through Proxmox. The running container immediately
+lost `eth1` and its `192.168.74.0/24` route while its VLAN 40 management path stayed
+up. Semaphore, SSH, and node-exporter remained running and the container health
+check passed.
+
+The orphaned token registry row had no corresponding token metadata, so the
+supported token-delete command could not address it. I created the same identity
+disabled, without a password or ACL, long enough to confirm the metadata was
+absent. I then removed only the orphaned registry row and deleted the temporary
+disabled identity. The final user, ACL, and private token-registry searches each
+returned zero matches.
+
+I deployed the versioned monitoring-exporter validator to `ansible-01` without a
+remote backup. Its SHA256 matched the repository copy, and the structural check
+passed with 10 node-exporter hosts and nine cAdvisor hosts.
+
+I removed eight current and rotated NPM access and error logs belonging to retired
+proxy host 23, reclaiming 911,271 bytes. No other proxy log was touched. Nginx
+configuration validation passed and the NPM container remained healthy.
+
+Prometheus still retained two historical instance series after their targets were
+removed. I recreated Prometheus briefly with its administrative API enabled, used
+exact instance selectors to delete only those series, cleaned the tombstones, and
+recreated it from the original Compose file. The temporary override was deleted,
+the administrative API returned to disabled, the Kasm instance-label search
+returned zero, and all 50 targets returned `up`.
+
+I removed three stale SSH host-key entries from the local agent account and three
+from `ansible-01`, deleting both `ssh-keygen` backup files afterward. I also deleted
+the retired dashboard login from the password manager without reading any stored
+value; no active item with that title remains.
+
+The private Docusaurus source lost the Kasm host page, service page, isolated-lab
+diagram, generated cache entries, and every current-state reference to the retired
+host, networks, proxy, and monitoring targets. I rebuilt and recreated the live
+container on `docker-main`. It is healthy, `/healthz` returns `ok`, both retired
+routes return HTTP `404`, and the built HTML and sitemap contain no Kasm match.
+The same refresh removed a broken link to the already-retired development VM and
+added the current `ubuntu-dev` page. I made no UniFi change during this follow-up.
+
 ## Final verification
 
 - Proxmox returns no VM 122 configuration, resource, or storage volume.
-- Nginx Proxy Manager has no Kasm proxy host or generated configuration, and `nginx -t` passes.
+- Proxmox returns no Kasm user, ACL, autoscaler token registry row, or CT 100 VLAN 74 interface.
+- Nginx Proxy Manager has no Kasm proxy host, generated configuration, or proxy-host-23 log, and `nginx -t` passes.
 - Wazuh has no agent 012 or Kasm identity.
-- The deployed Ansible projects and SSH Manager profile inventory contain no Kasm target.
-- Prometheus reports 50 of 50 targets up and no Kasm target.
+- The deployed Ansible projects and SSH Manager profile inventory contain no Kasm target; the monitoring-exporter validator passes.
+- Prometheus reports 50 of 50 targets up and no Kasm target or retained instance series; its administrative API is disabled.
 - The UniFi configuration readback returns no Kasm match across firewall policies, zones, firewall groups, networks, traffic routes, DNS records, port profiles, VPN clients, client-group names, or OON policies. The `VM` group has one retained member.
+- The password manager has no active Kasm dashboard login, and the two checked SSH known-hosts files have no former-host entry.
+- The internal documentation source and built site contain no Kasm page, content match, or sitemap URL.
 - The repository keeps the retired platform and dedicated records under `Archive/`; no active deployment source or configuration references Kasm.
 
 ## Rollback
@@ -68,4 +120,6 @@ None. The guest, workspace state, system disk, cloud-init disk, EFI disk, and sn
 
 ## Remaining work
 
-None. The controller has accepted the historical-client forget request; the read-only client-history endpoint may retain its unreferenced offline telemetry row until controller retention expires.
+The connected homelab has no remaining active Kasm artifact. An older record names
+a Windows-side pre-change copy and a workstation SSH entry that are not mounted or
+reachable from this environment, so their current state remains a user-side check.
