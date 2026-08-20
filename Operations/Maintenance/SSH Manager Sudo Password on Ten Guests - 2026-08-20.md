@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-20
 
 **Change date:** 2026-08-20  
-**Status:** Complete. `ssh_execute_sudo` reaches root on all eleven guests, `ssh_execute` still works on all eleven, and the credential exists in exactly one file  
+**Status:** Complete. `ssh_execute_sudo` reaches root on all eleven guests and `ssh_execute` still works on all eleven. This work put the credential in one file and no other. A wider scan on 2026-08-20 then found a second, older copy that this work did not create — see [Where the first scan was too narrow](#where-the-first-scan-was-too-narrow)  
 **Scope:** Ten `SUDO_PASSWORD` entries in the SSH Manager MCP's env file on `ubuntu-dev`. No remote host was touched: no sudoers file, no account password, no key, no sshd setting. The five Proxmox nodes, `docker-main` and `ansible-01` have no entry on purpose
 
 ## Outcome
@@ -41,7 +41,7 @@ Read through the SSH Manager itself, between 8:20 and 8:30 AM:
 Ten lines, one per host, of the form the loader expects:
 
 ```text
-SSH_SERVER_<NAME>_SUDO_PASSWORD="<root password>"
+SSH_SERVER_<SERVER_NAME>_SUDO_PASSWORD="<REDACTED_PASSWORD>"
 ```
 
 Each went at the end of the server's existing block. The file gained a two-line comment under its header saying what the entries hold and why, because a bare password entry gives a later reader nothing to check the value against, and root's password is not the value a reader would guess a sudo entry holds.
@@ -85,7 +85,25 @@ media-01      root   game-01 root     ansible-01 root
 
 **Mode is still `0600`**, owned by `ai-agent`, 6270 bytes, 153 lines.
 
-**The credential exists in exactly one file.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 session transcripts for this project, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which is what the source says and what the files confirm.
+**This work put the credential in one file and no other.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 session transcripts for this project, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which the source confirms at `index.js:695` — the only two `logCommand` call sites sit in the non-sudo handler.
+
+**The mask is one regex over the reported command line.** `index.js:2323` is `fullCommand.replace(/echo "[^"]+" \| sudo -S/, 'sudo')`, and the result template interpolates `result.stdout || result.stderr` untouched. So a command that echoes its own stdin still returns the value.
+
+**No restart was needed, and the source says why.** `getSingleFileSignature()` returns `${filePath}:${stats.mtimeMs}:${stats.size}` and `getServers()` compares it on every call, so the write alone was enough.
+
+## Where the first scan was too narrow
+
+The scan above concluded the value existed in exactly one file. That conclusion was wrong, and the reason is worth keeping because it will catch the next person.
+
+There are two Claude configuration directories on `ubuntu-dev`. This effort runs under `CLAUDE_CONFIG_DIR=~/.claude_alt`, so "all 11 session transcripts for this project" meant the transcripts under `~/.claude_alt/projects/`. The default directory `~/.claude/projects/` was never looked at, and that is where the second copy was. Scanning from `$HOME` instead of from a list of expected locations finds it immediately.
+
+A re-scan from `$HOME` on 2026-08-20, covering plaintext plus hex, spaced hex, `xxd` column, base64 and percent-encoded forms, returned two files: the env file, and `~/.claude/projects/-home-ai-agent-Documents-Homelab/8a3156c4-b4d6-4a1a-8505-0a6c74d581a8.jsonl`. One occurrence, on one line, timestamped **2026-08-14**, six days before this change. Only the plaintext form matched anywhere; no encoded form appeared in any file.
+
+**This change did not put it there.** The line is a 2026-08-14 session flagging that an `xxd` debug command had just printed the value into its own output. The exposure was recognised as it happened and the value was left in the transcript on disk. What is new is that the value's authority grew afterwards: on 2026-08-14 it was `dkadi`'s sudo password, on 2026-08-15 it became root's password on the guests, and on 2026-08-20 `Defaults rootpw` made it what every sudo prompt on all eleven checks.
+
+I replaced the value in that transcript with a `<REDACTED_PASSWORD>` marker on 2026-08-20, leaving the surrounding text intact so the flag itself still reads. All 1000 lines still parse as JSON, the file mode is unchanged at `0600`, and the modification time was preserved. A re-scan from `$HOME` now returns the env file only.
+
+Rotation is a separate decision and is not made here. Two things bear on it: the value sat in a mode-`0600` file readable by `ai-agent` and by root on this host for six days, and it is now the sudo password for the whole guest fleet rather than one account's.
 
 ## How the credential was handled
 
@@ -108,3 +126,7 @@ Before writing, I checked without printing anything that the field came back non
 **`ai-agent` still has no sudo grant on ten of the eleven guests**, so the SSH Manager's path to root on those hosts is `dkadi` and nothing else. That gap belongs to the verification ticket, not to this one.
 
 **Ticket 17 is unblocked.** The password path is proven on six hosts that have no drop-in, so removing the remaining four cannot leave privileged tooling without a route.
+
+**Whether to rotate the fleet sudo password.** The 2026-08-14 transcript copy is redacted, but redacting a file after the fact is not the same as the value never having been written. Rotating it means changing root's password on all eleven guests and the ten entries here together, because `Defaults rootpw` ties them.
+
+**Whether the 2026-08-14 exposure needs its own record.** `Security/Incidents/Grafana/Plaintext Administrator Credential - 2026-07-22.md` is the precedent for a plaintext credential getting an incident record, and nothing currently records this one.
