@@ -34,16 +34,6 @@
 !/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/
 /Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/*
 !/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/Screenshots/
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/
-/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/*
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/
-/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/*
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/S01-Disable-Autostart-2026-07-25.txt
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/
-/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/*
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/
-/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/*
-!/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/S01-CT-105-Deletion-2026-08-09.txt
 !/Infrastructure/Hardware/Images/
 !/Platforms/Netbird/Evidence/
 /Platforms/Netbird/Evidence/*
@@ -125,6 +115,16 @@
 !/Archive/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/
 /Archive/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*
 !/Archive/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Node Rolling Replacement - 2026-07-31/Logs/*.md
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/
+/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/*
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/
+/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/*
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Archival and Autostart Disablement - 2026-07-25/Logs/S01-Disable-Autostart-2026-07-25.txt
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/
+/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/*
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/
+/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/*
+!/Archive/Infrastructure/Compute/Galaxy/Evidence/AI Bravo 02 Retirement - 2026-08-09/Logs/S01-CT-105-Deletion-2026-08-09.txt
 
 # Galaxy incident evidence records. The Evidence directory itself has to be
 # un-ignored first: git cannot re-include a file inside an ignored directory.

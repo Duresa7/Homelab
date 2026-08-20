@@ -53,13 +53,11 @@ EXPECTED_DKADI_NOPASSWD = {
     "docker-blue",
 }
 # Deliberately outside the model. ubuntu-dev is the single-account workstation,
-# docker-main stays root-login only, supabase-01 is powered off, and the
-# Proxmox nodes are ssh-key-automation's cluster file rather than POSIX
-# accounts.
+# docker-main stays root-login only, and the Proxmox nodes are
+# ssh-key-automation's cluster file rather than POSIX accounts.
 EXCLUDED_HOSTS = {
     "ubuntu-dev",
     "docker-main",
-    "supabase-01",
     "grey-server",
     "purple-server",
     "blue-server",

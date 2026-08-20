@@ -63,13 +63,13 @@ This final configuration snapshot survives in the archive. It is not a restorabl
 
 ## Archival Verification
 
-I queried CT 105 through `grey-server` before archiving it. Proxmox reported the guest stopped. I changed `onboot` from `1` to `0`, then confirmed the guest remained stopped. The [Galaxy change record](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Archival%20and%20Autostart%20Disablement%20-%202026-07-25.md) records the command, result, decision, evidence, verification, rollback, & remaining work.
+I queried CT 105 through `grey-server` before archiving it. Proxmox reported the guest stopped. I changed `onboot` from `1` to `0`, then confirmed the guest remained stopped. The [Galaxy change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Archival%20and%20Autostart%20Disablement%20-%202026-07-25.md) records the command, result, decision, evidence, verification, rollback, & remaining work.
 
 ## Retirement Verification
 
 I completed the deletion gate early on 2026-08-09. CT 105 was still stopped with autostart disabled, the archived TNIO platform tree, OpenClaw-related records, walkthrough, and diagrams were readable, and Proxmox held no snapshot, HA resource, replication job, or configured backup for the guest. I captured the final redacted configuration, deleted CT 105 with its unreferenced 100 GiB root volume, and confirmed the guest ID, configuration file, and storage volume were absent while Galaxy remained quorate with five votes.
 
-UniFi held no matching client record, fixed address, local DNS record, firewall object, policy target, client group, content filter, ACL, or traffic route. Ansible, monitoring, Wazuh, local SSH configuration, and known-host files had no active dependency. The generated documentation host page was removed from the live site; its retired route returns HTTP `404`. The [retirement record](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) holds the deletion and cleanup evidence.
+UniFi held no matching client record, fixed address, local DNS record, firewall object, policy target, client group, content filter, ACL, or traffic route. Ansible, monitoring, Wazuh, local SSH configuration, and known-host files had no active dependency. The generated documentation host page was removed from the live site; its retired route returns HTTP `404`. The [retirement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) holds the deletion and cleanup evidence.
 
 ## Preserved Records
 

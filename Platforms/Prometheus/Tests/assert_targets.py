@@ -97,10 +97,10 @@ EXPECTED_BLACKBOX_SERVICES = {
 }
 
 # Retired addresses that must never reappear. 192.168.70.20 is the pre-migration
-# security-01; 192.168.80.20 is supabase-01, which is stopped. 192.168.80.10
-# (app-01) was on this list until 2026-07-25: it had been removed in the
-# 2026-07-13 cleanup only because its exporter was unavailable, and it is now a
-# legitimate target.
+# security-01; 192.168.80.20 belonged to deleted VM 117. 192.168.80.10 (app-01)
+# was on this list until 2026-07-25: it had been removed in the 2026-07-13
+# cleanup only because its exporter was unavailable, and it is now a legitimate
+# target.
 FORBIDDEN_ADDRESSES = {"192.168.70.20", "192.168.80.20"}
 
 

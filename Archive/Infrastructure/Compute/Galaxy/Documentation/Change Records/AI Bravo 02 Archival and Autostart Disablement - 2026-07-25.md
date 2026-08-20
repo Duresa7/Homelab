@@ -1,11 +1,11 @@
 # ai-bravo-02 Archival & Autostart Disablement
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-20
 
 **Implementation date:** 2026-07-25  
 **Scope:** Galaxy LXC 105, TNIO records, SSH automation, local SSH state, & deletion scheduling  
-**Status:** Archive complete; guest deletion scheduled for 2026-08-15
+**Status:** Superseded by completed retirement on 2026-08-09
 
 ## Starting State
 
@@ -34,7 +34,7 @@ Evidence: [S01 autostart transcript](../../Evidence/AI%20Bravo%2002%20Archival%2
 
 ## Step 2: Archive the Guest & TNIO Tree
 
-I moved the 50-file `Platforms/TNIO AI Bot/` tree, walkthrough, SVG, & Excalidraw source into matching `Archive/` paths. I copied the former CT 105 configuration, storage, device, & network tables into the [archived guest record](../../../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md).
+I moved the 50-file `Platforms/TNIO AI Bot/` tree, walkthrough, SVG, & Excalidraw source into matching `Archive/` paths. I copied the former CT 105 configuration, storage, device, & network tables into the [archived guest record](../../../../../Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md).
 
 Commit `ececdf9` records the archive moves as 53 renames plus the guest record & current index changes. I retained no separate terminal transcript because the commit records every moved path & Git detected the unchanged files at 100% similarity.
 
@@ -69,6 +69,6 @@ The archive holds all 50 former TNIO platform files, the walkthrough, both diagr
 3. Restore `ai-bravo-02` to the Ansible inventory & approved identity target lists only after the guest is running & SSH is verified.
 4. Recreate the local SSH alias & accept the host key after comparing its fingerprint with a trusted record.
 
-## Remaining Work
+## Retirement Closure
 
-On 2026-08-15 I will complete the [Galaxy deletion checklist](../TODO.md), delete CT 105 & `vm-105-disk-0`, remove the SSH Manager server definition, verify cluster, storage, DNS, DHCP, SSH, & automation state, then update the guest record from archived to retired.
+I deleted CT 105 and `vm-105-disk-0` on 2026-08-09. The [retirement record](AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) supersedes the scheduled work in this record. On 2026-08-20 I moved this record and its evidence into the archive with the rest of the retired guest documentation.

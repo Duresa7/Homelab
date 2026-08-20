@@ -1,7 +1,7 @@
 # Kasm Workspaces Decommission
 
 **Created:** 2026-08-19  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-20
 
 **Date:** 2026-08-19  
 **Scope:** Retire Kasm Workspaces, destroy VM 122 and its storage, remove the service's supporting integrations and network path, and archive its records. I kept no backup.
@@ -118,11 +118,26 @@ without archiving them. A repeat root-filesystem search returned zero Kasm-named
 path on all five nodes after excluding one unrelated library filename whose
 letters happen to contain `chasm` across a word boundary.
 
+A final numeric-VMID pass found `/var/lib/rrdcached/db/pve-vm-9.0/122` on all five
+nodes even though none of the filenames named Kasm. Each file was 1,346,072 bytes.
+I guarded removal on the absence of VM 122 configuration and cluster resources,
+then deleted all five files. The first Grey guard stopped before deletion because
+that node does not have `jq`; the same guard using `grep` passed on retry. A later
+readback returned zero VM 122 RRD files and zero Kasm-named paths on every node.
+
+The same VMID-aware pass found 69 Proxmox task-log files on Grey and Purple across
+deleted VM 117, deleted VM 122, retired LXC 105, and the removed Kasm autoscaler
+identity. I deleted those exact files and removed their rows from `active`, `index`,
+and `index.1`. Current VM 105 is a QEMU guest, so I matched the retired CT 105
+history only through `vz*` task types and preserved all eight current `qm*` task
+logs for VM 105. Both nodes retained active `pvedaemon`, `pveproxy`, `pvestatd`,
+and `rrdcached` services after the cleanup.
+
 ## Final verification
 
 - Proxmox returns no VM 122 configuration, resource, or storage volume.
 - Proxmox returns no Kasm user, ACL, autoscaler token registry row, or CT 100 VLAN 74 interface.
-- All five Proxmox root-filesystem searches return no Kasm runtime path, script, metric, or task log.
+- All five Proxmox root-filesystem searches return no Kasm runtime path, script, metric, task log, task-index row, or VM 122 RRD file.
 - Nginx Proxy Manager has no Kasm proxy host, generated configuration, or proxy-host-23 log, and `nginx -t` passes.
 - Wazuh has no agent 012 or Kasm identity.
 - The deployed Ansible projects and SSH Manager profile inventory contain no Kasm target; the monitoring-exporter validator passes.

@@ -1,11 +1,11 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-20
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
 
-I refreshed the living VM record on 2026-08-19 after retiring Kasm Workspaces and destroying VM 122. I did not create another dated inventory snapshot because the living files are the current-state view.
+I refreshed the living VM record on 2026-08-20 after confirming VM 117 `supabase-01` had been deleted and cleaning its remaining references. I did not create another dated inventory snapshot because the living files are the current-state view.
 
 ## Current state
 

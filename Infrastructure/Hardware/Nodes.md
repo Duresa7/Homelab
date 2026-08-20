@@ -67,7 +67,7 @@ From `purple-server` on 2026-08-19, after destroying VM 122:
 
 `ssd-lvm2` is empty after the Kasm retirement. `pvesm list ssd-lvm2 --vmid 122` returned no volumes and `pvesm status --storage ssd-lvm2` reported 0.00 percent used on 2026-08-19. The [purple 850 EVO SMART baseline](../../Archive/Platforms/Kasm%20Workspaces/Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/Purple%20850%20EVO%20SMART%20Baseline.md) remains the retained health record for the underlying disk.
 
-The 2026-08-09 `ssd-lvm1` reading follows the deletion of retired CT 105 and its 100 GiB root volume. The pool read 15.72 percent immediately before the deletion and 13.05 percent immediately afterward; the [retirement record](../Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) records the guarded removal.
+The 2026-08-09 `ssd-lvm1` reading follows the deletion of retired CT 105 and its 100 GiB root volume. The pool read 15.72 percent immediately before the deletion and 13.05 percent immediately afterward; the [retirement record](../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md) records the guarded removal.
 
 ## Memory Modules
 

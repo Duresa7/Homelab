@@ -1,7 +1,7 @@
 # TNIO AI Bot
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-20
 
 I preserved the TNIO lore-retrieval source snapshots, OpenClaw-backed inference records, evaluation tests, runtime configuration, product description, & dated accuracy work formerly operated on `ai-bravo-02`. I moved the stopped CT 105 records out of the active tree on 2026-07-25 and retired the guest early on 2026-08-09 by deleting it and its root volume. The [guest record](../../Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md) preserves the final configuration and retirement verification.
 
@@ -16,6 +16,7 @@ I preserved the TNIO lore-retrieval source snapshots, OpenClaw-backed inference 
 - `Documentation/Change Records/`: dated fixes, audits, and accuracy upgrades
 - `Documentation/Reference/`: supporting reference material
 - `Configuration/`: service units and remote-state configuration snapshots
+- `Scripts/`: retained guest setup automation, no longer executable against a live target
 - `Evidence/`: corpus audits and remote snapshots
 - `Artifacts/`: deployment bundles and generated state
 

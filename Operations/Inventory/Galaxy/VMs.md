@@ -1,9 +1,9 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-19  
+**Last updated:** 2026-08-20  
 
-Galaxy currently has 8 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 7 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
 
@@ -17,6 +17,8 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 
 `kasm-01` (VM 122) is gone. On 2026-08-19 I shut it down cleanly and destroyed it with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes. The cluster resource API returns no VMID 122 and `pvesm list ssd-lvm2 --vmid 122` returns no volumes. The [decommission record](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) records the completed monitoring, proxy, automation, security-agent, and UniFi cleanup.
 
+`supabase-01` (VM 117) is also gone. On 2026-08-20 I confirmed the user had already deleted it: the Proxmox configuration and cluster-resource entry are absent, `pvesm list ssd-lvm1 --vmid 117` returns no volume, and the local LVM inventory has no VM 117 logical volume. The [retirement record](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) records the remaining automation, SSH, monitoring, diagram, and documentation cleanup.
+
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -24,7 +26,6 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 | 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
-| 117 | supabase-01 | grey-server | Debian 13 | 4 | 12.60 GiB | 100G | 192.168.80.20/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
@@ -201,44 +202,6 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | `<REDACTED_APP_HOST_MAC>` |
-
-### VM 117 - supabase-01
-
-#### Identity
-| Setting | Value |
-| --- | --- |
-| Node | grey-server |
-| High availability | disabled |
-| Template | no |
-| OS family | Linux |
-| Guest OS | Debian 13 |
-| IPv4 | 192.168.80.20/24 |
-| Gateway | 192.168.80.1 |
-
-#### Hardware
-| Setting | Value |
-| --- | --- |
-| vCPU | 4 |
-| CPU type | host |
-| Memory | 12.60 GiB |
-| BIOS | ovmf |
-| Machine | q35 |
-| SCSI controller | virtio-scsi-single |
-| Display | default |
-| QEMU agent | enabled |
-| TPM | disabled |
-
-#### Storage
-| Device | Bus | Storage | Volume | Size | Media | Options |
-| --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-117-disk-1 | 100G | disk | I/O thread, SSD emulation |
-| ide2 | ide | local | iso/debian-13.0.0-amd64-netinst.iso | 754M | cdrom | default |
-| efidisk0 | efidisk | ssd-lvm1 | vm-117-disk-0 | 4M | disk | default |
-
-#### Network
-| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 80 | 192.168.80.20/24 | 192.168.80.1 | enabled | `<REDACTED_SUPABASE_HOST_MAC>` |
 
 ### VM 121 - edge-01
 

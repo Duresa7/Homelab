@@ -1,9 +1,9 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-20
 
-This backlog retains completed Green recovery, CT 105 retirement evidence, and Purple storage work. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog retains completed Green recovery and Purple storage work. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
 ## Scope of the `galaxy-pxe-join` Key
 
@@ -56,19 +56,6 @@ This backlog retains completed Green recovery, CT 105 retirement evidence, and P
 - [x] Trim Grey's accumulated kernels. `apt-get autoremove` cleared `proxmox-kernel-6.17.13-19-pve-signed` & `proxmox-kernel-7.0.2-6-pve-signed`, leaving five installed and nothing further autoremovable. `/boot` is 94 GB at 37 percent, so this was tidiness rather than pressure.
 - [x] Regenerate Grey's TLS certificate. Its CN was `grey-server.Grey` against `<node>.galaxy` on the other four. The `/etc/hosts` fix did not change it: Proxmox builds the CN from the search domain in `/etc/resolv.conf`, and Grey's read `search Grey`. I set it with `pvesh set /nodes/grey-server/dns --search galaxy --dns1 192.168.70.1`, passing the existing nameserver so the call wouldn't drop it, then ran `pvecm updatecerts --force` and restarted `pveproxy`. The CN is now `grey-server.galaxy` with matching SANs, all five nodes agree, and a cross-node API call between members succeeds. Both forced runs left the seeded `known_hosts` file at 15 lines.
 - [x] Remove `/root/.claude`, `/root/.claude.json`, & `/root/.codex` from Grey, 282 MB in total. Nothing referenced them: no cron entry, no systemd unit, no running process, and the newest file in either tree dated to 2026-06-11. Grey was the only node carrying them; the other four and `ansible-01` were already clean. Done 2026-08-01.
-
-## `ai-bravo-02` Retirement Complete
-
-**Status:** Complete 2026-08-09; CT 105 and its root volume are deleted  
-**Archive record:** [ai-bravo-02 Retired Guest](../../../../Archive/Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md)  
-**Change record:** [AI Bravo 02 Retirement](Change%20Records/AI%20Bravo%2002%20Retirement%20-%202026-08-09.md)
-
-- [x] Confirmed CT 105 was stopped and `onboot` remained `0`.
-- [x] Read the archived guest record, TNIO platform tree, OpenClaw-related records, walkthrough, and diagrams before deletion.
-- [x] Confirmed no restorable Proxmox or external guest backup existed.
-- [x] Captured the final redacted `pct config 105`, then deleted CT 105 and `ssd-lvm1:vm-105-disk-0`.
-- [x] Confirmed guest ID 105 and its hostname, configuration, storage, UniFi state, durable SSH Manager entry, local SSH state, and active automation dependencies are absent.
-- [x] Updated the archive and public completion records with the observed result.
 
 ## `purple-server` Boot NVMe Replaced
 
