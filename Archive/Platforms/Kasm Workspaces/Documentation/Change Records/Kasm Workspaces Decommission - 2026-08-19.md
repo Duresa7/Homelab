@@ -103,10 +103,26 @@ routes return HTTP `404`, and the built HTML and sitemap contain no Kasm match.
 The same refresh removed a broken link to the already-retired development VM and
 added the current `ubuntu-dev` page. I made no UniFi change during this follow-up.
 
+## Step 6: Sweep node-local files
+
+A deeper root-filesystem search on 2026-08-20 found three dormant Python scripts
+under `grey-server:/usr/local/lib/kasm-lab`. No process, systemd unit, cron entry,
+or external file called them. I checked the source for withheld values, compiled
+all three with Python 3, preserved their exact bytes and SHA256 hashes in the
+[source archive](../../Source/kasm-lab/README.md), and deleted the live
+directory.
+
+The same pass found a retired storage RRD metric on four Proxmox nodes, one clone
+log, and three task logs on `grey-server`. I deleted those runtime artifacts
+without archiving them. A repeat root-filesystem search returned zero Kasm-named
+path on all five nodes after excluding one unrelated library filename whose
+letters happen to contain `chasm` across a word boundary.
+
 ## Final verification
 
 - Proxmox returns no VM 122 configuration, resource, or storage volume.
 - Proxmox returns no Kasm user, ACL, autoscaler token registry row, or CT 100 VLAN 74 interface.
+- All five Proxmox root-filesystem searches return no Kasm runtime path, script, metric, or task log.
 - Nginx Proxy Manager has no Kasm proxy host, generated configuration, or proxy-host-23 log, and `nginx -t` passes.
 - Wazuh has no agent 012 or Kasm identity.
 - The deployed Ansible projects and SSH Manager profile inventory contain no Kasm target; the monitoring-exporter validator passes.

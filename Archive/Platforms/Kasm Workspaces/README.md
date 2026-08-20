@@ -1,9 +1,16 @@
 # Kasm Workspaces
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-20
 
-Kasm Workspaces 1.19.0 Community Edition runs on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streams disposable Linux desktops and browsers while UniFi places each session in a sealed lane.
+I retired this platform and destroyed VM 122 on 2026-08-19. The sections below
+preserve its final deployed design rather than describe a current service. The
+[decommission record](Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md)
+holds the deletion and integration checks. I later recovered three dormant
+Proxmox-side maintenance scripts into the [source archive](Source/kasm-lab/README.md)
+before removing their live directory and remaining runtime logs.
+
+Kasm Workspaces 1.19.0 Community Edition ran on `kasm-01` (VM 122) at `192.168.78.10` on `purple-server`. It streamed disposable Linux desktops and browsers while UniFi placed each session in a sealed lane.
 
 Community Edition caps the deployment at five concurrent sessions and one named user. The VM has six vCPUs, 12 GiB of memory, and a 200 GiB disk after I raised it from four vCPUs and 8 GiB on 2026-07-28. VM 122 is the only guest on `purple-server`, which has six cores and 15 GiB, so the guest takes every core and leaves roughly 2 GiB for Proxmox. That is enough on a node running one VM against LVM-thin rather than ZFS, since there is no ARC competing for memory.
 
