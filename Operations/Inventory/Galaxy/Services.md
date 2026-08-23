@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-08-23
 
-This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the monitoring check after the 2026-08-19 Kasm retirement. Prometheus reported 50 active targets with all 50 up: 18 node exporters, nine cAdvisor exporters, 19 blackbox probes, two NUT exporters, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
@@ -162,9 +162,9 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Jellyfin | `jellyfin/jellyfin:latest`; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
-| Seerr | `ghcr.io/seerr-team/seerr:latest` 3.3.0; migrated from Jellyseerr with its existing configuration retained; setup wizard completed 2026-07-17 with confirmed Jellyfin, Sonarr, and Radarr connections |
-| Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
+| Jellyfin | `jellyfin/jellyfin:latest`; Movies, TV Shows, and Anime libraries; AniList 13.0.0.0 is first for Anime series metadata and images; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
+| Seerr | `ghcr.io/seerr-team/seerr:latest` 3.4.1; migrated from Jellyseerr with its existing configuration retained; Anime, Movies, and TV Shows enabled in Jellyfin sync; standard series route to `/data/media/tv` and anime to `/data/media/anime` through Sonarr |
+| Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr has separate television and anime roots, its synced indexer includes anime category 5070, and Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
 | FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |
 | Download path | LinuxServer qBittorrent `latest` shares `qmcgaw/gluetun:latest` network namespace; Proton WireGuard, kill switch, and provider-side port synchronization verified; qBittorrent rejects the documented 100-pattern executable/script payload baseline for new torrents |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; environment 8; compose under `/opt/docker/portainer-edge-agent`; Portainer listed all 10 host containers on 2026-07-28 |

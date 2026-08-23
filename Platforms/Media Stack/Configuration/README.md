@@ -1,13 +1,19 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-08-23
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
 [`media-stack.env.example`](media-stack.env.example) lists the required deployment-specific variables. Both examples require editing before use.
 
 The request service intentionally retains the Compose key and configuration path name `jellyseerr` so the existing database is reused, but it runs the successor image `ghcr.io/seerr-team/seerr:latest` with `init: true`.
+
+## Library Routing
+
+Jellyfin mounts `/data/media` at `/media`. Its Movies, TV Shows, and Anime libraries use `/media/movies`, `/media/tv`, and `/media/anime`. The Anime library is a shows library with real-time monitoring and automatic series grouping enabled. AniList is first in its series metadata and image provider order; TMDB and OMDb remain fallbacks where supported.
+
+Sonarr has `/data/media/tv` and `/data/media/anime` as separate accessible roots. Seerr's default Sonarr server routes standard series to the television root and titles carrying TMDB's anime keyword to the anime root, with `HD-1080p` selected for both. An advanced request can override the root when a title's metadata is misclassified. The synced Prowlarr indexer configuration includes Torznab anime category `5070`.
 
 ## qBittorrent Callback Requirements
 

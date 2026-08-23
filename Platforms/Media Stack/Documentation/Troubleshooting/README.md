@@ -1,7 +1,7 @@
 # Media Stack Troubleshooting
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-23
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -9,6 +9,7 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 
 | Date | Issue |
 |---|---|
+| 2026-08-23 | [Anime Completed Downloads Missing from Jellyfin](Anime%20Completed%20Downloads%20Missing%20from%20Jellyfin%20-%202026-08-23.md) |
 | 2026-07-25 | [SSH Reload Failed During Ansible Account Onboarding](SSH%20Reload%20Failed%20During%20Ansible%20Account%20Onboarding%20-%202026-07-25.md) |
 | 2026-07-22 | [Jellyfin Orphaned Library Record Deletion](Jellyfin%20Orphaned%20Library%20Record%20Deletion%20-%202026-07-22.md) |
 | 2026-07-22 | [qBittorrent Host Validation Blocked Arr Clients](qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) |
