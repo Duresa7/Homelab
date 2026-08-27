@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-08-27
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -52,7 +52,7 @@ None.
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | `ubuntu-dev` registered and the cluster key file deduplicated, both 2026-08-15. New `host-access-baseline` project holds accounts and sudo; it set the account passwords on the twelve guests that existed then, and its `sudoers-rootpw.yml` play put `Defaults rootpw` on all eleven retained guests on 2026-08-20. The 2026-07-29 reboot wait is still unexercised. `jedi-pc`, `mac` and `ansible-control` need `green-server` on their allowlists, and `monitor-01`, `game-01` and `ansible-01` are absent from the `ssh-key-automation` inventory. `ansible-01`'s clock is on `Etc/UTC` where the baseline wants Eastern |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | `purple-server` and `blue-server` run `permitrootlogin yes` where the other three run `without-password`. Keys only on all five either way. `galaxy-pxe-join` now holds root on all five nodes where it used to be scoped to `grey-server`, and the mechanism that scoped it is gone |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
-| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | No open items; I dropped the backup-test, capacity-alert, & update-cadence items on 2026-07-25 |
+| [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Anime release selection moved to the TRaSH Guides profile on 2026-08-27. Three open: whether to backfill the 16 cutoff-unmet Mushoku Tensei episodes, whether Radarr gets anime handling, and whether Recyclarr keeps the tier lists current. The backup-test, capacity-alert, & update-cadence items stay dropped from 2026-07-25 |
 | [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
 | [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |

@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-08-26
+**Last updated:** 2026-08-27
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -9,7 +9,7 @@ I run request management, media playback, release automation, indexer coordinati
 
 | Item | Current value |
 | --- | --- |
-| Deployment status | Applications onboarded 2026-07-17; bounded end-to-end acquisition test passed 2026-07-21; separate anime library routing completed 2026-08-23; Jellyfin Moonbase plugin installed with Seerr single sign-on 2026-08-26. Containers, Proton VPN tunnel, provider-side port forwarding, Sonarr/Radarr download-client links, Jellyfin libraries and QSV transcoding, Prowlarr indexers, and Seerr connections verified |
+| Deployment status | Applications onboarded 2026-07-17; bounded end-to-end acquisition test passed 2026-07-21; separate anime library routing completed 2026-08-23; Jellyfin Moonbase plugin installed with Seerr single sign-on 2026-08-26; TRaSH Guides anime quality profile, custom formats, and the Nyaa.si indexer added 2026-08-27. Containers, Proton VPN tunnel, provider-side port forwarding, Sonarr/Radarr download-client links, Jellyfin libraries and QSV transcoding, Prowlarr indexers, and Seerr connections verified |
 | Compute | Galaxy CT 842 `media-01` on `red-server` |
 | Guest network | VLAN 40; address `192.168.40.42` |
 | Guest resources | 4 vCPU, 8 GiB memory, 1 GiB swap, 100 GiB NVMe root volume, 1 TB HDD mounted at `/data` |
@@ -44,6 +44,7 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 - [HDD data migration change record](Documentation/Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md)
 - [Anime library routing change record](Documentation/Change%20Records/Anime%20Library%20Routing%20-%202026-08-23.md)
 - [Moonbase plugin installation change record](Documentation/Change%20Records/Moonbase%20Plugin%20Installation%20-%202026-08-26.md)
+- [Anime quality profile and custom formats change record](Documentation/Change%20Records/Anime%20Quality%20Profile%20and%20Custom%20Formats%20-%202026-08-27.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Verified Jellyfin and Sonarr settings](Documentation/Media%20Settings%20Research%20-%202026-07-17.md)
 - [Download payload-filtering research](Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md)

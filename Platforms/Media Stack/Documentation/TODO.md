@@ -1,7 +1,7 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-25
+**Last updated:** 2026-08-27
 
 ## HDD Data Migration
 
@@ -19,6 +19,15 @@ Completed items are recorded with evidence in the [application onboarding change
 - [x] 2026-07-17: Left the `flaresolverr` tag intentionally unapplied: the configured indexer needs no challenge handling; I apply it only when a compatible indexer does.
 - [x] 2026-07-21: Ran the bounded end-to-end acquisition test in full. I requested a television episode and a movie, watched both acquire through the Prowlarr and VPN-isolated qBittorrent path, compared qBittorrent's Content list against the payload filter during transfer, confirmed the Sonarr and Radarr hard-link imports, and confirmed GPU-active playback in Jellyfin. The one retained capture is the Jellyfin Movies library (`Evidence/Media Stack End-to-End Acquisition Test - 2026-07-21/`), kept local because it shows an acquired title.
 - [x] 2026-07-21: Kept the onboarding Sonarr naming (`Season {season}` folders, no `{Release Group}` token). The episode imported and hard-linked correctly under that scheme during the test, so I declined the [media settings research](Media%20Settings%20Research%20-%202026-07-17.md) refinement.
+
+## Anime Release Selection
+
+- [x] 2026-08-27: Built the TRaSH Guides `[Anime] Remux-1080p` profile in Sonarr with its 40 custom formats, moved the three anime-type series onto it, pointed Seerr's anime route at it, and added Nyaa.si to Prowlarr scoped to Sonarr. The [change record](Change%20Records/Anime%20Quality%20Profile%20and%20Custom%20Formats%20-%202026-08-27.md) holds the scores and the verification.
+- [x] 2026-08-27: Set `animeEpisodeFormat` to the guide's scheme and renamed 27 anime files. This narrows the 2026-07-21 decision below rather than reversing it: anime episodes now carry `{Release Group}`, absolute numbers, and mediainfo tokens, while `seriesFolderFormat` and `seasonFolderFormat` stay at `{Series Title}` and `Season {season}` because standard television shares those two fields.
+- [x] 2026-08-27: Declined the guide's anime quality definitions. They are one set per Sonarr instance, and this instance also serves standard television, so applying them would strip the size limits from `HD-1080p`. The guide makes the same carve-out for a single instance.
+- [ ] Decide whether to backfill the 16 cutoff-unmet Mushoku Tensei episodes. Twelve are Italian-audio `WEBDL-1080p` that score 0 against a profile minimum of 100. A season search on series 26 acts on it; the guide is built for acquisition going forward, so nothing happens until I run one.
+- [ ] Decide whether Radarr gets anime handling. It keeps `HD-1080p` and Seerr has no Radarr anime route, so an anime film needs its profile set per movie or a second Radarr instance.
+- [ ] Consider Recyclarr against the `sonarr/templates/anime-remux-1080p.yml` template so the tier lists track SeaDex instead of staying a 2026-08-27 point-in-time copy. Drop the template's `quality_definition: type: anime` block for the single-instance reason above.
 
 ## Backups, Capacity & Updates
 

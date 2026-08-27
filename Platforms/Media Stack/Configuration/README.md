@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-08-23
+**Last updated:** 2026-08-27
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -13,7 +13,19 @@ The request service intentionally retains the Compose key and configuration path
 
 Jellyfin mounts `/data/media` at `/media`. Its Movies, TV Shows, and Anime libraries use `/media/movies`, `/media/tv`, and `/media/anime`. The Anime library is a shows library with real-time monitoring and automatic series grouping enabled. AniList is first in its series metadata and image provider order; TMDB and OMDb remain fallbacks where supported.
 
-Sonarr has `/data/media/tv` and `/data/media/anime` as separate accessible roots. Seerr's default Sonarr server routes standard series to the television root and titles carrying TMDB's anime keyword to the anime root, with `HD-1080p` selected for both. An advanced request can override the root when a title's metadata is misclassified. The synced Prowlarr indexer configuration includes Torznab anime category `5070`.
+Sonarr has `/data/media/tv` and `/data/media/anime` as separate accessible roots. Seerr's default Sonarr server routes standard series to the television root with `HD-1080p`, and titles carrying TMDB's anime keyword to the anime root with `[Anime] Remux-1080p`. An advanced request can override the root when a title's metadata is misclassified. The synced Prowlarr indexer configuration includes Torznab anime category `5070`.
+
+## Release Selection
+
+Standard television uses the stock `HD-1080p` profile. Anime uses `[Anime] Remux-1080p`, built from the [TRaSH Guides anime profile](https://trash-guides.info/Sonarr/sonarr-setup-quality-profiles-anime/) with 40 custom formats that rank release groups into tiers, a Minimum Custom Format Score of 100, and an unreachable Upgrade Until Custom Format Score of 10000. Sonarr applies it to anime-type series only. The [change record](../Documentation/Change%20Records/Anime%20Quality%20Profile%20and%20Custom%20Formats%20-%202026-08-27.md) holds the scores, the quality grouping, and why the guide's quality definitions and folder formats are deliberately not applied.
+
+`animeEpisodeFormat` carries the guide's scheme. `standardEpisodeFormat`, `seriesFolderFormat`, and `seasonFolderFormat` are shared with standard television and stay at their onboarding values.
+
+## Prowlarr Indexer Scope
+
+Three indexers are configured: 1337x, EZTV, and Nyaa.si. Nyaa.si is the anime source and maps to Torznab category 5070, with `sonarr_compatibility` enabled so Sonarr can parse absolute-numbered releases.
+
+Nyaa also advertises movie categories, and Prowlarr sends every indexer to an application that carries no tags. The `movies` tag exists to stop that: 1337x carries it alongside `flaresolverr`, the Radarr application syncs only indexers carrying it, and the Sonarr application stays untagged so it receives all three. Removing that tag from either the Radarr application or the 1337x indexer puts Nyaa into Radarr.
 
 ## qBittorrent Callback Requirements
 
