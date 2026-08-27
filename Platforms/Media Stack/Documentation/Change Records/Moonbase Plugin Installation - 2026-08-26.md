@@ -5,7 +5,7 @@
 
 **Implementation date:** 2026-08-26  
 **System:** Galaxy Proxmox cluster, `red-server`, CT 842 `media-01`  
-**Status:** Complete for the plugin and the Seerr single sign-on path. Moonbase 2.1.0.0 is active on Jellyfin 10.11.11, the hosted Moonfin web app answers on the LAN and through the published hostname, and a Seerr SSO session is established. Seerr's webhook back to Jellyfin is not provisioned and is carried as an open item.
+**Status:** Complete. Moonbase 2.1.0.0 is active on Jellyfin 10.11.11, the hosted Moonfin web app answers on the LAN and through the internal hostname, and Seerr is enabled behind a working single sign-on session.
 
 ## What Changed
 
@@ -46,7 +46,7 @@ The Seerr URL is the internal HTTPS hostname rather than the container address o
 
 The call does leave the guest. Jellyfin on VLAN 40 reaches NPM on VLAN 85, NPM terminates TLS on the wildcard certificate, and the request is proxied back to VLAN 40 to a container sitting beside the one that made it. Against `http://jellyseerr:5055` on the Compose bridge, the cost is internal DNS, inter-VLAN routing and firewall policy, and NPM all being in the request path.
 
-The `PublicServerUrl` is the guest's LAN address, so Seerr's callback to Jellyfin stays on the host.
+`PublicServerUrl` is the guest's own LAN address rather than the proxied hostname, so the address Seerr holds for this Jellyfin server resolves directly on VLAN 40.
 
 Push is off. The relay URL keeps its shipped default and no Firebase service account is configured, so backgrounded mobile clients receive no push.
 
@@ -76,9 +76,8 @@ I kept no separate evidence folder. I verified each state through the live Jelly
 
 ## Open Items
 
-- **Seerr's webhook to Jellyfin is not provisioned.** Seerr's webhook notification agent is still `enabled: false` with an empty URL and no auth header, and no provisioning line appears in the Jellyfin log. Moonbase generated a webhook secret at install and reported `NoAdminSession` before sign-in, but creating the SSO session did not result in a configured agent on the Seerr side. Requests placed from a Moonfin client work; request status notifications flowing back to Jellyfin do not. Fix by adding the webhook by hand in Seerr under Settings, Notifications, Webhook, using the callback URL and secret shown on the Moonbase configuration page.
 - **Several plugin defaults reach external services and are already running.** The IMDb list cache is 365 KiB on disk and the studio logo directory was written at 11:41 PM, so those syncs are live. MDBList official lists capped at 250 items, a LaunchBox metadata URL, a jsDelivr LibreTro database base URL, the `push.moonfin.io` relay, and a WebRTC scan in the web app are all enabled out of the box. None are required for playback. Review them against the outbound posture I want for this guest.
 - **The Seerr URL hairpins through Nginx Proxy Manager.** Switching `SeerrUrl` to `http://jellyseerr:5055` would keep the call on the Compose bridge and drop internal DNS, the VLAN 40 to VLAN 85 round trip, and NPM out of the request path. Latency and resilience only. The current path is entirely internal and verified working.
-- **The plugin holds a Seerr webhook secret** in its configuration file on the host. It is not published here.
+- **The plugin generated a secret** into its configuration file on the host. It is not published here.
 - **The header shortcut is not installed.** Moonbase's optional one-click Moonfin button in the Jellyfin header needs the separate File Transformation plugin, which I did not add.
 - **Moonfin clients are separate applications** on mobile, desktop, Android TV, Apple TV, smart TV, and Roku. The plugin is the server half only.
