@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-23
+**Last updated:** 2026-08-26
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -162,7 +162,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Jellyfin | `jellyfin/jellyfin:latest`; Movies, TV Shows, and Anime libraries; AniList 13.0.0.0 is first for Anime series metadata and images; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
+| Jellyfin | `jellyfin/jellyfin:latest` 10.11.11; Movies, TV Shows, and Anime libraries; AniList 13.0.0.0 is first for Anime series metadata and images; Moonbase 2.1.0.0 serves the Moonfin clients, hosts the Moonfin web app at `/Moonfin/Web/`, and proxies Seerr through a server-side SSO session; Seerr's webhook back to Jellyfin is not provisioned; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
 | Seerr | `ghcr.io/seerr-team/seerr:latest` 3.4.1; migrated from Jellyseerr with its existing configuration retained; Anime, Movies, and TV Shows enabled in Jellyfin sync; standard series route to `/data/media/tv` and anime to `/data/media/anime` through Sonarr |
 | Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr has separate television and anime roots, its synced indexer includes anime category 5070, and Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
 | FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |
