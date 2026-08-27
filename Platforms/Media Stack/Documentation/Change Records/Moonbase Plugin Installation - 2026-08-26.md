@@ -42,7 +42,9 @@ I enabled the Seerr integration on Moonbase's configuration page at 11:32 PM. Th
 
 `SeerrEnabled` is the correct toggle rather than `JellyseerrEnabled`, because the container runs `ghcr.io/seerr-team/seerr:latest` 3.4.1. The container name `jellyseerr` is a leftover from the migration off Jellyseerr and does not indicate the product.
 
-The Seerr URL is the published HTTPS hostname rather than the container address on the Compose `media` network. Both containers run on this guest, so `http://jellyseerr:5055` would keep the call inside the host instead of routing out through the gateway and back in through the tunnel and Caddy. I chose the published hostname anyway for one consistent address. The tradeoff is a WAN dependency on a call between two neighbouring containers: if the tunnel or public DNS fails, the request integration fails with both services still healthy.
+The Seerr URL is the internal HTTPS hostname rather than the container address on the Compose `media` network. That path stays inside the network. UniFi [local DNS](../../../../Infrastructure/Network/UniFi/Configuration/local-dns.md) answers `seerr.alphasecunited.com` with `192.168.85.2`, and Nginx Proxy Manager on CT 107 `docker-network` forwards it to `192.168.40.42:5055` per the [internal proxy-host inventory](../../../Nginx%20Proxy%20Manager/Configuration/internal-proxy-hosts.md). Public DNS holds no A record for the name, and Caddy on `edge-01` fronts public traffic only, so neither the WAN, Cloudflare, nor Caddy is on this path.
+
+The call does leave the guest. Jellyfin on VLAN 40 reaches NPM on VLAN 85, NPM terminates TLS on the wildcard certificate, and the request is proxied back to VLAN 40 to a container sitting beside the one that made it. Against `http://jellyseerr:5055` on the Compose bridge, the cost is internal DNS, inter-VLAN routing and firewall policy, and NPM all being in the request path.
 
 The `PublicServerUrl` is the guest's LAN address, so Seerr's callback to Jellyfin stays on the host.
 
@@ -66,7 +68,7 @@ Seerr SSO session created for user "dkadi"
 - `https://jellyfin.alphasecunited.com/web/` still returned HTTP 200, so the stock Jellyfin client is unaffected.
 - One session file exists under `plugins/configurations/Moonfin/seerr-sessions/`, written 11:33 PM, matching the SSO log line above.
 - A per-user settings document appeared under `plugins/configurations/Moonfin/` at 11:32 PM, so settings sync is writing.
-- `https://seerr.alphasecunited.com/api/v1/status` returned HTTP 200, so the address in `SeerrUrl` resolves and answers from this guest.
+- From CT 842, `seerr.alphasecunited.com` and `jellyfin.alphasecunited.com` both resolved to `192.168.85.2` through the gateway resolver at `192.168.70.1`. `https://seerr.alphasecunited.com/api/v1/status` returned HTTP 200 with the connection terminating on `192.168.85.2:443`, a `server: openresty` response header, and a passing certificate verification, confirming Nginx Proxy Manager served it and the path never left the network.
 - `https://jellyfin.alphasecunited.com/Moonfin/Seerr/Api/status` returned HTTP 401 to an unauthenticated request, which is the expected refusal for a proxy route that requires a Jellyfin session.
 - No `[ERR]`, `[FTL]`, warning, or exception line mentioning Moonfin or Seerr appears in the Jellyfin logs.
 
@@ -76,7 +78,7 @@ I kept no separate evidence folder. I verified each state through the live Jelly
 
 - **Seerr's webhook to Jellyfin is not provisioned.** Seerr's webhook notification agent is still `enabled: false` with an empty URL and no auth header, and no provisioning line appears in the Jellyfin log. Moonbase generated a webhook secret at install and reported `NoAdminSession` before sign-in, but creating the SSO session did not result in a configured agent on the Seerr side. Requests placed from a Moonfin client work; request status notifications flowing back to Jellyfin do not. Fix by adding the webhook by hand in Seerr under Settings, Notifications, Webhook, using the callback URL and secret shown on the Moonbase configuration page.
 - **Several plugin defaults reach external services and are already running.** The IMDb list cache is 365 KiB on disk and the studio logo directory was written at 11:41 PM, so those syncs are live. MDBList official lists capped at 250 items, a LaunchBox metadata URL, a jsDelivr LibreTro database base URL, the `push.moonfin.io` relay, and a WebRTC scan in the web app are all enabled out of the box. None are required for playback. Review them against the outbound posture I want for this guest.
-- **The Seerr URL routes through the WAN.** Switching `SeerrUrl` to `http://jellyseerr:5055` would keep the call between two containers on the same host and remove the tunnel and public DNS from the request path.
+- **The Seerr URL hairpins through Nginx Proxy Manager.** Switching `SeerrUrl` to `http://jellyseerr:5055` would keep the call on the Compose bridge and drop internal DNS, the VLAN 40 to VLAN 85 round trip, and NPM out of the request path. Latency and resilience only. The current path is entirely internal and verified working.
 - **The plugin holds a Seerr webhook secret** in its configuration file on the host. It is not published here.
 - **The header shortcut is not installed.** Moonbase's optional one-click Moonfin button in the Jellyfin header needs the separate File Transformation plugin, which I did not add.
 - **Moonfin clients are separate applications** on mobile, desktop, Android TV, Apple TV, smart TV, and Roku. The plugin is the server half only.
