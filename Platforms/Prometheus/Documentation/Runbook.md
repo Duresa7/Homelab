@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-06
+**Last updated:** 2026-08-27
 
 ## Health Check
 
@@ -13,10 +13,10 @@ curl -fsS http://127.0.0.1:9090/-/ready
 curl -fsS http://127.0.0.1:3000/api/health
 sudo docker exec prometheus promtool check config /etc/prometheus/prometheus.yml
 curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
-python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-overview.json
+python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 51 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) runs all 65 dashboard queries and fails on any that error or return no series. It walks into collapsed rows, so the `Per-host detail` panels are covered, and it resolves `$host` to `.*` so they are tested against every host at once rather than one. Upload both temporarily and remove the remote copies afterward.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 51 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query — 1,394 across the 27 — failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -35,14 +35,39 @@ Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Monitor` to 
 
 ## Change a Dashboard
 
-1. Edit the JSON under [Configuration/grafana/dashboards/](../Configuration/grafana/dashboards/).
-2. Validate it parses, then upload it to `~/monitoring/grafana/dashboards/` on `monitor-01`.
-3. Wait 30 seconds. Grafana re-reads the provisioning directory on its own interval, so no restart is needed.
-4. Run `assert_dashboard_queries.py` against the new file.
+The dashboard JSON is generated. Editing a file under `Configuration/grafana/dashboards/` is wasted work —
+the next build overwrites it.
 
-Only the first install needed a container recreate, to add the mounts. Provisioned dashboards are read-only in the browser by design. To experiment there, use Save As for a scratch copy, then fold the change back into the versioned JSON so the repository stays authoritative.
+1. Change `Tools/build_dashboards.py`, `Tools/dashlib.py` or `Tools/inventory.py`. See
+   [Tools/README.md](../Tools/README.md) for which file does what.
+2. `python3 Tools/build_dashboards.py`
+3. `python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards` — offline; catches overlapping
+   panels and anything past column 24, which Grafana accepts and then silently reflows.
+4. `python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090` —
+   runs all 1,394 queries and fails on any that error or come back empty unexpectedly.
+5. Upload `dashboards/` to `~/monitoring/grafana/` on `monitor-01` and `chmod 0644` the files.
+6. Wait 30 seconds. Grafana re-reads both provider directories on its own interval, so no restart is needed.
 
-Adding a provisioning subdirectory means adding a placeholder file to it. The Compose file mounts the whole `provisioning` directory over the image's, so a subdirectory absent from the mount is absent from the container, and Grafana logs an error per start for each one it expects.
+Changing `provisioning/dashboards/homelab.yaml` is the exception: provider configuration is read at startup,
+so it needs `docker restart grafana`. A restart is enough; no recreate, and it preserves the environment.
+
+Verify a provisioning change by checking that the dashboards actually registered, rather than trusting a
+clean log. Grafana 13 keeps them in unified storage, not the old `dashboard` table:
+
+```bash
+sudo docker cp grafana:/var/lib/grafana/grafana.db /tmp/g.db && sudo chown $USER /tmp/g.db
+python3 - <<'EOF'
+import sqlite3, json
+c = sqlite3.connect("file:/tmp/g.db?mode=ro", uri=True)
+for _, res, name, value in c.execute('select "group", resource, name, value from resource'):
+    if res == "dashboards":
+        print(name, json.loads(value)["spec"]["title"])
+EOF
+rm -f /tmp/g.db
+```
+
+Provisioned dashboards are read-only in the browser by design. `"editable": true` in the JSON only keeps
+panel-edit and Explore reachable so a query can be read; provisioning still refuses to save.
 
 ## Rollback
 
@@ -75,6 +100,8 @@ cAdvisor is pinned to `ghcr.io/google/cadvisor:v0.60.5`. Do not move it back to 
 ## User Endpoints
 
 - Homelab Overview: `https://grafana.alphasecunited.com/d/homelab-overview`
+- A host's own dashboard: `https://grafana.alphasecunited.com/d/node-<host>`, for example `/d/node-red-server`
+- The other eight topic dashboards are in the `Homelab` folder and in the header dropdown on every board
 - Prometheus: `https://prometheus.alphasecunited.com/`; direct fallback `http://192.168.73.2:9090/`
 - Grafana: `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/`
 

@@ -1,15 +1,27 @@
 # Grafana dashboard provisioning, deployed at
-# /home/dkadi/monitoring/grafana/provisioning/dashboards/ on
-# monitor-01.
+# /home/dkadi/monitoring/grafana/provisioning/dashboards/ on monitor-01.
 #
-# Dashboards under /etc/grafana/dashboards are read from a read-only bind mount
-# of the versioned repository copy. Grafana re-reads that directory every
-# updateIntervalSeconds, so editing a dashboard JSON on the host takes effect
-# without recreating the container.
+# Two providers, two folders. `Homelab` holds the nine topic dashboards you
+# navigate by concern; `Nodes` holds one dashboard per host. They are separate
+# because eighteen node dashboards in the same folder as the overview would bury
+# it, and because the dashboard-link dropdowns in the header filter by tag:
+# topic dashboards are tagged `homelab`, node dashboards `node`, so each dropdown
+# lists one set rather than all twenty-seven.
 #
-# allowUiUpdates: false keeps the repository authoritative. To iterate in the
-# browser, use Save As to make a scratch copy, then fold the change back into the
-# versioned JSON. Without this, a UI edit would silently diverge from git.
+# The two paths must not nest. Grafana's file provider walks its path
+# recursively, so a provider pointing at the parent directory would claim the
+# node dashboards as well and the two providers would fight over the same files
+# on every scan.
+#
+# Grafana re-reads each directory every updateIntervalSeconds, so editing a
+# dashboard JSON on the host takes effect without recreating the container.
+#
+# allowUiUpdates: false keeps the repository authoritative. The dashboards
+# themselves carry "editable": true, which is not a contradiction: provisioning
+# still refuses to persist a browser edit, but panel-edit and Explore stay
+# reachable so a query can be read without hunting for it in git. To iterate,
+# change Tools/build_dashboards.py and re-run it — the JSON is generated, so a
+# hand edit to a file under here is overwritten by the next build.
 apiVersion: 1
 
 providers:
@@ -22,5 +34,17 @@ providers:
     updateIntervalSeconds: 30
     allowUiUpdates: false
     options:
-      path: /etc/grafana/dashboards
+      path: /etc/grafana/dashboards/homelab
+      foldersFromFilesStructure: false
+
+  - name: nodes
+    orgId: 1
+    folder: Nodes
+    folderUid: nodes
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: false
+    options:
+      path: /etc/grafana/dashboards/nodes
       foldersFromFilesStructure: false

@@ -1,7 +1,7 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-27
 
 I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.13.1 scrapes 50 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
@@ -16,7 +16,8 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 - `Documentation/Runbook.md`: routine health checks, configuration changes, dashboard edits, and rollback.
 - `Documentation/TODO.md`: current Prometheus backlog.
 - `Documentation/Troubleshooting/`: issue index and one dated record per operational problem.
-- `Tests/`: validation scripts for the live target set and for every dashboard query.
+- `Tests/`: validation scripts for the live target set, for every dashboard query, and for dashboard layout.
+- `Tools/`: the dashboard generator. The JSON under `Configuration/grafana/dashboards/` is its output.
 
 ## Deployed Service
 
@@ -25,6 +26,7 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 | Prometheus UI | `https://prometheus.alphasecunited.com/` through NPM; direct fallback `http://192.168.73.2:9090/` |
 | Grafana UI | `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/` |
 | Homelab Overview dashboard | `https://grafana.alphasecunited.com/d/homelab-overview` |
+| A host's own dashboard | `https://grafana.alphasecunited.com/d/node-<host>`, e.g. `/d/node-grey-server` |
 | Live host configuration | `/home/dkadi/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
 | Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
@@ -61,29 +63,79 @@ cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAd
 
 Until 2026-07-25 the datasource and both imported dashboards existed only inside the `grafana_data` Docker volume. Removing that volume would have destroyed all of it with nothing in git to rebuild from.
 
-`Configuration/grafana/` now holds the datasource definition, the dashboard provider, and the Homelab Overview JSON, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative: to iterate in the browser, use Save As for a scratch copy and fold the change back into the versioned JSON.
+`Configuration/grafana/` now holds the datasource definition, the dashboard providers, and all 27 dashboards, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+
+Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
+
+The dashboards carry `"editable": true`, which is not a contradiction with `allowUiUpdates: false`. Provisioning still refuses to persist a browser edit; leaving the flag on keeps panel-edit and Explore reachable so a query can be read without hunting for it in git. To iterate, change the generator and re-run it — a hand edit to a file under `dashboards/` is overwritten by the next build.
 
 The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose. Provisioning matches on name, so it adopts the entry that already existed instead of creating a duplicate. The UID was pinned so the two imported dashboards kept resolving; they are gone now, but the pin stays because `homelab-overview.json` references that UID throughout.
 
 ## Dashboards
 
-| Dashboard | UID | Purpose |
-|---|---|---|
-| Homelab Overview | `homelab-overview` | 34 visible panels across 11 concern rows: fleet status, services, guests, CPU, memory, storage capacity, drive health, power, containers, network, monitoring health. A twelfth row, `Per-host detail`, stays collapsed and holds 8 more |
+27 dashboards in two Grafana folders, all generated from [Tools/](Tools/README.md) and committed here.
 
-One dashboard, provisioned from this repository. On 2026-07-26 I deleted the two imported community dashboards, Node Exporter Full (`rYdddlPWk`, grafana.com 1860) and Proxmox via Prometheus (`Dp7Cd57Zza`, grafana.com 10347). They were the only unversioned dashboards left, so removing them makes the repository the complete record of what Grafana shows.
+| Folder | Dashboard | UID | Purpose |
+|---|---|---|---|
+| Homelab | Homelab Overview | `homelab-overview` | Eight health tiles, one table of everything failing a check, the fleet table, service reachability, and links out |
+| Homelab | Proxmox · Galaxy Cluster | `proxmox-cluster` | Quorum, the five nodes, every guest, guest I/O, every storage |
+| Homelab | Containers | `containers` | 56 containers across the nine cAdvisor hosts, with restart and OOM tables |
+| Homelab | Services & Uptime | `services-uptime` | The 19 names through NPM: reachability, latency by request phase, TLS expiry |
+| Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
+| Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
+| Homelab | Power & UPS | `power-ups` | Both APC units: battery, runtime, load, mains, status flags |
+| Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 18 node_exporters |
+| Homelab | TeamSpeak | `teamspeak` | ts02 and ts03, with the fault isolated to the server or the path in front of it |
+| Nodes | one per host | `node-<host>` | Status, CPU, memory, filesystems, disk, network, then whatever else that host has |
 
-That cost per-host drill-down, which Node Exporter Full had covered. Rather than re-import 39 panels of someone else's dashboard, I put the drill-down into the versioned one as a **collapsed `Per-host detail` row** driven by a `$host` variable: CPU by mode, load against core count, memory breakdown, swap, every filesystem rather than just root, network per interface, disk throughput, and a host facts table. Collapsed means it costs nothing until expanded, so the overview stays a fleet summary. 34 visible panels, 8 more inside the row, 65 queries in total.
+Every header carries two dashboard-link dropdowns filtered by tag — **Homelab** lists the nine, **Nodes** the
+eighteen — and both keep the current time range. Any table with a hostname in it links that column to that
+host's dashboard, so the fleet table, the guest table, the storage tables and the target list are all routes
+into a node board.
 
-ZFS, SMART, and NVMe deliberately stay out of that row. They already sit under Drive health scoped to `role="hypervisor"`, for the reason below. The disk throughput panel is in the row with a description saying what it means on an LXC guest: `/proc/diskstats` isn't namespaced, so there it reports the hypervisor's physical devices.
+### One dashboard per host
 
-Rows are grouped by concern rather than by exporter, so temperature sits with the thing it measures: CPU package temperature under CPU, NVMe temperature under Drive health. Panels run mostly two-across at half width, with heights set from how many series each one draws. Click a row heading to collapse it.
+Eighteen of the 27 are per-host. Each is a real dashboard with its own UID and its own entry in the folder,
+not a `$host` filter on a shared one, because a host is a thing you open rather than a variable you set — and
+because a filter can only show what is true of every host. A per-host board can show `grey-server`'s ZFS pool,
+`media-01`'s containers, `red-server`'s UPS and `blue-server`'s NVMe, and omit each of those from the fifteen
+hosts they are not true of.
 
-Under each row heading sits a transparent markdown panel with one line about what the section answers and a horizontal rule, because Grafana's row header alone is a thin grey bar that reads as no boundary at all. Those 11 bands are `text` panels with no queries, so `assert_dashboard_queries.py` skips them; the 34 figure above counts data panels only.
+They are generated rather than written for the obvious reason: eighteen hand-kept copies of one layout
+diverge the first time one is edited. The layout lives once in `Tools/build_dashboards.py` and the capability
+flags in `Tools/inventory.py` decide which sections each host grows.
 
-Temperatures display in Fahrenheit. `node_hwmon_temp_celsius` reports Celsius, so the panel queries convert with `* 9 / 5 + 32` and their thresholds move with them; changing only the display unit would have labelled a Celsius number as Fahrenheit.
+### Conventions
 
-Every hardware panel filters on `role="hypervisor"`. `node_exporter` inside an LXC reports the host's ZFS pools, NVMe SMART data, and disk statistics, because those read from `/sys` and `/proc` paths that aren't namespaced. Unfiltered, one physical ZFS pool appeared as four and four CPUs appeared as thirteen temperature series.
+Panel type follows the data's job: a stat tile for one current value, a bar gauge for a ratio against a limit,
+a time series for change over time, a state timeline for up-or-down over time, a table with in-cell bars for
+one row per thing, and a table with a written-out empty state for a list that should normally be empty. Above
+eight series a time series shows `topk(N)` and says so in its title, with a table beside it covering the rest.
+
+Green, amber and red are reserved for state, so no series wears them for identity; multi-series graphs colour
+by series name rather than by rank, so a host keeps its colour when a filter changes the series count.
+
+Under each row heading sits a transparent markdown band with one line on what the section answers, because
+Grafana's row header alone is a thin grey rule that reads as no boundary.
+
+Temperatures display in Fahrenheit. `node_hwmon_temp_celsius` reports Celsius, so the queries convert with
+`* 9 / 5 + 32` and their thresholds move with them; changing only the display unit would label a Celsius
+number as Fahrenheit.
+
+Hardware panels are scoped to the machine that owns the hardware. `node_exporter` inside an LXC reports the
+node's ZFS pools, NVMe data, sensors and disk statistics, because those read from `/sys` and `/proc` paths
+that are not namespaced. Unfiltered, one physical ZFS pool appears as three and one CPU's sensors appear
+under seven hostnames.
+
+CPU package temperature joins on the sensor label rather than the chip name:
+
+```promql
+node_hwmon_temp_celsius * on (host, chip, sensor) group_left (label)
+  node_hwmon_sensor_label{label=~"Package id 0|Tctl"} * 9 / 5 + 32
+```
+
+Intel reports the die as `Package id 0` on a `coretemp` chip; AMD reports it as `Tctl`. The previous
+`chip=~".*coretemp.*"` filter silently omitted `grey-server`, the fleet's one AMD node.
 
 ## History
 

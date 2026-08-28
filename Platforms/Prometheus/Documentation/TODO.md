@@ -1,9 +1,9 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-10
+**Last updated:** 2026-08-27
 
-Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting. The host-side removal remains open until I next recreate Grafana.
+Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting. The host-side removal remains open until I next recreate Grafana.
 
 ## Open
 
@@ -11,7 +11,11 @@ Three items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 
-**Decide where alerts go, then write rules.** There are no alert rules and no Alertmanager. I kept alerting out of the 2026-07-25 expansion deliberately, because rules that fire into nothing are worse than no rules, so this starts with picking a notification path rather than with writing conditions. The dashboard already encodes the thresholds worth alerting on: targets down, `probe_success == 0`, certificate expiry, ZFS pool state, `nvme_critical_warning`, NVMe spare below 10%, filesystem above 90%, and a UPS off mains.
+**Decide where alerts go, then write rules.** There are no alert rules and no Alertmanager. I kept alerting out of the 2026-07-25 expansion deliberately, because rules that fire into nothing are worse than no rules, so this starts with picking a notification path rather than with writing conditions.
+
+The conditions themselves are now written down and running. `Anything failing a health check` on the overview is one PromQL expression unioning twelve checks with `or`, each arm a filtered comparison that returns nothing when it passes: targets down, `probe_success == 0`, certificate inside 21 days, ZFS not online, `nvme_critical_warning`, NVMe spare below 10%, filesystem above 90% or read-only, UPS on battery, a SMART self-assessment that failed on a disk that reports one, and either TeamSpeak fault. Splitting that expression into alert rules is mechanical once there is somewhere for them to fire.
+
+**Sweep the two Docker hosts the resolv.conf check could not reach.** The 2026-08-27 TeamSpeak fault was a container that spent 17 days with no nameserver, because Docker copied `/etc/resolv.conf` two seconds before `dhcpcd` wrote it and never revisits that copy. I checked 52 of 60 running containers across the fleet and found no others. The eight on `security-01` and `game-01` need a root shell to check and are still unverified. The loop is in the [change record](../../Teamspeak%20Hosting/Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md#fleet-sweep).
 
 ## Known limits, not tracked as work
 
@@ -22,6 +26,8 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 `node_exporter` stays on the Debian package. All 15 hosts run 1.9.0 while upstream is at v1.12.1 from 2026-07-14, so the fleet sits three minor versions behind on purpose. Debian 13 trixie ships `prometheus-node-exporter` 1.9.0-1+b4, and I decided on 2026-07-26 to keep APT owning the binary rather than move 13 more machines onto a pinned tarball for a version number. Security updates arriving through `apt upgrade` are worth more here than the newer collectors, none of which the dashboard uses. `docker-main` and `splunk-siem` keep the upstream binary because their package managers can't reach 1.9.0 at all. Revisit if trixie backports a newer build, or if a needed collector only exists above 1.9.0.
 
 ## Completed
+
+- 2026-08-27: [Dashboard Rebuild and Per-Node Boards](Change%20Records/Dashboard%20Rebuild%20and%20Per-Node%20Boards%20-%202026-08-27.md). Two hand-written dashboards became 27 generated ones: nine by concern and one per host, in two Grafana folders. The rebuild fixed three things that were quietly wrong — the fleet CPU temperature panel omitted `grey-server` because it matched Intel's `coretemp` chip and `grey-server` is AMD; the SMART check called two QEMU virtual disks unhealthy when they simply report no self-assessment; and the TeamSpeak dashboard had been built for one server while two were running. 1,394 queries verified against live Prometheus, 0 errors.
 
 - 2026-08-10: Prometheus restart-policy repair. After CT 104 restarted, Docker skipped Prometheus because its persisted metadata held `HasBeenManuallyStopped=true` under `unless-stopped`. I changed the deployed and live policy to `always`, started it, and verified 52 healthy targets and 20 passing probes. The complete diagnosis is [issue 5](Troubleshooting/Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md).
 - 2026-08-04: Prometheus auto-start verification. During the controlled 2026-08-01 restart, CT 104 booted at 11:11:33 EDT and Prometheus started four seconds later at 11:11:37 EDT with `RestartCount=0`. Grafana started at the same time. Docker was enabled and active, and all seven containers were running with `unless-stopped`, so the boot path rather than a later manual start satisfied the check.
