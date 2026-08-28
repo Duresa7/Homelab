@@ -1,7 +1,7 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-08-27
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
@@ -23,6 +23,12 @@ I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 8
 | `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.alphasecunited.com` |
 
 Each public name is a DNS-only CNAME to its Playit relay plus an `_ts3._udp` SRV record carrying the relay host and assigned port. The SRV target points at the Playit hostname directly, not the CNAME, because some TeamSpeak clients reject an alias there.
+
+The reachability collector reads that SRV record on every cycle, so it depends on DNS working inside its
+container. On 2026-08-27 I pinned its resolver with `dns: [192.168.80.1]` in the Compose file, after a boot
+race on 2026-08-10 left it with a `resolv.conf` containing no nameserver for 17 days — during which the
+dashboard reported both public addresses down while both servers were serving clients. Full diagnosis in
+[Collector DNS Failure After a Boot Race - 2026-08-27](Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md).
 
 ServerQuery ports are LAN only and their allowlists cover `127.0.0.1`, `192.168.80.118`, and `192.168.50.241`. They aren't tunneled, so only voice is reachable from the internet.
 

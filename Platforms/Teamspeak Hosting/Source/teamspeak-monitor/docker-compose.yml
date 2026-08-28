@@ -15,6 +15,19 @@ services:
     container_name: teamspeak-monitor
     restart: unless-stopped
     network_mode: host
+    # Pin the resolver rather than inheriting whatever /etc/resolv.conf held at
+    # creation. Docker copies the host file once when it creates the container
+    # and never revisits it, as the generated file's own header says. On
+    # 2026-08-10 the host booted, Docker created this container at 14:22:49, and
+    # dhcpcd wrote the nameserver line at 14:22:51 - two seconds too late. The
+    # container then ran 17 days with a resolv.conf containing zero nameservers,
+    # so every `dig SRV` returned nothing, the public relay port was never
+    # learned, and the dashboard reported the public address DOWN while both
+    # voice servers were up and serving clients. `dns:` is honoured under
+    # `network_mode: host` on Docker 29.6.2 (verified: the generated file
+    # reports `Overrides: [nameservers]`), so this closes the race for good.
+    dns:
+      - 192.168.80.1
     environment:
       TS_BASE_DOMAIN: alphasecunited.com
       TS_HOST_IP: 127.0.0.1
