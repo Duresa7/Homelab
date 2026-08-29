@@ -1,0 +1,575 @@
+<dashboard version="2" theme="dark">
+  <label>UniFi Client &amp; Network Activity</label>
+  <description>Who is on the network, what they are moving, and what changed on the controller.</description>
+  <definition><![CDATA[
+{
+  "title": "UniFi Client & Network Activity",
+  "description": "Who is on the network, what they are moving, and what changed on the controller.",
+  "visualizations": {
+    "viz_1": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_2"
+      },
+      "title": "Active clients"
+    },
+    "viz_3": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#0ca30c",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_4"
+      },
+      "title": "Connects"
+    },
+    "viz_5": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#c98500",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_6"
+      },
+      "title": "Disconnects"
+    },
+    "viz_7": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#fab219",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_8"
+      },
+      "title": "Config changes"
+    },
+    "viz_9": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_10"
+      },
+      "title": "Admin logins"
+    },
+    "viz_11": {
+      "type": "splunk.line",
+      "options": {
+        "seriesColors": [
+          "#0ca30c",
+          "#c98500"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "right",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto",
+        "legendPlacement": "right",
+        "lineWidth": 2,
+        "markerDisplay": "outlined"
+      },
+      "dataSources": {
+        "primary": "ds_12"
+      },
+      "title": "Client sessions"
+    },
+    "viz_13": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Traffic by client and network",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_14": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#3987e5"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_15"
+      },
+      "title": "Clients by volume"
+    },
+    "viz_16": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#199e70"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_17"
+      },
+      "title": "Networks by volume"
+    },
+    "viz_18": {
+      "type": "splunk.pie",
+      "options": {
+        "seriesColors": [
+          "#3987e5",
+          "#d95926",
+          "#199e70",
+          "#c98500",
+          "#d55181",
+          "#008300",
+          "#9085e9",
+          "#e66767"
+        ],
+        "backgroundColor": "#1a1a19",
+        "showDonutHole": true,
+        "legendDisplay": "bottom",
+        "labelDisplay": "valuesAndPercentage"
+      },
+      "dataSources": {
+        "primary": "ds_19"
+      },
+      "title": "WiFi networks"
+    },
+    "viz_20": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Controller activity",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_21": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 25,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_22"
+      },
+      "title": "Admin and configuration activity"
+    },
+    "viz_23": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 25,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_24"
+      },
+      "title": "Client connect and disconnect"
+    },
+    "viz_25": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Network health and camera detections",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_26": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#c98500"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_27"
+      },
+      "title": "Network and device health events"
+    },
+    "viz_28": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#9085e9"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_29"
+      },
+      "title": "Camera detections by type"
+    },
+    "viz_30": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 25,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_31"
+      },
+      "title": "Recent health and detection events"
+    }
+  },
+  "dataSources": {
+    "ds_2": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` src_mac=* | stats dc(src_mac)"
+      },
+      "name": "ds_2"
+    },
+    "ds_4": {
+      "type": "ds.search",
+      "options": {
+        "query": "eventtype=unifi_cef_session_start | stats count"
+      },
+      "name": "ds_4"
+    },
+    "ds_6": {
+      "type": "ds.search",
+      "options": {
+        "query": "eventtype=unifi_cef_session_end | stats count"
+      },
+      "name": "ds_6"
+    },
+    "ds_8": {
+      "type": "ds.search",
+      "options": {
+        "query": "eventtype=unifi_cef_config_change | stats count"
+      },
+      "name": "ds_8"
+    },
+    "ds_10": {
+      "type": "ds.search",
+      "options": {
+        "query": "eventtype=unifi_cef_admin_auth | stats count"
+      },
+      "name": "ds_10"
+    },
+    "ds_12": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` (eventtype=unifi_cef_session_start OR eventtype=unifi_cef_session_end) | eval c=if(sc4s_class IN (400,403,520),1,0), d=if(sc4s_class IN (401,404,521),1,0) | timechart minspan=15m sum(c) as Connects, sum(d) as Disconnects"
+      },
+      "name": "ds_12"
+    },
+    "ds_15": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` src=* | stats sum(bytes) as bytes by src | sort -bytes | head 10 | sort bytes"
+      },
+      "name": "ds_15"
+    },
+    "ds_17": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` src_network=* | stats sum(bytes) as bytes by src_network | sort -bytes | head 10 | sort bytes"
+      },
+      "name": "ds_17"
+    },
+    "ds_19": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` wifi_name=* | stats count by wifi_name | sort -count | head 6"
+      },
+      "name": "ds_19"
+    },
+    "ds_22": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` (eventtype=unifi_cef_config_change OR eventtype=unifi_cef_admin_auth) | eval when=strftime(_time, \"%m-%d %H:%M:%S\") | rename cef_name as event, UNIFIaccessMethod as method, UNIFIsettingsSection as section | table when event user method section src_ip | sort - when | head 200"
+      },
+      "name": "ds_22"
+    },
+    "ds_24": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` (eventtype=unifi_cef_session_start OR eventtype=unifi_cef_session_end) | eval when=strftime(_time, \"%m-%d %H:%M:%S\"), client=coalesce(client_alias, UNIFIclientHostname, UNIFIclientIp) | rename cef_name as event, wifi_name as wifi, UNIFIclientIp as client_ip | table when event client wifi client_ip | sort - when | head 200"
+      },
+      "name": "ds_24"
+    },
+    "ds_27": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` eventtype=unifi_cef_device_alert | stats count by cef_name | sort -count | head 12 | sort count | rename cef_name as event"
+      },
+      "name": "ds_27"
+    },
+    "ds_29": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` eventtype=unifi_protect_detection | stats count by cef_name | sort -count | head 12 | sort count | rename cef_name as detection"
+      },
+      "name": "ds_29"
+    },
+    "ds_31": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` (eventtype=unifi_cef_device_alert OR eventtype=unifi_protect_detection) | eval when=strftime(_time, \"%m-%d %H:%M:%S\"), device=coalesce(dvc_name, UNIFIdeviceName, dvc) | rename cef_name as event, cef_product as product, UNIFIcategory as category | table when product severity event category device | sort - when | head 200"
+      },
+      "name": "ds_31"
+    }
+  },
+  "inputs": {
+    "input_time": {
+      "type": "input.timerange",
+      "options": {
+        "token": "time",
+        "defaultValue": "-24h@h,now"
+      },
+      "title": "Time range"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "earliest": "$time.earliest$",
+            "latest": "$time.latest$"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "width": 1440,
+      "height": 1884,
+      "display": "auto-scale",
+      "backgroundColor": "#0d0d0d"
+    },
+    "structure": [
+      {
+        "item": "viz_1",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_3",
+        "type": "block",
+        "position": {
+          "x": 303,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_5",
+        "type": "block",
+        "position": {
+          "x": 586,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_7",
+        "type": "block",
+        "position": {
+          "x": 869,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_9",
+        "type": "block",
+        "position": {
+          "x": 1152,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_11",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 144,
+          "w": 1400,
+          "h": 240
+        }
+      },
+      {
+        "item": "viz_13",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 400,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_14",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 442,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_16",
+        "type": "block",
+        "position": {
+          "x": 492,
+          "y": 442,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_18",
+        "type": "block",
+        "position": {
+          "x": 964,
+          "y": 442,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_20",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 788,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_21",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 830,
+          "w": 692,
+          "h": 340
+        }
+      },
+      {
+        "item": "viz_23",
+        "type": "block",
+        "position": {
+          "x": 728,
+          "y": 830,
+          "w": 692,
+          "h": 340
+        }
+      },
+      {
+        "item": "viz_25",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1186,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_26",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1228,
+          "w": 692,
+          "h": 300
+        }
+      },
+      {
+        "item": "viz_28",
+        "type": "block",
+        "position": {
+          "x": 728,
+          "y": 1228,
+          "w": 692,
+          "h": 300
+        }
+      },
+      {
+        "item": "viz_30",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1544,
+          "w": 1400,
+          "h": 320
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_time"
+    ]
+  }
+}
+]]></definition>
+  <meta type="hiddenElements"><![CDATA[
+{"hideEdit":false,"hideOpenInSearch":false,"hideExport":false}
+]]></meta>
+</dashboard>

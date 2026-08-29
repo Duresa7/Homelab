@@ -1,0 +1,578 @@
+<dashboard version="2" theme="dark">
+  <label>UniFi Flow Insights</label>
+  <description>Every connection the gateway completed: what was allowed, what was blocked, how risky it was and where it went.</description>
+  <definition><![CDATA[
+{
+  "title": "UniFi Flow Insights",
+  "description": "Every connection the gateway completed: what was allowed, what was blocked, how risky it was and where it went.",
+  "visualizations": {
+    "viz_1": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_2"
+      },
+      "title": "Total flows"
+    },
+    "viz_3": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#d03b3b",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_4"
+      },
+      "title": "Blocked"
+    },
+    "viz_5": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#fab219",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_6"
+      },
+      "title": "High risk"
+    },
+    "viz_7": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_8"
+      },
+      "title": "Countries reached"
+    },
+    "viz_9": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true,
+        "unit": " GB",
+        "unitPosition": "after"
+      },
+      "dataSources": {
+        "primary": "ds_10"
+      },
+      "title": "Data volume"
+    },
+    "viz_11": {
+      "type": "splunk.area",
+      "options": {
+        "seriesColors": [
+          "#0ca30c",
+          "#d03b3b"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "right",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto",
+        "stackMode": "stacked",
+        "legendPlacement": "right",
+        "fillOpacity": 0.55,
+        "lineWidth": 2
+      },
+      "dataSources": {
+        "primary": "ds_12"
+      },
+      "title": "Flow volume over time",
+      "description": "Stacked by disposition; blocked sits on top of allowed."
+    },
+    "viz_13": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Where traffic goes",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_14": {
+      "type": "splunk.map",
+      "options": {
+        "layers": [
+          {
+            "type": "bubble"
+          }
+        ],
+        "backgroundColor": "#1a1a19"
+      },
+      "dataSources": {
+        "primary": "ds_15"
+      },
+      "title": "Where traffic goes",
+      "description": "Outbound flows plotted by destination location."
+    },
+    "viz_16": {
+      "type": "splunk.pie",
+      "options": {
+        "seriesColors": [
+          "#d03b3b",
+          "#fab219",
+          "#0ca30c"
+        ],
+        "backgroundColor": "#1a1a19",
+        "showDonutHole": true,
+        "legendDisplay": "bottom",
+        "labelDisplay": "valuesAndPercentage",
+        "collapseThreshold": 0,
+        "showOther": false
+      },
+      "dataSources": {
+        "primary": "ds_17"
+      },
+      "title": "Risk mix",
+      "description": "UniFi's own banding: high, medium, low."
+    },
+    "viz_18": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Top talkers",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_19": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#3987e5"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_20"
+      },
+      "title": "Busiest clients"
+    },
+    "viz_21": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#199e70"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_22"
+      },
+      "title": "Top external destinations"
+    },
+    "viz_23": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#9085e9"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_24"
+      },
+      "title": "Services by volume"
+    },
+    "viz_25": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Blocked traffic",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_26": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 50,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_27"
+      },
+      "title": "Blocked flows",
+      "description": "The peer column is the outside address for an inbound block and the target for an outbound one."
+    },
+    "viz_28": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 15,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_29"
+      },
+      "title": "Zone-to-zone matrix"
+    },
+    "viz_30": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 15,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_31"
+      },
+      "title": "Top destination domains"
+    }
+  },
+  "dataSources": {
+    "ds_2": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` | stats count"
+      },
+      "name": "ds_2"
+    },
+    "ds_4": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` action=blocked | stats count"
+      },
+      "name": "ds_4"
+    },
+    "ds_6": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` risk=high | stats count"
+      },
+      "name": "ds_6"
+    },
+    "ds_8": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` dest_region=* | stats dc(dest_region)"
+      },
+      "name": "ds_8"
+    },
+    "ds_10": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` | stats sum(bytes) as b | eval v=round(b/1073741824,1) | fields v"
+      },
+      "name": "ds_10"
+    },
+    "ds_12": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` | eval a=if(action=\"allowed\",1,0), b=if(action=\"blocked\",1,0) | timechart minspan=5m sum(a) as Allowed, sum(b) as Blocked"
+      },
+      "name": "ds_12"
+    },
+    "ds_15": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` dest_zone=External | iplocation dest_ip | search Country=* | geostats latfield=lat longfield=lon maxzoomlevel=18 count"
+      },
+      "name": "ds_15"
+    },
+    "ds_17": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` | stats count by risk | append [| makeresults count=3 | streamstats count as r | eval risk=case(r==1,\"high\",r==2,\"medium\",r==3,\"low\"), count=0 | fields risk count] | stats sum(count) as count by risk | eval o=case(risk=\"high\",1,risk=\"medium\",2,risk=\"low\",3) | sort o | fields risk count"
+      },
+      "name": "ds_17"
+    },
+    "ds_20": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` src=* | stats count by src | sort -count | head 10 | sort count"
+      },
+      "name": "ds_20"
+    },
+    "ds_22": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` dest_zone=External | eval target=if(isnull(dest_domain), dest_ip, mvindex(dest_domain,0)) | stats count by target | sort -count | head 10 | sort count"
+      },
+      "name": "ds_22"
+    },
+    "ds_24": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` app=* | stats sum(bytes) as bytes by app | sort -bytes | head 10 | sort bytes"
+      },
+      "name": "ds_24"
+    },
+    "ds_27": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` action=blocked | eval when=strftime(_time, \"%m-%d %H:%M:%S\"), peer=if(direction=\"incoming\", src_ip, dest_ip), where=coalesce(if(direction=\"incoming\", src_country, dest_country), \"-\") | table when direction peer where dest_port transport rule risk src_zone dest_zone | sort - when | head 200"
+      },
+      "name": "ds_27"
+    },
+    "ds_29": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` | stats count by src_zone dest_zone | sort -count | head 15"
+      },
+      "name": "ds_29"
+    },
+    "ds_31": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` dest_domain=* | stats count sum(bytes) as bytes by dest_domain | sort -count | head 15 | `fmt_bytes(bytes)`"
+      },
+      "name": "ds_31"
+    }
+  },
+  "inputs": {
+    "input_time": {
+      "type": "input.timerange",
+      "options": {
+        "token": "time",
+        "defaultValue": "-24h@h,now"
+      },
+      "title": "Time range"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "earliest": "$time.earliest$",
+            "latest": "$time.latest$"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "width": 1440,
+      "height": 1934,
+      "display": "auto-scale",
+      "backgroundColor": "#0d0d0d"
+    },
+    "structure": [
+      {
+        "item": "viz_1",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_3",
+        "type": "block",
+        "position": {
+          "x": 303,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_5",
+        "type": "block",
+        "position": {
+          "x": 586,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_7",
+        "type": "block",
+        "position": {
+          "x": 869,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_9",
+        "type": "block",
+        "position": {
+          "x": 1152,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_11",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 144,
+          "w": 1400,
+          "h": 250
+        }
+      },
+      {
+        "item": "viz_13",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 410,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_14",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 452,
+          "w": 920,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_16",
+        "type": "block",
+        "position": {
+          "x": 956,
+          "y": 452,
+          "w": 464,
+          "h": 380
+        }
+      },
+      {
+        "item": "viz_18",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 848,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_19",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 890,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_21",
+        "type": "block",
+        "position": {
+          "x": 492,
+          "y": 890,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_23",
+        "type": "block",
+        "position": {
+          "x": 964,
+          "y": 890,
+          "w": 456,
+          "h": 330
+        }
+      },
+      {
+        "item": "viz_25",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1236,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_26",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1278,
+          "w": 1400,
+          "h": 300
+        }
+      },
+      {
+        "item": "viz_28",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1594,
+          "w": 692,
+          "h": 320
+        }
+      },
+      {
+        "item": "viz_30",
+        "type": "block",
+        "position": {
+          "x": 728,
+          "y": 1594,
+          "w": 692,
+          "h": 320
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_time"
+    ]
+  }
+}
+]]></definition>
+  <meta type="hiddenElements"><![CDATA[
+{"hideEdit":false,"hideOpenInSearch":false,"hideExport":false}
+]]></meta>
+</dashboard>
