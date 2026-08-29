@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-08-29
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -53,8 +53,8 @@ None.
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | `purple-server` and `blue-server` run `permitrootlogin yes` where the other three run `without-password`. Keys only on all five either way. `galaxy-pxe-join` now holds root on all five nodes where it used to be scoped to `grey-server`, and the mechanism that scoped it is gone |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Anime release selection moved to the TRaSH Guides profile on 2026-08-27. Three open: whether to backfill the 16 cutoff-unmet Mushoku Tensei episodes, whether Radarr gets anime handling, and whether Recyclarr keeps the tier lists current. The backup-test, capacity-alert, & update-cadence items stay dropped from 2026-07-25 |
-| [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, UniFi dashboards, & optional CIM normalization; internal HTTPS completed 2026-07-22 |
-| [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Post-install data readiness and CIM scoping |
+| [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, & an `ips_category` breakdown; UniFi flow collection, dashboards, and CIM normalization completed 2026-08-28, and the UniFi OS and Protect exports restored with CIM coverage extended to all three products 2026-08-29 |
+| [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Risk-based alerting, asset and identity framework, & ES role review; CIM mapping and eight correlation searches completed 2026-08-28 |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items after the final retired proxy host was removed on 2026-08-19 |
 | [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | No open items; provider state and the authenticated model list are verified, and the deployment moved to `docker-main` on 2026-08-19 |
