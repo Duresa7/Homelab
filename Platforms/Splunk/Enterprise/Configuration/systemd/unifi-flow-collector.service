@@ -1,0 +1,40 @@
+[Unit]
+Description=UniFi Traffic Flow collector for Splunk
+Documentation=https://github.com/Duresa7/Homelab
+After=network-online.target splunk.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/unifi-flow-collector/unifi_flow_collector.py
+Restart=always
+RestartSec=30
+User=root
+Group=root
+
+# The credential file and the checkpoint are the only state this needs.
+StateDirectory=unifi-flow-collector
+ReadWritePaths=/var/lib/unifi-flow-collector
+
+# Hardening: the collector reads one config file, talks to the gateway and to
+# HEC on loopback, and writes one checkpoint. Nothing else is required.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+CapabilityBoundingSet=
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=unifi-flow-collector
+
+[Install]
+WantedBy=multi-user.target
