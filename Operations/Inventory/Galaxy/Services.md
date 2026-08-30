@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-26
+**Last updated:** 2026-08-30
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -27,7 +27,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
-| docker-blue | LXC 108 | blue-server | Remote access | RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
@@ -97,6 +97,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
+| Executor | Self-hosted 1.6.7 from a digest-pinned image; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; first administrator claim remains |
 | RustDesk | `hbbs` and `hbbr` using `rustdesk/rustdesk-server:latest` |
 | Portainer Edge Agent | `portainer/agent:2.39.1`; environment 7; compose under `/opt/docker/portainer-edge-agent`; Portainer listed all 4 host containers on 2026-07-28 |
 | Docker runtime | Docker Engine 29.6.2, containerd 2.2.6, & runc 1.3.6 after the 2026-07-28 repair of a containerd 2.2.4 shim panic |
@@ -228,7 +229,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 |---|---|---|---|---|
 | docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 12 containers, `overlay2` |
 | docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 5 containers, `overlayfs` |
-| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 4 containers, `overlayfs` |
+| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 5 containers, `overlayfs` |
 | media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 10 containers, `overlayfs` |
 | alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | 9101, 8 containers, `overlayfs` |
 | ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
