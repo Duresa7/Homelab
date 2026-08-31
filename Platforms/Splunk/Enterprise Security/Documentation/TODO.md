@@ -1,7 +1,7 @@
 # To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-30
 
 I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
@@ -12,8 +12,9 @@ I track unfinished Splunk Enterprise Security work here. Completed setup is in [
 
 ## Data Readiness
 
-- [ ] Next I want to normalize the existing UniFi/CEF data in `netops` to the Common Information Model (CIM) so it populates ES data models (Network Traffic, Authentication, etc.), likely via the `cefutils` add-on already installed on the search head
-- [ ] Confirm ES's required indexes exist (`notable`, `risk`, `threat_activity`, and related) and are sized appropriately
+- [x] 2026-08-28: Normalized both UniFi sources to CIM through the `unifi_insights` app rather than `cefutils`. Network_Traffic returns 6,875 allowed and 4 blocked, Intrusion_Detection returns 10,849 high and 635 medium, Authentication resolves console access to a username. See [UniFi Flow Collection and Insights App - 2026-08-28](../../Enterprise/Documentation/Change%20Records/UniFi%20Flow%20Collection%20and%20Insights%20App%20-%202026-08-28.md).
+- [x] 2026-08-28: Confirmed the ES indexes exist. `notable` is present with a 500000 MB cap, alongside `risk`, `threat_activity`, `notable_summary` and the rest.
+- [x] 2026-08-29: Extended CIM coverage to UniFi OS and UniFi Protect, and corrected two faults in the mapping. Network_Traffic no longer counts IDS detections as connections, and severity now falls back to the CEF header grading instead of reading informational on everything the gateway does not risk-band. Network_Sessions, Change and Alerts populate as well, so six data models carry UniFi data. See [UniFi Syslog Export Restored and CIM Coverage Completed - 2026-08-29](../../Enterprise/Documentation/Change%20Records/UniFi%20Syslog%20Export%20Restored%20and%20CIM%20Coverage%20Completed%20-%202026-08-29.md).
 
 ## Access
 
@@ -21,11 +22,23 @@ I track unfinished Splunk Enterprise Security work here. Completed setup is in [
 
 ## Detection
 
-- [ ] Enable a small first set of correlation searches relevant to UniFi data, rather than turning on everything at once
-- [ ] Set up Risk-Based Alerting (RBA) so low-fidelity matches accumulate risk instead of firing individual notables
+- [x] 2026-08-28: Enabled eight correlation searches over the UniFi data, each verified to run clean and to match real history. Three are tuned against this network's own behaviour: P2P is excluded because 10,849 of 11,477 detections are this network's BitTorrent traffic, the controller's own service accounts are excluded from the configuration rule, and `ansible-01` is excluded from the scanning rule.
+- [x] 2026-08-29: Confirmed the rules reach Incident Review rather than only running. 150 scheduled executions over 24 hours, all `success`, and seven notables in `index=notable` from three rules at the severities they declare.
+- [ ] **Alert on the Wazuh feed.** This is the deliberate gap in the 2026-08-30 dashboard work, not an oversight: I built the pipeline and the page first and left notification for its own change. Today a level 12 malware match changes a number on a page nobody is looking at.
+
+  Two saved searches already exist in the `wazuh_insights` app as the place to attach the first ones, `Wazuh - Machines gone quiet` and `Wazuh - Machines gone quiet, listed`. The candidates, in the order I would build them:
+
+  - Malware found. `wazuh_malware_found` returning anything at all. Lowest volume and highest value: it fired twice in the whole of 2026-08-30 and both were the same test file.
+  - An agent silent for 24 hours after reporting within 7 days. Catches a machine that stopped talking, which counting alerts cannot.
+  - A change under `~/.ssh`, `/usr/local/bin`, `/opt` or a systemd unit directory on a machine where that is not routine.
+  - A successful login from outside RFC1918.
+
+  Tune each one against real history before enabling it, the way the eight UniFi rules were. `Systemd: Service exited due to a failure` was 36 per cent of the fleet's alerts on the day the feed opened, from one broken unit on `red-server`, so a naive severity threshold would page on that and nothing else.
+- [ ] Set up Risk-Based Alerting (RBA) so low-fidelity matches accumulate risk instead of firing individual notables. The eight rules above write individual notables today.
 - [ ] Populate the Asset and Identity framework with known home lab devices (so notables resolve to real hosts/owners, not bare IPs)
 
 ## Later
 
 - [ ] Evaluate threat intelligence feed integration
-- [ ] Build glass tables / custom security dashboards once base detections are working
+- [x] 2026-08-28: Built custom security dashboards as the `unifi_insights` app. Glass tables are still untouched.
+- [x] 2026-08-30: Wazuh alerts now reach ES through the `wazuh_insights` app. Seven event types keyed on `rule.groups{}`, and `object_category` made conditional after an unconditional `"file"` put 905 of 925 non-file events into the Endpoint Filesystem model. See [Wazuh Insights App - 2026-08-29](../../Enterprise/Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md).

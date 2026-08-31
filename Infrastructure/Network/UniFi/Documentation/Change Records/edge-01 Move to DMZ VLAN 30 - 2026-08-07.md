@@ -109,6 +109,6 @@ Set `net0` back to `tag=90`, restore the `interfaces` file, and reboot VM 121. T
 
 ## Remaining Work
 
-- Delete DMZ-A (VLAN 90), its honeypot at `192.168.90.2`, and its rows from the records after the soak period.
+- ~~Delete DMZ-A (VLAN 90), its honeypot at `192.168.90.2`, and its rows from the records after the soak period.~~ Done on 2026-08-29 in [DMZ-A VLAN 90 Removal](DMZ-A%20VLAN%2090%20Removal%20-%202026-08-29.md). The honeypot was the gateway's built-in one rather than a guest, so deleting the network removed it.
 - `Block DMZ to Internal` at index 40000 and `Block DMZ to LAN` at index 40001 are identical: both block `Dmz ANY` to `Internal ANY`. One of them does nothing.
-- DMZ (30) is not in the Threat Management network list, so `edge-01` is uninspected. It was uninspected on VLAN 90 as well, so this is not a regression, but the edge host is a reasonable candidate for coverage.
+- ~~DMZ (30) is not in the Threat Management network list, so `edge-01` is uninspected.~~ Done on 2026-08-30 in [DMZ Added to Threat Management](DMZ%20Added%20to%20Threat%20Management%20-%202026-08-30.md). Detection Mode is Notify, so the edge host is now inspected but nothing is dropped.

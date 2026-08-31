@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# Rebuild the manager's known-bad hash list from abuse.ch MalwareBazaar.
+#
+# This is the backstop for the VirusTotal integration. VirusTotal's free tier
+# stops answering after 500 lookups in a day and after 4 in a minute, and when
+# it stops it does so silently -- an unanswered lookup looks exactly like a
+# clean verdict. This list is local, has no quota, and is checked on every
+# file-integrity event regardless of what VirusTotal is doing.
+#
+# The feed is the last 48 hours of samples, which is deliberately small. A full
+# MalwareBazaar dump is millions of hashes and would cost more memory in
+# analysisd than it is worth here; recent samples are the ones a fresh download
+# is plausibly going to match.
+#
+# Runs weekly from wazuh-hash-list.timer. Installed at /usr/local/sbin/.
+set -euo pipefail
+
+FEED="https://bazaar.abuse.ch/export/txt/sha256/recent/"
+LIST="/var/ossec/etc/lists/known-bad-hashes"
+TMP="$(mktemp)"
+trap 'rm -f "$TMP"' EXIT
+
+# EICAR's hash is pinned at the top, permanently. It is the standard harmless
+# antivirus test string, and keeping it in the list means the whole path --
+# file appears, syscheck hashes it, the rule matches, the alert reaches Splunk
+# -- can be proven on demand without going anywhere near real malware.
+printf '%s\n' "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f:eicar-test-file" > "$TMP"
+
+# The feed is a comment-headed list of bare SHA256 values, one per line,
+# some quoted. CDB format is key:value, so each hash becomes its own key.
+curl -sfL --max-time 120 "$FEED" \
+  | tr -d '"\r' \
+  | grep -Eio '^[a-f0-9]{64}$' \
+  | tr 'A-F' 'a-f' \
+  | sort -u \
+  | sed 's/$/:malwarebazaar/' >> "$TMP"
+
+COUNT=$(wc -l < "$TMP")
+if [ "$COUNT" -lt 2 ]; then
+  echo "refusing to install a list with $COUNT entries -- the feed returned nothing usable" >&2
+  exit 1
+fi
+
+install -o wazuh -g wazuh -m 660 "$TMP" "$LIST"
+
+# Wazuh 4.14 ships no makelists tool -- that binary was removed. analysisd
+# compiles a referenced CDB list into its .cdb form when it starts, so the
+# manager has to be restarted for a rebuilt list to take effect. Agents
+# reconnect on their own afterwards.
+/var/ossec/bin/wazuh-control restart >/dev/null
+
+echo "known-bad hash list rebuilt: $COUNT entries, manager restarted"

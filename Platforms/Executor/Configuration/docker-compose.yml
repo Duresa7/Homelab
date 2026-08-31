@@ -1,0 +1,29 @@
+name: executor
+
+services:
+  executor:
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.7@sha256:c8dd83a5dba8ac992dfe1ded4aa65ae4e7f52ec31fddbe2af5b49ffebe5bbfa7
+    container_name: executor
+    restart: unless-stopped
+    environment:
+      EXECUTOR_WEB_BASE_URL: https://mcp.alphasecunited.com
+      EXECUTOR_ALLOW_LOCAL_NETWORK: "false"
+      EXECUTOR_ALLOW_STDIO_MCP: "false"
+      EXECUTOR_DISABLE_ANALYTICS: "true"
+    ports:
+      - 192.168.40.39:4788:4788
+    volumes:
+      - ./data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

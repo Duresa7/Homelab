@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-31
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -33,7 +33,8 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Portainer](Portainer.md) | Portainer server 2.39.5 verified 2026-08-04, four Edge Agent 2.39.1 hosts verified 2026-07-28, UniFi ports, & environment registration |
 | [Prometheus](Prometheus.md) | Prometheus 3.13.1, 49 targets across six jobs, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
-| [Wazuh](Wazuh.md) | Wazuh 4.14.6, 14 active remote agents, manager checks, dashboard state, & recovery |
+| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 15 active remote agents, manager checks, dashboard state, & recovery |
+| [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, agent group file monitoring, malware detection built twice, CIM mapping, & the one-page dashboard |
 
 ## Archived & Retired Guides
 

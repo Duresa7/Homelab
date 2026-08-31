@@ -1,0 +1,4 @@
+<nav search_view="search" color="#3987e5">
+  <view name="wazuh_insights" default="true"/>
+  <view name="search"/>
+</nav>

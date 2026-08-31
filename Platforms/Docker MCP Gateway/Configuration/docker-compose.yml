@@ -1,0 +1,41 @@
+name: docker-mcp-gateway
+
+services:
+  gateway:
+    image: docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa
+    container_name: docker-mcp-gateway
+    restart: unless-stopped
+    environment:
+      MCP_GATEWAY_AUTH_TOKEN: ${MCP_GATEWAY_AUTH_TOKEN:?set in .env}
+    command:
+      - --transport=streaming
+      - --port=8811
+      - --cpus=1
+      - --memory=512Mb
+      - --watch=true
+    ports:
+      - 192.168.40.39:8811:8811
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/root/.docker/mcp
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8811/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

@@ -1,9 +1,9 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-30
 
-I track 27 enabled local A records on the UniFi gateway. Twenty-two send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. Five resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
+I track 28 enabled local A records on the UniFi gateway. Twenty-three send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. Five resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
 
 ## Host Records
 
@@ -31,6 +31,7 @@ I track 27 enabled local A records on the UniFi gateway. Twenty-two send NetBird
 | `games.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e27dee8c70a32d41e33` | Pelican Panel on `game-01` through NPM |
 | `wings.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e29dee8c70a32d41e41` | Pelican Wings API on `game-01` through NPM; the browser opens a console websocket straight to this name, so it needs its own HTTPS host rather than a path under `games` |
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
+| `mcp.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a94416df9e5db24858d3005` | Executor on `docker-blue` through NPM |
 | `grey.alphasecunited.com` | A | `192.168.70.10` | Controller default | Yes | `6a7dee01dee8c70a32e6ba96` | Proxmox GUI on `grey-server` |
 | `purple.alphasecunited.com` | A | `192.168.70.11` | Controller default | Yes | `6a7dee43dee8c70a32e6bb43` | Proxmox GUI on `purple-server` |
 | `blue.alphasecunited.com` | A | `192.168.70.12` | Controller default | Yes | `6a7deeabdee8c70a32e6bc70` | Proxmox GUI on `blue-server` |
@@ -57,5 +58,7 @@ I added `aiproxy.alphasecunited.com` on 2026-08-10 for CLI Proxy API, bringing t
 The record stayed unchanged when I moved the backend from `ubuntu-dev` to `docker-main` on 2026-08-19 because NPM remained the DNS target. After the move the HTTPS root and management page returned `200`, an unauthenticated model request returned `401`, and certificate verification returned `0`.
 
 On 2026-08-19 I deleted the Kasm record with the retired platform. The same final controller readback showed that the disabled apex record was no longer present and captured five enabled Proxmox node records, leaving 27 enabled records and none disabled.
+
+I added `mcp.alphasecunited.com` on 2026-08-30 for Executor, bringing the enabled set to 28. `docker-network` resolved it to `192.168.85.2`; HTTP redirected to HTTPS, the HTTPS health endpoint returned `200`, and Cloudflare DNS-over-HTTPS returned NXDOMAIN.
 
 These records exist only on the UniFi resolver. They don't change the public Cloudflare zone.

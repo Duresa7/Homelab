@@ -1,7 +1,7 @@
 # debian-dev Decommission - 2026-08-14
 
 **Created:** 2026-08-14  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-08-31
 
 **Implementation date:** 2026-08-14  
 **Status:** Complete  
@@ -21,7 +21,7 @@
 - **Shut down before destroy, not a forced stop.** Nothing was running that needed a clean database or application shutdown, but an ACPI shutdown costs nothing extra and rules out a dirty filesystem state on a disk about to be deleted anyway.
 - **`--purge` on the destroy.** It removes the guest from any backup job, replication job, or HA resource membership as part of the same command; the pre-checks below confirmed none existed, so this was a no-op safety net rather than a required step.
 - **Archive the four dedicated debian-dev records rather than delete them.** The GNOME installation, the workstation baseline and toolchain build, and two resolved troubleshooting records describe real work with a still-useful narrative (the `nvm`-vs-non-interactive-shell lesson from the toolchain build, in particular, is the same class of problem `ubuntu-dev`'s own Node.js setup now carries). Deleting them would throw away that history for no gain; moving them keeps the active `Documentation/` tree free of dead-host records without losing anything.
-- **Deregister the Wazuh manager-side agent record rather than leave it.** Agent `019` reported `Disconnected`, not merely absent, so its stale record would otherwise sit in the manager's agent list indefinitely. I retrieved the account credential from the `Linux Server Standard` 1Password item and ran `manage_agents` on `security-01` to remove it.
+- **Deregister the Wazuh manager-side agent record rather than leave it.** Agent `019` reported `Disconnected`, not merely absent, so its stale record would otherwise sit in the manager's agent list indefinitely. I retrieved the stored account credential and ran `manage_agents` on `security-01` to remove it.
 - **UniFi is explicitly out of scope for this record.** The controller-side cleanup for `debian-dev` was already completed during the 2026-08-13 migration (client MAC swap, firewall policy repoint, DNS record repoint); this decommission touches Proxmox and this repository only.
 
 ## Actions and Observed Results

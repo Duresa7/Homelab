@@ -48,7 +48,7 @@ Phase 5 is complete. Six containers run from `/home/dkadi/monitoring`. I created
 
 Phase 6 passed. All 15 node exporters and all eight cAdvisor endpoints return HTTP 200 from `monitor-01`; Proxmox answers on 8006; both NUT servers accept TCP 3493 and return live UPS metrics; and both local web interfaces answer. The direct `https://192.168.85.2/` check returns curl code `000` because NPM rejects a TLS handshake without an SNI hostname, not because TCP 443 is blocked. A TCP probe reaches 443, and `https://jellyfin.alphasecunited.com/` returns HTTP 302 through the same address. The exact target assertion reports 46 of 46 up with no stale addresses. All 65 dashboard queries pass, with only the allowed container restart table empty.
 
-The Phase 6 NPM handoff is complete. The operator changed proxy-host ID 18 for Grafana to `192.168.73.2:3000` & ID 19 for Prometheus to `192.168.73.2:9090`. A read-only database query confirmed both saved values. Both HTTPS names return HTTP 302, & both direct replacement endpoints return HTTP 200 from `docker-network`.
+The Phase 6 NPM re-point is complete. I changed proxy-host ID 18 for Grafana to `192.168.73.2:3000` & ID 19 for Prometheus to `192.168.73.2:9090`. A read-only database query confirmed both saved values. Both HTTPS names return HTTP 302, & both direct replacement endpoints return HTTP 200 from `docker-network`.
 
 Phase 7 is complete. I reran the assertion at the commit point and got 46 of 46 targets up, then stopped the old five-container Compose project on `security-01`. cAdvisor remained the only running Docker container there; `node_exporter`, `wazuh-manager`, `wazuh-indexer`, & `wazuh-dashboard` remained active. I enabled only `UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE` for the UniFi MCP, previewed and deleted the six superseded policies one at a time, and narrowed `Allow NPM to security-01 web UIs` to port 443. Each structural diff showed only the intended change. I replaced the four old 192.168.72.2 `cluster.fw` entries with the four 192.168.73.2 entries, compiled the result, and verified the same final SHA256 on all four nodes.
 
@@ -322,7 +322,7 @@ python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards/homelab-over
 
 **Pass, and this is the hard gate:** 46 targets, all `up`, and 65 dashboard queries with at most the container restart table empty. Anything less and you stop here with the old stack still running.
 
-Hand off to the operator for the NPM re-point. They own that step.
+Re-point NPM by hand before Phase 7. That step is not automated.
 
 ## Phase 7. Cutover
 

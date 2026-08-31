@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-30
+
+On 2026-08-30 I added `Allow NPM to docker-blue Executor`. It admits only `192.168.85.2` in AlphaSec-Access to `192.168.40.39:4788` in Internal over TCP, logs matches, and permits the response path. The live controller total increased from 65 to 66 user-defined policies: 59 allows and seven blocks. I used direct selectors because this rule has one source, one destination, and one port; a reusable object would not reduce the edit surface and could make a later object expansion broaden access unintentionally.
 
 On 2026-08-19 I repointed the dedicated CLI Proxy API policy from `ubuntu-dev` to `docker-main` and renamed it `Allow NPM to docker-main CLI Proxy API`. It now admits only `192.168.85.2` in Access-A to `192.168.40.35:8317` in Personal-A over TCP. The source, port, protocol, action, logging, index, and policy ID stayed in place; the before-and-after policy comparison found no other firewall change.
 
@@ -17,7 +19,7 @@ The third change added `192.168.40.135` to the destination list of `Allow Monito
 
 I added three policies for `game-01` on 2026-08-07 and extended one existing monitoring policy to reach it. The remaining narrow Wazuh enrollment paths admit `monitor-01`, `docker-network`, the five Galaxy nodes, the server zone, and `edge-01` to `192.168.72.2` on TCP 1514 and 1515. The Galaxy PXE callback verification also remains current.
 
-The gateway runs UniFi's zone-based V2 firewall. After I deleted the 68 Kasm policies on 2026-08-19, the controller returned 64 user-defined policies: 57 allows and seven blocks. The list below now contains all 64.
+The gateway runs UniFi's zone-based V2 firewall. After I deleted the 68 Kasm policies on 2026-08-19, the controller returned 64 user-defined policies: 57 allows and seven blocks. The list below records that audited baseline and later documented service-specific additions.
 
 `game-01` needed no policy for game traffic. `Allow Internal to AlphaSec-Servers` already permits every Internal network to that zone on every port, so Trusted, Secure, and Secure Client reach TCP 25565 and the Pelican SFTP port 2022 without a new rule. That also admits Management, Server-Provision, and Personal-A, which is wider than the three networks the host was built for.
 
@@ -70,6 +72,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 9443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
+| `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |

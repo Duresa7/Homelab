@@ -1,0 +1,451 @@
+<dashboard version="2" theme="dark">
+  <label>UniFi Threat Center</label>
+  <description>Intrusion detections, firewall blocks and the policies that produced them.</description>
+  <definition><![CDATA[
+{
+  "title": "UniFi Threat Center",
+  "description": "Intrusion detections, firewall blocks and the policies that produced them.",
+  "visualizations": {
+    "viz_1": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#fab219",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_2"
+      },
+      "title": "Threats detected"
+    },
+    "viz_3": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#0ca30c",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_4"
+      },
+      "title": "Threats blocked"
+    },
+    "viz_5": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#d03b3b",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_6"
+      },
+      "title": "Passed through"
+    },
+    "viz_7": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_8"
+      },
+      "title": "Unique signatures"
+    },
+    "viz_9": {
+      "type": "splunk.singlevalue",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_10"
+      },
+      "title": "Firewall blocks"
+    },
+    "viz_11": {
+      "type": "splunk.column",
+      "options": {
+        "seriesColors": [
+          "#d03b3b",
+          "#fab219",
+          "#0ca30c"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "right",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto",
+        "stackMode": "stacked",
+        "legendPlacement": "right"
+      },
+      "dataSources": {
+        "primary": "ds_12"
+      },
+      "title": "Detections over time",
+      "description": "Bands are UniFi's risk rating for the signature."
+    },
+    "viz_13": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## What is being detected",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_14": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 20,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_15"
+      },
+      "title": "Signatures by frequency"
+    },
+    "viz_16": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#d95926"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_17"
+      },
+      "title": "Threat categories"
+    },
+    "viz_18": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "## Where it comes from",
+        "fontColor": "#c3c2b7",
+        "fontSize": 16,
+        "backgroundColor": "transparent"
+      }
+    },
+    "viz_19": {
+      "type": "splunk.map",
+      "options": {
+        "layers": [
+          {
+            "type": "bubble"
+          }
+        ],
+        "backgroundColor": "#1a1a19"
+      },
+      "dataSources": {
+        "primary": "ds_20"
+      },
+      "title": "Where blocked traffic comes from"
+    },
+    "viz_21": {
+      "type": "splunk.bar",
+      "options": {
+        "seriesColors": [
+          "#d03b3b"
+        ],
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "showYMajorGridLines": true,
+        "yAxisAbbreviation": "auto"
+      },
+      "dataSources": {
+        "primary": "ds_22"
+      },
+      "title": "Blocking policies"
+    },
+    "viz_23": {
+      "type": "splunk.table",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 50,
+        "dataOverlayMode": "none",
+        "headerVisibility": "fixed",
+        "rowNumbers": false,
+        "wrap": false
+      },
+      "dataSources": {
+        "primary": "ds_24"
+      },
+      "title": "Recent detections"
+    }
+  },
+  "dataSources": {
+    "ds_2": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` | stats count"
+      },
+      "name": "ds_2"
+    },
+    "ds_4": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` action=blocked | stats count"
+      },
+      "name": "ds_4"
+    },
+    "ds_6": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` action=allowed | stats count"
+      },
+      "name": "ds_6"
+    },
+    "ds_8": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` | stats dc(signature)"
+      },
+      "name": "ds_8"
+    },
+    "ds_10": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_events` sc4s_class=203 | stats count"
+      },
+      "name": "ds_10"
+    },
+    "ds_12": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` | eval h=if(severity=\"high\",1,0), m=if(severity=\"medium\",1,0), l=if(severity=\"low\",1,0) | timechart minspan=30m sum(h) as High, sum(m) as Medium, sum(l) as Low"
+      },
+      "name": "ds_12"
+    },
+    "ds_15": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` signature=* | stats count, values(severity) as risk, dc(src) as sources, latest(_time) as last by signature | eval last=strftime(last, \"%m-%d %H:%M\") | sort -count | head 20"
+      },
+      "name": "ds_15"
+    },
+    "ds_17": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` rule=* | stats count by rule | sort -count | head 10 | sort count"
+      },
+      "name": "ds_17"
+    },
+    "ds_20": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` action=blocked direction=incoming | iplocation src_ip | search Country=* | geostats latfield=lat longfield=lon maxzoomlevel=18 count"
+      },
+      "name": "ds_20"
+    },
+    "ds_22": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_flows` action=blocked rule=* | stats count by rule | sort -count | head 10 | sort count"
+      },
+      "name": "ds_22"
+    },
+    "ds_24": {
+      "type": "ds.search",
+      "options": {
+        "query": "`unifi_threats` | eval when=strftime(_time, \"%m-%d %H:%M:%S\") | rename cef_name as event | table when event signature rule severity action src dest dest_port transport src_zone dest_zone | sort - when | head 200"
+      },
+      "name": "ds_24"
+    }
+  },
+  "inputs": {
+    "input_time": {
+      "type": "input.timerange",
+      "options": {
+        "token": "time",
+        "defaultValue": "-24h@h,now"
+      },
+      "title": "Time range"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "earliest": "$time.earliest$",
+            "latest": "$time.latest$"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "width": 1440,
+      "height": 1586,
+      "display": "auto-scale",
+      "backgroundColor": "#0d0d0d"
+    },
+    "structure": [
+      {
+        "item": "viz_1",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_3",
+        "type": "block",
+        "position": {
+          "x": 303,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_5",
+        "type": "block",
+        "position": {
+          "x": 586,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_7",
+        "type": "block",
+        "position": {
+          "x": 869,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_9",
+        "type": "block",
+        "position": {
+          "x": 1152,
+          "y": 16,
+          "w": 267,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_11",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 144,
+          "w": 1400,
+          "h": 250
+        }
+      },
+      {
+        "item": "viz_13",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 410,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_14",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 452,
+          "w": 860,
+          "h": 360
+        }
+      },
+      {
+        "item": "viz_16",
+        "type": "block",
+        "position": {
+          "x": 896,
+          "y": 452,
+          "w": 524,
+          "h": 360
+        }
+      },
+      {
+        "item": "viz_18",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 828,
+          "w": 1400,
+          "h": 34
+        }
+      },
+      {
+        "item": "viz_19",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 870,
+          "w": 692,
+          "h": 360
+        }
+      },
+      {
+        "item": "viz_21",
+        "type": "block",
+        "position": {
+          "x": 728,
+          "y": 870,
+          "w": 692,
+          "h": 360
+        }
+      },
+      {
+        "item": "viz_23",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 1246,
+          "w": 1400,
+          "h": 320
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_time"
+    ]
+  }
+}
+]]></definition>
+  <meta type="hiddenElements"><![CDATA[
+{"hideEdit":false,"hideOpenInSearch":false,"hideExport":false}
+]]></meta>
+</dashboard>

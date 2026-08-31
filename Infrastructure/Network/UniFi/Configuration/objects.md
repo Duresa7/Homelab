@@ -1,13 +1,15 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-27
 
 ## How I Use UniFi Objects
 
 I build UniFi policies from clients, groups, networks, zones, regions, applications, & IP or port groups. The controller turns those object references into the firewall, ACL, routing, QoS, & zone configuration enforced by the gateway, switches, and access points.
 
 An object-based rule follows its membership. If a client changes address or moves between groups, I update the object instead of rewriting every policy that uses it.
+
+Three separate features carry the word "object" in this interface and they are not interchangeable. The Objects entry in the Policy Engine navigation opens the OON policy list, not the address and port groups. The `OBJ-` and `PG-` groups appear as Network Lists, which define IP addresses, subnets, domains, and ports for use in policies, and I reach them from inside the firewall policy editor when a rule selects IP or List rather than from that navigation entry. Client groups are a third feature again, keyed on MAC. The headings below use the API names, because the interface names collide.
 
 On 2026-07-31 I reused `OBJ-Proxmox-Nodes` as the source for `Allow Proxmox Nodes to Galaxy PXE`. Future Galaxy nodes gain the post-cutover TCP 8080 callback path when I add their management address to this object. The VLAN 5 phase remains covered by the separate `Server-Provision` network object.
 
@@ -33,6 +35,8 @@ Traffic routes are separate from the OON policies above. One remains and points 
 I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab Proton Egress` before removing its target network on 2026-08-19. The controller now returns one traffic route and no reference to either retired network.
 
 ## Address and Port Groups
+
+These are the Network Lists in the interface. The API calls them `address-group` and `port-group`, and a policy references one through `ip_group_id` or `port_group_id`.
 
 Fifteen reusable firewall groups exist: six IPv4 address groups and nine port groups.
 

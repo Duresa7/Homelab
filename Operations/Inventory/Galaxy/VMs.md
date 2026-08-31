@@ -17,7 +17,7 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 
 `kasm-01` (VM 122) is gone. On 2026-08-19 I shut it down cleanly and destroyed it with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes. The cluster resource API returns no VMID 122 and `pvesm list ssd-lvm2 --vmid 122` returns no volumes. The [decommission record](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) records the completed monitoring, proxy, automation, security-agent, and UniFi cleanup.
 
-`supabase-01` (VM 117) is also gone. On 2026-08-20 I confirmed the user had already deleted it: the Proxmox configuration and cluster-resource entry are absent, `pvesm list ssd-lvm1 --vmid 117` returns no volume, and the local LVM inventory has no VM 117 logical volume. The [retirement record](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) records the remaining automation, SSH, monitoring, diagram, and documentation cleanup.
+`supabase-01` (VM 117) is also gone. On 2026-08-20 I confirmed I had already deleted it: the Proxmox configuration and cluster-resource entry are absent, `pvesm list ssd-lvm1 --vmid 117` returns no volume, and the local LVM inventory has no VM 117 logical volume. The [retirement record](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) records the remaining automation, SSH, monitoring, diagram, and documentation cleanup.
 
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
