@@ -1,0 +1,54 @@
+version: 2
+name: homelab
+displayName: Homelab MCP Catalog
+registry:
+  unifi-network:
+    title: UniFi Network
+    type: server
+    image: ghcr.io/sirkirby/unifi-network-mcp:0.29.3@sha256:4ebc2582d7c85f08fc52dc8f988abd7cf1c0350837fe84ca35f4c7884eab2f0b
+    description: Manage and query the UniFi Network controller through MCP.
+    readme: https://github.com/sirkirby/unifi-mcp/tree/main/apps/network
+    allowHosts:
+      - 192.168.1.1:443
+    secrets:
+      - name: unifi-network.username
+        env: UNIFI_NETWORK_USERNAME
+        example: local-admin
+      - name: unifi-network.password
+        env: UNIFI_NETWORK_PASSWORD
+        example: local-admin-password
+      - name: unifi-network.api_key
+        env: UNIFI_NETWORK_API_KEY
+        example: integration-api-key
+    env:
+      - name: UNIFI_NETWORK_HOST
+        value: 192.168.1.1
+      - name: UNIFI_NETWORK_PORT
+        value: "443"
+      - name: UNIFI_NETWORK_SITE
+        value: default
+      - name: UNIFI_NETWORK_VERIFY_SSL
+        value: "false"
+      - name: UNIFI_NETWORK_CONTROLLER_TYPE
+        value: proxy
+      - name: UNIFI_TOOL_REGISTRATION_MODE
+        value: lazy
+      - name: UNIFI_NETWORK_MCP_CONTENT_MODE
+        value: adaptive
+      - name: UNIFI_NETWORK_REDACT_SENSITIVE_FIELDS
+        value: "true"
+      - name: UNIFI_NETWORK_TOOL_PERMISSION_MODE
+        value: confirm
+      - name: UNIFI_POLICY_NETWORK_CREATE
+        value: "false"
+      - name: UNIFI_POLICY_NETWORK_UPDATE
+        value: "false"
+      - name: UNIFI_POLICY_NETWORK_DELETE
+        value: "false"
+    metadata:
+      category: network
+      tags:
+        - unifi
+        - network
+      license: MIT
+      owner: sirkirby

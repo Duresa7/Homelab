@@ -10,14 +10,20 @@ services:
     command:
       - --transport=streaming
       - --port=8811
+      - --catalog=unifi-network.yaml
+      - --servers=unifi-network
+      - --secrets=/run/secrets/mcp_secret
       - --cpus=1
       - --memory=512Mb
       - --watch=true
+      - --verbose=false
     ports:
       - 192.168.40.39:8811:8811
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/root/.docker/mcp
+    secrets:
+      - mcp_secret
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8811/health"]
       interval: 10s
@@ -39,3 +45,7 @@ services:
       options:
         max-size: 10m
         max-file: "3"
+
+secrets:
+  mcp_secret:
+    file: ./mcp-secrets.env

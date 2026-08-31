@@ -1,9 +1,9 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
-I run Docker MCP Gateway on `docker-blue` as the container runtime and aggregation point for future MCP servers. The gateway is deployed, authenticated, and healthy, but no MCP server or catalog is configured yet.
+I run Docker MCP Gateway on `docker-blue` as the container runtime and aggregation point for MCP servers. It currently serves the UniFi Network MCP through a dedicated catalog entry.
 
 ## Current State
 
@@ -17,12 +17,17 @@ I run Docker MCP Gateway on `docker-blue` as the container runtime and aggregati
 | Health endpoint | `http://192.168.40.39:8811/health` |
 | Live Compose path | `/opt/docker/mcp-gateway/docker-compose.yml` |
 | Live configuration | `/opt/docker/mcp-gateway/config` |
-| Live secret file | `/opt/docker/mcp-gateway/.env`, root-owned mode `0600` |
+| Gateway secret file | `/opt/docker/mcp-gateway/.env`, root-owned mode `0600` |
+| MCP secret file | `/opt/docker/mcp-gateway/mcp-secrets.env`, root-owned mode `0600` |
+| Managed server | UniFi Network MCP 0.29.3 |
+| Managed image digest | `sha256:4ebc2582d7c85f08fc52dc8f988abd7cf1c0350837fe84ca35f4c7884eab2f0b` |
+| UniFi controller | `192.168.1.1:443`, site `default` |
+| Catalog | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml` |
 | Restart policy | `unless-stopped` |
 
-The MCP endpoint uses Streamable HTTP and requires a bearer token. The token is held in the approved credential store and the live `.env`; it is not in this repository. No DNS record, TLS proxy, Executor connection, or UniFi policy was added in this deployment.
+The MCP endpoint uses Streamable HTTP and requires a bearer token. The token is held in the approved credential store and the live `.env`; it is not in this repository. No DNS record, TLS proxy, or Executor connection is present.
 
-The gateway has an empty default profile. It exposes its built-in MCP management tools but has not started a managed MCP server container. Its configuration directory is persistent across container recreation.
+The UniFi server runs through the gateway's headless catalog mode and starts as a managed stdio container when a client calls it. Lazy registration exposes the server through the gateway's discovery and execution tools instead of publishing all 187 UniFi tools at once. The local administrator credentials and Integration API key come from the approved credential store and the root-owned MCP secret file. Create, update, and delete policy switches are disabled. The catalog also limits the managed container's network access to `192.168.1.1:443`.
 
 The official container deployment requires the host Docker socket. This gives the gateway control of Docker Engine on `docker-blue`, which is necessary for starting managed MCP server containers and is the deployment's main trust boundary. The gateway container otherwise has a read-only root filesystem, no Linux capabilities, `no-new-privileges`, a 256 MiB memory limit, a half-CPU limit, a 256-process limit, and bounded JSON logs. Future managed MCP server containers default to one CPU and 512 MiB through the gateway arguments.
 
@@ -39,16 +44,20 @@ docker stats docker-mcp-gateway --no-stream
 curl -fsS http://192.168.40.39:8811/health
 ```
 
-Update by changing the tag and digest in the versioned Compose reference, installing the same file on `docker-blue`, and running `docker compose pull && docker compose up -d`. Verify the health endpoint, bearer-token enforcement, and an authenticated MCP initialization after recreation.
+Update the gateway by changing its tag and digest in the versioned Compose reference. Update UniFi MCP by changing its tag and digest in the catalog. Install the matching files on `docker-blue`, run `docker compose pull && docker compose up -d`, and verify health, bearer-token enforcement, an authenticated system-information read, and an Integration API read.
 
 ## Records
 
 - [Compose reference](Configuration/docker-compose.yml)
 - [Environment template](Configuration/.env.example)
+- [MCP secret template](Configuration/mcp-secrets.env.example)
+- [UniFi catalog](Configuration/catalogs/unifi-network.yaml)
 - [Initial deployment](Documentation/Change%20Records/Initial%20Deployment%20-%202026-08-30.md)
+- [UniFi Network MCP integration](Documentation/Change%20Records/UniFi%20Network%20MCP%20Integration%20-%202026-08-31.md)
 
 ## Upstream
 
 - [Docker MCP Gateway documentation](https://docs.docker.com/ai/mcp-catalog-and-toolkit/mcp-gateway/)
 - [Docker MCP Gateway repository](https://github.com/docker/mcp-gateway)
 - [Official container package](https://hub.docker.com/r/docker/mcp-gateway)
+- [UniFi Network MCP repository](https://github.com/sirkirby/unifi-mcp)
