@@ -45,6 +45,8 @@ This is worth stating plainly, because "DMZ is now inspected" invites the wrong 
 
 I left it on Notify on purpose. Switching to Notify and Block turns a false positive into an outage on the one path that serves traffic from outside, and I would rather see what the signatures actually match on this network for a while before I let them drop anything.
 
+I changed that on 2026-08-31, and Detection Mode is now Notify and Block. This section stays as written because it describes the 2026-08-30 capture and the reasoning that held then. [Detection Mode to Notify and Block](Detection%20Mode%20to%20Notify%20and%20Block%20-%202026-08-31.md) records the switch, including the fact that it went ahead without the run of signature matches this section asked for.
+
 ## What is still uninspected
 
 Eight of the fifteen routed LANs remain outside Threat Management:
@@ -69,5 +71,5 @@ Cluster-Net carries Corosync and nothing else, so inspecting it adds latency to 
 
 ## Remaining work
 
-- Decide whether Detection Mode moves to Notify and Block for DMZ once there is a run of signature matches to look at.
+- Detection Mode moved to Notify and Block on 2026-08-31, before any signature match had been recorded. It is one gateway-wide control, so enforcement covers all seven inspected networks and not DMZ alone. [Detection Mode to Notify and Block](Detection%20Mode%20to%20Notify%20and%20Block%20-%202026-08-31.md).
 - Decide whether SERVERS-A, Security-A, MONITOR-A and Access-A are worth the gateway throughput.
