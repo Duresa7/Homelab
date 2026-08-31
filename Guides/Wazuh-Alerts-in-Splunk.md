@@ -97,7 +97,13 @@ I chose 9997 over HEC because 8088 & 1514 were already carrying HEC & SC4S. A fi
 
 ### Step 3: Install the Forwarder on the Manager
 
-Install the package, add `splunkfwd` to the `wazuh` group, & write two files:
+Install the package, then put the forwarder's user in the `wazuh` group so it can read the alert stream without running as root:
+
+```sh
+usermod -aG wazuh splunkfwd
+```
+
+Then write two files:
 
 ```ini
 # /opt/splunkforwarder/etc/system/local/inputs.conf
@@ -133,7 +139,11 @@ ss -tnp | grep 9997
 
 ### Step 4: Look at What Actually Arrives
 
-Search `index=wazuh` & confirm events are landing. Count the distinct agents at the same time, because a forwarder that works for one machine and not the rest looks identical to one that works:
+Count the distinct agents at the same time as the events, because a forwarder that works for one machine and not the rest looks identical to one that works:
+
+```spl
+index=wazuh | stats count as Alerts, dc(agent.name) as Agents, min(_time) as Earliest, max(_time) as Latest
+```
 
 ![914 alerts from 13 agents in the first four hours](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S06-Splunk-First-Wazuh-Alerts-Received-2026-08-29.png)
 
@@ -141,11 +151,15 @@ Search `index=wazuh` & confirm events are landing. Count the distinct agents at 
 
 Then break it down by rule, which is the step people skip:
 
+```spl
+index=wazuh | top limit=10 rule.description
+```
+
 ![Wazuh alerts broken down by rule description](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S07-Splunk-Wazuh-Rule-Breakdown-2026-08-29.png)
 
 `Systemd: Service exited due to a failure` was 575 of 914 events, 62.9 per cent of everything the fleet said in that window. The cause is `nut-driver@ups01.service` on `red-server`, which carries `RestartUSec=15s` & lands at roughly one failure every 25 seconds once startup time is counted. On 2026-08-31 its journal held 3,422 `Failed to start` lines in 24 hours & `systemctl show` reported `NRestarts=8995`. The UPS it's configured for isn't attached to that node, & `openipmi.service` is failed on the same host.
 
-That's the first real finding this pipeline produced, & it had been true for a while. It also means an hour of work on the config that follows, because a feed where one broken unit is a third of the volume isn't a feed you'll read twice.
+That's the first real finding this pipeline produced, & it had been true for a while. It also justifies the hour of work in the next two steps, because a feed where one broken unit is nearly two thirds of the volume isn't a feed you'll read twice.
 
 ### Step 5: Decide What Each Group Watches
 
@@ -161,7 +175,14 @@ Groups are the unit of configuration, & putting a machine in its own group is wh
 
 `workstation` holds one machine, `ubuntu-dev`, agent 020. It's the only machine where a file arrives because a person chose to download it, which makes it both the first place to widen & the only place a VirusTotal lookup has anything to look up. It watches `~/Downloads`, `/tmp`, `/var/tmp`, `/usr/local/bin`, `/opt`, `~/.ssh`, `~/.config/systemd/user` & `/etc/systemd/system`. That last pair is there because a user-level timer survives a reboot exactly like a root one.
 
-Edit the group's `agent.conf` from Endpoint Groups, Edit content:
+Create the group, put the agent in it, & the manager writes the shared configuration to `/var/ossec/etc/shared/<group>/agent.conf`:
+
+```sh
+/var/ossec/bin/agent_groups -a -g workstation -q
+/var/ossec/bin/agent_groups -a -i 020 -g workstation -q
+```
+
+An agent can be in several groups. Everything is in `default`, so `default` is where a fleet-wide setting goes and the specific group carries the rest. Edit the file directly on the manager, or from Endpoint Groups, Edit content:
 
 ![The workstation group agent.conf in the Wazuh editor](../Platforms/Wazuh/Evidence/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29/Screenshots/S14-Wazuh-Workstation-Group-Agent-Config-2026-08-30.png)
 
@@ -251,7 +272,24 @@ One mechanism isn't enough & the reason is the quota. 500 lookups a day & 4 a mi
 
 ![The known-bad hash list with the EICAR hash pinned first](../Platforms/Wazuh/Evidence/Malware%20Detection%20-%202026-08-29/Screenshots/S18-Wazuh-Known-Bad-Hash-List-2026-08-30.png)
 
-The list is populated from abuse.ch MalwareBazaar's recent feed & held 872 entries on 2026-08-31. EICAR's hash is pinned as the first line permanently, so the whole path can be proven on demand without going near real malware. Declare it in `ossec.conf` as `<list>etc/lists/known-bad-hashes</list>`, then add the rule:
+CDB format is `key:value`, one per line, so each hash becomes its own key. The list is built from abuse.ch MalwareBazaar's recent feed, with EICAR's hash pinned as the first line permanently so the whole path can be proven on demand without going near real malware:
+
+```sh
+printf '%s\n' "275a021bbfb6489e54d471899f7db9d1663fc695ec2fe2a2c4538aabf651fd0f:eicar-test-file" > "$TMP"
+
+curl -sfL --max-time 120 "https://bazaar.abuse.ch/export/txt/sha256/recent/" \
+  | tr -d '"\r' \
+  | grep -Eio '^[a-f0-9]{64}$' \
+  | tr 'A-F' 'a-f' \
+  | sort -u \
+  | sed 's/$/:malwarebazaar/' >> "$TMP"
+
+install -o wazuh -g wazuh -m 660 "$TMP" /var/ossec/etc/lists/known-bad-hashes
+```
+
+The feed is the last 48 hours of samples, deliberately. A full MalwareBazaar dump is millions of hashes and costs more memory in analysisd than it's worth; recent samples are the ones a fresh download is plausibly going to match. Mine held 872 entries on 2026-08-31. Refuse to install a list with fewer than 2 entries, so a feed that returns nothing can't quietly empty your detection.
+
+Declare it in `ossec.conf` as `<list>etc/lists/known-bad-hashes</list>`, then add the rule:
 
 ![Rule 100200 in local_rules.xml](../Platforms/Wazuh/Evidence/Malware%20Detection%20-%202026-08-29/Screenshots/S19-Wazuh-Local-Rule-Known-Bad-Hash-2026-08-30.png)
 
