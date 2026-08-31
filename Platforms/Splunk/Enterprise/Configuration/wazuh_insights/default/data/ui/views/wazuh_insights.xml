@@ -1,0 +1,463 @@
+<dashboard version="2" theme="dark">
+  <label>Wazuh Insights</label>
+  <description>What the machines are reporting: malware, logins, file changes, software and agent health.</description>
+  <definition>{
+  "title": "Wazuh Insights",
+  "description": "What the machines are reporting: malware, logins, file changes, software and agent health.",
+  "visualizations": {
+    "viz_agents": {
+      "type": "splunk.singlevalue",
+      "title": "Machines gone quiet",
+      "description": "Agents that reported within the last 7 days but have sent nothing in the last 24 hours.",
+      "options": {
+        "majorColor": "#f8be34",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_agents"
+      }
+    },
+    "viz_malware": {
+      "type": "splunk.singlevalue",
+      "title": "Malware found (24h)",
+      "description": "A known-bad hash matched locally, or VirusTotal returned detections.",
+      "options": {
+        "majorColor": "#d93f3c",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_malware"
+      }
+    },
+    "viz_logins": {
+      "type": "splunk.singlevalue",
+      "title": "Off-network logins (24h)",
+      "description": "Successful logins from an address outside the home network and the VPN mesh.",
+      "options": {
+        "majorColor": "#d93f3c",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_logins"
+      }
+    },
+    "viz_files": {
+      "type": "splunk.singlevalue",
+      "title": "Watched files changed (24h)",
+      "description": "File-integrity events across every monitored directory.",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_files"
+      }
+    },
+    "viz_cron": {
+      "type": "splunk.singlevalue",
+      "title": "Scheduled task changes (7d)",
+      "description": "Changes under cron and systemd: how something arranges to run again after a reboot.",
+      "options": {
+        "majorColor": "#f8be34",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_cron"
+      }
+    },
+    "viz_pkg": {
+      "type": "splunk.singlevalue",
+      "title": "Software added or removed (7d)",
+      "description": "Package manager installs, upgrades and removals.",
+      "options": {
+        "majorColor": "#3987e5",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_pkg"
+      }
+    },
+    "viz_ports": {
+      "type": "splunk.singlevalue",
+      "title": "Listening port changes (7d)",
+      "description": "A machine started or stopped listening on a port, from the agent's netstat check.",
+      "options": {
+        "majorColor": "#f8be34",
+        "majorFontSize": 40,
+        "backgroundColor": "#1a1a19",
+        "sparklineDisplay": "off",
+        "trendDisplay": "off",
+        "shouldUseThousandSeparators": true
+      },
+      "dataSources": {
+        "primary": "ds_viz_ports"
+      }
+    },
+    "viz_timeline": {
+      "type": "splunk.area",
+      "title": "Alerts over time, by machine",
+      "description": "Ten busiest machines. A step change on one machine is usually the thing to look at.",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "stackMode": "stacked",
+        "legendDisplay": "right",
+        "yAxisTitleText": "alerts",
+        "xAxisTitleText": ""
+      },
+      "dataSources": {
+        "primary": "ds_timeline"
+      }
+    },
+    "viz_vt": {
+      "type": "splunk.column",
+      "title": "VirusTotal lookup budget (24h)",
+      "description": "The free tier answers 500 lookups a day and 4 a minute. Past either ceiling it stops answering, and an unanswered lookup looks exactly like a clean verdict, so the ceiling is shown rather than hidden.",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "stackMode": "stacked",
+        "legendDisplay": "bottom",
+        "yAxisTitleText": "lookups",
+        "xAxisTitleText": ""
+      },
+      "dataSources": {
+        "primary": "ds_vt"
+      }
+    },
+    "viz_bymachine": {
+      "type": "splunk.bar",
+      "title": "Alerts by machine",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "legendDisplay": "off",
+        "yAxisTitleText": "",
+        "xAxisTitleText": "alerts"
+      },
+      "dataSources": {
+        "primary": "ds_bymachine"
+      }
+    },
+    "viz_paths": {
+      "type": "splunk.table",
+      "title": "Most-changed watched files",
+      "description": "A path that suddenly climbs this list is the useful signal.",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 20,
+        "dataOverlayMode": "none"
+      },
+      "dataSources": {
+        "primary": "ds_paths"
+      }
+    },
+    "viz_logindetail": {
+      "type": "splunk.table",
+      "title": "Logins",
+      "description": "Who signed in where, from what address, and whether it worked.",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 20,
+        "dataOverlayMode": "none"
+      },
+      "dataSources": {
+        "primary": "ds_logindetail"
+      }
+    },
+    "viz_all": {
+      "type": "splunk.table",
+      "title": "Every alert, newest first",
+      "description": "The whole stream for the selected time range. Sort any column, or open an alert to see its raw fields.",
+      "options": {
+        "backgroundColor": "#1a1a19",
+        "count": 50,
+        "dataOverlayMode": "none"
+      },
+      "dataSources": {
+        "primary": "ds_all"
+      }
+    }
+  },
+  "dataSources": {
+    "ds_viz_agents": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts earliest=-7d latest=now | stats max(_time) as last by \"agent.name\" | where last &lt; relative_time(now(),\"-24h\") | stats count"
+      },
+      "name": "ds_viz_agents"
+    },
+    "ds_viz_malware": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_malware_found` earliest=-24h latest=now | stats count"
+      },
+      "name": "ds_viz_malware"
+    },
+    "ds_viz_logins": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_logins` earliest=-24h latest=now action=success src=* NOT (src=10.0.0.0/8 OR src=172.16.0.0/12 OR src=192.168.0.0/16) | stats count"
+      },
+      "name": "ds_viz_logins"
+    },
+    "ds_viz_files": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_file_changes` earliest=-24h latest=now | stats count"
+      },
+      "name": "ds_viz_files"
+    },
+    "ds_viz_cron": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_file_changes` earliest=-7d latest=now (\"syscheck.path\"=\"/etc/cron*\" OR \"syscheck.path\"=\"*systemd/system*\" OR \"syscheck.path\"=\"*systemd/user*\") | stats count"
+      },
+      "name": "ds_viz_cron"
+    },
+    "ds_viz_pkg": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_package_changes` earliest=-7d latest=now | stats count"
+      },
+      "name": "ds_viz_pkg"
+    },
+    "ds_viz_ports": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts earliest=-7d latest=now \"rule.id\" IN (533,534) | stats count"
+      },
+      "name": "ds_viz_ports"
+    },
+    "ds_timeline": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts | timechart span=30m count by \"agent.name\" limit=10 useother=t"
+      },
+      "name": "ds_timeline"
+    },
+    "ds_vt": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts earliest=-24h latest=now \"rule.groups{}\"=virustotal | eval outcome=case(like('rule.description',\"%rate limit%\"),\"Rate limited\",like('rule.description',\"%No records%\"),\"Unknown to VirusTotal\",like('rule.description',\"%engines detected%\"),\"Detected\",like('rule.description',\"%No positives%\"),\"Clean\",1==1,\"Other\") | timechart span=1h count by outcome"
+      },
+      "name": "ds_vt"
+    },
+    "ds_bymachine": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts | stats count by \"agent.name\" | sort - count | head 15"
+      },
+      "name": "ds_bymachine"
+    },
+    "ds_paths": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_file_changes` | stats count as Changes, values(action) as Change by \"syscheck.path\",\"agent.name\" | rename \"syscheck.path\" as Path, \"agent.name\" as Machine | sort - Changes | head 20"
+      },
+      "name": "ds_paths"
+    },
+    "ds_logindetail": {
+      "type": "ds.search",
+      "options": {
+        "query": "`wazuh_logins` | sort - _time | head 100 | eval Time=strftime(_time,\"%Y-%m-%d %H:%M:%S\"), Result=if(action=\"success\",\"success\",\"FAILED\") | table Time,\"agent.name\",user,src,Result,signature | rename \"agent.name\" as Machine,user as User,src as From,signature as What"
+      },
+      "name": "ds_logindetail"
+    },
+    "ds_all": {
+      "type": "ds.search",
+      "options": {
+        "query": "index=wazuh sourcetype=wazuh:alerts | sort - _time | head 500 | eval Time=strftime(_time,\"%Y-%m-%d %H:%M:%S\") | table Time,\"agent.name\",severity,\"rule.level\",signature,\"rule.id\",user,src,\"syscheck.path\" | rename \"agent.name\" as Machine,severity as Severity,\"rule.level\" as Level,signature as What,\"rule.id\" as Rule,user as User,src as From,\"syscheck.path\" as Path"
+      },
+      "name": "ds_all"
+    }
+  },
+  "inputs": {
+    "input_time": {
+      "type": "input.timerange",
+      "options": {
+        "token": "time",
+        "defaultValue": "-24h@h,now"
+      },
+      "title": "Time range"
+    }
+  },
+  "defaults": {
+    "dataSources": {
+      "ds.search": {
+        "options": {
+          "queryParameters": {
+            "earliest": "$time.earliest$",
+            "latest": "$time.latest$"
+          }
+        }
+      }
+    }
+  },
+  "layout": {
+    "type": "absolute",
+    "options": {
+      "width": 1440,
+      "height": 1240,
+      "display": "auto-scale",
+      "backgroundColor": "#0d0d0d"
+    },
+    "structure": [
+      {
+        "item": "viz_agents",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_malware",
+        "type": "block",
+        "position": {
+          "x": 222,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_logins",
+        "type": "block",
+        "position": {
+          "x": 424,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_files",
+        "type": "block",
+        "position": {
+          "x": 626,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_cron",
+        "type": "block",
+        "position": {
+          "x": 828,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_pkg",
+        "type": "block",
+        "position": {
+          "x": 1030,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_ports",
+        "type": "block",
+        "position": {
+          "x": 1232,
+          "y": 16,
+          "w": 190,
+          "h": 112
+        }
+      },
+      {
+        "item": "viz_timeline",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 144,
+          "w": 920,
+          "h": 300
+        }
+      },
+      {
+        "item": "viz_vt",
+        "type": "block",
+        "position": {
+          "x": 956,
+          "y": 144,
+          "w": 464,
+          "h": 300
+        }
+      },
+      {
+        "item": "viz_bymachine",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 460,
+          "w": 450,
+          "h": 320
+        }
+      },
+      {
+        "item": "viz_paths",
+        "type": "block",
+        "position": {
+          "x": 486,
+          "y": 460,
+          "w": 460,
+          "h": 320
+        }
+      },
+      {
+        "item": "viz_logindetail",
+        "type": "block",
+        "position": {
+          "x": 962,
+          "y": 460,
+          "w": 458,
+          "h": 320
+        }
+      },
+      {
+        "item": "viz_all",
+        "type": "block",
+        "position": {
+          "x": 20,
+          "y": 796,
+          "w": 1400,
+          "h": 420
+        }
+      }
+    ],
+    "globalInputs": [
+      "input_time"
+    ]
+  }
+}</definition>
+</dashboard>

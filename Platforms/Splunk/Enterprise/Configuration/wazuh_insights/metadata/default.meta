@@ -1,0 +1,5 @@
+# The dashboard and knowledge objects are readable by any authenticated user
+# and writable by admins. Nothing here is user-private.
+[]
+access = read : [ * ], write : [ admin, sc_admin, ess_admin ]
+export = system

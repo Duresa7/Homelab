@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-08-30
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -47,14 +47,27 @@ I removed Kasm identity 012 through `manage_agents` on 2026-08-19 after destroyi
 
 ## Shared Agent Groups
 
+All four groups carry a versioned fragment as of 2026-08-30. The two that were empty were given one in [File Integrity Monitoring Widening](../Documentation/Change%20Records/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md), and `default` and `workstation` were both corrected in it.
+
 | Group | Versioned fragment | Membership and purpose |
 |---|---|---|
-| `default` | [default-agent.conf](Agent%20Groups/default-agent.conf) | All agents; real-time `/etc/ssh` and `/etc/cron.d` monitoring |
-| `edge` | [edge-agent.conf](Agent%20Groups/edge-agent.conf) | ID `005` only; adds real-time `/etc/cloudflared` monitoring |
-| `proxmox` | No extra fragment | IDs `013` through `017`: Grey, Purple, Blue, Red, & Green; membership is `default,proxmox` |
-| `workstation` | No extra fragment | ID `020`, `ubuntu-dev`; membership is `default,workstation`. Created 2026-08-08 for `debian-dev` (ID `019`, enrolled as `db-13-dev`) so the one machine I sit at is separable from the servers in a dashboard filter; `ubuntu-dev` took over the role and the group membership on 2026-08-13. `debian-dev` was decommissioned on 2026-08-14, and its agent `019` was removed from the manager the same day via `manage_agents`; `agent_control -l` no longer lists it |
+| `default` | [default-agent.conf](Agent%20Groups/default-agent.conf) | All 16 agents. Real-time `/etc/ssh` and `/etc/cron.d`. Since 2026-08-30 it also turns off rootcheck's trojan check fleet-wide, which produced over 22,000 alerts on `/bin/chfn`, `/bin/chsh` and `/bin/passwd` and no true positives, and ignores `/dev/.lxc` |
+| `edge` | [edge-agent.conf](Agent%20Groups/edge-agent.conf) | ID `005` only. `/etc/cloudflared`, `/etc/caddy`, `/tmp`, `/var/tmp`, `/usr/local/bin`, `/home/dkadi/.ssh` and `/etc/systemd/system` |
+| `proxmox` | [proxmox-agent.conf](Agent%20Groups/proxmox-agent.conf) | IDs `013` through `017`: Grey, Purple, Blue, Red and Green; membership is `default,proxmox`. Added 2026-08-30 and adds no watches, only ignores: `/etc/pve` is pmxcfs, and its status files were reporting 533 changes each. Configuration under `/etc/pve` stays watched |
+| `workstation` | [workstation-agent.conf](Agent%20Groups/workstation-agent.conf) | ID `020`, `ubuntu-dev`; membership is `default,workstation`. Created 2026-08-08 for `debian-dev` (ID `019`, enrolled as `db-13-dev`) so the one machine I sit at is separable from the servers in a dashboard filter; `ubuntu-dev` took over the role and the group membership on 2026-08-13. `debian-dev` was decommissioned on 2026-08-14, and its agent `019` was removed from the manager the same day via `manage_agents`; `agent_control -l` no longer lists it. Given real file-integrity coverage on 2026-08-30: Downloads, `/usr/local/bin`, `/opt`, `~/.ssh` and both systemd unit directories in realtime, with `/tmp` and `/var/tmp` restricted by filename to payload-shaped files |
 
 I removed the former custom `/var/lib/docker/volumes/wordpress_wp_data/_data` entry and its rollback copy on 2026-08-03. The exact path has zero matches under the manager's shared configuration. Wazuh's package-owned generic audit signatures remain unchanged.
+
+## Detection content
+
+| Item | Versioned at | Purpose |
+|---|---|---|
+| Local rules | [Rules/local_rules.xml](Rules/local_rules.xml) | Rule 100200, level 12, matches a file's SHA-256 against the `known-bad-hashes` CDB list on rules 554 and 550 |
+| Hash list refresh | [Scripts](../Scripts/) | A systemd timer at Sunday 04:30 that rebuilds `etc/lists/known-bad-hashes` from MalwareBazaar, re-pins the EICAR hash, refuses a list shorter than 2 entries, and restarts the manager so analysisd recompiles it |
+| Splunk forwarder | [Splunk Forwarder](Splunk%20Forwarder/) | `inputs.conf` and `outputs.conf` shipping `/var/ossec/logs/alerts/alerts.json` to `192.168.72.3:9997` |
+
+The VirusTotal integration lives in the manager's `ossec.conf` and is not versioned here, because the stanza is mostly its API key.
+
 
 ## Administrative Access
 

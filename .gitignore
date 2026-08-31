@@ -334,6 +334,36 @@
 *.tfstate
 *.tfstate.*
 
+# Wazuh dashboard build evidence records, 2026-08-29
+!/Infrastructure/Network/UniFi/Evidence/DMZ-A VLAN 90 Removal - 2026-08-29/
+/Infrastructure/Network/UniFi/Evidence/DMZ-A VLAN 90 Removal - 2026-08-29/*
+!/Infrastructure/Network/UniFi/Evidence/DMZ-A VLAN 90 Removal - 2026-08-29/Evidence-Index.md
+!/Infrastructure/Network/UniFi/Evidence/DMZ-A VLAN 90 Removal - 2026-08-29/Screenshots/
+!/Infrastructure/Network/UniFi/Evidence/DMZ Added to Threat Management - 2026-08-30/
+/Infrastructure/Network/UniFi/Evidence/DMZ Added to Threat Management - 2026-08-30/*
+!/Infrastructure/Network/UniFi/Evidence/DMZ Added to Threat Management - 2026-08-30/Evidence-Index.md
+!/Infrastructure/Network/UniFi/Evidence/DMZ Added to Threat Management - 2026-08-30/Screenshots/
+!/Platforms/Splunk/Enterprise/Evidence/Root Filesystem Expansion - 2026-08-29/
+/Platforms/Splunk/Enterprise/Evidence/Root Filesystem Expansion - 2026-08-29/*
+!/Platforms/Splunk/Enterprise/Evidence/Root Filesystem Expansion - 2026-08-29/Evidence-Index.md
+!/Platforms/Splunk/Enterprise/Evidence/Root Filesystem Expansion - 2026-08-29/Screenshots/
+!/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/
+/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/*
+!/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/Evidence-Index.md
+!/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/Screenshots/
+!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/
+/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/*
+!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/Evidence-Index.md
+!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/Screenshots/
+!/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/
+/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/*
+!/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/Evidence-Index.md
+!/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/Screenshots/
+!/Platforms/Wazuh/Evidence/Malware Detection - 2026-08-29/
+/Platforms/Wazuh/Evidence/Malware Detection - 2026-08-29/*
+!/Platforms/Wazuh/Evidence/Malware Detection - 2026-08-29/Evidence-Index.md
+!/Platforms/Wazuh/Evidence/Malware Detection - 2026-08-29/Screenshots/
+
 # Retained evidence transcripts kept as .log files. These negations must sit
 # after the *.log rule above, because the last matching pattern wins.
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/Logs/*.log

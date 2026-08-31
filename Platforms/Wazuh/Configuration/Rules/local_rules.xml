@@ -1,0 +1,58 @@
+<!-- Local rules -->
+<!-- Copyright (C) 2015, Wazuh Inc. -->
+
+<!--
+  Rule 100001 is the stock example that ships with Wazuh. It matches a hard-coded
+  1.1.1.1 and has never fired; it is left alone rather than deleted so a later
+  reader can tell what was authored here and what came with the product.
+-->
+<group name="local,syslog,sshd,">
+
+  <!--
+  Dec 10 01:02:02 host sshd[1234]: Failed none for root from 1.1.1.1 port 1066 ssh2
+  -->
+  <rule id="100001" level="5">
+    <if_sid>5716</if_sid>
+    <srcip>1.1.1.1</srcip>
+    <description>sshd: authentication failed from IP 1.1.1.1.</description>
+    <group>authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5,</group>
+  </rule>
+
+</group>
+
+<!--
+  Known-bad file hashes, checked locally.
+
+  This is the half of malware detection that keeps working when VirusTotal
+  stops. The free VirusTotal tier answers 500 lookups a day and 4 a minute, and
+  past either ceiling it simply stops answering — a lookup that never
+  completes is indistinguishable from a clean verdict, which is the failure
+  mode worth designing against. A CDB list is a local hash table with no quota
+  and no network call, consulted on every file-integrity event.
+
+  Level 12 puts a match in the high band, so it appears in the dashboard's top
+  strip without any further configuration.
+
+  The list itself is rebuilt weekly by /usr/local/sbin/wazuh-refresh-hash-list
+  from abuse.ch MalwareBazaar, plus a pinned EICAR hash so the path can be
+  proven end to end on demand.
+-->
+<group name="malware,known_bad_hash,">
+
+  <!-- 554 is a new file appearing, 550 is a watched file changing. -->
+  <rule id="100200" level="12">
+    <if_sid>554,550</if_sid>
+    <list field="sha256" lookup="match_key">etc/lists/known-bad-hashes</list>
+    <!--
+      $(file) expands, $(agent.name) does not: a rule description can only
+      interpolate decoded fields, and the agent is alert metadata rather than a
+      decoded field. Leaving it in produced 'found on : /path'. The agent is
+      carried on the alert itself and shown as its own column in the dashboard.
+    -->
+    <description>Known-bad file hash found: $(file)</description>
+    <mitre>
+      <id>T1105</id>
+    </mitre>
+  </rule>
+
+</group>

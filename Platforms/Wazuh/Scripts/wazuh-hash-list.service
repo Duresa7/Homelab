@@ -1,0 +1,8 @@
+[Unit]
+Description=Rebuild the Wazuh known-bad hash list from abuse.ch
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/wazuh-refresh-hash-list

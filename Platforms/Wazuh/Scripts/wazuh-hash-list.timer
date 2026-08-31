@@ -1,0 +1,10 @@
+[Unit]
+Description=Weekly rebuild of the Wazuh known-bad hash list
+
+[Timer]
+OnCalendar=Sun 04:30
+Persistent=true
+RandomizedDelaySec=30m
+
+[Install]
+WantedBy=timers.target

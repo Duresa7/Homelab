@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-08-30
 
 ## Fleet deployment status
 
@@ -12,7 +12,17 @@ I completed the [2026-08-03 fleet deployment](Change%20Records/Wazuh%20Agent%20F
 Both turned up while I turned root SSH off on `security-01` and neither affects Wazuh itself. See [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md).
 
 - [ ] The guest answers to the hostname `wazuh-01`, but it is `security-01` in [VMs.md](../../../Operations/Inventory/Galaxy/VMs.md), in the Ansible inventory, and in the SSH Manager configuration. Every shell prompt and journal line from the host disagrees with the name every record uses. Decide which name is canonical and make `/etc/hostname` match it.
-- [ ] `timedatectl` reports `Time zone: Etc/UTC (UTC, +0000)`. Step 8 of the Linux host baseline requires `America/New_York` so timestamps compare across hosts without conversion.
+- [x] Fixed 2026-08-30: `timedatectl` now reports `Time zone: America/New_York (EDT, -0400)` with the system clock synchronized. This mattered more than a baseline tick once alerts started reaching Splunk, because the manager's timestamps are what the dashboard sorts on.
+
+## Detection and forwarding, 2026-08-30
+
+Four changes on 2026-08-29 into 2026-08-30 took this platform from an agent fleet that reported into its own dashboard to one whose alerts are searchable in Splunk with malware detection on top: [Alert Forwarding to Splunk](Change%20Records/Alert%20Forwarding%20to%20Splunk%20-%202026-08-29.md), [File Integrity Monitoring Widening](Change%20Records/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md), [Malware Detection](Change%20Records/Malware%20Detection%20-%202026-08-29.md) and, on the Splunk side, [Wazuh Insights App](../../Splunk/Enterprise/Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md).
+
+- [ ] Phase two of file-integrity monitoring. Only `workstation` and `edge` have real watches; the other 14 agents still carry `/etc/ssh` and `/etc/cron.d` from the `default` group.
+- [ ] Alerting. Nothing in Wazuh or Splunk notifies me yet. The backlog entry is in the [Enterprise Security TODO](../../Splunk/Enterprise%20Security/Documentation/TODO.md).
+- [ ] No automatic response. Nothing quarantines or deletes a file that matched a known-bad hash.
+- [ ] `nut-driver@ups01.service` on `red-server` fails every 25 seconds, about 3,450 times a day, and was 36 per cent of all fleet alerts on the day the feed opened. `openipmi.service` is failed on the same host. This belongs with [PeaNUT](../../PeaNUT/) rather than here.
+- [ ] Rootcheck still reports "Files hidden inside directory '/tmp'" on `ubuntu-dev`, 36 events. Low volume, left alone.
 
 ## Agent versions are gated on the manager, not on the sources
 

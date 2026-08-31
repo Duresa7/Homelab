@@ -1,13 +1,17 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-29
+**Last updated:** 2026-08-30
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
 
 - [ ] **Move Coolify off root SSH on `app-01`, and clear out its leftover keys.** Coolify 4.3.2 manages the host it runs on by connecting to it over SSH as `root`, which is why `app-01` logged 735 root logins in the 30 days to 2026-08-15 against 70 for `dkadi`. That blocks the rule that a VM carries no root account, so `app-01` stays an exception until this is done. Read Coolify's own guidance on running against a non-root user before changing anything. Two loose ends belong to the same job: `/root/.ssh/authorized_keys` holds `SHA256:rmcpwm…` with no comment, written 2026-03-13 at 16:37 — twenty-six minutes after `/data/coolify` was created, and not one of the four keys Coolify holds today, so it is probably an install-time key that was rotated and never removed. Coolify also stores a private key commented `dkadi@wp-01`, and no host named `wp-01` exists anywhere in the environment.
+
+- [ ] **`nut-driver@ups01.service` has been failing every 25 seconds on `red-server`.** 3,422 `Failed to start` lines in the 24 hours to 2026-08-31 and `NRestarts=8995`, and `openipmi.service` is failed on the same host. `upsd` says `Can't connect to UPS [ups01] (usbhid-ups-ups01): No such file or directory`, so the UPS this node is configured for is not attached to it. Nobody noticed until Wazuh alerts reached Splunk on 2026-08-29, where it was 575 of the first 914 alerts, 62.9 per cent of everything the fleet said. Fix or mask it, with [PeaNUT](Platforms/PeaNUT/).
+
+- [ ] **Decide how far Threat Management coverage goes.** DMZ joined the Selected Networks list on 2026-08-30, so `edge-01` is inspected now, but Detection Mode is Notify and nothing is dropped. Eight of the fifteen routed LANs are still outside inspection: Management, Server-Provision, Proton-WiFi, Cluster-Net, Security-A, MONITOR-A, SERVERS-A and Access-A. Both questions are throughput trades rather than switches to flip. [DMZ Added to Threat Management](Infrastructure/Network/UniFi/Documentation/Change%20Records/DMZ%20Added%20to%20Threat%20Management%20-%202026-08-30.md).
 
 ## Active Priorities
 
@@ -55,10 +59,10 @@ None.
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | `purple-server` and `blue-server` run `permitrootlogin yes` where the other three run `without-password`. Keys only on all five either way. `galaxy-pxe-join` now holds root on all five nodes where it used to be scoped to `grey-server`, and the mechanism that scoped it is gone |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
 | [Media Stack](Platforms/Media%20Stack/Documentation/TODO.md) | Anime release selection moved to the TRaSH Guides profile on 2026-08-27. Three open: whether to backfill the 16 cutoff-unmet Mushoku Tensei episodes, whether Radarr gets anime handling, and whether Recyclarr keeps the tier lists current. The backup-test, capacity-alert, & update-cadence items stay dropped from 2026-07-25 |
-| [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, & an `ips_category` breakdown; UniFi flow collection, dashboards, and CIM normalization completed 2026-08-28, and the UniFi OS and Protect exports restored with CIM coverage extended to all three products 2026-08-29 |
-| [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | Risk-based alerting, asset and identity framework, & ES role review; CIM mapping and eight correlation searches completed 2026-08-28 |
+| [Splunk Enterprise](Platforms/Splunk/Enterprise/Documentation/TODO.md) | Rocky host OS logs, Proxmox host logs, an `ips_category` breakdown, a machine and severity filter on the Wazuh dashboard, and a verification script for `wazuh_insights`; UniFi flow collection, dashboards, and CIM normalization completed 2026-08-28, the UniFi OS and Protect exports restored with CIM coverage extended to all three products 2026-08-29, and Wazuh added as a data source with its own app and dashboard 2026-08-30 |
+| [Splunk Enterprise Security](Platforms/Splunk/Enterprise%20Security/Documentation/TODO.md) | **Alerting on the Wazuh feed**, risk-based alerting, asset and identity framework, & ES role review; CIM mapping and eight correlation searches completed 2026-08-28, Wazuh CIM coverage 2026-08-30 |
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items after the final retired proxy host was removed on 2026-08-19 |
 | [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | No open items; provider state and the authenticated model list are verified, and the deployment moved to `docker-main` on 2026-08-19 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | The repository no longer carries the inert Grafana WAL setting; the running container keeps it until the next recreate I initiate. Alert routing then rules; UniFi gateway metrics. Prometheus now uses `restart: always` after Docker's manual-stop flag caused `unless-stopped` to skip the 2026-08-10 boot |
-| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Central stack upgraded to 4.14.7 on 2026-08-04. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5 and `docker-main` off 4.14.0. Two host deviations found 2026-08-15: the guest answers to `wazuh-01` where every record calls it `security-01`, and its clock is on `Etc/UTC` |
+| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Alerts forwarded to Splunk, file-integrity monitoring widened, and malware detection added 2026-08-30. Phase two of FIM covers the other 14 agents; nothing alerts or responds yet. Central stack upgraded to 4.14.7 on 2026-08-04. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5 and `docker-main` off 4.14.0. The clock deviation is fixed; the guest still answers to `wazuh-01` where every record calls it `security-01` |

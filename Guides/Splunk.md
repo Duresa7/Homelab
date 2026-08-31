@@ -1,7 +1,7 @@
 # Splunk Enterprise Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-31
 
 ## What This Guide Covers
 
@@ -9,7 +9,9 @@ I built a Rocky Linux VM for Splunk Enterprise, connected UniFi CEF events throu
 
 ## Current Status and Verified Versions
 
-VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3`. The current VM has 6 vCPU, 12 GiB memory, & a 150 GiB disk. Splunk Enterprise 10.4.0 receives SC4S events through HEC on 8088; SC4S 3.45.0 listens for CEF on TCP and UDP 1514.
+VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3`. The current VM has 6 vCPU, 12 GiB memory, & a 150 GiB disk. Splunk Enterprise 10.4.0 build `f798d4d49089` receives SC4S events through HEC on 8088; SC4S 3.45.0 listens for CEF on TCP and UDP 1514. Since 2026-08-29 it also listens on 9997 for the Wazuh Universal Forwarder, & `/` is 142 GB after the expansion recorded in [Root Filesystem Expansion](../Platforms/Splunk/Enterprise/Documentation/Change%20Records/Root%20Filesystem%20Expansion%20-%202026-08-29.md).
+
+The endpoint side of the SIEM is a separate walkthrough: [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) covers the forwarder, the CIM mapping & the dashboard.
 
 ## What You Need
 
