@@ -64,9 +64,15 @@ That capture also shows something I didn't expect. `_internal`, `_audit` & `_int
 
 ### Step 2: Open the Receiver on 9997
 
-On the indexer, Settings, Forwarding and receiving, Configure receiving, New Receiving Port, 9997.
+On the indexer, Settings, Forwarding and receiving, Configure receiving, New Receiving Port, 9997. Then check the listener rather than the form you just submitted:
 
-![Splunk forwarding and receiving settings with port 9997 configured](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S08-Splunk-Receiving-Port-9997-Enabled-2026-08-29.png)
+```spl
+| rest /services/data/inputs/tcp/cooked | table title index disabled connection_host
+```
+
+![The cooked TCP inputs: 9997 enabled, the older 1514 disabled](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S08-Splunk-Receiving-Port-9997-Enabled-2026-08-29.png)
+
+Both inputs read `index default`, & that is correct. The forwarder sets `index = wazuh` in its own `inputs.conf`, and the sender's index wins over the listener's.
 
 I put the listener in the app rather than in `etc/system/local`, so the receiving port, the index & its retention travel together as one thing I can uninstall:
 
@@ -127,9 +133,11 @@ ss -tnp | grep 9997
 
 ### Step 4: Look at What Actually Arrives
 
-Search `index=wazuh` & confirm events are landing:
+Search `index=wazuh` & confirm events are landing. Count the distinct agents at the same time, because a forwarder that works for one machine and not the rest looks identical to one that works:
 
-![The first Wazuh alerts arriving in the wazuh index](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S06-Splunk-First-Wazuh-Alerts-Received-2026-08-29.png)
+![914 alerts from 13 agents in the first four hours](../Platforms/Wazuh/Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/Screenshots/S06-Splunk-First-Wazuh-Alerts-Received-2026-08-29.png)
+
+914 alerts from 13 agents in the first four hours. All 16 were represented by the following day.
 
 Then break it down by rule, which is the step people skip:
 

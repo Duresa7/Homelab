@@ -9,6 +9,6 @@ Step numbers run S01 to S21 across six evidence folders. This folder holds S06 t
 
 | Step | Capture | What it shows |
 |---:|---|---|
-| 6 | [First Wazuh alerts received](Screenshots/S06-Splunk-First-Wazuh-Alerts-Received-2026-08-29.png) | `index=wazuh` returning events for the first time, which is the moment the forwarder proved out end to end. |
+| 6 | [First Wazuh alerts received](Screenshots/S06-Splunk-First-Wazuh-Alerts-Received-2026-08-29.png) | `index=wazuh` returning events for the first time: 914 alerts from 13 distinct agents, earliest 2026-08-29 8:00:04 PM and latest 2026-08-30 12:01:45 AM. That first timestamp is the moment the forwarder proved out end to end, and 914 is the denominator behind the 62.9 per cent in S07. |
 | 7 | [Rule breakdown](Screenshots/S07-Splunk-Wazuh-Rule-Breakdown-2026-08-29.png) | What the fleet actually reports, broken down by rule over 2026-08-29 12:02 AM to 2026-08-30 12:02 AM. `Systemd: Service exited due to a failure` is 575 of 914 events, 62.9 per cent, which is how the `red-server` fault surfaced. |
-| 8 | [Receiving port 9997 enabled](Screenshots/S08-Splunk-Receiving-Port-9997-Enabled-2026-08-29.png) | Splunk's forwarding and receiving settings with 9997 configured, the listener the forwarder connects to. |
+| 8 | [Receiving port 9997 enabled](Screenshots/S08-Splunk-Receiving-Port-9997-Enabled-2026-08-29.png) | `| rest /services/data/inputs/tcp/cooked`, which is the listener state rather than the settings page. 9997 is `disabled 0` with `connection_host = ip`; the older 1514 cooked input is `disabled 1`. Both read `index default`, because the forwarder sets `index = wazuh` on its own side and that is what wins. |
