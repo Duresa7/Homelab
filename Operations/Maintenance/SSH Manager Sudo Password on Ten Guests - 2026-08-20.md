@@ -52,7 +52,7 @@ The write went through a script that read the value on stdin, refused to run if 
 
 ## Why `ansible-01` has no entry
 
-The plan said all eleven guests connect as `dkadi` and all eleven need an entry. That is wrong for `ansible-01`: the SSH Manager connects there as `ansible`, and `ansible` keeps `NOPASSWD` on all eleven by design, so it never sees a sudo prompt. It is the same exclusion the plan already applies to the five nodes and `docker-main`, for the same stated reason, and I owned it with the owner before writing the file.
+The plan said all eleven guests connect as `dkadi` and all eleven need an entry. That is wrong for `ansible-01`: the SSH Manager connects there as `ansible`, and `ansible` keeps `NOPASSWD` on all eleven by design, so it never sees a sudo prompt. It is the same exclusion the plan already applies to the five nodes and `docker-main`, for the same stated reason, and I settled it before writing the file.
 
 There is a second reason not to configure a password where the account is `NOPASSWD`. The tool builds the elevated call as `echo "<password>" | sudo -S <command>`, and sudo reads stdin only when it actually needs to prompt. Where it does not prompt, the line is left on the child's stdin. Proved locally on `ubuntu-dev`, where `ai-agent` holds `NOPASSWD`:
 

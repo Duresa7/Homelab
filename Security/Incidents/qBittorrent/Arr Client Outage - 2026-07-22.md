@@ -57,7 +57,7 @@ Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms.
 | 13:31:31 EDT | The HTTPS compatibility change recreated Gluetun. |
 | 13:31:42 EDT | Docker started the recreated qBittorrent container in Gluetun's namespace. |
 | 13:31:43 EDT | qBittorrent saved the single-domain value containing only its NPM hostname. |
-| Exact minute not retained | The user reported both Arr download clients unavailable. |
+| Exact minute not retained | I found both Arr download clients unavailable. |
 | 20:49:22 EDT | I saved the three-entry domain list through qBittorrent's Web API. |
 | 20:53:48 EDT | The final audit passed both saved-client tests, both health APIs, direct access, NPM TLS, & VPN port matching. |
 

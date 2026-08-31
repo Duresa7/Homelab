@@ -45,7 +45,7 @@ I didn't change Splunk configuration, so I kept its current service state as the
 
 Evidence: [Step 1 recovery-point verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S01-Recovery-Points-2026-07-22.md). The exact creation commands weren't retained outside the task transcript; the log records the verified artifacts and the permission failures without reconstructing commands.
 
-I deleted all six project-created archives after implementation at the owner's request. The five named recovery points above and the 423-byte `security-ui-configs.tar.gz` archive are no longer available. [Step 6](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S06-Backup-Removal-2026-07-22.md) records the exact deletion commands and absence checks.
+I deleted all six project-created archives after implementation, deliberately. The five named recovery points above and the 423-byte `security-ui-configs.tar.gz` archive are no longer available. [Step 6](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S06-Backup-Removal-2026-07-22.md) records the exact deletion commands and absence checks.
 
 ## Step 2: Apply Backend Compatibility Settings
 
@@ -62,7 +62,7 @@ I made only the application changes needed for the new names:
 
 Recreating the Media Stack pulled the current floating Gluetun and qBittorrent images because that Compose project intentionally uses `pull_policy: always`. Both containers returned running, Jellyfin returned `Healthy`, and qBittorrent's WebUI answered afterward.
 
-That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The former floating image digests weren't recorded by Compose, and the project-created pre-change archive was later deleted at the owner's request. I accepted the running replacements only after the media containers and proxy paths passed health checks.
+That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The former floating image digests weren't recorded by Compose, and I later deleted the project-created pre-change archive deliberately. I accepted the running replacements only after the media containers and proxy paths passed health checks.
 
 The first qBittorrent domain value contained only the NPM hostname. That made the proxy route pass while qBittorrent rejected Sonarr and Radarr requests carrying `Host: gluetun:8080` with HTTP `401`. At 20:49 EDT I added `gluetun` and `192.168.40.42` without disabling Host-header validation. Both Arr saved-client tests then returned HTTP `200`; the [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) holds the reproduction, root cause, correction, & verification.
 

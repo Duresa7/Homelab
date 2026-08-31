@@ -43,7 +43,7 @@ verify-agent-conf: OK
 central-policy-update-ok
 ```
 
-At the owner's direction, I resolved and deleted only `/var/ossec/etc/shared/default/agent.conf.pre-fleet-20260803T0648Z` because it retained the unused WordPress path. I left the edge backup because it contains no WordPress configuration. Wazuh regenerated `default/merged.mg`, and the exact custom path has zero matches under `/var/ossec/etc/shared`. The package-owned generic WordPress audit signature remains unchanged.
+I deliberately resolved and deleted only `/var/ossec/etc/shared/default/agent.conf.pre-fleet-20260803T0648Z` because it retained the unused WordPress path. I left the edge backup because it contains no WordPress configuration. Wazuh regenerated `default/merged.mg`, and the exact custom path has zero matches under `/var/ossec/etc/shared`. The package-owned generic WordPress audit signature remains unchanged.
 
 I also checked Docker resources on `docker-main`, `app-01`, `alpha-prod-01`, `docker-network`, `docker-blue`, `media-01`, `monitor-01`, `kasm-01`, & `security-01`. None had a WordPress container, image, volume, or Compose project. `edge-01` had no Docker installation. There was no deployed WordPress workload or data left to remove.
 

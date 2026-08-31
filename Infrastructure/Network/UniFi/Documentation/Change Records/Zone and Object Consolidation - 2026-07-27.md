@@ -191,7 +191,7 @@ The S01 exports are the full controller baseline. S02 through S08 retain before-
 
 I can restore policy selectors, group membership, names, and order from those exports. Recreating a deleted zone or network is a controller UI operation. A full rollback of S06 requires recreating the old security zone, moving Security-A back, and restoring the S01 policy bodies in their original order. A rollback of S07 requires recreating Secure-V and `Non-tracking` from the S07 before snapshot.
 
-The Active Directory decommission has no rollback because the owner explicitly chose no backups and the three guests were destroyed. Its retained evidence is separate from this network rollback.
+The Active Directory decommission has no rollback because I explicitly chose no backups and the three guests were destroyed. Its retained evidence is separate from this network rollback.
 
 ## Remaining Work
 

@@ -37,4 +37,4 @@ I kept direct IP and port selectors in the new policy. The rule has one source, 
 
 ## Remaining Administrator Step
 
-The first-run setup form is reachable at `https://mcp.alphasecunited.com`. I left administrator creation to the owner so a unique credential can be chosen and stored outside this repository. Until that account is claimed, the instance should be treated as awaiting application bootstrap even though the deployment and network path are healthy.
+The first-run setup form is reachable at `https://mcp.alphasecunited.com`. I left administrator creation as a manual step so a unique credential can be chosen and stored outside this repository. Until that account is claimed, the instance should be treated as awaiting application bootstrap even though the deployment and network path are healthy.

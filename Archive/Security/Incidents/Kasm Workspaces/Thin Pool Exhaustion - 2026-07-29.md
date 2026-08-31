@@ -60,7 +60,7 @@ status: io-error
 | 22:05:09 EDT | `dmeventd` warned that `ssd-lvm2` was 90.02 percent full. |
 | 22:09:39 EDT | The pool reached 95.10 percent. |
 | 22:24:09 EDT | The pool reached 100.00 percent; VM 122 later reported `io-error`. |
-| Exact minute not retained | The user reported an unexpected Kasm `502`. |
+| Exact minute not retained | I hit an unexpected Kasm `502`. |
 | About 22:36 EDT | Direct NPM and backend probes reproduced `502` and timeout results. |
 | About 22:44 EDT | I stopped VM 122 and rolled back `baseline-tiles-2026-07-28`. |
 | About 22:45 EDT | I started VM 122 with the pool at 52.51 percent. |

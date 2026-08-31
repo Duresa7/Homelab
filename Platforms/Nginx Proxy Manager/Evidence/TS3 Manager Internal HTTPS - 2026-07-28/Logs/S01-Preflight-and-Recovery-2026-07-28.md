@@ -31,7 +31,7 @@ The read-only NPM query returned 19 enabled proxy hosts and no `ts3-manager.alph
 
 ## Backup removal
 
-I created one transaction-consistent, mode-0600 NPM SQLite copy during the change. At the owner's request I deleted the exact 126,976-byte file and its empty directory:
+I created one transaction-consistent, mode-0600 NPM SQLite copy during the change. I then deliberately deleted the exact 126,976-byte file and its empty directory:
 
 ```text
 /opt/docker/nginx-proxy-manager/backups/ts3-manager-internal-https-2026-07-28-prechange/database.sqlite

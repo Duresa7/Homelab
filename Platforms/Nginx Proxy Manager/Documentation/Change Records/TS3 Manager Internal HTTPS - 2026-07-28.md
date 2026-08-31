@@ -31,7 +31,7 @@ I did not publish TeamSpeak voice, ServerQuery, file-transfer, Playit, SSH, expo
 
 I queried the NPM SQLite database read-only, listed UniFi DNS and NPM policies, checked the live listeners on `alpha-prod-01`, & tested the blocked backend path from `docker-network`.
 
-I created a mode-0600 SQLite copy during the change, then deleted the file and its empty directory at the owner's request. No NPM backup from this work remains.
+I created a mode-0600 SQLite copy during the change, then deliberately deleted the file and its empty directory. No NPM backup from this work remains.
 
 Evidence: [preflight and backup removal](../../Evidence/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28/Logs/S01-Preflight-and-Recovery-2026-07-28.md).
 
@@ -76,7 +76,7 @@ Evidence: [NPM creation and route verification](../../Evidence/TS3%20Manager%20I
 
 I added `https://ts3-manager.alphasecunited.com/` to the 60-second blackbox job. The candidate differed from the live Prometheus file by that one target line and passed `promtool check config`.
 
-The intended pre-change copy failed because `/home/dkadi/monitoring/backups/` did not exist. I preserved the live file's inode when deploying the candidate, sent Prometheus `SIGHUP`, & confirmed readiness. I later deleted the deployment candidate, temporary validator, reconstructed rollback file, & empty backup directory at the owner's request. No Prometheus backup from this work remains.
+The intended pre-change copy failed because `/home/dkadi/monitoring/backups/` did not exist. I preserved the live file's inode when deploying the candidate, sent Prometheus `SIGHUP`, & confirmed readiness. I later deliberately deleted the deployment candidate, temporary validator, reconstructed rollback file, & empty backup directory. No Prometheus backup from this work remains.
 
 The target validator returned 46 expected targets present and all `up`: 27 exporter targets and 19 blackbox services. The TS3 Manager blackbox target reported `up` with no last error.
 

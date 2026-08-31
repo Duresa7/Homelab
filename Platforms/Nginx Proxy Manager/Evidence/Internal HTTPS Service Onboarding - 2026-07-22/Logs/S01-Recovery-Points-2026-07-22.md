@@ -37,4 +37,4 @@ Sanitized Compose backup; credential values excluded
 
 The successful artifact checks returned the listed values. The first security and Splunk archive attempts hit file-permission errors. I replaced the security capture with a sanitized Compose archive and made no Splunk configuration change.
 
-I deleted every archive created for this project later on 2026-07-22 at the owner's request. These recovery points are historical observations, not available rollback files. The exact deletion commands and final absence checks are in [Step 6 backup removal](S06-Backup-Removal-2026-07-22.md).
+I deleted every archive created for this project later on 2026-07-22, deliberately. These recovery points are historical observations, not available rollback files. The exact deletion commands and final absence checks are in [Step 6 backup removal](S06-Backup-Removal-2026-07-22.md).

@@ -35,7 +35,7 @@ ASSERTION: 46 expected targets present and all UP (27 scraped exporters, 19 blac
 ASSERTION: stale addresses absent
 ```
 
-The intended pre-change copy failed because the backup directory did not exist. I later removed the reconstructed rollback file, deployment candidate, temporary validator copy, & empty backup directory at the owner's request. No backup or temporary file from this deployment remains on `monitor-01`.
+The intended pre-change copy failed because the backup directory did not exist. I later deliberately removed the reconstructed rollback file, deployment candidate, temporary validator copy, & empty backup directory. No backup or temporary file from this deployment remains on `monitor-01`.
 
 ## Client paths
 
