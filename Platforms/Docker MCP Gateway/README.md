@@ -19,8 +19,8 @@ I run Docker MCP Gateway on `docker-blue` as the container runtime and aggregati
 | Live configuration | `/opt/docker/mcp-gateway/config` |
 | Gateway secret file | `/opt/docker/mcp-gateway/.env`, root-owned mode `0600` |
 | MCP secret file | `/opt/docker/mcp-gateway/mcp-secrets.env`, root-owned mode `0600` |
-| Managed server | UniFi Network MCP 0.29.3 |
-| Managed image digest | `sha256:4ebc2582d7c85f08fc52dc8f988abd7cf1c0350837fe84ca35f4c7884eab2f0b` |
+| Managed server | UniFi Network MCP, tracking `latest` |
+| Managed image | `ghcr.io/sirkirby/unifi-network-mcp:latest` |
 | UniFi controller | `192.168.1.1:443`, site `default` |
 | Catalog | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml` |
 | Restart policy | `unless-stopped` |
@@ -44,7 +44,15 @@ docker stats docker-mcp-gateway --no-stream
 curl -fsS http://192.168.40.39:8811/health
 ```
 
-Update the gateway by changing its tag and digest in the versioned Compose reference. Update UniFi MCP by changing its tag and digest in the catalog. Install the matching files on `docker-blue`, run `docker compose pull && docker compose up -d`, and verify health, bearer-token enforcement, an authenticated system-information read, and an Integration API read.
+Update the gateway by changing its tag and digest in the versioned Compose reference. Update UniFi MCP manually on `docker-blue` with:
+
+```bash
+cd /opt/docker/mcp-gateway
+docker pull ghcr.io/sirkirby/unifi-network-mcp:latest
+docker compose up -d --force-recreate gateway
+```
+
+Verify health, bearer-token enforcement, an authenticated system-information read, and an Integration API read after the recreation.
 
 ## Records
 
@@ -54,6 +62,7 @@ Update the gateway by changing its tag and digest in the versioned Compose refer
 - [UniFi catalog](Configuration/catalogs/unifi-network.yaml)
 - [Initial deployment](Documentation/Change%20Records/Initial%20Deployment%20-%202026-08-30.md)
 - [UniFi Network MCP integration](Documentation/Change%20Records/UniFi%20Network%20MCP%20Integration%20-%202026-08-31.md)
+- [UniFi Network MCP release tracking](Documentation/Change%20Records/UniFi%20Network%20MCP%20Release%20Tracking%20-%202026-08-31.md)
 
 ## Upstream
 
