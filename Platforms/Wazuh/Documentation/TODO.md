@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## Fleet deployment status
 
@@ -21,7 +21,7 @@ Four changes on 2026-08-29 into 2026-08-30 took this platform from an agent flee
 - [ ] Phase two of file-integrity monitoring. Only `workstation` and `edge` have real watches; the other 14 agents still carry `/etc/ssh` and `/etc/cron.d` from the `default` group.
 - [ ] Alerting. Nothing in Wazuh or Splunk notifies me yet. The backlog entry is in the [Enterprise Security TODO](../../Splunk/Enterprise%20Security/Documentation/TODO.md).
 - [ ] No automatic response. Nothing quarantines or deletes a file that matched a known-bad hash.
-- [ ] `nut-driver@ups01.service` on `red-server` fails every 25 seconds, about 3,450 times a day, and was 36 per cent of all fleet alerts on the day the feed opened. `openipmi.service` is failed on the same host. This belongs with [PeaNUT](../../PeaNUT/) rather than here.
+- [ ] `nut-driver@ups01.service` on `red-server` fails every 25 seconds, about 3,450 times a day, and was 575 of 914 fleet alerts, 62.9 per cent, on the day the feed opened. `openipmi.service` is failed on the same host. This belongs with [PeaNUT](../../PeaNUT/) rather than here.
 - [ ] Rootcheck still reports "Files hidden inside directory '/tmp'" on `ubuntu-dev`, 36 events. Low volume, left alone.
 
 ## Agent versions are gated on the manager, not on the sources

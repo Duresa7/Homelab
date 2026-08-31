@@ -1,7 +1,7 @@
 # To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
@@ -33,7 +33,7 @@ I track unfinished Splunk Enterprise Security work here. Completed setup is in [
   - A change under `~/.ssh`, `/usr/local/bin`, `/opt` or a systemd unit directory on a machine where that is not routine.
   - A successful login from outside RFC1918.
 
-  Tune each one against real history before enabling it, the way the eight UniFi rules were. `Systemd: Service exited due to a failure` was 36 per cent of the fleet's alerts on the day the feed opened, from one broken unit on `red-server`, so a naive severity threshold would page on that and nothing else.
+  Tune each one against real history before enabling it, the way the eight UniFi rules were. `Systemd: Service exited due to a failure` was 575 of 914 of the fleet's alerts, 62.9 per cent, on the day the feed opened, from one broken unit on `red-server`, so a naive severity threshold would page on that and nothing else.
 - [ ] Set up Risk-Based Alerting (RBA) so low-fidelity matches accumulate risk instead of firing individual notables. The eight rules above write individual notables today.
 - [ ] Populate the Asset and Identity framework with known home lab devices (so notables resolve to real hosts/owners, not bare IPs)
 
