@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -15,7 +15,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Active Priorities
 
-- [ ] **Fold the credential-file read rule into the `1password-cli` skill's Guardrails.** On 2026-08-29 I printed the Splunk administrator credential by running `awk '{print $1, $2, $3, $4, "password <redacted>"}'` over a staged netrc to check which host it named. A netrc is one key-value pair per line, so `$2` on the `password` line is the secret, and the `"password <redacted>"` literal I appended only made the output read as sanitised. Nothing persisted: the transcript carries the marker, and sweeps of `$HOME` and all 3,371 blobs in this repository's history found zero copies. The rule the skill is missing is the general one, not the `awk` case: answer questions about a credential file from its metadata, never its contents. [Administrator Credential Printed to an Agent Session](Security/Incidents/Splunk/Administrator%20Credential%20Printed%20to%20an%20Agent%20Session%20-%202026-08-29.md).
+- [ ] **Fold the credential-file read rule into the credential-retrieval skill's Guardrails.** On 2026-08-29 I printed the Splunk administrator credential by running `awk '{print $1, $2, $3, $4, "password <redacted>"}'` over a staged netrc to check which host it named. A netrc is one key-value pair per line, so `$2` on the `password` line is the secret, and the `"password <redacted>"` literal I appended only made the output read as sanitised. Nothing persisted: the transcript carries the marker, and sweeps of `$HOME` and all 3,371 blobs in this repository's history found zero copies. The rule the skill is missing is the general one, not the `awk` case: answer questions about a credential file from its metadata, never its contents. [Administrator Credential Printed to an Agent Session](Security/Incidents/Splunk/Administrator%20Credential%20Printed%20to%20an%20Agent%20Session%20-%202026-08-29.md).
 
 - [ ] **Fleet access model. This priority inverted twice and the second inversion is the live one.** On 2026-08-14 I gave up on removing `dkadi`'s passwordless sudo, because a live audit showed my keys reach root on the Proxmox nodes and on `ansible-01` regardless, so the gate bought nothing. On **2026-08-15 I reversed that again and went further**: `dkadi` and `ai-agent` are both password-gated now, and a sudo prompt asks for a password that is not the login password. That last part is not a stock behaviour. It needs `Defaults rootpw`, which makes sudo check **root's** password, so root must carry a known password on every guest first — and a locked root password plus that file locks every account out of sudo, recoverable only from the Proxmox console.
 
