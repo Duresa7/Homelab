@@ -12,7 +12,7 @@ I confirmed Galaxy VM 117 `supabase-01` had already been deleted from `grey-serv
 
 The last living inventory described VM 117 as a Debian 13 guest with four vCPUs, 12.60 GiB memory, OVMF firmware, a 100 GiB `ssd-lvm1` system disk, a 4 MiB EFI disk, and VLAN 80 address `192.168.80.20/24`. I preserved that historical configuration in the dated Galaxy inventory snapshots and this retirement record instead of leaving it in the living VM inventory.
 
-I did not perform the original deletion during this change. The user confirmed it was intentional, and I retained no destruction transcript, so this record does not claim which command removed the guest.
+I did not perform the original deletion during this change. I had already done it, deliberately, and I retained no destruction transcript, so this record does not claim which command removed the guest.
 
 ## Proxmox Verification
 
