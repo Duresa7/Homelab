@@ -7,7 +7,7 @@
 **Owner:** Infrastructure / Compute / Galaxy  
 **Status:** Complete. LXC 123 `game-01` running on `green-server`, baselined, on SERVERS-A VLAN 80.
 
-I built a dedicated guest to host self-managed game servers. This record covers the guest: placement, specification, network and baseline. The platform that runs on it is [Game Servers](../../../../Platforms/Game%20Servers/README.md).
+I built a dedicated guest to host self-managed game servers. This record covers the guest: placement, specification, network and baseline. The platform that runs on it is [Game Servers](../../../../../Platforms/Game%20Servers/README.md).
 
 ## Placement
 
