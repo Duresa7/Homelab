@@ -1,7 +1,7 @@
 # debian-dev Workstation Baseline and Toolchain Build - 2026-08-08
 
 **Created:** 2026-08-08  
-**Last updated:** 2026-08-08
+**Last updated:** 2026-08-31
 
 **Implementation date:** 2026-08-08  
 **Status:** Complete, with two items carried forward  
@@ -117,7 +117,7 @@ The project validator needed two changes to pass again, and one of them was alre
 
 **Check mode does not work on this playbook, and that is not new.** `--check` against the `db-13-dev` inventory alias fails an assert with `reports node_exporter unknown, expected 1.9.0`, because check mode skips the version probe and then asserts on its result. I ran the same check against `docker-main`, a host I never touched, and it fails too, on a different task. The limitation belongs to the playbook and predates this work.
 
-Everything else came back clean: no failed units, no dangling symlinks outside browser lock files and two Debian Maven jars that ship that way, no reference to `/home/dkadi` anywhere in system or user configuration, `dpkg -C` and `apt-get check` both clean, and zero upgradable packages. A real signed commit verified with `Good "git" signature`. `ssh -G` still sends a fleet host to the machine key with no agent and `github.com` to the 1Password agent. `mcp-ssh-manager` 3.7.0 loads under Node 24.19.0, and `docker run hello-world` succeeded.
+Everything else came back clean: no failed units, no dangling symlinks outside browser lock files and two Debian Maven jars that ship that way, no reference to `/home/dkadi` anywhere in system or user configuration, `dpkg -C` and `apt-get check` both clean, and zero upgradable packages. A real signed commit verified with `Good "git" signature`. `ssh -G` still sends a fleet host to the machine key with no agent and `github.com` to the credential manager's SSH agent. `mcp-ssh-manager` 3.7.0 loads under Node 24.19.0, and `docker run hello-world` succeeded.
 
 ## What I did not do
 
