@@ -37,6 +37,8 @@ EXPECTED_OS_HOSTS = {
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {
         "booklore": ("/opt/docker/booklore", ()),
+        "cli-proxy-api": ("/opt/docker/cli-proxy-api", ()),
+        "docusaurus": ("/opt/docker/docusaurus/Configuration", ()),
         "forgejo": ("/opt/docker/forgejo", ()),
         "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
         "immich": ("/opt/docker/immich-app", ()),
@@ -48,6 +50,8 @@ EXPECTED_COMPOSE_PROJECTS = {
         "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
     },
     "docker-blue": {
+        "docker-mcp-gateway": ("/opt/docker/mcp-gateway", ()),
+        "executor": ("/opt/docker/executor", ()),
         "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
         "rustdesk": ("/opt/docker/rustdesk", ()),
     },
@@ -61,7 +65,6 @@ EXPECTED_COMPOSE_PROJECTS = {
             (),
         ),
         "portainer-edge-agent": ("/opt/docker/portainer-edge-agent", ()),
-        "teamspeak": ("/home/dkadi/teamspeak", ()),
         "teamspeak-02": ("/home/dkadi/teamspeak-02", ()),
         "teamspeak-03": ("/home/dkadi/teamspeak-03", ()),
         "teamspeak-monitor": (
@@ -76,6 +79,7 @@ EXPECTED_COMPOSE_PROJECTS = {
     },
 }
 EXPECTED_PULL_OVERRIDES = {
+    ("docker-main", "docusaurus"): "never",
     ("alpha-prod-01", "teamspeak-monitor"): "never",
 }
 
@@ -105,7 +109,7 @@ def main() -> int:
 
     if set(os_hosts) != EXPECTED_OS_HOSTS:
         errors.append(
-            "OS-update host set differs from the approved eleven-host fleet: "
+            "OS-update host set differs from the approved twelve-host fleet: "
             f"{sorted(os_hosts)}"
         )
     if set(compose_hosts) != set(EXPECTED_COMPOSE_PROJECTS):
@@ -205,8 +209,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 21:
-        errors.append(f"expected 21 compose projects, found {project_count}")
+    if project_count != 24:
+        errors.append(f"expected 24 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

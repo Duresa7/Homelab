@@ -2,7 +2,7 @@ name: portainer-edge-agent
 
 services:
   portainer_edge_agent:
-    image: portainer/agent:2.39.1
+    image: portainer/agent:2.45.0
     container_name: portainer_edge_agent
     restart: always
     volumes:

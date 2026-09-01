@@ -1,11 +1,11 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-09-01
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
-I repeated the monitoring check after the 2026-08-19 Kasm retirement. Prometheus reported 50 active targets with all 50 up: 18 node exporters, nine cAdvisor exporters, 19 blackbox probes, two NUT exporters, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
+I repeated the monitoring check on 2026-09-01 after UPS-01 left the target set. Prometheus reported 49 active targets with all 49 up: 18 node exporters, nine cAdvisor exporters, 19 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
 ## Cluster State
 
@@ -26,14 +26,14 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.75.1 / dashboard 2.90.8<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
-| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.77.1 / dashboard 2.91.1<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
+| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
-| alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent<br>Wazuh agent 4.14.6 |
+| alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
-| media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1<br>Wazuh agent 4.14.6 |
+| media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
@@ -75,18 +75,18 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Immich | 3.0.3 photo/video stack: server, Postgres, machine learning, Valkey |
 | Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
-| Portainer CE | Server 2.39.5 from `portainer/portainer-ce:latest`, verified 2026-08-04 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.39.1 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
+| Portainer CE | Server 2.45.0 from `portainer/portainer-ce:latest`, verified 2026-09-01 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.45.0 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
 | CLI Proxy API | Version 7.2.128 from a digest-pinned image; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
 
 ## monitor-01
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.13.1 on TCP 9090; `restart: always`; 15-day retention; 50 of 50 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 19, NUT 2, & self-scrape 1 |
-| Grafana | 13.1.1 on TCP 3000; provisioned Homelab Overview dashboard; administrator credential held outside this repository |
+| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 49 of 49 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 19, NUT 1, & self-scrape 1 |
+| Grafana | 13.2.0 on TCP 3000; 27 provisioned dashboards and 12 provisioned alert rules; no external alert destination configured; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
-| NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; reads `ups01` on red-server and `ups02` on grey-server |
+| NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of nine scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
@@ -97,10 +97,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Docker MCP Gateway | Version 0.43.3 from a digest-pinned official image; Compose under `/opt/docker/mcp-gateway`; authenticated Streamable HTTP on `192.168.40.39:8811`; empty profile with no managed MCP server containers |
-| Executor | Self-hosted 1.6.7 from a digest-pinned image; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; first administrator claim remains |
+| Docker MCP Gateway | Version 0.43.3 from a digest-pinned official image; Compose under `/opt/docker/mcp-gateway`; separate bearer-authenticated Streamable HTTP endpoints at `192.168.40.39:8811` for UniFi Network and `192.168.40.39:8812` for SSH Manager 3.8.5; 5 UniFi gateway tools and 37 SSH tools; all 18 SSH targets verified reachable |
+| Executor | Self-hosted 1.6.7 from a digest-pinned image; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; administrator claimed; separate healthy personal connections for UniFi MCP Gateway with 5 tools and SSH Manager MCP Gateway with 37 tools |
 | RustDesk | `hbbs` and `hbbr` using `rustdesk/rustdesk-server:latest` |
-| Portainer Edge Agent | `portainer/agent:2.39.1`; environment 7; compose under `/opt/docker/portainer-edge-agent`; Portainer listed all 4 host containers on 2026-07-28 |
+| Portainer Edge Agent | `portainer/agent:2.45.0`; environment 7; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-01 |
 | Docker runtime | Docker Engine 29.6.2, containerd 2.2.6, & runc 1.3.6 after the 2026-07-28 repair of a containerd 2.2.4 shim panic |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `007` as `docker-blue` |
 
@@ -109,9 +109,9 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Management server 0.75.1 and dashboard 2.90.8 under `/opt/docker/netbird`; dashboard version verified 2026-08-04 from the OCI version and revision labels; authenticated dashboard live at `https://netbird.alphasecunited.com`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
+| NetBird | Management server 0.77.1 and dashboard 2.91.1 under `/opt/docker/netbird`; versions verified 2026-09-01 from the management startup log and dashboard OCI label; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
-| Portainer Edge Agent | `portainer/agent:2.39.1`; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; Portainer listed all 5 host containers on 2026-07-28 |
+| Portainer Edge Agent | `portainer/agent:2.45.0`; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; endpoint status 1 on 2026-09-01 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
 | Operational status | First peer/VPN path, non-interactive ACME renewal, and bounded logging verified; no further hardening tracked after the 2026-07-12 descope decision |
 
@@ -149,7 +149,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | TeamSpeak | Two `teamspeak` containers |
 | TS3 Manager | `joni1802/ts3-manager` |
 | Playit agent | `ghcr.io/playit-cloud/playit-agent:0.17` |
-| Portainer Edge Agent | `portainer/agent:2.39.1`; one of four remote Edge Agent hosts managed by Portainer server 2.39.5 |
+| Portainer Edge Agent | `portainer/agent:2.45.0`; one of four remote Edge Agent hosts managed by Portainer server 2.45.0; endpoint status 1 on 2026-09-01 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `006` as `alpha-prod-01` |
 
 ## splunk-siem
@@ -169,7 +169,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr has separate television and anime roots, its synced indexer includes anime category 5070, and Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
 | FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |
 | Download path | LinuxServer qBittorrent `latest` shares `qmcgaw/gluetun:latest` network namespace; Proton WireGuard, kill switch, and provider-side port synchronization verified; qBittorrent rejects the documented 100-pattern executable/script payload baseline for new torrents |
-| Portainer Edge Agent | `portainer/agent:2.39.1`; environment 8; compose under `/opt/docker/portainer-edge-agent`; Portainer listed all 10 host containers on 2026-07-28 |
+| Portainer Edge Agent | `portainer/agent:2.45.0`; environment 8; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-01 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `008` as `media-01` |
 | Storage | One 100 GiB local LVM root volume contains configuration, downloads, media, and transcodes |
 | Network | Static `192.168.40.42` on VLAN 40; no gateway inbound port forward |

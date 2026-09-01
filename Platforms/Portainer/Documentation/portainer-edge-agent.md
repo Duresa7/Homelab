@@ -1,7 +1,7 @@
 # Portainer Edge Agent Setup
 
 **Created:** 2026-04-14  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-09-01
 
 **Implementation date:** 2026-04-14; fleet expanded 2026-07-28  
 **Status:** Operational; all four Edge Agent environments are manageable through `docker-main`  
@@ -68,7 +68,7 @@ volumes:
 name: portainer-edge-agent
 services:
   portainer_edge_agent:
-    image: portainer/agent:2.39.1
+    image: portainer/agent:2.45.0
     container_name: portainer_edge_agent
     restart: always
     volumes:
@@ -128,4 +128,4 @@ I store one Edge ID & key per environment outside this repository. Live `.env` f
 | docker-network | 192.168.85.2 | VLAN 85 | 2026-07-28; running & manageable |
 | docker-blue | 192.168.40.39 | VLAN 40 | 2026-07-28; running & manageable |
 
-Portainer environment 7 lists 4 `docker-blue` containers, environment 8 lists 10 `media-01` containers, & environment 9 lists 5 `docker-network` containers. The dated [fleet expansion change record](Change%20Records/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28.md) holds the API registration, deployment checks, firewall policy, `docker-blue` repair, rollback points, & final verification.
+All four remote environments reported endpoint status 1 on 2026-09-01 after the server and agents moved to 2.45.0. The dated [fleet expansion change record](Change%20Records/Portainer%20Edge%20Agent%20Fleet%20Expansion%20-%202026-07-28.md) holds the API registration, deployment checks, firewall policy, `docker-blue` repair, rollback points, & initial verification. The [2.45.0 upgrade record](Change%20Records/Portainer%202.45.0%20Upgrade%20-%202026-08-31.md) holds the current version change and fleet readback.
