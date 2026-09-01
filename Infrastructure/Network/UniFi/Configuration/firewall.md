@@ -1,7 +1,11 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
+
+On 2026-08-31 I added `Allow docker-blue SSH Manager to Proxmox`. It admits only `192.168.40.39` in Internal to `192.168.70.10` through `192.168.70.14` in `AlphaSec-Mgmt` over TCP 22, logs matches, and permits the response path. The live controller total increased from 66 to 67 user-defined policies: 60 allows and seven blocks. The matching Proxmox Datacenter `pve_admins` member was required before the five nodes answered.
+
+During the same readback I found that this living table omitted the existing `Allow Internal to Printer` policy. It permits Internal to reach `192.168.20.212` in Untrusted through `PG-Printing`. I added the missing row without changing the controller.
 
 On 2026-08-30 I added `Allow NPM to docker-blue Executor`. It admits only `192.168.85.2` in AlphaSec-Access to `192.168.40.39:4788` in Internal over TCP, logs matches, and permits the response path. The live controller total increased from 65 to 66 user-defined policies: 59 allows and seven blocks. I used direct selectors because this rule has one source, one destination, and one port; a reusable object would not reduce the edit surface and could make a later object expansion broaden access unintentionally.
 
@@ -53,6 +57,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Docker-main Allowed -> Server` | Yes | ALLOW | 10002 | TCP | Internal / `docker-main` MAC | `AlphaSec-Mgmt` / MGMT-A / 8006 |
 | `Docker -> Jedi PC` | Yes | ALLOW | 10003 | All | Internal / `docker-main` MAC | Internal / Secure |
 | `Allow Internal to AlphaSec-Access` | Yes | ALLOW | 10000 | All | Internal / Any | `AlphaSec-Access` / Any |
+| `Allow Internal to Printer` | Yes | ALLOW | 10000 | All | Internal / Any | Untrusted / 192.168.20.212 / `PG-Printing` |
 | `Allow VPN to AlphaSec-Access` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Access` / Any |
 | `Allow Internal to AlphaSec-Security` | Yes | ALLOW | 10003 | All | Internal / Any | `AlphaSec-Observability` / Any |
 | `Allow VPN to AlphaSec-Security` | Yes | ALLOW | 10001 | All | Vpn / Any | `AlphaSec-Observability` / Any |
@@ -73,6 +78,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 6060, 9443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
+| `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |

@@ -6,13 +6,13 @@ services:
     container_name: docker-mcp-gateway
     restart: unless-stopped
     environment:
-      MCP_GATEWAY_AUTH_TOKEN: ${MCP_GATEWAY_AUTH_TOKEN:?set in .env}
+      MCP_GATEWAY_AUTH_TOKEN: ${UNIFI_MCP_GATEWAY_AUTH_TOKEN:?set in .env}
     command:
       - --transport=streaming
       - --port=8811
       - --catalog=unifi-network.yaml
       - --servers=unifi-network
-      - --secrets=/run/secrets/mcp_secret
+      - --secrets=/run/secrets/unifi_secret
       - --cpus=1
       - --memory=512Mb
       - --watch=true
@@ -23,7 +23,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/root/.docker/mcp
     secrets:
-      - mcp_secret
+      - unifi_secret
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8811/health"]
       interval: 10s
@@ -46,6 +46,53 @@ services:
         max-size: 10m
         max-file: "3"
 
+  ssh-manager-gateway:
+    image: docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa
+    container_name: ssh-manager-mcp-gateway
+    restart: unless-stopped
+    environment:
+      MCP_GATEWAY_AUTH_TOKEN: ${SSH_MANAGER_MCP_GATEWAY_AUTH_TOKEN:?set in .env}
+    command:
+      - --transport=streaming
+      - --port=8812
+      - --catalog=ssh-manager.yaml
+      - --servers=ssh-manager
+      - --secrets=/run/secrets/ssh_manager_secret
+      - --cpus=1
+      - --memory=512Mb
+      - --watch=true
+      - --verbose=false
+    ports:
+      - 192.168.40.39:8812:8812
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/root/.docker/mcp
+    secrets:
+      - ssh_manager_secret
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8812/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 5s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
 secrets:
-  mcp_secret:
-    file: ./mcp-secrets.env
+  unifi_secret:
+    file: ./unifi-secrets.env
+  ssh_manager_secret:
+    file: ./ssh-manager-secrets.env

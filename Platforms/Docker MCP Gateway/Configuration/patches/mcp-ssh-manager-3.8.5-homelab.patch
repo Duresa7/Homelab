@@ -1,0 +1,300 @@
+diff --git a/src/index.js b/src/index.js
+index 8fece61..a7a1dff 100755
+--- a/src/index.js
++++ b/src/index.js
+@@ -799,48 +799,72 @@ registerToolConditional(
+ registerToolConditional(
+   'ssh_upload',
+   {
+-    description: 'Uploads one local file to a remote destination path over SFTP on the named server, overwriting any existing remote file at that path. Mutates remote state and is not idempotent beyond replacing the target. Creates no backup. Requires the local file to exist. Does not use sudo, so the remote path must be writable by the configured SSH user. This tool is blocked entirely on servers set to readonly or restricted security mode. For directory trees use ssh_sync instead.',
++    description: 'Uploads one file to a remote destination path over SFTP on the named server, overwriting any existing remote file at that path. Supply exactly one of localPath or content. content allows remote MCP clients to transfer UTF-8 or base64 data without access to the MCP server container filesystem. Mutates remote state, creates no backup, and does not use sudo, so the remote path must be writable by the configured SSH user. This tool is blocked entirely on servers set to readonly or restricted security mode. For directory trees use ssh_sync instead.',
+     inputSchema: {
+       server: z.string().describe('Server name'),
+-      localPath: z.string().describe('Local file path'),
++      localPath: z.string().optional().describe('Local file path inside the MCP server; mutually exclusive with content'),
++      content: z.string().optional().describe('Inline file content; mutually exclusive with localPath'),
++      encoding: z.enum(['utf8', 'base64']).optional().describe('Encoding of inline content (default: utf8)'),
+       remotePath: z.string().describe('Remote destination path')
+     }
+   },
+-  async ({ server: serverName, localPath, remotePath }) => {
+-    const denied = await applyServerPolicy(serverName, 'ssh_upload', { localPath, remotePath });
++  async ({ server: serverName, localPath, content, encoding = 'utf8', remotePath }) => {
++    const inline = content !== undefined;
++    if ((localPath !== undefined) === inline) {
++      return {
++        content: [{ type: 'text', text: '❌ Upload error: supply exactly one of localPath or content' }],
++        isError: true
++      };
++    }
++
++    const sourceLabel = inline ? '<inline>' : localPath;
++    const denied = await applyServerPolicy(serverName, 'ssh_upload', { localPath: sourceLabel, remotePath });
+     if (denied) return denied;
+ 
++    let tempDir = null;
+     try {
++      let uploadPath = localPath;
++      if (inline) {
++        const maxBytes = Number.parseInt(process.env.MCP_SSH_MAX_INLINE_TRANSFER_BYTES || '1048576', 10);
++        const data = Buffer.from(content, encoding);
++        if (data.length > maxBytes) {
++          throw new Error(`Inline upload is ${data.length} bytes; limit is ${maxBytes} bytes`);
++        }
++        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ssh-manager-upload-'));
++        uploadPath = path.join(tempDir, 'payload');
++        fs.writeFileSync(uploadPath, data, { mode: 0o600 });
++      }
++
+       const ssh = await getConnection(serverName);
+ 
+-      logger.logTransfer('upload', serverName, localPath, remotePath);
++      logger.logTransfer('upload', serverName, sourceLabel, remotePath);
+       const startTime = Date.now();
+ 
+-      await ssh.putFile(localPath, remotePath);
++      await ssh.putFile(uploadPath, remotePath);
+ 
+-      const fileStats = fs.statSync(localPath);
+-      logger.logTransfer('upload', serverName, localPath, remotePath, {
++      const fileStats = fs.statSync(uploadPath);
++      logger.logTransfer('upload', serverName, sourceLabel, remotePath, {
+         success: true,
+         size: fileStats.size,
+         duration: `${Date.now() - startTime}ms`
+       });
+ 
+-      await auditOk(serverName, 'ssh_upload', { localPath, remotePath }, { success: true });
++      await auditOk(serverName, 'ssh_upload', { localPath: sourceLabel, remotePath }, { success: true });
+ 
+       return {
+         content: [
+           {
+             type: 'text',
+-            text: `✅ File uploaded successfully\nServer: ${serverName}\nLocal: ${localPath}\nRemote: ${remotePath}`,
++            text: `✅ File uploaded successfully\nServer: ${serverName}\nLocal: ${sourceLabel}\nRemote: ${remotePath}`,
+           },
+         ],
+       };
+     } catch (error) {
+-      await auditOk(serverName, 'ssh_upload', { localPath, remotePath }, {
++      await auditOk(serverName, 'ssh_upload', { localPath: sourceLabel, remotePath }, {
+         success: false,
+         error: error.message,
+       });
+-      logger.logTransfer('upload', serverName, localPath, remotePath, {
++      logger.logTransfer('upload', serverName, sourceLabel, remotePath, {
+         success: false,
+         error: error.message
+       });
+@@ -852,6 +876,8 @@ registerToolConditional(
+           },
+         ],
+       };
++    } finally {
++      if (tempDir) fs.rmSync(tempDir, { recursive: true, force: true });
+     }
+   }
+ );
+@@ -859,29 +885,67 @@ registerToolConditional(
+ registerToolConditional(
+   'ssh_download',
+   {
+-    description: 'Downloads one remote file from the named server to a local destination path over SFTP, overwriting any existing local file at that path. Affects only the local filesystem and is read-only on the remote side, so it stays allowed even on servers in readonly or restricted security mode. Reads the remote file using the configured SSH user, which must have permission to read it. Handles single files only; use ssh_sync for directories.',
++    description: 'Downloads one remote file from the named server over SFTP. Supply either a localPath inside the MCP server or set returnContent true to return UTF-8 or base64 data directly to a remote MCP client. Affects only the MCP response or local container filesystem and is read-only on the remote side, so it stays allowed even on servers in readonly or restricted security mode. Handles single files only; use ssh_sync for directories.',
+     inputSchema: {
+       server: z.string().describe('Server name'),
+       remotePath: z.string().describe('Remote file path'),
+-      localPath: z.string().describe('Local destination path')
++      localPath: z.string().optional().describe('Local destination inside the MCP server; mutually exclusive with returnContent'),
++      returnContent: z.boolean().optional().describe('Return file data in the tool response instead of writing locally'),
++      encoding: z.enum(['utf8', 'base64']).optional().describe('Encoding for returned content (default: utf8)')
+     }
+   },
+-  async ({ server: serverName, remotePath, localPath }) => {
++  async ({ server: serverName, remotePath, localPath, returnContent = false, encoding = 'utf8' }) => {
++    if ((localPath !== undefined) === returnContent) {
++      return {
++        content: [{ type: 'text', text: '❌ Download error: supply localPath or set returnContent true, but not both' }],
++        isError: true
++      };
++    }
++
++    let tempDir = null;
+     try {
++      let downloadPath = localPath;
++      if (returnContent) {
++        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ssh-manager-download-'));
++        downloadPath = path.join(tempDir, 'payload');
++      }
++
+       const ssh = await getConnection(serverName);
+ 
+-      logger.logTransfer('download', serverName, remotePath, localPath);
++      const destinationLabel = returnContent ? '<inline>' : localPath;
++      logger.logTransfer('download', serverName, remotePath, destinationLabel);
+       const startTime = Date.now();
+ 
+-      await ssh.getFile(localPath, remotePath);
++      if (returnContent) {
++        const maxBytes = Number.parseInt(process.env.MCP_SSH_MAX_INLINE_TRANSFER_BYTES || '1048576', 10);
++        await ssh.getFileBounded(downloadPath, remotePath, maxBytes);
++      } else {
++        await ssh.getFile(downloadPath, remotePath);
++      }
+ 
+-      const fileStats = fs.statSync(localPath);
+-      logger.logTransfer('download', serverName, remotePath, localPath, {
++      const fileStats = fs.statSync(downloadPath);
++      logger.logTransfer('download', serverName, remotePath, destinationLabel, {
+         success: true,
+         size: fileStats.size,
+         duration: `${Date.now() - startTime}ms`
+       });
+ 
++      if (returnContent) {
++        const data = fs.readFileSync(downloadPath);
++        return {
++          content: [{
++            type: 'text',
++            text: formatJSONResponse({
++              server: serverName,
++              remotePath,
++              encoding,
++              size: fileStats.size,
++              content: data.toString(encoding)
++            })
++          }]
++        };
++      }
++
+       return {
+         content: [
+           {
+@@ -903,6 +967,8 @@ registerToolConditional(
+           },
+         ],
+       };
++    } finally {
++      if (tempDir) fs.rmSync(tempDir, { recursive: true, force: true });
+     }
+   }
+ );
+diff --git a/src/ssh-manager.js b/src/ssh-manager.js
+index df471d2..e6fecb2 100644
+--- a/src/ssh-manager.js
++++ b/src/ssh-manager.js
+@@ -1,7 +1,8 @@
+ import { Client } from 'ssh2';
++import crypto from 'crypto';
+ import fs from 'fs';
+ import os from 'os';
+-import { isHostKnown, addHostKey } from './ssh-key-manager.js';
++import { getCurrentHostKey, addHostKey } from './ssh-key-manager.js';
+ import { logger } from './logger.js';
+ 
+ // Validate liveness-probe output across shells (bash, cmd.exe, PowerShell).
+@@ -109,14 +110,26 @@ class SSHManager {
+ 
+       // Add host key verification callback if enabled
+       if (this.hostKeyVerification) {
+-        connConfig.hostVerifier = () => {
++        connConfig.hostVerifier = (key) => {
+           const port = this.config.port || 22;
+           const host = this.config.host;
++          const fingerprint = `SHA256:${crypto.createHash('sha256').update(key).digest('base64')}`;
++          const knownKeys = getCurrentHostKey(host, port);
++
++          // A known hostname is not enough: compare the key SSH2 actually
++          // received with the fingerprints enrolled in known_hosts.
++          if (knownKeys && knownKeys.length > 0) {
++            const matches = knownKeys.some((knownKey) => knownKey.fingerprint === fingerprint);
++            if (!matches) {
++              logger.error('Host key mismatch', {
++                host,
++                port,
++                receivedFingerprint: fingerprint,
++                expectedFingerprints: knownKeys.map((knownKey) => knownKey.fingerprint)
++              });
++              return false;
++            }
+ 
+-          // Check if host is already known
+-          if (isHostKnown(host, port)) {
+-            // For now, accept all known hosts
+-            // TODO: Implement proper fingerprint comparison once we understand SSH2's hash format
+             logger.info('Host key verified', { host, port });
+             return true;
+           }
+@@ -143,10 +156,12 @@ class SSHManager {
+             return true;
+           }
+ 
+-          // For backward compatibility, accept new hosts by default
+-          // In production, you might want to prompt the user or check a whitelist
+-          logger.warn('Auto-accepting new host', { host, port });
+-          return true;
++          logger.error('Unknown host key refused; enroll it with ssh_key_manage first', {
++            host,
++            port,
++            fingerprint
++          });
++          return false;
+         };
+       }
+ 
+@@ -505,6 +520,53 @@ class SSHManager {
+     });
+   }
+ 
++  async getFileBounded(localPath, remotePath, maxBytes) {
++    let resolvedRemotePath = remotePath;
++    if (remotePath.includes('~')) {
++      try {
++        const homeDir = await this.resolveHomePath();
++        if (remotePath === '~') {
++          resolvedRemotePath = homeDir;
++        } else if (remotePath.startsWith('~/')) {
++          resolvedRemotePath = homeDir + remotePath.substring(1);
++        }
++      } catch (err) {
++        throw new Error(`Failed to resolve home directory for path: ${remotePath}. ${err.message}`);
++      }
++    }
++
++    const sftp = await this.getSFTP();
++    return new Promise((resolve, reject) => {
++      const source = sftp.createReadStream(resolvedRemotePath, { start: 0, end: maxBytes });
++      const destination = fs.createWriteStream(localPath, { mode: 0o600 });
++      let bytesRead = 0;
++      let settled = false;
++
++      const fail = (error) => {
++        if (settled) return;
++        settled = true;
++        source.destroy();
++        destination.destroy();
++        reject(error);
++      };
++
++      source.on('data', (chunk) => {
++        bytesRead += chunk.length;
++        if (bytesRead > maxBytes) {
++          fail(new Error(`Inline download exceeds the ${maxBytes}-byte limit`));
++        }
++      });
++      source.on('error', fail);
++      destination.on('error', fail);
++      destination.on('finish', () => {
++        if (settled) return;
++        settled = true;
++        resolve(bytesRead);
++      });
++      source.pipe(destination);
++    });
++  }
++
+   async putFiles(files, options = {}) {
+     await this.getSFTP();
+     const results = [];
+ 

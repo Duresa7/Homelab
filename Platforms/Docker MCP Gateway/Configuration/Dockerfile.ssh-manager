@@ -1,0 +1,98 @@
+# syntax=docker/dockerfile:1
+#
+# SSH Manager MCP server image.
+#
+# Upstream (https://github.com/bvisible/mcp-ssh-manager) publishes to npm only and
+# ships no container image, so the gateway's catalog entry needs one built here.
+#
+# openssh-client and rsync are required because ssh_sync spawns rsync as a local
+# process rather than going through the pure-JS ssh2 path. No fleet entry uses
+# password authentication, so the image does not carry sshpass.
+#
+# The private key arrives as a base64 gateway secret rather than a mounted file:
+# the gateway refuses to bind-mount anything it recognises as a credential file,
+# and routing it through the secret store keeps the key out of the image layers.
+
+FROM node:22-alpine
+
+RUN apk add --no-cache openssh-client patch rsync
+
+COPY patches/mcp-ssh-manager-3.8.5-homelab.patch /tmp/mcp-ssh-manager-homelab.patch
+
+# Tracks latest; rebuild to pick up a new release. Record the resolved version in
+# the change record whenever this is rebuilt.
+RUN npm install -g mcp-ssh-manager@latest \
+ && patch -d "$(npm root -g)/mcp-ssh-manager" -p1 < /tmp/mcp-ssh-manager-homelab.patch \
+ && rm /tmp/mcp-ssh-manager-homelab.patch \
+ && npm cache clean --force
+
+RUN <<'EOS'
+set -e
+mkdir -p /root/.ssh && chmod 700 /root/.ssh
+printf '%s\n' 'Host *' '    StrictHostKeyChecking yes' \
+  '    UserKnownHostsFile /root/.ssh/known_hosts' > /root/.ssh/config
+chmod 600 /root/.ssh/config
+
+cat > /usr/local/bin/entrypoint.sh <<'INNER'
+#!/bin/sh
+set -e
+
+state_dir=/state
+package_dir="$(npm root -g)/mcp-ssh-manager"
+
+mkdir -p "$state_dir/ssh" "$state_dir/ssh-manager" "$state_dir/workspace"
+chmod 700 "$state_dir" "$state_dir/ssh" "$state_dir/ssh-manager"
+
+persist_file() {
+  source_path="$package_dir/$1"
+  state_path="$state_dir/$1"
+  initial_value="$2"
+
+  if [ ! -e "$state_path" ]; then
+    if [ -f "$source_path" ] && [ ! -L "$source_path" ]; then
+      cp "$source_path" "$state_path"
+    else
+      printf '%s' "$initial_value" > "$state_path"
+    fi
+  fi
+
+  rm -f "$source_path"
+  ln -s "$state_path" "$source_path"
+}
+
+touch "$state_dir/ssh/known_hosts" "$state_dir/ssh/known_hosts.mcp-backup"
+chmod 600 "$state_dir/ssh/known_hosts" "$state_dir/ssh/known_hosts.mcp-backup"
+ln -sfn "$state_dir/ssh/known_hosts" /root/.ssh/known_hosts
+ln -sfn "$state_dir/ssh/known_hosts.mcp-backup" /root/.ssh/known_hosts.mcp-backup
+
+persist_file .command-aliases.json '{}'
+persist_file .hooks-config.json '{}'
+persist_file .server-aliases.json '{}'
+persist_file .server-groups.json '{}'
+persist_file .ssh-command-history.json '[]'
+persist_file .ssh-manager-profile 'default'
+
+if [ -e /root/.ssh-manager ] && [ ! -L /root/.ssh-manager ]; then
+  cp -R /root/.ssh-manager/. "$state_dir/ssh-manager/"
+  rm -rf /root/.ssh-manager
+fi
+ln -sfn "$state_dir/ssh-manager" /root/.ssh-manager
+
+if [ -n "${SSH_PRIVATE_KEY_B64:-}" ]; then
+  mkdir -p /keys && chmod 700 /keys
+  printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 -d > /keys/id_ed25519
+  chmod 600 /keys/id_ed25519
+fi
+exec mcp-ssh-manager "$@"
+INNER
+chmod +x /usr/local/bin/entrypoint.sh
+EOS
+
+ENV MCP_SSH_MAX_OUTPUT_LENGTH=10000 \
+    MCP_SSH_DEFAULT_TIMEOUT=120000 \
+    MCP_SSH_MAX_TIMEOUT=300000 \
+    MCP_SSH_MAX_INLINE_TRANSFER_BYTES=1048576 \
+    SSH_LOG_FILE=/state/ssh-manager.log \
+    SSH_MANAGER_HOME=/state/ssh-manager
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

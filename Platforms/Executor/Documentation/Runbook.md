@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-08-31
 
 ## Deployment Layout
 
@@ -12,6 +12,8 @@
 | `Platforms/Executor/Configuration/docker-compose.yml` | Versioned Compose reference |
 
 The live data directory is owned by root with mode `0700`. Generated key files are mode `0600`. I do not put the data directory, keys, administrator credentials, or tokens in Git.
+
+`EXECUTOR_ALLOW_LOCAL_NETWORK` is enabled because the UniFi and SSH Manager gateways are intentional local integrations at `192.168.40.39:8811` and `192.168.40.39:8812`. Local STDIO MCP servers remain disabled.
 
 ## Initial Deployment Process
 
@@ -60,6 +62,20 @@ curl -fsS https://mcp.alphasecunited.com/api/health
 ```
 
 A healthy response is `{"status":"ok"}`. A request to `/mcp` without authentication should return `401`; that is application enforcement, not a proxy failure.
+
+For the Docker MCP Gateway integrations, confirm all of the following in Executor after an upgrade or credential change:
+
+- Integration `unifi-mcp-gateway` points to `http://192.168.40.39:8811/mcp`, and personal connection `unifiMcpGateway` reports healthy.
+- A refresh of `unifiMcpGateway` discovers 5 names under `unifi_`.
+- Executor can execute `unifi-mcp-gateway.user.unifiMcpGateway.unifi_tool_index`.
+- Integration `ssh-manager-mcp-gateway` points to `http://192.168.40.39:8812/mcp`, and personal connection `sshManagerMcpGateway` reports healthy.
+- A refresh of `sshManagerMcpGateway` discovers 37 names under `ssh_` while SSH Manager remains at 3.8.5.
+- Executor can execute `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers`.
+- `ssh_list_servers` returns all 18 catalog entries. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other twelve return UID `0` through `ssh_execute_sudo`.
+- Both integrations have empty static request-header maps. Each bearer token belongs in its connection's encrypted credential.
+- The retired `docker-mcp-gateway` integration and `dockerMcpGateway` connection remain absent.
+
+Tool counts change when either managed server changes its surface. Record each new count rather than treating 5 and 37 as permanent release invariants.
 
 ## Updating
 

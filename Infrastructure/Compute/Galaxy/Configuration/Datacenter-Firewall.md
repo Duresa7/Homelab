@@ -1,11 +1,11 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-08-31
 
-**Last verified:** 2026-08-07 after the SPICE port addition. `pve-firewall compile` exited `0`, the live file held SHA256 `10a2ff822eeb7ba30881362111a56695e1c666bb144474324defa99b88758858` across 45 lines, Grey reported the firewall enabled and running, and Galaxy reported five nodes with quorum.
+**Last verified:** 2026-08-31 after adding Docker Blue's SSH Manager source. All five nodes read the same `192.168.40.39` `pve_admins` member and digest, and `pve-firewall status` returned enabled and running on each node.
 
-`/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all four `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
+`/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all five `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
 ## IPSets
 
@@ -19,7 +19,7 @@
 | 192.168.70.13 | red-server |
 | 192.168.70.14 | green-server |
 
-### `pve_admins`: approved admin devices (GUI + SSH)
+### `pve_admins`: approved admin sources (GUI + SSH)
 
 | Address | Host |
 |---|---|
@@ -27,6 +27,7 @@
 | 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
 | 192.168.40.179 | `ubuntu-dev` |
+| 192.168.40.39 | `docker-blue` SSH Manager |
 
 ### `pve_automation`: automation control node (GUI + SSH)
 
@@ -66,6 +67,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 That generated set holds exactly one member, `192.168.70.0/24`, so its accepts only ever admit a node. Anything a client off MGMT-A needs, `pve_mgmt` has to grant by name. This is not obvious from the rule list, because the generated 3128 and `5900:5999` accepts read as though the ports are open. They are open between nodes and closed to everything else. That is what cost me the SPICE console on 2026-08-07.
 
 ## History
+
+- On 2026-08-31 I added `192.168.40.39` `docker-blue SSH Manager` to `pve_admins`. UniFi policy `Allow docker-blue SSH Manager to Proxmox` limits the source to TCP 22 and the five node addresses, so `docker-blue` does not gain a network path to the 8006 and 3128 ports that the shared `pve_admins` rule also names. All five nodes read the new member with one digest, reported their firewall enabled and running, and answered a root SSH command through Executor. The complete record is [SSH Manager Fleet Reach Completion - 2026-08-31](../../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md).
 
 - On 2026-08-13 I replaced `192.168.40.135` `debian-dev` with `192.168.40.179` `ubuntu-dev` in `pve_admins`, as development moved to the new workstation. The same two-firewall lesson held: adding the address here was necessary but not sufficient, and on the UniFi side a client-MAC entry never produced a working rule for the new guest, so an explicit `Allow ubuntu-dev to Proxmox` policy carries that half. After both changes all five nodes answered TCP 22 from the new address, and I removed the old one.
 
