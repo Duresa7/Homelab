@@ -1,9 +1,9 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-01
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.13.1 scrapes 50 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, both APC UPS units over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 49 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation.
 
@@ -29,7 +29,7 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 | A host's own dashboard | `https://grafana.alphasecunited.com/d/node-<host>`, e.g. `/d/node-grey-server` |
 | Live host configuration | `/home/dkadi/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions | Prometheus 3.13.1, Grafana 13.1.1, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
+| Versions | Prometheus 3.14.0, Grafana 13.2.0, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
@@ -49,13 +49,13 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `cadvisor` | all 9 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01, game-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 19 service names published through NPM |
-| `nut` | both APC Back-UPS Pro BR1500MS2 units, `ups01` on red-server and `ups02` on grey-server |
+| `nut` | APC Back-UPS Pro BR1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
 its administrative API disabled, no historical label from the retired lab
-workload, and all 50 targets up.
+workload, and all 49 targets up.
 
 cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. A 2026-07-28 Prometheus query returned 11 on `docker-main`, 5 on `docker-network`, 4 on `docker-blue`, 10 on `media-01`, 8 on `alpha-prod-01`, 7 on `app-01`, 1 on `security-01`, & 7 on `monitor-01`. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
@@ -63,7 +63,9 @@ cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAd
 
 Until 2026-07-25 the datasource and both imported dashboards existed only inside the `grafana_data` Docker volume. Removing that volume would have destroyed all of it with nothing in git to rebuild from.
 
-`Configuration/grafana/` now holds the datasource definition, the dashboard providers, and all 27 dashboards, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 12 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+
+The 12 rules cover host, exporter, service, and Proxmox availability; filesystem, Proxmox storage, memory, and disk capacity; service latency; UPS state; and hardware temperature. Grafana accepted the provisioned file on 2026-09-01, all 12 PromQL expressions executed against live Prometheus, and no threshold was crossed. I have not configured an external notification destination, so the remaining alerting decision is where Grafana should deliver a firing rule. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md).
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
@@ -83,7 +85,7 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 | Homelab | Services & Uptime | `services-uptime` | The 19 names through NPM: reachability, latency by request phase, TLS expiry |
 | Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
 | Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
-| Homelab | Power & UPS | `power-ups` | Both APC units: battery, runtime, load, mains, status flags |
+| Homelab | Power & UPS | `power-ups` | UPS-02 battery, runtime, load, mains, and status flags; UPS-01 is absent while its data cable remains disconnected |
 | Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 18 node_exporters |
 | Homelab | TeamSpeak | `teamspeak` | ts02 and ts03, with the fault isolated to the server or the path in front of it |
 | Nodes | one per host | `node-<host>` | Status, CPU, memory, filesystems, disk, network, then whatever else that host has |

@@ -457,7 +457,7 @@
         "x": 6,
         "y": 7
       },
-      "description": "Red as soon as either UPS drops off mains.",
+      "description": "Red as soon as the monitored UPS drops off mains.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1867,7 +1867,7 @@
       "transparent": true,
       "options": {
         "mode": "markdown",
-        "content": "\n| | | |\n|---|---|---|\n| **[Overview](/d/homelab-overview)** — is anything wrong | **[Nodes](/dashboards/f/nodes)** — one dashboard per host | **[Proxmox](/d/proxmox-cluster)** — cluster, guests, storage |\n| **[Services](/d/services-uptime)** — reachability and TLS | **[Containers](/d/containers)** — every Docker workload | **[Storage](/d/storage-health)** — capacity and drive health |\n| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — both UPS units | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |\n| **[TeamSpeak](/d/teamspeak)** — voice reachability | | |\n",
+        "content": "\n| | | |\n|---|---|---|\n| **[Overview](/d/homelab-overview)** — is anything wrong | **[Nodes](/dashboards/f/nodes)** — one dashboard per host | **[Proxmox](/d/proxmox-cluster)** — cluster, guests, storage |\n| **[Services](/d/services-uptime)** — reachability and TLS | **[Containers](/d/containers)** — every Docker workload | **[Storage](/d/storage-health)** — capacity and drive health |\n| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — UPS-02 | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |\n| **[TeamSpeak](/d/teamspeak)** — voice reachability | | |\n",
         "code": {
           "language": "plaintext",
           "showLineNumbers": false,

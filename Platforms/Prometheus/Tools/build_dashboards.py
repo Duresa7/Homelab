@@ -106,7 +106,7 @@ NAV = """
 |---|---|---|
 | **[Overview](/d/homelab-overview)** — is anything wrong | **[Nodes](/dashboards/f/nodes)** — one dashboard per host | **[Proxmox](/d/proxmox-cluster)** — cluster, guests, storage |
 | **[Services](/d/services-uptime)** — reachability and TLS | **[Containers](/d/containers)** — every Docker workload | **[Storage](/d/storage-health)** — capacity and drive health |
-| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — both UPS units | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |
+| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — UPS-02 | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |
 | **[TeamSpeak](/d/teamspeak)** — voice reachability | | |
 """
 
@@ -138,7 +138,7 @@ def overview():
         stat("UPS on mains", [q('min(nut_ups_status{status="OL"})', instant=True)], w=6,
              mappings=mapping({0: ("ON BATTERY", "red"), 1: ("ON MAINS", "green")}),
              thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value",
-             desc="Red as soon as either UPS drops off mains."),
+             desc="Red as soon as the monitored UPS drops off mains."),
         stat("Hottest CPU package", [q("max(%s)" % (PKG_TEMP_F % 'role="hypervisor"'), instant=True)],
              w=6, unit="fahrenheit", decimals=0, thr=TEMP_F, graph="area",
              desc="The warmest of the five nodes, at the die rather than a core."),
@@ -939,8 +939,8 @@ def power():
     g = Grid()
     ups = 'ups=~"$ups"'
 
-    g.section("Right now", "Two APC Back-UPS Pro BR1500MS2 units, read over NUT. ups01 carries red-server, "
-                           "ups02 carries grey-server.")
+    g.section("Right now", "APC Back-UPS Pro BR1500MS2 UPS-02, read over NUT from grey-server. "
+                           "UPS-01 is absent while its data cable remains disconnected.")
     g.extend([
         stat("Mains", [q('nut_ups_status{status="OL", %s}' % ups, "{{ups}}", instant=True)], w=4,
              mappings=mapping({0: ("ON BATTERY", "red"), 1: ("ON MAINS", "green")}),
@@ -971,7 +971,7 @@ def power():
         bargauge("Runtime remaining", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}", instant=True)],
                  w=12, h=7, unit="s", maxv=3600, decimals=0,
                  thr=thresholds(("red", None), ("orange", 300), ("yellow", 900), ("green", 1800)),
-                 desc="Scaled to an hour. The low-battery shutdown trigger on both units is 120 seconds."),
+                 desc="Scaled to an hour. The low-battery shutdown trigger is 120 seconds."),
         timeseries("Charge over time", [q("nut_battery_charge{%s} * 100" % ups, "{{ups}}")],
                    w=12, h=9, unit="percent", maxv=100),
         timeseries("Runtime over time", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}")],
@@ -1026,7 +1026,7 @@ def power():
     return dashboard(
         "power-ups", "Power & UPS", g,
         tags=["homelab", "power"],
-        description="Both APC units over the NUT protocol. Load and charge arrive as ratios and are scaled "
+        description="UPS-02 over the NUT protocol. Load and charge arrive as ratios and are scaled "
                     "to percentages here.",
         refresh="1m", time_from="now-24h",
         templating=[var_query("ups", "UPS", "label_values(nut_status, ups)")])

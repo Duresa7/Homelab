@@ -61,7 +61,7 @@ python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards
 python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090
 ```
 
-The first is offline and checks the grid. The second runs all 1,394 queries against Prometheus and fails on
+The first is offline and checks the grid. The second runs all 1,390 queries against Prometheus and fails on
 any that error or return nothing unexpectedly. Run both before deploying.
 
 ## Deploying

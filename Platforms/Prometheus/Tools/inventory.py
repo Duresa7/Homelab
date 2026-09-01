@@ -22,7 +22,7 @@ NODES = [
     dict(host="blue-server",    role="hypervisor", ip="192.168.70.12", kind="metal",
          zfs=False, nvme=True,  smart=True,  temp=True, apt=True,  docker=False),
     dict(host="red-server",     role="hypervisor", ip="192.168.70.13", kind="metal",
-         zfs=False, nvme=True,  smart=True,  temp=True, ups="ups01", apt=True, docker=False),
+         zfs=False, nvme=True,  smart=True,  temp=True, apt=True, docker=False),
     dict(host="green-server",   role="hypervisor", ip="192.168.70.14", kind="metal",
          zfs=False, nvme=True,  smart=True,  temp=True, apt=True,  docker=False),
 

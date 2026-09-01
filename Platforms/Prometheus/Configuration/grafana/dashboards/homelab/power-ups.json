@@ -1,7 +1,7 @@
 {
   "uid": "power-ups",
   "title": "Power & UPS",
-  "description": "Both APC units over the NUT protocol. Load and charge arrive as ratios and are scaled to percentages here.",
+  "description": "UPS-02 over the NUT protocol. Load and charge arrive as ratios and are scaled to percentages here.",
   "tags": [
     "homelab",
     "power"
@@ -105,7 +105,7 @@
       "transparent": true,
       "options": {
         "mode": "markdown",
-        "content": "Two APC Back-UPS Pro BR1500MS2 units, read over NUT. ups01 carries red-server, ups02 carries grey-server.\n\n---",
+        "content": "APC Back-UPS Pro BR1500MS2 UPS-02, read over NUT from grey-server. UPS-01 is absent while its data cable remains disconnected.\n\n---",
         "code": {
           "language": "plaintext",
           "showLineNumbers": false,
@@ -701,7 +701,7 @@
         "x": 12,
         "y": 10
       },
-      "description": "Scaled to an hour. The low-battery shutdown trigger on both units is 120 seconds.",
+      "description": "Scaled to an hour. The low-battery shutdown trigger is 120 seconds.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",

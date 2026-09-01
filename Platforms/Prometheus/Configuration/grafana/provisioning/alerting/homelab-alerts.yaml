@@ -1,0 +1,658 @@
+# Grafana alert rules, deployed at
+# /home/dkadi/monitoring/grafana/provisioning/alerting/ on monitor-01.
+#
+# Created 2026-08-31. Before this file the environment had no alerting of any
+# kind: Prometheus loaded zero rule groups and knew no Alertmanager, and
+# Grafana's provisioner found only a .gitkeep. A scrape target sat down for
+# three and a half days in August and the only thing that caught it was me
+# noticing a red panel. These rules are the answer to that.
+#
+# Grafana-managed rather than Prometheus `rule_files`, because Prometheus can
+# evaluate a rule but cannot deliver it anywhere without an Alertmanager, and
+# that is another container plus another config holding another secret. Grafana
+# is already running with its scheduler active, so this adds no moving parts.
+#
+# Provisioned rules are read-only in the web interface, the same choice the
+# datasource file makes. The file is the source of truth; change the rule here.
+#
+# Threshold philosophy: every threshold below was checked against the live value
+# on 2026-08-31 and sits clear of it, so a fresh deploy fires nothing. An alert
+# that cries wolf on day one gets muted by week two.
+apiVersion: 1
+
+groups:
+  # =====================================================================
+  # Something that should be running is not.
+  # 1m evaluation: these are the ones worth knowing about quickly.
+  # =====================================================================
+  - orgId: 1
+    name: Availability
+    folder: Homelab Alerts
+    interval: 1m
+    rules:
+      # The plain "a machine stopped answering" alert.
+      - uid: homelab-host-down
+        title: Host is down
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: '{{ $labels.host }} has stopped answering Prometheus.'
+          description: >-
+            node_exporter on {{ $labels.host }} ({{ $labels.instance }}) has
+            failed every scrape for 5 minutes. The host is off, has lost its
+            network path, or node_exporter itself has died. Everything running
+            on it should be treated as unavailable until this clears.
+        # NoData here means Prometheus itself is unreachable from Grafana, which
+        # is worth an alert of its own rather than silence.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'up{job="node"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: lt, params: [0.5]}
+
+      # This is the rule that would have caught the ups01 blind spot. It covers
+      # every job except `node`, so a dead exporter is not invisible just
+      # because the machine underneath it is fine.
+      #
+      # The `unless on(host)` clause suppresses this when the host itself is
+      # down, since "Host is down" above already says so and two alerts for one
+      # outage is how people learn to ignore alerts. Targets with no `host`
+      # label (blackbox, proxmox) match nothing on the right-hand side and are
+      # correctly kept.
+      - uid: homelab-exporter-down
+        title: Metrics source stopped reporting
+        condition: B
+        for: 10m
+        labels:
+          severity: warning
+          category: availability
+        annotations:
+          summary: 'Scrape target {{ $labels.instance }} ({{ $labels.job }}) is down.'
+          description: >-
+            This target has failed every scrape for 10 minutes while its host is
+            still up, so the exporter is the problem rather than the machine.
+            Whatever this target measures is now unmonitored and will stay that
+            way silently. In August 2026 that condition lasted three and a half
+            days.
+        # A filtered expression returns nothing when everything is healthy, so
+        # empty must read as OK rather than as missing data.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'up{job!="node"} == 0 unless on(host) (up{job="node"} == 0)'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
+
+      # Lost connectivity, from the direction that matters: the blackbox prober
+      # walks the real user path, so a failure here means local DNS, the proxy,
+      # the certificate, or the backend is broken.
+      - uid: homelab-service-unreachable
+        title: Internal service is unreachable
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: '{{ $labels.instance }} is not responding.'
+          description: >-
+            The blackbox prober has failed to get a 2xx from this address for 5
+            minutes. It walks the same path a browser does, so the fault is in
+            local DNS, Nginx Proxy Manager, the certificate, or the service
+            behind it.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'probe_success'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: lt, params: [0.5]}
+
+      # Cluster nodes and quorum only. Guests are deliberately excluded:
+      # qemu/101, qemu/102 and qemu/9000 are stopped on purpose, so a
+      # guest-level rule would fire three false alarms the moment it loaded.
+      - uid: homelab-proxmox-node-down
+        title: Proxmox node or cluster is down
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: 'Proxmox reports {{ $labels.id }} as down.'
+          description: >-
+            The PVE API reports this node or the Galaxy cluster itself as not
+            running. If it names the cluster, quorum is lost and the remaining
+            nodes will refuse to start guests.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'pve_up{id=~"node/.+|cluster/.+"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: lt, params: [0.5]}
+
+  # =====================================================================
+  # Running out of something. 5m evaluation and long `for` windows, because
+  # none of these need a fast answer and a backup burst should not page.
+  # =====================================================================
+  - orgId: 1
+    name: Capacity
+    folder: Homelab Alerts
+    interval: 5m
+    rules:
+      # ZFS is excluded here on purpose. All three zfs mountpoints belong to the
+      # single hddpool-1 pool, and every dataset in a pool reports the same free
+      # space, so grey-server:/hddpool-1, grey-server:/hddpool-1/subvol-110-disk-0
+      # and docker-main:/data would all cross the threshold in the same minute
+      # for one problem. The Proxmox storage rule below owns pools instead and
+      # reports each one once. Nothing is blinded by this: no host is ZFS-only.
+      # fuse and fuse.lxcfs are excluded because lxcfs mirrors host values into
+      # guests rather than measuring anything of its own.
+      #
+      # 85%: with zfs excluded, the fullest filesystem this rule watches on
+      # 2026-08-31 was media-01:/data at 67.1%. hddpool-1 is the fuller thing at
+      # 81.4%, and the Proxmox storage rule below is what watches that.
+      - uid: homelab-filesystem-filling
+        title: Filesystem is almost full
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.host }} {{ $labels.mountpoint }} is {{ humanize $values.A.Value }}% full.'
+          description: >-
+            This filesystem has been above 85% for 15 minutes. There are no
+            backups here by design, so a full disk is fixed by finding what grew
+            rather than by restoring anything.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: >-
+                100 - 100 * (
+                  node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*"}
+                  /
+                  node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*"}
+                )
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [85]}
+
+      # Owns the ZFS pools and the LVM thin pools. This is not redundant with the
+      # filesystem rule: a thin pool holds VM disks that no guest filesystem can
+      # see, so local-lvm can fill while every guest still reports plenty free.
+      - uid: homelab-pve-storage-filling
+        title: Proxmox storage is almost full
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.id }} is {{ humanize $values.A.Value }}% full.'
+          description: >-
+            A Proxmox storage has been above 85% for 15 minutes. For a thin LVM
+            pool this is the number that matters, because guests cannot see it
+            and will keep writing until it stops them.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'pve_disk_usage_bytes{id=~"storage/.+"} / pve_disk_size_bytes{id=~"storage/.+"} * 100'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [85]}
+
+      # 92% rather than 90%: grey-server sits at 77% with ZFS ARC counted, and
+      # ARC is reclaimable, so a tighter threshold would flap on a healthy host.
+      - uid: homelab-memory-exhausted
+        title: Memory is nearly exhausted
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.host }} is using {{ humanize $values.A.Value }}% of memory.'
+          description: >-
+            Available memory on {{ $labels.host }} has been under 8% for 15
+            minutes. The next allocation that fails gets something killed by the
+            OOM reaper, and it will not be the process you would have chosen.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: '100 - 100 * (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [92]}
+
+      # Storage lag, as opposed to storage capacity: the fraction of wall-clock
+      # time a device spends with I/O in flight. Sustained 95% means requests are
+      # queueing and everything on that disk feels slow.
+      #
+      # Hypervisors only, and aggregated to one value per host. LXC guests see
+      # their host's block devices through /proc, so an unfiltered rule would
+      # report grey-server's disks again as ansible-01 and docker-main. Busiest
+      # node on 2026-08-31 was grey-server at 24%.
+      - uid: homelab-disk-saturated
+        title: Disk is saturated
+        condition: B
+        for: 20m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.host }} has a disk busy {{ humanize $values.A.Value }}% of the time.'
+          description: >-
+            A block device on {{ $labels.host }} has been busy essentially
+            continuously for 20 minutes. Guests on this node will be slow to
+            respond even though nothing is down.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'max by (host) (rate(node_disk_io_time_seconds_total{role="hypervisor",device!~"loop.*|zram.*"}[5m]) * 100)'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [95]}
+
+  # =====================================================================
+  # Slow rather than absent.
+  # =====================================================================
+  - orgId: 1
+    name: Network
+    folder: Homelab Alerts
+    interval: 1m
+    rules:
+      # Network lag on the path people actually use. Every probe on 2026-08-31
+      # answered in 0.12s or less, so 5s is roughly forty times the worst normal
+      # case and will not fire on a slow page load.
+      - uid: homelab-service-slow
+        title: Internal service is responding slowly
+        condition: B
+        for: 10m
+        labels:
+          severity: warning
+          category: network
+        annotations:
+          summary: '{{ $labels.instance }} is taking {{ humanize $values.A.Value }}s to respond.'
+          description: >-
+            This probe normally completes in well under a second. Ten minutes
+            above 5 seconds points at DNS resolution, the proxy, or a backend
+            that is alive but struggling.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'probe_duration_seconds'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [5]}
+
+  # =====================================================================
+  # Power and hardware.
+  # =====================================================================
+  - orgId: 1
+    name: Power and hardware
+    folder: Homelab Alerts
+    interval: 1m
+    rules:
+      # UPS-02 carries every Galaxy node, the gateway, the switch and the ONT.
+      # `for: 1m` because this one is a clock counting down, not a trend.
+      #
+      # UPS-01 cannot trigger this: its data cable is unplugged as of 2026-08-28
+      # and it reports nothing. See the root TODO.
+      - uid: homelab-ups-on-battery
+        title: UPS is running on battery
+        condition: B
+        for: 1m
+        labels:
+          severity: critical
+          category: power
+        annotations:
+          summary: '{{ $labels.ups }} has lost mains power and is on battery.'
+          description: >-
+            {{ $labels.ups }} is discharging. It feeds the Galaxy nodes, the
+            gateway, the switch and the ONT, so this is a countdown to the whole
+            cluster stopping. nut-monitor is disabled by choice, meaning nothing
+            will shut anything down gracefully on your behalf.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'nut_ups_status{status="OB"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
+
+      # Three states in one rule rather than three rules: LB is the battery
+      # running out during an outage, RB is the UPS asking for a new battery,
+      # and FSD means it has begun a forced shutdown. The status label says
+      # which one.
+      - uid: homelab-ups-battery-fault
+        title: UPS battery needs attention
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: power
+        annotations:
+          summary: '{{ $labels.ups }} reports status {{ $labels.status }}.'
+          description: >-
+            LB means the battery is nearly flat during an outage. RB means the
+            UPS wants the battery replaced, which it can report while running
+            normally on mains. FSD means it has started a forced shutdown.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'nut_ups_status{status=~"LB|RB|FSD"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
+
+      # Overheating. Hypervisors only and reduced to one value per host, for the
+      # same reason as the disk rule: an LXC guest reads its host's hwmon
+      # sensors, so green-server's chip would otherwise alert twice, once as
+      # itself and once as game-01.
+      #
+      # 80C for 10 minutes. The hottest node on 2026-08-31 was grey-server at
+      # 52.6C, and a brief spike under load is not interesting.
+      - uid: homelab-temperature-high
+        title: Hardware is running hot
+        condition: B
+        for: 10m
+        labels:
+          severity: warning
+          category: hardware
+        annotations:
+          summary: '{{ $labels.host }} has a sensor at {{ humanize $values.A.Value }}C.'
+          description: >-
+            A sensor on {{ $labels.host }} has been above 80C for 10 minutes.
+            Check the fans and the intake before the CPU starts throttling
+            itself, or the NVMe drive does.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'max by (host) (node_hwmon_temp_celsius{role="hypervisor"})'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [80]}

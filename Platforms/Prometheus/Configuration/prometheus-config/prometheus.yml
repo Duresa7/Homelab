@@ -152,9 +152,9 @@ scrape_configs:
         labels: {host: monitor-01, role: monitoring}
 
   # ------------------------------------------------------------------- nut
-  # Both APC Back-UPS Pro BR1500MS2 units, read over the NUT protocol on 3493.
-  # NUT needs no credential: upsd.users is empty on both hosts and anonymous
-  # reads are permitted.
+  # APC Back-UPS Pro BR1500MS2 UPS-02, read over NUT on TCP 3493.
+  # NUT needs no credential: upsd.users is empty and anonymous reads are
+  # permitted.
   #
   # Reaching this needed rules in two independent firewalls. The UniFi policy
   # "Allow Security to Proxmox NUT" was not sufficient on its own; the Proxmox

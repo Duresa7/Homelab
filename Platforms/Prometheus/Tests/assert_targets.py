@@ -62,9 +62,8 @@ EXPECTED_TARGETS = {
     ),
     # Prometheus self-scrape
     "http://localhost:9090/metrics": ("prometheus", "monitor-01"),
-    # NUT, one target per UPS. Reaching these needed rules in both the UniFi
-    # firewall and the Proxmox cluster firewall.
-    "http://nut-exporter:9995/nut?target=192.168.70.13%3A3493": ("nut", "red-server"),
+    # NUT, UPS-02 on grey-server. UPS-01 left monitoring on 2026-08-31 after
+    # its disconnected data cable made the exporter target permanently down.
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 

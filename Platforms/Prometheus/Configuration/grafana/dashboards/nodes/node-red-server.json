@@ -4962,7 +4962,7 @@
     },
     {
       "type": "row",
-      "title": "Power",
+      "title": "Facts",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -4980,351 +4980,6 @@
         "w": 24,
         "x": 0,
         "y": 165
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "This node is read by the NUT server for ups01. Full detail on [Power & UPS](/d/power-ups).\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
-      "type": "stat",
-      "title": "Mains",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "bfgnkdi47u5tsa"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 0,
-        "y": 167
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short",
-          "mappings": [
-            {
-              "type": "value",
-              "options": {
-                "0": {
-                  "text": "ON BATTERY",
-                  "color": "red",
-                  "index": 0
-                },
-                "1": {
-                  "text": "ON MAINS",
-                  "color": "green",
-                  "index": 1
-                }
-              }
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 1
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "no data"
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "value",
-        "orientation": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "percentChangeColorMode": "standard"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "nut_ups_status{status=\"OL\", ups=\"ups01\"}",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "bfgnkdi47u5tsa"
-          },
-          "instant": true,
-          "range": false
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "Battery",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "bfgnkdi47u5tsa"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
-        "y": 167
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 30
-              },
-              {
-                "color": "yellow",
-                "value": 60
-              },
-              {
-                "color": "green",
-                "value": 90
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "no data",
-          "decimals": 0,
-          "max": 100
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "orientation": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "percentChangeColorMode": "standard"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "nut_battery_charge{ups=\"ups01\"} * 100",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "bfgnkdi47u5tsa"
-          },
-          "instant": true,
-          "range": false
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "Runtime left",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "bfgnkdi47u5tsa"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 12,
-        "y": 167
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "s",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "red",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 300
-              },
-              {
-                "color": "yellow",
-                "value": 900
-              },
-              {
-                "color": "green",
-                "value": 1800
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "no data",
-          "decimals": 0
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "orientation": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "percentChangeColorMode": "standard"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "nut_battery_runtime_seconds{ups=\"ups01\"}",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "bfgnkdi47u5tsa"
-          },
-          "instant": true,
-          "range": false
-        }
-      ]
-    },
-    {
-      "type": "stat",
-      "title": "Load",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "bfgnkdi47u5tsa"
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 18,
-        "y": 167
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "yellow",
-                "value": 70
-              },
-              {
-                "color": "orange",
-                "value": 85
-              },
-              {
-                "color": "red",
-                "value": 95
-              }
-            ]
-          },
-          "color": {
-            "mode": "thresholds"
-          },
-          "noValue": "no data",
-          "decimals": 0,
-          "max": 100
-        },
-        "overrides": []
-      },
-      "options": {
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "colorMode": "value",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "textMode": "auto",
-        "orientation": "auto",
-        "wideLayout": true,
-        "showPercentChange": false,
-        "percentChangeColorMode": "standard"
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "expr": "nut_load{ups=\"ups01\"} * 100",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "bfgnkdi47u5tsa"
-          },
-          "instant": true,
-          "range": false
-        }
-      ]
-    },
-    {
-      "type": "row",
-      "title": "Facts",
-      "collapsed": false,
-      "panels": [],
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 172
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 173
       },
       "transparent": true,
       "options": {
@@ -5348,7 +5003,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 175
+        "y": 167
       },
       "fieldConfig": {
         "defaults": {
@@ -5411,7 +5066,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 175
+        "y": 167
       },
       "fieldConfig": {
         "defaults": {
@@ -5475,7 +5130,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 175
+        "y": 167
       },
       "fieldConfig": {
         "defaults": {
@@ -5539,7 +5194,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 175
+        "y": 167
       },
       "description": "Against the NTP source. A drifting clock quietly ruins every graph on this page.",
       "fieldConfig": {
@@ -5612,7 +5267,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 180
+        "y": 172
       },
       "fieldConfig": {
         "defaults": {
@@ -5739,7 +5394,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 184
+        "y": 176
       },
       "fieldConfig": {
         "defaults": {
@@ -5829,7 +5484,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 184
+        "y": 176
       },
       "fieldConfig": {
         "defaults": {
