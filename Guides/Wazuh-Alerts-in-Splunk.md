@@ -1,11 +1,11 @@
 # Wazuh Alerts in Splunk Walkthrough
 
 **Created:** 2026-08-31  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
 ## What This Guide Covers
 
-I already ran Wazuh & Splunk side by side, & neither one told me anything the other knew. This guide is the path I took to join them: a Universal Forwarder shipping the manager's alert stream into Splunk on 9997, the two Wazuh-side corrections that decide whether the stream is worth reading, malware detection built twice so it survives an API quota, & one dashboard whose top row is seven numbers that should be zero.
+I already ran Wazuh & Splunk side by side, & neither one told me anything the other knew. This guide is the path I took to join them: a Universal Forwarder shipping the manager's alert stream into Splunk on 9997, the two Wazuh-side corrections that decide whether the stream is worth reading, malware detection built twice so it survives an API quota, & one dashboard whose top row is seven numbers that should read zero, or close to it.
 
 The question I built it to answer is narrow. If somebody downloads a malicious file onto a machine in this lab, does a page in Splunk show it. Everything here exists because it was needed for that, & the panels that would have looked good but answered nothing aren't in it.
 
@@ -366,7 +366,7 @@ definition = index=wazuh sourcetype=wazuh:alerts ("data.virustotal.malicious"=1 
 
 The general lesson is that a product's own operational messages sit in the same group as its findings, & a group match can't tell them apart.
 
-The dashboard's top strip is seven counts that should normally read zero:
+The dashboard's top strip is seven counts that should normally read zero, or close to it:
 
 ![The Wazuh Insights dashboard, seven glance tiles and the charts below them](../Platforms/Splunk/Enterprise/Evidence/Wazuh%20Insights%20App%20-%202026-08-29/Screenshots/S09-Wazuh-Insights-Dashboard-Glance-Tiles-2026-08-30.png)
 
@@ -379,6 +379,8 @@ The dashboard's top strip is seven counts that should normally read zero:
 | Scheduled task changes | Changes under cron & systemd unit directories | 7 days |
 | Software added or removed | Package manager activity | 7 days |
 | Listening port changes | A machine started or stopped listening on a port | 7 days |
+
+Four of the seven read zero in that capture. The three that don't are the point of the strip rather than a fault in it. Malware found reads 4: the same EICAR file caught on two separate occasions, each raising two independent alerts, which is 2 rather than 2,941 per occasion & the number the macro fix was chasing. Watched files changed reads 227 & software added or removed reads 3, & neither tile is ever meant to sit at zero on a fleet that is being worked on. For those two the question is whether the number moved, not whether it's zero.
 
 Quiet agents can't be derived from alert volume, & that shaped one tile. A healthy machine with nothing to report sends nothing, so "no alerts" & "agent is down" look identical if you only count. The tile is "seen in the last 7 days, silent for the last 24", which separates a machine that stopped talking from one that was never enrolled.
 

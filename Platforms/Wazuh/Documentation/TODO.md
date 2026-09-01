@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
 ## Fleet deployment status
 
@@ -11,7 +11,15 @@ I completed the [2026-08-03 fleet deployment](Change%20Records/Wazuh%20Agent%20F
 
 Both turned up while I turned root SSH off on `security-01` and neither affects Wazuh itself. See [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md).
 
-- [ ] The guest answers to the hostname `wazuh-01`, but it is `security-01` in [VMs.md](../../../Operations/Inventory/Galaxy/VMs.md), in the Ansible inventory, and in the SSH Manager configuration. Every shell prompt and journal line from the host disagrees with the name every record uses. Decide which name is canonical and make `/etc/hostname` match it.
+- [ ] The guest answers to the hostname `wazuh-01`, but it is `security-01` in [VMs.md](../../../Operations/Inventory/Galaxy/VMs.md), in the Ansible inventory, and in the SSH Manager configuration. Every shell prompt and journal line from the host disagrees with the name every record uses. **Decided 2026-09-01: `security-01` is canonical**, because it is the Proxmox guest name and what all but a handful of records already say. `/etc/hostname` has to move to it; the name `wazuh-01` then survives only in dated records and captures, where it stays.
+
+  Do not run `hostnamectl` as the whole job. Three things read the current name and one of them can take the stack down:
+
+  - **The indexer's TLS identity, first, read-only.** A single-node Wazuh install usually names the node `node-1` with certificates to match, in which case the hostname is irrelevant to it. If this one took its `node.name` from the hostname instead, renaming breaks the security plugin's node check and the indexer will not start. Read `node.name`, `network.host` and `plugins.security.nodes_dn` out of `/etc/wazuh-indexer/opensearch.yml`, and the subject and SANs of the indexer certificate, before touching anything. Also read `opensearch.hosts` in `/etc/wazuh-dashboard/opensearch_dashboards.yml`.
+  - **Agent 000.** The manager's own agent is registered as `wazuh-01` (`ID: 000, Name: wazuh-01 (server)`). Renaming the host does not re-register it, so decide whether agent 000 keeps the old name or gets re-registered, and expect a split in `agent.name` either way.
+  - **The Splunk `host` field.** The forwarder's [inputs.conf](../Configuration/Splunk%20Forwarder/inputs.conf) sets no `host`, so it defaults to the OS hostname. After the rename, forwarded alerts arrive as `security-01` while the previous 30 days are `wazuh-01`. The `wazuh` index keeps 30 days, so it heals on its own, but check anything that keys on the manager's name first. Pinning `host = security-01` in the forwarder's `inputs.conf` ahead of the rename makes the change invisible to Splunk.
+
+  Blocked on 2026-09-01: the SSH Manager MCP was disconnected, so none of the read-only preflight above has been run yet.
 - [x] Fixed 2026-08-30: `timedatectl` now reports `Time zone: America/New_York (EDT, -0400)` with the system clock synchronized. This mattered more than a baseline tick once alerts started reaching Splunk, because the manager's timestamps are what the dashboard sorts on.
 
 ## Detection and forwarding, 2026-08-30

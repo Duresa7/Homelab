@@ -1,7 +1,7 @@
 # To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
 I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
 
@@ -28,7 +28,7 @@ I track unfinished Splunk Enterprise Security work here. Completed setup is in [
 
   Two saved searches already exist in the `wazuh_insights` app as the place to attach the first ones, `Wazuh - Machines gone quiet` and `Wazuh - Machines gone quiet, listed`. The candidates, in the order I would build them:
 
-  - Malware found. `wazuh_malware_found` returning anything at all. Lowest volume and highest value: it fired twice in the whole of 2026-08-30 and both were the same test file.
+  - Malware found. `wazuh_malware_found` returning anything at all. Lowest volume and highest value: four alerts in the whole of 2026-08-30, which was the same test file detected on two occasions, each occasion raising one VirusTotal alert and one local hash-list alert.
   - An agent silent for 24 hours after reporting within 7 days. Catches a machine that stopped talking, which counting alerts cannot.
   - A change under `~/.ssh`, `/usr/local/bin`, `/opt` or a systemd unit directory on a machine where that is not routine.
   - A successful login from outside RFC1918.
