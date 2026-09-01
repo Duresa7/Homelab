@@ -1,17 +1,19 @@
 # PeaNUT UPS Dashboard
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-28
+**Last updated:** 2026-08-31
 
-I use PeaNUT as the browser interface for the two APC Back-UPS Pro BR1500MS2 units. NUT owns each USB connection on its physical Proxmox host; PeaNUT reads both TCP/3493 endpoints from one container on `monitor-01`.
+I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each USB connection on its physical Proxmox host; PeaNUT reads the TCP/3493 endpoints from one container on `monitor-01`.
+
+**`UPS-01` is unmonitored as of 2026-08-31.** Its USB data cable came off `red-server` on 2026-08-28 when I moved that node onto `UPS-02`, and it is not plugged into any host. The unit still carries its loads. `UPS-02` feeds every Galaxy node and reports normally through `grey-server`, so the unit powering the cluster is still on the board. Restoring `UPS-01` is tracked in the root [TODO](../../TODO.md); the diagnosis is in [ups01 NUT Driver Restart Loop After the UPS Swap](Documentation/Troubleshooting/ups01%20NUT%20Driver%20Restart%20Loop%20After%20the%20UPS%20Swap%20-%202026-08-31.md).
 
 ## Layout
 
 | Component | Location | Role |
 | --- | --- | --- |
-| NUT `ups01` | `red-server` | Reads `UPS-01` through USB & publishes telemetry on `192.168.70.13:3493` |
+| NUT `ups01` | `red-server` | Disabled 2026-08-31. Stanza commented out in `/etc/nut/ups.conf`, `nut-server` and the driver disabled, nothing listening on `192.168.70.13:3493` |
 | NUT `ups02` | `grey-server` | Reads `UPS-02` through USB & publishes telemetry on `192.168.70.10:3493` |
-| PeaNUT 6.0.0 | `monitor-01` | Displays both NUT endpoints at `https://peanut.alphasecunited.com`; direct fallback `http://192.168.73.2:8090` |
+| PeaNUT 6.0.0 | `monitor-01` | Displays the enabled NUT endpoints at `https://peanut.alphasecunited.com`; direct fallback `http://192.168.73.2:8090`. The `192.168.70.13` entry is present with `DISABLED: true` |
 
 The dashboard login is held outside this repository. The versioned configuration contains no password, UPS serial number, or command-capable NUT account.
 

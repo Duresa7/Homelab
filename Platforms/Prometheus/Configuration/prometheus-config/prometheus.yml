@@ -167,8 +167,15 @@ scrape_configs:
     scrape_interval: 30s
     metrics_path: /nut
     static_configs:
-      - targets: ["192.168.70.13:3493"]
-        labels: {host: red-server, ups: ups01}
+      # UPS-01 is commented out as of 2026-08-31. Its USB data cable came off
+      # red-server on 2026-08-28 during a UPS swap and is not plugged into any
+      # node, so red-server serves no NUT data and this target sat down for
+      # three and a half days. red-server now draws power from UPS-02, which
+      # grey-server already reports as ups02 below, so no UPS went unmonitored
+      # in the sense that matters: the unit feeding red is still on the board.
+      # Restore alongside the ups.conf stanza on red-server. See TODO.md.
+      # - targets: ["192.168.70.13:3493"]
+      #   labels: {host: red-server, ups: ups01}
       - targets: ["192.168.70.10:3493"]
         labels: {host: grey-server, ups: ups02}
     relabel_configs:
