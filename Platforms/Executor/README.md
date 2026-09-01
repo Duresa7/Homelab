@@ -34,7 +34,7 @@ No Executor policy overrides cover either connection. The gateway tools therefor
 
 Codex and Claude Code on `ubuntu-dev` each use one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp`. Both connections use OAuth. The direct `ssh-manager` and `unifi-network` client entries, standalone SSH Manager package, and UniFi client plugins are absent. Codex approves Executor tools without prompting, and Claude Code persistently allows `mcp__executor__*`, so the client layer does not add an approval gate to SSH Manager.
 
-The pre-cutover client configuration and retired direct-server files remain temporarily in the private mode-`0700` archive at `/home/ai-agent/.local/share/mcp-retired/ubuntu-dev-direct-mcps-20260901T032615Z`. The archive stays outside this public repository because it contains credentials. Delete it immediately after the outstanding Claude Code end-to-end call passes; it is rollback material for that verification window, not a retained backup. Its own `README.md` records the full rollback procedure until deletion.
+I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both Claude Code profiles reported Executor connected and Claude Alt passed a live Executor-backed UniFi request. The direct-server files remain absent, and no credential-bearing rollback copy remains.
 
 ## Records
 

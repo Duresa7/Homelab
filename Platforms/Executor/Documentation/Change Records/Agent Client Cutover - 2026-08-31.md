@@ -20,7 +20,7 @@ I kept the requested no-approval behavior. Codex sets the Executor server's defa
 5. I added one user-scoped remote MCP server named `executor` to each client and completed its OAuth flow. The clients keep their OAuth credentials outside this repository.
 6. I configured Codex to approve Executor tools without a prompt and added `mcp__executor__*` to Claude Code's persistent allow rules, matching the decision that SSH operations should not require approval.
 
-The rollback archive is `/home/ai-agent/.local/share/mcp-retired/ubuntu-dev-direct-mcps-20260901T032615Z`. Its root is mode `0700`, which prevents any other local account from traversing its contents, and its `README.md` records the full-restore procedure. It contains credentials and must remain outside a repository.
+The temporary rollback archive was `/home/ai-agent/.local/share/mcp-retired/ubuntu-dev-direct-mcps-20260901T032615Z`. Its root was mode `0700`, which prevented any other local account from traversing its credential-bearing contents during the verification window. I permanently deleted it after the final Claude Code test passed.
 
 ## Verification
 
@@ -29,17 +29,16 @@ The rollback archive is `/home/ai-agent/.local/share/mcp-retired/ubuntu-dev-dire
 - The active Claude plugin inventory contained seven unrelated enabled plugins and no UniFi plugin. The active Codex plugin inventory contained no UniFi plugin or marketplace. The global npm inventory contained no SSH Manager package.
 - A fresh ephemeral Codex 0.152.0 session initialized Executor, loaded its `execute` guidance, and saw Cloudflare, Supabase, UniFi MCP Gateway, and SSH Manager MCP Gateway as available integrations.
 - That Codex session resolved `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers` and called it through Executor. The first generated call used invalid dot notation for the hyphenated integration name and returned `'manager' is not defined`; the retry used the exact path as a bracket key and succeeded. It returned all eighteen configured servers, with `docker_blue` first and `docker_main` last. No approval prompt occurred.
-- A fresh Claude Code 2.1.252 session initialized the Executor server as connected and exposed its six tools. The first model request stopped before a tool call because the Claude organization had reached its spend limit. Two 2026-09-01 retries reached tool selection, but explicit `$0.50` and `$1.00` session caps stopped them before either returned a tool result because the loaded tool context consumed those budgets. These are account or self-imposed usage bounds, not MCP connection or OAuth failures.
+- A fresh Claude Code 2.1.252 session initialized the Executor server as connected and exposed its six tools. The first model request stopped before a tool call because the Claude organization had reached its spend limit. Two 2026-09-01 retries reached tool selection, but explicit `$0.50` and `$1.00` session caps stopped them before either returned a tool result because the loaded tool context consumed those budgets. These were account or self-imposed usage bounds, not MCP connection or OAuth failures.
+- The final interactive Claude Alt session completed Executor OAuth and passed a live Executor-backed UniFi request. Both the default Claude Code profile and Claude Alt then reported Executor connected, proving the Claude model-to-tool path end to end.
 - One final `claude mcp get executor` check timed out after 30 seconds. DNS still resolved the name to `192.168.85.2`, TCP 443 on Nginx Proxy Manager and TCP 4788 on `docker-blue` both connected, and a pinned HTTPS health request returned `{"status":"ok"}`. The immediate `claude mcp get executor` retry reported connected, so the timeout did not persist.
-- The rollback archive exists at mode `0700` with pre-cutover agent configuration, the retired SSH package, UniFi plugin and marketplace sources, and residual client data. The active `~/.claude/ssh-manager.env` and `~/.ssh-manager` paths are absent. I did not read or publish any archived credential value.
+- The active `~/.claude/ssh-manager.env`, `~/.claude_alt/ssh-manager.env`, and `~/.ssh-manager` paths are absent. After the final Claude test, I permanently deleted the temporary rollback archive containing 6,727 files and 60,985,495 bytes. I did not read or publish any archived credential value.
 
 No standalone transcript was retained. The results above are the live command and client-session results observed during the cutover and follow-up verification.
 
-## Open State
+## Final State
 
-One verification remains: start a fresh Claude Code session with a sufficient bounded budget and call `ssh_list_servers` through Executor. The configuration, MCP initialization, and model-side tool selection already pass, but only a successful tool result proves the Claude model path end to end.
-
-The private archive is temporary rollback material, not a retained backup. Delete it immediately after the remaining Claude call passes. Until then, restoring it would reinstate direct MCP catalogs beside Executor, so rollback must follow the archive's full-restore procedure rather than copying back selected files.
+Codex, the default Claude Code profile, and Claude Alt now use Executor as their only client-side homelab MCP connection. The direct UniFi and SSH Manager entries remain absent, the Claude Alt live request passed, and no pre-cutover rollback archive remains. The client cutover has no open verification or cleanup item.
 
 ## References
 
