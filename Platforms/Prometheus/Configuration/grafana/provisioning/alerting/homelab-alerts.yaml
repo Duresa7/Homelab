@@ -527,7 +527,8 @@ groups:
             gateway, the switch and the ONT, so this is a countdown to the whole
             cluster stopping. nut-monitor is disabled by choice, meaning nothing
             will shut anything down gracefully on your behalf.
-        noDataState: NoData
+        # This filtered expression is empty while the UPS is online.
+        noDataState: OK
         execErrState: Error
         isPaused: false
         data:
@@ -575,7 +576,8 @@ groups:
             LB means the battery is nearly flat during an outage. RB means the
             UPS wants the battery replaced, which it can report while running
             normally on mains. FSD means it has started a forced shutdown.
-        noDataState: NoData
+        # This filtered expression is empty while no fault state is active.
+        noDataState: OK
         execErrState: Error
         isPaused: false
         data:

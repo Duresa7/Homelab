@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 49 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query — 1,390 across the 27 — failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 49 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query (1,390 across the 27), failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -35,15 +35,15 @@ Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Monitor` to 
 
 ## Change a Dashboard
 
-The dashboard JSON is generated. Editing a file under `Configuration/grafana/dashboards/` is wasted work —
+The dashboard JSON is generated. Editing a file under `Configuration/grafana/dashboards/` is wasted work;
 the next build overwrites it.
 
 1. Change `Tools/build_dashboards.py`, `Tools/dashlib.py` or `Tools/inventory.py`. See
    [Tools/README.md](../Tools/README.md) for which file does what.
 2. `python3 Tools/build_dashboards.py`
-3. `python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards` — offline; catches overlapping
+3. `python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards` (offline); catches overlapping
    panels and anything past column 24, which Grafana accepts and then silently reflows.
-4. `python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090` —
+4. `python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090`;
    runs all 1,390 queries and fails on any that error or come back empty unexpectedly.
 5. Upload `dashboards/` to `~/monitoring/grafana/` on `monitor-01` and `chmod 0644` the files.
 6. Wait 30 seconds. Grafana re-reads both provider directories on its own interval, so no restart is needed.

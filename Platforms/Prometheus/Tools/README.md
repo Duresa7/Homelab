@@ -1,9 +1,9 @@
 # Dashboard Tooling
 
 **Created:** 2026-08-27  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-01
 
-Every dashboard under `Configuration/grafana/dashboards/` is generated. Do not hand-edit the JSON — change
+Every dashboard under `Configuration/grafana/dashboards/` is generated. Do not hand-edit the JSON; change
 the source here and re-run the builder, or the next build overwrites the edit.
 
 ```bash
@@ -39,12 +39,12 @@ the `topic` list in `main()`, and tag it `homelab` so it appears in the header d
 
 ## Capability flags
 
-`inventory.py` records which collectors each host actually runs — `zfs`, `nvme`, `smart`, `temp`, `psi`,
+`inventory.py` records which collectors each host actually runs, including `zfs`, `nvme`, `smart`, `temp`, `psi`,
 `conntrack`, `systemd`, `cpufreq`, `apt`, `docker`, `ups`. They were read off the live Prometheus on
 2026-08-27.
 
 They exist because a panel built for a collector a host does not run draws an empty rectangle, and an empty
-rectangle reads as *fine* rather than *not applicable* — which is the worse of the two failures.
+rectangle reads as *fine* rather than *not applicable*, which is the worse of the two failures.
 
 Two flags are deliberately narrower than the data. `temp` and `cpufreq` are true only on the five nodes, even
 though the seven LXC guests also report both: an LXC shares its node's kernel, so `/sys/class/hwmon` and the
@@ -66,7 +66,7 @@ any that error or return nothing unexpectedly. Run both before deploying.
 
 ## Deploying
 
-Dashboard JSON alone needs no restart — Grafana re-reads both directories every 30 seconds:
+Dashboard JSON alone needs no restart; Grafana re-reads both directories every 30 seconds:
 
 ```bash
 tar czf /tmp/d.tgz -C Configuration/grafana dashboards

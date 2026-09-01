@@ -31,17 +31,19 @@ The old alerting `.gitkeep` was no longer a placeholder once the YAML existed. I
 
 The final consistency pass found four dead UPS-01 panels on the generated `red-server` dashboard and stale two-UPS wording on the overview and power dashboards. I removed the inactive capability from the dashboard inventory, regenerated all 27 dashboards, and retained UPS-01's restoration instructions in the Prometheus configuration and backlog. I deployed the three changed JSON files without restarting Grafana; their live SHA-256 values matched the repository, and authenticated dashboard API responses contained zero `ups01` mentions or `Power` rows on `red-server`.
 
+The pre-commit review found that the two UPS rules treated their normal empty filtered vectors as `NoData`. I changed those two rules to `noDataState: OK`, leaving genuine source-loss handling unchanged on the unfiltered availability rules. I deployed the corrected file, removed the candidate, restarted Grafana, and observed both database health `ok` and a completed alert-provisioning pass.
+
 ## Verification
 
 - YAML parsing found four groups, 12 unique rule UIDs, and 12 rules.
-- The deployed file and repository file share SHA-256 `f20cce12ed5c7d24083e7bde6898ddf47f3ef40ed773b20dcc0cce186bde4108`.
+- The deployed file and repository file share SHA-256 `b42f155d0c1fc512f105a34e3d622a07a53f7a52128f4bef3da1f6f52be5af1b`.
 - All 12 PromQL expressions returned a successful response from Prometheus 3.14.0.
 - The healthy baseline evaluated 18 host series, 19 blackbox services, six Proxmox node or cluster series, 31 filesystems, 13 Proxmox storages, five hypervisor disk and temperature series, and UPS-02. Zero series crossed a rule threshold.
 - Grafana's database held 12 alert rules and 12 rule-state rows with zero rule-instance errors before the final reload; the completed reload retained the same 12 UIDs.
 - Prometheus reported 49 active targets with all 49 `up`. Grafana reported version 13.2.0 and database state `ok`.
 - All 27 regenerated dashboards passed the layout check; 1,390 PromQL queries returned 1,385 populated results, five expected empty results, zero unexpected empty results, and zero errors.
 
-I created no snapshot or backup. The versioned YAML rebuilds the rule definitions, and the Grafana data volume retains evaluation state.
+I created no snapshot or backup. The versioned YAML rebuilds the rule definitions, and the Grafana data volume retains evaluation state. I retained no standalone command or API capture; the verification bullets above record the live results I observed.
 
 ## Remaining Work
 
