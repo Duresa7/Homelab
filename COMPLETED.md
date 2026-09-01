@@ -1,12 +1,13 @@
 # Completed Work
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-09-01
 
 This is my public history of work closed from [TODO.md](TODO.md). Active priorities, scheduled work, and system backlogs stay in that file.
 
 ## Completed
 
+- [x] 2026-09-01: Credential-file inspection guardrail. I added the missing rule to both mirrored credential-retrieval skills: answer questions about a credential file from non-secret metadata and observed behavior rather than reading or printing its contents for inspection. Both copies passed the skill validator and remain byte-for-byte identical. This closes the follow-up from [Administrator Credential Printed to an Agent Session](Security/Incidents/Splunk/Administrator%20Credential%20Printed%20to%20an%20Agent%20Session%20-%202026-08-29.md).
 - [x] 2026-08-20: [supabase-01 retirement](Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md). I confirmed deleted Galaxy VM 117 has no configuration, cluster resource, or storage volume; removed five per-node RRD files, its Ansible and SSH Manager definitions, and its active inventory, diagram, and documentation-site entries; and verified monitoring, proxy, and Wazuh state have no matching dependency.
 - [x] 2026-08-19: [Kasm Workspaces decommission](Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md). I shut down and destroyed VM 122 with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes, keeping no backup. I archived the platform and dedicated records; removed its proxy, DNS, Wazuh, Ansible, SSH, Prometheus, Proxmox, and credential remnants; and removed 68 policies, five networks, five zones, and its Proton route from UniFi. Residual passes removed CT 100's VLAN 74 interface, an orphaned autoscaler token row, eight retired proxy logs, six SSH host keys, the two historical Prometheus series, five per-node VM 122 RRD files, the dashboard login, and the active documentation pages. Prometheus returned 50 of 50 targets up, NPM and Docusaurus remained healthy, and the retired site routes return HTTP `404`.
 - [x] 2026-08-19: [CLI Proxy API relocation to docker-main](Platforms/CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md). I moved the Compose project and all runtime state from `ubuntu-dev` to `/opt/docker/cli-proxy-api` on `docker-main`, pinned version 7.2.128 by digest, and repointed the existing UniFi policy and NPM proxy host. TLS, root, management, unauthenticated rejection, and an authenticated 14-model response passed through the production name. I then removed the old container, network, project files, credential state, and migration cache from `ubuntu-dev`.
