@@ -16,7 +16,8 @@
 # datasource file makes. The file is the source of truth; change the rule here.
 #
 # Threshold philosophy: every threshold below was checked against the live value
-# on 2026-08-31 and sits clear of it, so a fresh deploy fires nothing. An alert
+# on the day it was written, 2026-08-31 or 2026-09-01, and sits clear of it, so a
+# fresh deploy fires nothing. An alert
 # that cries wolf on day one gets muted by week two.
 apiVersion: 1
 
@@ -229,6 +230,66 @@ groups:
                   reducer: {type: last, params: []}
                   operator: {type: and}
                   evaluator: {type: lt, params: [0.5]}
+
+
+      # Which VM or LXC went down, by name. "Down" here means it was running at
+      # some point in the last two hours and is not running now, which is what
+      # separates a crash from a guest I stopped on purpose. qemu/101 and
+      # qemu/9000 are templates and qemu/102 has been off for weeks; none of
+      # them can trip this. The cost of the design is that a guest I stop
+      # deliberately fires once and clears itself two hours later.
+      #
+      # pve_onboot_status looked like the cleaner filter, but the exporter only
+      # reads guest configs from the node it is pointed at, so on 2026-09-01 it
+      # covered 5 of 16 guests, all on grey-server. Not usable.
+      #
+      # pve_guest_info has exactly one series per guest, 16 of 16 on
+      # 2026-09-01, so the name join drops nothing. Added 2026-09-01.
+      - uid: homelab-guest-down
+        title: VM or container is down
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: '{{ $labels.name }} ({{ $labels.id }}) on {{ $labels.node }} has stopped.'
+          description: >-
+            This guest was running within the last two hours and Proxmox now reports
+            it stopped. If you did not stop it yourself, it crashed or was
+            killed. If you did, this clears on its own two hours after the stop.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: >-
+                (max_over_time(pve_up{id=~"qemu/.+|lxc/.+"}[2h]) == 1 and pve_up{id=~"qemu/.+|lxc/.+"} == 0)
+                * on(id) group_left(name, node) pve_guest_info
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
 
   # =====================================================================
   # Running out of something. 5m evaluation and long `for` windows, because
@@ -444,6 +505,118 @@ groups:
                   reducer: {type: last, params: []}
                   operator: {type: and}
                   evaluator: {type: gt, params: [95]}
+
+
+      # CPU, for every guest and every node in one rule. pve_cpu_usage_ratio is
+      # Proxmox's own figure, already relative to the cores a guest is assigned,
+      # so 0.9 means "using nine tenths of everything it has" whether that is 2
+      # cores or 16. Guests get their name joined in; nodes pass through under
+      # their id. Busiest on 2026-09-01 was media-01 at 57%.
+      #
+      # The Proxmox view rather than node_exporter on purpose: it covers the
+      # guests that run no exporter, and it attributes CPU per guest, so there
+      # is nothing to deduplicate. Added 2026-09-01.
+      - uid: homelab-cpu-pinned
+        title: CPU is pinned
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ if $labels.name }}{{ $labels.name }}{{ else }}{{ $labels.id }}{{ end }} has been above 90% CPU for 15 minutes.'
+          description: >-
+            Proxmox reports this guest or node using more than 90% of the cores it
+            has, sustained for 15 minutes. Something is either doing real work
+            that needs more cores, or spinning.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: >-
+                (pve_cpu_usage_ratio{id=~"qemu/.+|lxc/.+"} * on(id) group_left(name, node) pve_guest_info)
+                or pve_cpu_usage_ratio{id=~"node/.+"}
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.9]}
+
+      # Run queue against core count, hypervisors only. This is the "using all
+      # its cores" alert: a load of two per core sustained for 15 minutes means
+      # the machine has twice as much runnable work as it can execute.
+      #
+      # Hypervisors only because lxcfs does not virtualise /proc/loadavg. On
+      # 2026-09-01 ansible-01, docker-main and grey-server all read 2.06, and
+      # docker-blue, monitor-01 and blue-server all read 0.25: the guests are
+      # reporting their host's number. Highest per-core figure that day was
+      # red-server at 0.37. Added 2026-09-01.
+      - uid: homelab-load-overloaded
+        title: Host is overloaded
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.host }} has a 15-minute load of {{ humanize $values.A.Value }} per core.'
+          description: >-
+            Load average is the number of threads running or waiting to run. Two per
+            core for 15 minutes means work is queueing behind the CPUs or behind
+            I/O, and every guest on {{ $labels.host }} feels it. Read it with
+            the CPU rule: high load and low CPU is I/O wait.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: >-
+                node_load15{role="hypervisor"}
+                / on(host) group_left count by (host) (node_cpu_seconds_total{mode="idle"})
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [2]}
 
   # =====================================================================
   # Slow rather than absent.
