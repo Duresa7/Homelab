@@ -1,0 +1,211 @@
+---
+# What's Up Docker (WUD) as a compose project on each Compose host. It asks
+# each container's registry once a day whether a newer tag, or a newer build
+# of the same mutable tag, exists, and publishes the answer as the
+# wud_containers gauge with an update_available label. Grafana alerts on that
+# label; nothing here pulls or restarts anything. Notify only, by decision:
+# an image that starts cleanly and behaves differently is not something to
+# discover at 06:00 from a restart loop.
+#
+# A mutable tag such as :latest only changes underneath, so the only way to
+# see a new build is to compare digests. WUD does that for ghcr.io by default
+# but not for Docker Hub, where each digest lookup counts against the
+# anonymous pull quota, so the Hub registry is told to watch digests
+# explicitly. Several projects here float on :latest on purpose (Jellyfin,
+# NPM, Grafana, Prometheus, Portainer, NetBird among them) and without this
+# WUD would report nothing for any of them.
+#
+# Run with -e wud_state=absent to remove it from a host cleanly.
+- name: Manage What's Up Docker as a compose project on the Compose hosts
+  hosts: "{{ target | default('wud_targets') }}"
+  gather_facts: true
+  become: true
+  vars:
+    # present or absent
+    wud_state: present
+    # Pinned. 8.3.1 was the newest release on 2026-09-02 (published
+    # 2026-07-31). It is itself a watched container, so it will say when it
+    # is behind.
+    wud_image: "getwud/wud:8.3.1"
+    # 9102: node_exporter is 9100, cAdvisor is 9101, and the UniFi port group
+    # PG-Node-Exporter carries all three.
+    wud_host_port: 9102
+    wud_project_dir: /opt/docker/wud
+    # Inventory sets a different minute per host; see hosts.yml.
+    wud_watch_cron: "{{ wud_cron | default('0 6 * * *') }}"
+
+  tasks:
+    - name: Confirm Docker is present
+      ansible.builtin.command:
+        argv: [docker, version, --format, "{{ '{{' }}.Server.Version{{ '}}' }}"]
+      changed_when: false
+      register: docker_version
+
+    # ------------------------------------------------------------- removal
+    - name: Remove the WUD project
+      when: wud_state == 'absent'
+      block:
+        - name: Take the compose project down
+          community.docker.docker_compose_v2:
+            project_src: "{{ wud_project_dir }}"
+            project_name: wud
+            state: absent
+            remove_orphans: true
+            remove_volumes: true
+          failed_when: false
+
+        - name: Remove any leftover container
+          community.docker.docker_container:
+            name: wud
+            state: absent
+            force_kill: true
+
+        - name: Remove the project directory
+          ansible.builtin.file:
+            path: "{{ wud_project_dir }}"
+            state: absent
+
+        - name: Report the removal
+          ansible.builtin.debug:
+            msg: "{{ inventory_hostname }}: WUD removed"
+
+    # --------------------------------------------------------- installation
+    - name: Install and verify the WUD project
+      when: wud_state == 'present'
+      block:
+        - name: Confirm the chosen host port is free or already ours
+          changed_when: false
+          failed_when: false
+          ansible.builtin.shell:
+            cmd: >-
+              ss -lntH 'sport = :{{ wud_host_port }}' | grep -q . && echo busy || echo free
+          register: port_state
+
+        - name: Detect an existing WUD container
+          changed_when: false
+          failed_when: false
+          ansible.builtin.command:
+            argv: [docker, ps, -a, --filter, name=^wud$, --format, "{{ '{{' }}.Names{{ '}}' }}"]
+          register: existing_wud
+
+        - name: Stop when the port is taken by something that is not WUD
+          ansible.builtin.assert:
+            that:
+              - >-
+                port_state.stdout | trim == 'free'
+                or existing_wud.stdout | trim == 'wud'
+            fail_msg: >-
+              {{ inventory_hostname }} already has a listener on
+              {{ wud_host_port }} that is not WUD. Pick another port with
+              -e wud_host_port=NNNN or free it first.
+            quiet: true
+
+        - name: Create the project directory
+          ansible.builtin.file:
+            path: "{{ wud_project_dir }}"
+            state: directory
+            owner: root
+            group: root
+            mode: "0755"
+
+        - name: Write the compose file
+          ansible.builtin.copy:
+            dest: "{{ wud_project_dir }}/docker-compose.yml"
+            owner: root
+            group: root
+            mode: "0644"
+            content: |
+              # Managed by Ansible: monitoring-exporters/playbooks/wud.yml
+              # Edit the playbook, not this file.
+              services:
+                wud:
+                  image: {{ wud_image }}
+                  container_name: wud
+                  restart: unless-stopped
+                  environment:
+                    - TZ=America/New_York
+                    - WUD_WATCHER_LOCAL_CRON={{ wud_watch_cron }}
+                    - WUD_LOG_LEVEL=info
+                    # The web UI has no login. Deleting containers from it is
+                    # the one destructive thing it can do, so that is off.
+                    - WUD_SERVER_FEATURE_DELETE=false
+                    # Compare digests for Docker Hub images on mutable tags.
+                    # Roughly fifteen such images fleet-wide, checked once a
+                    # day, against a quota of 100 pulls per six hours.
+                    - WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true
+                    - WUD_REGISTRY_HUB_PUBLIC_SUPPRESSDIGESTWATCHWARNING=true
+                  volumes:
+                    - /var/run/docker.sock:/var/run/docker.sock:ro
+                    - wud_store:/store
+                  ports:
+                    - "{{ wud_host_port }}:3000"
+              volumes:
+                wud_store:
+
+        - name: Bring the project up
+          community.docker.docker_compose_v2:
+            project_src: "{{ wud_project_dir }}"
+            project_name: wud
+            state: present
+            pull: missing
+
+        - name: Confirm WUD answers on the published port
+          become: false
+          changed_when: false
+          ansible.builtin.uri:
+            url: "http://127.0.0.1:{{ wud_host_port }}/metrics"
+            return_content: false
+            status_code: 200
+          retries: 10
+          delay: 6
+          until: wud_probe is succeeded
+          register: wud_probe
+
+        # The first scan runs at start and takes a moment per container, so
+        # wait for the gauge to fill before comparing it to Docker's count.
+        - name: Count the containers WUD reports
+          become: false
+          changed_when: false
+          ansible.builtin.shell:
+            cmd: >-
+              curl -s -m 20 http://127.0.0.1:{{ wud_host_port }}/metrics
+              | grep -c '^wud_containers{' || true
+          register: wud_count
+          retries: 10
+          delay: 6
+          until: (wud_count.stdout | trim | int) > 0
+
+        - name: Count the containers Docker itself reports running
+          changed_when: false
+          ansible.builtin.shell:
+            cmd: docker ps -q | wc -l
+          register: docker_running
+
+        # WUD reports fewer containers than Docker runs, and that is expected:
+        # it skips an image pinned by digest (immich's postgres and valkey,
+        # cli-proxy-api), because there is no tag to compare, and it skips a
+        # registry it has no provider for. On 2026-09-02 docker-main watched
+        # 9 of 13 and media-01 7 of 11 for those two reasons. So the guard is
+        # only that the gauge has rows; the per-host report carries both
+        # numbers for the eye. On a re-run the store volume already holds the
+        # containers and WUD skips its start-up scan, so the rows are there
+        # at once and the next registry check waits for the cron.
+        - name: Fail when WUD watched nothing on a host that runs containers
+          ansible.builtin.assert:
+            that:
+              - (wud_count.stdout | trim | int) > 0 or (docker_running.stdout | trim | int) == 0
+            fail_msg: >-
+              {{ inventory_hostname }}: WUD reports no containers while Docker
+              reports {{ docker_running.stdout | trim }} running. Check the
+              container log.
+            quiet: true
+
+        - name: Report the per-host result
+          ansible.builtin.debug:
+            msg: >-
+              {{ inventory_hostname }}:
+              docker={{ docker_version.stdout | trim }}
+              port={{ wud_host_port }}
+              cron="{{ wud_watch_cron }}"
+              watched={{ wud_count.stdout | trim }}
+              of {{ docker_running.stdout | trim }} running

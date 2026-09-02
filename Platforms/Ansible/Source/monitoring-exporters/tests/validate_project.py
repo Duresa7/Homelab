@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Validate the monitoring-exporters project structure without contacting a host.
 
-Checks that the inventory parses, both target groups exist and hold exactly the
-approved host sets, every host connects as the ansible account unless it is
+Checks that the inventory parses, all four target groups exist and hold exactly
+the approved host sets, every host connects as the ansible account unless it is
 listed in NON_STANDARD_USERS with a reason, the referenced
 playbooks exist, the Semaphore manifest references only valid playbooks and
 views, and that hosts deliberately excluded from collection have not crept back
@@ -17,8 +17,19 @@ import sys
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
-REQUIRED_GROUPS = ("node_exporter_targets", "cadvisor_targets")
-PLAYBOOKS = ("playbooks/node-exporter.yml", "playbooks/cadvisor.yml")
+REQUIRED_GROUPS = (
+    "node_exporter_targets",
+    "cadvisor_targets",
+    # Added 2026-09-02 with the update and drive-health alerts.
+    "textfile_collector_targets",
+    "wud_targets",
+)
+PLAYBOOKS = (
+    "playbooks/node-exporter.yml",
+    "playbooks/cadvisor.yml",
+    "playbooks/textfile-collectors.yml",
+    "playbooks/wud.yml",
+)
 
 EXPECTED_NODE_EXPORTER_HOSTS = {
     "docker-main",
@@ -50,6 +61,30 @@ EXPECTED_CADVISOR_HOSTS = {
     "security-01",
     "monitor-01",
     "game-01",
+}
+
+# The six hosts whose node_exporter is the upstream binary and so had no
+# textfile collector until 2026-09-02. The other twelve get the collectors
+# package as a Recommends of the Debian node_exporter package and must not be
+# listed here, because the play writes a drop-in for a unit they do not have.
+EXPECTED_TEXTFILE_COLLECTOR_HOSTS = {
+    "grey-server",
+    "docker-main",
+    "app-01",
+    "edge-01",
+    "security-01",
+    "splunk-siem",
+}
+
+# What's Up Docker: the same six Compose hosts fleet-updates manages. app-01
+# (Coolify) and game-01 (Pelican) stay out for the reason they stay out there.
+EXPECTED_WUD_HOSTS = {
+    "docker-main",
+    "docker-network",
+    "docker-blue",
+    "media-01",
+    "alpha-prod-01",
+    "monitor-01",
 }
 
 # Hosts that must never appear under node_exporter_targets, with the reason.
@@ -88,6 +123,8 @@ EXPECTED_IPS = {
     "monitor-01": "192.168.73.2",
     "game-01": "192.168.80.30",
     "db-13-dev": "192.168.40.135",
+    "grey-server": "192.168.70.10",
+    "edge-01": "192.168.30.10",
 }
 
 # Hosts that connect as an account other than `ansible`, with that account.
@@ -97,6 +134,10 @@ NON_STANDARD_USERS = {
     # separate `ansible` account exists to target. The exception is recorded in
     # the Linux Host Baseline Standard, which is not published.
     "db-13-dev": "ai-agent",
+    # A Proxmox node has no ansible account. ssh-key-automation reaches the
+    # nodes as root through the shared /etc/pve/priv/authorized_keys, and the
+    # textfile collector play does the same.
+    "grey-server": "root",
 }
 
 
@@ -122,6 +163,8 @@ def main() -> int:
 
     node_hosts = collect_hosts(children.get("node_exporter_targets", {}))
     cadvisor_hosts = collect_hosts(children.get("cadvisor_targets", {}))
+    textfile_hosts = collect_hosts(children.get("textfile_collector_targets", {}))
+    wud_hosts = collect_hosts(children.get("wud_targets", {}))
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
@@ -133,6 +176,19 @@ def main() -> int:
             "cAdvisor host set differs from the approved eight Docker hosts: "
             f"{sorted(cadvisor_hosts)}"
         )
+    if set(textfile_hosts) != EXPECTED_TEXTFILE_COLLECTOR_HOSTS:
+        errors.append(
+            "textfile collector host set differs from the six binary-installed hosts: "
+            f"{sorted(textfile_hosts)}"
+        )
+    if set(wud_hosts) != EXPECTED_WUD_HOSTS:
+        errors.append(
+            "WUD host set differs from the six Compose hosts: "
+            f"{sorted(wud_hosts)}"
+        )
+    for host in wud_hosts:
+        if not (wud_hosts[host] or {}).get("wud_cron"):
+            errors.append(f"wud_targets/{host}: wud_cron is required so the daily checks stay staggered")
     if "cadvisor_incompatible" in children:
         errors.append(
             "cadvisor_incompatible is back in the inventory. It was removed on "
@@ -150,6 +206,8 @@ def main() -> int:
     for group_name, hosts in (
         ("node_exporter_targets", node_hosts),
         ("cadvisor_targets", cadvisor_hosts),
+        ("textfile_collector_targets", textfile_hosts),
+        ("wud_targets", wud_hosts),
     ):
         for host, host_vars in hosts.items():
             host_vars = host_vars or {}

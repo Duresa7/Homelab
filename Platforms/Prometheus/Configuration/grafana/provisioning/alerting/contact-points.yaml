@@ -35,3 +35,18 @@ policies:
     group_wait: 30s
     group_interval: 5m
     repeat_interval: 4h
+    routes:
+      # Update notices are a different rhythm. One message when a host or an
+      # image first has something waiting, one when it is patched, and nothing
+      # in between: repeat_interval is a year, which in practice means never.
+      # Grouped by alert name only, so twelve hosts with pending updates arrive
+      # as one embed listing twelve hosts, and a five-minute group_wait lets
+      # the whole fleet's textfiles land before the first message. Added
+      # 2026-09-02.
+      - receiver: discord-bot
+        object_matchers:
+          - ["class", "=", "updates"]
+        group_by: [alertname]
+        group_wait: 5m
+        group_interval: 30m
+        repeat_interval: 8760h

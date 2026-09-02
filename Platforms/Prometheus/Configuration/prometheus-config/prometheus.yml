@@ -3,7 +3,7 @@
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
-# hostname. The current configuration has 18 node_exporter targets and six
+# hostname. The current configuration has 18 node_exporter targets and seven
 # jobs overall. Changing it breaks graph continuity for series that existed
 # before the switch; with 15-day retention that discontinuity ages out.
 global:
@@ -87,6 +87,29 @@ scrape_configs:
         labels: {host: monitor-01, role: monitoring}
       - targets: ["192.168.80.30:9101"]
         labels: {host: game-01, role: game}
+
+  # ------------------------------------------------------------------- wud
+  # What's Up Docker on the six Compose hosts. One gauge row per container
+  # with an update_available label; the Grafana rule "Container image has an
+  # update" reads it. WUD checks the registries once a day on a staggered cron,
+  # so a five-minute scrape loses nothing. Managed by the monitoring-exporters
+  # Ansible project, published on 9102 beside node_exporter and cAdvisor.
+  # Added 2026-09-02.
+  - job_name: wud
+    scrape_interval: 5m
+    static_configs:
+      - targets: ["192.168.40.35:9102"]
+        labels: {host: docker-main, role: docker}
+      - targets: ["192.168.85.2:9102"]
+        labels: {host: docker-network, role: docker}
+      - targets: ["192.168.40.39:9102"]
+        labels: {host: docker-blue, role: docker}
+      - targets: ["192.168.40.42:9102"]
+        labels: {host: media-01, role: docker}
+      - targets: ["192.168.80.118:9102"]
+        labels: {host: alpha-prod-01, role: app}
+      - targets: ["192.168.73.2:9102"]
+        labels: {host: monitor-01, role: monitoring}
 
   # --------------------------------------------------------------- proxmox
   # The PVE API exporter. This one job covers the whole cluster: every guest's

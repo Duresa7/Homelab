@@ -55,6 +55,14 @@ EXPECTED_TARGETS = {
     # game-01 runs one container per game server, so per-container metrics are
     # the only view of a single server against its assigned limit.
     "http://192.168.80.30:9101/metrics": ("cadvisor", "game-01"),
+    # What's Up Docker, the six Compose hosts, added 2026-09-02 for the image
+    # update alert.
+    "http://192.168.40.35:9102/metrics": ("wud", "docker-main"),
+    "http://192.168.85.2:9102/metrics": ("wud", "docker-network"),
+    "http://192.168.40.39:9102/metrics": ("wud", "docker-blue"),
+    "http://192.168.40.42:9102/metrics": ("wud", "media-01"),
+    "http://192.168.80.118:9102/metrics": ("wud", "alpha-prod-01"),
+    "http://192.168.73.2:9102/metrics": ("wud", "monitor-01"),
     # Proxmox API exporter
     "http://pve-exporter:9221/pve?module=default&target=192.168.70.10": (
         "proxmox",
@@ -117,7 +125,9 @@ def main() -> int:
         if job == "blackbox":
             instance = labels.get("instance", "")
             # https://jellyfin.example.com/ -> jellyfin
-            host = instance.split("://", 1)[-1].split("/", 1)[0]
+            # http://alert-bot:8080/health -> alert-bot, so a port never
+            # becomes part of the service name.
+            host = instance.split("://", 1)[-1].split("/", 1)[0].split(":", 1)[0]
             blackbox_seen.add(host.split(".", 1)[0])
         else:
             scraped[target["scrapeUrl"]] = (job, labels.get("host"))

@@ -1088,3 +1088,213 @@ groups:
                   reducer: {type: last, params: []}
                   operator: {type: and}
                   evaluator: {type: gt, params: [0.9]}
+
+  # =====================================================================
+  # Updates. Notify only, never apply. These carry class: updates, which the
+  # notification policy routes with a year-long repeat interval, so each one
+  # speaks once when it starts and once when it clears. 15m evaluation: the
+  # textfiles behind them refresh every 15 minutes and WUD checks once a day.
+  #
+  # apt_upgrades_pending and node_reboot_required come from apt_info.py in
+  # prometheus-node-exporter-collectors on the Debian and Ubuntu hosts;
+  # dnf_upgrades_pending and dnf_security_upgrades_pending come from this
+  # repository's dnf-updates-textfile script on splunk-siem. Security is the
+  # origin label: Debian and Ubuntu both put "security" in the suite name of
+  # their security archives. Added 2026-09-02.
+  # =====================================================================
+  - orgId: 1
+    name: Updates
+    folder: Homelab Alerts
+    interval: 15m
+    rules:
+      # Security patches waiting. On 2026-09-02 eleven hosts had some, and the
+      # four Lenovo nodes had 24 each, so this fires on first deploy by design.
+      - uid: homelab-security-updates
+        title: Security updates are waiting
+        condition: B
+        for: 30m
+        labels:
+          severity: warning
+          category: updates
+          class: updates
+        annotations:
+          summary: '{{ $labels.host }} has {{ humanize $values.A.Value }} security updates waiting.'
+          description: >-
+            Packages with a security advisory are installable now. The
+            fleet-updates os-update playbook covers the guests; the Proxmox
+            nodes are patched by hand. The count is packages, not advisories.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'sum by (host) (apt_upgrades_pending{origin=~".*[Ss]ecurity.*"}) or sum by (host) (dnf_security_upgrades_pending)'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0]}
+
+      # Everything else. A host with security updates is excluded so it shows
+      # up in exactly one of these two, not both.
+      - uid: homelab-os-updates
+        title: OS updates are waiting
+        condition: B
+        for: 1h
+        labels:
+          severity: info
+          category: updates
+          class: updates
+        annotations:
+          summary: '{{ $labels.host }} has {{ humanize $values.A.Value }} package updates waiting.'
+          description: >-
+            Ordinary package updates with no security advisory attached.
+            Nothing here is urgent; it clears when the host is patched.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: '(sum by (host) (apt_upgrades_pending) or sum by (host) (dnf_upgrades_pending)) unless (sum by (host) (apt_upgrades_pending{origin=~".*[Ss]ecurity.*"}) or sum by (host) (dnf_security_upgrades_pending)) > 0'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0]}
+
+      # The kernel or libc moved under a running system. apt_info.py reads
+      # /run/reboot-required; the dnf script compares the running kernel with
+      # the newest installed one.
+      - uid: homelab-reboot-required
+        title: Host needs a reboot
+        condition: B
+        for: 30m
+        labels:
+          severity: info
+          category: updates
+          class: updates
+        annotations:
+          summary: '{{ $labels.host }} has been patched and needs a reboot to finish.'
+          description: >-
+            A package update replaced something only a reboot can reload,
+            usually the kernel. Until then the host runs the old code with the
+            new files on disk.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'node_reboot_required'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
+
+      # A newer image exists for a running container. WUD's gauge carries the
+      # answer as labels: result_tag is the newest tag it found, or the same
+      # tag with a new digest when the tag is mutable. The Ansible
+      # docker-compose-update playbook is how these get applied, on purpose,
+      # by hand.
+      - uid: homelab-image-update
+        title: Container image has an update
+        condition: B
+        for: 30m
+        labels:
+          severity: info
+          category: updates
+          class: updates
+        annotations:
+          summary: '{{ $labels.name }} on {{ $labels.host }}: {{ $labels.image_name }} {{ $labels.image_tag_value }}{{ if eq $labels.update_kind_kind "digest" }} has a newer build{{ else }} can move to {{ $labels.result_tag }}{{ end }}.'
+          description: >-
+            WUD compared the running image with its registry and found
+            something newer. Read the release notes before pulling; several
+            projects here float on :latest on purpose, and a digest change on
+            those is a new build of the same tag, not a new version.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'wud_containers{update_available="true"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.5]}
