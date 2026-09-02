@@ -1,9 +1,9 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-02
 
-Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting, but the live Compose file and running container still do. Twelve Grafana alert rules now evaluate successfully; only their notification destination remains undecided.
+Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The repository no longer carries the inert Grafana WAL setting, but the live Compose file and running container still do. Fifteen Grafana alert rules now evaluate successfully; only their notification destination remains undecided.
 
 ## Open
 
@@ -11,7 +11,7 @@ Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 w
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 
-**Decide where Grafana alerts go.** Twelve provisioned rules now evaluate host, exporter, service, and Proxmox availability; filesystem, Proxmox storage, memory, and disk capacity; service latency; UPS state; and hardware temperature. Grafana loaded all 12 on 2026-09-01, every PromQL expression executed, and no threshold was crossed. There is still no external contact point or tested routing policy, so a firing rule remains visible only inside Grafana. Pick the destination, provision the contact point without publishing its credential, route a bounded test alert, and record delivery. [Grafana Alert Rules](Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md).
+**Decide where Grafana alerts go.** Fifteen provisioned rules now evaluate host, exporter, service, Proxmox node and named guest availability; filesystem, Proxmox storage, memory, CPU, load and disk capacity; service latency; UPS state; and hardware temperature. Grafana loaded all 15 by 2026-09-02, every PromQL expression executed, and no threshold was crossed. A Discord webhook is the agreed destination. There is still no external contact point or tested routing policy, so a firing rule remains visible only inside Grafana. Pick the destination, provision the contact point without publishing its credential, route a bounded test alert, and record delivery. [Grafana Alert Rules](Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md), [Guest, CPU and Load Alert Rules](Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md).
 
 **Sweep the two Docker hosts the resolv.conf check could not reach.** The 2026-08-27 TeamSpeak fault was a container that spent 17 days with no nameserver, because Docker copied `/etc/resolv.conf` two seconds before `dhcpcd` wrote it and never revisits that copy. I checked 52 of 60 running containers across the fleet and found no others. The eight on `security-01` and `game-01` need a root shell to check and are still unverified. The loop is in the [change record](../../Teamspeak%20Hosting/Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md#fleet-sweep).
 

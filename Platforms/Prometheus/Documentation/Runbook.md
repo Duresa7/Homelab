@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-02
 
 ## Health Check
 
@@ -71,7 +71,7 @@ panel-edit and Explore reachable so a query can be read; provisioning still refu
 
 ## Change Alert Rules
 
-The alert rules live in `Configuration/grafana/provisioning/alerting/homelab-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 12 rule UIDs remain present, and that no rule instance holds an evaluation error.
+The alert rules live in `Configuration/grafana/provisioning/alerting/homelab-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 15 rule UIDs remain present, and that no rule instance holds an evaluation error.
 
 The rules evaluate inside Grafana. No external contact point is configured yet, so they do not deliver notifications outside Grafana. Do not call alert delivery complete until a destination and routing policy have been selected and tested.
 

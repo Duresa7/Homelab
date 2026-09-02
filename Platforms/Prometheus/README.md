@@ -1,7 +1,7 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-02
 
 I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 49 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
@@ -65,7 +65,7 @@ Until 2026-07-25 the datasource and both imported dashboards existed only inside
 
 `Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 12 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
 
-The 12 rules cover host, exporter, service, and Proxmox availability; filesystem, Proxmox storage, memory, and disk capacity; service latency; UPS state; and hardware temperature. Grafana accepted the provisioned file on 2026-09-01, all 12 PromQL expressions executed against live Prometheus, and no threshold was crossed. I have not configured an external notification destination, so the remaining alerting decision is where Grafana should deliver a firing rule. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md).
+The 15 rules cover host, exporter, service, Proxmox node and named guest availability; filesystem, Proxmox storage, memory, CPU, load and disk capacity; service latency; UPS state; and hardware temperature. Grafana holds all 15 as file-provisioned rules with no evaluation error, and no threshold is crossed against live data as of 2026-09-02. I have not configured an external notification destination, so the remaining alerting decision is where Grafana should deliver a firing rule. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md) and [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md).
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
