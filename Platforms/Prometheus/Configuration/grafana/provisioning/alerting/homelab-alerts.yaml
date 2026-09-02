@@ -291,6 +291,57 @@ groups:
                   operator: {type: and}
                   evaluator: {type: gt, params: [0.5]}
 
+      # A container that keeps dying and being brought back by its restart
+      # policy. cAdvisor's start-time gauge moves on every restart while the
+      # container id, and so the series, stays the same. Four or more moves in
+      # fifteen minutes is a crash loop, not a deploy: a compose recreate gives
+      # a new id and a new series that starts at zero changes. The fleet-wide
+      # maximum on 2026-09-02 was 0. Added 2026-09-02.
+      - uid: homelab-container-restarting
+        title: Container is restart-looping
+        condition: B
+        for: 2m
+        labels:
+          severity: warning
+          category: availability
+        annotations:
+          summary: '{{ $labels.name }} on {{ $labels.host }} restarted {{ humanize $values.A.Value }} times in 15 minutes.'
+          description: >-
+            Docker keeps restarting this container and it keeps exiting. The
+            process is crashing on start: a bad config, a missing dependency,
+            a full disk, or a database it cannot reach. `docker logs` on
+            {{ $labels.host }} says which.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'max by (host, name) (changes(container_start_time_seconds{name!=""}[15m]))'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [3]}
+
   # =====================================================================
   # Running out of something. 5m evaluation and long `for` windows, because
   # none of these need a fast answer and a backup burst should not page.
@@ -673,6 +724,56 @@ groups:
                   operator: {type: and}
                   evaluator: {type: gt, params: [5]}
 
+      # blackbox verifies the wildcard certificate on every probe, so it knows
+      # when the certificate NPM is serving expires. NPM renews on its own
+      # inside the last 30 days, and says nothing either way. On 2026-09-02 the
+      # certificate had 36 days left. Firing at 14 gives a failed renewal two
+      # weeks of warning before the browser gives none. Added 2026-09-02.
+      - uid: homelab-cert-expiring
+        title: TLS certificate is expiring
+        condition: B
+        for: 1h
+        labels:
+          severity: warning
+          category: network
+        annotations:
+          summary: '{{ $labels.instance }} is serving a certificate that expires in {{ humanize $values.A.Value }} days.'
+          description: >-
+            Nginx Proxy Manager should have renewed this already. Check its
+            SSL Certificates page and the Cloudflare DNS token it uses for the
+            DNS-01 challenge. Every internal name shares the one wildcard, so
+            if one fires they all will.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: '(probe_ssl_earliest_cert_expiry - time()) / 86400'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: lt, params: [14]}
+
   # =====================================================================
   # Power and hardware.
   # =====================================================================
@@ -831,3 +932,159 @@ groups:
                   reducer: {type: last, params: []}
                   operator: {type: and}
                   evaluator: {type: gt, params: [80]}
+
+  # =====================================================================
+  # Drive health on the Proxmox nodes. Read from smartmon.prom and nvme.prom,
+  # which the prometheus-node-exporter-collectors package writes every 15
+  # minutes on the four Lenovo nodes. grey-server joins once its textfile
+  # collector is enabled. Added 2026-09-02.
+  # =====================================================================
+  - orgId: 1
+    name: Storage health
+    folder: Homelab Alerts
+    interval: 5m
+    rules:
+      # role="hypervisor" on purpose. The same script reports a QEMU virtio
+      # disk as unhealthy because the virtual disk has no SMART self-assessment
+      # at all, and alpha-prod-01 and ubuntu-dev both read 0 today for exactly
+      # that reason. Only a real drive in a real node counts here.
+      - uid: homelab-smart-unhealthy
+        title: Drive failed its SMART health check
+        condition: B
+        for: 15m
+        labels:
+          severity: critical
+          category: hardware
+        annotations:
+          summary: '{{ $labels.disk }} on {{ $labels.host }} reports SMART overall health FAILED.'
+          description: >-
+            The drive's own controller has decided it is failing. Copy what
+            matters off it now and plan the replacement; the purple-server
+            boot NVMe went from this state to unbootable in three days in
+            July 2026.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'smartmon_device_smart_healthy{role="hypervisor"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: lt, params: [0.5]}
+
+      # The purple-server boot NVMe died on 2026-07-22 with critical warning
+      # 0x04, media placed in read-only mode. Any non-zero bit in this field is
+      # the drive saying something is wrong: spare below threshold, over
+      # temperature, degraded reliability, read-only, or a failed backup
+      # device. All four nodes read 0 on 2026-09-02.
+      - uid: homelab-nvme-critical-warning
+        title: NVMe drive reports a critical warning
+        condition: B
+        for: 5m
+        labels:
+          severity: critical
+          category: hardware
+        annotations:
+          summary: '{{ $labels.device }} on {{ $labels.host }} has critical warning bitmap {{ $values.A.Value }}.'
+          description: >-
+            Run `nvme smart-log` on {{ $labels.host }} to decode the bits.
+            0x04 is media in read-only mode, which is what took purple-server
+            down. Treat it as a failing drive until proven otherwise.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'nvme_critical_warning{role="hypervisor"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0]}
+
+      # Wear, as the drive itself estimates it. purple-server's replacement
+      # drive already reads 30 percent used; the other three are at 11 or
+      # less. Past 90 the vendor no longer guarantees the cells, and past 100
+      # the counter keeps going while the drive keeps working, until it does not.
+      - uid: homelab-nvme-worn
+        title: NVMe drive is nearly worn out
+        condition: B
+        for: 1h
+        labels:
+          severity: warning
+          category: hardware
+        annotations:
+          summary: '{{ $labels.device }} on {{ $labels.host }} is {{ humanizePercentage $values.A.Value }} through its rated write endurance.'
+          description: >-
+            Not urgent, but budget a replacement. This is a percentage of the
+            vendor's rated write endurance, so it climbs slowly and predictably.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'nvme_percentage_used_ratio{role="hypervisor"}'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [0.9]}
