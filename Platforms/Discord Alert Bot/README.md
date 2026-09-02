@@ -3,7 +3,7 @@
 **Created:** 2026-09-02  
 **Last updated:** 2026-09-02
 
-I run a small Discord bot that turns Grafana alerts into messages in the `#bots` channel, posted by the **Anubis AS** bot user. It is the only contact point Grafana has. Before it existed, every one of the 15 alert rules on `monitor-01` evaluated into a receiver named `empty`, so nothing was ever delivered.
+I run a small Discord bot that turns Grafana alerts into messages in the `#bots` channel, posted by the **Anubis AS** bot user. It is the only contact point Grafana has. Before it existed, every one of the 15 alert rules on `monitor-01` evaluated into a receiver named `empty`, so nothing was ever delivered. Delivery was proven on 2026-09-02 with a firing and a resolved message; the ids are in the deployment record.
 
 **Owner:** Homelab infrastructure monitoring
 

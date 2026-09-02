@@ -87,7 +87,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
-| Discord alert bot | `homelab/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; image built 2026-09-02, container not yet started pending its token |
+| Discord alert bot | `homelab/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; running since 2026-09-02, healthy, delivery proven the same day |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of nine scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |

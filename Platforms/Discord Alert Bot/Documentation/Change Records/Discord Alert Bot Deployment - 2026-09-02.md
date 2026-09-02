@@ -4,7 +4,7 @@
 **Last updated:** 2026-09-02
 
 **Implemented:** 2026-09-02  
-**Status:** Grafana side complete and verified; the bot container is built but not started, pending access to its Discord token  
+**Status:** Complete. Delivery proven end to end in both directions  
 **Affected systems:** Grafana, Prometheus and the monitoring Compose project on `monitor-01`
 
 ## Change
@@ -27,7 +27,9 @@ The deploy did not go smoothly, and the record should say so. My first two attem
 
 Through that route, at 11:54:39 AM Eastern, `docker compose up -d grafana prometheus` recreated Grafana. Grafana's provisioner logged `starting to provision alerting` and `finished to provision alerting` 273 milliseconds apart with no error between them. Compose left Prometheus running, because a changed bind-mounted config does not trigger a recreate, so at 11:55:58 AM I restarted it explicitly and it reported ready six seconds later.
 
-The bot image built successfully at 227 MB. I did not start the container: the item holding the Discord token is not in the vault the automation account can read, so `DISCORD_TOKEN` in `.env` is empty. Starting it now would only produce a login failure loop.
+The bot image built at 227 MB. The token item was not in the vault the automation account reads, so the first pass ended with `DISCORD_TOKEN` empty and the container not started. Once the item was moved there, I read it by item id rather than by title, because the colon in the title broke the password manager's secret-reference syntax, wrote `.env` over the stdin of a single SSH session, and started the container at 12:33 PM Eastern. It reported healthy after 22 seconds and its log shows the Discord session ready as the Anubis AS bot user, posting to channel `1495962372936826991`. The Grafana container reaches `http://alert-bot:8080/health` and gets `ok`.
+
+I used one multiplexed SSH connection for that whole pass, because the earlier drop turned out to be UniFi Threat Management matching `ET SCAN Potential SSH Scan OUTBOUND` on my burst of separate connections and blocking them under the Scanning Activity policy.
 
 ## Verification
 
@@ -38,11 +40,11 @@ The bot image built successfully at 227 MB. I did not start the container: the i
 - Prometheus reports 50 active targets after the restart. The `http://alert-bot:8080/health` target scrapes successfully and `probe_success` for it reads 0, which is the correct reading for a bot that is not running.
 - `.env` on the host is mode 600 with three lines.
 - The bot source compiles, and the Compose file, `prometheus.yml` and both provisioning files parse; `promtool check config` returned SUCCESS.
-
-I have not verified a message in Discord. That needs the bot running, and is the first thing to do once the token is reachable.
+- After the bot started, `probe_success` for its health endpoint reads 1, Prometheus reports 50 of 50 targets up, and no rule is firing.
+- **Delivery, firing.** A throwaway rule with `vector(1)` created at 12:34:10 PM was posted by the bot at 12:35:10 PM as Discord message `1544747525821431839`: one evaluation plus the 30-second `group_wait`.
+- **Delivery, resolved, twice.** Deleting that rule did produce a resolved message, at 12:40:10 PM as message `1544748783970295980`: exactly one `group_interval` after the firing post, not immediately, and later than the three and a half minutes I first waited before concluding it had not come. Because I doubted it at the time, I ran a second throwaway rule that clears on its own, true for 100 seconds after creation through `vector(time() - <start> < bool 100)`. It posted firing at 12:40:10 PM as message `1544748784054046801` and resolved at 12:45:10 PM as message `1544750042014031996`, again one `group_interval` later. So a resolved notification, whether from a rule clearing or from a rule being deleted, arrives at the next five-minute flush. Both rules are deleted and the 15 provisioned rules remain.
 
 ## Remaining Work
 
-1. Move the Discord token item into the vault the automation account reads, write it into `.env`, start `alert-bot`, and prove delivery with one throwaway rule that fires and resolves. Then record the message ids.
-2. Find what drops SSH from `ubuntu-dev` to `monitor-01` on port 22. Tracked in the root TODO.
-3. Until the bot runs, the rule "Internal service is unreachable" will fire for its health endpoint, and Grafana will fail to deliver that alert to the bot that is the subject of it. That is a true positive and clears itself when the bot starts.
+1. UniFi Threat Management blocks SSH bursts from `ubuntu-dev` as a scan. The agent hosts need a signature suppression for `ET SCAN Potential SSH Scan OUTBOUND` scoped to their source addresses, or the agents keep one multiplexed connection per host. Tracked in the root TODO.
+2. The bot posts only. Slash commands such as a `/status` that reads Prometheus are a separate project.
