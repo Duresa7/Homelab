@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-02
 
 ## Deployment Layout
 
@@ -68,9 +68,12 @@ For the Docker MCP Gateway integrations, confirm all of the following in Executo
 - Integration `unifi-mcp-gateway` points to `http://192.168.40.39:8811/mcp`, and personal connection `unifiMcpGateway` reports healthy.
 - A refresh of `unifiMcpGateway` discovers 5 names under `unifi_`.
 - Executor can execute `unifi-mcp-gateway.user.unifiMcpGateway.unifi_tool_index`.
+- The UniFi connection identity label is `UniFi MCP`, and its description is `Full UniFi Network read, create, update, and delete access.`
+- Executor has no tool policy targeting the UniFi connection. A no-confirm mutation probe reaches the handler without returning `requires_confirmation`.
 - Integration `ssh-manager-mcp-gateway` points to `http://192.168.40.39:8812/mcp`, and personal connection `sshManagerMcpGateway` reports healthy.
 - A refresh of `sshManagerMcpGateway` discovers 37 names under `ssh_` while SSH Manager remains at 3.8.5.
 - Executor can execute `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers`.
+- The SSH Manager connection identity label is `SSH Manager MCP`, and its description is `SSH Manager access.`
 - `ssh_list_servers` returns all 18 catalog entries. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other twelve return UID `0` through `ssh_execute_sudo`.
 - Both integrations have empty static request-header maps. Each bearer token belongs in its connection's encrypted credential.
 - The retired `docker-mcp-gateway` integration and `dockerMcpGateway` connection remain absent.
