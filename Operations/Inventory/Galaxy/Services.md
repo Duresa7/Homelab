@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-02
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -97,7 +97,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Docker MCP Gateway | Version 0.43.3 from a digest-pinned official image; Compose under `/opt/docker/mcp-gateway`; separate bearer-authenticated Streamable HTTP endpoints at `192.168.40.39:8811` for UniFi Network and `192.168.40.39:8812` for SSH Manager 3.8.5; 5 UniFi gateway tools and 37 SSH tools; all 18 SSH targets verified reachable |
+| Docker MCP Gateway | Version 0.43.3 from a digest-pinned official image; Compose under `/opt/docker/mcp-gateway`; separate bearer-authenticated Streamable HTTP endpoints at `192.168.40.39:8811` for UniFi Network and `192.168.40.39:8812` for SSH Manager 3.8.5; 5 UniFi gateway tools and 37 SSH tools; all 18 SSH targets verified reachable; SSH Manager server runs long-lived since 2026-09-02 |
 | Executor | Self-hosted 1.6.7 from a digest-pinned image; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; administrator claimed; separate healthy personal connections for UniFi MCP Gateway with 5 tools and SSH Manager MCP Gateway with 37 tools |
 | RustDesk | `hbbs` and `hbbr` using `rustdesk/rustdesk-server:latest` |
 | Portainer Edge Agent | `portainer/agent:2.45.0`; environment 7; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-01 |

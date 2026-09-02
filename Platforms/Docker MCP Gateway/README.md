@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-02
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -29,6 +29,7 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 | SSH Manager version | 3.8.5, 37 tools, 18 configured servers |
 | UniFi controller | `192.168.1.1:443`, site `default` |
 | Catalogs | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml`, `.../ssh-manager.yaml` |
+| SSH Manager server lifetime | `--long-lived`: one managed container for the gateway's lifetime, shared across client sessions |
 | Restart policy | `unless-stopped` |
 
 Both MCP endpoints use Streamable HTTP and require different bearer tokens. The tokens are held in the approved credential store and the live `.env`; they are not in this repository. Executor reaches each internal HTTP endpoint directly through separate personal connections named `unifiMcpGateway` and `sshManagerMcpGateway`. No DNS record or TLS proxy fronts either gateway endpoint.
@@ -76,13 +77,13 @@ docker compose up -d --force-recreate ssh-manager-gateway
 
 Record the resolved version, then verify with an `ssh_list_servers` call and one `ssh_execute` against a reachable host.
 
-SSH Manager is marked `longLived` because its `ssh_session_*` tools keep interactive shell state between calls. The gateway starts one managed container per MCP session, and a client should close a finished Streamable HTTP session with `DELETE`. Check for a container left by an interrupted client with:
+SSH Manager is marked `longLived` because its `ssh_session_*` tools keep interactive shell state between calls, and since 2026-09-02 the gateway runs with `--long-lived`, so it starts one managed container and shares it across every client session for as long as the gateway runs. Executor opens a new MCP session on every `execute` call and never closes it; without the gateway flag, each call left its own container and stdio bridge behind until the gateway hit its 256-process limit after about eighteen hours. Exactly one managed container is the expected state:
 
 ```bash
 docker ps --filter label=docker-mcp-name=ssh-manager
 ```
 
-When no client still owns the session, stop the exact container. Docker removes it through `--rm`; the `ssh-manager-state` volume retains enrolled host keys and other durable server state.
+A second container is a fault, not a leftover. Restart the gateway to reset the server's interactive session state; Docker removes the managed container through `--rm`, and the `ssh-manager-state` volume retains enrolled host keys and other durable server state.
 
 ## Records
 
@@ -102,6 +103,7 @@ When no client still owns the session, stop the exact container. Docker removes 
 - [UniFi full agent access](Documentation/Change%20Records/UniFi%20Full%20Agent%20Access%20-%202026-09-01.md)
 - [SSH Manager MCP integration](Documentation/Change%20Records/SSH%20Manager%20MCP%20Integration%20-%202026-08-31.md)
 - [SSH Manager fleet reach completion](Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md)
+- [SSH Manager gateway process exhaustion](Documentation/Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md)
 - [Executor integration](../Executor/Documentation/Change%20Records/Docker%20MCP%20Gateway%20Integration%20-%202026-08-31.md)
 - [Executor integration separation](../Executor/Documentation/Change%20Records/MCP%20Integration%20Separation%20-%202026-08-31.md)
 

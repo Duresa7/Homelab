@@ -58,7 +58,6 @@ services:
       - --catalog=ssh-manager.yaml
       - --servers=ssh-manager
       - --secrets=/run/secrets/ssh_manager_secret
-      - --long-lived
       - --cpus=1
       - --memory=512Mb
       - --watch=true
