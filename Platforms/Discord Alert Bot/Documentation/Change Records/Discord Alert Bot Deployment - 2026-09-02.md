@@ -46,5 +46,10 @@ I used one multiplexed SSH connection for that whole pass, because the earlier d
 
 ## Remaining Work
 
-1. UniFi Threat Management blocks SSH bursts from `ubuntu-dev` as a scan. The agent hosts need a signature suppression for `ET SCAN Potential SSH Scan OUTBOUND` scoped to their source addresses, or the agents keep one multiplexed connection per host. Tracked in the root TODO.
-2. The bot posts only. Slash commands such as a `/status` that reads Prometheus are a separate project.
+1. The bot posts only. Slash commands such as a `/status` that reads Prometheus are a separate project.
+
+## Follow-up the same day
+
+The SSH blocks were UniFi Threat Management matching `ET SCAN Potential SSH Scan OUTBOUND`, and this was the second time: the existing Detection Exclusion for `192.168.85.2` had been added for the same symptom on `docker-network`. Rather than add a second host, I excluded the one signature under Detection Exclusions, which keeps every other detection live on the automation hosts, and removed the `192.168.85.2` host exclusion so `docker-network` is inspected again. I made both changes in the controller interface; the UniFi MCP catalog exposes no exclusion tool, so the second change is recorded from what I did rather than from an API read.
+
+Verification at 4:19 PM Eastern: twelve separate SSH connections from `ubuntu-dev` to `monitor-01` in two seconds all succeeded, and a thirteenth immediately after still reached the host. That is the burst that was blocked at 11:44 AM.
