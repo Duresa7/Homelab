@@ -5,7 +5,7 @@ registry:
   unifi-network:
     title: UniFi Network
     type: server
-    image: ghcr.io/sirkirby/unifi-network-mcp:latest
+    image: homelab/unifi-network-mcp:0.29.3-full-access
     description: Manage and query the UniFi Network controller through MCP.
     readme: https://github.com/sirkirby/unifi-mcp/tree/main/apps/network
     allowHosts:
@@ -38,13 +38,13 @@ registry:
       - name: UNIFI_NETWORK_REDACT_SENSITIVE_FIELDS
         value: "true"
       - name: UNIFI_NETWORK_TOOL_PERMISSION_MODE
-        value: confirm
+        value: bypass
       - name: UNIFI_POLICY_NETWORK_CREATE
-        value: "false"
+        value: "true"
       - name: UNIFI_POLICY_NETWORK_UPDATE
-        value: "false"
+        value: "true"
       - name: UNIFI_POLICY_NETWORK_DELETE
-        value: "false"
+        value: "true"
     metadata:
       category: network
       tags:
