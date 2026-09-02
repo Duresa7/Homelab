@@ -5,7 +5,7 @@
 
 ## Health Check
 
-On `monitor-01`, the stack is healthy when the Compose project's five containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is the sixth container on the host and belongs to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion.
+On `monitor-01`, the stack is healthy when the Compose project's six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is the sixth container on the host and belongs to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion.
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
@@ -73,7 +73,7 @@ panel-edit and Explore reachable so a query can be read; provisioning still refu
 
 The alert rules live in `Configuration/grafana/provisioning/alerting/homelab-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 15 rule UIDs remain present, and that no rule instance holds an evaluation error.
 
-The rules evaluate inside Grafana. No external contact point is configured yet, so they do not deliver notifications outside Grafana. Do not call alert delivery complete until a destination and routing policy have been selected and tested.
+Delivery is `contact-points.yaml` in the same directory: one webhook contact point into the `alert-bot` container and the root policy that routes to it. Its bearer secret is `$ALERT_BOT_SECRET`, which Grafana reads from its environment, which Compose reads from the untracked mode-0600 `.env` beside `docker-compose.yml`. Changing that secret means recreating both `grafana` and `alert-bot`. Do not call a delivery change complete until one throwaway rule has fired and its message has appeared in `#bots`.
 
 ## Rollback
 

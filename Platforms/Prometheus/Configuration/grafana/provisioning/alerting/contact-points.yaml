@@ -1,0 +1,37 @@
+# Where a firing alert goes, deployed at
+# /home/dkadi/monitoring/grafana/provisioning/alerting/ on monitor-01.
+#
+# Before 2026-09-02 there was no contact point at all and the root policy's
+# receiver was literally named `empty`, so every rule in homelab-alerts.yaml
+# evaluated into silence. This file replaces that.
+#
+# The receiver is the Discord alert bot, reached over the Compose network. The
+# shared secret is interpolated from the Grafana container's environment; the
+# value lives in the untracked .env beside docker-compose.yml and in the
+# password manager, never here.
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: discord-bot
+    receivers:
+      - uid: homelab-discord-bot
+        type: webhook
+        disableResolveMessage: false
+        settings:
+          url: http://alert-bot:8080/grafana
+          httpMethod: POST
+          authorization_scheme: Bearer
+          authorization_credentials: $ALERT_BOT_SECRET
+
+policies:
+  - orgId: 1
+    receiver: discord-bot
+    group_by: [grafana_folder, alertname]
+    # Wait 30s so a host going down arrives as one message, not one per rule
+    # that noticed it. Re-send a still-firing alert every four hours, which is
+    # a reasonable nag for a homelab and stops Grafana repeating itself every
+    # evaluation.
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 4h

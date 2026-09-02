@@ -135,6 +135,11 @@ scrape_configs:
           - https://splunk.alphasecunited.com/
           - https://ts3-manager.alphasecunited.com/
           - https://games.alphasecunited.com/
+          # The Discord alert bot's own health endpoint, over the Compose
+          # network. /health answers 200 only while its Discord session is
+          # ready, so a dead bot trips "Internal service is unreachable" rather
+          # than silently swallowing every alert. Added 2026-09-02.
+          - http://alert-bot:8080/health
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target

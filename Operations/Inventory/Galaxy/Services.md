@@ -25,7 +25,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
-| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
+| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.77.1 / dashboard 2.91.1<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
@@ -82,11 +82,12 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 49 of 49 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 19, NUT 1, & self-scrape 1 |
-| Grafana | 13.2.0 on TCP 3000; 27 provisioned dashboards and 12 provisioned alert rules; no external alert destination configured; administrator credential held outside this repository |
+| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 50 of 50 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 20 (19 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
+| Grafana | 13.2.0 on TCP 3000; 27 provisioned dashboards and 15 provisioned alert rules; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
+| Discord alert bot | `homelab/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; image built 2026-09-02, container not yet started pending its token |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of nine scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |

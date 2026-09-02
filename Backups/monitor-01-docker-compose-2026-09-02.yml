@@ -1,8 +1,13 @@
 # Monitoring stack on monitor-01, deployed at
 # /home/dkadi/monitoring/docker-compose.yml
 #
+# Publication note: the three URL values below carry a redaction placeholder in
+# the repository copy and the real internal base domain in the deployed copy at
+# /home/dkadi/monitoring/. Same convention as the Ansible
+# fleet-updates inventory.
+#
 # cAdvisor is deliberately absent here. Ansible owns it as its own compose
-# project at /opt/docker/cadvisor so one playbook covers all nine Docker hosts
+# project at /opt/docker/cadvisor so one playbook covers all eight Docker hosts
 # identically, including this one.
 services:
   prometheus:
@@ -30,9 +35,22 @@ services:
       - GF_SERVER_DOMAIN=grafana.alphasecunited.com
       - GF_SERVER_ROOT_URL=https://grafana.alphasecunited.com
       - GF_SERVER_PROTOCOL=http
-      # GF_DATABASE_WAL is deliberately absent. It worked with Grafana 12.4.1,
-      # but Grafana 13 reads the variable while leaving SQLite in rollback-journal
-      # mode. Detail is in Troubleshooting issue 4.
+      # Write-ahead logging on the SQLite database. Added 2026-07-26 after 25
+      # `database is locked` errors in 10 hours, spread across background jobs:
+      # provisioning re-walks, alert rule saves, remote-cache GC, token and login
+      # cleanup, SSO settings, snapshot expiry. In SQLite's default rollback-journal
+      # mode a reader blocks the writer, and Grafana's own housekeeping runs enough
+      # concurrent work to hit that on its own with a single user. WAL lets readers
+      # and the writer proceed together.
+      #
+      # This line does nothing on Grafana 13.1.1. The setting is read and logged,
+      # but the database stays in rollback-journal mode under the
+      # modernc.org/sqlite driver: no -wal file, no -shm file, and header bytes 18
+      # and 19 read 1 rather than 2. It worked on 12.4.1. Kept only until the
+      # 2026-07-27 error count decides between removing it and setting the journal
+      # mode on the file directly, because a recreate to drop it now would reset
+      # the log that count reads. Detail in Troubleshooting issue 4.
+      - GF_DATABASE_WAL=true
       # 12-hour clock everywhere in the UI. Grafana's [date_formats] defaults are
       # 24-hour (HH:mm), so each interval is overridden explicitly rather than
       # relying on the viewer's browser locale. Added 2026-07-28.
@@ -44,11 +62,6 @@ services:
       - GF_DATE_FORMATS_INTERVAL_DAY=MM/DD
       - GF_DATE_FORMATS_INTERVAL_MONTH=YYYY-MM
       - GF_DATE_FORMATS_INTERVAL_YEAR=YYYY
-      # Shared secret Grafana presents to the Discord alert bot as a bearer
-      # token. Interpolated by Compose from the untracked mode-0600 .env beside
-      # this file, then by Grafana into provisioning/alerting/contact-points.yaml
-      # as $ALERT_BOT_SECRET. Added 2026-09-02.
-      - ALERT_BOT_SECRET=${ALERT_BOT_SECRET}
     volumes:
       - grafana_data:/var/lib/grafana
       # Directory mounts, not single-file mounts, so the inode problem above
@@ -84,9 +97,9 @@ services:
     ports:
       - "9115:9115"
 
-  # Proxies Prometheus reads of UPS-02 from grey-server over NUT on TCP 3493.
-  # NUT needs no credential here: upsd.users is empty and anonymous reads are
-  # permitted. UPS-01 is absent while its data cable remains disconnected.
+  # Reads the NUT servers on red-server (ups01) and grey-server (ups02) over the
+  # NUT protocol on 3493. NUT needs no credential here: upsd.users is empty on
+  # both hosts and anonymous reads are permitted.
   nut-exporter:
     image: hon95/prometheus-nut-exporter:1
     container_name: nut-exporter
@@ -95,22 +108,6 @@ services:
       - TZ=America/New_York
     ports:
       - "9995:9995"
-
-  # Discord alert bot. Grafana's only contact point posts to this container's
-  # /grafana endpoint over the Compose network; the bot posts each alert to the
-  # #bots channel as the Anubis AS bot user. Nothing is published on the LAN.
-  # Source is versioned at Platforms/Discord Alert Bot/Source/ and deployed to
-  # ./alert-bot/. Both secrets come from the untracked .env. Added 2026-09-02.
-  alert-bot:
-    build: ./alert-bot
-    image: homelab/alert-bot:1
-    container_name: alert-bot
-    restart: unless-stopped
-    environment:
-      - DISCORD_TOKEN=${DISCORD_TOKEN}
-      - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID}
-      - ALERT_BOT_SECRET=${ALERT_BOT_SECRET}
-      - TZ=America/New_York
 
 volumes:
   prometheus_data:

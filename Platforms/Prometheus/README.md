@@ -3,7 +3,7 @@
 **Created:** 2026-07-13  
 **Last updated:** 2026-09-02
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 49 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 50 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation.
 
@@ -35,7 +35,7 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 
 ## Containers on monitor-01
 
-Seven containers run on the host from three Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, and `nut-exporter` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other eight Docker hosts. PeaNUT runs from `/opt/docker/peanut`.
+Eight containers belong to the host across three Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other eight Docker hosts. PeaNUT runs from `/opt/docker/peanut`.
 
 The 2026-08-10 restart exposed a limit in the old policy: Docker held `HasBeenManuallyStopped=true` for Prometheus, so `unless-stopped` skipped it while the other containers returned. I changed Prometheus alone to `restart: always`, started it, and verified both readiness paths, 52 healthy targets, and 20 passing probes. The diagnosis and correction are in [issue 5](Documentation/Troubleshooting/Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md).
 
@@ -48,14 +48,14 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, ubuntu-dev (configured `host` label `ubuntu-dev`), game-01 |
 | `cadvisor` | all 9 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01, game-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
-| `blackbox` | the 19 service names published through NPM |
+| `blackbox` | the 19 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS Pro BR1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
 its administrative API disabled, no historical label from the retired lab
-workload, and all 49 targets up.
+workload, and all 50 targets up.
 
 cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. A 2026-07-28 Prometheus query returned 11 on `docker-main`, 5 on `docker-network`, 4 on `docker-blue`, 10 on `media-01`, 8 on `alpha-prod-01`, 7 on `app-01`, 1 on `security-01`, & 7 on `monitor-01`. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
@@ -65,7 +65,7 @@ Until 2026-07-25 the datasource and both imported dashboards existed only inside
 
 `Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 12 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
 
-The 15 rules cover host, exporter, service, Proxmox node and named guest availability; filesystem, Proxmox storage, memory, CPU, load and disk capacity; service latency; UPS state; and hardware temperature. Grafana holds all 15 as file-provisioned rules with no evaluation error, and no threshold is crossed against live data as of 2026-09-02. I have not configured an external notification destination, so the remaining alerting decision is where Grafana should deliver a firing rule. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md) and [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md).
+The 15 rules cover host, exporter, service, Proxmox node and named guest availability; filesystem, Proxmox storage, memory, CPU, load and disk capacity; service latency; UPS state; and hardware temperature. Grafana holds all 15 as file-provisioned rules with no evaluation error, and no threshold is crossed against live data as of 2026-09-02. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user. The bot container is built but waits on its token; until it runs, alerts are accepted by Grafana and fail delivery, and its own health probe will report it down. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md) and [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md).
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
