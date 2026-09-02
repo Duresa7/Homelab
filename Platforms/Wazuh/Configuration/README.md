@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-09-01
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -9,7 +9,7 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 
 | Item | Value |
 |---|---|
-| Host | `security-01` / `wazuh-01` |
+| Host | `security-01` |
 | Address | `192.168.72.2/24`, Security-A/VLAN 72 |
 | Agent events | TCP 1514 |
 | Enrollment | TCP 1515 |

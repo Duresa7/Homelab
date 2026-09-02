@@ -1,9 +1,9 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-01
 
-Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.6-1. Those services and the API run on `security-01` / `wazuh-01` at `192.168.72.2` on Security-A/VLAN 72.
+Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.7-1, verified on 2026-09-01. Those services and the API run on `security-01` at `192.168.72.2` on Security-A/VLAN 72. The guest answered to the hostname `wazuh-01` until 2026-09-01; see [Hostname Rename to security-01](Documentation/Change%20Records/Hostname%20Rename%20to%20security-01%20-%202026-09-01.md).
 
 **Owner:** Homelab security monitoring
 

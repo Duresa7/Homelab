@@ -13,7 +13,7 @@ Two of the nine steps are corrections rather than construction. That ratio is ho
 
 ## Current Status and Verified Versions
 
-`wazuh-01` at `192.168.72.2` runs Wazuh 4.14.7 with the manager, indexer & dashboard active, & 16 agents reporting Active including the manager's own agent 000. `splunk-siem` at `192.168.72.3` runs Splunk Enterprise 10.4.0 build `f798d4d49089` with Enterprise Security, listening on 8000, 8088, 8089, 1514 & 9997. The Universal Forwarder on `wazuh-01` is 10.4.0, the same build, holding an established connection to `192.168.72.3:9997`.
+`security-01` at `192.168.72.2` runs Wazuh 4.14.7 with the manager, indexer & dashboard active, & 16 agents reporting Active including the manager's own agent 000. `splunk-siem` at `192.168.72.3` runs Splunk Enterprise 10.4.0 build `f798d4d49089` with Enterprise Security, listening on 8000, 8088, 8089, 1514 & 9997. The Universal Forwarder on `security-01` is 10.4.0, the same build, holding an established connection to `192.168.72.3:9997`. The host answered to `wazuh-01` until 2026-09-01, which is the name the screenshots & step checks below still show.
 
 Both hosts sit on Security-A, VLAN 72, so this traffic never reaches the gateway & needed no UniFi firewall policy. Root on `splunk-siem` is 142 GB with 93 GB free. The `wazuh` index keeps 30 days or 5 GB, whichever comes first.
 
