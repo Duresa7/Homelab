@@ -45,7 +45,7 @@ The bot was rebuilt on `monitor-01` at 2:01 AM with the size limits and again at
 
 ## Verification
 
-The Updates batch that had failed eight times was accepted at Grafana's next retry after the 2:01 AM rebuild, which the bot's log records as posted messages with Discord ids. The Splunk path was proven with a real saved search once its suppression window lapsed; both results are in the [Splunk delivery record](../../../Splunk/Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
+The Updates batch that had failed eight times was accepted at Grafana's next retry after the 2:01 AM rebuild: two `UPDATES INFO: Container image has an update` messages at 2:27:43 AM, ids `1544957045353226292` and `1544957047005782107`, each with six fields and no silence link. The channel's message history read through the bot's own token confirms them, and confirms that the other two Updates groups had already landed the previous evening before the image group first fired: the condensed 16-host security-updates message at 8:27 PM and the OS-updates message at 8:57 PM. The failure was confined to the one group whose metric carries fifteen labels. The Splunk path was proven with a real saved search once its suppression window lapsed; both results are in the [Splunk delivery record](../../../Splunk/Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
 
 ## What I would do differently
 

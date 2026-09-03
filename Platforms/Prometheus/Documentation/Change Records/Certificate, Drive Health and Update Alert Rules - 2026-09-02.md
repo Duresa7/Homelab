@@ -54,7 +54,8 @@ The Updates rules fired for the first time at 10:27 PM Eastern on 2026-09-02, an
 - Prometheus reports 56 active targets and 56 up, six of them in the `wud` job.
 - The drive rules have something to evaluate: 11 SMART health series and 5 NVMe critical-warning series carry `role="hypervisor"`.
 - The update metrics cover the fleet. At 2:10 AM on 2026-09-03, 16 hosts reported at least one pending security upgrade, 17 reported some pending upgrade, none required a reboot, and two containers had a newer tag available: `forgejo` on `docker-main` and `playit-agent` on `alpha-prod-01`.
-- `python3 Tests/assert_targets.py` passes against the live target set.
+- `python3 Tests/assert_targets.py` passed against the live target set at 2:21 AM on 2026-09-03: 56 expected targets present and all up, 36 scraped exporters and 20 blackbox services, no stale address.
+- **Delivery, read back from the channel itself.** At 8:27:48 PM on 2026-09-02 the bot posted `UPDATES WARNING: Security updates are waiting (16)` as message `1544866468976398357`, one condensed embed for sixteen hosts with a 733-character list. At 8:57:45 PM it posted `UPDATES INFO: OS updates are waiting` for the one host with no security upgrade among its pending ones, message `1544874008212672573`. The image-update group, which first fired at 10:27 PM and failed eight times, was accepted at Grafana's 2:27:43 AM retry as messages `1544957045353226292` and `1544957047005782107`, one per container because two is below the condensing threshold. No message has repeated since.
 
 I created no snapshot or backup. The versioned files rebuild every rule and route, and Grafana's data volume holds only evaluation state.
 
@@ -64,4 +65,4 @@ I created no snapshot or backup. The versioned files rebuild every rule and rout
 
 **Digest-pinned images and `lscr.io` images are not watched.** A digest-pinned image has nothing newer to match, and LinuxServer's registry needs a GitHub token, which I have not issued to six hosts for this. Those containers are counted but never report an update.
 
-**Grafana's admin credential is not in the Compose environment.** Reading rule state through the API needs a credential I do not keep on the host, so after the 2026-09-03 bot fix I proved delivery from the bot's own log rather than from Grafana's state API.
+**Grafana's admin credential is not in the Compose environment.** Reading rule state through the API needs a credential I do not keep on the host, so after the 2026-09-03 bot fix I proved delivery from the bot's log and from the channel's own message history rather than from Grafana's state API. Grafana's log still shows the rule router handing 16 security-update alerts and one OS-update alert to the notifier every 15 minutes, which is the evaluation working; the one-year repeat interval is what keeps those from becoming messages.

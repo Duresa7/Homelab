@@ -23,7 +23,7 @@ Port 8080 is now published on the host for that reason; before this it existed o
 
 I copied `alert_bot.py` to `/home/dkadi/monitoring/alert-bot/` and rebuilt with `docker compose up -d --build alert-bot`, and replaced the Compose file so the port and the variable took effect. The bot reported healthy and its Discord session ready after each rebuild.
 
-I proved the endpoint from three directions on 2026-09-02: a test payload sent from `splunk-siem` with `curl` was posted to Discord as `SECURITY Splunk delivery test`, the same payload from `ubuntu-dev` at `192.168.40.179` got a 403, and from `monitor-01` itself over the loopback address it got a 403. The UniFi policy `Allow splunk-siem to alert bot` was created for the path; it is in [Monitoring Ports for What's Up Docker and the Alert Bot](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Monitoring%20Ports%20for%20What's%20Up%20Docker%20and%20the%20Alert%20Bot%20-%202026-09-02.md).
+I proved the endpoint from three directions on 2026-09-02: a test payload sent from `splunk-siem` with `curl` was posted to Discord at 7:52 PM as `SECURITY Splunk delivery test`, message `1544857589014069351`, the same payload from `ubuntu-dev` at `192.168.40.179` got a 403, and from `monitor-01` itself over the loopback address it got a 403. The UniFi policy `Allow splunk-siem to alert bot` was created for the path; it is in [Monitoring Ports for What's Up Docker and the Alert Bot](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Monitoring%20Ports%20for%20What's%20Up%20Docker%20and%20the%20Alert%20Bot%20-%202026-09-02.md).
 
 The first real Updates batch then failed for three and a half hours, because a silence link built from fifteen labels passed Discord's field limit, and the first real Splunk post failed because Splunk's results link used a bare hostname. Both are in [Discord Rejected Every Updates Batch](../Troubleshooting/Discord%20Rejected%20Every%20Updates%20Batch%20-%202026-09-03.md). The bot now measures every field, keeps the embed under 6000 characters, and validates URLs. The final build went live at 2:07 AM on 2026-09-03 with `alert_bot.py` at SHA-256 `aeb1bf62006191d29659170d044e909062551a432548291a28ecbeb808b8ed5c`, matching the repository.
 
@@ -31,6 +31,7 @@ The first real Updates batch then failed for three and a half hours, because a s
 
 - `curl -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/health` on `monitor-01` returns 200 and the log shows `discord ready as Anubis AS#9583`.
 - The 403 path is proven from two addresses and the accept path from `splunk-siem`, above.
+- The condensed embed works on real data: `UPDATES WARNING: Security updates are waiting (16)` at 8:27 PM on 2026-09-02, message `1544866468976398357`, is one message for sixteen hosts.
 - `docker exec alert-bot sha256sum /app/alert_bot.py` matches the repository file.
 - Delivery of the condensed Updates messages and of a real Splunk saved search are recorded in the [Prometheus](../../../Prometheus/Documentation/Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md) and [Splunk](../../../Splunk/Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md) records.
 
