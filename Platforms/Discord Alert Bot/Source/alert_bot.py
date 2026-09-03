@@ -146,7 +146,7 @@ def build_embed(alert: dict) -> discord.Embed:
     if not resolved and ann.get("description"):
         embed.add_field(name="Detail", value=ann["description"][:1024], inline=False)
     add_silence_field(embed, alert.get("silenceURL"), resolved)
-    embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'Homelab Alerts')}")
+    embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'AlphaSec United Alerts')}")
     return fit_embed(embed)
 
 
@@ -167,7 +167,7 @@ def build_condensed_embed(alerts: list[dict]) -> discord.Embed:
         url=safe_url(first.get("dashboardURL") or first.get("generatorURL")),
     )
     add_silence_field(embed, first.get("silenceURL"), resolved)
-    embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'Homelab Alerts')}")
+    embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'AlphaSec United Alerts')}")
     return fit_embed(embed)
 
 

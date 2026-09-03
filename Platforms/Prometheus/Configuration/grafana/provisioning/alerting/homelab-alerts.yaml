@@ -28,7 +28,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Availability
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 1m
     rules:
       # The plain "a machine stopped answering" alert.
@@ -348,7 +348,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Capacity
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 5m
     rules:
       # ZFS is excluded here on purpose. All three zfs mountpoints belong to the
@@ -674,7 +674,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Network
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 1m
     rules:
       # Network lag on the path people actually use. Every probe on 2026-08-31
@@ -779,7 +779,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Power and hardware
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 1m
     rules:
       # UPS-02 carries every Galaxy node, the gateway, the switch and the ONT.
@@ -941,7 +941,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Storage health
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 5m
     rules:
       # role="hypervisor" on purpose. The same script reports a QEMU virtio
@@ -1104,7 +1104,7 @@ groups:
   # =====================================================================
   - orgId: 1
     name: Updates
-    folder: Homelab Alerts
+    folder: AlphaSec United Alerts
     interval: 15m
     rules:
       # Security patches waiting. On 2026-09-02 eleven hosts had some, and the
