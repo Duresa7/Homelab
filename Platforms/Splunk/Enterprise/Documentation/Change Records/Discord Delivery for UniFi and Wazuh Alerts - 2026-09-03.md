@@ -73,4 +73,6 @@ The credential I used for the REST calls lived in a mode-600 file in my home dir
 
 ## End-to-end proof
 
-Pending at the time of the first write of this record: the malware search's two results were inside their one-hour suppression from the 2:02 AM dispatch. The proof paragraph is completed below once the window lapsed.
+The malware search's two rows had been inside their one-hour suppression since the 2:02 AM dispatch, so the proof waited for the window. At 3:04:13 AM I dispatched `Wazuh - Malware or high severity` over the last ten days with actions enabled. The scheduler log recorded `status=success`, `result_count=2`, `suppressed=0`, `alert_actions=webhook`. `sendmodalert` ran the action twice, once per row, each ending in `Webhook receiver responded with HTTP status=200` and `exit code=0`, with payloads of 801 and 876 bytes to `http://192.168.73.2:8080/splunk`. The bot logged both requests from `192.168.72.3` and posted them as `SECURITY Malware or high severity`, Discord messages `1544966233340772434` and `1544966235211698239`, at 3:04:14 AM. They describe the EICAR test file on `ubuntu-dev` that the 2026-08-30 malware detection work planted, once from the local known-bad hash list and once from VirusTotal, which is the right pair of messages for that file.
+
+The credential file I used for the REST calls was shredded at 3:05 AM and the home directory holds no other Splunk credential.
