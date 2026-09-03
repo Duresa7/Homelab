@@ -64,6 +64,7 @@ SPLUNK_FIELDS = (
     "src", "src_ip", "dest_ip", "dest_port", "ports", "rule", "signature", "action",
     "count", "targets", "agent.name", "Machine", "Last", "Silent", "user",
     "rule.id", "rule.level", "rule.description", "syscheck.path", "src_zone", "dest_zone",
+    "permalink",
 )
 # A notification carrying this many alerts with the same name and status is
 # collapsed into one embed that lists them, so a host going down or a batch of
@@ -120,10 +121,23 @@ def add_silence_field(embed: discord.Embed, silence_url: str | None, resolved: b
 
 
 def fit_embed(embed: discord.Embed) -> discord.Embed:
-    """Trim the description until the embed is under Discord's total size."""
-    while len(embed) > EMBED_LIMIT and embed.description:
-        excess = len(embed) - EMBED_LIMIT
-        embed.description = embed.description[: max(0, len(embed.description) - excess - 1)] + "…"
+    """Bring the embed under Discord's total size, description first, fields second.
+
+    Everything except the description is treated as a floor. If the floor
+    itself fits, the description is cut once to the room that is left; if it
+    does not, the description goes entirely and then the fields do. No loop:
+    an earlier version trimmed in a loop and could never make progress once
+    the description was down to the ellipsis, which would have hung the event
+    loop and with it every endpoint on the bot.
+    """
+    if len(embed) <= EMBED_LIMIT:
+        return embed
+    description = embed.description or ""
+    floor = len(embed) - len(description)
+    if floor < EMBED_LIMIT:
+        embed.description = description[: EMBED_LIMIT - floor - 1] + "…"
+        return embed
+    embed.description = None
     if len(embed) > EMBED_LIMIT:
         embed.clear_fields()
     return embed

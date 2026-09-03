@@ -36,12 +36,12 @@ Two limits in Discord's embed validation, neither of which the bot checked.
 In [alert_bot.py](../../Source/alert_bot.py):
 
 - `add_silence_field` builds the link and adds the field only when the value fits in 1024 characters. A message without a silence link is still a message.
-- `fit_embed` trims the description until the embed's total length is under Discord's 6000-character limit, and drops the fields if that is still not enough. Every embed passes through it.
+- `fit_embed` brings the embed under Discord's 6000-character total: it cuts the description once to the room the title, fields and footer leave, and if those alone pass the limit it drops the description and then the fields. Every embed passes through it. The first version of this function trimmed in a loop, and a code review the same morning found that the loop could never finish once the description was down to a single ellipsis while the fields still exceeded the limit, which would have hung the event loop and with it every endpoint on the bot. It was rewritten without the loop, checked against five constructed cases, and redeployed at 4:00 AM.
 - `safe_url` accepts a URL only if it is `http` or `https` and its host contains a dot, and every embed URL goes through it.
 
 On the Splunk side, both `unifi_insights` and `wazuh_insights` now carry a `default/alert_actions.conf` setting `hostname = https://splunk.alphasecunited.com`, which is the name the reverse proxy publishes Splunk Web on. The link in a Discord message now opens.
 
-The bot was rebuilt on `monitor-01` at 2:01 AM with the size limits and again at 2:07 AM with the URL check. Both builds reported healthy within ten seconds and the Discord session ready. The deployed `alert_bot.py` has SHA-256 `aeb1bf62006191d29659170d044e909062551a432548291a28ecbeb808b8ed5c`, matching the repository.
+The bot was rebuilt on `monitor-01` at 2:01 AM with the size limits and again at 2:07 AM with the URL check. Both builds reported healthy within ten seconds and the Discord session ready. After the review fix the deployed `alert_bot.py` has SHA-256 `c299838035dfd8534fc091a252ca89e28335a3a9b3d4df0ed0f9ef9c7771ab67`, matching the repository.
 
 ## Verification
 
