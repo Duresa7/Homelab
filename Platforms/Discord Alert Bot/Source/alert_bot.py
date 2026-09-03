@@ -10,6 +10,12 @@ infrastructure. The class picks the embed colour and a title prefix so one
 channel can hold outage, security and update messages and still be readable at
 a glance. Added 2026-09-02.
 
+Splunk posts its webhook alert action to POST /splunk. Splunk's webhook cannot
+send a header, so that endpoint is guarded by source address instead: only
+SPLUNK_SOURCE_IP is accepted, and the UniFi policy "Allow splunk-siem to alert
+bot" is what lets that one address reach this port at all. Every Splunk alert
+is class security. Added 2026-09-02.
+
 Deployed at /home/dkadi/monitoring/alert-bot/ on monitor-01, built by the
 monitoring Compose project. Configuration is environment only:
 
@@ -17,10 +23,12 @@ monitoring Compose project. Configuration is environment only:
                        that is versioned
   DISCORD_CHANNEL_ID   numeric channel id for #bots
   ALERT_BOT_SECRET     shared secret Grafana sends as "Authorization: Bearer"
+  SPLUNK_SOURCE_IP     the one address allowed to POST /splunk, splunk-siem
 """
 import asyncio
 import logging
 import os
+import re
 import sys
 from collections import OrderedDict
 
@@ -34,6 +42,7 @@ TOKEN = os.environ["DISCORD_TOKEN"]
 CHANNEL_ID = int(os.environ["DISCORD_CHANNEL_ID"])
 SECRET = os.environ["ALERT_BOT_SECRET"]
 PORT = int(os.environ.get("PORT", "8080"))
+SPLUNK_SOURCE_IP = os.environ.get("SPLUNK_SOURCE_IP", "192.168.72.3")
 
 # Infrastructure alerts colour by severity. The other two classes colour by
 # class, because "a security event" and "an update is waiting" are the whole
@@ -48,6 +57,14 @@ RESOLVED_COLOR = 0x2F9E44
 # Labels worth a field of their own, in display order. Anything else stays out
 # of the embed so the message says what is wrong rather than listing metadata.
 SHOW_LABELS = ("host", "name", "node", "id", "instance", "mountpoint", "device", "disk", "ups", "status")
+# Splunk result fields worth a line each, in display order. A saved search
+# names its own columns, so this is the union across the searches that post
+# here; anything absent is skipped, anything else in the result is ignored.
+SPLUNK_FIELDS = (
+    "src", "src_ip", "dest_ip", "dest_port", "ports", "rule", "signature", "action",
+    "count", "targets", "agent.name", "Machine", "Last", "Silent", "user",
+    "rule.id", "rule.level", "rule.description", "syscheck.path", "src_zone", "dest_zone",
+)
 # A notification carrying this many alerts with the same name and status is
 # collapsed into one embed that lists them, so a host going down or a batch of
 # update notices is one message rather than a wall of identical cards.
@@ -70,6 +87,47 @@ def title_and_color(labels: dict, resolved: bool) -> tuple[str, int]:
     color = style["color"] if style["color"] is not None else SEVERITY_COLOR.get(severity, SEVERITY_COLOR["warning"])
     return f"{style['prefix']}{severity.upper()}: {name}", color
 
+# Discord rejects the whole message with "Invalid Form Body" if any embed field
+# value passes 1024 characters or the embed as a whole passes 6000. Grafana's
+# silence link carries a matcher for every label on the alert, and an alert
+# built from a metric with many labels (wud_containers has fifteen) produces a
+# link well past 1024 characters. The first Updates batch failed on exactly
+# that, and Grafana retried it every half hour until the bot was fixed.
+FIELD_LIMIT = 1024
+EMBED_LIMIT = 6000
+
+
+# Discord also rejects an embed whose url is not "well formed", and its idea
+# of well formed includes a dot in the host. Splunk builds its results link
+# from the server's own name, which was the bare hostname splunk-siem until
+# the apps set alert_actions.conf hostname; this keeps one bad link from
+# taking the whole message down.
+URL_OK = re.compile(r"^https?://[^/\s]+\.[^/\s]+")
+
+
+def safe_url(url: str | None) -> str | None:
+    if url and URL_OK.match(url):
+        return url
+    return None
+
+
+def add_silence_field(embed: discord.Embed, silence_url: str | None, resolved: bool) -> None:
+    if not silence_url or resolved:
+        return
+    value = f"[in Grafana]({silence_url})"
+    if len(value) <= FIELD_LIMIT:
+        embed.add_field(name="Silence", value=value, inline=False)
+
+
+def fit_embed(embed: discord.Embed) -> discord.Embed:
+    """Trim the description until the embed is under Discord's total size."""
+    while len(embed) > EMBED_LIMIT and embed.description:
+        excess = len(embed) - EMBED_LIMIT
+        embed.description = embed.description[: max(0, len(embed.description) - excess - 1)] + "…"
+    if len(embed) > EMBED_LIMIT:
+        embed.clear_fields()
+    return embed
+
 
 def build_embed(alert: dict) -> discord.Embed:
     labels = alert.get("labels", {})
@@ -80,17 +138,16 @@ def build_embed(alert: dict) -> discord.Embed:
         title=title[:256],
         description=(ann.get("summary") or "")[:4096],
         color=color,
-        url=alert.get("dashboardURL") or alert.get("generatorURL") or None,
+        url=safe_url(alert.get("dashboardURL") or alert.get("generatorURL")),
     )
     for key in SHOW_LABELS:
         if key in labels and labels[key]:
             embed.add_field(name=key, value=str(labels[key])[:1024], inline=True)
     if not resolved and ann.get("description"):
         embed.add_field(name="Detail", value=ann["description"][:1024], inline=False)
-    if alert.get("silenceURL") and not resolved:
-        embed.add_field(name="Silence", value=f"[in Grafana]({alert['silenceURL']})", inline=False)
+    add_silence_field(embed, alert.get("silenceURL"), resolved)
     embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'Homelab Alerts')}")
-    return embed
+    return fit_embed(embed)
 
 
 def build_condensed_embed(alerts: list[dict]) -> discord.Embed:
@@ -107,12 +164,11 @@ def build_condensed_embed(alerts: list[dict]) -> discord.Embed:
         title=f"{title} ({len(alerts)})"[:256],
         description="\n".join(lines)[:4096],
         color=color,
-        url=first.get("dashboardURL") or first.get("generatorURL") or None,
+        url=safe_url(first.get("dashboardURL") or first.get("generatorURL")),
     )
-    if first.get("silenceURL") and not resolved:
-        embed.add_field(name="Silence", value=f"[in Grafana]({first['silenceURL']})", inline=False)
+    add_silence_field(embed, first.get("silenceURL"), resolved)
     embed.set_footer(text=f"Grafana · {labels.get('grafana_folder', 'Homelab Alerts')}")
-    return embed
+    return fit_embed(embed)
 
 
 def embeds_for(alerts: list[dict]) -> list[discord.Embed]:
@@ -156,6 +212,47 @@ async def handle_grafana(request: web.Request) -> web.Response:
     return web.json_response({"posted": posted, "alerts": len(alerts)})
 
 
+def build_splunk_embed(payload: dict) -> discord.Embed:
+    result = payload.get("result") or {}
+    name = payload.get("search_name") or "Splunk alert"
+    # The saved searches are named "<Source> - <what happened>"; the source
+    # becomes part of the footer and the rest is the title.
+    source, _, what = name.partition(" - ")
+    if not what:
+        source, what = "Splunk", name
+    style = CLASS_STYLE["security"]
+    embed = discord.Embed(
+        title=f"{style['prefix']}{what}"[:256],
+        description=(result.get("description") or result.get("summary") or "")[:4096] or None,
+        color=style["color"],
+        url=safe_url(payload.get("results_link")),
+    )
+    for key in SPLUNK_FIELDS:
+        value = result.get(key)
+        if value in (None, "", [], "null"):
+            continue
+        if isinstance(value, list):
+            value = ", ".join(str(v) for v in value[:12])
+        embed.add_field(name=key, value=str(value)[:1024], inline=True)
+    embed.set_footer(text=f"Splunk · {source} · {payload.get('app') or ''}".rstrip(" ·"))
+    return fit_embed(embed)
+
+
+async def handle_splunk(request: web.Request) -> web.Response:
+    if request.remote != SPLUNK_SOURCE_IP:
+        log.warning("rejected splunk webhook from %s: not %s", request.remote, SPLUNK_SOURCE_IP)
+        return web.Response(status=403, text="forbidden")
+    try:
+        payload = await request.json()
+    except Exception:
+        return web.Response(status=400, text="body is not json")
+    if not client.is_ready():
+        log.error("received splunk alert %s but discord session not ready", payload.get("search_name"))
+        return web.Response(status=503, text="discord not ready")
+    posted = await post_embeds([build_splunk_embed(payload)], f"splunk sid={payload.get('sid')}")
+    return web.json_response({"posted": posted})
+
+
 async def handle_health(_: web.Request) -> web.Response:
     if client.is_ready():
         return web.Response(text="ok")
@@ -170,6 +267,7 @@ async def on_ready():
 async def main() -> None:
     app = web.Application()
     app.router.add_post("/grafana", handle_grafana)
+    app.router.add_post("/splunk", handle_splunk)
     app.router.add_get("/health", handle_health)
     runner = web.AppRunner(app)
     await runner.setup()

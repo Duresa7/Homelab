@@ -97,10 +97,16 @@ services:
       - "9995:9995"
 
   # Discord alert bot. Grafana's only contact point posts to this container's
-  # /grafana endpoint over the Compose network; the bot posts each alert to the
-  # #bots channel as the Anubis AS bot user. Nothing is published on the LAN.
-  # Source is versioned at Platforms/Discord Alert Bot/Source/ and deployed to
-  # ./alert-bot/. Both secrets come from the untracked .env. Added 2026-09-02.
+  # /grafana endpoint over the Compose network, and Splunk's webhook alert
+  # actions post to /splunk from splunk-siem; the bot posts each alert to the
+  # #bots channel as the Anubis AS bot user. Source is versioned at
+  # Platforms/Discord Alert Bot/Source/ and deployed to ./alert-bot/. Both
+  # secrets come from the untracked .env. Added 2026-09-02.
+  #
+  # 8080 is published for Splunk, which cannot send an authorization header,
+  # so /splunk checks the source address instead: the bot accepts only
+  # SPLUNK_SOURCE_IP, and the UniFi policy "Allow splunk-siem to alert bot"
+  # is the only cross-VLAN path to this port. /grafana still needs its bearer.
   alert-bot:
     build: ./alert-bot
     image: homelab/alert-bot:1
@@ -110,7 +116,10 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
       - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID}
       - ALERT_BOT_SECRET=${ALERT_BOT_SECRET}
+      - SPLUNK_SOURCE_IP=192.168.72.3
       - TZ=America/New_York
+    ports:
+      - "8080:8080"
 
 volumes:
   prometheus_data:

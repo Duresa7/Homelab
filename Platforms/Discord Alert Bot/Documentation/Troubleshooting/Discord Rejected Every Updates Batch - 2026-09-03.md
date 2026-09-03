@@ -1,0 +1,52 @@
+# Discord Rejected Every Updates Batch
+
+**Created:** 2026-09-03  
+**Last updated:** 2026-09-03
+
+**Observed:** 2026-09-02 10:27 PM to 2026-09-03 1:57 AM Eastern  
+**Status:** Resolved 2026-09-03
+
+## Symptom
+
+The bot's log showed the same stack every 30 minutes, eight times, each ending in:
+
+```text
+discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
+```
+
+Each was Grafana's webhook for the Updates group, delivered to `POST /grafana` from the Grafana container and answered with a 500 when `channel.send` raised. Grafana treats a 5xx as undelivered and retried at every `group_interval`, so the same batch failed eight times and nothing from the Updates class reached Discord in those three and a half hours. The infrastructure rules were unaffected, because none fired.
+
+A second variant appeared at 2:06 AM on the new `/splunk` endpoint, once the first was fixed:
+
+```text
+400 Bad Request (error code: 50035): Invalid Form Body
+In embeds.0.url: Not a well formed URL.
+```
+
+## Cause
+
+Two limits in Discord's embed validation, neither of which the bot checked.
+
+**An embed field value may not pass 1024 characters.** The bot adds a `Silence` field whose value is a markdown link to Grafana's silence URL. Grafana builds that URL with one matcher per label on the alert. The Updates rules are the first whose metrics carry many labels: a `wud_containers` series has fifteen, including the image name, tag, result tag, error message and watcher, and the URL-encoded link ran well past 1024 characters. The single-alert embed and the condensed embed both added the field without measuring it.
+
+**An embed URL must be well formed, and Discord's definition needs a dot in the host.** Splunk builds the `results_link` in its webhook payload from its own server name, which was `https://splunk-siem:8000/...`. The bot passed it straight through as the embed's title link.
+
+## Fix
+
+In [alert_bot.py](../../Source/alert_bot.py):
+
+- `add_silence_field` builds the link and adds the field only when the value fits in 1024 characters. A message without a silence link is still a message.
+- `fit_embed` trims the description until the embed's total length is under Discord's 6000-character limit, and drops the fields if that is still not enough. Every embed passes through it.
+- `safe_url` accepts a URL only if it is `http` or `https` and its host contains a dot, and every embed URL goes through it.
+
+On the Splunk side, both `unifi_insights` and `wazuh_insights` now carry a `default/alert_actions.conf` setting `hostname = https://splunk.alphasecunited.com`, which is the name the reverse proxy publishes Splunk Web on. The link in a Discord message now opens.
+
+The bot was rebuilt on `monitor-01` at 2:01 AM with the size limits and again at 2:07 AM with the URL check. Both builds reported healthy within ten seconds and the Discord session ready. The deployed `alert_bot.py` has SHA-256 `aeb1bf62006191d29659170d044e909062551a432548291a28ecbeb808b8ed5c`, matching the repository.
+
+## Verification
+
+The Updates batch that had failed eight times was accepted at Grafana's next retry after the 2:01 AM rebuild, which the bot's log records as posted messages with Discord ids. The Splunk path was proven with a real saved search once its suppression window lapsed; both results are in the [Splunk delivery record](../../../Splunk/Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
+
+## What I would do differently
+
+Test the first rule of a new class with the widest-labelled metric it will ever read, not the narrowest. The class styling had been proven with a `vector(1)` rule carrying two labels.

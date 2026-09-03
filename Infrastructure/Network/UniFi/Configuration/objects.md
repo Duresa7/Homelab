@@ -1,7 +1,7 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-03
 
 ## How I Use UniFi Objects
 
@@ -53,10 +53,12 @@ Fifteen reusable firewall groups exist: six IPv4 address groups and nine port gr
 | Proxmox-Admin-Ports | Port | 22, 8006, 3128 |
 | Portainer Edge Agents | Port | 8000, 9443 |
 | Allow Identity Sync Service Connection-9543 | Port | 9543 |
-| PG-Node-Exporter | Port | 9100, 9101 |
+| PG-Node-Exporter | Port | 9100, 9101, 9102 |
 | PG-Egress-Web | Port | 80, 443 |
 | PG-NTP | Port | 123 |
 | PG-Galaxy-PXE-Callback | Port | 8080 |
+
+On 2026-09-02 I added 9102 to `PG-Node-Exporter` for What's Up Docker, so the three monitoring policies that reference the group admit the new exporter without their own edit.
 
 I moved 35 exact selectors across 24 policies onto these objects. I kept 11 partial or mixed selectors inline because replacing them with a broader group would change behavior.
 

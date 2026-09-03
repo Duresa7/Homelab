@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-03
 
 ## Fleet deployment status
 
@@ -23,8 +23,8 @@ Both turned up while I turned root SSH off on `security-01` and neither affects 
 Four changes on 2026-08-29 into 2026-08-30 took this platform from an agent fleet that reported into its own dashboard to one whose alerts are searchable in Splunk with malware detection on top: [Alert Forwarding to Splunk](Change%20Records/Alert%20Forwarding%20to%20Splunk%20-%202026-08-29.md), [File Integrity Monitoring Widening](Change%20Records/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md), [Malware Detection](Change%20Records/Malware%20Detection%20-%202026-08-29.md) and, on the Splunk side, [Wazuh Insights App](../../Splunk/Enterprise/Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md).
 
 - [ ] Phase two of file-integrity monitoring. Only `workstation` and `edge` have real watches; the other 14 agents still carry `/etc/ssh` and `/etc/cron.d` from the `default` group.
-- [ ] Alerting. Nothing in Wazuh or Splunk notifies me yet. The backlog entry is in the [Enterprise Security TODO](../../Splunk/Enterprise%20Security/Documentation/TODO.md).
-- [ ] No automatic response. Nothing quarantines or deletes a file that matched a known-bad hash.
+- [x] 2026-09-03: Alerting. Splunk posts four Wazuh searches to Discord: malware or level 12 and above, account and group changes, logins from outside private networks, and a machine silent for 24 hours. Wazuh itself still notifies nobody, by design; Splunk is the one emitter. See [Discord Delivery for UniFi and Wazuh Alerts](../../Splunk/Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
+- [ ] No automatic response, and that is a decision as of 2026-09-02 rather than a gap: I considered active response while planning the alerts and chose to keep Wazuh as detection only. Nothing quarantines or deletes a file that matched a known-bad hash. Revisit only if a detection ever arrives that a human could not have acted on in time.
 - [ ] `nut-driver@ups01.service` on `red-server` fails every 25 seconds, about 3,450 times a day, and was 575 of 914 fleet alerts, 62.9 per cent, on the day the feed opened. `openipmi.service` is failed on the same host. This belongs with [PeaNUT](../../PeaNUT/) rather than here.
 - [ ] Rootcheck still reports "Files hidden inside directory '/tmp'" on `ubuntu-dev`, 36 events. Low volume, left alone.
 

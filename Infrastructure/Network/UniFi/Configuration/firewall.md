@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
+
+On 2026-09-02 I added `Allow splunk-siem to alert bot`. It admits only `192.168.72.3` to `192.168.73.2` on TCP 8080, both in `AlphaSec-Observability`, logs matches, and permits the response path, so Splunk's webhook alert action can reach the Discord alert bot on `monitor-01`. The same evening `PG-Node-Exporter` gained port 9102 for What's Up Docker, and `Allow Monitor to A-Access monitoring`, which names its ports inline, gained 9102 too. The live controller total increased from 67 to 68 user-defined policies: 61 allows and seven blocks. The table had recorded that inline policy as `Allow Monitor to AlphaSec-Access monitoring`; the controller's name is `Allow Monitor to A-Access monitoring` and the row now matches. See [Monitoring Ports for What's Up Docker and the Alert Bot](../Documentation/Change%20Records/Monitoring%20Ports%20for%20What's%20Up%20Docker%20and%20the%20Alert%20Bot%20-%202026-09-02.md).
 
 On 2026-08-31 I added `Allow docker-blue SSH Manager to Proxmox`. It admits only `192.168.40.39` in Internal to `192.168.70.10` through `192.168.70.14` in `AlphaSec-Mgmt` over TCP 22, logs matches, and permits the response path. The live controller total increased from 66 to 67 user-defined policies: 60 allows and seven blocks. The matching Proxmox Datacenter `pve_admins` member was required before the five nodes answered.
 
@@ -89,7 +91,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `OBJ-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Internal / .35, .36, .39, .42, .179 / `PG-Node-Exporter` |
 | `Allow Monitor to A-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Servers` / .10, .30, .118 / `PG-Node-Exporter` |
-| `Allow Monitor to AlphaSec-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Access` / `OBJ-Reverse-Proxy` / 9100, 9101, 443 |
+| `Allow Monitor to A-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Access` / `OBJ-Reverse-Proxy` / 9100, 9101, 9102, 443 |
 | `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | Dmz / 192.168.30.10 / 9100 |
 | `Allow Monitor to Proxmox monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Mgmt` / `OBJ-Proxmox-Nodes` / 9100, 8006 |
 | `Allow Monitor to Proxmox NUT` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Mgmt` / .10, .13 / 3493 |
@@ -102,6 +104,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow VPN Management Access to PeaNUT` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | `AlphaSec-Observability` / `OBJ-Monitor-Collector` / 8090 |
 | `Allow dkadi MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27 | `AlphaSec-Observability` / `OBJ-Monitor-Collector` / 8090 |
 | `Allow Monitor to Security monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `OBJ-Monitor-Collector` | `AlphaSec-Observability` / `OBJ-Security-Stack` / `PG-Node-Exporter` |
+| `Allow splunk-siem to alert bot` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Observability` / 192.168.72.3 | `AlphaSec-Observability` / 192.168.73.2 / 8080 |
 
 ## Kasm Retirement Result
 

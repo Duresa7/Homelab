@@ -1,9 +1,9 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
 
-Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Fifteen Grafana alert rules evaluate and route to the Discord alert bot, and delivery is proven in both directions.
+Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Twenty-four Grafana alert rules evaluate and route to the Discord alert bot, coloured by class, and delivery is proven in both directions for the infrastructure and updates classes.
 
 ## Open
 
@@ -13,6 +13,8 @@ Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 wi
 
 ## Known limits, not tracked as work
 
+What's Up Docker's default tag matching offered `16-rootless` for `forgejo:15`, because any newer semver-looking tag is a candidate. A container whose tag scheme has variants needs a `wud.tag.include` label in its own Compose file. `lscr.io` images are not watched without a GitHub token, and digest-pinned images have nothing to match; both are counted and never report an update.
+
 Prometheus and Grafana both run floating `:latest` tags. Every exporter is pinned (`blackbox-exporter:v0.28.0`, `ghcr.io/google/cadvisor:v0.60.5`, `prometheus-nut-exporter:1`, `node_exporter` 1.9.0), so the two unpinned images are the older ones. cAdvisor being pinned is what let v0.52.1 sit there registering nothing for a day, and also what makes the upgrade a deliberate, recorded act rather than a surprise.
 
 I checked every component against its upstream release on 2026-07-26. Prometheus 3.13.1, Grafana 13.1.1, and cAdvisor v0.60.5 are the current releases, published 2026-07-10, 2026-07-21, and 2026-07-11. `hon95/prometheus-nut-exporter:1` looks three years stale because it is: v1.2.1 from 2022-08-03 is still the newest release upstream. `blackbox-exporter` was one release behind at v0.27.0 and moved to v0.28.0 the same day.
@@ -21,6 +23,7 @@ I checked every component against its upstream release on 2026-07-26. Prometheus
 
 ## Completed
 
+- 2026-09-02: [Certificate, Drive Health and Update Alert Rules](Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md). Nine rules joined the fifteen: TLS expiry inside 14 days, a container restart loop, SMART failure, an NVMe critical warning and NVMe wear on the nodes, and four notify-only update rules with their own notification route that fires once and resolves once. Prometheus gained a `wud` job for What's Up Docker on the six Compose hosts, 50 targets became 56, and the target test stopped mis-parsing the bot's probe. The first Updates batch failed at Discord for three and a half hours on an oversized silence link; the bot was fixed on 2026-09-03.
 - 2026-09-02: [Discord Alert Bot deployment](../../Discord%20Alert%20Bot/Documentation/Change%20Records/Discord%20Alert%20Bot%20Deployment%20-%202026-09-02.md). Grafana's root policy routes to the webhook contact point `discord-bot`; the bot posts to `#bots` as the Anubis AS user. Proven twice: a rule that was deleted and a rule that cleared on its own each produced a firing message and, one five-minute `group_interval` later, a resolved one.
 - 2026-09-02: Inert Grafana WAL setting retired on the host. The versioned Compose file was deployed as part of the [Discord Alert Bot deployment](../../Discord%20Alert%20Bot/Documentation/Change%20Records/Discord%20Alert%20Bot%20Deployment%20-%202026-09-02.md); the recreated Grafana 13.2.0 container carries zero `GF_DATABASE_WAL` lines. The lock count after the alert rules' added writes is still worth repeating and stays noted in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 - 2026-08-27: [Dashboard Rebuild and Per-Node Boards](Change%20Records/Dashboard%20Rebuild%20and%20Per-Node%20Boards%20-%202026-08-27.md). Two hand-written dashboards became 27 generated ones: nine by concern and one per host, in two Grafana folders. The rebuild fixed three things that were quietly wrong — the fleet CPU temperature panel omitted `grey-server` because it matched Intel's `coretemp` chip and `grey-server` is AMD; the SMART check called two QEMU virtual disks unhealthy when they simply report no self-assessment; and the TeamSpeak dashboard had been built for one server while two were running. 1,394 queries verified against live Prometheus, 0 errors.

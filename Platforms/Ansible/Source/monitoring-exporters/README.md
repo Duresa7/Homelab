@@ -1,9 +1,9 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-03
 
-I run two playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, & `cadvisor.yml` manages cAdvisor on all 9 Docker hosts. Both use the same `ansible` account except for the single-account development workstation, the same key, & the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope & single-host templates for both playbooks.
+I run four playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on all 9 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts, and `wud.yml` runs What's Up Docker on the six Compose hosts. All use the same `ansible` account except for the single-account development workstation and `grey-server`, the same key, & the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope & single-host templates for every playbook.
 
 ## Scope
 
@@ -12,6 +12,8 @@ I run two playbooks from `ansible-01` to keep Prometheus exporters installed acr
 Command allowlisting is not achievable for any Ansible-managed account, here or elsewhere. Escalation runs `sudo -u root /bin/sh -c '<token>; python3'` with the module fed on stdin, so a sudoers rule permissive enough for a play to succeed is equivalent to full root, and sudoers wildcards on command arguments are unsafe by design. The controls that actually constrain this account are the `from="192.168.40.36"` restriction on its key, the disabled pty and forwarding, and the empty group list. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` & `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
 
 `ansible-01` manages itself over `ansible_connection: local`, so the controller doesn't depend on its own key sitting in its own `authorized_keys`.
+
+`textfile_collector_targets` holds the six hosts that run the upstream binary rather than Debian's package, because the package brings the collector with it and the binary does not: `grey-server` as root, `docker-main`, `app-01`, `edge-01`, `security-01` and `splunk-siem`. `wud_targets` holds the six Compose hosts: `docker-main`, `docker-network`, `docker-blue`, `media-01`, `alpha-prod-01` and `monitor-01`, each with its own `wud_cron`.
 
 `cadvisor_targets` holds all eight Docker hosts: the six shared targets above plus `app-01` and `security-01`, both of which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
 
@@ -25,7 +27,19 @@ The playbook decides per host by reading the APT candidate version, not by looki
 
 The upstream download is verified against the release's own `sha256sums.txt`, so no hash is hardcoded and nothing is trusted blind. `grey-server` has run a hand-installed 1.9.0 since before this project existed, so this matches existing practice rather than introducing a new one. I did not add EPEL to `splunk-siem`: pulling a third-party repository onto the host that holds the security logs to obtain one binary isn't a trade worth making.
 
-The `prometheus-node-exporter-collectors` package is deliberately absent. Its `smartmon` script finds no block devices inside an LXC or behind a virtio disk, which would pin `node_textfile_scrape_error` at 1 and report a fault that isn't real.
+The `prometheus-node-exporter-collectors` package is present on the package-managed hosts, because it is what Debian's `prometheus-node-exporter` recommends, and `textfile-collectors.yml` installs it on the five apt hosts that run the binary. What the playbook does not do is enable its `smartmon` and `nvme` timers inside a guest: those scripts find no block devices inside an LXC or behind a virtio disk, which would pin `node_textfile_scrape_error` at 1 and report a fault that isn't real. They run on bare metal only, which in this group is `grey-server`. The earlier version of this paragraph said the package was deliberately absent everywhere; that was wrong about the twelve package-managed hosts, which had carried it all along.
+
+## Update and drive metrics come from the textfile collector
+
+The four Grafana update rules read `apt_upgrades_pending`, `dnf_upgrades_pending`, `node_reboot_required` and What's Up Docker's `wud_containers`. The first three are textfiles: Debian's collectors package writes `apt.prom` from `apt_info.py` on a timer, and `splunk-siem` on Rocky gets [dnf-updates-textfile.sh](playbooks/files/dnf-updates-textfile.sh) on a 15-minute timer instead, writing counts by repository, a security count, a check timestamp and a reboot flag derived from the running kernel differing from the newest installed one. Every host in the group gets a systemd drop-in that adds `--collector.textfile.directory=/var/lib/prometheus/node-exporter` to the upstream unit. The collectors package is installed with `install_recommends: false`, because its Recommends pull in `ipmitool` and `openipmi`, and a failing `openipmi.service` on four Lenovo nodes with no management controller is how I learned that.
+
+The play verifies itself by scraping each host and asserting `node_textfile_scrape_error 0`, a package-cache timestamp, and `node_reboot_required`, plus a SMART and an NVMe row on bare metal. It asserts on the timestamp rather than on `apt_upgrades_pending`, because a fully patched host emits no pending rows and `security-01` failed the first version for being up to date.
+
+## What's Up Docker watches images on the Compose hosts
+
+`wud.yml` runs `getwud/wud:8.3.1` at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
+
+Three limits, accepted: the interface on 9102 has no login, reachable only inside the host's VLAN and from `monitor-01`; `lscr.io` images need a GitHub token I have not issued; and WUD's default tag matching will offer a variant tag such as `16-rootless` for `forgejo:15` until that container gets a `wud.tag.include` label in its own Compose file. Removal is `-e wud_state=absent`.
 
 ## cAdvisor needs v0.60.5, not the image you'll find first
 
@@ -60,6 +74,11 @@ ansible-playbook playbooks/node-exporter.yml -e target=splunk-siem
 # cAdvisor across all eight Docker hosts, then removal from one.
 ansible-playbook playbooks/cadvisor.yml
 ansible-playbook playbooks/cadvisor.yml -e target=media-01 -e cadvisor_state=absent
+
+# Textfile collectors on the six binary-managed hosts, and What's Up Docker on the six Compose hosts.
+ansible-playbook playbooks/textfile-collectors.yml
+ansible-playbook playbooks/wud.yml
+ansible-playbook playbooks/wud.yml -e target=media-01 -e wud_state=absent
 ```
 
 Both plays verify their own work. `node-exporter.yml` probes the exporter and asserts the version it reports matches the pinned one, so a silent drift fails the run rather than passing on the package manager's word. `cadvisor.yml` compares the containers cAdvisor registered against the containers Docker reports running, and fails the play on a mismatch instead of warning.
@@ -69,12 +88,14 @@ Both plays verify their own work. `node-exporter.yml` probes the exporter and as
 A `--check` run of `node-exporter.yml` isn't a pass/fail gate. On a binary-managed host, `get_url` predicts the download without creating the staging archive, then `unarchive` & `copy` can't read that missing file. Ansible also skips the `uri` & shell verification modules in check mode, so installed package-managed hosts report an unknown version. I keep that command as a command-line preview of package decisions, but I don't expose it as a Semaphore template that looks like a health check.
 
 The deployed SHA256 matches this repository, and
-`python3 tests/validate_project.py` passes with 10 node-exporter hosts and nine
-cAdvisor hosts.
+`python3 tests/validate_project.py` passes with 10 node-exporter hosts, nine
+cAdvisor hosts, six textfile-collector hosts and six What's Up Docker hosts. The
+`node_exporter_targets` entry for `db-13-dev` at `192.168.40.135` is stale; the
+validator pins the set, so removing it is its own change.
 
 ## Adding a host
 
-Add it under `node_exporter_targets` or `cadvisor_targets` with its `ansible_host` & `ansible_user`, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
+Add it under `node_exporter_targets`, `cadvisor_targets`, `textfile_collector_targets` or `wud_targets` with its `ansible_host` & `ansible_user`, and a `wud_cron` for the last, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
 
 Scraping the new host also needs a UniFi policy from the collector's zone to the target, and possibly a rule in the Proxmox cluster firewall. Test reachability from the active Prometheus host before adding it to `prometheus.yml`.
 

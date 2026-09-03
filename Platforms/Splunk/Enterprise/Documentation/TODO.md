@@ -1,7 +1,7 @@
 # To-Do
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-09-03
 
 I track unfinished Splunk Enterprise work here. Completed deployment steps are in [Build-Log.md](Build-Log.md).
 
@@ -29,6 +29,8 @@ I track unfinished Splunk Enterprise work here. Completed deployment steps are i
 - [x] 2026-08-28: Repaired the CEF space-truncation fault that reduced every signature to `ET` or `GPL`. The extractions are in the app's `props.conf` and the detail is in the [CEF reference](UniFi-CEF-Reference.md#parsing-fault-values-containing-spaces).
 - [x] 2026-08-29: Added [Tests/verify_unifi_insights.py](../Tests/verify_unifi_insights.py), which runs every deployed panel query, every correlation search and a probe of each CIM data model. It reads the views off disk rather than holding a copy of the queries, so it does not drift when a panel changes.
 - [x] 2026-08-30: Built the `wazuh_insights` app: one Dashboard Studio view over the `wazuh` index, seven glance tiles and six panels, plus the CIM mapping under it. See [Wazuh Insights App - 2026-08-29](Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md).
+- [x] 2026-09-03: Nine saved searches across `unifi_insights` and `wazuh_insights` post to Discord through the alert bot's `/splunk` endpoint: five UniFi and four Wazuh, each tuned against 30 days of history, one message per source or machine, with suppression per pair. Splunk is the only thing that notifies on security events. See [Discord Delivery for UniFi and Wazuh Alerts - 2026-09-03](Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
+- [ ] Remove the `wazuh-01` exclusion from `Wazuh - Machines gone quiet, listed` after 2026-09-08, when the renamed manager's old name has aged out of the seven-day window. Harmless if left.
 - [ ] Add a machine and severity filter to the Wazuh Insights dashboard. The first attempt at a multiselect input broke the whole definition and I rebuilt without it.
 - [ ] Give `wazuh_insights` the equivalent of [Tests/verify_unifi_insights.py](../Tests/verify_unifi_insights.py), which would have caught the malware macro counting VirusTotal's rate-limit errors as findings.
 - [ ] Break high-risk flows down by `ips_category`. The collector captures it and no panel uses it yet.

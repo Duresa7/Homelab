@@ -1,9 +1,9 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 50 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 56 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation.
 
@@ -50,12 +50,13 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 19 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS Pro BR1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
+| `wud` | What's Up Docker 8.3.1 on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
 its administrative API disabled, no historical label from the retired lab
-workload, and all 50 targets up.
+workload, and all 56 targets up.
 
 cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAdvisor containers themselves. A 2026-07-28 Prometheus query returned 11 on `docker-main`, 5 on `docker-network`, 4 on `docker-blue`, 10 on `media-01`, 8 on `alpha-prod-01`, 7 on `app-01`, 1 on `security-01`, & 7 on `monitor-01`. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 from `ghcr.io/google/cadvisor` handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
@@ -63,9 +64,9 @@ cAdvisor covers 53 named containers across those 8 hosts, 8 of which are the cAd
 
 Until 2026-07-25 the datasource and both imported dashboards existed only inside the `grafana_data` Docker volume. Removing that volume would have destroyed all of it with nothing in git to rebuild from.
 
-`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 12 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 24 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
 
-The 15 rules cover host, exporter, service, Proxmox node and named guest availability; filesystem, Proxmox storage, memory, CPU, load and disk capacity; service latency; UPS state; and hardware temperature. Grafana holds all 15 as file-provisioned rules with no evaluation error, and no threshold is crossed against live data as of 2026-09-02. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user. Delivery was proven on 2026-09-02 with one firing and one resolved message. The implementation and verification are in [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md) and [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md).
+The 24 rules sit in six groups. Availability, Capacity, Network and Power and hardware cover host, exporter, service, Proxmox node and named guest availability, container restart loops, filesystem, Proxmox storage, memory, CPU, load and disk capacity, service latency, TLS certificate expiry, UPS state and hardware temperature. Storage health reads the SMART and NVMe textfiles on the five nodes. Updates carries four notify-only rules for pending security updates, other OS updates, a required reboot and a newer container image, fed by the node_exporter textfile collectors on all 18 hosts and What's Up Docker on the six Compose hosts. Every rule carries a `class` label, infrastructure or updates, and Grafana holds all 24 as file-provisioned rules with no evaluation error. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user and colours the message by class; a child route groups the Updates class by rule name and repeats once a year, so an update is announced once and resolved once. The records are [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md), [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md) and [Certificate, Drive Health and Update Alert Rules - 2026-09-02](Documentation/Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md).
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
