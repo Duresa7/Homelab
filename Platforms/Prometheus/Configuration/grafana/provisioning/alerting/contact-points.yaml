@@ -2,7 +2,7 @@
 # /home/dkadi/monitoring/grafana/provisioning/alerting/ on monitor-01.
 #
 # Before 2026-09-02 there was no contact point at all and the root policy's
-# receiver was literally named `empty`, so every rule in homelab-alerts.yaml
+# receiver was literally named `empty`, so every rule in alphasec-united-alerts.yaml
 # evaluated into silence. This file replaces that.
 #
 # The receiver is the Discord alert bot, reached over the Compose network. The
@@ -30,7 +30,7 @@ policies:
     group_by: [grafana_folder, alertname]
     # Wait 30s so a host going down arrives as one message, not one per rule
     # that noticed it. Re-send a still-firing alert every four hours, which is
-    # a reasonable nag for a homelab and stops Grafana repeating itself every
+    # a reasonable nag for this environment and stops Grafana repeating itself every
     # evaluation.
     group_wait: 30s
     group_interval: 5m

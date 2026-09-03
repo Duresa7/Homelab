@@ -20,7 +20,7 @@ I run a small Discord bot that turns Grafana alerts and Splunk alerts into messa
 | Item | Location |
 | --- | --- |
 | Bot source | [Source/alert_bot.py](Source/alert_bot.py), [Source/Dockerfile](Source/Dockerfile), [Source/requirements.txt](Source/requirements.txt) |
-| Deployed copy | `/home/dkadi/monitoring/alert-bot/` on `monitor-01`, built by the monitoring Compose project as `homelab/alert-bot:1` |
+| Deployed copy | `/home/dkadi/monitoring/alert-bot/` on `monitor-01`, built by the monitoring Compose project as `alphasecunited/alert-bot:1` |
 | Compose service | `alert-bot` in [Prometheus Configuration/docker-compose.yml](../Prometheus/Configuration/docker-compose.yml), port 8080 published on the host, `SPLUNK_SOURCE_IP=192.168.72.3` |
 | Grafana contact point and policy | [contact-points.yaml](../Prometheus/Configuration/grafana/provisioning/alerting/contact-points.yaml) |
 | Splunk senders | the nine searches carrying `action.webhook` in [unifi_insights](../Splunk/Enterprise/Configuration/unifi_insights/default/savedsearches.conf) and [wazuh_insights](../Splunk/Enterprise/Configuration/wazuh_insights/default/savedsearches.conf) |

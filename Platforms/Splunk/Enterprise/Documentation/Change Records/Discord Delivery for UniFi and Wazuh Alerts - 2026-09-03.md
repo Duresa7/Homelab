@@ -41,7 +41,7 @@ The first two already existed as notable rules and keep their notable action; th
 
 **The syslog dead-man window is six hours** because the history had one hour and one four-hour block with zero UniFi events, on 2026-08-26, and the quietest six-hour block held 13. Anything shorter would have produced a false alarm.
 
-**`wazuh-01` is excluded from the silent-machine search until 2026-09-08.** The manager was renamed `security-01` on 2026-09-01, so its old name looks like an agent that fell silent until the seven-day lookback ages it out. The exclusion is harmless after that and can stay or go.
+**`wazuh-01` is excluded from the silent-machine search, and the exclusion expires on its own.** The manager was renamed `security-01` on 2026-09-01, so its old name looks like an agent that fell silent until the seven-day lookback ages it out on 2026-09-08. Rather than a name match I would have to remember to remove, the search ignores a `wazuh-01` row only when its last event predates 2026-09-02, which is true of the stale name and would not be true of a host enrolled under that name later. Later on 2026-09-03 I proved it both ways: the search returns 0 rows, and the same search with the cutoff moved to 2026-09-01 returns `wazuh-01`. The first draft placed the test after `table` had dropped the `last` field, where it excluded nothing; it now sits in the first `where`.
 
 **Level 12 is the Wazuh severity floor**, plus any malware verdict at any level. Only the two EICAR detections reached it in 30 days. The `Systemd: Service exited due to a failure` flood that dominated the feed's first day never gets near 12.
 

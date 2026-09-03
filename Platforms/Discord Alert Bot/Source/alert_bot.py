@@ -1,4 +1,4 @@
-"""Discord alert bot for the homelab.
+"""Discord alert bot for AlphaSec United.
 
 Grafana posts its webhook payload to POST /grafana with a bearer secret. The
 bot turns each alert in the payload into one embed and posts it to the alerts

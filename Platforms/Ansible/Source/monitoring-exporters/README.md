@@ -39,7 +39,7 @@ The play verifies itself by scraping each host and asserting `node_textfile_scra
 
 `wud.yml` runs `getwud/wud:8.3.1` at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
 
-Three limits, accepted: the interface on 9102 has no login, reachable only inside the host's VLAN and from `monitor-01`; `lscr.io` images need a GitHub token I have not issued; and WUD's default tag matching will offer a variant tag such as `16-rootless` for `forgejo:15` until that container gets a `wud.tag.include` label in its own Compose file. Removal is `-e wud_state=absent`.
+Three limits, accepted: the interface on 9102 has no login, reachable only inside the host's VLAN and from `monitor-01`; `lscr.io` images need a GitHub token I have not issued; and WUD's default tag matching will offer a variant tag such as `16-rootless` for a `:15` image until that container gets a `wud.tag.include` label in its own Compose file, which is what Forgejo carries since 2026-09-03. Removal is `-e wud_state=absent`.
 
 ## cAdvisor needs v0.60.5, not the image you'll find first
 

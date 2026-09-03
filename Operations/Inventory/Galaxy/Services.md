@@ -73,7 +73,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | --- | --- |
 | Internal documentation site | Static HTML served by an unprivileged Nginx container as UID 101 with a read-only root filesystem, all Linux capabilities dropped, and no writable application volume |
 | Immich | 3.0.3 photo/video stack: server, Postgres, machine learning, Valkey |
-| Forgejo | Git service: `codeberg.org/forgejo/forgejo:15` |
+| Forgejo | Git service: `codeberg.org/forgejo/forgejo:15`, labelled `wud.tag.include=^[0-9]+$` since 2026-09-03 so What's Up Docker offers only plain numeric tags |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
 | Portainer CE | Server 2.45.0 from `portainer/portainer-ce:latest`, verified 2026-09-01 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.45.0 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
 | CLI Proxy API | Version 7.2.128 from a digest-pinned image; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
@@ -87,7 +87,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
-| Discord alert bot | `homelab/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; running since 2026-09-02, healthy, delivery proven the same day |
+| Discord alert bot | `alphasecunited/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; running since 2026-09-02, healthy, delivery proven the same day |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
 | cAdvisor | `ghcr.io/google/cadvisor:v0.60.5` on TCP 9101; one of nine scraped cAdvisor endpoints |
 | PeaNUT | 6.0.0 pinned by digest; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |

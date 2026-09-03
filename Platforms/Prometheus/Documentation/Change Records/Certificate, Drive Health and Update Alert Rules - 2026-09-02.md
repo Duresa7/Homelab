@@ -61,7 +61,7 @@ I created no snapshot or backup. The versioned files rebuild every rule and rout
 
 ## Known limits
 
-**What's Up Docker suggests `16-rootless` for `forgejo:15`.** Its default tag matching treats any newer semver-looking tag as a candidate, and the rootless variant is a different image. The right fix is a `wud.tag.include` label on containers whose tag scheme needs one, and that is a per-Compose-project edit I have not made. Until then a tag-kind update for a variant tag is a prompt to look, not an instruction.
+**What's Up Docker suggested `16-rootless` for `forgejo:15`.** Its default tag matching treats any newer semver-looking tag as a candidate, and the rootless variant is a different image. On 2026-09-03 I added `wud.tag.include=^[0-9]+$` to the Forgejo service in `/opt/docker/forgejo/docker-compose.yml` on `docker-main`, recreated the container, and triggered a scan; it now reports `16`, the real major release. Any other container with variant tags needs the same label in its own Compose file.
 
 **Digest-pinned images and `lscr.io` images are not watched.** A digest-pinned image has nothing newer to match, and LinuxServer's registry needs a GitHub token, which I have not issued to six hosts for this. Those containers are counted but never report an update.
 
