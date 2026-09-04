@@ -1,7 +1,9 @@
 # MCP Integration Separation
 
 **Created:** 2026-08-31  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-03
+
+**Superseded in part:** SSH Manager no longer reads `ssh-manager-secrets.env` through the gateway secret store. It runs as its own service reading the root-owned `ssh-manager.env`, changed 2026-09-03 in the [shared server cutover](../../../Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md). The token separation this record describes is unchanged.
 
 ## Outcome
 

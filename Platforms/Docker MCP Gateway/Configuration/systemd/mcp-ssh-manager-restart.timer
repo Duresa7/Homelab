@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart the SSH Manager MCP service every day at 4 AM Eastern
+
+[Timer]
+OnCalendar=*-*-* 04:00:00 America/New_York
+Persistent=true
+RandomizedDelaySec=0
+
+[Install]
+WantedBy=timers.target

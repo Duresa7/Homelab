@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
 
 ## Deployment Layout
 
@@ -72,6 +72,7 @@ For the Docker MCP Gateway integrations, confirm all of the following in Executo
 - Executor has no tool policy targeting the UniFi connection. A no-confirm mutation probe reaches the handler without returning `requires_confirmation`.
 - Integration `ssh-manager-mcp-gateway` points to `http://192.168.40.39:8812/mcp`, and personal connection `sshManagerMcpGateway` reports healthy.
 - A refresh of `sshManagerMcpGateway` discovers 37 names under `ssh_` while SSH Manager remains at 3.8.5.
+- `docker ps -a --filter label=docker-mcp-name=ssh-manager` on `docker-blue` returns nothing, and the `mcp-ssh-manager` service is healthy. Since 2026-09-03 the SSH Manager server is a persistent service rather than a container the gateway starts per session, so any managed container here is a sign the old catalog entry came back.
 - Executor can execute `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers`.
 - The SSH Manager connection identity label is `SSH Manager MCP`, and its description is `SSH Manager access.`
 - `ssh_list_servers` returns all 18 catalog entries. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other twelve return UID `0` through `ssh_execute_sudo`.

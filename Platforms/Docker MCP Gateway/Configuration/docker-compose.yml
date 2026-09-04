@@ -46,21 +46,60 @@ services:
         max-size: 10m
         max-file: "3"
 
+  # One persistent SSH Manager process behind mcp-proxy. The gateway below reaches it
+  # as a remote server on the project network, so every client session shares this one
+  # process and no per-session container is started. Not published on any host port.
+  ssh-manager:
+    image: homelab/mcp-ssh-manager:latest
+    container_name: mcp-ssh-manager
+    restart: unless-stopped
+    init: true
+    command:
+      - --stateless
+    env_file:
+      - ./ssh-manager-servers.env
+      - ./ssh-manager.env
+    volumes:
+      - ssh-manager-state:/state
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+      - /keys:rw,noexec,nosuid,nodev,size=1m,mode=700
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/status', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 512m
+    cpus: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
   ssh-manager-gateway:
     image: docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa
     container_name: ssh-manager-mcp-gateway
     restart: unless-stopped
+    depends_on:
+      ssh-manager:
+        condition: service_healthy
     environment:
       MCP_GATEWAY_AUTH_TOKEN: ${SSH_MANAGER_MCP_GATEWAY_AUTH_TOKEN:?set in .env}
+      # The SSH Manager catalog entry is a plain-HTTP remote on the private project
+      # network; the gateway refuses non-HTTPS remotes without this.
+      DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS: "1"
     command:
       - --transport=streaming
       - --port=8812
       - --catalog=ssh-manager.yaml
       - --servers=ssh-manager
-      - --secrets=/run/secrets/ssh_manager_secret
-      - --long-lived
-      - --cpus=1
-      - --memory=512Mb
       - --watch=true
       - --verbose=false
     ports:
@@ -68,8 +107,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/root/.docker/mcp
-    secrets:
-      - ssh_manager_secret
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8812/health"]
       interval: 10s
@@ -95,5 +132,9 @@ services:
 secrets:
   unifi_secret:
     file: ./unifi-secrets.env
-  ssh_manager_secret:
-    file: ./ssh-manager-secrets.env
+
+volumes:
+  # Created by the gateway on 2026-08-31 as an unprefixed named volume; it holds the
+  # enrolled host keys and the server's persisted local configuration.
+  ssh-manager-state:
+    external: true

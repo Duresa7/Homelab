@@ -1,7 +1,9 @@
 # SSH Manager Gateway Process Exhaustion
 
 **Created:** 2026-09-02  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
+
+**Superseded in part:** the conclusion that `--long-lived` shares one container across client sessions did not hold. The eight verification calls reused one Executor session. The gateway keeps one container per session in this version, which the [2026-09-03 troubleshooting record](../Troubleshooting/Managed%20SSH%20Manager%20Containers%20Accumulated%20Under%20long-lived%20-%202026-09-03.md) shows from the log and the source. The diagnosis of the exhaustion and the cleanup below stand.
 
 ## Outcome
 

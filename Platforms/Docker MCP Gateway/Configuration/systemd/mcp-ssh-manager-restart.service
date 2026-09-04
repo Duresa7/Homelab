@@ -1,0 +1,10 @@
+[Unit]
+Description=Nightly restart of the SSH Manager MCP service for a fresh process
+Documentation=https://github.com/Duresa7/Homelab/tree/main/Platforms/Docker%%20MCP%%20Gateway
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/docker/mcp-gateway
+ExecStart=/usr/bin/docker compose restart ssh-manager

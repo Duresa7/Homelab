@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
