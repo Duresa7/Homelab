@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-04
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -26,7 +26,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.77.1 / dashboard 2.91.1<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.0 / dashboard 2.92.0<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
@@ -34,7 +34,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
-| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta36<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
+| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta38<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
@@ -83,7 +83,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 50 of 50 targets `up` across six jobs: node 18, cAdvisor 9, Proxmox 1, blackbox 20 (19 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
-| Grafana | 13.2.0 on TCP 3000; 27 provisioned dashboards and 15 provisioned alert rules; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
+| Grafana | 13.2.1 on TCP 3000; 27 provisioned dashboards and 15 provisioned alert rules; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:v0.28.0` on TCP 9115; probes 19 internal NPM names |
 | NUT exporter | `hon95/prometheus-nut-exporter:1` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
@@ -111,7 +111,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Management server 0.77.1 and dashboard 2.91.1 under `/opt/docker/netbird`; versions verified 2026-09-01 from the management startup log and dashboard OCI label; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
+| NetBird | Management server 0.78.0 and dashboard 2.92.0 under `/opt/docker/netbird`; versions verified 2026-09-04 from the management startup log and dashboard OCI label; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Portainer Edge Agent | `portainer/agent:2.45.0`; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; endpoint status 1 on 2026-09-01 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
@@ -180,7 +180,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Pelican Panel | `ghcr.io/pelican-dev/panel:latest`, running v1.0.0-beta36 on Laravel 13.23.0; SQLite in the `pelican-panel_pelican-data` volume; compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
+| Pelican Panel | `ghcr.io/pelican/panel:latest`, running v1.0.0-beta38 on Laravel 13.25.0; SQLite in the `pelican-panel_pelican-data` volume; Compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
 | Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
 | Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; current assignments total 9216 MiB memory, 51200 MiB disk, and 500 percent CPU; allocations `192.168.80.30:25565` through `25575` |
 | Vanilla Minecraft 26.2 | Pelican server ID 3; official Vanilla egg; Java 25; `VANILLA_VERSION=26.2`; 8192 MiB memory, 400 percent CPU, and 20480 MiB disk on `192.168.80.30:25565`; running and public; `keep_inventory=true`, read back from the console and flushed to the world on 2026-08-11; reached `Done (0.257s)!` after a controlled restart; public status returned 26.2 and protocol 776 after the game-rule change |

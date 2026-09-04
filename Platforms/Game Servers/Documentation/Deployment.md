@@ -1,12 +1,12 @@
 # Game Servers Deployment
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-04
 
 **Implemented:** 2026-08-07  
 **Owner:** Platforms / Game Servers  
 **Host:** `game-01`, LXC 123 on `green-server`, `192.168.80.30`  
-**Status:** Complete. Pelican Panel v1.0.0-beta36 and Wings v1.0.0-beta27 remain the live platform. The original NeoForge workload documented below was retired, Better Realism replaced it and was later retained offline, and the current Vanilla workload is recorded in [Better Realism Shutdown and Vanilla Minecraft Deployment - 2026-08-09](Change%20Records/Better%20Realism%20Shutdown%20and%20Vanilla%20Minecraft%20Deployment%20-%202026-08-09.md).
+**Status:** Complete. Pelican Panel v1.0.0-beta38 and Wings v1.0.0-beta27 remain the live platform. The original NeoForge workload documented below was retired, Better Realism replaced it and was later retained offline, and the current Vanilla workload is recorded in [Better Realism Shutdown and Vanilla Minecraft Deployment - 2026-08-09](Change%20Records/Better%20Realism%20Shutdown%20and%20Vanilla%20Minecraft%20Deployment%20-%202026-08-09.md).
 
 This record preserves the original 2026-08-07 platform deployment and its troubleshooting trail. It is not the current server inventory.
 

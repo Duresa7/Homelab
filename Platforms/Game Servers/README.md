@@ -1,7 +1,7 @@
 # Game Servers
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-08-11
+**Last updated:** 2026-09-04
 
 I host my own game servers on `game-01`, an unprivileged LXC on `green-server`. Pelican Panel manages them through a web UI, and its Wings daemon runs each game server in its own Docker container with a memory, CPU and disk limit taken from the panel.
 
@@ -29,7 +29,7 @@ The guest itself belongs to Galaxy, not here. Its creation record is [Galaxy Gam
 | SFTP | `192.168.80.30:2022`, advertised by the panel as an alias so it bypasses NPM |
 | Public Minecraft | `minecraft.alphasecunited.com`; DNS-only Cloudflare CNAME and Minecraft SRV records lead to Playit, which forwards only the game tunnel |
 | Host | `game-01`, LXC 123 on `green-server`, `192.168.80.30/24` on SERVERS-A VLAN 80 |
-| Versions | Pelican Panel v1.0.0-beta36, Wings v1.0.0-beta27, Docker 29.7.2, Playit agent 1.0.9 |
+| Versions | Pelican Panel v1.0.0-beta38, Wings v1.0.0-beta27, Docker 29.7.2, Playit agent 1.0.9 |
 | Database | SQLite, in the `pelican-panel_pelican-data` Docker volume |
 | Live panel configuration | `/opt/docker/pelican-panel/` on `game-01` |
 | Server files | `/var/lib/pelican/volumes/<server-uuid>/`, owned `pelican` uid 999 gid 988 |
