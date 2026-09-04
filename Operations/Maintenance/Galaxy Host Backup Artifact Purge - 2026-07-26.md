@@ -9,7 +9,7 @@
 
 ## Outcome
 
-I deleted every operator-created backup artifact sitting on `grey-server`, `purple-server`, `blue-server`, and `red-server`. That covers 12 `cluster.fw` snapshots, a host firewall and storage snapshot, four config directories, a 2.2 GB orphaned guest image, two SSH recovery files on Red, and a second pass through `/etc` and `/usr/share`.
+I deleted every backup artifact I had created sitting on `grey-server`, `purple-server`, `blue-server`, and `red-server`. That covers 12 `cluster.fw` snapshots, a host firewall and storage snapshot, four config directories, a 2.2 GB orphaned guest image, two SSH recovery files on Red, and a second pass through `/etc` and `/usr/share`.
 
 Grey's rootfs went from 77 percent to 75 percent, reclaiming the 2.2 GB the guest image held. Nothing else on any node was large enough to move the number.
 
@@ -36,7 +36,7 @@ This purge deliberately voids rollback points that six committed change records 
 
 ## What I Deliberately Left
 
-A `find` for `*.bak`, `*.old`, and `*backup*` returns far more than operator snapshots, and most of those hits must stay:
+A `find` for `*.bak`, `*.old`, and `*backup*` returns far more than the snapshots I made, and most of those hits must stay:
 
 - `/etc/lvm/backup` is LVM's live volume-group metadata, not a stale copy. It's how a VG gets recovered. Grey reports 2 volume groups and the other three report 1, unchanged after the purge.
 - `/etc/pve/authkey.pub.old` is managed by `pve-cluster` across ticket-key rotation.

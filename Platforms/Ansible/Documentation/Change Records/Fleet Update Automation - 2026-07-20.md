@@ -53,4 +53,4 @@ The project is additive. Deleting `/home/ansible/fleet-updates` removes it with 
 
 ## 2026-07-25 Follow-up
 
-I closed the unattended privilege gap with one dedicated `ansible` account on the controller and nine running workload guests. The [2026-07-25 account and fleet expansion](Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md) records the new 9-host OS scope, 5-host and 16-project Compose scope, restricted controller key, passwordless sudo, & full check-mode verification. The first real fleet update remains operator-initiated because it can install packages, recreate containers, & identify reboot work.
+I closed the unattended privilege gap with one dedicated `ansible` account on the controller and nine running workload guests. The [2026-07-25 account and fleet expansion](Dedicated%20Ansible%20Account%20and%20Fleet%20Expansion%20-%202026-07-25.md) records the new 9-host OS scope, 5-host and 16-project Compose scope, restricted controller key, passwordless sudo, & full check-mode verification. I still start the first real fleet update by hand, because it can install packages, recreate containers, & identify reboot work.

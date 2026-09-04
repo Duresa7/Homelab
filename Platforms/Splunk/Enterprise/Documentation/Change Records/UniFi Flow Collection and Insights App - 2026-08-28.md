@@ -35,7 +35,7 @@ Whichever limit is reached first rolls the oldest buckets out. At the measured r
 
 `unifi_flow_collector.py` runs as `unifi-flow-collector.service` on `splunk-siem`. It authenticates to the controller at `192.168.1.1` with the existing `unifi-mcp` local account, posts to `/proxy/network/v2/api/site/default/traffic-flows`, and writes the results to HEC on `127.0.0.1:8088` with sourcetype `unifi:flow` into `netfw`.
 
-It polls every 120 seconds over a window that reaches 300 seconds behind the last flow it saw, so a record that lands late is still picked up, and it drops repeats by flow id. State is a checkpoint file under `/var/lib/unifi-flow-collector/`, so a restart does not re-ingest or lose a window. Credentials sit in `/etc/unifi-flow-collector/env`, mode 600 and root-owned; the HEC token is also in the password manager as `Splunk HEC Token - unifi-flows`.
+It polls every 120 seconds over a window that reaches 300 seconds behind the last flow it saw, so a record that lands late is still picked up, and it drops repeats by flow id. State is a checkpoint file under `/var/lib/unifi-flow-collector/`, so a restart does not re-ingest or lose a window. Credentials sit in `/etc/unifi-flow-collector/env`, mode 600 and root-owned; the HEC token is also held in the password manager.
 
 The script emits Common Information Model field names where the meaning matches, which is most of them. UniFi's own `allowed` and `blocked` are already the CIM action vocabulary, so those pass through unchanged.
 

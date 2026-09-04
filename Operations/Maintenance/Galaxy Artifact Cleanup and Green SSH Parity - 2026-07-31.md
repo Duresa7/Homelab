@@ -140,7 +140,7 @@ The partition table it cloned, with the disk-unique UUID tails redacted:
 
 ```text
 label: gpt
-label-id: 7573A5D4-<REDACTED>
+label-id: 7573A5D4-<REDACTED_DISK_LABEL_ID>
 device: /dev/sdb
 unit: sectors
 first-lba: 34

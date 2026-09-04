@@ -19,13 +19,13 @@ python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
   --force \
-  <GREEN_NODE_MAC> ready
+  <REDACTED_GREEN_NODE_MAC> ready
 
 python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
   --json \
-  <GREEN_NODE_MAC>
+  <REDACTED_GREEN_NODE_MAC>
 ```
 
 The readback returned `ready`, no attempt ID, and an update time of `2026-07-31T06:12:43+00:00`. The commands exited `0`.

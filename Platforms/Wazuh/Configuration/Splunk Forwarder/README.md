@@ -11,7 +11,7 @@ That is the whole reason it can read the alert stream without running as root:
 every level of `/var/ossec/logs/alerts/alerts.json` is group-readable by
 `wazuh`, so group membership is sufficient and root is unnecessary.
 
-Its admin credential is held in the password manager under `Splunk Universal Forwarder - security-01`.
+Its admin credential is held in the password manager.
 The forwarder has no web interface; that account exists only for local CLI and
 the management port.
 

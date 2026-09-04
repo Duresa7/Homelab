@@ -181,7 +181,7 @@ I installed three `ed25519` public keys, one per client, each identified by its 
 |---|---|:-:|
 | `mac-air3-dkadi` | MacBook Air | Yes |
 | `ansible-control` | Ansible control node | No (automation needs unattended login) |
-| `<RETIRED_ROOT_KEY_LABEL>-nopass` | jedi-pc workstation | No |
+| `<REDACTED_RETIRED_ROOT_KEY_LABEL>-nopass` | jedi-pc workstation | No |
 
 I hardened `/etc/ssh/sshd_config`:
 

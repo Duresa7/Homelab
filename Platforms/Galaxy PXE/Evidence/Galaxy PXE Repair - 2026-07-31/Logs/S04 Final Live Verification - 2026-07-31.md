@@ -51,13 +51,13 @@ python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
   --json \
-  <GREEN_NODE_MAC>
+  <REDACTED_GREEN_NODE_MAC>
 
 python3 /usr/local/lib/galaxy-pxe/state.py \
   --machines /etc/galaxy-pxe/machines.json \
   --state-file /var/lib/galaxy-pxe/state.json \
   --json \
-  02:00:00:00:09:99
+  <REDACTED_ACCEPTANCE_VM_MAC>
 ```
 
 ## Machine State Results
@@ -209,13 +209,13 @@ I issued:
   {
     "operation": "unifi_get_switch_ports",
     "arguments": {
-      "device_mac": "<BANE_SWITCH_MAC>"
+      "device_mac": "<REDACTED_BANE_SWITCH_MAC>"
     }
   },
   {
     "operation": "unifi_get_port_stats",
     "arguments": {
-      "device_mac": "<BANE_SWITCH_MAC>"
+      "device_mac": "<REDACTED_BANE_SWITCH_MAC>"
     }
   },
   {
@@ -250,7 +250,7 @@ All four structured results returned `"success": true`. These are the exact resu
       "port_idx": 4,
       "last_connection": {
         "connected": true,
-        "mac": "<GREEN_NODE_MAC>",
+        "mac": "<REDACTED_GREEN_NODE_MAC>",
         "ip": "192.168.5.18"
       },
       "enable": true,
@@ -295,7 +295,7 @@ All four structured results returned `"success": true`. These are the exact resu
 }
 ```
 
-UniFi reported Bane switch port 4 enabled, linked at 1 Gbps full duplex, and assigned to `Server-Provision`. The live MAC table identified Green as `<GREEN_NODE_MAC>` with its current VLAN 5 lease at `192.168.5.18`. Receive and transmit error and drop counters were zero.
+UniFi reported Bane switch port 4 enabled, linked at 1 Gbps full duplex, and assigned to `Server-Provision`. The live MAC table identified Green as `<REDACTED_GREEN_NODE_MAC>` with its current VLAN 5 lease at `192.168.5.18`. Receive and transmit error and drop counters were zero.
 
 `Server-Provision` had native VLAN 5 and a custom tagged set that excluded only Management, IoT, Trusted, DMZ, and Secure. MGMT-A and Cluster-Net were not excluded, so the installed node can create its two tagged interfaces while the port keeps the provisioning profile.
 

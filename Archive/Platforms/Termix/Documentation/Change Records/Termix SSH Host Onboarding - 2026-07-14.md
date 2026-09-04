@@ -35,7 +35,7 @@ I populated the empty Termix host manager with every machine SSH Manager could r
 1. Inventoried all 19 SSH Manager targets and issued a live `echo TERMIX_SSH_OK` probe. Nine succeeded; ten returned either connection refused or timeout.
 2. Confirmed the Termix host and credential inventories were empty through authenticated local API reads.
 3. Created mode-0600 Termix data backup `/opt/docker/termix/backups/pre-host-import-2026-07-14T1900Z.tar.gz` on `docker-main`.
-4. Used Termix's key generator to create credential ID 1, `Termix Homelab SSH`. Its Ed25519 public-key fingerprint is `<K05_FINGERPRINT>`.
+4. Used Termix's key generator to create credential ID 1, `Termix Homelab SSH`. Its Ed25519 public-key fingerprint is `<REDACTED_K05_FINGERPRINT>`.
 5. Idempotently added the public key to the nine reachable accounts' `authorized_keys` files and verified the exact entry on each target.
 6. Created nine Termix host records with credential ID 1, per-host username override, terminal/tunnel/file-manager access, server statistics, and Docker or Proxmox integration flags where applicable.
 7. Exercised Termix's SSH metrics connection path. Five hosts connected immediately; all four Proxmox nodes timed out.
@@ -97,7 +97,7 @@ These are deliberate exceptions, not silently skipped successes. When an endpoin
 
 ### Termix
 
-To undo only the folder reorganization, restore the prior folder strings through the Termix host editor or restore `/opt/docker/termix/backups/pre-folder-reorganization-2026-07-14T1810Z.tar.gz`. To remove the onboarding, delete host IDs 1 through 9 and credential ID 1 through Termix, then remove public-key fingerprint `<K05_FINGERPRINT>` from the nine accounts. The complete pre-onboarding archive remains `/opt/docker/termix/backups/pre-host-import-2026-07-14T1900Z.tar.gz`.
+To undo only the folder reorganization, restore the prior folder strings through the Termix host editor or restore `/opt/docker/termix/backups/pre-folder-reorganization-2026-07-14T1810Z.tar.gz`. To remove the onboarding, delete host IDs 1 through 9 and credential ID 1 through Termix, then remove public-key fingerprint `<REDACTED_K05_FINGERPRINT>` from the nine accounts. The complete pre-onboarding archive remains `/opt/docker/termix/backups/pre-host-import-2026-07-14T1900Z.tar.gz`.
 
 ### Proxmox
 

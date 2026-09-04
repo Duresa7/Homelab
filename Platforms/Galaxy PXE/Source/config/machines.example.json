@@ -1,6 +1,6 @@
 {
   "machines": {
-    "<REDACTED_NODE_MAC>": {
+    "<YOUR_NODE_MAC>": {
       "hostname": "<YOUR_NODE_HOSTNAME>",
       "domain": "<YOUR_CLUSTER_DOMAIN>",
       "install_disk": "<YOUR_INSTALL_DISK>",
@@ -10,7 +10,7 @@
       "cluster_peer": "<YOUR_JOIN_PEER_MANAGEMENT_IP>",
       "cluster_peer_address": "<YOUR_JOIN_PEER_CLUSTER_IP>"
     },
-    "02:00:00:00:09:99": {
+    "<REDACTED_ACCEPTANCE_VM_MAC>": {
       "hostname": "pxe-acceptance",
       "domain": "<YOUR_CLUSTER_DOMAIN>",
       "install_disk": "sda",

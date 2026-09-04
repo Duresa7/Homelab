@@ -5,7 +5,7 @@
 
 **Investigation date:** 2026-07-31  
 **Status:** Resolved  
-**Affected system:** `green-server`, MAC `<GREEN_NODE_MAC>`
+**Affected system:** `green-server`, MAC `<REDACTED_GREEN_NODE_MAC>`
 
 ## Symptom
 

@@ -73,7 +73,7 @@ Root is 75 percent full at 67 GB of 94 GB, the tightest on the fleet. Everything
 
 That is 18.1 GB with no live dependency I could find.
 
-### Operator files in /root
+### My files in /root
 
 Small, but they are the residue of finished jobs: `ansible-ssh-identity-evidence-2026-07-14/` (68 KB), `ssh-key-automation-2026-07-14.tar.gz` (12 KB), `ssh-key-automation-hosts.yml`, `read-key-state-posix.yml`, four `PeaNUT-S0*` transcripts from 2026-07-22, `nvidia-driver-state-before-580-20260525-221847.txt`, two `.install-*.log` files from January, `configure_debian_lab_template.sh`, and `configure_kali_ops.sh`.
 

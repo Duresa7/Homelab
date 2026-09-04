@@ -23,8 +23,8 @@ The live Ansible distribution playbook in LXC 100, the Linux host baseline, and 
 
 | Key | Fingerprint | Removed from | Authorized-key path | Observed result |
 |---|---|---|---|---|
-| `<RETIRED_ROOT_KEY_LABEL>` | `<RETIRED_ROOT_KEY_FINGERPRINT>` | `docker_main` / `root` | `/root/.ssh/authorized_keys` | One exact match removed; zero remained |
-| `<RETIRED_USER_KEY_LABEL>` | `<RETIRED_USER_KEY_FINGERPRINT>` | `alpha_prod_01` / `dkadi` | `/home/dkadi/.ssh/authorized_keys` | One exact match removed; zero remained |
+| `<REDACTED_RETIRED_ROOT_KEY_LABEL>` | `<REDACTED_RETIRED_ROOT_KEY_FINGERPRINT>` | `docker_main` / `root` | `/root/.ssh/authorized_keys` | One exact match removed; zero remained |
+| `<REDACTED_RETIRED_USER_KEY_LABEL>` | `<REDACTED_RETIRED_USER_KEY_FINGERPRINT>` | `alpha_prod_01` / `dkadi` | `/home/dkadi/.ssh/authorized_keys` | One exact match removed; zero remained |
 
 I replaced each file atomically, confirmed it still parsed as SSH public-key syntax, & rescanned it. Follow-up SSH commands reached both changed hosts.
 
@@ -41,11 +41,11 @@ Connected-account coverage doesn't prove the absence of keys in unreadable accou
 
 | Key | Verified fingerprint | Result |
 |---|---|---|
-| `K05` | `<K05_FINGERPRINT>` | Matched the recorded identity |
-| `K07` | `<K07_FINGERPRINT>` | Matched the recorded identity |
-| `K08` | `<K08_FINGERPRINT>` | Matched the recorded identity |
-| `K09` | `<K09_FINGERPRINT>` | Matched the recorded identity |
-| `K10` | `<K10_FINGERPRINT>` | Matched the recorded identity |
+| `K05` | `<REDACTED_K05_FINGERPRINT>` | Matched the recorded identity |
+| `K07` | `<REDACTED_K07_FINGERPRINT>` | Matched the recorded identity |
+| `K08` | `<REDACTED_K08_FINGERPRINT>` | Matched the recorded identity |
+| `K09` | `<REDACTED_K09_FINGERPRINT>` | Matched the recorded identity |
+| `K10` | `<REDACTED_K10_FINGERPRINT>` | Matched the recorded identity |
 
 ## Windows Retest
 

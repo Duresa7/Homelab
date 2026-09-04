@@ -34,7 +34,7 @@ I started with 19 SSH Manager targets and sent a live `echo TERMIX_SSH_OK` probe
 
 ### Step 3: Create the Reusable Identity
 
-I used Termix's key generator to create `Termix Homelab SSH`. I recorded the Ed25519 public fingerprint as `<K05_FINGERPRINT>` and used that fingerprint for later audit and retirement.
+I used Termix's key generator to create `Termix Homelab SSH`. I recorded the Ed25519 public fingerprint as `<REDACTED_K05_FINGERPRINT>` and used that fingerprint for later audit and retirement.
 
 ### Step 4: Install the Public Key
 
@@ -67,7 +67,7 @@ I exercised Termix's own SSH metrics path for all nine records. Each returned HT
 
 ## Troubleshooting and Recovery
 
-If Termix times out while another client works, test TCP 22 from `docker-main` and inspect both UniFi and host firewall decisions. If authentication fails, compare the target username and `<K05_FINGERPRINT>` before adding another key. Remove the narrow Proxmox IPSet rule if the Termix host is retired.
+If Termix times out while another client works, test TCP 22 from `docker-main` and inspect both UniFi and host firewall decisions. If authentication fails, compare the target username and `<REDACTED_K05_FINGERPRINT>` before adding another key. Remove the narrow Proxmox IPSet rule if the Termix host is retired.
 
 ## Known Limits
 

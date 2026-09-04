@@ -1,7 +1,7 @@
 # Backups
 
 **Created:** 2026-08-05  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-04
 
 This folder holds config files I copied off a host before editing them. It exists so a host does not have to keep the copy.
 
@@ -28,4 +28,4 @@ This is also not a home for hypervisor snapshots or disk images. I keep none.
 
 **This folder is published.** A config file is the single most likely place for a token, a password, or a key to reach the public repository by accident, because the sensitive part is usually one line in a file that is otherwise dull. Read the whole file before committing it, not a diff of it.
 
-Withheld: credentials, API tokens, keys, my WAN address, MAC addresses, drive serials and WWNs, and tunnel and relay identifiers. A scrub cannot unpublish what a push already sent, so the check happens before the commit or not at all.
+Withheld: credentials, API tokens, keys, my WAN address, MAC addresses, drive serials and WWNs, tunnel and relay identifiers, and the name of my password manager. A scrub cannot unpublish what a push already sent, so the check happens before the commit or not at all.

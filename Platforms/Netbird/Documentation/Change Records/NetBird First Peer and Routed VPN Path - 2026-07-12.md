@@ -29,7 +29,7 @@ This closed the Internal-and-VPN reachability item in the completed network segm
 
 ```sh
 curl -fsSL https://pkgs.netbird.io/install.sh | sh
-netbird up --management-url https://netbird.alphasecunited.com --setup-key <SETUP_KEY>
+netbird up --management-url https://netbird.alphasecunited.com --setup-key <REDACTED_SETUP_KEY>
 ```
 
 **Observed result:** The peer connected as `debian` from VLAN 50 (`192.168.50.173`) with overlay address `100.121.231.114`.
@@ -60,7 +60,7 @@ netbird up --management-url https://netbird.alphasecunited.com --setup-key <SETU
 
 ```sh
 curl -fsSL https://pkgs.netbird.io/install.sh | sh
-netbird up --management-url https://netbird.alphasecunited.com --setup-key <SETUP_KEY>
+netbird up --management-url https://netbird.alphasecunited.com --setup-key <REDACTED_SETUP_KEY>
 ```
 
 **Observed result:** `docker-network` connected as a Server peer with overlay address `100.121.111.204`.

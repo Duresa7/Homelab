@@ -17,7 +17,7 @@ The first physical run downloaded the complete installer path and installed Prox
 
 ## Starting State
 
-- The Lenovo M920q had UEFI PXE IPv4 enabled and reported MAC `<GREEN_NODE_MAC>`.
+- The Lenovo M920q had UEFI PXE IPv4 enabled and reported MAC `<REDACTED_GREEN_NODE_MAC>`.
 - Bane switch port 4 used the `Server-Provision` profile.
 - `Server-Provision` provided native VLAN 5 on `192.168.5.0/24` and advertised `192.168.40.36` with filename `galaxy-ipxe.efi`.
 - Galaxy had four quorate Proxmox VE 9.2.5 nodes.
@@ -44,7 +44,7 @@ The first physical run downloaded the complete installer path and installed Prox
 | Physical switch port | Bane port 4 |
 | DHCP boot server | `192.168.40.36` |
 | DHCP boot filename | `galaxy-ipxe.efi` |
-| PXE MAC | `<GREEN_NODE_MAC>` |
+| PXE MAC | `<REDACTED_GREEN_NODE_MAC>` |
 | Hostname | `green-server.galaxy` |
 | Install disk | `nvme0n1` |
 | Disk excluded from installer and LVM | `sda` |
@@ -98,7 +98,7 @@ The regression suite grew from 13 to 21 tests. It passed locally and on the exac
 
 ## Step 4: Exercise the Disposable Acceptance Path
 
-I created disposable VM 999 on Red with UEFI, a 32 GiB disk, MAC `02:00:00:00:09:99`, and VLAN 5. The first run emitted DHCP discovers but received no offer. After I admitted `Server-Provision` as a tagged network on `Proxmox-Trunk`, the next UEFI boot reached `ansible-01` and claimed an installer attempt.
+I created disposable VM 999 on Red with UEFI, a 32 GiB disk, MAC `<REDACTED_ACCEPTANCE_VM_MAC>`, and VLAN 5. The first run emitted DHCP discovers but received no offer. After I admitted `Server-Provision` as a tagged network on `Proxmox-Trunk`, the next UEFI boot reached `ansible-01` and claimed an installer attempt.
 
 The 7 GiB run failed while unpacking initramfs with `No space left on device` and could not mount `/mnt/pve-installer.squashfs`. I increased only the disposable VM to 12 GiB. That run reached the answer parser and exposed an invalid acceptance-only value: `poweroff` instead of Proxmox's `power-off`.
 
