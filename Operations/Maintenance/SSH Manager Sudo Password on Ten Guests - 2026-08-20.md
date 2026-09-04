@@ -75,7 +75,7 @@ splunk-siem   root   docker-blue root docker-network root monitor-01  root
 media-01      root   game-01 root     ansible-01 root
 ```
 
-**`ssh_execute` without sudo still works on 11 of 11.** Each returned its own hostname and the expected login account, `dkadi` on ten and `ansible` on `ansible-01`. `security-01` answers to `wazuh-01`, which is the known host-versus-record deviation from 2026-08-15 and not something this change caused.
+**`ssh_execute` without sudo still works on 11 of 11.** Each returned its own hostname and the expected login account, `dkadi` on ten and `ansible` on `ansible-01`.
 
 **The returned output masks the password.** The tool reports `Command: sudo id -un` where it actually ran `echo "..." | sudo -S id -un`. Worth knowing exactly how far that goes: the mask is a regular expression over the reported command line only, so it hides the credential in the command echo and does nothing to stdout or stderr. It is not a general guarantee that the value cannot appear in a result.
 

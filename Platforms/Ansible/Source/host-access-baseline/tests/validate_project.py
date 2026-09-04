@@ -33,8 +33,7 @@ EXPECTED_AI_AGENT_TARGETS = {
     "edge-01",
     "app-01",
     "alpha-prod-01",
-    # The effort spec calls this host wazuh-01. The inventory name matches
-    # every other Ansible project and the SSH manager.
+    # The inventory name matches every other Ansible project and SSH Manager.
     "security-01",
     "splunk-siem",
     "docker-blue",

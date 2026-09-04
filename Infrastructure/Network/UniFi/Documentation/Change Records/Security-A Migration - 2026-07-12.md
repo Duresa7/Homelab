@@ -19,7 +19,7 @@ I left Wazuh agent repointing for later. Validation also found three missing Pro
 | Guest | Before | Workloads |
 |---|---|---|
 | VM 109 `splunk-siem` | `192.168.70.109/24`, VLAN 70 | Splunk Enterprise/ES, SC4S, HEC |
-| VM 200 `security-01` / `wazuh-01` | `192.168.70.20/24`, VLAN 70 | Wazuh manager/indexer/dashboard, Prometheus, Grafana, PVE exporter |
+| VM 200 `security-01` | `192.168.70.20/24`, VLAN 70 | Wazuh manager/indexer/dashboard, Prometheus, Grafana, PVE exporter |
 
 The UniFi controller had Wazuh policies aimed at `192.168.70.20` and a MGMT-A-to-DMZ node-exporter policy. The Galaxy Datacenter firewall allowed TCP 9100 and 8006 from all of `192.168.70.0/24`. No port forward or WAN-facing policy targeted either guest.
 

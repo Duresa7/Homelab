@@ -19,7 +19,7 @@ I captured the complete 13-guest workload inventory after adding the Galaxy PXE 
 | app-01 | VM 116 | grey-server | App platform | Coolify; Traefik; Postgres; Redis; Realtime; Wazuh agent 4.14.6; node_exporter; cAdvisor |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy; cloudflared; Wazuh agent 4.14.5 |
 | kasm-01 | VM 122 | purple-server | Isolated disposable desktops | Kasm Workspaces 1.19.0 CE; Docker 29.6.2; VLAN 74, 75, 77, and 79 session lanes; node_exporter |
-| security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring | Wazuh 4.14.6; node_exporter; cAdvisor |
+| security-01 | VM 200 | grey-server | Security monitoring | Wazuh 4.14.6; node_exporter; cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice and game services | TeamSpeak; TS3 Manager; Playit; Portainer Edge Agent; node_exporter; cAdvisor |
 | splunk-siem | VM 109 | grey-server | SIEM | Splunkd; SC4S; node_exporter |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin; Seerr; Sonarr; Radarr; Prowlarr; FlareSolverr; qBittorrent through Gluetun; Portainer Edge Agent; node_exporter; cAdvisor |

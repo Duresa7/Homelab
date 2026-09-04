@@ -9,11 +9,11 @@ I started this change on 2026-08-29 and finished it on 2026-08-30.
 
 ## Scope
 
-I put a Splunk Universal Forwarder on `wazuh-01` and pointed it at `splunk-siem` on port 9997, so every Wazuh alert lands in Splunk as well as in Wazuh's own indexer. This is the first of four changes that together give me one page in Splunk showing what my machines are reporting. The other three are [Wazuh Insights App](../../../Splunk/Enterprise/Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md), [File Integrity Monitoring Widening](File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md) and [Malware Detection](Malware%20Detection%20-%202026-08-29.md).
+I put a Splunk Universal Forwarder on `security-01` and pointed it at `splunk-siem` on port 9997, so every Wazuh alert lands in Splunk as well as in Wazuh's own indexer. This is the first of four changes that together give me one page in Splunk showing what my machines are reporting. The other three are [Wazuh Insights App](../../../Splunk/Enterprise/Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md), [File Integrity Monitoring Widening](File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md) and [Malware Detection](Malware%20Detection%20-%202026-08-29.md).
 
 The four together are written up as one followable path in [Wazuh Alerts in Splunk](../../../../Guides/Wazuh-Alerts-in-Splunk.md), which is the guide a reader outside this lab would start from.
 
-`wazuh-01` is the manager at `192.168.72.2`, reachable through the SSH Manager as `security_01`. `splunk-siem` is `192.168.72.3`.
+`security-01` is the manager at `192.168.72.2`, reachable through SSH Manager as `security_01`. `splunk-siem` is `192.168.72.3`.
 
 I did not change any Wazuh rule, decoder or agent configuration here. I did not touch Wazuh's own indexer, which keeps its alerts on its own schedule.
 
@@ -31,7 +31,7 @@ I did not change any Wazuh rule, decoder or agent configuration here. I did not 
 
 ## What I configured
 
-On `wazuh-01`, Splunk Universal Forwarder 10.4.0 build `f798d4d49089`:
+On `security-01`, Splunk Universal Forwarder 10.4.0 build `f798d4d49089`:
 
 ```ini
 # inputs.conf

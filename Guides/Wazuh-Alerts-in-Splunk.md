@@ -13,7 +13,7 @@ Two of the nine steps are corrections rather than construction. That ratio is ho
 
 ## Current Status and Verified Versions
 
-`security-01` at `192.168.72.2` runs Wazuh 4.14.7 with the manager, indexer & dashboard active, & 16 agents reporting Active including the manager's own agent 000. `splunk-siem` at `192.168.72.3` runs Splunk Enterprise 10.4.0 build `f798d4d49089` with Enterprise Security, listening on 8000, 8088, 8089, 1514 & 9997. The Universal Forwarder on `security-01` is 10.4.0, the same build, holding an established connection to `192.168.72.3:9997`. The host answered to `wazuh-01` until 2026-09-01, which is the name the screenshots & step checks below still show.
+`security-01` at `192.168.72.2` runs Wazuh 4.14.7 with the manager, indexer & dashboard active, & 16 agents reporting Active including the manager's own agent 000. `splunk-siem` at `192.168.72.3` runs Splunk Enterprise 10.4.0 build `f798d4d49089` with Enterprise Security, listening on 8000, 8088, 8089, 1514 & 9997. The Universal Forwarder on `security-01` is 10.4.0, the same build, holding an established connection to `192.168.72.3:9997`.
 
 Both hosts sit on Security-A, VLAN 72, so this traffic never reaches the gateway & needed no UniFi firewall policy. Root on `splunk-siem` is 142 GB with 93 GB free. The `wazuh` index keeps 30 days or 5 GB, whichever comes first.
 
@@ -210,7 +210,7 @@ Wazuh's own malware view is where that becomes obvious. 2,760 hits in 24 hours, 
 
 ![Wazuh malware events: one VirusTotal detection buried under rule 87101 rate-limit errors](../Platforms/Wazuh/Evidence/Malware%20Detection%20-%202026-08-29/Screenshots/S20-Wazuh-Malware-Detection-Events-2026-08-30.png)
 
-The top row is rule 87105 at level 12 on `ubuntu-dev`. Every row under it is rule 87101 at level 3 from `wazuh-01`, one every half second, & each of those is the integration saying it ran out of quota rather than saying anything about a file.
+The top row is rule 87105 at level 12 on `ubuntu-dev`. Every row under it is rule 87101 at level 3 from `security-01`, one every half second, & each of those is the integration saying it ran out of quota rather than saying anything about a file.
 
 `/tmp` stays watched, because a payload dropped into world-writable space is a real case. It's restricted by filename instead:
 
@@ -398,7 +398,7 @@ Three Dashboard Studio behaviours cost me time. A definition either parses or it
 - `/var/ossec/bin/verify-agent-conf` returned OK for all four groups, & `merged.mg` on `ubuntu-dev` contained the `restrict` expressions.
 - File-integrity alerts in 24 hours fell from 2,958 to 227; the rootcheck trojan false positives went from 22,190 to 0.
 - Two alerts, 87105 & 100200, both level 12, one second apart on the same file, searchable in `index=wazuh` about ten seconds later.
-- All 16 agents Active, & the four Wazuh & forwarder units active on `wazuh-01`.
+- All 16 agents Active, & the four Wazuh & forwarder units active on `security-01`.
 
 ## Troubleshooting and Recovery
 

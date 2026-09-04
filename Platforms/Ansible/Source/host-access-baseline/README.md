@@ -12,7 +12,7 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - Every host connects as `ansible`, which already holds passwordless root on all of them. `ansible-01` runs through a local connection guarded by a hostname assertion.
 - The Proxmox nodes are absent. Node root access is the cluster-backed key file that `ssh-key-automation` owns, not a POSIX account.
 - `ubuntu-dev` and `docker-main` are outside the model by decision and appear in no group. `ubuntu-dev` is the single-account workstation, and `docker-main` stays root-login only. The validator fails if either turns up in a target group.
-- The Wazuh host is `security-01` here. The effort spec calls it `wazuh-01`; this name matches every other Ansible project and the SSH manager.
+- The Wazuh host is `security-01`, matching the other Ansible projects and SSH Manager.
 - `game-01` is in `ai_agent_key_only`. Its `ai-agent` account and `/etc/sudoers.d/90-ai-agent` already exist, and its `authorized_keys` was 0 bytes, which is the only reason the account was unreachable. This project writes that one file and creates nothing there.
 - The `ai-agent` key carries **no** restriction prefix: no `from=`, no forwarding limits, no `no-pty`. That is a decision taken on 2026-08-14, not an omission. The validator fails if a restriction appears, so a later reader cannot quietly "fix" it.
 - The key itself lives in `vars/ai-agent-key.yml`, which is gitignored. The repository publishes only `vars/ai-agent-key.yml.example`, following `ssh-key-automation/identities/`. The validator fails if a real key reaches the example, if the playbook hardcodes one, or if the gitignore entry disappears. See [vars/PUBLICATION-NOTICE.md](vars/PUBLICATION-NOTICE.md).

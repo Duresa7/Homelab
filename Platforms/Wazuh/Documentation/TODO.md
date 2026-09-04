@@ -7,15 +7,10 @@
 
 I completed the [2026-08-03 fleet deployment](Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md) with 14 active remote agents, zero disconnected or pending agents, and all five Galaxy nodes active in `proxmox`. I described IDs `006` through `017` as held because the [deployment play](../Source/agent-deployment/playbooks/deploy.yml) installs exact package `4.14.6-1` and separately applies `dpkg_selections: hold` to its twelve targets. Existing IDs `004` and `005` are not in that inventory, so the empty `apt-mark showhold` results from `app-01` and `edge-01` on 2026-08-04 do not contradict the record. The final seven-host run and later Green-only run each changed zero hosts.
 
-## Two host deviations found on 2026-08-15
+## Host deviation found on 2026-08-15
 
-Both turned up while I turned root SSH off on `security-01` and neither affects Wazuh itself. See [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md).
+This turned up while I turned root SSH off on `security-01` and doesn't affect Wazuh itself. See [Root SSH Disabled on ansible-01 and security-01](../../../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md).
 
-- [x] Fixed 2026-09-01: the guest now answers to `security-01`, matching the Proxmox guest name, [VMs.md](../../../Operations/Inventory/Galaxy/VMs.md), the Ansible inventory and the SSH Manager configuration. See [Hostname Rename to security-01](Change%20Records/Hostname%20Rename%20to%20security-01%20-%202026-09-01.md).
-
-  All three of the things this entry warned read the current name came back clear on the preflight. The indexer takes `node.name: "node-1"` and `CN=indexer` from its own configuration and reaches itself on loopback, so its TLS identity never involved the hostname. Agent 000 turned out to be dynamic: no `<agent_name>` in `ossec.conf` and no `000` row in `client.keys`, so the manager reads its own agent name from the OS hostname at runtime and picked up `security-01` without re-registration. I pinned `host = security-01` in the forwarder's [inputs.conf](../Configuration/Splunk%20Forwarder/inputs.conf) before the rename, so Splunk saw no split, and moved `serverName` in its `server.conf` to match.
-
-  16 agents active and 0 disconnected both before and after the reboot. The one open consequence is that `agent.name` for the manager reads `wazuh-01` on events before 2026-09-01 and `security-01` after, which the `wazuh` index ages out by 2026-10-01.
 - [x] Fixed 2026-08-30: `timedatectl` now reports `Time zone: America/New_York (EDT, -0400)` with the system clock synchronized. This mattered more than a baseline tick once alerts started reaching Splunk, because the manager's timestamps are what the dashboard sorts on.
 
 ## Detection and forwarding, 2026-08-30

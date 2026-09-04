@@ -27,7 +27,7 @@ Every one was tuned against the 30 days of history before it was enabled, in the
 | Wazuh - Malware or high severity | every 15 minutes at :07 | 20 minutes | 1 hour per machine and rule | 2, both the EICAR test file on `ubuntu-dev` |
 | Wazuh - Account or group changed | hourly at :57 | 70 minutes | 1 hour per machine | 7 events on 3 machines, all mine |
 | Wazuh - Login from outside private networks | hourly at :02 | 70 minutes | 24 hours per machine and source | 0 |
-| Wazuh - Machines gone quiet, listed | hourly at :05 | 7 days | 7 days per machine | 0 after excluding `wazuh-01` |
+| Wazuh - Machines gone quiet, listed | hourly at :05 | 7 days | 7 days per machine | 0 after excluding one stale manager identity |
 
 The first two already existed as notable rules and keep their notable action; the webhook was added beside it. The other three UniFi searches and the three new Wazuh searches carry the webhook and no notable, because they exist for the phone, not the queue. The silent-machine search is the one that existed unscheduled since 2026-08-30, now scheduled.
 
@@ -41,7 +41,7 @@ The first two already existed as notable rules and keep their notable action; th
 
 **The syslog dead-man window is six hours** because the history had one hour and one four-hour block with zero UniFi events, on 2026-08-26, and the quietest six-hour block held 13. Anything shorter would have produced a false alarm.
 
-**`wazuh-01` is excluded from the silent-machine search, and the exclusion expires on its own.** The manager was renamed `security-01` on 2026-09-01, so its old name looks like an agent that fell silent until the seven-day lookback ages it out on 2026-09-08. Rather than a name match I would have to remember to remove, the search ignores a `wazuh-01` row only when its last event predates 2026-09-02, which is true of the stale name and would not be true of a host enrolled under that name later. Later on 2026-09-03 I proved it both ways: the search returns 0 rows, and the same search with the cutoff moved to 2026-09-01 returns `wazuh-01`. The first draft placed the test after `table` had dropped the `last` field, where it excluded nothing; it now sits in the first `where`.
+**One stale manager identity is excluded from the silent-machine search, and the exclusion expires on its own.** It looks like an agent that fell silent until the seven-day lookback ages it out on 2026-09-08. The search ignores that row only when its last event predates 2026-09-02, which would not hide a host enrolled under the same name later. On 2026-09-03 I proved it both ways: the search returns 0 rows, and the same search with the cutoff moved to 2026-09-01 returns the stale identity. The first draft placed the test after `table` had dropped the `last` field, where it excluded nothing; it now sits in the first `where`.
 
 **Level 12 is the Wazuh severity floor**, plus any malware verdict at any level. Only the two EICAR detections reached it in 30 days. The `Systemd: Service exited due to a failure` flood that dominated the feed's first day never gets near 12.
 

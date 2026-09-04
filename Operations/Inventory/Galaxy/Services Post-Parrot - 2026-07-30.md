@@ -18,7 +18,7 @@ I captured the complete workload inventory after the Kasm Parrot build-out. It m
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | kasm-01 | VM 122 | purple-server | Isolated disposable desktops (`192.168.78.10`, VLAN 78 control plane) | Kasm Workspaces 1.19.0 CE<br>Docker 29.6.2<br>macvlan session lanes 74, 75, 77, 79 |
-| security-01 / wazuh-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
+| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.6<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; applications onboarded, end-to-end acquisition test pending | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent 2.39.1 |
@@ -117,7 +117,7 @@ I captured the complete workload inventory after the Kasm Parrot build-out. It m
 | Swap | 4 GiB file at `/mnt/Kasm.swap`, required by Kasm's own guidance |
 | Network | Static `192.168.78.10/24` on LAB-MGMT/VLAN 78; sessions use `192.168.74.208/28`, `192.168.75.208/28`, `192.168.77.208/28`, or `192.168.79.208/28`; VLAN 74 exits through Proton, VLAN 75 uses ordinary WAN, and VLANs 77 and 79 have no Internet |
 
-## security-01 / wazuh-01
+## security-01
 
 | Workload | Details |
 | --- | --- |

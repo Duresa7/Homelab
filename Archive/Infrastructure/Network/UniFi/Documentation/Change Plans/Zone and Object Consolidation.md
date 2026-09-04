@@ -194,7 +194,7 @@ Separately, `AlphaSec-IoT` is a disabled SSID bound to the untagged Management n
 - `IOT` has zero members and `iot_device` has six. I delete the empty one and keep the populated one.
 - `server` holds one MAC, `docker-blue`. I rename it to what it is.
 - `grey-server` holds five MACs: `grey-node` itself plus four VM addresses. The name says node, the contents say node plus guests. I decide which it's meant to be and rename accordingly.
-- `VM` holds `wazuh-01` and `kasm-01`, two unrelated hosts under a name that describes neither. Because it contains a Kasm host I flag it rather than change it in this plan.
+- `VM` holds `security-01` and `kasm-01`, two unrelated hosts under a name that describes neither. Because it contains a Kasm host I flag it rather than change it in this plan.
 - `Game Servers` holds one MAC that isn't in the current online set. I confirm whether the host still exists before deciding.
 - `Admin_Device` already contains exactly the four approved administrative devices, while `Device Access to Proxmox` still matches four MACs inline.
 

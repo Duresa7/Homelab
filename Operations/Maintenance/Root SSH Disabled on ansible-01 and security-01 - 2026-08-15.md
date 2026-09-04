@@ -132,10 +132,8 @@ I also made a rollback copy on each host for the duration of the edit, at `/etc/
 
 ## Left open
 
-Two deviations turned up that are outside this change and are not fixed here.
+One deviation turned up outside this change and was not fixed here.
 
 **Both hosts run `Etc/UTC`.** Step 8 of the baseline standard requires `America/New_York` so timestamps compare across hosts without conversion. `timedatectl` reports `Time zone: Etc/UTC (UTC, +0000)` on `ansible-01` and on `security-01`. Every journal timestamp quoted in this record is UTC because of it.
 
-**`security-01` answers to the hostname `wazuh-01`.** The guest is `security-01` in [VMs.md](../Inventory/Galaxy/VMs.md), in the Ansible inventory, and in the SSH Manager configuration, but its own `/etc/hostname` says `wazuh-01`, which is why the shell prompt and the journal lines above disagree with the filename.
-
-Neither affects the change. Both are recorded in the Wazuh and Ansible platform TODO lists.
+It didn't affect the change and was recorded in the Wazuh and Ansible platform TODO lists.

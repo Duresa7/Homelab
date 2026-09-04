@@ -36,7 +36,7 @@ I installed `prometheus-node-exporter` 1.9.0-1+b4 and its collector package thro
 
 ### 2. Reset obsolete Wazuh registrations
 
-I stopped and disabled `app-01` and `edge-01`, changed their manager address from `192.168.70.20` to `192.168.72.2`, and cleared their stale client-key files to zero bytes with root/Wazuh ownership. I removed the manager registrations ID `002` `edge-01` and ID `003` `wp-01`. A fresh manager list contains only local ID `000` `wazuh-01`.
+I stopped and disabled `app-01` and `edge-01`, changed their manager address from `192.168.70.20` to `192.168.72.2`, and cleared their stale client-key files to zero bytes with root/Wazuh ownership. I removed the manager registrations ID `002` `edge-01` and ID `003` `wp-01`. A fresh manager list contains only local ID `000` `security-01`.
 
 The incorrect `wp-01` identity and retired manager address are recorded in the [Wazuh troubleshooting record](../../../Wazuh/Documentation/Troubleshooting/Incorrect%20and%20stale%20endpoint%20identities%20-%202026-07-13.md).
 
