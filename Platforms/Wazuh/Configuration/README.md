@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-03
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -73,7 +73,7 @@ The VirusTotal integration lives in the manager's `ossec.conf` and is not versio
 
 The internal indexer user `dkadi` has backend role `admin`, which the live `all_access` mapping grants full indexer access. Dashboard `run_as` is enabled. Wazuh server mapping rule ID 100, `wui_dkadi_admin`, matches `user_name: dkadi` and links to role ID 1, `administrator`.
 
-I verified the complete path on 2026-08-03 with a fresh `dkadi` authorization context. The security configuration endpoint returned HTTP `200`, the effective role was `administrator`, & that role exposed all 23 administrator policies. The check did not reveal or change the user's password.
+I verified the complete path on 2026-08-03 with a fresh `dkadi` authorization context. The security configuration endpoint returned HTTP `200`, the effective role was `administrator`, & that role exposed all 23 administrator policies. I checked the live state again on 2026-09-03: the running Indexer Security API returned backend role `admin` for `dkadi`, its live `all_access` mapping still matched that backend role, dashboard `run_as` remained enabled, & Wazuh's RBAC database still linked rule 100 to the 23-policy `administrator` role. The manager, indexer, & dashboard were all enabled and running, and the Indexer cluster was green with no unassigned shards. Neither check revealed or changed the user's password.
 
 The manager-side `proxmox` group contains exactly five active members: Grey, Purple, Blue, Red, & Green. Its generated `agent.conf` passed `verify-agent-conf`. The dashboard returned `default, proxmox` on all five rows, so the nodes keep the common Linux policy and share one Proxmox identity.
 
