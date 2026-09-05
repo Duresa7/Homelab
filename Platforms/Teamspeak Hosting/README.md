@@ -26,7 +26,7 @@ Each public name is a DNS-only CNAME to its Playit relay plus an `_ts3._udp` SRV
 
 The reachability collector reads that SRV record on every cycle, so it depends on DNS working inside its
 container. On 2026-08-27 I pinned its resolver with `dns: [192.168.80.1]` in the Compose file, after a boot
-race on 2026-08-10 left it with a `resolv.conf` containing no nameserver for 17 days — during which the
+race on 2026-08-10 left it with a `resolv.conf` containing no nameserver for 17 days, during which the
 dashboard reported both public addresses down while both servers were serving clients. Full diagnosis in
 [Collector DNS Failure After a Boot Race - 2026-08-27](Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md).
 
