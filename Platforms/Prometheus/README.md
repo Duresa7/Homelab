@@ -35,7 +35,7 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 
 ## Containers on monitor-01
 
-Eight containers belong to the host across three Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other eight Docker hosts. PeaNUT runs from `/opt/docker/peanut`.
+Nine containers belong to the host across four Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other eight Docker hosts. `wud` comes from `/opt/docker/wud`, deployed by that same project. PeaNUT runs from `/opt/docker/peanut`.
 
 The 2026-08-10 restart exposed a limit in the old policy: Docker held `HasBeenManuallyStopped=true` for Prometheus, so `unless-stopped` skipped it while the other containers returned. I changed Prometheus alone to `restart: always`, started it, and verified both readiness paths, 52 healthy targets, and 20 passing probes. The diagnosis and correction are in [issue 5](Documentation/Troubleshooting/Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md).
 
@@ -49,7 +49,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `cadvisor` | all 9 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01, game-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 20 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
-| `nut` | APC Back-UPS Pro BR1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
+| `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `wud` | What's Up Docker `:latest`, currently 8.4.0, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
@@ -82,7 +82,7 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 |---|---|---|---|
 | Homelab | Homelab Overview | `homelab-overview` | Eight health tiles, one table of everything failing a check, the fleet table, service reachability, and links out |
 | Homelab | Proxmox · Galaxy Cluster | `proxmox-cluster` | Quorum, the five nodes, every guest, guest I/O, every storage |
-| Homelab | Containers | `containers` | 56 containers across the nine cAdvisor hosts, with restart and OOM tables |
+| Homelab | Containers | `containers` | Every container across the nine cAdvisor hosts, 71 of them on 2026-09-05, with restart and OOM tables |
 | Homelab | Services & Uptime | `services-uptime` | The 19 names through NPM: reachability, latency by request phase, TLS expiry |
 | Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
 | Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
