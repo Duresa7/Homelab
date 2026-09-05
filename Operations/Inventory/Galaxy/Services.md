@@ -24,7 +24,7 @@ All five nodes report `pve-manager/9.2.6`, kernel `7.0.14-8-pve`, and their lowe
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.0 / dashboard 2.92.0<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent 2.45.0<br>Wazuh agent 4.14.6 |
@@ -77,6 +77,8 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
 | Portainer CE | Server 2.45.0 from `portainer/portainer-ce:latest`, verified 2026-09-01 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.45.0 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
 | CLI Proxy API | Version 7.2.128 from a digest-pinned image; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
+| Ollama | 0.33.3 pinned by tag and digest; `qwen3.5:2b` model ID `324d162be6ca` is the only installed model; GTX 1080 Ti at 100% GPU offload; Compose under `/opt/docker/ollama`; API bound to `192.168.40.35:11434` without NPM or WAN publication |
+| Open WebUI | Tracks rolling `main` with `pull_policy: always`; currently reports 0.11.3; authenticated frontend in the Ollama Compose project; internal HTTPS active at `openwebui.alphasecunited.com` through NPM host 28; direct recovery path on `192.168.40.35:3002`; model discovery verified |
 
 ## monitor-01
 
@@ -230,7 +232,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
-| docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 12 containers, `overlay2` |
+| docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 14 containers, `overlay2` |
 | docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 5 containers, `overlayfs` |
 | docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 6 containers, `overlayfs` |
 | media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 10 containers, `overlayfs` |

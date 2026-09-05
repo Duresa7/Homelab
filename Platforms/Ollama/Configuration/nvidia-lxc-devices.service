@@ -1,0 +1,16 @@
+[Unit]
+Description=Create NVIDIA device nodes for LXC GPU access
+After=systemd-modules-load.service
+Before=pve-guests.service
+ConditionPathExists=/usr/bin/nvidia-modprobe
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe nvidia
+ExecStart=/sbin/modprobe nvidia-modeset
+ExecStart=/sbin/modprobe nvidia-uvm
+ExecStart=/usr/bin/nvidia-modprobe -c 0 -u -m
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,11 +1,11 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-04
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
-I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). The active LXC allocation now totals 18 vCPUs, 30 GiB of memory, and 10 GiB of swap. The values below are the live post-restart settings.
+I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. The active LXC allocation now totals 18 vCPUs, 38 GiB of memory, and 10 GiB of swap. The values below are the live post-restart settings.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
@@ -14,7 +14,7 @@ I recaptured all seven containers after the [2026-08-10 resource efficiency chan
 | 104 | monitor-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.73.2/24 | 192.168.73.1 | 73 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
-| 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 4 | 8 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
+| 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 4 | 16 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
 | 123 | game-01 | green-server | disabled | Debian GNU/Linux 13 (trixie) | 6 | 12 GiB | 192.168.80.30/24 | 192.168.80.1 | 80 |
 | 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
 
@@ -154,11 +154,12 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | High availability | disabled |
 | OS | Debian GNU/Linux 12 (bookworm) |
 | vCPU | 4 |
-| Memory | 8 GiB |
+| Memory | 16 GiB |
 | Swap | 4 GiB |
 | Unprivileged | yes |
 | Features | nesting=1 |
 | Tags | docker |
+| GPU devices | GTX 1080 Ti via `/dev/nvidia0`, `nvidiactl`, `nvidia-modeset`, both UVM nodes, and both NVIDIA capability nodes |
 
 ### Storage
 | Device | Mount | Storage | Volume | Size | Backup |
