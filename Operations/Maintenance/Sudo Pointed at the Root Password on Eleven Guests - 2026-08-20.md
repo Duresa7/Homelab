@@ -9,7 +9,7 @@
 
 ## Outcome
 
-A sudo prompt on the eleven guests now asks for root's password rather than the invoking user's. That is what I wanted on 2026-08-15: one password to log in as `dkadi`, a different one at a sudo prompt. Stock sudo cannot do it — sudo authenticates the invoking user's own password, so on an unmodified host the two values are necessarily the same. `Defaults rootpw` is the only mechanism that separates them, and it works by pointing every prompt at **root's** password.
+A sudo prompt on the eleven guests now asks for root's password rather than the invoking user's. That is what I wanted on 2026-08-15: one password to log in as `dkadi`, a different one at a sudo prompt. Stock sudo cannot do it: sudo authenticates the invoking user's own password, so on an unmodified host the two values are necessarily the same. `Defaults rootpw` is the only mechanism that separates them, and it works by pointing every prompt at **root's** password.
 
 | Action | Password now typed |
 | --- | --- |
@@ -26,7 +26,7 @@ Read through Ansible immediately before the run, on all eleven:
 
 - `passwd -S root` reported `P` on every host, so no host was in the condition that makes this change dangerous.
 - `visudo -c` passed on every host.
-- **No `rootpw`, `targetpw` or `runaspw` existed anywhere on the fleet** — not in `/etc/sudoers`, not in any drop-in. This change introduces the setting rather than adjusting it.
+- **No `rootpw`, `targetpw` or `runaspw` existed anywhere on the fleet**, not in `/etc/sudoers` and not in any drop-in. This change introduces the setting rather than adjusting it.
 - `/etc/sudoers.d/00-rootpw` did not exist on any host.
 
 Who could reach root through sudo, and how:
@@ -57,13 +57,13 @@ Before touching a host I confirmed the out-of-band route to root on it, because 
 | --- | --- |
 | `pct exec` from the node | `ansible-01`, `monitor-01`, `docker-network`, `docker-blue`, `media-01`, `game-01` |
 | `qm guest exec` from the node | `app-01`, `edge-01`, `security-01`, `alpha-prod-01` |
-| **Proxmox console only** | `splunk-siem` — `guest-exec` is disabled on VM 109 |
+| **Proxmox console only** | `splunk-siem`, where `guest-exec` is disabled on VM 109 |
 
 `splunk-siem` went last for that reason.
 
 ## The bug the first host caught
 
-I ran the play against `docker-blue` alone before the rest. The file was written, `visudo -c` passed, root's password was accepted at a `dkadi` sudo prompt and the login password was refused — and then the last verification failed:
+I ran the play against `docker-blue` alone before the rest. The file was written, `visudo -c` passed, root's password was accepted at a `dkadi` sudo prompt and the login password was refused. Then the last verification failed:
 
 ```text
 fatal: [docker-blue]: FAILED! => {"assertion": "dkadi_sudo_list.rc == 0",
@@ -72,7 +72,7 @@ fatal: [docker-blue]: FAILED! => {"assertion": "dkadi_sudo_list.rc == 0",
 
 `sudo -l` authenticates too. Once `rootpw` is in force, a password-gated account running `sudo -l` is prompted before sudo will tell it anything, so the command I had written to confirm the grant could no longer run unattended. The change was correct; the check was written for the world as it existed before the change.
 
-Feeding the password into `sudo -l` was the obvious repair and the wrong one — it makes a routine read depend on a credential. The play now reads the policy as root with `sudo -l -U dkadi`, which needs no authentication and reports the same thing:
+Feeding the password into `sudo -l` was the obvious repair and the wrong one: it makes a routine read depend on a credential. The play now reads the policy as root with `sudo -l -U dkadi`, which needs no authentication and reports the same thing:
 
 ```text
 Matching Defaults entries for dkadi on docker-blue:

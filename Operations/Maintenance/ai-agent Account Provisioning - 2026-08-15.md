@@ -25,7 +25,7 @@ Every host connects as `ansible`, which already holds passwordless root on each 
 
 This is the finding worth carrying forward.
 
-The playbook reported `account=present keys=1` on `media-01` and looked completely clean. `ssh ai-agent@media-01` returned `Permission denied (publickey)`. The account, the key, the ownership and the modes were all correct. The cause was `AllowUsers dkadi ansible` in `/etc/ssh/sshd_config.d/60-media-01-hardening.conf` — sshd refused the account before it ever read the key.
+The playbook reported `account=present keys=1` on `media-01` and looked completely clean. `ssh ai-agent@media-01` returned `Permission denied (publickey)`. The account, the key, the ownership and the modes were all correct. The cause was `AllowUsers dkadi ansible` in `/etc/ssh/sshd_config.d/60-media-01-hardening.conf`: sshd refused the account before it ever read the key.
 
 A run that installs a key onto an account sshd will not admit is the worst outcome available here, because it looks like success.
 

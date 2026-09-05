@@ -4,7 +4,7 @@
 **Last updated:** 2026-08-20
 
 **Change date:** 2026-08-20  
-**Status:** Complete. `ssh_execute_sudo` reaches root on all eleven guests and `ssh_execute` still works on all eleven. This work put the credential in one file and no other. A wider scan on 2026-08-20 then found a second, older copy that this work did not create — see [Where the first scan was too narrow](#where-the-first-scan-was-too-narrow)  
+**Status:** Complete. `ssh_execute_sudo` reaches root on all eleven guests and `ssh_execute` still works on all eleven. This work put the credential in one file and no other. A wider scan on 2026-08-20 then found a second, older copy that this work did not create. See [Where the first scan was too narrow](#where-the-first-scan-was-too-narrow)  
 **Scope:** Ten `SUDO_PASSWORD` entries in the SSH Manager MCP's env file on `ubuntu-dev`. No remote host was touched: no sudoers file, no account password, no key, no sshd setting. The five Proxmox nodes, `docker-main` and `ansible-01` have no entry on purpose
 
 ## Outcome
@@ -85,7 +85,7 @@ media-01      root   game-01 root     ansible-01 root
 
 **Mode is still `0600`**, owned by `ai-agent`, 6270 bytes, 153 lines.
 
-**This work put the credential in one file and no other.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 session transcripts for this project, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which the source confirms at `index.js:695` — the only two `logCommand` call sites sit in the non-sudo handler.
+**This work put the credential in one file and no other.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 session transcripts for this project, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which the source confirms at `index.js:695`: the only two `logCommand` call sites sit in the non-sudo handler.
 
 **The mask is one regex over the reported command line.** `index.js:2323` is `fullCommand.replace(/echo "[^"]+" \| sudo -S/, 'sudo')`, and the result template interpolates `result.stdout || result.stderr` untouched. So a command that echoes its own stdin still returns the value.
 

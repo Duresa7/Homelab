@@ -15,7 +15,7 @@ I checked this against the management store on 2026-09-04. The network was renam
 
 | Element | Value |
 |---|---|
-| Network | `AlphaSec-Galaxy` — "Routed access to homelab VLANs through the Access-A routing peer" |
+| Network | `AlphaSec-Galaxy`, "Routed access to homelab VLANs through the Access-A routing peer" |
 | Routing peer | `docker-network` (CT 107, overlay `100.121.111.204`); Enable on, **Masquerade on**, metric `9999`. It is the only router on the network |
 | Resources defined | 13: subnets for VLANs 10, 40, 60, 65, 70, 72, 80, 85, and 90, plus `/32` host resources for the grey, purple, blue, and red Proxmox nodes |
 | Resource groups | `trusted`, `personal-a`, `secure-client`, `ad-servers`, `mgmt-a`, `security-a`, `servers-a`, `access-a`, `dmz-a`, `proxmox-nodes`, and the two scope groups `admin-scope` and `boss-scope` |

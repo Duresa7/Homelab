@@ -18,14 +18,14 @@ storage report, the power panel and the container view, in one 3,757-line file t
 rows. Nothing was hard to find because it was hidden; it was hard to find because everything was on one page.
 
 **Per-host detail was one dashboard wearing eighteen hats.** The `$host` variable worked, but a host is a
-thing you open, not a filter you set — and the collapsed row could only show what was true of every host at
+thing you open, not a filter you set, and the collapsed row could only show what was true of every host at
 once. It could not show grey-server's ZFS pool, or media-01's containers, or red-server's UPS, because those
 are true of some hosts and not others.
 
 **`TeamSpeak` had been built for one server and now had two.** `ts01` was retired on 2026-08-09 and `ts03`
 added, and every stat panel queried a bare metric with no aggregation, so each one silently rendered two
 values side by side. It also led with `Public address reachable`, which is exactly the panel that lied for
-17 days while the collector could not resolve DNS — see
+17 days while the collector could not resolve DNS. See
 [Collector DNS Failure After a Boot Race](../../../Teamspeak%20Hosting/Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md).
 
 ## What there is now
@@ -71,10 +71,10 @@ The dashboards answer, per panel, the question of what form the data's job wants
 | The data's job | Form used |
 |---|---|
 | One current value | stat tile, with a sparkline where the trend adds something |
-| A ratio against a known limit | bar gauge — filesystem used, battery charge, certificate days |
+| A ratio against a known limit | bar gauge: filesystem used, battery charge, certificate days |
 | Change over time, up to 8 series | time series |
 | Change over time, more than 8 | time series of `topk(N)`, with a table beside it that covers all of them |
-| Up or down over time | state timeline — service reachability, UPS status flags |
+| Up or down over time | state timeline: service reachability, UPS status flags |
 | One row per thing, many columns | table, with the magnitude column drawn as an in-cell bar |
 | A list that should be empty | table, with the empty state written out as a sentence |
 
@@ -147,7 +147,7 @@ built to be empty registers itself.
 
 After deploying and restarting Grafana, all 27 were present in the two folders with no provisioning errors in
 the log, and the stored specs still carried the table transformations, field overrides, data links and header
-link dropdowns — the parts Grafana's schema migration was most likely to alter.
+link dropdowns, the parts Grafana's schema migration was most likely to alter.
 
 ## Two tests changed
 
@@ -155,7 +155,7 @@ link dropdowns — the parts Grafana's schema migration was most likely to alter
 allowed-empty list from `allow-empty.json`, and knows the five new template variables. One run covers all 27.
 
 `assert_dashboard_layout.py` is new. Grafana does not reject a dashboard whose panels overlap or run past
-column 24 — it silently reflows them, so the file in git and the thing on screen stop being the same document
+column 24: it silently reflows them, so the file in git and the thing on screen stop being the same document
 and no error says so. Since the panels are placed by a generator, the check is on the generator.
 
 ## Rollback

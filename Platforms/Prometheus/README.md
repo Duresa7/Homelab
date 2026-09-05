@@ -70,7 +70,7 @@ The 24 rules sit in six groups. Availability, Capacity, Network and Power and ha
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
-The dashboards carry `"editable": true`, which is not a contradiction with `allowUiUpdates: false`. Provisioning still refuses to persist a browser edit; leaving the flag on keeps panel-edit and Explore reachable so a query can be read without hunting for it in git. To iterate, change the generator and re-run it — a hand edit to a file under `dashboards/` is overwritten by the next build.
+The dashboards carry `"editable": true`, which is not a contradiction with `allowUiUpdates: false`. Provisioning still refuses to persist a browser edit; leaving the flag on keeps panel-edit and Explore reachable so a query can be read without hunting for it in git. To iterate, change the generator and re-run it. A hand edit to a file under `dashboards/` is overwritten by the next build.
 
 The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose. Provisioning matches on name, so it adopts the entry that already existed instead of creating a duplicate. The UID was pinned so the two imported dashboards kept resolving; they are gone now, but the pin stays because `homelab-overview.json` references that UID throughout.
 
@@ -91,15 +91,15 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 | Homelab | TeamSpeak | `teamspeak` | ts02 and ts03, with the fault isolated to the server or the path in front of it |
 | Nodes | one per host | `node-<host>` | Status, CPU, memory, filesystems, disk, network, then whatever else that host has |
 
-Every header carries two dashboard-link dropdowns filtered by tag — **Homelab** lists the nine, **Nodes** the
-eighteen — and both keep the current time range. Any table with a hostname in it links that column to that
+Every header carries two dashboard-link dropdowns filtered by tag: **Homelab** lists the nine and **Nodes** the
+eighteen, and both keep the current time range. Any table with a hostname in it links that column to that
 host's dashboard, so the fleet table, the guest table, the storage tables and the target list are all routes
 into a node board.
 
 ### One dashboard per host
 
 Eighteen of the 27 are per-host. Each is a real dashboard with its own UID and its own entry in the folder,
-not a `$host` filter on a shared one, because a host is a thing you open rather than a variable you set — and
+not a `$host` filter on a shared one, because a host is a thing you open rather than a variable you set, and
 because a filter can only show what is true of every host. A per-host board can show `grey-server`'s ZFS pool,
 `media-01`'s containers, `red-server`'s UPS and `blue-server`'s NVMe, and omit each of those from the fifteen
 hosts they are not true of.
