@@ -75,7 +75,7 @@ EXPECTED_TARGETS = {
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 
-# The 19 internal service names probed through NPM, plus the alert bot. Host label is absent; the
+# The 20 internal service names probed through NPM, plus the alert bot. Host label is absent; the
 # instance label carries the probed URL.
 #
 # wings.alphasecunited.com is deliberately absent. The Wings API answers 401 on
@@ -101,6 +101,7 @@ EXPECTED_BLACKBOX_SERVICES = {
     "splunk",
     "ts3-manager",
     "games",
+    "openwebui",
     # The Discord alert bot's /health endpoint, added 2026-09-02. Not an NPM
     # name: probed directly over the Compose network as http://alert-bot:8080.
     "alert-bot",

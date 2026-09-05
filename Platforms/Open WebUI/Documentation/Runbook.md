@@ -1,7 +1,7 @@
 # Open WebUI Operations Runbook
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-05
 
 ## Routine Check
 
@@ -11,17 +11,18 @@ I run these commands on `docker-main`:
 cd /opt/docker/ollama
 docker compose ps open-webui ollama
 curl -fsS http://192.168.40.35:3002/health
+curl -fsS https://openwebui.alphasecunited.com/health
 docker exec open-webui curl -fsS http://ollama:11434/api/tags
 docker inspect -f 'health={{.State.Health.Status}} restarts={{.RestartCount}}' open-webui
 ```
 
 The expected health response is `{"status":true}`. The model response must contain only `qwen3.5:2b`, which proves the frontend container can reach the current Ollama inventory without exposing an additional API listener.
 
-## Initial Administrator
+## Access and Initial Administrator
 
-I open `http://192.168.40.35:3002` from an approved internal client and register the first account. Open WebUI makes that account the administrator and automatically closes initial signup. I then sign out and back in before treating the account path as verified.
+I normally open `https://openwebui.alphasecunited.com` from an approved internal client. The direct `http://192.168.40.35:3002` URL remains available only as a recovery path. The first registered Open WebUI account becomes the administrator and automatically closes initial signup. I then sign out and back in before treating the account path as verified.
 
-The intended HTTPS name is `openwebui.alphasecunited.com`. Its local DNS record and firewall path are staged, but I do not use the name until NPM has a saved proxy host forwarding HTTP to `192.168.40.35:3002`, Force SSL and HTTP/2 are enabled, and the wildcard certificate validates.
+NPM proxy host 28 forwards HTTP to `192.168.40.35:3002`. Force SSL, HTTP/2, WebSockets, Block Common Exploits, and wildcard certificate ID 1 are enabled; caching, HSTS, and an NPM access list are disabled. UniFi resolves the name only on the internal resolver, and the narrow firewall rule admits only NPM to the backend port.
 
 ## Models
 

@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-05
 
-I route 23 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 22 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I route 24 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 23 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -31,9 +31,12 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `wings.alphasecunited.com` | `192.168.80.30:8080` | HTTP | Pelican Wings API. It exists as a separate host because the browser opens the server console websocket directly to the daemon, and an HTTPS panel talking to a plain-HTTP daemon is blocked as mixed content. Pelican SFTP on 2022 bypasses NPM through a node alias pointing at `192.168.80.30`. |
 | `aiproxy.alphasecunited.com` | `192.168.40.35:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. I repointed the upstream from `ubuntu-dev` to `docker-main` on 2026-08-19; five provider auth files and clients are loaded. |
 | `mcp.alphasecunited.com` | `192.168.40.39:4788` | HTTP | Executor on `docker-blue`. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The administrator account is claimed. |
+| `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |
 
 The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 
 The implementation and rollback record is [Internal HTTPS Service Onboarding - 2026-07-22](../Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+I added Open WebUI as proxy host 28 on 2026-09-05: [Open WebUI Internal HTTPS - 2026-09-05](../Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md).
 
 I repointed Grafana and Prometheus to `monitor-01` on 2026-07-26 and left Wazuh on `security-01`: [Monitoring Relocation to monitor-01 - 2026-07-26](../../Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).

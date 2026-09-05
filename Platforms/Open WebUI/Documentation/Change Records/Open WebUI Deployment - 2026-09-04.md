@@ -1,7 +1,7 @@
 # Open WebUI Deployment
 
 **Date:** 2026-09-04  
-**Status:** Deployed; internal HTTPS proxy host pending
+**Status:** Deployed; internal HTTPS completed on 2026-09-05 in [Open WebUI Internal HTTPS](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md)
 
 ## Summary
 

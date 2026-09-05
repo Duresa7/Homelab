@@ -1,7 +1,7 @@
 # Nginx Proxy Manager TODO
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-05
 
 NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS host, automated renewal path, and bounded logging are verified. This record preserves the completed publication and readiness work. Completed deployment details are recorded in [Deployment.md](Deployment.md).
 
@@ -46,4 +46,6 @@ Internal HTTPS onboarding is closed. NPM now has no open items.
 - [x] 2026-09-04: Verified that Cloudflare's public resolver returns NXDOMAIN for the internal name.
 - [x] 2026-09-04: Added TCP/3002 to the narrow policy permitting only NPM to the approved `docker-main` web interfaces and verified the backend health path from `docker-network`.
 - [x] 2026-09-04: Repaired the stored NPM administrator credential. The stored value did not authenticate, so I wrote a new bcrypt secret for `<REDACTED_PERSONAL_EMAIL>` directly to `auth.secret` and confirmed `POST /api/tokens` returns 200 with it and 400 without. The credential is now the shared `Account dkadi` password. [Service Login Password Standardization](../../../Operations/Maintenance/Service%20Login%20Password%20Standardization%20-%202026-09-04.md).
-- [ ] Add the NPM proxy host forwarding HTTP to `192.168.40.35:3002`, assign certificate ID 1, enable Force SSL, HTTP/2, Block Common Exploits, and WebSocket support, then verify HTTPS.
+- [x] 2026-09-05: Added proxy host 28 forwarding HTTP to `192.168.40.35:3002` with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. HTTP redirects with `301`, HTTPS returns `200`, the wildcard certificate is presented, and the root path is a blackbox target. [Open WebUI Internal HTTPS - 2026-09-05](Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md).
+
+NPM again has no open items.

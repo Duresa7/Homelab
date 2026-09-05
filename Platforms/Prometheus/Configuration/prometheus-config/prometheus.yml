@@ -131,7 +131,7 @@ scrape_configs:
   # Probes each internal service name through NPM, so a failure means the path a
   # person actually uses is broken: local DNS, the proxy, the certificate, or the
   # backend. 60s because uptime does not need 15-second resolution, and it keeps
-  # the probe load on NPM to 20 requests a minute.
+  # the probe load on NPM to 21 requests a minute.
   - job_name: blackbox
     scrape_interval: 60s
     metrics_path: /probe
@@ -157,6 +157,7 @@ scrape_configs:
           - https://prometheus.alphasecunited.com/
           - https://splunk.alphasecunited.com/
           - https://ts3-manager.alphasecunited.com/
+          - https://openwebui.alphasecunited.com/
           - https://games.alphasecunited.com/
           # The Discord alert bot's own health endpoint, over the Compose
           # network. /health answers 200 only while its Discord session is
