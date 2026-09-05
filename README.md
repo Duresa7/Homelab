@@ -31,7 +31,7 @@ A version figure in this repository is a point-in-time observation, not a durabl
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 22 network objects, including 15 routed LAN networks, and enforces policy across 11 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 56 targets `UP` across seven jobs. I verified these figures on 2026-09-05.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 22 network objects, including 15 routed LAN networks, and enforces policy across 11 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 57 targets `UP` across seven jobs. I verified these figures on 2026-09-05.
 
 ## Repository layout
 
