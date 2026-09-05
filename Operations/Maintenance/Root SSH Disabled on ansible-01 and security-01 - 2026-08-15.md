@@ -11,7 +11,7 @@
 
 Both hosts now report `permitrootlogin no` from `sshd -T`, and `ssh.service` is `active` on both. Root SSH is refused from my workstation with `Permission denied (publickey)`, while `ansible@ansible-01` and `dkadi@security-01` still open new sessions normally. Neither host had a single key in `/root/.ssh/authorized_keys` before the change, so the setting was granting nothing and closing it cost nothing.
 
-The [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md) requires `PermitRootLogin no`. Three hosts ran `without-password`, which permits root to log in by key. Two of them are now closed. The third is `app-01`, and it stays open on purpose.
+The Linux Host Baseline Standard requires `PermitRootLogin no`. Three hosts ran `without-password`, which permits root to log in by key. Two of them are now closed. The third is `app-01`, and it stays open on purpose.
 
 The change was not uneventful. `systemctl reload ssh` on `ansible-01` killed the daemon and put `ssh.service` into `failed`. The cause was not the one I expected, and the fix is a `restart` rather than a `reload`. That is written up below, because the same trap is waiting on every socket-activated host in the fleet.
 

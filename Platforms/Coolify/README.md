@@ -1,7 +1,7 @@
 # Coolify
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-05
 
 I run Coolify on app-01 as my self-hosted deployment platform. It builds & runs applications in Docker & fronts them with its own Traefik proxy, which does the per-application Host routing for everything I publish under `*.alphsec.com`. Coolify is where a new external service gets its domain: I set the domain on the resource & the rest of the ingress chain already carries it.
 
@@ -10,7 +10,7 @@ I run Coolify on app-01 as my self-hosted deployment platform. It builds & runs 
 | Item | Value |
 |---|---|
 | Host | app-01, `192.168.80.10`, VLAN 80, Debian 13 |
-| Coolify version | 4.1.2 |
+| Coolify version | 4.3.17, verified 2026-09-05 |
 | Traefik runtime | 3.7.10 through the `traefik:v3.7` image tag |
 | Public dashboard | `coolify-a1.alphsec.com`, behind Cloudflare Access |
 | Local dashboard | `http://192.168.80.10:8000` |

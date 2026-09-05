@@ -109,7 +109,7 @@ Rotation is a separate decision and is not made here. Two things bear on it: the
 
 The value never appeared in a command string, an argument, a log, a shell history or this repository. It was read with a secret reference and piped into the process that wrote it, so the only places it existed were the pipe and the destination file. Both staging scripts are gone, along with the pre-change copy of the env file.
 
-Before writing, I checked without printing anything that the field came back non-empty and that it is byte-identical to the duplicate field the last ticket of this effort deletes. That matters here for one reason: reading the durable field rather than the duplicate means this entry does not point at a name that is scheduled to stop existing. Which fields those are stays in the unpublished [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md).
+Before writing, I checked without printing anything that the field came back non-empty and that it is byte-identical to the duplicate field the last ticket of this effort deletes. That matters here for one reason: reading the durable field rather than the duplicate means this entry does not point at a name that is scheduled to stop existing. Which fields those are stays in the unpublished Linux Host Baseline Standard.
 
 ## What this weakens
 

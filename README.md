@@ -1,13 +1,13 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-05
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
-![UniFi](https://img.shields.io/badge/UniFi-20_routed_LANs,_16_zones-0559C9?logo=ubiquiti&logoColor=white)
+![UniFi](https://img.shields.io/badge/UniFi-15_routed_LANs,_11_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_SIEM-000000?logo=splunk&logoColor=white)
-![Wazuh](https://img.shields.io/badge/Wazuh-14_active_agents-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-49_targets,_6_jobs-E6522C?logo=prometheus&logoColor=white)
+![Wazuh](https://img.shields.io/badge/Wazuh-15_active_agents-3585BB)
+![Prometheus](https://img.shields.io/badge/Prometheus-57_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
@@ -31,7 +31,7 @@ A version figure in this repository is a point-in-time observation, not a durabl
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 28 network objects, including 20 routed LAN networks, and enforces policy across 16 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 16 active remote agents, & Prometheus reports 52 targets `UP` across six jobs.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 22 network objects, including 15 routed LAN networks, and enforces policy across 11 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 56 targets `UP` across seven jobs. I verified these figures on 2026-09-05.
 
 ## Repository layout
 
@@ -65,6 +65,10 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Bring the fleet's human sudo policy in line with the [Linux host baseline](Guides/Linux-Host-Baseline.md): provision the `ai-agent` automation account, remove the old `NOPASSWD` drop-ins, then stop cloud-init reapplying them.
+1. Finish the fleet access model: remove the remaining `NOPASSWD` drop-ins, `dkadi`'s on `docker-network`, `monitor-01`, `game-01` and `media-01`, and `ai-agent`'s on `game-01`, then verify the model per host and rewrite the unpublished [Linux host baseline](Guides/Linux-Host-Baseline.md) standard to match.
+2. Move Coolify off root SSH on `app-01` and clear out its leftover keys.
+3. Put `UPS-01` back on a data cable, or accept it as unmonitored and say so once.
+4. Decide how far Threat Management coverage goes across the eight routed LANs still outside inspection.
+5. Close the three account findings the password standardization turned up.
 
 I keep closed work in [Completed Work](COMPLETED.md), separate from the roadmap and system backlogs.

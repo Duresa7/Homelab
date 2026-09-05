@@ -72,7 +72,7 @@ This backlog retains completed Green recovery and Purple storage work. Its open 
 
 ## `green-server` Cross-Process Faults and Status Loss
 
-**Status:** Closed after service recovery and a controlled reboot on 2026-08-09; no further investigation is planned  
+**Status:** Closed 2026-08-09 after service recovery and a controlled reboot. I am not running the offline Memtest86+ pass the record names as its next conclusive step, so Green's hardware cause stays unproven rather than ruled out  
 **Troubleshooting record:** [Status Unknown and Cross-Process Faults](Troubleshooting/Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md)
 
 - [x] Confirm the `unknown` status with a cluster-side pass/fail loop. `pvestatd` had aborted and stayed failed because its unit has `Restart=no`.

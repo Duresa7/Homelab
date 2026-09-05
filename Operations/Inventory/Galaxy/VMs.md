@@ -44,7 +44,7 @@ This is the Ubuntu development workstation that takes over from `debian-dev`. I 
 
 It has 16 GiB with ballooning off, which is deliberate. The running instance predates that setting and has not been restarted to pick it up, so until it is the QEMU monitor reports `actual=12630` against `max_mem=16384` and the guest sees 11.4 GiB. The tables below record the configured end state; the restart is outstanding.
 
-I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) on 2026-08-13, following the single-account exception this workstation role carries. It joined fleet monitoring the same day as Wazuh agent `020` and as a node_exporter target.
+I applied the Linux Host Baseline Standard on 2026-08-13, following the single-account exception this workstation role carries. It joined fleet monitoring the same day as Wazuh agent `020` and as a node_exporter target.
 
 #### Identity
 | Setting | Value |

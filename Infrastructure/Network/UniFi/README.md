@@ -1,11 +1,11 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-05
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
-The final 2026-08-19 controller readback after the Kasm retirement returned 23 network objects: 16 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 64 user-defined policies, 15 reusable firewall groups, 15 client groups, four OON policies, one traffic route, five WLANs, five switch port profiles, and 27 enabled local DNS records. The policy set contains 57 allows and seven blocks. Three WLANs are enabled and two are disabled.
+A controller readback on 2026-09-05 returned 22 network objects: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, and five WLANs. The 2026-08-19 readback after the Kasm retirement is the last full count of the rest: 15 reusable firewall groups, 15 client groups, four OON policies, one traffic route, five switch port profiles, and 27 enabled local DNS records. Three WLANs are enabled and two are disabled.
 
 The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
 
@@ -34,4 +34,4 @@ The remaining traffic route is `VPN - Proton`. It is enabled with its kill switc
 
 ## Physical Power
 
-I record Ahsoka Gateway (`UCG-Fiber`), Bane Switch POE (`USW-Pro-Max-16-PoE`), & the Verizon ONT on `UPS-02` in the [power equipment inventory](../../Hardware/Power.md). `UPS-02` is an APC Back-UPS Pro BR1500MS2 rated for 1500 VA / 900 W.
+I record Ahsoka Gateway (`UCG-Fiber`), Bane Switch POE (`USW-Pro-Max-16-PoE`), & the Verizon ONT on `UPS-02` in the [power equipment inventory](../../Hardware/Power.md). `UPS-02` is an APC Back-UPS RS 1500MS2 rated for 1500 VA / 900 W.

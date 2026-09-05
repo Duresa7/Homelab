@@ -45,7 +45,7 @@ I scoped the assertion to the key-only group and gated the key tasks on a record
 
 ## The credential and the key
 
-The account's password is set at creation only, for console recovery, and comes from the standard login field of the credential item the unpublished [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md) names. A run without the credential creates a key-only account with a locked password rather than failing, and a run against an account that already has a password will not lock it.
+The account's password is set at creation only, for console recovery, and comes from the standard login field of the credential item the unpublished Linux Host Baseline Standard names. A run without the credential creates a key-only account with a locked password rather than failing, and a run against an account that already has a password will not lock it.
 
 The value never entered a command string, an inventory, a playbook or a log. It was read into a variable, JSON-escaped into a mode-`0600` file so any character survived intact, transferred over SFTP, consumed as `-e @file`, then destroyed with `shred -u -z` on both ends. Every task handling it carries `no_log: true`.
 

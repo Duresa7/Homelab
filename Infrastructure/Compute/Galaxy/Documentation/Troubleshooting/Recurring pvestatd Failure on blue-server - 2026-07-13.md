@@ -64,7 +64,7 @@ I performed no service restart, firmware change, stress test, offline memory tes
 
 ## Original deferred follow-up
 
-I track a controlled follow-up in the [Galaxy TODO](../TODO.md#blue-server-recurring-pvestatd-crashes), beginning with evidence capture and non-disruptive integrity checks before any BIOS work or extended offline memory testing. **That plan is still live.** The 2026-08-04 review confirmed the crashes have not recurred since 2026-07-22 but changed nothing on Blue, so nothing in it has been retired.
+I tracked a controlled follow-up in the [Galaxy TODO](../TODO.md), beginning with evidence capture and non-disruptive integrity checks before any BIOS work or extended offline memory testing. **That plan is closed.** The ten-second activation errors stopped with the 2026-07-30 duplicate-VG correction, no errors followed from 2026-07-31 through the 2026-08-04 review, and the [troubleshooting index](README.md) carries the issue as resolved on that date. The Galaxy TODO no longer holds a section for it.
 
 ## Related records
 

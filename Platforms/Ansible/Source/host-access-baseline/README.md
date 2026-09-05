@@ -85,7 +85,7 @@ ansible-playbook playbooks/account-passwords.yml -e @~/.hab-run/vars.json
 shred -u -z ~/.hab-run/vars.json && rmdir ~/.hab-run
 ```
 
-`RP` is root's password and `SP` is the standard login password, both read straight out of the credential item rather than typed. Which fields those are is in the unpublished [Linux Host Baseline Standard](../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), the one file allowed to say where a host account's credentials come from. JSON is what makes the file safe to build from a value containing quotes or backslashes.
+`RP` is root's password and `SP` is the standard login password, both read straight out of the credential item rather than typed. Which fields those are is in the unpublished Linux Host Baseline Standard, the one file allowed to say where a host account's credentials come from. JSON is what makes the file safe to build from a value containing quotes or backslashes.
 
 Point sudo at the root password. Same staging pattern, and both values are required: root's because it is what the prompt will ask for, the login password because the play proves it is now refused. Run one host first and read the result before the rest:
 

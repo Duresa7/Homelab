@@ -141,7 +141,7 @@ Neither value entered a command string, an inventory, a playbook, a log or a rep
 
 Before the run I asserted, without reading or printing either value, that both came back non-empty and that they are **distinct from each other**. That assertion is load-bearing rather than decorative: if the two fields held the same value, the negative proof would pass for the wrong reason and I would have recorded a separation that does not exist. I also confirmed that the durable field and the duplicate it is scheduled to replace still hold the same value, which is what the last step of this effort relies on when it deletes the duplicate.
 
-Both copies of the staging file are gone, removed with `shred -u -z`, and both staging directories are gone. Neither host keeps a credential from this work. Which fields these are stays in the unpublished [Linux Host Baseline Standard](../../Security/Hardening/Linux-Host-Baseline-Standard.md), the one file permitted to describe where a host account's credentials come from.
+Both copies of the staging file are gone, removed with `shred -u -z`, and both staging directories are gone. Neither host keeps a credential from this work. Which fields these are stays in the unpublished Linux Host Baseline Standard, the one file permitted to describe where a host account's credentials come from.
 
 ## What this unblocks, and the warning that goes with it
 
