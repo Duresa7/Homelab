@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-06
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It is available only through internal DNS at `https://mcp.alphasecunited.com`; no public DNS record or WAN forwarding exists.
 
@@ -32,12 +32,13 @@ The gateway endpoints are registered separately. `unifi-mcp-gateway` is displaye
 
 No Executor policy overrides cover either connection. The gateway tools therefore carry no Executor approval requirement today. UniFi permits read, create, update, and delete operations, and its full-access bypass executes mutations without confirmation. SSH Manager reaches all eighteen configured servers in unrestricted mode and can obtain root on every one: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on ten hosts, and passwordless sudo on `ansible-01` and `ubuntu-dev`.
 
-Codex and Claude Code on `ubuntu-dev` each use one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp`. Both connections use OAuth. The direct `ssh-manager` and `unifi-network` client entries, standalone SSH Manager package, and UniFi client plugins are absent. Codex approves Executor tools without prompting, and Claude Code persistently allows `mcp__executor__*`, so the client layer does not add an approval gate to UniFi or SSH Manager.
+My three Codex profiles (`.codex`, `.codex_alt`, and `.codex_personal`) and two Claude Code profiles (default and `.claude_alt`) on `ubuntu-dev` use one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`. I enabled per-integration search tools in all five saved connections on 2026-09-06. I renewed OAuth for both Claude profiles and verified that both report connected at the new URL; fresh authenticated Codex discovery remains unverified. All five connections use OAuth. The direct `ssh-manager` and `unifi-network` client entries, standalone SSH Manager package, and UniFi client plugins are absent. Codex approves Executor tools without prompting, and Claude Code persistently allows `mcp__executor__*`, so the client layer does not add an approval gate to UniFi or SSH Manager.
 
 I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both Claude Code profiles reported Executor connected and Claude Alt passed a live Executor-backed UniFi request. The direct-server files remain absent, and no credential-bearing rollback copy remains.
 
 ## Records
 
+- [Integration search tools](Documentation/Change%20Records/Integration%20Search%20Tools%20-%202026-09-06.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Runbook](Documentation/Runbook.md)
 - [Initial deployment](Documentation/Change%20Records/Initial%20Deployment%20-%202026-08-30.md)
