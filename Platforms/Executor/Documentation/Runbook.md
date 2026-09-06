@@ -13,12 +13,12 @@
 
 The live data directory is owned by root with mode `0700`. Generated key files are mode `0600`. I do not put the data directory, keys, administrator credentials, or tokens in Git.
 
-`EXECUTOR_ALLOW_LOCAL_NETWORK` is enabled because the UniFi and SSH Manager gateways are intentional local integrations at `192.168.40.39:8811` and `192.168.40.39:8812`. Local STDIO MCP servers remain disabled.
+`EXECUTOR_ALLOW_LOCAL_NETWORK` is enabled because the UniFi and SSH Manager gateways are intentional local integrations at `192.168.40.39:8811` and `192.168.40.39:8812`, and Wazuh MCP is at `192.168.72.2:3000`. Local STDIO MCP servers remain disabled.
 
 ## Initial Deployment Process
 
-1. Confirm the newest stable version and multi-architecture image digest in the official GitHub container package.
-2. Update the versioned Compose reference so both the release tag and digest are pinned.
+1. Confirm that the official GitHub container package still publishes `latest` and note the version and manifest it currently resolves to.
+2. Keep the versioned Compose reference on `ghcr.io/usefulsoftwareco/executor-selfhost:latest`.
 3. Install the same file as `/opt/docker/executor/docker-compose.yml` on `docker-blue` and create `/opt/docker/executor/data`.
 4. Validate and start the project:
 
@@ -79,12 +79,21 @@ For the Docker MCP Gateway integrations, confirm all of the following in Executo
 - Both integrations have empty static request-header maps. Each bearer token belongs in its connection's encrypted credential.
 - The retired `docker-mcp-gateway` integration and `dockerMcpGateway` connection remain absent.
 
-Tool counts change when either managed server changes its surface. Record each new count rather than treating 5 and 37 as permanent release invariants.
+For Wazuh MCP, confirm all of the following:
+
+- Integration `wazuh-mcp-server` points to `http://192.168.72.2:3000/mcp`, and user connection `localWazuh` reports healthy.
+- A refresh discovers 41 tools for Wazuh MCP Server 4.3.0 and none of the 14 `wazuh:write` tools.
+- Executor can execute `wazuh-mcp-server.user.localWazuh.validate_wazuh_connection`.
+- `get_wazuh_agents`, `get_wazuh_alert_summary`, and `get_wazuh_vulnerability_summary` each return an MCP success result.
+- The connection identity label is `Local Wazuh`, and its bearer credential is in Executor's encrypted provider rather than the integration's static header map.
+- On `security-01`, `/ready` reports `wazuh_manager`, `wazuh_indexer`, and `mcp` healthy.
+
+Tool counts change when a managed server changes its surface. Record each new count rather than treating 5, 37, and 41 as permanent release invariants.
 
 ## Updating
 
-1. Check the official GitHub container package for the newest stable tag and current multi-architecture digest.
-2. Change both values in the repository Compose reference.
+1. Check the official GitHub container package for the current `latest` manifest and note the running version before the update.
+2. Confirm the repository Compose reference still uses `ghcr.io/usefulsoftwareco/executor-selfhost:latest`.
 3. Install the same Compose file on `docker-blue`.
 4. Apply and verify:
 

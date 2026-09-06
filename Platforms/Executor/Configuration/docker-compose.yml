@@ -2,7 +2,7 @@ name: executor
 
 services:
   executor:
-    image: ghcr.io/usefulsoftwareco/executor-selfhost:1.6.7@sha256:c8dd83a5dba8ac992dfe1ded4aa65ae4e7f52ec31fddbe2af5b49ffebe5bbfa7
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:latest
     container_name: executor
     restart: unless-stopped
     environment:

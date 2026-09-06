@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-04
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 12 running Linux guests through apt or dnf, updates 24 docker compose projects on 6 hosts, manages node_exporter on 10 targets, manages cAdvisor on 9 Docker hosts, and hosts the Galaxy PXE runtime. Semaphore provides 23 task templates across three projects over the same maintenance playbooks.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 12 running Linux guests through apt or dnf, updates 25 docker compose projects on 6 hosts, manages node_exporter on 10 targets, manages cAdvisor on 9 Docker hosts, and hosts the Galaxy PXE runtime. Semaphore provides 23 task templates across three projects over the same maintenance playbooks.
 
 Fleet package updates include `ansible-01` through Ansible's local connection. The fleet-update inventory excludes all five Proxmox nodes.
 

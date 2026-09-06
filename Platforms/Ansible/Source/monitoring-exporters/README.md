@@ -15,7 +15,7 @@ Command allowlisting is not achievable for any Ansible-managed account, here or 
 
 `textfile_collector_targets` holds the six hosts that run the upstream binary rather than Debian's package, because the package brings the collector with it and the binary does not: `grey-server` as root, `docker-main`, `app-01`, `edge-01`, `security-01` and `splunk-siem`. `wud_targets` holds the six Compose hosts: `docker-main`, `docker-network`, `docker-blue`, `media-01`, `alpha-prod-01` and `monitor-01`, each with its own `wud_cron`.
 
-`cadvisor_targets` holds all eight Docker hosts: the six shared targets above plus `app-01` and `security-01`, both of which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
+`cadvisor_targets` holds all nine Docker hosts: the six shared targets above plus `app-01`, `security-01`, and `game-01`, which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
 
 ## One exporter version, two install methods
 
@@ -37,13 +37,13 @@ The play verifies itself by scraping each host and asserting `node_textfile_scra
 
 ## What's Up Docker watches images on the Compose hosts
 
-`wud.yml` runs `getwud/wud:8.3.1` at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
+`wud.yml` runs `getwud/wud:latest`, currently resolving to 8.4.0, at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
 
 Three limits, accepted: the interface on 9102 has no login, reachable only inside the host's VLAN and from `monitor-01`; `lscr.io` images need a GitHub token I have not issued; and WUD's default tag matching will offer a variant tag such as `16-rootless` for a `:15` image until that container gets a `wud.tag.include` label in its own Compose file, which is what Forgejo carries since 2026-09-03. Removal is `-e wud_state=absent`.
 
-## cAdvisor needs v0.60.5, not the image you'll find first
+## cAdvisor needs GHCR and v0.60.5 or newer
 
-The pinned image is `ghcr.io/google/cadvisor:v0.60.5`, and both halves of that matter.
+The image is `ghcr.io/google/cadvisor:latest`, currently resolving to v0.60.5. The registry and that minimum version both matter.
 
 cAdvisor v0.52.1 can't resolve a container's read-write layer ID under Docker 29's default `overlayfs` driver, because it reads the old graphdriver `layerdb` path and the containerd snapshotter doesn't keep one. The lookup happens during registration rather than during collection, so the container is abandoned outright and only the root cgroup is emitted. From 2026-07-25 to 2026-07-26 this project ran cAdvisor on `docker-main` alone for that reason, since `docker-main` was the one host still on `overlay2`.
 
@@ -51,7 +51,7 @@ v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all eight hosts and sits next to `node_exporter`.
+cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all nine hosts and sits next to `node_exporter`.
 
 ## Running the playbooks
 
@@ -71,7 +71,7 @@ ansible-playbook playbooks/node-exporter.yml
 # One host.
 ansible-playbook playbooks/node-exporter.yml -e target=splunk-siem
 
-# cAdvisor across all eight Docker hosts, then removal from one.
+# cAdvisor across all nine Docker hosts, then removal from one.
 ansible-playbook playbooks/cadvisor.yml
 ansible-playbook playbooks/cadvisor.yml -e target=media-01 -e cadvisor_state=absent
 
@@ -101,6 +101,6 @@ Scraping the new host also needs a UniFi policy from the collector's zone to the
 
 ## Relationship to fleet-updates
 
-Separate projects on purpose. `fleet-updates` patches packages on 11 guests & updates 22 application Compose projects on a schedule; this project manages node_exporter on 9 targets & cAdvisor on 8 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
+Separate projects on purpose. `fleet-updates` patches packages on 12 guests & updates 24 application Compose projects on a schedule; this project manages node_exporter on 10 targets & cAdvisor on 9 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
 
-The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so it isn't picked up by scheduled application-image updates. Its image is pinned, so upgrades remain a deliberate act here: bump `cadvisor_image` and re-run, which is exactly how v0.52.1 became v0.60.5. The 2026-07-29 fleet maintenance ran `pull` and `up -d` for all 8 pinned projects, then used this playbook's owner checks without changing the version.
+The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so the monitoring-exporters playbook owns its updates. Its `:latest` tag follows the fleet's floating-image policy; re-running `cadvisor.yml` pulls the tag and reconciles all nine projects. The explicit move from v0.52.1 to v0.60.5 remains the historical fix for Docker's containerd snapshotter.

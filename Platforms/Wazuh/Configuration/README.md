@@ -19,6 +19,27 @@ I record endpoints, paths, package versions, & current agent state here. The [ve
 | Indexer data | `/var/lib/wazuh-indexer` (`wazuh-indexer`, mode 0750) |
 | Dashboard config | `/etc/wazuh-dashboard` (`wazuh-dashboard`, mode 0750) |
 
+## MCP Server
+
+| Item | Value |
+|---|---|
+| Host | `security-01` |
+| Upstream version | Wazuh MCP Server 4.3.0 |
+| Image | `wazuh-mcp-server-local:4.3.0-compat` |
+| Pinned base | `ghcr.io/gensecaihq/wazuh-mcp-server:4.3.0@sha256:4b3dc5e031f79d113cdb1f14ba03620499461f0d9c713e8e34cd3a047d7319d8` |
+| MCP endpoint | `http://192.168.72.2:3000/mcp` |
+| Health / readiness | `http://192.168.72.2:3000/health`, `http://192.168.72.2:3000/ready` |
+| Live project | `/opt/docker/wazuh-mcp-server` |
+| Versioned project | [MCP Server](MCP%20Server/) |
+| Executor integration | `wazuh-mcp-server`, user connection `localWazuh` |
+| Manager identity | `wazuh-mcp-api`, built-in `readonly` role |
+| Indexer identity | `wazuh-mcp-indexer`, custom `wazuh_mcp_readonly` role |
+| MCP scope | `wazuh:read`; the 14 write tools are not exposed |
+
+The Indexer role can read only `wazuh-alerts-*` and `wazuh-states-vulnerabilities-*`. Its cluster permissions are `cluster_composite_ops_ro` and the single `cluster:monitor/health` action needed by the MCP readiness check.
+
+The local image applies two patches to the pinned upstream image. The Indexer client clears Python 3.13's extra `VERIFY_X509_STRICT` flag because Wazuh's generated root CA omits a `keyUsage` extension; certificate-chain and hostname verification remain enabled. The bearer middleware also accepts the configured high-entropy API key directly while retaining its read-only scope, because upstream's token-exchange JWT expires after 24 hours and Executor needs a durable static credential.
+
 ## Endpoint Installation State
 
 | Host | Package | Manager identity | Address | Service state |

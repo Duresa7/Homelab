@@ -1,0 +1,31 @@
+diff --git a/wazuh_mcp_server/api/wazuh_indexer.py b/wazuh_mcp_server/api/wazuh_indexer.py
+--- a/wazuh_mcp_server/api/wazuh_indexer.py
++++ b/wazuh_mcp_server/api/wazuh_indexer.py
+@@ -10,6 +10,7 @@
+ import asyncio
+ import json
+ import logging
++import ssl
+ from typing import Any, Dict, List, Optional
+ 
+ import httpx
+@@ -105,8 +106,18 @@ class WazuhIndexerClient:
+         if self.username and self.password:
+             auth = (self.username, self.password)
+ 
++        verify: bool | ssl.SSLContext = self.verify_ssl
++        if self.verify_ssl:
++            # Wazuh's generated root CA omits the X.509 keyUsage extension. Python
++            # 3.13 enables X509_STRICT by default and rejects that otherwise valid
++            # chain. Clear only the strict extension check; certificate-chain and
++            # hostname verification remain enabled.
++            verify = ssl.create_default_context()
++            if hasattr(ssl, "VERIFY_X509_STRICT"):
++                verify.verify_flags &= ~ssl.VERIFY_X509_STRICT
++
+         self.client = httpx.AsyncClient(
+-            verify=self.verify_ssl,
++            verify=verify,
+             timeout=self.timeout,
+             auth=auth,
+             limits=httpx.Limits(max_connections=20, max_keepalive_connections=10),

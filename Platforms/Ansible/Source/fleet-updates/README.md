@@ -1,7 +1,7 @@
 # Fleet Updates
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-04
 
 I run two playbooks from `ansible-01` to keep the Linux fleet current. `os-update.yml` patches packages through apt or dnf, and `docker-compose-update.yml` pulls new images & recreates the compose stacks. Both use the same `ansible` account, the same key, & the same inventory style as `ssh-key-automation` next door.
 
@@ -11,7 +11,7 @@ The inventory holds 12 running Linux guests for OS updates & 6 hosts with direct
 
 `os_update_targets` covers ansible-01, monitor-01, docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, edge-01, security-01, splunk-siem, & game-01. Eleven run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager. `ansible-01` uses a local connection so the controller doesn't depend on an SSH round trip to patch itself. A hostname assertion stops that local entry from patching the wrong runner if someone invokes this copy elsewhere.
 
-`docker_compose_targets` covers docker-main (7 managed stacks), docker-network (3), docker-blue (4), media-01 (2), alpha-prod-01 (6), & monitor-01 (2). The four Portainer Edge Agent projects use `/opt/docker/portainer-edge-agent`. The media project requests the `vpn` profile so the update matches its deployed eight-container topology. cAdvisor stays pinned under the separate monitoring-exporters project, so those nine compose projects aren't duplicated here. The local `homelab/docusaurus` and `teamspeak-monitor` images set `pull: never` because neither has a registry source. app-01 is left out because Coolify owns its two generated projects; a manual `docker compose up -d` would fight Coolify's own reconcile. game-01 remains outside this play because its Pelican panel and native Wings binary are a matched pair. The retired `teamspeak` project is absent so a fleet run cannot recreate server 01.
+`docker_compose_targets` covers docker-main (8 managed stacks), docker-network (3), docker-blue (4), media-01 (2), alpha-prod-01 (6), & monitor-01 (2). The four Portainer Edge Agent projects use `/opt/docker/portainer-edge-agent`. The media project requests the `vpn` profile so the update matches its deployed eight-container topology. cAdvisor follows `:latest` under the separate monitoring-exporters project, so those nine compose projects aren't duplicated here. Ollama keeps its tested release digest while still taking part in the same health-checked reconcile. The local `homelab/docusaurus` and `teamspeak-monitor` images set `pull: never` because neither has a registry source. app-01 is left out because Coolify owns its two generated projects; a manual `docker compose up -d` would fight Coolify's own reconcile. game-01 remains outside this play because its Pelican panel and native Wings binary are a matched pair. The retired `teamspeak` project is absent so a fleet run cannot recreate server 01.
 
 ## os-update.yml
 
@@ -46,17 +46,17 @@ Every host connects through the dedicated `ansible` account. Its sudo rule is `N
 
 The play runs `docker compose pull` then `docker compose up -d` for each registry-backed stack listed on the host. It uses `community.docker.docker_compose_v2` with `pull: always` & `state: present`, which pulls every registry image then recreates only the containers whose image or config changed. An optional `profiles` list passes deployed compose profiles such as media-01's `vpn` profile. `docusaurus` and `teamspeak-monitor` set `pull: never` because their images are built on their hosts and have no registry source; the module still reconciles both projects with `up -d`. The module becomes root because several projects protect their `.env` files from non-owner reads.
 
-The module retries a failed registry pull up to three times, then passes `docker compose up -d --wait` with a 180-second default timeout. It returns the full `docker compose ps --all` state for each project, including stopped containers. The play asserts that each project has at least one container, every container is running, & every configured health check is healthy. Its own assertion failure names only the affected containers, not their commands or labels. A successful recap therefore proves both reconciliation & the settled state of every service in the 24 managed projects.
+The module retries a failed registry pull up to three times, then passes `docker compose up -d --wait` with a 180-second default timeout. It returns the full `docker compose ps --all` state for each project, including stopped containers. The play asserts that each project has at least one container, every container is running, & every configured health check is healthy. Its own assertion failure names only the affected containers, not their commands or labels. A successful recap therefore proves both reconciliation & the settled state of every service in the 25 managed projects.
 
 Each stack is pinned by `project_name` taken from `docker compose ls`, not from the directory name. immich runs as project `immich` out of `/opt/docker/immich-app`, so pinning the name keeps the update on the running project instead of starting a second one called `immich-app`.
 
 ## Floating image tags are the intended policy
 
-Most managed projects track floating tags rather than fixed versions, and that's deliberate. Taking the newest image is the reason this play exists. On docker-main, booklore, homelab-dashboard-aio, nginx-proxy-manager, & portainer run `:latest`. On monitor-01, the monitoring project runs `prom/prometheus:latest`, `grafana/grafana:latest`, & `prompve/prometheus-pve-exporter:latest`, alongside `prom/blackbox-exporter:v0.28.0` & `hon95/prometheus-nut-exporter:1`. PeaNUT is pinned to `brandawg93/peanut:6.0.0` by digest.
+Most managed projects track floating tags rather than fixed versions, and that's deliberate. Taking the newest image is the reason this play exists. On docker-main, BookLore, homelab-dashboard-aio, Portainer, and CLI Proxy API run `:latest`; Nginx Proxy Manager does the same on docker-network. On monitor-01, Prometheus, Grafana, the Proxmox exporter, blackbox exporter, NUT exporter, and PeaNUT also run `:latest`. Stateful dependencies keep the application-supported references in their live Compose files: BookLore's MariaDB follows its current release example, while Immich's Valkey and PostgreSQL follow the Compose file attached to the current Immich release.
 
 Be clear about what that buys and costs. A scheduled run can land a new major release without me reading its notes first, including on the monitoring stack that watches the rest of the fleet. The `--wait` behavior and the `ps --all` assertion are what catch it: a project whose containers don't come back running and healthy fails the play loudly instead of leaving a half-started stack. What they can't catch is an image that starts cleanly and behaves differently, such as a Grafana major that changes how a datasource or dashboard resolves.
 
-cAdvisor is the deliberate exception and stays out of this project. It's pinned to `ghcr.io/google/cadvisor:v0.60.5` under monitoring-exporters, where a version bump is an explicit edit rather than a scheduled pull.
+cAdvisor stays out of this project because monitoring-exporters owns its installation and post-start metric checks. That project now pulls `ghcr.io/google/cadvisor:latest` across all nine Docker hosts.
 
 ```bash
 cd /home/ansible/fleet-updates

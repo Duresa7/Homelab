@@ -23,10 +23,9 @@
   vars:
     # present or absent
     wud_state: present
-    # Pinned. 8.3.1 was the newest release on 2026-09-02 (published
-    # 2026-07-31). It is itself a watched container, so it will say when it
-    # is behind.
-    wud_image: "getwud/wud:8.3.1"
+    # Track the newest published build by policy. It watches its own mutable
+    # tag by digest, so a later build is visible before the next reconciliation.
+    wud_image: "getwud/wud:latest"
     # 9102: node_exporter is 9100, cAdvisor is 9101, and the UniFi port group
     # PG-Node-Exporter carries all three.
     wud_host_port: 9102

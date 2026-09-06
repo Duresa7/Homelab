@@ -1,15 +1,15 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-03
 
-Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.7-1, verified on 2026-09-01. Those services and the API run on `security-01` at `192.168.72.2` on Security-A/VLAN 72.
+Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.7-1, verified on 2026-09-01. Those services and the API run on `security-01` at `192.168.72.2` on Security-A/VLAN 72. Wazuh MCP Server 4.3.0 also runs there and gives Executor a bearer-authenticated, read-only MCP path to the local Manager and Indexer. Its optional external-context tool uses You.com for caller-supplied public web searches.
 
 **Owner:** Homelab security monitoring
 
 ## Layout
 
-- `Configuration/`: reader-editable reference to the live endpoints, paths, & agent state.
+- `Configuration/`: reader-editable reference to the live endpoints, paths, agent state, & MCP deployment.
 - `Source/agent-deployment/`: idempotent Ansible deployment for the expanded Linux fleet.
 - `Documentation/Runbook.md`: routine health checks and enrollment workflow.
 - `Documentation/Change Plans/`: reviewed future changes that are not yet authorized for execution.
@@ -27,6 +27,7 @@ Wazuh provides endpoint detection and security monitoring for the homelab. The m
 |---|---|---|
 | Wazuh dashboard | `https://wazuh.alphasecunited.com/`; direct fallback `https://192.168.72.2/` | Human web interface through internal NPM |
 | Wazuh API | `https://192.168.72.2:55000/` | Authenticated API |
+| Wazuh MCP | `http://192.168.72.2:3000/mcp` | Bearer-authenticated, read-only MCP endpoint used by Executor on `docker-blue` |
 | Agent events | `192.168.72.2:1514/tcp` | Enrolled agent traffic |
 | Agent enrollment | `192.168.72.2:1515/tcp` | New agent registration |
 
@@ -46,3 +47,5 @@ The shared `default` policy monitors `/etc/ssh` & `/etc/cron.d`. The `edge` poli
 I removed retired Kasm identity 012 from the manager on 2026-08-19. The completed expansion is recorded in [Wazuh Agent Fleet Deployment - 2026-08-03](Documentation/Change%20Records/Wazuh%20Agent%20Fleet%20Deployment%20-%202026-08-03.md). The [configuration reference](Configuration/README.md) records the retained identities and policy fragments.
 
 The completed reinstall is documented in [Wazuh Endpoint Re-enrollment - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Re-enrollment%20-%202026-07-13.md). The preceding clean removal is in [Wazuh Endpoint Agent Removal - 2026-07-13](Documentation/Change%20Records/Wazuh%20Endpoint%20Agent%20Removal%20-%202026-07-13.md).
+
+The Executor integration and its two narrowly scoped upstream compatibility patches are documented in [Wazuh MCP Server and Executor Integration - 2026-09-03](Documentation/Change%20Records/Wazuh%20MCP%20Server%20and%20Executor%20Integration%20-%202026-09-03.md).

@@ -1,9 +1,9 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-23
+**Last updated:** 2026-09-04
 
-Galaxy is my five-node Proxmox VE 9.2.6 cluster. This directory owns its bridge configuration, two-link Corosync setup, storage references, Datacenter firewall, change records, & troubleshooting history.
+Galaxy is my five-node Proxmox VE 9.2.11 cluster. This directory owns its bridge configuration, two-link Corosync setup, storage references, Datacenter firewall, change records, & troubleshooting history.
 
 ## Records
 

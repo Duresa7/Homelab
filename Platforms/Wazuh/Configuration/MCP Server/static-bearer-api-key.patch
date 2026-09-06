@@ -1,0 +1,26 @@
+diff --git a/wazuh_mcp_server/auth.py b/wazuh_mcp_server/auth.py
+--- a/wazuh_mcp_server/auth.py
++++ b/wazuh_mcp_server/auth.py
+@@ -334,6 +334,22 @@ async def verify_bearer_token(authorization: str) -> AuthToken:
+ 
+     token = authorization[7:]  # Remove "Bearer " prefix
+ 
++    # The documented remote-client quick start sends MCP_API_KEY directly as
++    # the bearer credential. Accept that stable key here so clients without a
++    # token-refresh flow do not fail when the /auth/token JWT expires after 24h.
++    # validate_api_key performs a constant-time hash comparison, and the key's
++    # configured scopes are preserved (read-only by default).
++    if token.startswith("wazuh_"):
++        key_obj = auth_manager.validate_api_key(token)
++        if key_obj:
++            return AuthToken(
++                token=token,
++                api_key_id=key_obj.id,
++                created_at=key_obj.created_at,
++                scopes=key_obj.scopes or ["wazuh:read"],
++            )
++        raise ValueError("Invalid API key")
++
+     # First, try session token validation (wst_* tokens)
+     if token.startswith("wst_"):
+         token_obj = auth_manager.validate_token(token)

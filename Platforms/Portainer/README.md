@@ -1,21 +1,21 @@
 # Portainer
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-03
 
-I run Portainer CE 2.45.0 on `docker-main` at `192.168.40.35`. I verified the server version on 2026-09-01 when the unauthenticated `https://localhost:9443/api/status` endpoint returned `Version` `2.45.0`. The server manages its local Docker socket & four Edge Agent 2.45.0 hosts on other VLANs.
+I run Portainer CE 2.45.0 on `docker-main` at `192.168.40.35`. I verified the server version on 2026-09-01 when the unauthenticated `https://localhost:9443/api/status` endpoint returned `Version` `2.45.0`. The server manages its local Docker socket & four Edge Agent hosts on other VLANs. Both server and agents follow their `:latest` tags; those tags resolved to 2.45.0 on 2026-09-03.
 
 ## Current State
 
 | Environment | Portainer type | Agent state | Management state |
 |---|---:|---|---|
 | `docker-main` | Local Docker | Server container running | Operational |
-| `alpha-prod-01` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-01 |
-| `media-01` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-01 |
-| `docker-network` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-01 |
-| `docker-blue` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-01 |
+| `alpha-prod-01` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-03 |
+| `media-01` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-03 |
+| `docker-network` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-03 |
+| `docker-blue` | Edge Agent | Running | Operational; endpoint status 1 on 2026-09-03 |
 
-Each agent uses `portainer/agent:2.45.0`, restart policy `always`, the Docker socket, `/var/lib/docker/volumes`, `/`, & a named `portainer_agent_data` volume. The shared compose reference is [Configuration/portainer-edge-agent/docker-compose.yml](Configuration/portainer-edge-agent/docker-compose.yml). Generated Edge IDs & keys stay outside this repository; the workspace holds no copy.
+Each agent uses `portainer/agent:latest`, currently 2.45.0, restart policy `always`, the Docker socket, `/var/lib/docker/volumes`, `/`, & a named `portainer_agent_data` volume. The shared compose reference is [Configuration/portainer-edge-agent/docker-compose.yml](Configuration/portainer-edge-agent/docker-compose.yml). Generated Edge IDs & keys stay outside this repository; the workspace holds no copy.
 
 `docker-network` reaches `docker-main` through one logged TCP policy from `192.168.85.2` to `192.168.40.35` using the existing `Portainer Edge Agents` port group for 8000 & 9443. `docker-blue` runs Docker 29.6.2, containerd 2.2.6, & runc 1.3.6 after the 2.2.4 shim crashed on every new task.
 

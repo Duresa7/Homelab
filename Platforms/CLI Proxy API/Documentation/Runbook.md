@@ -1,7 +1,7 @@
 # CLI Proxy API Operations Runbook
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-03
 
 ## Routine Check
 
@@ -48,7 +48,7 @@ I do not copy bearer tokens, API keys, management credentials, OAuth callback va
 
 ## Update
 
-The Compose file pins the complete image digest, so an ordinary recreate keeps the same image. To update, I record the current digest, replace it with the selected tested digest in `docker-compose.yml`, and run:
+The Compose file tracks `eceasy/cli-proxy-api:latest`. To update, I record the currently running image ID and version, then run:
 
 ```sh
 cd /opt/docker/cli-proxy-api
@@ -57,7 +57,7 @@ docker compose up -d
 docker compose ps
 ```
 
-I repeat the routine check and authenticated model check before treating an update as complete. If the new image fails, I restore the prior digest in `docker-compose.yml`, run `docker compose up -d`, and repeat the checks.
+I repeat the routine check and authenticated model check before treating an update as complete. If the new image fails, I temporarily replace `:latest` with the last known-good digest, run `docker compose up -d`, and repeat the checks before deciding whether to leave that rollback pin in place.
 
 ## Rollback
 

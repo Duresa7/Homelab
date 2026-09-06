@@ -9,28 +9,29 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 
 | Item | Value |
 |---|---|
-| Version | 1.6.7 |
-| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:1.6.7` |
-| Pinned image digest | `sha256:c8dd83a5dba8ac992dfe1ded4aa65ae4e7f52ec31fddbe2af5b49ffebe5bbfa7` |
+| Version | 1.6.7 on 2026-09-03 |
+| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:latest` |
+| Image policy | Rolling `latest`; it resolved to the same manifest as 1.6.7 when adopted |
 | Host | `docker-blue` (`192.168.40.39`) |
 | Internal URL | `https://mcp.alphasecunited.com` |
 | Upstream listener | `192.168.40.39:4788` |
 | Live Compose path | `/opt/docker/executor/docker-compose.yml` |
 | Persistent state | `/opt/docker/executor/data` |
-| Connected integrations | Cloudflare MCP, Supabase MCP, UniFi MCP, SSH Manager MCP |
+| Connected integrations | Cloudflare MCP, Supabase MCP, UniFi MCP, SSH Manager MCP, Wazuh MCP |
 | UniFi connection | Personal connection `unifiMcpGateway`, 5 tools |
 | SSH Manager connection | Personal connection `sshManagerMcpGateway`, 37 tools |
+| Wazuh connection | Personal connection `localWazuh`, 41 read-only tools |
 | Restart policy | `unless-stopped` |
 
 Nginx Proxy Manager terminates TLS with the existing wildcard certificate and forwards to the HTTP listener on Docker Blue. UniFi resolves the name to Nginx Proxy Manager and permits only `192.168.85.2` to cross from AlphaSec-Access to `192.168.40.39:4788` for this proxy path.
 
-The container uses a read-only root filesystem, a bounded temporary filesystem, no Linux capabilities, `no-new-privileges`, a 256-process limit, and bounded JSON logs. Local STDIO MCP servers and analytics are disabled. Local-network integrations are enabled so Executor can reach the UniFi gateway at `http://192.168.40.39:8811/mcp` and the SSH Manager gateway at `http://192.168.40.39:8812/mcp`.
+The container uses a read-only root filesystem, a bounded temporary filesystem, no Linux capabilities, `no-new-privileges`, a 256-process limit, and bounded JSON logs. Local STDIO MCP servers and analytics are disabled. Local-network integrations are enabled so Executor can reach the UniFi gateway at `http://192.168.40.39:8811/mcp`, the SSH Manager gateway at `http://192.168.40.39:8812/mcp`, and Wazuh MCP at `http://192.168.72.2:3000/mcp`.
 
 The first administrator account is claimed. Credentials and Executor's generated secret files stay outside this repository.
 
-The gateway endpoints are registered separately. `unifi-mcp-gateway` is displayed as `UniFi MCP`, uses personal connection `unifiMcpGateway`, and discovers 5 UniFi tools. `ssh-manager-mcp-gateway` is displayed as `SSH Manager MCP`, uses personal connection `sshManagerMcpGateway`, and discovers 37 SSH tools. Each connection keeps its own bearer token in Executor's encrypted credential provider, and both integration header maps remain empty. The retired combined `docker-mcp-gateway` integration and `dockerMcpGateway` connection are absent.
+The gateway endpoints are registered separately. `unifi-mcp-gateway` is displayed as `UniFi MCP`, uses personal connection `unifiMcpGateway`, and discovers 5 UniFi tools. `ssh-manager-mcp-gateway` is displayed as `SSH Manager MCP`, uses personal connection `sshManagerMcpGateway`, and discovers 37 SSH tools. `wazuh-mcp-server` uses personal connection `localWazuh` and discovers 41 tools from the local Manager and Indexer. Each connection keeps its own bearer token in Executor's encrypted credential provider, and all three integration header maps remain empty. The retired combined `docker-mcp-gateway` integration and `dockerMcpGateway` connection are absent.
 
-No Executor policy overrides cover either connection. The gateway tools therefore carry no Executor approval requirement today. UniFi permits read, create, update, and delete operations, and its full-access bypass executes mutations without confirmation. SSH Manager reaches all eighteen configured servers in unrestricted mode and can obtain root on every one: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on ten hosts, and passwordless sudo on `ansible-01` and `ubuntu-dev`.
+No Executor policy overrides cover these connections. The gateway tools therefore carry no Executor approval requirement today. UniFi permits read, create, update, and delete operations, and its full-access bypass executes mutations without confirmation. SSH Manager reaches all eighteen configured servers in unrestricted mode and can obtain root on every one: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on ten hosts, and passwordless sudo on `ansible-01` and `ubuntu-dev`. Wazuh is enforced read-only at the MCP server: its bearer credential has only `wazuh:read`, so the 14 active-response and rollback tools never enter Executor's catalog.
 
 My three Codex profiles (`.codex`, `.codex_alt`, and `.codex_personal`) and two Claude Code profiles (default and `.claude_alt`) on `ubuntu-dev` use one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`. I enabled per-integration search tools in all five saved connections on 2026-09-06. I renewed OAuth for both Claude profiles and verified that both report connected at the new URL; fresh authenticated Codex discovery remains unverified. All five connections use OAuth. The direct `ssh-manager` and `unifi-network` client entries, standalone SSH Manager package, and UniFi client plugins are absent. Codex approves Executor tools without prompting, and Claude Code persistently allows `mcp__executor__*`, so the client layer does not add an approval gate to UniFi or SSH Manager.
 
@@ -48,6 +49,7 @@ I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both
 - [Agent client cutover](Documentation/Change%20Records/Agent%20Client%20Cutover%20-%202026-08-31.md)
 - [UniFi full agent access](../Docker%20MCP%20Gateway/Documentation/Change%20Records/UniFi%20Full%20Agent%20Access%20-%202026-09-01.md)
 - [SSH Manager fleet reach completion](../Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md)
+- [Wazuh MCP Server and Executor integration](../Wazuh/Documentation/Change%20Records/Wazuh%20MCP%20Server%20and%20Executor%20Integration%20-%202026-09-03.md)
 
 ## Upstream
 

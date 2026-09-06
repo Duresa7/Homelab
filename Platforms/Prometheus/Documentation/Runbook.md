@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-03
 
 ## Health Check
 
@@ -101,7 +101,7 @@ ansible-playbook playbooks/cadvisor.yml
 
 Both playbooks are idempotent and verify what they installed rather than trusting the package manager: `node-exporter.yml` asserts the version the running exporter reports, and `cadvisor.yml` compares the containers cAdvisor registered against the containers Docker reports running, failing on a mismatch. Pass `-e target=<host>` for a single host and `-e cadvisor_state=absent` to remove cAdvisor.
 
-cAdvisor is pinned to `ghcr.io/google/cadvisor:v0.60.5`. Do not move it back to `gcr.io/cadvisor/cadvisor`: that registry stops at v0.55.1, and anything before v0.60.5 registers zero containers on the six hosts using Docker's `overlayfs` driver. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
+cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Do not move it back to `gcr.io/cadvisor/cadvisor`: that registry stops at v0.55.1, and anything before v0.60.5 registers zero containers on the hosts using Docker's `overlayfs` driver. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
 
 ## User Endpoints
 

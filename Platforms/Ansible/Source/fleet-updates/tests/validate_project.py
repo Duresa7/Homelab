@@ -42,6 +42,7 @@ EXPECTED_COMPOSE_PROJECTS = {
         "forgejo": ("/opt/docker/forgejo", ()),
         "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
         "immich": ("/opt/docker/immich-app", ()),
+        "ollama": ("/opt/docker/ollama", ()),
         "portainer": ("/opt/docker/portainer", ()),
     },
     "docker-network": {
@@ -209,8 +210,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 24:
-        errors.append(f"expected 24 compose projects, found {project_count}")
+    if project_count != 25:
+        errors.append(f"expected 25 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

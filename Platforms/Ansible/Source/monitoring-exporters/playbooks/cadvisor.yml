@@ -25,12 +25,12 @@
   vars:
     # present or absent
     cadvisor_state: present
-    # Pinned, not latest, so a silent upstream change cannot alter metric names
-    # under a dashboard that depends on them. ghcr, not gcr: gcr's newest is
-    # v0.55.1 and only v0.60.5 handles the containerd snapshotter.
-    cadvisor_image: "ghcr.io/google/cadvisor:v0.60.5"
+    # Track the newest published build by policy. Use ghcr, not gcr: gcr's
+    # newest is v0.55.1 and only v0.60.5 or newer handles the containerd
+    # snapshotter used by this fleet.
+    cadvisor_image: "ghcr.io/google/cadvisor:latest"
     # coolify-proxy uses 8080 on app-01, and the NetBird server uses 8081 on
-    # docker-network. 9101 is free on all eight hosts and sits next to
+    # docker-network. 9101 is free on all nine hosts and sits next to
     # node_exporter's 9100, so the fleet publishes cAdvisor there.
     cadvisor_host_port: 9101
     cadvisor_project_dir: /opt/docker/cadvisor

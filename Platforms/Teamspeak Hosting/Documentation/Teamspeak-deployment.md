@@ -1,7 +1,7 @@
 # TeamSpeak Hosting on alpha-prod-01
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-03
 
 I run two TeamSpeak servers, one shared Playit agent, & TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, Compose projects, & boot recovery.
 
@@ -80,7 +80,7 @@ The `playit-agent` Compose project is independent of both TeamSpeak projects. Re
 
 | Property | Value |
 |---|---|
-| Image | `ghcr.io/playit-cloud/playit-agent:0.17` |
+| Image | `ghcr.io/playit-cloud/playit-agent:latest` (currently release 1.0.10) |
 | Container | `playit-agent` |
 | Compose project | `playit-agent` |
 | Compose file | `~/playit-agent/docker-compose.yml` |
