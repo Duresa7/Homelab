@@ -26,7 +26,7 @@ I run Ollama on `docker-main` with Grey's GTX 1080 Ti. The API is available dire
 
 ## Runtime Boundary
 
-`grey-server` owns the NVIDIA kernel modules. The unprivileged LXC receives only the seven real NVIDIA character devices, and it carries matching driver user-space files without DKMS or a second kernel module. The Compose service needs both `runtime: nvidia` and `gpus: all` in this nested-LXC deployment. The ordinary device-request path cannot inspect the outer LXC's BPF device filter, while the explicitly registered NVIDIA runtime passes the same workload without turning off cgroup enforcement.
+`grey-server` owns the NVIDIA kernel modules. The unprivileged LXC receives only the seven real NVIDIA character devices, and it carries matching driver user-space files without DKMS or a second kernel module. The Compose service needs both `runtime: nvidia` and `gpus: all` in this nested-LXC deployment. Since 2026-09-05 the [Immich](../Immich/README.md) server and machine-learning containers share the same card for NVENC transcoding and CUDA inference, so a loaded Ollama model, a running transcode, and Immich's CLIP model share the 11,264 MiB. The ordinary device-request path cannot inspect the outer LXC's BPF device filter, while the explicitly registered NVIDIA runtime passes the same workload without turning off cgroup enforcement.
 
 The GTX 1080 Ti is Pascal hardware. It stays on the proprietary R580 driver branch; open NVIDIA kernel modules and the R590 or newer branches do not support this card. I retained the working 580.159.03 patched source already registered with DKMS rather than combining a driver replacement with the service deployment.
 
