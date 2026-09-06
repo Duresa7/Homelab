@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-06
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -64,6 +64,30 @@ From `purple-server` on 2026-08-19, after destroying VM 122:
 | `ssd-lvm2` | lvmthin | active | 228.11 GiB | 0.00% |
 
 `ssd-lvm2` is restricted to Purple by `nodes purple-server`, and `ssd-lvm1` and `hddpool-1` both live on Grey, which is why each side reports the other's pools as disabled. `local` and `local-lvm` are per-node storages, so their capacities differ between the two tables rather than disagreeing.
+
+I re-read both nodes on 2026-09-06 during the documentation audit. The shape is unchanged; the figures below are the current usage.
+
+From `grey-server` on 2026-09-06:
+
+| Storage | Type | Status | Total | Used |
+| --- | --- | --- | ---: | ---: |
+| `hddpool-1` | zfspool | active | 1.76 TiB | 82.46% |
+| `local` | dir | active | 93.93 GiB | 43.40% |
+| `local-lvm` | lvmthin | active | 793.79 GiB | 11.37% |
+| `ssd-lvm1` | lvmthin | active | 1.79 TiB | 13.47% |
+| `ssd-lvm2` | lvmthin | disabled | Not reported | Not reported |
+
+From `purple-server` on 2026-09-06:
+
+| Storage | Type | Status | Total | Used |
+| --- | --- | --- | ---: | ---: |
+| `hddpool-1` | zfspool | disabled | Not reported | Not reported |
+| `local` | dir | active | 67.61 GiB | 12.31% |
+| `local-lvm` | lvmthin | active | 140.87 GiB | 0.00% |
+| `ssd-lvm1` | lvmthin | disabled | Not reported | Not reported |
+| `ssd-lvm2` | lvmthin | active | 228.11 GiB | 0.00% |
+
+`hddpool-1` has moved from 80.08 to 82.46 percent since 2026-08-09, which is Immich growth on `docker-main`'s `/data` mount. `ssd-lvm2` is still empty. The per-node `local-lvm` figures on the other three nodes were blue 26.00, red 31.73, and green 8.58 percent.
 
 `ssd-lvm2` is empty after the Kasm retirement. `pvesm list ssd-lvm2 --vmid 122` returned no volumes and `pvesm status --storage ssd-lvm2` reported 0.00 percent used on 2026-08-19. The [purple 850 EVO SMART baseline](../../Archive/Platforms/Kasm%20Workspaces/Evidence/Kasm%20Session%20Isolation%20-%202026-07-28/Logs/Purple%20850%20EVO%20SMART%20Baseline.md) remains the retained health record for the underlying disk.
 

@@ -13,7 +13,7 @@ I reduced the UniFi zone matrix, moved repeated host and port selectors into reu
 
 I kept KASM-BROWSER, MALWARE-OFFLINE, and EVIDENCE-QUARANTINE separate. I also kept `AlphaSec-Access` separate from observability because its reverse proxy accepts internet traffic.
 
-The [Windows Servers retirement](../../../../../Platforms/Windows%20Servers/README.md) ran between S01 and S02. S01 therefore captured the controller before that plan changed its remaining UniFi, Proxmox, Ansible, Termix, and credential state.
+The [Windows Servers retirement](../../../../../Archive/Platforms/Windows%20Servers/README.md) ran between S01 and S02. S01 therefore captured the controller before that plan changed its remaining UniFi, Proxmox, Ansible, Termix, and credential state.
 
 ## Starting State
 

@@ -1,15 +1,17 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the monitoring check on 2026-09-03 after the floating-tag rollout. Prometheus reported 56 active targets with all 56 up: 18 node exporters, nine cAdvisor exporters, six What's Up Docker exporters, 20 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
+On 2026-09-06 I audited every row in this file against the running guests through the SSH Manager, reading versions from the services themselves, from OCI image labels, and from package managers rather than from earlier records. Prometheus reported 57 of 57 targets up across the same seven jobs, with the Open WebUI probe as the twenty-first blackbox target. The corrections from that pass are marked with their date below; the largest finding is that `docker-main`'s Wazuh agent has never reached the current manager. The audit is recorded in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
+
 ## Cluster State
 
-All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. Kernel `7.0.14-15-pve` is installed on every node, while the nodes continue to run `7.0.14-8-pve` until a later rolling reboot.
+All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. Kernel `7.0.14-15-pve` is installed on every node, while the nodes continue to run `7.0.14-8-pve` until a later rolling reboot. I re-read both figures from every node on 2026-09-06 and nothing had moved; quorum held at five votes.
 
 | Node | FQDN | PVE | Running kernel | Installed kernel |
 | --- | --- | --- | --- | --- |
@@ -23,15 +25,15 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
-| ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.133.0<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.97.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3 |
+| ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.0, not connected to the manager |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.0 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
-| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.7<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor |
-| alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta38<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
@@ -59,10 +61,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | GNOME desktop | Ubuntu GNOME; GNOME Shell 50.1, GDM 50.1 |
-| Docker | Docker CE 29.7.2 with Compose v5.4.0; installed 2026-08-13 |
-| VS Code | 1.133.0 |
+| Docker | Docker CE 29.7.2 with Compose v5.5.0 on 2026-09-06; installed 2026-08-13 |
+| VS Code | 1.136.1 on 2026-09-06 |
 | Node.js | 24.19.0 via nvm, user scope |
-| GitHub CLI | 2.97.0, authenticated as `Duresa7` |
+| GitHub CLI | 2.98.0 on 2026-09-06, authenticated as `Duresa7` |
 | Wazuh agent | 4.14.6, manager ID `020`, manager `192.168.72.2`; version held in apt |
 | node_exporter | `prometheus-node-exporter` 1.10.2, `192.168.40.179:9100` |
 | SSH | key-based login; host signing key registered on GitHub for verified commits |
@@ -80,13 +82,16 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | CLI Proxy API | Version 7.2.149 from `eceasy/cli-proxy-api:latest`; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
 | Ollama | 0.33.3 pinned by tag and digest; `qwen3.5:2b` model ID `324d162be6ca` is the only installed model; GTX 1080 Ti at 100% GPU offload; Compose under `/opt/docker/ollama`; API bound to `192.168.40.35:11434` without NPM or WAN publication |
 | Open WebUI | Tracks rolling `main` with `pull_policy: always`; currently reports 0.11.3; authenticated frontend in the Ollama Compose project; internal HTTPS active at `openwebui.alphasecunited.com` through NPM host 28; direct recovery path on `192.168.40.35:3002`; model discovery verified |
+| What's Up Docker | 8.4.0 from `getwud/wud:latest`; Compose under `/opt/docker/wud`; one of the six WUD exporters Prometheus scrapes on 9102 |
+| Wazuh agent | Package 4.14.0-1 with no APT source or hold; `wazuh-agent.service` is enabled and active, but `/var/ossec/etc/ossec.conf`, unchanged since 2025-11-05, still names `192.168.40.227` as the manager, the address `security-01` held before the 2026-07-12 Security-A migration. The agent retries `192.168.40.227:1514` every ten seconds and logs `Unable to connect`, and `agent_control -l` on the manager at `192.168.72.2` does not list `docker-main`. Found 2026-09-06; the host has had no working agent since the migration, and re-enrolling it is tracked in the root [TODO](../../../TODO.md) |
+| Leftover project directories | `/opt/docker` also holds `wyze-bridge` (empty, 2026-07-29), `nginx-proxy-manager` (a `docker-compose.yml`, `data`, and `letsencrypt` tree from 2026-04-14 with no running container), `docker-proxy` (empty, 2025-10-03), `backups` (empty, root-only), and `docusaurus.prev` (a 2026-08-03 copy of the documentation site project). None has a Compose project or container behind it as of 2026-09-06; their removal is tracked in the root TODO |
 
 ## monitor-01
 
 | Workload | Details |
 | --- | --- |
 | Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 57 of 57 targets `up` across seven jobs: node 18, cAdvisor 9, WUD 6, Proxmox 1, blackbox 21 (20 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
-| Grafana | 13.2.1 on TCP 3000; 27 provisioned dashboards and 15 provisioned alert rules; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
+| Grafana | 13.2.1 on TCP 3000; 27 provisioned dashboards and 24 provisioned alert rules in the `AlphaSec United Alerts` folder; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:latest`, currently v0.28.0, on TCP 9115; probes 20 internal NPM names plus the alert bot's Compose health endpoint |
 | NUT exporter | `hon95/prometheus-nut-exporter:latest` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
@@ -103,10 +108,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | --- | --- |
 | Docker MCP Gateway | Version 0.43.3 from a digest-pinned official image; Compose under `/opt/docker/mcp-gateway`; separate bearer-authenticated Streamable HTTP endpoints at `192.168.40.39:8811` for UniFi Network and `192.168.40.39:8812` for SSH Manager; UniFi runs as a gateway-managed container, SSH Manager as its own service the gateway reaches at `http://ssh-manager:8080/mcp` since 2026-09-03; both health endpoints and real client calls pass |
 | SSH Manager MCP | `mcp-ssh-manager` container from the local `homelab/mcp-ssh-manager:latest` image, SSH Manager 3.8.5 behind mcp-proxy 0.12.0 on port 8080 of the Compose network only; one persistent process shared by every client, so no per-session container is created; eighteen server definitions in `ssh-manager-servers.env` and credentials in the root-owned `ssh-manager.env`; enrolled host keys on the `ssh-manager-state` volume |
-| Executor | Self-hosted 1.6.7 from `ghcr.io/usefulsoftwareco/executor-selfhost:latest`; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; administrator claimed; separate healthy connections for UniFi MCP Gateway with 5 tools, SSH Manager MCP Gateway with 37 tools, and local Wazuh MCP with 41 read-only tools |
+| Executor | Self-hosted 1.6.8 from `ghcr.io/usefulsoftwareco/executor-selfhost:latest`, OCI version label read 2026-09-06; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; administrator claimed; separate healthy connections for UniFi MCP Gateway with 5 tools, SSH Manager MCP Gateway with 37 tools, and local Wazuh MCP with 41 read-only tools |
 | RustDesk | `hbbs` and `hbbr` using `rustdesk/rustdesk-server:latest` |
 | Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; environment 7; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-03 |
-| Docker runtime | Docker Engine 29.6.2, containerd 2.2.6, & runc 1.3.6 after the 2026-07-28 repair of a containerd 2.2.4 shim panic |
+| Docker runtime | Docker Engine 29.8.0, containerd 2.3.4, & runc 1.5.1 on 2026-09-06. The 2026-07-28 repair of a containerd 2.2.4 shim panic took the host to 29.6.2 / 2.2.6 / 1.3.6, and ordinary package updates have carried it forward since. Every Debian 13 Docker host reads 29.8.0; `security-01` is on 29.6.2 and `ubuntu-dev` on 29.7.2 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `007` as `docker-blue` |
 
 ## docker-network
@@ -114,7 +119,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
-| NetBird | Management server 0.78.0 and dashboard 2.92.0 under `/opt/docker/netbird`; versions verified 2026-09-04 from the management startup log and dashboard OCI label; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
+| NetBird | Management server 0.78.1 and dashboard 2.92.0 under `/opt/docker/netbird`; the management server moved from 0.78.0 to 0.78.1 on 2026-09-04, and on 2026-09-06 the container's own `netbird version` returned 0.78.1 while the dashboard OCI label still read v2.92.0; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; endpoint status 1 on 2026-09-03 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
@@ -154,6 +159,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | --- | --- |
 | TeamSpeak | Two `teamspeak` containers |
 | TS3 Manager | `joni1802/ts3-manager` |
+| TeamSpeak reachability collector | `teamspeak-monitor` from the locally built `teamspeak-monitor:local` image, rebuilt 2026-09-04; runs `collector.py` under `unless-stopped`, reads each server's public SRV record every cycle, and feeds the reachability dashboard; source under [Teamspeak Hosting](../../../Platforms/Teamspeak%20Hosting/Source/teamspeak-monitor/) |
 | Playit agent | `ghcr.io/playit-cloud/playit-agent:latest`, currently release 1.0.10 |
 | Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; one of four remote Edge Agent hosts managed by Portainer server 2.45.0; endpoint status 1 on 2026-09-03 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `006` as `alpha-prod-01` |
@@ -211,6 +217,8 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. All five Proxmox nodes share `default, proxmox`. I enrolled `ubuntu-dev` as `020` on 2026-08-13. `debian-dev` held `019` from 2026-08-08 and was never added to this table; I decommissioned that VM on 2026-08-14 and removed agent `019` from the manager the same day via `manage_agents`, so `agent_control -l` no longer lists it.
 
+On 2026-09-06 `agent_control -l` on `security-01` listed 15 active remote agents and none disconnected or pending: the 14 below plus `game-01` as `018`, which had its own row in the guest table but was missing here. `agent_groups -l` reported `default` 14, `edge` 1, `proxmox` 5, `workstation` 1, and no unassigned agents. `docker-main` is not enrolled at all; its installed agent points at the manager's pre-migration address, as recorded in its section above.
+
 | Host | Manager ID | Version | Group | State |
 |---|---:|---|---|---|
 | app-01 | 004 | 4.14.6 | default | Active |
@@ -221,6 +229,7 @@ The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. 
 | ansible-01 | 009 | 4.14.6 | default | Active |
 | monitor-01 | 010 | 4.14.6 | default | Active |
 | docker-network | 011 | 4.14.6 | default | Active |
+| game-01 | 018 | 4.14.6 | default | Active |
 | grey-server | 013 | 4.14.6 | default, proxmox | Active |
 | purple-server | 014 | 4.14.6 | default, proxmox | Active |
 | blue-server | 015 | 4.14.6 | default, proxmox | Active |
@@ -254,5 +263,5 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 
 | Node | NUT version | Device | Endpoint | State |
 | --- | --- | --- | --- | --- |
-| red-server | 2.8.1-5 | `ups01`, APC Back-UPS RS 1500MS2 | `192.168.70.13:3493` | Driver and server active; `nut-monitor` disabled |
-| grey-server | 2.8.1-5 | `ups02`, APC Back-UPS RS 1500MS2 | `192.168.70.10:3493` | Driver and server active; `nut-monitor` disabled |
+| red-server | 2.8.1-5 | `ups01`, APC Back-UPS Pro BR1500MS2 (UPS-01) | None | Disabled 2026-08-31: the `[ups01]` stanza is commented out in `/etc/nut/ups.conf`, `nut-server` is inactive, and `upsc -l` lists nothing. UPS-01's data cable has been disconnected since 2026-08-28. Re-read 2026-09-06 |
+| grey-server | 2.8.1-5 | `ups02`, APC Back-UPS RS 1500MS2 (UPS-02) | `192.168.70.10:3493` | Driver and server active; `nut-monitor` disabled; `upsc -l` returns `ups02`. Re-read 2026-09-06 |

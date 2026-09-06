@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-06
 
 ## Fleet deployment status
 
@@ -31,9 +31,10 @@ Four changes on 2026-08-29 into 2026-08-30 took this platform from an agent flee
 - [x] Upgraded the central stack to 4.14.7 on 2026-08-04. Indexer, manager, Filebeat integration, and dashboard, in that order, with no snapshot by choice. 15 agents active and zero disconnected before and after; cluster green at 400 primaries both times. See [Wazuh 4.14.7 Central Upgrade](Change%20Records/Wazuh%204.14.7%20Central%20Upgrade%20-%202026-08-04.md).
 - [ ] Release the twelve agent holds, one host at a time. The manager is now newer than every agent, so this is unblocked. Releasing a hold makes that host eligible for `4.14.7-1` on the next fleet run.
 - [ ] Move `edge-01` off `4.14.5-1` and `docker-main` off `4.14.0-1`, and give `docker-main` the package source it has never had.
+- [ ] **Re-enroll `docker-main`. Its agent is not an old version reporting in; it is not reporting at all.** On 2026-09-06 I found `wazuh-agent.service` enabled and active on `docker-main` with `/var/ossec/etc/ossec.conf` unchanged since 2025-11-05 and pointing at `192.168.40.227`, the manager's address before the Security-A migration moved it to `192.168.72.2` on 2026-07-12. The agent logs `Unable to connect to '[192.168.40.227]:1514/tcp'` every ten seconds, and `agent_control -l` on the manager lists 15 remote agents with no `docker-main` among them, which is why the 2026-08-03 fleet count of 14 and today's 15 never included it. The fix is the manager address in `ossec.conf`, a fresh enrollment against `192.168.72.2:1515` through the [agent-deployment](../Source/agent-deployment/README.md) play so the host also gets the source and the hold, and a check that it appears as Active with the `default` group. Until then the host that runs Immich, Portainer, Forgejo, and the documentation site has no host-based detection.
 
 Adding a source does **not** move an agent forward on its own, which is the thing I had wrong when I chose this option. The version an agent can reach is capped by the manager, and the repository only ever carries the current package for a release line. So a source plus a hold is the whole of what a target can safely have until the manager moves.
 
-`edge-01` on `4.14.5-1` and `docker-main` on `4.14.0-1` against a `4.14.7-1` manager are supported pairings, so none of the above describes an outage.
+`edge-01` on `4.14.5-1` against a `4.14.7-1` manager is a supported pairing. `docker-main` on `4.14.0-1` would be too, but its agent is not connected, so that host is the one outage in this list.
 
 The [configuration reference](../Configuration/README.md) carries the dated package observations and links the repository-wide version rule.

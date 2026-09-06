@@ -1,9 +1,9 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-29
+**Last updated:** 2026-09-06
 
-I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
+I re-read all 22 network objects on 2026-09-06 and every row below matched: names, VLAN IDs, subnets, and DHCP ranges. I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
 
 I added `Proton-WiFi`/VLAN 45 on 2026-08-10 for wireless clients that egress through ProtonVPN. After I retired the five Kasm networks on 2026-08-19, 16 routed LAN networks remained out of 23 controller network objects. I deleted the empty DMZ-A/VLAN 90 on 2026-08-29, so 15 routed LAN networks remain out of 22 objects. The other seven objects are two WANs, the ProtonVPN client, and four remote-user VPN networks. The Proton WiFi build is in [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
@@ -73,7 +73,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 
 | Network | Deleted | Reason | Durable record |
 |---|---|---|---|
-| AD-SERVERS (65) | 2026-07-27 | The Windows domain, both domain controllers, and the domain-joined test VM were retired. | [Windows Servers retirement](../../../../Platforms/Windows%20Servers/README.md) |
+| AD-SERVERS (65) | 2026-07-27 | The Windows domain, both domain controllers, and the domain-joined test VM were retired. | [Windows Servers retirement](../../../../Archive/Platforms/Windows%20Servers/README.md) |
 | Secure-V (100) | 2026-07-27 | Its domain SSID was already gone. I deleted the `Non-tracking` ProtonVPN route first, then removed the unused network. | [Zone and Object Consolidation](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
 | KASM-BROWSER (74) | 2026-08-19 | The disposable browser lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
 | KASM-TRUSTED (75) | 2026-08-19 | The trusted disposable-session lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
@@ -81,4 +81,4 @@ I use this table when placing a new device or workload. The **Zone** column name
 | LAB-MGMT (78) | 2026-08-19 | VM 122 and its isolated control-plane network were destroyed. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
 | EVIDENCE-QUARANTINE (79) | 2026-08-19 | The evidence-review lane ended with the Kasm platform. | [Kasm Workspaces decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
 
-The disabled `AlphaSec-IoT` WLAN now points to IoT/VLAN 20. It stayed disabled during the correction.
+The disabled `Alpha-Sec-IoT` WLAN, which earlier records spell `AlphaSec-IoT`, now points to IoT/VLAN 20. It stayed disabled during the correction, and the 2026-09-06 WLAN readback still shows it disabled under the controller's hyphenated name.

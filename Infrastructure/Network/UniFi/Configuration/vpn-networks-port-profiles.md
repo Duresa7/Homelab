@@ -1,9 +1,9 @@
 # UniFi VPNs, Groups & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-06
 
-I track five WireGuard servers, one WireGuard client, one traffic route, 15 reusable firewall groups, and five switch port profiles here.
+I track five WireGuard servers, one WireGuard client, one traffic route, 16 reusable firewall groups, and five switch port profiles here. I read the network objects, groups, port profiles, and traffic routes back on 2026-09-06.
 
 ## VPN Servers
 
@@ -13,9 +13,11 @@ All servers are WireGuard, remote-user-VPN type, bound to the WAN interface.
 |---|---|---|---|---|
 | FamilyVPN | WireGuard Server | 192.168.3.1/24 | 51821 | Disabled |
 | Management Access | WireGuard Server | 10.6.0.1/24 | 51822 | Enabled |
-| Game-Access | WireGuard Server | 10.66.200.1/24 | 51823 | Enabled |
-| One-Click VPN | WireGuard Server | 192.168.12.1/24 | 51820 | Enabled |
+| Game-Access | WireGuard Server | 10.66.200.1/24 | 51823 | Disabled on the 2026-09-06 readback |
+| One-Click VPN | WireGuard Server | 192.168.12.1/24 | 51820 | Not among the network objects the controller returned on 2026-09-06 |
 | Temp | WireGuard Server | 10.6.10.1/24 | 51824 | Disabled |
+
+The 2026-09-06 network readback returned four remote-user VPN networks, not five: FamilyVPN, Management Access, Game-Access, and Temp, with only Management Access enabled. `Game-Access` had been recorded as enabled here since 2026-07-09 and is disabled on the controller. `One-Click VPN` was not returned as a network object at all; UniFi presents One-Click VPN as its own feature, and I have not confirmed through the interface whether it is still configured, so its row stays until I do.
 
 ## VPN Clients
 
@@ -51,11 +53,12 @@ Reusable port/address groups referenced by firewall policies.
 | OBJ-Security-Stack | IPv4 address group | 192.168.72.2, 192.168.72.3 |
 | OBJ-Proxmox-Nodes | IPv4 address group | 192.168.70.10 through 192.168.70.14 |
 | OBJ-Observability-Hosts | IPv4 address group | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
-| PG-Node-Exporter | Port group | 9100, 9101 |
+| PG-Node-Exporter | Port group | 9100, 9101, 9102 |
 | PG-Egress-Web | Port group | 80, 443 |
 | PG-NTP | Port group | 123 |
 | OBJ-Galaxy-PXE-Service | IPv4 address group | 192.168.40.36 |
 | PG-Galaxy-PXE-Callback | Port group | 8080 |
+| PG-Printing | Port group | 631, 9100 |
 
 ## Port Profiles
 

@@ -1,11 +1,11 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
-A controller readback on 2026-09-05 returned 22 network objects: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, and five WLANs. The 2026-08-19 readback after the Kasm retirement is the last full count of the rest: 15 reusable firewall groups, 15 client groups, four OON policies, one traffic route, five switch port profiles, and 27 enabled local DNS records. Three WLANs are enabled and two are disabled.
+A full controller readback on 2026-09-06 returned 22 network objects: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, 16 reusable firewall groups, 17 client groups, four OON policies, one traffic route, five switch port profiles, five WLANs with three enabled, 29 enabled local DNS records, no port forwards, and no user-defined static routes. Five adopted devices were online: the gateway, three switches, and one access point, on Network application 10.6.101. Against the 2026-08-19 count, the firewall groups gained `PG-Printing`, the client groups gained an `IOT` and an `IoT` entry, and local DNS gained `mcp` and `openwebui`. The configuration records below carry the detail.
 
 The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
 

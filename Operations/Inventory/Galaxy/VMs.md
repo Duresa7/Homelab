@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-08-20  
+**Last updated:** 2026-09-06  
 
 Galaxy currently has 7 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -11,9 +11,11 @@ On 2026-08-10 I recaptured the active VMs after the [guest resource efficiency c
 
 On 2026-08-13 I added VM 105 `ubuntu-dev`, which had been running since 2026-08-12 without an entry here. I found the gap while moving CLI Proxy API onto it, so this file was one guest short of the cluster for a day.
 
+On 2026-09-06 I audited this file against `pvesh get /cluster/resources` and every `qemu-server/*.conf` on the cluster. `kali-pen` had been rebuilt without a record: grey-server's task log shows `qmdestroy 106` at 10:42 EDT on 2026-08-26 and `qmcreate 102` ten minutes later, so the new Kali VM reused VMID 102, the number `debian-dev` carried until 2026-08-14. It is a 6 vCPU, 8 GiB guest with a 100G `local-lvm` disk, the Kali 2026.2 installer attached, tagged VLAN 40 without the Proxmox firewall flag, and it was stopped when I read it. Its detail block below replaces the retired VM 106 block. The same pass confirmed the other six VMs and both templates match their configuration files, and it closed the `ubuntu-dev` restart note. The audit is recorded in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
+
 VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this file on 2026-07-26 after the PVE API surfaced a guest I had never written down, and I decided to keep it on 2026-07-27. I reversed that decision: `debian-dev` (VM 102) is the machine I develop on, so a second development guest that had been stopped since 2026-07-15 was paying for nothing. I confirmed the deletion against the cluster on 2026-08-08. `pvesh get /cluster/resources` returns no VMID 111, `/etc/pve/qemu-server/111.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-111-*` volume, so its 80 GiB is back.
 
-`debian-dev` (VM 102) is also gone now. `ubuntu-dev` (VM 105) took over as the machine I develop on when CLI Proxy API moved across on 2026-08-13, and VM 102 sat idle from that point. I shut it down cleanly on 2026-08-14 and destroyed it with `qm destroy 102 --purge`. It carried no snapshot, backup job, HA resource, or replication job, so there was nothing to reconcile first. `pvesh get /cluster/resources` returns no VMID 102, `/etc/pve/qemu-server/102.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-102-*` volume; its 120 GiB is back. The full decommission record, including the documentation archival, is [debian-dev Decommission - 2026-08-14](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md), and the final configuration snapshot is [Debian Dev Archived Guest - 2026-08-14](../../../Archive/Operations/Inventory/Galaxy/Debian%20Dev%20Archived%20Guest%20-%202026-08-14.md).
+`debian-dev` (VM 102) is also gone now. `ubuntu-dev` (VM 105) took over as the machine I develop on when CLI Proxy API moved across on 2026-08-13, and VM 102 sat idle from that point. I shut it down cleanly on 2026-08-14 and destroyed it with `qm destroy 102 --purge`. It carried no snapshot, backup job, HA resource, or replication job, so there was nothing to reconcile first. At that point `pvesh get /cluster/resources` returned no VMID 102, `/etc/pve/qemu-server/102.conf` did not exist, and `pvesm list ssd-lvm1` held no `vm-102-*` volume; its 120 GiB was back. VMID 102 has been in use again since 2026-08-26, when I rebuilt `kali-pen` under it on `local-lvm`, so a `102.conf` exists today and describes the Kali VM rather than `debian-dev`. The full decommission record, including the documentation archival, is [debian-dev Decommission - 2026-08-14](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md), and the final configuration snapshot is [Debian Dev Archived Guest - 2026-08-14](../../../Archive/Operations/Inventory/Galaxy/Debian%20Dev%20Archived%20Guest%20-%202026-08-14.md).
 
 `kasm-01` (VM 122) is gone. On 2026-08-19 I shut it down cleanly and destroyed it with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes. The cluster resource API returns no VMID 122 and `pvesm list ssd-lvm2 --vmid 122` returns no volumes. The [decommission record](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) records the completed monitoring, proxy, automation, security-agent, and UniFi cleanup.
 
@@ -22,8 +24,8 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 105 | ubuntu-dev | grey-server | Ubuntu 26.04 LTS, GNOME 50 | 6 | 16 GiB | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
-| 106 | kali-pen | grey-server | Kali Linux | 4 | 5.86 GiB | 50G | 192.168.40.226/24 | 192.168.40.1 | none | disabled |
+| 102 | kali-pen | grey-server | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured; stopped on 2026-09-06 | 192.168.40.1 | 40 | disabled |
+| 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 16 GiB | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
@@ -38,11 +40,52 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 
 ## VM Details
 
+### VM 102 - kali-pen
+
+I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.86 GiB guest with a 50G disk, no VLAN tag, and the Kali 2025.2 installer; I destroyed it at 10:42 EDT and created this one at 10:52 EDT under VMID 102. The new guest is tagged VLAN 40, carries the Kali 2026.2 installer, and has the QEMU agent and a QXL display enabled. It was stopped when I captured it on 2026-09-06, so its address is not recorded here; the previous VM held 192.168.40.226 and the rebuilt one has not been read back.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | no |
+| OS family | Linux |
+| Guest OS | Kali Linux, 2026.2 installer |
+| IPv4 | Not captured; the VM was stopped on 2026-09-06 |
+| Gateway | 192.168.40.1 |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 6 |
+| CPU type | host |
+| Memory | 8 GiB |
+| Ballooning | default; no `balloon` key, so the minimum equals the maximum |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | qxl |
+| QEMU agent | enabled |
+| TPM | disabled |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | local-lvm | vm-102-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
+| ide2 | ide | local | iso/kali-linux-2026.2-installer-amd64.iso | 4689972K | cdrom | default |
+| efidisk0 | efidisk | local-lvm | vm-102-disk-0 | 4M | disk | efitype 4m |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 40 | Not captured | 192.168.40.1 | disabled | `<REDACTED_KALI_VM_MAC>` |
+
 ### VM 105 - ubuntu-dev
 
 This is the Ubuntu development workstation that takes over from `debian-dev`. I created it on 2026-08-12 and added it to this inventory on 2026-08-13, when CLI Proxy API moved onto it; it ran undocumented in between.
 
-It has 16 GiB with ballooning off, which is deliberate. The running instance predates that setting and has not been restarted to pick it up, so until it is the QEMU monitor reports `actual=12630` against `max_mem=16384` and the guest sees 11.4 GiB. The tables below record the configured end state; the restart is outstanding.
+It has 16 GiB with ballooning off, which is deliberate. The running instance predated that setting until the guest restarted on 2026-08-19, and the setting has been in force since: on 2026-09-06 the guest reported 15,408 MiB of total memory, where the pre-restart instance had been capped at `actual=12630` against `max_mem=16384` and saw 11.4 GiB.
 
 I applied the Linux Host Baseline Standard on 2026-08-13, following the single-account exception this workstation role carries. It joined fleet monitoring the same day as Wazuh agent `020` and as a node_exporter target.
 
@@ -55,7 +98,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | High availability | disabled |
 | Template | no |
 | OS family | Linux |
-| Guest OS | Ubuntu 26.04 LTS, GNOME Shell 50.1 |
+| Guest OS | Ubuntu 26.04.1 LTS, GNOME Shell 50.1 |
 | IPv4 | 192.168.40.179/24 |
 | Gateway | 192.168.40.1 |
 | Login account | `ai-agent` |
@@ -67,7 +110,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | vCPU | 6 |
 | CPU type | host |
 | Memory | 16 GiB |
-| Ballooning | disabled (`balloon: 0`); pending a guest restart to take effect |
+| Ballooning | disabled (`balloon: 0`); in effect since the 2026-08-19 restart |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -85,44 +128,6 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 40 | 192.168.40.179/24 | 192.168.40.1 | enabled | `<REDACTED_UBUNTU_DEV_MAC>` |
-
-### VM 106 - kali-pen
-
-#### Identity
-| Setting | Value |
-| --- | --- |
-| Node | grey-server |
-| High availability | disabled |
-| Template | no |
-| OS family | Linux |
-| Guest OS | Kali Linux |
-| IPv4 | 192.168.40.226/24 |
-| Gateway | 192.168.40.1 |
-
-#### Hardware
-| Setting | Value |
-| --- | --- |
-| vCPU | 4 |
-| CPU type | host |
-| Memory | 5.86 GiB |
-| BIOS | ovmf |
-| Machine | q35 |
-| SCSI controller | virtio-scsi-single |
-| Display | default |
-| QEMU agent | not set |
-| TPM | disabled |
-
-#### Storage
-| Device | Bus | Storage | Volume | Size | Media | Options |
-| --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | local-lvm | vm-106-disk-1 | 50G | disk | I/O thread |
-| ide2 | ide | local | iso/kali-linux-2025.2-installer-amd64.iso | 4373964K | cdrom | default |
-| efidisk0 | efidisk | local-lvm | vm-106-disk-0 | 4M | disk | default |
-
-#### Network
-| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | none | 192.168.40.226/24 | 192.168.40.1 | enabled | `<REDACTED_KALI_VM_MAC>` |
 
 ### VM 109 - splunk-siem
 

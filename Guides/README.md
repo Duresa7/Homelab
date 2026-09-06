@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-06
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -30,8 +30,8 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
 | [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [Portainer](Portainer.md) | Portainer server 2.39.5 verified 2026-08-04, four Edge Agent 2.39.1 hosts verified 2026-07-28, UniFi ports, & environment registration |
-| [Prometheus](Prometheus.md) | Prometheus 3.13.1, 49 targets across six jobs, config validation, reload behavior, & exact target checks |
+| [Portainer](Portainer.md) | Portainer server 2.45.0 and four Edge Agent 2.45.0 hosts verified 2026-09-06, UniFi ports, & environment registration |
+| [Prometheus](Prometheus.md) | Prometheus 3.14.0, 57 targets across seven jobs verified 2026-09-06, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [Wazuh](Wazuh.md) | Wazuh 4.14.7, 15 active remote agents, manager checks, dashboard state, & recovery |
 | [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, agent group file monitoring, malware detection built twice, CIM mapping, & the one-page dashboard |
@@ -44,4 +44,4 @@ I preserved the Discord assistant configuration formerly hosted on deleted CT 10
 
 `Verified` means the linked record contains the observed command result, UI state, or screenshot. `Partial` names the exact unfinished check. I don't turn a plan into a completed result because the command appears plausible.
 
-Cloudflare and Windows Servers don't have standalone guides yet. Their current public records contain inventories or supporting steps, not a complete deployment sequence.
+Cloudflare doesn't have a standalone guide yet. Its current public records contain inventories or supporting steps, not a complete deployment sequence. Windows Servers moved to the archive on 2026-09-06 with the rest of the retired Active Directory records.

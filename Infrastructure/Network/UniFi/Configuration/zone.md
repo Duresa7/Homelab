@@ -1,11 +1,11 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-29
+**Last updated:** 2026-09-06
 
 I track 11 firewall zones and their assigned networks here.
 
-I verified the current 15 LAN rows from the network records after deleting the empty DMZ-A/VLAN 90 on 2026-08-29. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
+I verified the current 15 LAN rows from the network records after deleting the empty DMZ-A/VLAN 90 on 2026-08-29, and the 2026-09-06 readback returned the same 11 zones by name. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
 ## Zone Membership
 
@@ -15,7 +15,7 @@ I verified the current 15 LAN rows from the network records after deleting the e
 | Untrusted | Built-in | IoT (VLAN 20) |
 | Dmz | Built-in | DMZ (VLAN 30) |
 | External | Built-in | Internet 1 (WAN), Internet 2 (WAN), ProtonVPN (VPN client) |
-| Vpn | Built-in | FamilyVPN, Management Access, Game-Access, One-Click VPN, Temp |
+| Vpn | Built-in | FamilyVPN, Management Access, Game-Access, Temp; One-Click VPN was not returned as a network object on 2026-09-06 |
 | Gateway | Built-in | *(none)* |
 | Hotspot | Built-in | *(none)* |
 | `AlphaSec-Servers` | Custom | SERVERS-A (VLAN 80) |

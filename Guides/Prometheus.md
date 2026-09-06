@@ -1,15 +1,15 @@
 # Prometheus Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-14
+**Last updated:** 2026-09-06
 
 ## What This Guide Covers
 
-I installed the missing node exporters, removed stale scrape jobs, validated the replacement configuration, & expanded the same test pattern to the current six-job target set. This guide also covers the Docker bind-mount behavior that required a restart.
+I installed the missing node exporters, removed stale scrape jobs, validated the replacement configuration, & expanded the same test pattern to the current seven-job target set. This guide also covers the Docker bind-mount behavior that required a restart.
 
 ## Current Status and Verified Versions
 
-Prometheus 3.13.1 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. All 52 targets were `UP` on 2026-08-08 across six jobs: node 19, cAdvisor 9, Proxmox 1, blackbox 20, NUT 2, & self-scrape 1. The node job took its nineteenth member that day, when `debian-dev` picked up the same 1.9.0 exporter every other host runs & Prometheus started scraping it under the label `role=workstation`. It stayed out of the cAdvisor job on purpose: the containers on a workstation are throwaway builds, so per-container history there is noise. The blackbox job dropped from 20 to 19 when I retired Syncthing on 2026-08-06, then returned to 20 when `game-01` arrived the next day. Purple, blue, red, & green run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
+Prometheus 3.14.0 runs on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. All 57 targets were `UP` on 2026-09-06 across seven jobs: node 18, cAdvisor 9, What's Up Docker 6, Proxmox 1, blackbox 21, NUT 1, & self-scrape 1. The node job counts 13 guests and five nodes; `ubuntu-dev` took `debian-dev`'s place under the label `role=workstation` on 2026-08-13 and stays out of the cAdvisor job on purpose, because the containers on a workstation are throwaway builds and per-container history there is noise. The blackbox job dropped from 20 to 19 when I retired Syncthing on 2026-08-06, returned to 20 when `game-01` arrived the next day, and reached 21 with the Open WebUI probe on 2026-09-05. NUT fell from two targets to one when `UPS-01` lost its data cable on 2026-08-28 and I disabled its entry on 2026-08-31. The What's Up Docker job joined on 2026-09-02. Purple, blue, red, & green run Debian package `prometheus-node-exporter` 1.9.0-1+b4; grey runs manual node_exporter 1.9.0.
 
 On 2026-08-13 the node job's workstation member changed from `debian-dev` to `ubuntu-dev` (`192.168.40.179`, still `role=workstation`, Ubuntu 26.04's packaged 1.10.2 exporter) when development moved to the new VM. `debian-dev` was decommissioned on 2026-08-14; the target count held at 19 rather than dropping, because the swap replaced one entry instead of adding a second and then removing it.
 

@@ -1,7 +1,7 @@
 # UniFi Object-Oriented Networking Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-06
 
 ## How I Use UniFi Objects
 
@@ -38,7 +38,7 @@ I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab 
 
 These are the Network Lists in the interface. The API calls them `address-group` and `port-group`, and a policy references one through `ip_group_id` or `port_group_id`.
 
-Fifteen reusable firewall groups exist: six IPv4 address groups and nine port groups.
+Sixteen reusable firewall groups exist as of the 2026-09-06 readback: six IPv4 address groups and ten port groups.
 
 | Group | Type | Members |
 |---|---|---|
@@ -57,8 +57,11 @@ Fifteen reusable firewall groups exist: six IPv4 address groups and nine port gr
 | PG-Egress-Web | Port | 80, 443 |
 | PG-NTP | Port | 123 |
 | PG-Galaxy-PXE-Callback | Port | 8080 |
+| PG-Printing | Port | 631, 9100 |
 
 On 2026-09-02 I added 9102 to `PG-Node-Exporter` for What's Up Docker, so the three monitoring policies that reference the group admit the new exporter without their own edit.
+
+`PG-Printing` carries IPP on 631 and raw printing on 9100 for `Allow Internal to Printer`. It was on the controller but absent from this table until the 2026-09-06 readback, the same way its policy was absent from the firewall table until 2026-08-31.
 
 I moved 35 exact selectors across 24 policies onto these objects. I kept 11 partial or mixed selectors inline because replacing them with a broader group would change behavior.
 
@@ -66,7 +69,7 @@ I moved 35 exact selectors across 24 policies onto these objects. I kept 11 part
 
 ## Client Groups
 
-Fifteen client groups remain.
+The 2026-09-06 readback returned 17 client groups: the 15 below plus an empty `IOT` and a one-member `IoT`. I deleted an empty `IOT` group on 2026-07-27, so the pair was created afterwards. No OON policy targets either one, and the V2 firewall schema has no client-group selector, so nothing depends on them; whether they stay is tracked in the root [TODO](../../../../TODO.md).
 
 | Group | Members | Current use or decision |
 |---|---:|---|

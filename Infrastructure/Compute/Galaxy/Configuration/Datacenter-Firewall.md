@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-06
 
-**Last verified:** 2026-08-31 after adding Docker Blue's SSH Manager source. All five nodes read the same `192.168.40.39` `pve_admins` member and digest, and `pve-firewall status` returned enabled and running on each node.
+**Last verified:** 2026-09-06 during the documentation audit, when I read `/etc/pve/firewall/cluster.fw` back from `grey-server`: 52 lines, last written 2026-08-31 at 22:54 EDT, `pve-firewall status` enabled and running. That readback found an IPSet and a rule this record had never listed; both are now below. The previous verification was 2026-08-31 after adding Docker Blue's SSH Manager source, when all five nodes read the same `192.168.40.39` `pve_admins` member and digest.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all five `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -42,6 +42,14 @@
 | 192.168.73.2 | monitor-01 (PVE exporter / Proxmox API) |
 | 192.168.40.35 | docker-main dashboard |
 
+### `pve_ssh_manager`: Docker MCP Gateway SSH Manager
+
+| Address | Host |
+|---|---|
+| 192.168.40.39 | docker-blue |
+
+This IPSet exists in the live file alongside the `pve_admins` entry for the same address. Its rule admits TCP 22 only, so on its own it grants less than `pve_admins` does; the address is admitted twice for SSH and once for 8006 and 3128. I found the set during the 2026-09-06 readback; it was not in this record before then.
+
 ## Security Group: `pve_mgmt`
 
 **Comment:** Proxmox SSH/GUI management access. Applied via `GROUP pve_mgmt` in `cluster.fw [RULES]`; attaches to every node's `PVEFW-HOST-IN`.
@@ -57,6 +65,7 @@
 | in | ACCEPT | tcp | 192.168.73.2/32 | 192.168.70.13/32 | 3493 | nolog | monitor-01 NUT exporter to Red NUT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.70.0/24 | - | nolog | WG VPN - MGMT |
 | in | ACCEPT | - | 10.6.0.0/24 | 192.168.80.0/24 | - | nolog | WG VPN - Server |
+| in | ACCEPT | tcp | +pve_ssh_manager | - | 22 | nolog | Docker MCP Gateway SSH Manager |
 | in | DROP | tcp | - | - | 22 | nolog | DROP SSH |
 | in | DROP | tcp | - | - | 8006 | nolog | Drop GUI |
 
@@ -67,6 +76,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 That generated set holds exactly one member, `192.168.70.0/24`, so its accepts only ever admit a node. Anything a client off MGMT-A needs, `pve_mgmt` has to grant by name. This is not obvious from the rule list, because the generated 3128 and `5900:5999` accepts read as though the ports are open. They are open between nodes and closed to everything else. That is what cost me the SPICE console on 2026-08-07.
 
 ## History
+
+- On 2026-09-06 I found that the live file also defines the IPSet `pve_ssh_manager`, holding `192.168.40.39`, and a matching `IN ACCEPT` for TCP 22 commented `Docker MCP Gateway SSH Manager`, placed after the two VPN accepts and before the terminal drops. Neither was in this record. The file's modification time is 2026-08-31 at 22:54 EDT, so both landed with the SSH Manager work that day and the record only captured the `pve_admins` half. The file is 52 lines. I changed nothing on the nodes; whether to keep both grants or collapse to one is a cleanup question, and the wider `pve_admins` membership is the one that matters for what `docker-blue` can reach.
 
 - On 2026-08-31 I added `192.168.40.39` `docker-blue SSH Manager` to `pve_admins`. UniFi policy `Allow docker-blue SSH Manager to Proxmox` limits the source to TCP 22 and the five node addresses, so `docker-blue` does not gain a network path to the 8006 and 3128 ports that the shared `pve_admins` rule also names. All five nodes read the new member with one digest, reported their firewall enabled and running, and answered a root SSH command through Executor. The complete record is [SSH Manager Fleet Reach Completion - 2026-08-31](../../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md).
 

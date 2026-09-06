@@ -16,11 +16,12 @@
 # already published and this rule does not retract it.
 /Security/Hardening/
 
-# Intentionally private platform content
+# Intentionally private platform content. The Windows Servers platform was
+# retired on 2026-07-27 and its README moved to the archive on 2026-09-06; the
+# private plan, change record, and evidence beside it stay unpublished.
 /Docs Site/
-/Platforms/Windows Servers/*
-!/Platforms/Windows Servers/README.md
 /Archive/Platforms/Windows Servers/*
+!/Archive/Platforms/Windows Servers/README.md
 
 # Raw evidence, artifacts, and diagnostics
 **/Artifacts/

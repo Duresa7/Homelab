@@ -1,11 +1,11 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-06
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
-I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. The active LXC allocation now totals 18 vCPUs, 38 GiB of memory, and 10 GiB of swap. The values below are the live post-restart settings.
+I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. On 2026-09-06 I read every `lxc/*.conf` back and found one change no record had captured: `docker-blue` went from one vCPU, 1 GiB, and 0.5 GiB of swap to two vCPUs, 2 GiB, and 1 GiB of swap, with `onboot` set. Its configuration file was last written at 12:51 EDT on 2026-09-01, during the Executor and Docker MCP Gateway work on that host. The active LXC allocation now totals 19 vCPUs, 39 GiB of memory, and 10.5 GiB of swap. The values below are the live settings on 2026-09-06.
 
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
@@ -13,7 +13,7 @@ I recaptured all seven containers after the [2026-08-10 resource efficiency chan
 | 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
 | 104 | monitor-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.73.2/24 | 192.168.73.1 | 73 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
-| 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
+| 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
 | 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 4 | 16 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
 | 123 | game-01 | green-server | disabled | Debian GNU/Linux 13 (trixie) | 6 | 12 GiB | 192.168.80.30/24 | 192.168.80.1 | 80 |
 | 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
@@ -129,11 +129,12 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | Node | blue-server |
 | High availability | enabled; pinned to blue-server via strict node-affinity rule `pin-blue-local-storage` |
 | OS | Debian GNU/Linux 13 (trixie) |
-| vCPU | 1 |
-| Memory | 1 GiB |
-| Swap | 0.50 GiB |
+| vCPU | 2 |
+| Memory | 2 GiB |
+| Swap | 1 GiB |
 | Unprivileged | yes |
 | Features | nesting=1 |
+| On boot | yes |
 
 ### Storage
 | Device | Mount | Storage | Volume | Size | Backup |
@@ -166,6 +167,8 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | --- | --- | --- | --- | --- | --- |
 | rootfs | / | local-lvm | vm-110-disk-0 | 100G | default |
 | mp0 | /data | hddpool-1 | subvol-110-disk-0 | 2900G | enabled |
+
+The configuration also carries `unused0: hddpool:subvol-110-disk-0`. That storage ID does not exist in `/etc/pve/storage.cfg`; the pool is `hddpool-1`, and `pvesm list hddpool-1` returns the one `subvol-110-disk-0` volume that `mp0` already mounts. The line is a leftover reference from before the pool carried its current name, so Proxmox shows a phantom unused disk on this container. I found it on 2026-09-06 and left it in place; removing it is tracked in the root [TODO](../../../TODO.md).
 
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
