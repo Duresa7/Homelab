@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-06
 
 ## Deployment Layout
 
@@ -106,7 +106,7 @@ Tool counts change when a managed server changes its surface. Record each new co
    curl -fsS http://192.168.40.39:4788/api/health
    ```
 
-5. Recheck the HTTPS health endpoint and authenticated MCP connection before removing any older image.
+5. Recheck the HTTPS health endpoint and authenticated MCP connection before removing any older image. Then run one live call through each integration, since a recreate drops every client session. The [1.6.8 update](Change%20Records/Update%20to%201.6.8%20-%202026-09-06.md) is the worked example.
 
 ## Restarting and Stopping
 

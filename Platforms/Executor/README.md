@@ -9,9 +9,9 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 
 | Item | Value |
 |---|---|
-| Version | 1.6.7 on 2026-09-03 |
+| Version | 1.6.8 on 2026-09-06 |
 | OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:latest` |
-| Image policy | Rolling `latest`; it resolved to the same manifest as 1.6.7 when adopted |
+| Image policy | Rolling `latest`; it resolved to 1.6.8 at the last pull |
 | Host | `docker-blue` (`192.168.40.39`) |
 | Internal URL | `https://mcp.alphasecunited.com` |
 | Upstream listener | `192.168.40.39:4788` |
@@ -39,6 +39,7 @@ I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both
 
 ## Records
 
+- [Update to 1.6.8](Documentation/Change%20Records/Update%20to%201.6.8%20-%202026-09-06.md)
 - [Integration search tools](Documentation/Change%20Records/Integration%20Search%20Tools%20-%202026-09-06.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Runbook](Documentation/Runbook.md)
