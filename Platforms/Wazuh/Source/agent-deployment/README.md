@@ -1,7 +1,7 @@
 # Wazuh Agent Deployment
 
 **Created:** 2026-08-03  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-09-06
 
 I use this Ansible project to install one host-level Wazuh agent on each listed Linux endpoint. The play pins `wazuh-agent` to `4.14.6-1`, which matches the manager package on `security-01` at the 2026-08-03 deployment check.
 
@@ -20,5 +20,7 @@ Deploy a bounded host set with `--limit`. The 2026-08-03 change record names the
 ```bash
 ansible-playbook playbooks/deploy.yml --limit 'alpha-prod-01:ansible-01'
 ```
+
+I added `docker-main` to the inventory on 2026-09-06, after the documentation audit found its agent pointed at the manager's pre-migration address and never enrolled. I re-enrolled it by hand to the same end state this play produces, then ran the play with `--limit docker-main`; it returned `ok=15 changed=0 failed=0` with the seven installation tasks skipped, which is the check that the host matches. The record is [docker-main Agent Re-enrollment](../../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md). I also removed `db-13-dev` from both copies of the inventory: that was the retired `debian-dev` guest at `192.168.40.135`, destroyed on 2026-08-14, and a run without `--limit` would have failed to reach it. `ansible-inventory --graph` on `ansible-01` now lists 13 targets.
 
 I completed all twelve inventory targets on 2026-08-03. A final run across the original last seven hosts returned `changed=0`, `failed=0`, & `unreachable=0` for every endpoint. The later Green-only rerun also returned `changed=0`. The manager reported all twelve new identities active as IDs `006` through `017`.

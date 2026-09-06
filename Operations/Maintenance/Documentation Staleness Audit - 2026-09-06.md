@@ -4,14 +4,14 @@
 **Last updated:** 2026-09-06
 
 **Implementation date:** 2026-09-06  
-**Status:** Complete; host-side follow-ups tracked in [TODO.md](../../TODO.md)  
+**Status:** Complete, including the host-side follow-ups, which I worked the same day  
 **Affected systems:** All five Galaxy nodes, all 13 workload guests, the UniFi controller, and the living records that describe them
 
 ## Outcome
 
-I read the live state of the cluster, every guest, and the UniFi controller back through Executor, then compared it line by line with the records that claim to describe them. The records were right about far more than they were wrong about: every VLAN, subnet, DHCP range, zone, firewall policy count, DNS record, Prometheus target, and Wazuh agent the records name is on the live system. What had drifted was concentrated in the living inventory files and in version figures that services had moved past. I corrected each in its owning file, archived the one platform that had no workload behind it, and left the hosts untouched.
+I read the live state of the cluster, every guest, and the UniFi controller back through Executor, then compared it line by line with the records that claim to describe them. The records were right about far more than they were wrong about: every VLAN, subnet, DHCP range, zone, firewall policy count, DNS record, Prometheus target, and Wazuh agent the records name is on the live system. What had drifted was concentrated in the living inventory files and in version figures that services had moved past. I corrected each in its owning file, archived the one platform that had no workload behind it, and left the hosts untouched during the audit itself. The follow-ups at the end of this record changed them later the same day.
 
-Two findings matter beyond bookkeeping. `docker-main`'s Wazuh agent has been pointed at the manager's pre-migration address since before 2026-07-12 and has never connected to the current manager, so the records that tracked it as "on 4.14.0" were tracking a version that reports to nobody. And `kali-pen` was destroyed and rebuilt under a different VMID on 2026-08-26 without any record, so the VM inventory described a guest that had not existed for eleven days.
+Two findings matter beyond bookkeeping. `docker-main`'s Wazuh agent had been pointed at the manager's pre-migration address since before 2026-07-12 and had never connected to the current manager, so the records that tracked it as "on 4.14.0" were tracking a version that reported to nobody; it is re-enrolled as of the afternoon. And `kali-pen` was destroyed and rebuilt under a different VMID on 2026-08-26 without any record, so the VM inventory described a guest that had not existed for eleven days.
 
 ## Method
 
@@ -19,7 +19,7 @@ The read side was Executor's SSH Manager and UniFi gateways. On `grey-server` I 
 
 From UniFi I listed the networks, zones, all 68 firewall policies, firewall groups, client groups, OON policies, WLANs, port profiles, traffic routes, static routes, port forwards, DNS records, adopted devices, and the controller version. The controller's login limiter returned `429` partway through, so the second half of the readback ran after a pause; nothing was written to the controller at any point.
 
-Every command was read-only. The one thing I changed outside this repository is nothing.
+Every command in the audit pass was read-only. The changes came afterwards, one per follow-up, each with its own record.
 
 ## Findings and Corrections
 
@@ -28,8 +28,8 @@ Every command was read-only. The one thing I changed outside this repository is 
 | [VMs](../Inventory/Galaxy/VMs.md) | `kali-pen` is VM 106: 4 vCPU, 5.86 GiB, 50G, no VLAN tag, Kali 2025.2 | VM 106 was destroyed at 10:42 EDT on 2026-08-26 and `kali-pen` recreated at 10:52 EDT as VM 102: 6 vCPU, 8 GiB, 100G on `local-lvm`, VLAN 40, Kali 2026.2, stopped | Replaced the table row and detail block; noted that VMID 102 is in use again after the `debian-dev` deletion |
 | [VMs](../Inventory/Galaxy/VMs.md) | `ubuntu-dev` still awaits a restart for `balloon: 0` to take effect and sees 11.4 GiB | The guest has been up since 2026-08-19 and reports 15,408 MiB | Closed the note; recorded the OS as Ubuntu 26.04.1 LTS |
 | [LXCs](../Inventory/Galaxy/LXCs.md) | `docker-blue` is 1 vCPU, 1 GiB, 0.5 GiB swap; the fleet totals 18 vCPUs, 38 GiB, 10 GiB swap | `docker-blue` is 2 vCPU, 2 GiB, 1 GiB swap, `onboot` set; the file was written 2026-09-01 12:51 EDT; totals are 19, 39, and 10.5 | Corrected the row, the detail table, and the totals |
-| [LXCs](../Inventory/Galaxy/LXCs.md) | No mention | CT 110 carries `unused0: hddpool:subvol-110-disk-0`, a reference to a storage ID that is not defined | Recorded it; cleanup is a TODO item |
-| [Services](../Inventory/Galaxy/Services.md) | `docker-main` is a Docker host with no agent row; the Wazuh TODO tracked it as "on 4.14.0" | `wazuh-agent` 4.14.0-1 is active but `ossec.conf` names `192.168.40.227` and the agent has never appeared on the manager | Added the row, corrected the Wazuh TODO, and opened a root TODO item |
+| [LXCs](../Inventory/Galaxy/LXCs.md) | No mention | CT 110 carries `unused0: hddpool:subvol-110-disk-0`, a reference to a storage ID that is not defined | Recorded it; removed later the same day, see the follow-ups below |
+| [Services](../Inventory/Galaxy/Services.md) | `docker-main` is a Docker host with no agent row; the Wazuh TODO tracked it as "on 4.14.0" | `wazuh-agent` 4.14.0-1 is active but `ossec.conf` names `192.168.40.227` and the agent has never appeared on the manager | Added the row and corrected the Wazuh TODO; re-enrolled the agent later the same day, see the follow-ups below |
 | [Services](../Inventory/Galaxy/Services.md) | Wazuh table has 14 rows and a 2026-08-03 count | `agent_control -l` lists 15 active remote agents including `game-01` as `018` | Added the row and a 2026-09-06 count with the group totals |
 | [Services](../Inventory/Galaxy/Services.md) | NetBird management 0.78.0 | 0.78.1 since 2026-09-04 | Corrected two rows and the [NetBird runbook](../../Platforms/Netbird/Documentation/Runbook.md) |
 | [Services](../Inventory/Galaxy/Services.md) | Executor 1.6.7 | 1.6.8 by OCI label | Corrected two rows |
@@ -42,7 +42,7 @@ Every command was read-only. The one thing I changed outside this repository is 
 | [Datacenter firewall](../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) | Five IPSets and eleven rules | The live file also defines `pve_ssh_manager` holding `192.168.40.39` and a TCP 22 accept for it, both written 2026-08-31 | Added the IPSet, the rule, and a history entry |
 | [UniFi firewall](../../Infrastructure/Network/UniFi/Configuration/firewall.md) | Seven policies named with `AlphaSec` | The controller names them `AlphSec` or `A-Servers`; the 2026-07-27 correction renamed zones, not policies | Renamed the rows to match the controller |
 | [UniFi objects](../../Infrastructure/Network/UniFi/Configuration/objects.md) and [VPN and port profiles](../../Infrastructure/Network/UniFi/Configuration/vpn-networks-port-profiles.md) | 15 firewall groups; `PG-Node-Exporter` is 9100 and 9101 in one file | 16 groups including `PG-Printing` on 631 and 9100; `PG-Node-Exporter` carries 9102 | Added the group and the port |
-| [UniFi objects](../../Infrastructure/Network/UniFi/Configuration/objects.md) | 15 client groups | 17: an empty `IOT` and a one-member `IoT` exist again | Recorded; decision is a TODO item |
+| [UniFi objects](../../Infrastructure/Network/UniFi/Configuration/objects.md) | 15 client groups | 17: an empty `IOT` and a one-member `IoT` exist again | Recorded; deleted the empty `IOT` later the same day and kept `IoT`, see the follow-ups below |
 | [VPN and port profiles](../../Infrastructure/Network/UniFi/Configuration/vpn-networks-port-profiles.md) and [zones](../../Infrastructure/Network/UniFi/Configuration/zone.md) | `Game-Access` enabled; `One-Click VPN` is a network in the `Vpn` zone | `Game-Access` disabled; the controller returned four remote-user VPN networks and no `One-Click VPN` object | Corrected the status; kept the One-Click row marked as not returned, because the interface has not been checked |
 | [Networks and VLANs](../../Infrastructure/Network/UniFi/Configuration/network-vlan.md) | The disabled WLAN is `AlphaSec-IoT` | The controller spells it `Alpha-Sec-IoT` | Corrected |
 | [UniFi README](../../Infrastructure/Network/UniFi/README.md) and [UniFi guide](../../Guides/UniFi-Network.md) | Partial counts from 2026-08-19 and 2026-09-05 | Full 2026-09-06 readback | Replaced with the complete count |
@@ -56,7 +56,7 @@ The 22 network objects, 15 routed LANs, subnets, gateway addresses, DHCP ranges,
 
 ## What I Could Not Verify
 
-- **Cloudflare.** The Executor Cloudflare connection exposes a single tool, documentation search, so I could not read zones, DNS records, or the tunnel. The [Cloudflare records](../../Infrastructure/Network/Cloudflare/README.md) keep their 2026-08-09 verification date and a TODO item asks how they get verified next.
+- **Cloudflare through Executor.** The Executor Cloudflare connection exposes a single tool, documentation search, so I could not read zones, DNS records, or the tunnel through it. Later in the day I verified the public DNS side by hand; see the follow-ups below and the [Cloudflare README](../../Infrastructure/Network/Cloudflare/README.md).
 - **Splunk version.** `splunk version` needs root on `splunk-siem`, and the SSH Manager's configured `dkadi` login there has no sudo password entry. `Splunkd.service` and `sc4s.service` are both active and the root filesystem is at 36 percent, so the platform is up; the 10.4.0 figure stays on its own verification date.
 - **Semaphore template count.** The API answers `pong` without authentication and the template list does not, so the 23-template figure was not re-read.
 - **Grafana rule count from the running instance.** The API requires a session. I used the provisioning file, which is what the running instance loads.
@@ -69,11 +69,13 @@ I moved `Platforms/Windows Servers/README.md` to `Archive/Platforms/Windows Serv
 
 ## Host-Side Follow-Ups
 
-I changed nothing on a host or the controller. These need a decision and are in the root TODO:
+The audit itself changed nothing on a host or the controller. Later the same day I worked each follow-up, verified it live, and recorded it:
 
-- Re-enroll `docker-main`'s Wazuh agent against `192.168.72.2`.
-- Remove the `unused0` line from CT 110 or confirm it is wanted.
-- Remove or keep the five container-less directories under `/opt/docker` on `docker-main`.
-- Decide whether `docker-blue` keeps both `pve_admins` and `pve_ssh_manager` in the Datacenter firewall.
-- Decide whether the `IOT` and `IoT` client groups stay on the controller.
-- Give Executor a Cloudflare connection that can read the account, or verify the Cloudflare records by hand.
+- **`docker-main`'s Wazuh agent** is re-enrolled as `021` on 4.14.6-1, held, with the repository disabled and the host added to the `agent-deployment` inventory; the play then ran against it with `changed=0`. The manager lists 16 active remote agents. [docker-main Agent Re-enrollment](../../Platforms/Wazuh/Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md).
+- **CT 110's `unused0` line** is gone, removed by editing the pmxcfs file rather than through `pct set --delete`, which would have tried to free the named volume. The container and its `/data` mount were unaffected. [CT 110 Phantom Unused Volume Removed](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20110%20Phantom%20Unused%20Volume%20Removed%20-%202026-09-06.md).
+- **The five container-less directories** under `/opt/docker` on `docker-main` are deleted. `docker ps` still shows 15 containers and `docusaurus` healthy. The service inventory records the result.
+- **`docker-blue`** now holds only the `pve_ssh_manager` TCP 22 grant in the Datacenter firewall; I removed its `pve_admins` membership, and all five nodes, their live sets, and a port test from the host confirm it. [docker-blue Firewall Grant Narrowed to pve_ssh_manager](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/docker-blue%20Firewall%20Grant%20Narrowed%20to%20pve_ssh_manager%20-%202026-09-06.md).
+- **The `IOT` client group** is deleted. `IoT` stays: its one member is the Brother printer that the 2026-08-26 printing policy targets. The controller has 16 client groups. [Empty IOT Client Group Removal](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Empty%20IOT%20Client%20Group%20Removal%20-%202026-09-06.md).
+- **Cloudflare** got a public-DNS and connector-host verification, recorded in the [Cloudflare README](../../Infrastructure/Network/Cloudflare/README.md): nameservers, the tunnel wildcard, the Minecraft and TeamSpeak CNAME and SRV records, and the absence of internal names all check out. The account, tunnel ingress, and Access policies still need an account-scoped connection, and that remains the one open decision in the root TODO.
+
+Pre-edit copies of the CT 110 configuration, the cluster firewall file, and `docker-main`'s `ossec.conf` are in `Backups/` with the MAC address redacted, and none of the hosts kept a copy.

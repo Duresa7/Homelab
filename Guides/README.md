@@ -33,7 +33,7 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Portainer](Portainer.md) | Portainer server 2.45.0 and four Edge Agent 2.45.0 hosts verified 2026-09-06, UniFi ports, & environment registration |
 | [Prometheus](Prometheus.md) | Prometheus 3.14.0, 57 targets across seven jobs verified 2026-09-06, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
-| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 15 active remote agents, manager checks, dashboard state, & recovery |
+| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 16 active remote agents verified 2026-09-06, manager checks, dashboard state, & recovery |
 | [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, agent group file monitoring, malware detection built twice, CIM mapping, & the one-page dashboard |
 
 ## Archived & Retired Guides

@@ -69,7 +69,7 @@ I moved 35 exact selectors across 24 policies onto these objects. I kept 11 part
 
 ## Client Groups
 
-The 2026-09-06 readback returned 17 client groups: the 15 below plus an empty `IOT` and a one-member `IoT`. I deleted an empty `IOT` group on 2026-07-27, so the pair was created afterwards. No OON policy targets either one, and the V2 firewall schema has no client-group selector, so nothing depends on them; whether they stay is tracked in the root [TODO](../../../../TODO.md).
+Sixteen client groups exist as of 2026-09-06. The readback that morning returned 17: the 15 below plus an empty `IOT` and a one-member `IoT`, both created on 2026-08-26 within nine seconds of each other, the same afternoon as the `PG-Printing` group and its policy. `IoT` holds the Brother printer at `192.168.20.212`, the destination `Allow Internal to Printer` names, so it is the group made for that work and it stays. `IOT` was the empty first attempt at the name, the same name as the empty group I removed on 2026-07-27, and I deleted it the same day; see [Empty IOT Client Group Removal](../Documentation/Change%20Records/Empty%20IOT%20Client%20Group%20Removal%20-%202026-09-06.md).
 
 | Group | Members | Current use or decision |
 |---|---:|---|
@@ -88,6 +88,7 @@ The 2026-09-06 readback returned 17 client groups: the 15 below plus an empty `I
 | blue server | 0 | Empty retained group |
 | green-server | 1 | Physical Green node |
 | LXC | 1 | LXC member group |
+| IoT | 1 | The Brother printer on IoT/VLAN 20, created 2026-08-26 with the printing policy |
 
 I deleted the empty `IOT` group and the obsolete `Game Servers` group after the S01 and final reference scans found no firewall or OON dependency. I renamed `server` to `docker-blue` and `grey-server` to `grey-node-and-guests` without changing membership.
 

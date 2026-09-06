@@ -168,7 +168,7 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | rootfs | / | local-lvm | vm-110-disk-0 | 100G | default |
 | mp0 | /data | hddpool-1 | subvol-110-disk-0 | 2900G | enabled |
 
-The configuration also carries `unused0: hddpool:subvol-110-disk-0`. That storage ID does not exist in `/etc/pve/storage.cfg`; the pool is `hddpool-1`, and `pvesm list hddpool-1` returns the one `subvol-110-disk-0` volume that `mp0` already mounts. The line is a leftover reference from before the pool carried its current name, so Proxmox shows a phantom unused disk on this container. I found it on 2026-09-06 and left it in place; removing it is tracked in the root [TODO](../../../TODO.md).
+Until 2026-09-06 the configuration also carried `unused0: hddpool:subvol-110-disk-0`, a reference to a storage ID that no longer exists; the pool is `hddpool-1`, and the one volume on it is the `subvol-110-disk-0` that `mp0` mounts. Proxmox showed it as a phantom unused disk. I removed the line by editing the pmxcfs file directly rather than through `pct set --delete`, which would have tried to free the named volume, and the container kept running with `/data` mounted throughout. [CT 110 Phantom Unused Volume Removed](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20110%20Phantom%20Unused%20Volume%20Removed%20-%202026-09-06.md) has the verification.
 
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |

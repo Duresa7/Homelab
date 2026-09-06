@@ -1,7 +1,7 @@
 # Cloudflare Tunnel: edge-01
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-07
+**Last updated:** 2026-09-06
 
 I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Cloudflare Zero Trust dashboard rather than a local file. The connector runs as cloudflared on the edge-01 host. This tunnel is the only inbound path from the Internet to my services; the router forwards no ports.
 
@@ -14,8 +14,8 @@ I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Clou
 | Created | 2026-02-14 |
 | Configuration source | Remote (dashboard-managed) |
 | Connector host | edge-01, `192.168.30.10`, VLAN 30, Debian 13 |
-| cloudflared version | 2026.6.1 |
-| Connections | 4, healthy (verified 2026-07-24) |
+| cloudflared version | 2026.8.3, read from the binary on 2026-09-06; the service has been active since the 2026-08-10 boot |
+| Connections | 4, healthy (verified 2026-07-24; not re-read on 2026-09-06 because the journal and metrics are not reachable from the unprivileged account) |
 | Public DNS zone | alphsec.com |
 
 ## Ingress rules

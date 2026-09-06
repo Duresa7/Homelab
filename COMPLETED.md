@@ -1,12 +1,13 @@
 # Completed Work
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 This is my public history of work closed from [TODO.md](TODO.md). Active priorities, scheduled work, and system backlogs stay in that file.
 
 ## Completed
 
+- [x] 2026-09-06: [Documentation staleness audit](Operations/Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md) and its follow-ups. I read every guest, node, service version, Prometheus target, Wazuh agent, and UniFi object back through Executor, corrected the drift in the living records, and archived the retired Windows Servers platform. The same day I re-enrolled `docker-main`'s Wazuh agent, which had pointed at the manager's pre-migration address since before 2026-07-12 and never connected, as agent `021`; removed CT 110's phantom `unused0` volume reference and five container-less directories under `/opt/docker` on `docker-main`; narrowed `docker-blue`'s Datacenter firewall grant to the TCP 22 `pve_ssh_manager` set; deleted the empty `IOT` client group; and verified the Cloudflare public DNS by hand. Wazuh stands at 16 active remote agents and every change is verified in its record.
 - [x] 2026-09-05: [Open WebUI internal HTTPS](Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md). I created NPM proxy host 28 at `openwebui.alphasecunited.com`, reused the internal-only UniFi DNS and narrow TCP/3002 backend path, enabled the wildcard certificate, Force SSL, HTTP/2, WebSockets, and exploit blocking, and added its health endpoint to Prometheus. HTTP redirects to HTTPS, the application health and version endpoints pass, Cloudflare public DNS returns NXDOMAIN, and all 57 Prometheus targets are up.
 - [x] 2026-09-04: [Qwen 3.5 2B model replacement](Platforms/Ollama/Documentation/Change%20Records/Qwen%203.5%202B%20Model%20Replacement%20-%202026-09-04.md). I pulled `qwen3.5:2b`, verified Handy-compatible transcript cleanup through Ollama's OpenAI endpoint, confirmed 100% GTX 1080 Ti offload, and then deleted `llama3.1:8b`. Qwen is the only installed model and appears in Open WebUI; Ollama and Open WebUI stayed healthy with zero restarts.
 - [x] 2026-09-04: [GTX 1080 Ti and Ollama deployment](Platforms/Ollama/Documentation/Change%20Records/GTX%201080%20Ti%20and%20Llama%20Deployment%20-%202026-09-04.md). I rebuilt the retained patched proprietary NVIDIA 580.159.03 module for Grey's running and next Proxmox kernels, passed its seven real device nodes into 16 GiB `docker-main`, installed matching user space and NVIDIA Container Toolkit 1.20.0-1, and deployed digest-pinned Ollama 0.33.3 with `llama3.1:8b`. The model returned `GPU OK`, reported 100% GPU with all 33 layers on CUDA, and used about 5.2 GiB of the GTX 1080 Ti. All 14 Docker containers are running with every defined health check passing and zero restart counts.

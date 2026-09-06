@@ -1,0 +1,52 @@
+[OPTIONS]
+
+enable: 1
+
+[IPSET pve_admins] # Approved admin devices (GUI + SSH)
+
+192.168.10.27 # dkadi Mac Air
+192.168.10.87 # dkadi Pixel 10 Pro XL
+192.168.40.179 # ubuntu-dev
+192.168.40.39 # docker-blue SSH Manager
+192.168.50.241 # Jedi PC
+
+[IPSET pve_automation] # Automation control node (GUI + SSH)
+
+192.168.40.36 # ansible-01
+
+[IPSET pve_cluster] # Proxmox cluster nodes (inter-node SSH + GUI proxy)
+
+192.168.70.10 # grey-server
+192.168.70.11 # purple-server
+192.168.70.12 # blue-server
+192.168.70.13 # red-server
+192.168.70.14 # green-server
+
+[IPSET pve_ssh_manager] # Docker MCP Gateway SSH Manager
+
+192.168.40.39 # docker-blue
+
+[IPSET pve_svc_clients] # Service / API consumers (GUI/API 8006 only)
+
+192.168.40.35 # docker-main dashboard
+192.168.73.2 # monitor-01 (PVE exporter / Proxmox API)
+
+[RULES]
+
+GROUP pve_mgmt
+
+[group pve_mgmt] # Proxmox SSH/GUI management access
+
+IN ACCEPT -source +pve_cluster -p tcp -dport 22,8006 -log nolog # inter-node SSH + GUI proxy
+IN ACCEPT -source +pve_admins -p tcp -dport 22,8006,3128 -log nolog # personal admin devices (3128 = SPICE proxy)
+IN ACCEPT -source +pve_automation -p tcp -dport 22,8006 -log nolog # ansible control node
+IN ACCEPT -source +pve_svc_clients -p tcp -dport 8006 -log nolog # dashboards / API consumers
+IN ACCEPT -source 192.168.73.2 -p tcp -dport 9100 -log nolog # monitor-01 Prometheus node_exporter
+IN ACCEPT -source 192.168.73.2 -dest 192.168.70.10 -p tcp -dport 3493 -log nolog # monitor-01 NUT exporter to Grey NUT
+IN ACCEPT -source 192.168.73.2 -dest 192.168.70.13 -p tcp -dport 3493 -log nolog # monitor-01 NUT exporter to Red NUT
+IN ACCEPT -source 10.6.0.0/24 -dest 192.168.70.0/24 -log nolog # WG VPN - MGMT
+IN ACCEPT -source 10.6.0.0/24 -dest 192.168.80.0/24 -log nolog # WG VPN - Server
+IN ACCEPT -source +pve_ssh_manager -p tcp -dport 22 -log nolog # Docker MCP Gateway SSH Manager
+IN DROP -p tcp -dport 22 -log nolog # DROP SSH
+IN DROP -p tcp -dport 8006 -log nolog # Drop GUI
+

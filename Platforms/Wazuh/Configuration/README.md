@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-06
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -107,7 +107,7 @@ Observed 2026-08-04, after adding the `edge-01` source and correcting two holds:
 | `alpha-prod-01`, `media-01`, `docker-network`, `docker-blue`, `ansible-01`, `monitor-01` | 4.14.6-1 | yes | yes |
 | `app-01` | 4.14.6-1 | yes, applied 2026-08-04 | yes |
 | `edge-01` | 4.14.5-1 | yes, applied 2026-08-04 | yes, added 2026-08-04 |
-| `docker-main` | 4.14.0-1 | no | no |
+| `docker-main` | 4.14.6-1 since 2026-09-06; was 4.14.0-1 pointed at the pre-migration manager address and never enrolled | yes, applied 2026-09-06 | yes, added and disabled 2026-09-06 |
 | `security-01` | manager 4.14.7-1 | n/a | yes |
 | `splunk-siem` | none | n/a | no |
 
@@ -115,4 +115,4 @@ Observed 2026-08-04, after adding the `edge-01` source and correcting two holds:
 
 That is what the holds are for. `app-01` had the source without a hold, and a simulated fleet run confirmed it would have installed `4.14.7-1` over its `4.14.6-1`, putting the agent ahead of the manager. Holding it was the fix. `edge-01` received the same hold when it received the source, so adding the source could not create the same exposure.
 
-`edge-01` on 4.14.5-1 against a 4.14.7-1 manager is a supported pairing, so none of this describes an outage. `docker-main` on 4.14.0-1 is the widest gap and is [tracked as open work](../Documentation/TODO.md).
+`edge-01` on 4.14.5-1 against a 4.14.7-1 manager is a supported pairing, so none of this describes an outage. `docker-main` was the outage this table hid: its 4.14.0-1 agent had never connected to the current manager, which the 2026-09-06 audit found and [the same day's re-enrollment](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) fixed. `edge-01` is now the only agent below 4.14.6-1 and stays [tracked](../Documentation/TODO.md).

@@ -7,7 +7,7 @@ This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, remo
 
 I repeated the monitoring check on 2026-09-03 after the floating-tag rollout. Prometheus reported 56 active targets with all 56 up: 18 node exporters, nine cAdvisor exporters, six What's Up Docker exporters, 20 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
-On 2026-09-06 I audited every row in this file against the running guests through the SSH Manager, reading versions from the services themselves, from OCI image labels, and from package managers rather than from earlier records. Prometheus reported 57 of 57 targets up across the same seven jobs, with the Open WebUI probe as the twenty-first blackbox target. The corrections from that pass are marked with their date below; the largest finding is that `docker-main`'s Wazuh agent has never reached the current manager. The audit is recorded in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
+On 2026-09-06 I audited every row in this file against the running guests through the SSH Manager, reading versions from the services themselves, from OCI image labels, and from package managers rather than from earlier records. Prometheus reported 57 of 57 targets up across the same seven jobs, with the Open WebUI probe as the twenty-first blackbox target. The corrections from that pass are marked with their date below; the largest finding was that `docker-main`'s Wazuh agent had never reached the current manager, which I fixed the same day. The audit is recorded in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
 
 ## Cluster State
 
@@ -26,7 +26,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | --- | --- | --- | --- | --- |
 | ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.0, not connected to the manager |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
@@ -83,8 +83,8 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Ollama | 0.33.3 pinned by tag and digest; `qwen3.5:2b` model ID `324d162be6ca` is the only installed model; GTX 1080 Ti at 100% GPU offload; Compose under `/opt/docker/ollama`; API bound to `192.168.40.35:11434` without NPM or WAN publication |
 | Open WebUI | Tracks rolling `main` with `pull_policy: always`; currently reports 0.11.3; authenticated frontend in the Ollama Compose project; internal HTTPS active at `openwebui.alphasecunited.com` through NPM host 28; direct recovery path on `192.168.40.35:3002`; model discovery verified |
 | What's Up Docker | 8.4.0 from `getwud/wud:latest`; Compose under `/opt/docker/wud`; one of the six WUD exporters Prometheus scrapes on 9102 |
-| Wazuh agent | Package 4.14.0-1 with no APT source or hold; `wazuh-agent.service` is enabled and active, but `/var/ossec/etc/ossec.conf`, unchanged since 2025-11-05, still names `192.168.40.227` as the manager, the address `security-01` held before the 2026-07-12 Security-A migration. The agent retries `192.168.40.227:1514` every ten seconds and logs `Unable to connect`, and `agent_control -l` on the manager at `192.168.72.2` does not list `docker-main`. Found 2026-09-06; the host has had no working agent since the migration, and re-enrolling it is tracked in the root [TODO](../../../TODO.md) |
-| Leftover project directories | `/opt/docker` also holds `wyze-bridge` (empty, 2026-07-29), `nginx-proxy-manager` (a `docker-compose.yml`, `data`, and `letsencrypt` tree from 2026-04-14 with no running container), `docker-proxy` (empty, 2025-10-03), `backups` (empty, root-only), and `docusaurus.prev` (a 2026-08-03 copy of the documentation site project). None has a Compose project or container behind it as of 2026-09-06; their removal is tracked in the root TODO |
+| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `021` as `docker-main`, enrolled 2026-09-06. Until that day the host ran 4.14.0-1 with `ossec.conf` still naming `192.168.40.227`, the manager's pre-migration address, so it had never connected to the manager at `192.168.72.2`; see [docker-main Agent Re-enrollment](../../../Platforms/Wazuh/Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) |
+| Project directories | `/opt/docker` holds the ten Compose projects above and nothing else since 2026-09-06, when I removed five container-less leftovers: `wyze-bridge` and `docker-proxy` (empty), `backups` (empty), `nginx-proxy-manager` (a 2026-04-14 tree from before the proxy moved to `docker-network`, including its old certificates), and `docusaurus.prev` (a 2026-08-03 copy of the documentation site project). All 15 containers stayed up and `docusaurus` stayed healthy |
 
 ## monitor-01
 
@@ -217,7 +217,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. All five Proxmox nodes share `default, proxmox`. I enrolled `ubuntu-dev` as `020` on 2026-08-13. `debian-dev` held `019` from 2026-08-08 and was never added to this table; I decommissioned that VM on 2026-08-14 and removed agent `019` from the manager the same day via `manage_agents`, so `agent_control -l` no longer lists it.
 
-On 2026-09-06 `agent_control -l` on `security-01` listed 15 active remote agents and none disconnected or pending: the 14 below plus `game-01` as `018`, which had its own row in the guest table but was missing here. `agent_groups -l` reported `default` 14, `edge` 1, `proxmox` 5, `workstation` 1, and no unassigned agents. `docker-main` is not enrolled at all; its installed agent points at the manager's pre-migration address, as recorded in its section above.
+On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote agents and none disconnected or pending: the 14 rows from 2026-08-03 plus `game-01` as `018`, which had its own row in the guest table but was missing here. `docker-main` was not enrolled at all; its installed agent pointed at the manager's pre-migration address. I re-enrolled it the same day as `021`, so the manager now lists 16 active remote agents. The table below is the 2026-09-06 end state.
 
 | Host | Manager ID | Version | Group | State |
 |---|---:|---|---|---|
@@ -236,6 +236,7 @@ On 2026-09-06 `agent_control -l` on `security-01` listed 15 active remote agents
 | red-server | 016 | 4.14.6 | default, proxmox | Active |
 | green-server | 017 | 4.14.6 | default, proxmox | Active |
 | ubuntu-dev | 020 | 4.14.6 | workstation | Active |
+| docker-main | 021 | 4.14.6 | default | Active |
 
 ## Guest exporter coverage
 

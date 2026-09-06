@@ -3,7 +3,7 @@
 **Created:** 2026-07-04  
 **Last updated:** 2026-09-06
 
-**Last verified:** 2026-09-06 during the documentation audit, when I read `/etc/pve/firewall/cluster.fw` back from `grey-server`: 52 lines, last written 2026-08-31 at 22:54 EDT, `pve-firewall status` enabled and running. That readback found an IPSet and a rule this record had never listed; both are now below. The previous verification was 2026-08-31 after adding Docker Blue's SSH Manager source, when all five nodes read the same `192.168.40.39` `pve_admins` member and digest.
+**Last verified:** 2026-09-06, after removing `192.168.40.39` from `pve_admins`. All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all five `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -27,7 +27,6 @@
 | 192.168.10.87 | Pixel |
 | 192.168.50.241 | Jedi PC |
 | 192.168.40.179 | `ubuntu-dev` |
-| 192.168.40.39 | `docker-blue` SSH Manager |
 
 ### `pve_automation`: automation control node (GUI + SSH)
 
@@ -48,7 +47,7 @@
 |---|---|
 | 192.168.40.39 | docker-blue |
 
-This IPSet exists in the live file alongside the `pve_admins` entry for the same address. Its rule admits TCP 22 only, so on its own it grants less than `pve_admins` does; the address is admitted twice for SSH and once for 8006 and 3128. I found the set during the 2026-09-06 readback; it was not in this record before then.
+This set and its TCP 22 rule are the only Proxmox-side grant `docker-blue` holds. Until 2026-09-06 the address was also a `pve_admins` member, which admitted it to 8006 and 3128 as well; I removed that membership the same day, so the SSH Manager reaches the nodes on port 22 through a set named for what it is and nothing else. The set had been on the file since 2026-08-31 without appearing in this record.
 
 ## Security Group: `pve_mgmt`
 
@@ -77,7 +76,9 @@ That generated set holds exactly one member, `192.168.70.0/24`, so its accepts o
 
 ## History
 
-- On 2026-09-06 I found that the live file also defines the IPSet `pve_ssh_manager`, holding `192.168.40.39`, and a matching `IN ACCEPT` for TCP 22 commented `Docker MCP Gateway SSH Manager`, placed after the two VPN accepts and before the terminal drops. Neither was in this record. The file's modification time is 2026-08-31 at 22:54 EDT, so both landed with the SSH Manager work that day and the record only captured the `pve_admins` half. The file is 52 lines. I changed nothing on the nodes; whether to keep both grants or collapse to one is a cleanup question, and the wider `pve_admins` membership is the one that matters for what `docker-blue` can reach.
+- On 2026-09-06 I removed `192.168.40.39` from `pve_admins`, leaving `docker-blue` with the `pve_ssh_manager` TCP 22 grant alone. The file went from 52 to 51 lines, `pve-firewall compile` exited 0, and every node's live sets and a port test from `docker-blue` confirmed the result. The pre-change copy is [grey-server-pve-cluster.fw-2026-09-06](../../../../Backups/grey-server-pve-cluster.fw-2026-09-06); the host keeps no copy. The complete record is [docker-blue Firewall Grant Narrowed to pve_ssh_manager](../Documentation/Change%20Records/docker-blue%20Firewall%20Grant%20Narrowed%20to%20pve_ssh_manager%20-%202026-09-06.md).
+
+- Earlier on 2026-09-06 the documentation audit found that the live file also defined the IPSet `pve_ssh_manager`, holding `192.168.40.39`, and a matching `IN ACCEPT` for TCP 22 commented `Docker MCP Gateway SSH Manager`, placed after the two VPN accepts and before the terminal drops. Neither was in this record. The file's modification time was 2026-08-31 at 22:54 EDT, so both landed with the SSH Manager work that day and the record only captured the `pve_admins` half.
 
 - On 2026-08-31 I added `192.168.40.39` `docker-blue SSH Manager` to `pve_admins`. UniFi policy `Allow docker-blue SSH Manager to Proxmox` limits the source to TCP 22 and the five node addresses, so `docker-blue` does not gain a network path to the 8006 and 3128 ports that the shared `pve_admins` rule also names. All five nodes read the new member with one digest, reported their firewall enabled and running, and answered a root SSH command through Executor. The complete record is [SSH Manager Fleet Reach Completion - 2026-08-31](../../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md).
 
