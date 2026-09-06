@@ -1,9 +1,9 @@
 # Cloudflare Access Applications
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-09-06
 
-I last verified these Access applications against the Cloudflare API on 2026-07-22.
+I last verified these Access applications against the Cloudflare API on 2026-09-06, through the Executor Cloudflare Account MCP connection. All three were unchanged since 2026-07-22, and the two allow applications share one reusable policy, `Allow dkadi`, with the same two email identities.
 
 | Application | Protected URL | Decision | Purpose |
 |---|---|---|---|

@@ -14,8 +14,8 @@ I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Clou
 | Created | 2026-02-14 |
 | Configuration source | Remote (dashboard-managed) |
 | Connector host | edge-01, `192.168.30.10`, VLAN 30, Debian 13 |
-| cloudflared version | 2026.8.3, read from the binary on 2026-09-06; the service has been active since the 2026-08-10 boot |
-| Connections | 4, healthy (verified 2026-07-24; not re-read on 2026-09-06 because the journal and metrics are not reachable from the unprivileged account) |
+| cloudflared version | 2026.8.3, running since I restarted the service on 2026-09-06 at 14:21 EDT; the binary had been on disk since 2026-09-04 while the process from the 2026-08-10 boot kept running 2026.7.3, and Cloudflare now reports 2026.8.3 on all four connections |
+| Connections | 4, healthy, read through the Cloudflare API on 2026-09-06 after the restart: four QUIC connections to Ashburn edge locations, all reporting 2026.8.3, opened at 14:21 EDT |
 | Public DNS zone | alphsec.com |
 
 ## Ingress rules

@@ -1,9 +1,9 @@
 # Cloudflare Domains
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-06
 
-These are the domains I manage through Cloudflare.
+These are the domains I manage through Cloudflare. I last read all four zones back through the API on 2026-09-06; the [Cloudflare README](../README.md) verification section summarizes what each zone holds. `duresakadi.me` is paused, so Cloudflare serves its DNS without proxying any of its records.
 
 | Domain |
 | --- |
