@@ -1,7 +1,7 @@
 # Service Login Password Standardization
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-06
 
 **Implementation date:** 2026-09-04  
 **Status:** Complete  
@@ -104,6 +104,8 @@ Coolify still holds two rows after the change, `id = 0` and `id = 2`, and the `j
 A repeat of the stored-credential audit, run while the per-service items still existed, put twelve items on the shared account password. The items that differed were the host and sudo credentials, the `admin` accounts, the Portainer Edge Agent pairs, and the service accounts, which is the intended result.
 
 ## Open Items
+
+I re-verified the first three on 2026-09-06 in the evening: a read-only query of Jellyfin's user table on `media-01` still shows a null password for `Ilyas`, Portainer's user list on `docker-main`, read with the shared account, still shows `dashboard` at role 1 beside `dkadi`, and the indexer's `internal_users.yml` on `security-01`, unchanged since 2026-08-04, still defines the five demo users. All three remain decisions rather than fixes.
 
 - Jellyfin `Ilyas` has no password set at all. Its `Password` column is null, so the account authenticates with an empty credential from the user picker. It is not an administrator. Left alone by instruction; it needs a decision.
 - Portainer `dashboard` holds `Role` 1, the same administrator authority as `dkadi`. It appears to exist for the Homelab Dashboard's API access and should hold a scoped role instead.
