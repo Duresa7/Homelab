@@ -147,6 +147,11 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.39/24 | 192.168.40.1 | enabled | `<REDACTED_DOCKER_BLUE_MAC>` |
 
+### Administrative Access
+
+- SSH is public-key only as `dkadi`, with `(ALL : ALL) ALL` through the `sudo` group behind a prompt that `/etc/sudoers.d/00-rootpw` points at root's password. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. Root login is disabled.
+- The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07. The SSH Manager restart timer names its zone explicitly and still fires at 4 AM Eastern; no container on the host mounts the host's zone file.
+
 ## LXC 110 - docker-main
 
 ### Configuration
@@ -175,6 +180,11 @@ Until 2026-09-06 the configuration also carried `unused0: hddpool:subvol-110-dis
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- |
 | eth0 | vmbr0 | 40 | 192.168.40.35/24 | 192.168.40.1 | enabled | `<REDACTED_DOCKER_MAIN_MAC>` |
+
+### Administrative Access
+
+- Root-login only, keyed, by decision. This host is outside the three-account model and has no `dkadi` account.
+- The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07. Immich and Forgejo mount the host's zone file; Immich already ran on Eastern through its own `TZ` variable, and Forgejo keeps reporting UTC until its next restart. The CLI Proxy API container carries `TZ=Asia/Shanghai` from its upstream image.
 
 ## LXC 123 - game-01
 

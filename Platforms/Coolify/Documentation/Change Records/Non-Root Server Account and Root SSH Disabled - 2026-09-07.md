@@ -80,7 +80,7 @@ Coolify holds one multiplexed connection open and reuses it, so the journal show
 
 ## Found along the way
 
-**`apps-02` is a stale server record.** Coolify still lists a second server at `192.168.80.11` as `root` with the `apps-01-key`, marked unreachable, and nothing at that address answers. No host by that name exists in the Galaxy inventory. It is a Coolify housekeeping decision, recorded in the root `TODO.md`, and until it is removed Coolify will keep failing a check against it.
+**`apps-02` is a second server record on another team.** Coolify lists a server `apps-02` at `192.168.80.11` as `root` with the `apps-01-key`, created 2026-03-22, marked unreachable, and nothing at that address answers. It belongs to team 1, `Member-1-access`, not the Root Team, so the dashboard only shows it after switching teams, which is why it looked unfamiliar. No host by that name exists in the Galaxy inventory. Whether that team still needs it is recorded as a decision in the root `TODO.md`; until it is removed Coolify will keep failing a check against it.
 
 **The `wp-01` key claim does not hold.** The root `TODO.md` said Coolify stored a private key commented `dkadi@wp-01`. Searching the `private_keys` table's key columns for `wp-01` returns nothing on 4.3.17. Whatever carried that comment is gone or was never a stored key, and the item is closed as not found.
 

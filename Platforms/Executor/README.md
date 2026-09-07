@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It is available only through internal DNS at `https://mcp.alphasecunited.com`; no public DNS record or WAN forwarding exists.
 
@@ -28,6 +28,8 @@ Nginx Proxy Manager terminates TLS with the existing wildcard certificate and fo
 
 The container uses a read-only root filesystem, a bounded temporary filesystem, no Linux capabilities, `no-new-privileges`, a 256-process limit, and bounded JSON logs. Local STDIO MCP servers and analytics are disabled. Local-network integrations are enabled so Executor can reach the UniFi gateway at `http://192.168.40.39:8811/mcp`, the SSH Manager gateway at `http://192.168.40.39:8812/mcp`, and Wazuh MCP at `http://192.168.72.2:3000/mcp`.
 
+**Every integration tool call is capped at 60 seconds.** Executor 1.6.8 calls tools through the MCP SDK client with no timeout option, so the SDK default applies and no gateway or SSH Manager setting can extend it. Keep a single call under about 55 seconds and detach longer remote work. [Troubleshooting record](Documentation/Troubleshooting/Integration%20Tool%20Calls%20Time%20Out%20at%2060%20Seconds%20-%202026-09-07.md).
+
 The first administrator account is claimed. Credentials and Executor's generated secret files stay outside this repository.
 
 The gateway endpoints are registered separately. `unifi-mcp-gateway` is displayed as `UniFi MCP`, uses personal connection `unifiMcpGateway`, and discovers 5 UniFi tools. `ssh-manager-mcp-gateway` is displayed as `SSH Manager MCP`, uses personal connection `sshManagerMcpGateway`, and discovers 37 SSH tools. `wazuh-mcp-server` uses personal connection `localWazuh` and discovers 41 tools from the local Manager and Indexer. Each connection keeps its own bearer token in Executor's encrypted credential provider, and all three integration header maps remain empty. The retired combined `docker-mcp-gateway` integration and `dockerMcpGateway` connection are absent.
@@ -45,6 +47,7 @@ I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both
 - [Integration search tools](Documentation/Change%20Records/Integration%20Search%20Tools%20-%202026-09-06.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Runbook](Documentation/Runbook.md)
+- [Troubleshooting](Documentation/Troubleshooting/README.md)
 - [Initial deployment](Documentation/Change%20Records/Initial%20Deployment%20-%202026-08-30.md)
 - [Docker MCP Gateway integration](Documentation/Change%20Records/Docker%20MCP%20Gateway%20Integration%20-%202026-08-31.md)
 - [MCP integration separation](Documentation/Change%20Records/MCP%20Integration%20Separation%20-%202026-08-31.md)
