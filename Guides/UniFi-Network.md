@@ -9,7 +9,7 @@ This guide follows the network work that supports Galaxy & the hosted platforms:
 
 ## Current Status and Verified Versions
 
-The controller has 22 network objects, including 15 routed corporate LANs, and 11 zones. The active records cover VLAN 30 for the DMZ, VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, and VLAN 85 for Access-A. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 29 enabled local DNS entries as of 2026-09-06: 24 NPM names at `192.168.85.2` plus five Proxmox node names on MGMT-A. The same readback returned 68 user-defined firewall policies and 16 reusable firewall groups.
+The controller has 22 networks, including 15 routed corporate LANs, and 11 zones. The active records cover VLAN 30 for the DMZ, VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, and VLAN 85 for Access-A. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 29 enabled local DNS entries as of 2026-09-06: 24 NPM names at `192.168.85.2` plus five Proxmox node names on MGMT-A. The same readback returned 68 user-defined firewall policies and 16 reusable Network Lists.
 
 ## What You Need
 
@@ -46,7 +46,7 @@ I created three Access-to-External rules in this order:
 2. Allow UDP 123 from those same addresses.
 3. Block the remaining Access-A traffic to External.
 
-The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is represented by `OBJ-Reverse-Proxy` in its cross-zone policies.
+The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is represented by `AG-Reverse-Proxy` in its cross-zone policies.
 
 ![Access-A egress rules after deployment](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 

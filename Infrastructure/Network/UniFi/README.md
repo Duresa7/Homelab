@@ -3,9 +3,9 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-06
 
-I track UniFi-owned VLANs, zones, firewall rules, DNS records, network objects, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
+I track UniFi-owned VLANs, zones, firewall rules, DNS records, networks, Network Lists, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
-A full controller readback on 2026-09-06 returned 22 network objects: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, 16 reusable firewall groups, 17 client groups (16 after I deleted the empty `IOT` duplicate later that day), four OON policies, one traffic route, five switch port profiles, five WLANs with three enabled, 29 enabled local DNS records, no port forwards, and no user-defined static routes. Five adopted devices were online: the gateway, three switches, and one access point, on Network application 10.6.101. Against the 2026-08-19 count, the firewall groups gained `PG-Printing`, the client groups gained an `IOT` and an `IoT` entry, and local DNS gained `mcp` and `openwebui`. The configuration records below carry the detail.
+A full controller readback on 2026-09-06 returned 22 networks: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, 16 reusable Network Lists, 17 client groups (16 after I deleted the empty `IOT` duplicate later that day), four OON policies, one traffic route, five switch port profiles, five WLANs with three enabled, 29 enabled local DNS records, no port forwards, and no user-defined static routes. Five adopted devices were online: the gateway, three switches, and one access point, on Network application 10.6.101. Against the 2026-08-19 count, the Network Lists gained `PG-Printing`, the client groups gained an `IOT` and an `IoT` entry, and local DNS gained `mcp` and `openwebui`. The configuration records below carry the detail.
 
 The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
 
@@ -16,8 +16,8 @@ The remaining traffic route is `VPN - Proton`. It is enabled with its kill switc
 - [Firewall zones](Configuration/zone.md)
 - [Firewall policies](Configuration/firewall.md)
 - [Local DNS](Configuration/local-dns.md)
-- [Network objects](Configuration/objects.md)
-- [VPNs, network groups, and port profiles](Configuration/vpn-networks-port-profiles.md)
+- [Policy features and Network Lists](Configuration/objects.md)
+- [VPNs, Network Lists, and port profiles](Configuration/vpn-networks-port-profiles.md)
 - [Proton-WiFi VLAN 45 (2026-08-10)](Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md)
 - [edge-01 move to DMZ VLAN 30 (2026-08-07)](Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md)
 - [Zone and object consolidation (2026-07-27)](Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)

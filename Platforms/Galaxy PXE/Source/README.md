@@ -85,7 +85,7 @@ The playbook installs:
 
 The live `config/machines.json` contains hardware MAC addresses, node addresses, and the exact install disk. Git ignores that file. I copy `config/machines.example.json` to `config/machines.json`, replace every `<YOUR_...>` value, and verify the disk name against `lsblk` before deployment.
 
-The public example also contains a disposable acceptance identity at synthetic MAC `02:00:00:00:09:99`. It targets a VM disk named `sda`, powers off after the installer, and skips the physical-node first-boot routine. I completed a disposable install through tagged VLAN 5 on 2026-07-31, destroyed VM 999, and returned that identity to `disabled`.
+The public example also contains a disposable acceptance identity. It targets a VM disk named `sda`, powers off after the installer, and skips the physical-node first-boot routine. I completed a disposable install through tagged VLAN 5 on 2026-07-31, destroyed VM 999, and returned that identity to `disabled`.
 
 ## Verification
 
@@ -109,4 +109,4 @@ The custom iPXE loader is unsigned, so Secure Boot must be off. A 7 GiB acceptan
 
 If an attempt stops, I inspect the full state record and the two service journals before I rearm it. A machine at `installer_succeeded` has written the target disk even if first boot never started. A machine at `failed` keeps the failing phase and detail. During an active Green recovery, `/var/log/galaxy-pxe-first-boot.log` holds the local bootstrap output after the installed system starts. I retain a sanitized evidence summary before removing that one-run log.
 
-I leave Bane port 4 on `Server-Provision` until the first-boot state reaches at least `network_ready`. I change it to `Proxmox-Trunk` only after the node's management address is reachable and the node is visible in the cluster. UniFi policy `Allow Server-Provision callbacks to Galaxy PXE` permits the VLAN 5 callback before cutover. `Allow Proxmox Nodes to Galaxy PXE` uses `OBJ-Proxmox-Nodes` for the post-cutover TCP 8080 callback. I add a future node's management address to that object instead of creating another policy.
+I leave Bane port 4 on `Server-Provision` until the first-boot state reaches at least `network_ready`. I change it to `Proxmox-Trunk` only after the node's management address is reachable and the node is visible in the cluster. UniFi policy `Allow Server-Provision callbacks to Galaxy PXE` permits the VLAN 5 callback before cutover. `Allow Proxmox Nodes to Galaxy PXE` uses `AG-Proxmox-Nodes` for the post-cutover TCP 8080 callback. I add a future node's management address to that Network List instead of creating another policy.

@@ -1,17 +1,21 @@
-# UniFi Object-Oriented Networking Policies
+# UniFi Policy Features and Network Lists
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
-## How I Use UniFi Objects
+## How I Build UniFi Policies
 
-I build UniFi policies from clients, groups, networks, zones, regions, applications, & IP or port groups. The controller turns those object references into the firewall, ACL, routing, QoS, & zone configuration enforced by the gateway, switches, and access points.
+I use Network Lists for reusable address and port selectors in firewall policies. I track OON Policies, traffic routes, and Client Groups separately below.
 
-An object-based rule follows its membership. If a client changes address or moves between groups, I update the object instead of rewriting every policy that uses it.
+A firewall policy that references a Network List follows its membership. When an address changes, I update the Network List and check every policy that references it.
 
-Three separate features carry the word "object" in this interface and they are not interchangeable. The Objects entry in the Policy Engine navigation opens the OON policy list, not the address and port groups. The `OBJ-` and `PG-` groups appear as Network Lists, which define IP addresses, subnets, domains, and ports for use in policies, and I reach them from inside the firewall policy editor when a rule selects IP or List rather than from that navigation entry. Client groups are a third feature again, keyed on MAC. The headings below use the API names, because the interface names collide.
+Three separate features carry the word "object" in this interface and they are not interchangeable. The Objects entry in the Policy Engine navigation opens the OON policy list, not the address and port groups. The `AG-` and `PG-` groups appear as Network Lists, which define IP addresses, subnets, domains, and ports for use in policies, and I reach them from inside the firewall policy editor when a rule selects IP or List rather than from that navigation entry. Client groups are a third feature again, keyed on MAC. I use Network List, OON Policy, and Client Group to distinguish these features.
 
-On 2026-07-31 I reused `OBJ-Proxmox-Nodes` as the source for `Allow Proxmox Nodes to Galaxy PXE`. Future Galaxy nodes gain the post-cutover TCP 8080 callback path when I add their management address to this object. The VLAN 5 phase remains covered by the separate `Server-Provision` network object.
+On 2026-07-31 I reused `AG-Proxmox-Nodes` as the source for `Allow Proxmox Nodes to Galaxy PXE`. Future Galaxy nodes gain the post-cutover TCP 8080 callback path when I add their management address to this Network List. The VLAN 5 phase remains covered by the separate `Server-Provision` network.
+
+On 2026-09-07 I renamed the six `OBJ-` address groups to `AG-`, changing only their names; I verified unchanged IDs and members (1, 1, 2, 5, 3, and 1 in table order), all six requested `AG-` names, zero `OBJ-` names, and all ten existing port groups unchanged. The later policy check confirmed the same group-ID references and unchanged returned configurations in all 23 original referencing policies. I did not retain a separate raw transcript.
+
+The final same-day readback returned 22 Network Lists and 349 firewall policies, including 76 user-defined policies. Six Network Lists appeared between checks: `AG-Domain-Controllers`, `AG-Identity-Servers`, `AG-PAW`, `PG-AD-Client`, `PG-Windows-Admin`, and `PG-Windows-Exporter`. A new `Allow Monitor to Windows Exporter` policy also references `AG-Monitor-Collector`. I made none of those additions and changed no policies during this rename; the six renamed groups and the ten original port groups still matched their verified IDs and memberships.
 
 ## OON Policies
 
@@ -34,20 +38,20 @@ Traffic routes are separate from the OON policies above. One remains and points 
 
 I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab Proton Egress` before removing its target network on 2026-08-19. The controller now returns one traffic route and no reference to either retired network.
 
-## Address and Port Groups
+## Network Lists
 
 These are the Network Lists in the interface. The API calls them `address-group` and `port-group`, and a policy references one through `ip_group_id` or `port_group_id`.
 
-Sixteen reusable firewall groups exist as of the 2026-09-06 readback: six IPv4 address groups and ten port groups.
+The table below covers the 16 Network Lists present at the rename verification on 2026-09-07: six IPv4 address groups and ten port groups.
 
 | Group | Type | Members |
 |---|---|---|
-| OBJ-Monitor-Collector | IPv4 | 192.168.73.2 |
-| OBJ-Reverse-Proxy | IPv4 | 192.168.85.2 |
-| OBJ-Security-Stack | IPv4 | 192.168.72.2, 192.168.72.3 |
-| OBJ-Proxmox-Nodes | IPv4 | 192.168.70.10 through 192.168.70.14 |
-| OBJ-Observability-Hosts | IPv4 | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
-| OBJ-Galaxy-PXE-Service | IPv4 | 192.168.40.36 |
+| AG-Monitor-Collector | IPv4 | 192.168.73.2 |
+| AG-Reverse-Proxy | IPv4 | 192.168.85.2 |
+| AG-Security-Stack | IPv4 | 192.168.72.2, 192.168.72.3 |
+| AG-Proxmox-Nodes | IPv4 | 192.168.70.10 through 192.168.70.14 |
+| AG-Observability-Hosts | IPv4 | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
+| AG-Galaxy-PXE-Service | IPv4 | 192.168.40.36 |
 | Wazuh Ports | Port | 1514, 1515 |
 | App Access | Port | 80, 8000 |
 | Proxmox-Admin-Ports | Port | 22, 8006, 3128 |
@@ -63,9 +67,9 @@ On 2026-09-02 I added 9102 to `PG-Node-Exporter` for What's Up Docker, so the th
 
 `PG-Printing` carries IPP on 631 and raw printing on 9100 for `Allow Internal to Printer`. It was on the controller but absent from this table until the 2026-09-06 readback, the same way its policy was absent from the firewall table until 2026-08-31.
 
-I moved 35 exact selectors across 24 policies onto these objects. I kept 11 partial or mixed selectors inline because replacing them with a broader group would change behavior.
+I moved 35 exact selectors across 24 policies onto these Network Lists. I kept 11 partial or mixed selectors inline because replacing them with a broader group would change behavior.
 
-`OBJ-Galaxy-PXE-Service` and `PG-Galaxy-PXE-Callback` are single-member groups, which I normally avoid. I created them on 2026-07-31 because the same literal `192.168.40.36:8080` destination was duplicated across both Galaxy PXE policies. Two policies carrying the same hardcoded service is the duplication these objects exist to remove: if the PXE service ever moves off `ansible-01` or gains a second listener, I edit one object instead of hunting two rules. Both policies now reference objects on the source and the destination side, and all five nodes still returned `ok` with HTTP 200 from the health endpoint after the change.
+`AG-Galaxy-PXE-Service` and `PG-Galaxy-PXE-Callback` are single-member groups, which I normally avoid. I created them on 2026-07-31 because the same literal `192.168.40.36:8080` destination was duplicated across both Galaxy PXE policies. Two policies carrying the same hardcoded service is the duplication these Network Lists exist to remove: if the PXE service ever moves off `ansible-01` or gains a second listener, I edit one Network List instead of hunting two rules. Both policies reference these Network Lists for their destination; their sources are `AG-Proxmox-Nodes` and the `Server-Provision` network. All five nodes returned `ok` with HTTP 200 from the health endpoint after the 2026-07-31 change.
 
 ## Client Groups
 
@@ -92,7 +96,7 @@ Sixteen client groups exist as of 2026-09-06. The readback that morning returned
 
 I deleted the empty `IOT` group and the obsolete `Game Servers` group after the S01 and final reference scans found no firewall or OON dependency. I renamed `server` to `docker-blue` and `grey-server` to `grey-node-and-guests` without changing membership.
 
-On 2026-08-19 I removed the retired Kasm client from `VM`, reducing that group from two members to one, and used the controller's forget action on the offline historical client record. No policy or OON object depended on that member.
+On 2026-08-19 I removed the retired Kasm client from `VM`, reducing that group from two members to one, and used the controller's forget action on the offline historical client record. No firewall policy or OON Policy depended on that member.
 
 `Device Access to Proxmox` still carries the four administrative MACs inline. The V2 policy selector schema has no client-group target, so I did not replace those selectors with `Admin_Device`.
 

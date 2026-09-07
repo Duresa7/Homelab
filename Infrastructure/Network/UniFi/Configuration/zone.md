@@ -15,7 +15,7 @@ I verified the current 15 LAN rows from the network records after deleting the e
 | Untrusted | Built-in | IoT (VLAN 20) |
 | Dmz | Built-in | DMZ (VLAN 30) |
 | External | Built-in | Internet 1 (WAN), Internet 2 (WAN), ProtonVPN (VPN client) |
-| Vpn | Built-in | FamilyVPN, Management Access, Game-Access, Temp; One-Click VPN was not returned as a network object on 2026-09-06 |
+| Vpn | Built-in | FamilyVPN, Management Access, Game-Access, Temp; One-Click VPN was not returned as a network on 2026-09-06 |
 | Gateway | Built-in | *(none)* |
 | Hotspot | Built-in | *(none)* |
 | `AlphaSec-Servers` | Custom | SERVERS-A (VLAN 80) |
@@ -33,6 +33,6 @@ I moved Cluster-Net into `AlphaSec-Mgmt` and deleted the empty cluster zone. I m
 
 The 2026-07-27 consolidation reduced the live result to 14. Two Kasm zones were added on 2026-07-28, bringing that historical platform state to 16. I deleted all five Kasm zones on 2026-08-19 after removing their policies and networks. The controller now has 11 zones.
 
-`Allow Monitor to Security monitoring` explicitly limits the collector to `OBJ-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
+`Allow Monitor to Security monitoring` explicitly limits the collector to `AG-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
 
 The retired zone design and its tests remain in [Kasm Session Isolation](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) and [Kasm Workspace Build-Out](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The deletion result is in [Kasm Workspaces Decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md).

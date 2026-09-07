@@ -1,9 +1,9 @@
-# UniFi VPNs, Groups & Port Profiles
+# UniFi VPNs, Network Lists & Port Profiles
 
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-06
 
-I track five WireGuard servers, one WireGuard client, one traffic route, 16 reusable firewall groups, and five switch port profiles here. I read the network objects, groups, port profiles, and traffic routes back on 2026-09-06.
+I track five WireGuard servers, one WireGuard client, one traffic route, 16 reusable Network Lists, and five switch port profiles here. I read the networks, Network Lists, port profiles, and traffic routes back on 2026-09-06.
 
 ## VPN Servers
 
@@ -14,10 +14,10 @@ All servers are WireGuard, remote-user-VPN type, bound to the WAN interface.
 | FamilyVPN | WireGuard Server | 192.168.3.1/24 | 51821 | Disabled |
 | Management Access | WireGuard Server | 10.6.0.1/24 | 51822 | Enabled |
 | Game-Access | WireGuard Server | 10.66.200.1/24 | 51823 | Disabled on the 2026-09-06 readback |
-| One-Click VPN | WireGuard Server | 192.168.12.1/24 | 51820 | Not among the network objects the controller returned on 2026-09-06 |
+| One-Click VPN | WireGuard Server | 192.168.12.1/24 | 51820 | Not among the networks the controller returned on 2026-09-06 |
 | Temp | WireGuard Server | 10.6.10.1/24 | 51824 | Disabled |
 
-The 2026-09-06 network readback returned four remote-user VPN networks, not five: FamilyVPN, Management Access, Game-Access, and Temp, with only Management Access enabled. `Game-Access` had been recorded as enabled here since 2026-07-09 and is disabled on the controller. `One-Click VPN` was not returned as a network object at all; UniFi presents One-Click VPN as its own feature, and I have not confirmed through the interface whether it is still configured, so its row stays until I do.
+The 2026-09-06 network readback returned four remote-user VPN networks, not five: FamilyVPN, Management Access, Game-Access, and Temp, with only Management Access enabled. `Game-Access` had been recorded as enabled here since 2026-07-09 and is disabled on the controller. `One-Click VPN` was not returned as a network at all; UniFi presents One-Click VPN as its own feature, and I have not confirmed through the interface whether it is still configured, so its row stays until I do.
 
 ## VPN Clients
 
@@ -37,7 +37,7 @@ On 2026-08-10 I repointed `VPN - Proton` from a single client MAC to `Proton-WiF
 
 On 2026-08-19 I disabled and deleted the Kasm-specific route before deleting its target network. The shared ProtonVPN client and `VPN - Proton` route remained enabled and unchanged.
 
-## Network List (Firewall Groups)
+## Network Lists
 
 Reusable port/address groups referenced by firewall policies.
 
@@ -48,15 +48,15 @@ Reusable port/address groups referenced by firewall policies.
 | Proxmox-Admin-Ports | Port group | 22, 8006, 3128 |
 | Portainer Edge Agents | Port group | 8000, 9443 |
 | Allow Identity Sync Service Connection-9543 | Port group | 9543 |
-| OBJ-Monitor-Collector | IPv4 address group | 192.168.73.2 |
-| OBJ-Reverse-Proxy | IPv4 address group | 192.168.85.2 |
-| OBJ-Security-Stack | IPv4 address group | 192.168.72.2, 192.168.72.3 |
-| OBJ-Proxmox-Nodes | IPv4 address group | 192.168.70.10 through 192.168.70.14 |
-| OBJ-Observability-Hosts | IPv4 address group | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
+| AG-Monitor-Collector | IPv4 address group | 192.168.73.2 |
+| AG-Reverse-Proxy | IPv4 address group | 192.168.85.2 |
+| AG-Security-Stack | IPv4 address group | 192.168.72.2, 192.168.72.3 |
+| AG-Proxmox-Nodes | IPv4 address group | 192.168.70.10 through 192.168.70.14 |
+| AG-Observability-Hosts | IPv4 address group | 192.168.72.2, 192.168.72.3, 192.168.73.2 |
 | PG-Node-Exporter | Port group | 9100, 9101, 9102 |
 | PG-Egress-Web | Port group | 80, 443 |
 | PG-NTP | Port group | 123 |
-| OBJ-Galaxy-PXE-Service | IPv4 address group | 192.168.40.36 |
+| AG-Galaxy-PXE-Service | IPv4 address group | 192.168.40.36 |
 | PG-Galaxy-PXE-Callback | Port group | 8080 |
 | PG-Printing | Port group | 631, 9100 |
 

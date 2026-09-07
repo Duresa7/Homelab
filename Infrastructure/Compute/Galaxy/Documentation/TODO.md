@@ -26,7 +26,7 @@ This backlog retains completed Green recovery and Purple storage work. Its open 
 **Troubleshooting record:** [Green PXE Install Stalls Before Reboot](../../../../Platforms/Galaxy%20PXE/Documentation/Troubleshooting/Green%20PXE%20Install%20Stalls%20Before%20Reboot%20-%202026-07-31.md)
 
 - [x] Build and validate the UEFI PXE service, Proxmox VE 9.2-1 assets, MAC-specific answer, and first-boot hook on `ansible-01`.
-- [x] Add `192.168.70.14` to the Galaxy `pve_cluster` IP set and UniFi `OBJ-Proxmox-Nodes`.
+- [x] Add `192.168.70.14` to the Galaxy `pve_cluster` IP set and UniFi `AG-Proxmox-Nodes`.
 - [x] Capture the first physical request through the installer answer and bootstrap fetch. Green did not reboot or join, and the old service could not identify the stopping phase.
 - [x] Repair the lifecycle, installer webhook, SSH cluster join, root SSH baseline, storage checks, and failure telemetry. The deployed suite has 21 passing tests and the playbook reports `changed=0`.
 - [x] Complete a disposable 12 GiB UEFI install through tagged VLAN 5. Proxmox reported only `/dev/sda` through the success webhook and powered the VM off.

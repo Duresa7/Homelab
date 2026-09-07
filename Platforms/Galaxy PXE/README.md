@@ -18,7 +18,7 @@ I run Galaxy PXE as the dedicated bare-metal provisioning service for Galaxy Pro
 - Install disk: `/dev/nvme0n1`
 - Preserved secondary disk: `/dev/sda`
 - Cluster join peer: `grey-server`, `192.168.70.10`
-- Post-cutover callback: `OBJ-Proxmox-Nodes` to `192.168.40.36:8080` through `Allow Proxmox Nodes to Galaxy PXE`
+- Post-cutover callback: `AG-Proxmox-Nodes` to `192.168.40.36:8080` through `Allow Proxmox Nodes to Galaxy PXE`
 
 I installed Green through the one-use PXE path on 2026-07-31. Proxmox reported `/dev/nvme0n1` as the only boot disk and `/dev/sda` as the other disk. The first-boot state reached `complete` after Galaxy reported five nodes, quorum, and four connected peers on Corosync links 0 and 1. Bane port 4 now uses `Proxmox-Trunk` with no native VLAN; Green remains online on tagged VLANs 70 and 71.
 
