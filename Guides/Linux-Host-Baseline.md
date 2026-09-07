@@ -1,11 +1,11 @@
 # Linux Host Baseline Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-05
+**Last updated:** 2026-09-07
 
 ## What This Guide Covers
 
-I apply this baseline to a Linux VM or LXC before it carries a workload. The finish line is a patched host with one administrative account, exactly three approved SSH public keys, key-only SSH, locked root, passwordless sudo for automation, & consistent time and locale.
+I apply this baseline to a Linux VM or LXC before it carries a workload. The finish line is a patched host with one administrative account, exactly three approved SSH public keys, key-only SSH, root that cannot log in over SSH, a sudo prompt that asks for a password other than the login password, passwordless sudo for automation only, & consistent time and locale.
 
 ## Current Status and Verified Versions
 
@@ -40,7 +40,7 @@ adduser dkadi
 usermod -aG sudo dkadi
 ```
 
-Group membership is the whole policy. `%sudo ALL=(ALL:ALL) ALL` already ships in `/etc/sudoers`, so `dkadi` gets sudo and is asked for its own password. I don't write a `NOPASSWD` drop-in for a human account: the reason automation needs one is that it runs unattended, and a person at a keyboard doesn't. It also means a stolen key alone is not root.
+Group membership is the whole policy. `%sudo ALL=(ALL:ALL) ALL` already ships in `/etc/sudoers`, so `dkadi` gets sudo and is asked for a password. Step 5 makes that password root's rather than its own. I don't write a `NOPASSWD` drop-in for a human account: the reason automation needs one is that it runs unattended, and a person at a keyboard doesn't. It also means a stolen key alone is not root.
 
 ### Step 3: Install the Three Public Keys
 
@@ -59,10 +59,21 @@ KbdInteractiveAuthentication no
 
 Run `sshd -t` before restarting SSH. Keep the console open until a second session connects with a public key.
 
-### Step 5: Lock Root and Set Time
+### Step 5: Give Root a Password and Point Sudo at It
+
+Set root's password with `passwd root`, then prove it authenticates with `su -` from an unprivileged account before going further. Then write `/etc/sudoers.d/00-rootpw`, mode `0440`, validated with `visudo -cf` at a temporary path first:
+
+```text
+Defaults rootpw
+```
+
+A sudo prompt on the host now asks for root's password instead of the invoking user's. Stock sudo cannot separate the two, so this is the only way a stolen login password stays short of root. The order matters: if root's password is locked or unknown when that file lands, every account loses sudo at once and the way back is the hypervisor console. Root still cannot log in over SSH, because Step 4 turned that off.
+
+I used to lock root here. That ended on 2026-08-15, when I moved to this model.
+
+### Step 6: Set Time and Locale
 
 ```sh
-passwd -l root
 timedatectl set-timezone America/New_York
 ```
 
@@ -73,6 +84,7 @@ Generate `en_US.UTF-8` & make it active through the distribution's locale tools.
 ```sh
 id dkadi
 sudo -n true; echo "expect exit 1: $?"
+sudo -l -U dkadi   # as root: expect rootpw among the Defaults and no NOPASSWD
 sudo sshd -T | grep -E 'permitrootlogin|pubkeyauthentication|passwordauthentication|kbdinteractiveauthentication'
 ssh-keygen -lf /home/dkadi/.ssh/authorized_keys
 passwd -S root
@@ -80,7 +92,7 @@ timedatectl
 locale
 ```
 
-The expected state is membership in `sudo`, non-interactive sudo exit `1` because a human account is asked for its password, three fingerprints, `permitrootlogin no`, both password methods disabled, & root status `L`.
+The expected state is membership in `sudo`, non-interactive sudo exit `1` because a human account is asked for its password, three fingerprints, `permitrootlogin no`, both password methods disabled, root status `P`, & a wrong password refused at the sudo prompt.
 
 ## Troubleshooting and Recovery
 

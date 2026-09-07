@@ -1,11 +1,11 @@
 # PeaNUT UPS Dashboard
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-07
 
 I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each USB connection on its physical Proxmox host; PeaNUT reads the TCP/3493 endpoints from one container on `monitor-01`.
 
-**`UPS-01` is unmonitored as of 2026-08-31.** Its USB data cable came off `red-server` on 2026-08-28 when I moved that node onto `UPS-02`, and it is not plugged into any host. The unit still carries its loads. `UPS-02` feeds every Galaxy node and reports normally through `grey-server`, so the unit powering the cluster is still on the board. Restoring `UPS-01` is tracked in the root [TODO](../../TODO.md); the diagnosis is in [ups01 NUT Driver Restart Loop After the UPS Swap](Documentation/Troubleshooting/ups01%20NUT%20Driver%20Restart%20Loop%20After%20the%20UPS%20Swap%20-%202026-08-31.md).
+**`UPS-01` is unmonitored as of 2026-08-31.** Its USB data cable came off `red-server` on 2026-08-28 when I moved that node onto `UPS-02`, and it is not plugged into any host. The unit still carries its loads. `UPS-02` feeds every Galaxy node and reports normally through `grey-server`, so the unit powering the cluster is still on the board. On 2026-09-07 I decided `UPS-01` stays unmonitored rather than reconnecting it; the diagnosis and the entries to re-enable if that ever changes are in [ups01 NUT Driver Restart Loop After the UPS Swap](Documentation/Troubleshooting/ups01%20NUT%20Driver%20Restart%20Loop%20After%20the%20UPS%20Swap%20-%202026-08-31.md).
 
 ## Layout
 

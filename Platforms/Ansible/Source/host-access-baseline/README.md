@@ -68,7 +68,7 @@ ansible-playbook playbooks/ai-agent-account.yml \
 
 Leave `ai_agent_password` unset to create a key-only account with a locked password. That is the supported outcome when no console credential is available, not a failure.
 
-**`sudoers-nopasswd.yml` is superseded and refuses to run.** It writes NOPASSWD grants for `dkadi` and `ai-agent`, which the 2026-08-15 decision reverses: both accounts are password-gated now, and a sudo prompt asks for root's password by way of `Defaults rootpw`. The play is kept as the record of what was planned, and it asserts on its first task unless `sudoers_nopasswd_acknowledged=true` is passed. Do not pass it without re-reading the fleet access priority in the root [TODO](../../../../TODO.md).
+**`sudoers-nopasswd.yml` is superseded and refuses to run.** It writes NOPASSWD grants for `dkadi` and `ai-agent`, which the 2026-08-15 decision reverses: `dkadi` is password-gated, with a sudo prompt that asks for root's password by way of `Defaults rootpw`, and `ai-agent` holds no sudo at all on the guests as of 2026-09-07. The play is kept as the record of what was planned, and it asserts on its first task unless `sudoers_nopasswd_acknowledged=true` is passed. Do not pass it without re-reading the fleet access priority in the root [TODO](../../../../TODO.md).
 
 Hold a second root session open on any host you are about to change, and keep it open until the new configuration has been proven.
 

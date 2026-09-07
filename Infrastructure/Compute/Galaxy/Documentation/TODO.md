@@ -1,7 +1,7 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-09-07
 
 This backlog retains completed Green recovery and Purple storage work. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
 
@@ -17,7 +17,7 @@ This backlog retains completed Green recovery and Purple storage work. Its open 
 **Status:** Open, found 2026-08-15 while resetting the node root passwords  
 **Change record:** [Node Root Password Reset](Change%20Records/Node%20Root%20Password%20Reset%20-%202026-08-15.md)
 
-- [ ] Decide whether `purple-server` and `blue-server` move from `permitrootlogin yes` to `without-password`, which is what grey, red and green run. Nothing is exposed by the difference today: `passwordauthentication` is `no` on all five, so both nodes accept keys only either way. The setting still says something untrue about intent, and the two that differ are the two built on 2026-05-27. Proxmox needs root SSH between nodes for the web interface **Shell** button and for migrations, so `no` is not an option on any of them.
+- [x] 2026-09-07: `purple-server` and `blue-server` moved from `PermitRootLogin yes` to `prohibit-password`, so all five nodes resolve `without-password`. One line each, `sshd -t` clean, restart clean, fresh root login proven. [PermitRootLogin Aligned on purple-server and blue-server](Change%20Records/PermitRootLogin%20Aligned%20on%20purple-server%20and%20blue-server%20-%202026-09-07.md).
 
 ## `green-server` PXE Expansion Complete
 

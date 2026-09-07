@@ -1,9 +1,11 @@
 # Ansible TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-07
 
 ## Open Items
+
+- Make `ensure-key-present-posix.yml` create a missing `.ssh` directory as `0700` owned by the key's account. On 2026-09-07 it created `/home/dkadi/.ssh` on `ansible-01` as `755 root:root`, because the play escalates to root to write into another account's home, and I corrected the ownership by hand. Every earlier host already had the directory from its baseline build, which is why this never showed. [Record](Change%20Records/SSH%20Identity%20Registration%20for%20green-server,%20monitor-01,%20game-01%20and%20ansible-01%20-%202026-09-07.md).
 
 - Watch the first real automatic reboot after the 2026-07-29 fix. I added a wait for the guest's SSH listener to drop before the reconnect, so the boot-ID check cannot race the shutdown. The validator, both syntax checks, `--list-tasks`, and a two-host check-mode run all pass, but the reboot block is skipped under `--check` and no guest currently reports `reboot_required=True`, so the new wait itself is unexercised. The reasoning is in [Reboot action did not finish after the guest returned](Troubleshooting/Reboot%20action%20did%20not%20finish%20after%20the%20guest%20returned%20-%202026-07-29.md). **Reopened 2026-08-15.** This line was dropped from the working tree and committed closed as a side effect of the root-SSH change, which is not work that exercised the reboot path. Nothing has run it since, so the item stands.
 
@@ -11,6 +13,7 @@ Future controller runtime, Semaphore, SSH identity, or fleet-update tasks start 
 
 ## Completed
 
+- [x] 2026-09-07: [SSH identity registration for green-server, monitor-01, game-01 and ansible-01](Change%20Records/SSH%20Identity%20Registration%20for%20green-server,%20monitor-01,%20game-01%20and%20ansible-01%20-%202026-09-07.md). `ssh-key-automation` now covers 17 hosts. `green-server` joined the `jedi-pc` and `mac` allowlists, the three missing guests joined the inventory and every human allowlist, and the audit found `ansible-01`'s `dkadi` account had no `authorized_keys` at all. Onboarded all three human identities there; every identity audits `present` on every host in its list. `ansible-control` keeps its nine-guest list, because its `ansible`-account override cannot describe the cluster root key file it also lives in.
 - [x] 2026-09-01: Confirmed the `ubuntu-dev` identity registration recorded on 2026-08-15 was complete and removed its stale open entry. On `ansible-01`, `identities/ubuntu-dev.yml` exists as mode `0600`, owned by `ansible`, with its last modification on 2026-08-14. The project validator passed all 4 identities, 14 supported hosts, 0 unknown hosts, and 17 Semaphore templates without exposing identity-file contents.
 - [x] 2026-09-01: Set `ansible-01` from `Etc/UTC` to `America/New_York`, as required by the Linux host baseline. The post-change check reported `Timezone=America/New_York`, `NTPSynchronized=yes`, and `EDT -0400`; no service restart was needed.
 - [x] 2026-08-20: Wrote `playbooks/sudoers-rootpw.yml` in `host-access-baseline`. It puts `/etc/sudoers.d/00-rootpw` on the eleven retained guests as `0440 root:root`, validates each temporary file with `visudo -cf`, and checks the resulting policy with `sudo -l -U <user>` as root. [Sudo Pointed at the Root Password on Eleven Guests](../../../Operations/Maintenance/Sudo%20Pointed%20at%20the%20Root%20Password%20on%20Eleven%20Guests%20-%202026-08-20.md).

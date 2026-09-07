@@ -1,7 +1,7 @@
 # Power Equipment Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-07
 
 I use two APC Back-UPS units for the workstation, Galaxy nodes, UniFi core, & Verizon fiber handoff. Each unit is rated for 1500 VA / 900 W at 120 V and provides 10 NEMA 5-15R outlets.
 
@@ -29,7 +29,7 @@ I haven't recorded the physical location, purchase date, battery installation da
 | UPS-01 | None since 2026-08-28 | None | 2026-07-22: Online; 100% charge; 58% load; 675-second estimated runtime |
 | UPS-02 | `grey-server` | `ups02@192.168.70.10:3493` | 2026-08-31: Online (`OL`); 100% charge; 19% load; 2,424-second estimated runtime |
 
-**`UPS-01` is unmonitored.** Its USB data cable came off `red-server` during the 2026-08-28 move and is plugged into no host, so nothing reads its charge, load, or runtime and nothing will report it going to battery. The unit still powers the workstation. Its 2026-07-22 reading is kept above as the last one I have, not as current state. Restoring it is tracked in the root [TODO](../../TODO.md).
+**`UPS-01` is unmonitored.** Its USB data cable came off `red-server` during the 2026-08-28 move and is plugged into no host, so nothing reads its charge, load, or runtime and nothing will report it going to battery. The unit still powers the workstation. Its 2026-07-22 reading is kept above as the last one I have, not as current state. On 2026-09-07 I decided it stays unmonitored: the unit powers only the workstation, and reconnecting it is not tracked anywhere. Should it ever be reconnected, the [restart loop record](../../Platforms/PeaNUT/Documentation/Troubleshooting/ups01%20NUT%20Driver%20Restart%20Loop%20After%20the%20UPS%20Swap%20-%202026-08-31.md) lists the NUT, Prometheus and PeaNUT entries to re-enable.
 
 `UPS-02`'s load rose from 17 to 19 percent and its estimated runtime fell from 2,895 to 2,424 seconds between 2026-07-22 and 2026-08-31, which is `red-server` arriving on the unit.
 

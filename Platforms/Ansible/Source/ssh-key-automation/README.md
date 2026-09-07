@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-09-07
 
 I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -17,7 +17,9 @@ I use this project to onboard and rotate SSH public-key identities. Semaphore ca
 - `docker-blue` & `media-01` are supported Linux targets. Their identity allowlists remain explicit, like every other host.
 - I removed the retired domain controllers and `obi-pc` from the inventory on 2026-07-27. No Windows host remains in this project.
 - I registered `ubuntu-dev` on 2026-08-15. Its key was installed by hand before the project existed, so registration brought an already-present key under management and installed nothing.
-- I added `green-server` to the inventory on 2026-08-15. The public copy had drifted from the live one, which had carried the node for some time.
+- I added `green-server` to the inventory on 2026-08-15. The public copy had drifted from the live one, which had carried the node for some time. The `jedi-pc` and `mac` allowlists caught up with it on 2026-09-07.
+- `monitor-01`, `game-01` and `ansible-01` joined the inventory on 2026-09-07 as `linux_ssh_key_hosts`, connecting as `ansible` with `dkadi`'s key store like the other guests. `ansible-01` uses `ansible_connection: local`. Seventeen hosts are under management, and the audit for every identity reads `present` on every host in its allowlist.
+- `ansible-control`'s allowlist holds the nine guests and no node, on purpose. Its key-store override points at the `ansible` account, which does not exist on a node; the controller reaches the nodes as root through the cluster key file, which the Proxmox group manages as one unit.
 
 ## Direct Ansible Commands
 
