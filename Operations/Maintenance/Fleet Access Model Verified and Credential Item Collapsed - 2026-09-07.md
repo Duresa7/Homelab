@@ -16,7 +16,7 @@ The model decided on 2026-08-15 is the live state on every guest, the standard n
 | `dkadi` | `(ALL : ALL) ALL` from the `sudo` group, prompt takes root's password | `sudo -l -U dkadi` shows `rootpw` and no `NOPASSWD` on 11 of 11; a wrong password is refused with sudo checking root's password |
 | `ai-agent` | none | `sudo -l -U ai-agent` reports not allowed on 11 of 11 |
 | `ansible` | `NOPASSWD: ALL` | `sudo -n true` exits 0 on 11 of 11 |
-| `root` | n/a | `passwd -S` reports `P` on 11 of 11; SSH login off everywhere except `app-01` |
+| `root` | n/a | `passwd -S` reports `P` on 11 of 11; SSH login off on 11 of 11 since the [Coolify change](../../Platforms/Coolify/Documentation/Change%20Records/Non-Root%20Server%20Account%20and%20Root%20SSH%20Disabled%20-%202026-09-07.md) later the same night closed `app-01` |
 
 ## Verification
 

@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-06  
+**Last updated:** 2026-09-07  
 
 Galaxy currently has 7 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -207,6 +207,12 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 80 | 192.168.80.10/24 | 192.168.80.1 | enabled | `<REDACTED_APP_HOST_MAC>` |
+
+#### Administrative Access
+
+- SSH is public-key only. Root login, password authentication, and keyboard-interactive authentication are disabled; `PermitRootLogin no` since 2026-09-07, when Coolify stopped managing the host as root.
+- `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a prompt that `/etc/sudoers.d/00-rootpw` points at root's password. `ansible` keeps its NOPASSWD drop-in. `ai-agent` cannot run sudo.
+- `coolify`, uid 9999, is Coolify's own key-only service account with `NOPASSWD` sudo and `docker` group membership; the uid matches the container's internal user so `/data/coolify` needs no ownership change. [Non-Root Server Account and Root SSH Disabled](../../../Platforms/Coolify/Documentation/Change%20Records/Non-Root%20Server%20Account%20and%20Root%20SSH%20Disabled%20-%202026-09-07.md).
 
 ### VM 121 - edge-01
 

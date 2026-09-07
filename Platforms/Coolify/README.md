@@ -1,7 +1,7 @@
 # Coolify
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-07
 
 I run Coolify on app-01 as my self-hosted deployment platform. It builds & runs applications in Docker & fronts them with its own Traefik proxy, which does the per-application Host routing for everything I publish under `*.alphsec.com`. Coolify is where a new external service gets its domain: I set the domain on the resource & the rest of the ingress chain already carries it.
 
@@ -15,6 +15,7 @@ I run Coolify on app-01 as my self-hosted deployment platform. It builds & runs 
 | Public dashboard | `coolify-a1.alphsec.com`, behind Cloudflare Access |
 | Local dashboard | `http://192.168.80.10:8000` |
 | Docker network | `coolify`, bridge |
+| Host SSH account | `coolify`, uid 9999, key-only with `NOPASSWD` sudo, since 2026-09-07; root cannot log in over SSH |
 
 ### Containers (verified 2026-08-09)
 
@@ -41,6 +42,7 @@ A UniFi policy lets edge-01 reach this host only on TCP 80 & 8000. See the [Cool
 ## Records
 
 - [Architecture](Documentation/Architecture.md)
+- [Non-root server account and root SSH disabled](Documentation/Change%20Records/Non-Root%20Server%20Account%20and%20Root%20SSH%20Disabled%20-%202026-09-07.md)
 - [Traefik 3.7 minor update](Documentation/Change%20Records/Coolify%20Traefik%203.7%20Minor%20Update%20-%202026-08-09.md)
 - [Traefik 3.6 patch update](Documentation/Change%20Records/Coolify%20Traefik%203.6%20Patch%20Update%20-%202026-08-02.md)
 - [External Service Ingress design](../../Architecture/External-Service-Ingress.md)
