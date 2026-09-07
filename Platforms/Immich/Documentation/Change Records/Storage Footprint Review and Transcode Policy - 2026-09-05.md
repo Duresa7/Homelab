@@ -1,10 +1,10 @@
 # Storage Footprint Review and Transcode Policy
 
 **Created:** 2026-09-05  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 **Date:** 2026-09-05  
-**Status:** Policy applied; one Transcode Videos job in All mode waits for me in the admin UI to reclaim the space
+**Status:** Complete; the second All-mode run on 2026-09-06 reclaimed 226 GB, and the OCR re-run finished the same day
 
 ## Question
 
@@ -64,6 +64,44 @@ Immich does not sweep existing transcodes when the policy changes. It deletes on
 
 No separate evidence transcript was retained.
 
+## First Run Result, 2026-09-06
+
+The Transcode Videos job in All mode queued 5,377 per-asset jobs and drained with zero failures in the queue. It logged 385 deletions and 10 new transcodes. The encoded-video folder went from 266 GB to 252 GB, the database count of encoded copies from 5,359 to 4,974, and free space on `/data` from 316 GB to 332 GB.
+
+The other 4,982 jobs did nothing, silently. In v3.1.0 `getForVideoConversion` inner-joins `asset_video`, the per-asset video stream table that the current release fills during metadata extraction. Only 397 of the 5,368 videos have a row there; the rest were imported before that table existed and have never been re-extracted. With no row the query returns nothing and the job returns Failed without a log line, which BullMQ still counts as completed. Every one of the 4,964 remaining encoded copies belongs to a video with no `asset_video` row.
+
+The fix is Extract Metadata in All mode, which probes every video and upserts its stream row, followed by Transcode Videos in All mode again. Metadata extraction rewrites description, capture date, and location from the file, so any of those edited inside Immich would be reset; this library has 23 sidecar files and I am not aware of in-app edits.
+
+## OCR Failures in the Same Window
+
+While the transcode run, Smart Search, and OCR were all active, 4,408 of the 5,912 OCR jobs failed with an onnxruntime `BFCArena` allocation error inside the machine-learning container: the GPU ran out of memory with the 3.3 GB CLIP model, both OCR server models, and the face models resident alongside NVENC sessions. 1,146 assets got text. A fresh OCR request on the idle GPU returned 200 immediately afterwards, so the models are fine and the failure was contention. Because `ocrAt` was already set from the earlier mobile-model run, Missing mode would only revisit 5 assets; OCR needs another All run, on its own.
+
+## Second Run Result, 2026-09-06
+
+Extract Metadata in All mode gave 5,362 of the 5,368 videos a stream row; five files failed extraction. The second Transcode Videos run in All mode then drained with zero failed jobs.
+
+| Metric | Before any change | After the second run |
+| --- | --- | --- |
+| Transcoded copies in the database | 5,377 | 110 |
+| `library/encoded-video` | 266 GB | 27 GB |
+| `/data` used | 83 %, 316 GB free | 70 %, 558 GB free |
+
+The 110 copies that remain are the ones the `optimal` policy still calls for: 86 sources above 1080p and 24 at or below 1080p in a codec or pixel format outside the accepted list. Across both runs the server logged 1,150 deletions and 31 new transcodes, all on NVENC, with no job errors.
+
+## OCR Re-run
+
+I ran OCR in All mode on its own later on 2026-09-06. It drained with zero failed jobs and no onnxruntime error in the machine-learning log. `asset_ocr` now holds 8,487 text regions across 4,995 assets, up from 1,804 across 1,146 after the contended run.
+
 ## Remaining Work
+
+None.
+
+From Administration, Jobs, one at a time and in this order:
+
+1. **Extract Metadata, All**, and wait for the queue to drain.
+2. **Transcode Videos, All**. Expected outcome: roughly 250 GB freed under `library/encoded-video`, 137 fresh 1080p HEVC transcodes for the 4K sources, and `/data` moving from 82 % toward 69 %.
+3. **OCR, All**, with nothing else running.
+
+I will confirm the numbers here once the jobs have finished.
 
 From Administration, Jobs, run **Transcode Videos, All**. Expected outcome: roughly 260 GB freed under `library/encoded-video`, 137 fresh 1080p HEVC transcodes for the 4K sources, and a `df` on `/data` moving from 83 % toward 69 %. I will confirm the number in this record once the job has finished.

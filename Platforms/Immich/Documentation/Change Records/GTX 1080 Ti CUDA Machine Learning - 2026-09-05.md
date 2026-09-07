@@ -1,10 +1,10 @@
 # GTX 1080 Ti CUDA Machine Learning
 
 **Created:** 2026-09-05  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 **Date:** 2026-09-05  
-**Status:** Complete on the server side; two re-index jobs wait for me in the admin UI
+**Status:** Complete; both re-index jobs ran on 2026-09-06
 
 ## Change
 
@@ -62,6 +62,10 @@ I pre-loaded the new CLIP text model through the same `/predict` path so the dow
 - I removed the pull and warm-up logs from `/root` and the synthetic test image from the server container. The superseded CPU image `immich-machine-learning:release`, 1.29 GB, is still on disk and can go in the next image prune.
 
 No separate evidence transcript was retained. The values above were captured during the live change.
+
+## Re-index Result
+
+I ran Smart Search in All mode and OCR in All mode from the admin UI on 2026-09-06. Afterwards the `smart_search` table held 5,889 embeddings, one per asset with a preview. The first OCR run overlapped the transcode sweep and Smart Search, and 4,408 of its jobs failed when the GPU ran out of memory; that is recorded in the [storage record](Storage%20Footprint%20Review%20and%20Transcode%20Policy%20-%202026-09-05.md). A second OCR run on its own finished clean with 8,487 text regions across 4,995 assets. Run one All-mode job at a time on this card.
 
 ## Remaining Work
 

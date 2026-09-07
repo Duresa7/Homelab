@@ -1,10 +1,10 @@
 # Facial Recognition Threshold Tuning
 
 **Created:** 2026-09-05  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-06
 
 **Date:** 2026-09-05  
-**Status:** Settings applied; one Missing-mode recognition job waits for me in the admin UI
+**Status:** Complete; the Missing-mode job ran on 2026-09-06
 
 ## Change
 
@@ -31,6 +31,10 @@ The detection score only applies to new detection jobs, and applying it to exist
 - Machine learning, PostgreSQL, and Valkey were untouched.
 
 No separate evidence transcript was retained.
+
+## Result
+
+I ran Facial Recognition in Missing mode on 2026-09-06. Unassigned faces fell from 1,050 to 843, the 52 named people are all still present, and the person count moved from 238 to 239. The queue drained with no failed job.
 
 ## Remaining Work
 
