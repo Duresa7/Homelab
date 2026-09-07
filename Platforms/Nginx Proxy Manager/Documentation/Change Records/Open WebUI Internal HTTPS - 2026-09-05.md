@@ -21,7 +21,7 @@ I reused the UniFi local A record pointing at NPM `192.168.85.2` and the narrow 
 - Force SSL, HTTP/2, WebSockets, and Block Common Exploits enabled;
 - caching, HSTS, and the NPM access list disabled.
 
-I used the centralized web-account credential through the the password manager workflow. The password and short-lived NPM bearer token stayed in variables or a mode-controlled temporary directory, never appeared in command output, and the temporary material was shredded and removed after use.
+I used the centralized web-account credential through the password-manager workflow. The password and short-lived NPM bearer token stayed in variables or a mode-controlled temporary directory, never appeared in command output, and the temporary material was shredded and removed after use.
 
 I also added `https://openwebui.alphasecunited.com/` to the Prometheus blackbox job and its approved-target assertion, matching the root-path probe every other NPM name uses. My first pass at this on 2026-09-05 wrote a `/health` target into the versioned file only: the live Prometheus configuration on `monitor-01` never received it and stayed at 56 targets. I found the gap when I re-checked the target API, deployed the root-path target to the live file, validated it with `promtool`, and reloaded Prometheus with `SIGHUP`. The versioned and live files now have the same checksum.
 

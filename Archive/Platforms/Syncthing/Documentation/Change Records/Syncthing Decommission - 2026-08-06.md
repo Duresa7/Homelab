@@ -36,7 +36,7 @@ I deleted NPM proxy host 16 through the `/api/tokens` API path, leaving 20 proxy
 
 ## Step 4: Archive the records
 
-The platform moved from `Platforms/Syncthing/` to `Archive/Platforms/Syncthing/` with its Compose definition, deployment record, device-addition runbook, alternatives research, troubleshooting index, and deployment evidence. I deleted its backlog: both open items — pairing the laptop and adding an independent vault backup — died with the service.
+The platform moved from `Platforms/Syncthing/` to `Archive/Platforms/Syncthing/` with its Compose definition, deployment record, device-addition runbook, alternatives research, troubleshooting index, and deployment evidence. I deleted its backlog: pairing the laptop and adding an independent vault backup both died with the service.
 
 ## Verification
 

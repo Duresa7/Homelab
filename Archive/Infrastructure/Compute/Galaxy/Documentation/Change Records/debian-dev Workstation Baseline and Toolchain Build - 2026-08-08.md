@@ -10,7 +10,7 @@
 
 ## Scope
 
-VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The [Linux Host Baseline Standard](../../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md) records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
+VM 102 became the machine I develop on when I deleted `fedora-dev`, and it had never been baselined. The Linux Host Baseline Standard records `debian-dev` as unreachable during the 2026-08-05 fleet sweep, so the gap was known and untracked. This record covers three things: bringing the host up to the baseline, giving it the fleet services every other guest runs, and finishing the toolchains I had installed on it piecemeal.
 
 Nothing here changed another guest. The Wazuh manager gained one group and one agent, Prometheus gained one target, and one UniFi policy gained one destination address.
 
@@ -128,7 +128,7 @@ Everything else came back clean: no failed units, no dangling symlinks outside b
 
 ## Related records
 
-- [Linux Host Baseline Standard](../../../../../../Security/Hardening/Linux-Host-Baseline-Standard.md), which named this host's single-account exception. Not published.
+- Linux Host Baseline Standard, which named this host's single-account exception. Not published.
 - [Galaxy VM inventory](../../../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../../../Operations/Inventory/Galaxy/Services.md).
 - [Wazuh configuration reference](../../../../../../Platforms/Wazuh/Configuration/README.md) for the group and agent `019` this build created.
 - [UniFi firewall policies](../../../../../../Infrastructure/Network/UniFi/Configuration/firewall.md) for the monitoring destination change.

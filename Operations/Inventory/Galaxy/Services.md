@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -24,7 +24,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
-| ansible-01 | LXC 100 | grey-server | Automation | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Wazuh agent 4.14.6<br>SSH<br>cron |
+| ansible-01 | LXC 100 | grey-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
@@ -45,7 +45,9 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | Ansible | Control node; community 14.2.0 with ansible-core 2.21.2 selected from `/opt/ansible-current` |
 | Semaphore | 2.18.27; systemd enabled/active; HTTP UI on TCP 3000; three projects, 23 templates, & 11 views |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `009` as `ansible-01` |
-| System services | Semaphore, SSH, cron |
+| Galaxy PXE | `galaxy-pxe.service`; enabled/active since 2026-08-01; `/usr/bin/python3 /usr/local/lib/galaxy-pxe/galaxy_pxe.py` from the unit at `/etc/systemd/system/galaxy-pxe.service`; HTTP on `0.0.0.0:8080` with `--base-url http://192.168.40.36:8080`; machine registry `/etc/galaxy-pxe/machines.json`, state `/var/lib/galaxy-pxe/state.json`, assets `/srv/galaxy-pxe`; `ProtectSystem=strict` with `/var/lib/galaxy-pxe` the one writable path. Platform record at [Galaxy PXE](../../../Platforms/Galaxy%20PXE/README.md) |
+| tftpd-hpa | 5.2+20240610-3 from APT; `tftpd-hpa.service` enabled/active; UDP 69; root `/srv/tftp`; serves the UEFI boot chain Galaxy PXE hands out |
+| System services | Semaphore, Galaxy PXE, tftpd-hpa, SSH, cron |
 | Containers | No Docker or Podman containers detected |
 
 ## ubuntu-dev
@@ -54,7 +56,7 @@ This is the Ubuntu development workstation on VM 105, and it is where I now deve
 
 It took CLI Proxy API from `debian-dev` on 2026-08-13 and hosted it until I moved the deployment to `docker-main` on 2026-08-19. After the new HTTPS and authenticated model paths passed, I removed the old container, Compose network, project files, credential state, logs, plugins, and migration cache from this VM.
 
-The login account is `ai-agent`, matching the single-account arrangement on `debian-dev`, and it carries the same approved single-account exception. I applied the [Linux Host Baseline Standard](../../../Security/Hardening/Linux-Host-Baseline-Standard.md) on 2026-08-13: the sudo grant moved out of `/etc/sudoers` into a `0440` drop-in, SSH took the six hardening settings, root is locked, the clock and locale are `America/New_York` and `en_US.UTF-8`, and cloud-init is disabled. It joined fleet monitoring the same day as Wazuh agent `020` and node_exporter target.
+The login account is `ai-agent`, matching the single-account arrangement on `debian-dev`, and it carries the same approved single-account exception. I applied the Linux Host Baseline Standard on 2026-08-13: the sudo grant moved out of `/etc/sudoers` into a `0440` drop-in, SSH took the six hardening settings, root is locked, the clock and locale are `America/New_York` and `en_US.UTF-8`, and cloud-init is disabled. It joined fleet monitoring the same day as Wazuh agent `020` and node_exporter target.
 
 Node.js is installed per-user through nvm rather than system-wide. It resolves in an interactive shell but not in a non-interactive one, so scripts, cron jobs, and remote commands do not find `node` on PATH.
 
@@ -240,19 +242,19 @@ On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote 
 
 ## Guest exporter coverage
 
-Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on 9100, all at `node_exporter` 1.9.0 except `ubuntu-dev`, added 2026-08-13, where Ubuntu 26.04 ships 1.10.2. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md).
+Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on 9100, all at `node_exporter` 1.9.0 except `ubuntu-dev`, added 2026-08-13, where Ubuntu 26.04 ships 1.10.2. `docker-main` and `splunk-siem` run the upstream binary because their distributions can't supply that version: bookworm offers only 1.5.0-1+b6, and Rocky 10.2 offers none. Rollout is owned by [monitoring-exporters](../../../Platforms/Ansible/Source/monitoring-exporters/README.md). The cAdvisor container counts below are a Prometheus readback of `container_last_seen` on 2026-09-07, 70 containers across the nine cAdvisor hosts.
 
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
 | docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 15 containers, `overlay2` |
-| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 5 containers, `overlayfs` |
-| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 6 containers, `overlayfs` |
-| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 10 containers, `overlayfs` |
+| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 6 containers, `overlayfs` |
+| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 9 containers, `overlayfs` |
+| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 11 containers, `overlayfs` |
 | alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | 9101, 8 containers, `overlayfs` |
 | ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
-| monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 7 containers, `overlayfs` |
+| monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 9 containers, `overlayfs` |
 | edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.30.10:9100` | No containers |
 | ubuntu-dev | Ubuntu package | `prometheus-node-exporter.service` | `192.168.40.179:9100` | Not installed |
 
