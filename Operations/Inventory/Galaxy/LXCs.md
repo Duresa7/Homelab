@@ -1,7 +1,7 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
@@ -80,8 +80,9 @@ The LXC keeps its address static in the Proxmox network configuration. UniFi DHC
 
 ### Administrative Access
 
-- SSH is public-key only as `dkadi` and `ansible`; I installed the approved keys.
-- Both accounts have their recorded recovery credentials. Root is locked.
+- SSH is public-key only as `dkadi` and `ansible`; I installed the approved keys. SSH Manager reaches it through a ProxyJump.
+- `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt that `/etc/sudoers.d/00-rootpw` points at root's password. Its `90-dkadi` NOPASSWD drop-in came off on 2026-09-07. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. [NOPASSWD Drop-ins Removed on docker-network, monitor-01 and media-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md).
+- Root and `dkadi` carry known passwords since 2026-08-15, for the console and the sudo prompt only.
 
 ### Workload
 
@@ -117,9 +118,9 @@ The HA resource uses node-local `local-lvm`, so it has no shared-storage failove
 
 ### Administrative Access
 
-- SSH is public-key only as `dkadi`; I installed the three approved administrative keys.
-- `dkadi` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root and `dkadi` password records are locked; public-key SSH remains available.
+- SSH is public-key only as `dkadi`; I installed the three approved administrative keys. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
+- `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt that `/etc/sudoers.d/00-rootpw` points at root's password. Its `90-dkadi` NOPASSWD drop-in came off on 2026-09-07. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. [NOPASSWD Drop-ins Removed on docker-network, monitor-01 and media-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md).
+- Root and `dkadi` carry known passwords since 2026-08-15; password SSH stays disabled, so they serve the console and the sudo prompt only.
 
 ## LXC 108 - docker-blue
 
@@ -203,8 +204,8 @@ Until 2026-09-06 the configuration also carried `unused0: hddpool:subvol-110-dis
 ### Administrative Access
 
 - SSH is public-key only. Root login, password authentication, and keyboard-interactive authentication are disabled.
-- SSH Manager reaches the normal administrative account as `dkadi`. `/etc/sudoers.d/90-dkadi` has granted it NOPASSWD sudo since 2026-08-11; the complete sudoers configuration parsed successfully, and `sudo -n` worked through the normal SSH path. This is a deliberate deviation from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md) awaiting the fleet sudo decision, not baseline-conforming state.
-- `ansible` and `ai-agent` retain their separate NOPASSWD drop-ins. `ai-agent` has no authorized SSH key and cannot use the key-only SSH path. The policy change is recorded with the game-rule work in [Vanilla Keep Inventory and Host Sudo Policy - 2026-08-11](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Vanilla%20Keep%20Inventory%20and%20Host%20Sudo%20Policy%20-%202026-08-11.md).
+- SSH Manager reaches the normal administrative account as `dkadi`, which holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt. `/etc/sudoers.d/00-rootpw` points that prompt at root's password, and the SSH Manager answers it from its configured entry. The `90-dkadi` NOPASSWD drop-in I added on 2026-08-11 came off on 2026-09-07, so the host is no longer a deviation from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md). [NOPASSWD Drop-ins Removed on game-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md).
+- `ansible` keeps its NOPASSWD drop-in. `ai-agent` logs in by key and is not allowed to run sudo since its `90-ai-agent` drop-in was removed the same day, matching the other ten guests. The 2026-08-11 grant is recorded in [Vanilla Keep Inventory and Host Sudo Policy - 2026-08-11](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Vanilla%20Keep%20Inventory%20and%20Host%20Sudo%20Policy%20-%202026-08-11.md).
 
 ## LXC 842 - media-01
 
@@ -248,9 +249,9 @@ The host mounts ext4 UUID `289788f9-52a4-4e49-885b-000e8d565c8b` with systemd au
 
 ### Administrative Access
 
-- SSH is public-key only as `dkadi`; I installed the approved administrative keys.
-- `dkadi` has NOPASSWD sudo. Root SSH, password SSH, and keyboard-interactive SSH are disabled.
-- Root is locked; the administrative account uses the recorded public-key SSH path.
+- SSH is public-key only as `dkadi`; I installed the approved administrative keys. Root SSH, password SSH, and keyboard-interactive SSH are disabled, and sshd carries an `AllowUsers dkadi ansible ai-agent` list, the only one in the fleet.
+- `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt that `/etc/sudoers.d/00-rootpw` points at root's password. Its NOPASSWD drop-in, named `dkadi` rather than `90-dkadi`, came off on 2026-09-07. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. [NOPASSWD Drop-ins Removed on docker-network, monitor-01 and media-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md).
+- Root and `dkadi` carry known passwords since 2026-08-15, for the console and the sudo prompt only. The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07, matching the other guests and the baseline.
 
 ## Archived & Retired LXCs
 

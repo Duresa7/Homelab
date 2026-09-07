@@ -1,7 +1,7 @@
 # Vanilla Keep Inventory and Host Sudo Policy
 
 **Created:** 2026-08-11  
-**Last updated:** 2026-08-11
+**Last updated:** 2026-09-07
 
 **Implemented:** 2026-08-11  
 **Owner:** Platforms / Game Servers  
@@ -55,3 +55,5 @@ I created no snapshot or backup. This changed one saved game rule and one indepe
 ## Open work
 
 The game-rule change is finished. The sudo grant is not: it puts `game-01` outside the [Linux host baseline](../../../../Guides/Linux-Host-Baseline.md), where only unattended accounts carry `NOPASSWD`. The fleet sudo priority in the root [TODO](../../../../TODO.md) either approves this host as a documented exception or removes the drop-in with the other nonconforming grants. Until that decision lands, `game-01` is a known deviation I made deliberately rather than an oversight.
+
+**Closed 2026-09-07.** The decision went against the exception. I removed `90-dkadi`, and `90-ai-agent` with it, so `dkadi` now answers a sudo prompt with root's password on this host like the other guests. [NOPASSWD Drop-ins Removed on game-01](../../../../Operations/Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md).
