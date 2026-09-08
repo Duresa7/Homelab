@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-08
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -16,6 +16,8 @@ I verified the node and physical-storage state against all five nodes on 2026-08
 | purple-server | 192.168.70.11 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x SSD | Not reported |
 | red-server | 192.168.70.13 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | [UPS-02](Power.md) |
 
+On 2026-09-08 I moved VM 105 `ubuntu-dev` onto Grey's NVMe-backed `local-lvm` and removed its two unused SATA SSD source volumes. `ssd-lvm1` then reported 231,147,287 KiB used (12.04%), about 62.4 GiB less than immediately before deletion. The [storage move record](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) holds the disk identities and verification.
+
 ## Physical Storage
 | Node | Device | Type | Model | Size | Used by |
 | --- | --- | --- | --- | --- | --- |
@@ -23,7 +25,7 @@ I verified the node and physical-storage state against all five nodes on 2026-08
 | blue-server | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 465.76 GiB | Unused; empty GPT, no filesystem or LVM; passed its extended SMART test |
 | green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and `local-lvm` |
 | green-server | /dev/sda | HDD | HITACHI HTS723232A7A364 | 298.09 GiB | Blank; extended test stopped with a read failure and two pending sectors; do not use |
-| grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot |
+| grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot and `local-lvm`, including VM 105 system and EFI disks |
 | grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin |
 | grey-server | /dev/sdb | HDD | TOSHIBA_DT01ACA200 | 1.82 TiB | `hddpool-1` ZFS |
 | purple-server | /dev/nvme0n1 | NVMe | THNSF5256GPUK TOSHIBA | 238.47 GiB | Proxmox boot |

@@ -1,13 +1,15 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-08
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
 
 I refreshed the living VM record on 2026-08-20 after confirming VM 117 `supabase-01` had been deleted and cleaning its remaining references. I did not create another dated inventory snapshot because the living files are the current-state view.
 
 On 2026-09-06 I audited all four living records against the cluster: `pvesh get /cluster/resources`, every guest configuration file, the storage status on each node, and the running services on all 13 workload guests. The VM record had missed the 2026-08-26 `kali-pen` rebuild as VM 102, the LXC record had missed `docker-blue` growing to two vCPUs and 2 GiB on 2026-09-01, and the service record carried several superseded versions. Each is corrected in its living file; the findings and verification are in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
+
+On 2026-09-08 I updated the VM and node records for `ubuntu-dev`'s move to M.2 NVMe storage and removal of its two unused SSD source volumes. The [change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) includes live verification and recovered space.
 
 ## Current state
 

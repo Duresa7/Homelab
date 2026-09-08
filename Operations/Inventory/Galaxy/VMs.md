@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-07  
+**Last updated:** 2026-09-08  
 
 Galaxy currently has 7 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -83,6 +83,8 @@ I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.
 
 ### VM 105 - ubuntu-dev
 
+On 2026-09-08 I moved both disks to Grey's M.2 NVMe-backed `local-lvm` and deleted the two unused `ssd-lvm1` source volumes. The VM remained running and its guest agent responded after cleanup. The [storage move record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) holds the verification and reclaimed-space figures.
+
 This is the Ubuntu development workstation that takes over from `debian-dev`. I created it on 2026-08-12 and added it to this inventory on 2026-08-13, when CLI Proxy API moved onto it; it ran undocumented in between.
 
 It has 16 GiB with ballooning off, which is deliberate. The running instance predated that setting until the guest restarted on 2026-08-19, and the setting has been in force since: on 2026-09-06 the guest reported 15,408 MiB of total memory, where the pre-restart instance had been capped at `actual=12630` against `max_mem=16384` and saw 11.4 GiB.
@@ -121,8 +123,8 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-105-disk-1 | 150G | disk | discard, I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-105-disk-0 | 4M | disk | efitype 4m |
+| scsi0 | scsi | local-lvm | vm-105-disk-0 | 150G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-105-disk-1 | 4M | disk | efitype 4m |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |

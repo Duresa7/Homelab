@@ -1,0 +1,108 @@
+Before cleanup (September 8, 2026, 9:11:19 AM EDT)
+Target: grey-server (SSH Manager: grey_server)
+Command:
+date '+%Y-%m-%d %T %Z'
+qm status 105
+qm config 105 | sed -n -E '/^(name|scsi0|efidisk0|unused[0-9]+|lock|boot):/p'
+pvesm list ssd-lvm1 --vmid 105
+pvesm list local-lvm --vmid 105
+pvesm status --storage ssd-lvm1
+pvs --noheadings -o pv_name,vg_name
+lsblk -dn -o NAME,MODEL,SIZE
+qm help disk unlink
+
+stdout:
+2026-09-08 09:11:19 EDT
+status: running
+boot: order=scsi0;net0
+efidisk0: local-lvm:vm-105-disk-1,efitype=4m,size=4M
+name: ubuntu-dev
+scsi0: local-lvm:vm-105-disk-0,discard=on,iothread=1,size=150G,ssd=1
+unused0: ssd-lvm1:vm-105-disk-1
+unused1: ssd-lvm1:vm-105-disk-0
+Volid                  Format  Type              Size VMID
+ssd-lvm1:vm-105-disk-0 raw     images         4194304 105
+ssd-lvm1:vm-105-disk-1 raw     images    161061273600 105
+Volid                   Format  Type              Size VMID
+local-lvm:vm-105-disk-0 raw     images    161061273600 105
+local-lvm:vm-105-disk-1 raw     images         4194304 105
+Name            Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+ssd-lvm1     lvmthin     active      1919827968       296613421      1623214546   15.45%
+  /dev/nvme0n1p3 pve     
+  /dev/sda       ssd-lvm1
+sda     CT2000BX500SSD1      1.8T
+sdb     TOSHIBA DT01ACA200   1.8T
+nvme0n1 CT1000P310SSD8     931.5G
+USAGE: qm disk unlink <vmid> --idlist <string> [OPTIONS]
+
+  Unlink/delete disk images.
+
+  <vmid>     <integer> (100 - 999999999)
+	     The (unique) ID of the VM.
+
+  --force    <boolean>
+	     Force physical removal. Without this, we simple remove the
+	     disk from the config file and create an additional
+	     configuration entry called 'unused[n]', which contains the
+	     volume ID. Unlink of unused[n] always cause physical removal.
+
+  --idlist   <string>
+	     A list of disk IDs you want to delete.
+
+
+
+stderr:
+(empty)
+Exit code: 0
+
+Cleanup and verification (September 8, 2026, 9:11:41 AM EDT)
+Target: grey-server (SSH Manager: grey_server)
+Command:
+set -e
+qm agent 105 ping
+python3 - <<'PY'
+import subprocess, pathlib
+cfg=subprocess.check_output(['qm','config','105'],text=True)
+d=dict(line.split(': ',1) for line in cfg.splitlines() if ': ' in line)
+assert d['scsi0'].split(',')[0]=='local-lvm:vm-105-disk-0'
+assert d['efidisk0'].split(',')[0]=='local-lvm:vm-105-disk-1'
+assert d['unused0']=='ssd-lvm1:vm-105-disk-1'
+assert d['unused1']=='ssd-lvm1:vm-105-disk-0'
+assert 'lock' not in d
+for p in pathlib.Path('/etc/pve/nodes').glob('*/qemu-server/*.conf'):
+    for line in p.read_text().splitlines():
+        if any(v in line for v in [d['unused0'],d['unused1']]):
+            assert p.name=='105.conf' and line in ['unused0: '+d['unused0'],'unused1: '+d['unused1']], 'Unexpected disk reference'
+print('Verified attached NVMe disks and exactly two unused SSD source volumes.')
+PY
+qm disk unlink 105 --idlist unused0,unused1
+date '+%Y-%m-%d %I:%M:%S %p %Z'
+qm status 105
+qm config 105 | sed -n -E '/^(name|scsi0|efidisk0|unused[0-9]+|lock|boot):/p'
+pvesm list ssd-lvm1 --vmid 105
+pvesm list local-lvm --vmid 105
+pvesm status --storage ssd-lvm1
+qm agent 105 ping
+
+stdout:
+Verified attached NVMe disks and exactly two unused SSD source volumes.
+update VM 105: -delete unused0,unused1
+  Logical volume "vm-105-disk-1" successfully removed.
+  Logical volume "vm-105-disk-0" successfully removed.
+2026-09-08 09:11:41 AM EDT
+status: running
+boot: order=scsi0;net0
+efidisk0: local-lvm:vm-105-disk-1,efitype=4m,size=4M
+name: ubuntu-dev
+scsi0: local-lvm:vm-105-disk-0,discard=on,iothread=1,size=150G,ssd=1
+Volid Format  Type      Size VMID
+Volid                   Format  Type              Size VMID
+local-lvm:vm-105-disk-0 raw     images    161061273600 105
+local-lvm:vm-105-disk-1 raw     images         4194304 105
+Name            Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+ssd-lvm1     lvmthin     active      1919827968       231147287      1688680680   12.04%
+
+stderr:
+(empty)
+Exit code: 0
+

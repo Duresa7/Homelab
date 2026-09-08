@@ -519,3 +519,8 @@ Platforms/Netbird/Configuration/netbird_data/
 Platforms/Nginx Proxy Manager/Configuration/data/
 Platforms/Nginx Proxy Manager/Configuration/letsencrypt/
 Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
+
+# Verified VM 105 storage migration transcript
+!/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/
+/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/*
+!/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/Verification.log
