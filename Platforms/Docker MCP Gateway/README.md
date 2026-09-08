@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-07
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -13,7 +13,8 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 | OCI image | `docker.io/docker/mcp-gateway:v0.43.3` |
 | Pinned manifest digest | `sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa` |
 | Host | `docker-blue` (`192.168.40.39`) |
-| UniFi container | `docker-mcp-gateway` |
+| UniFi gateway container | `docker-mcp-gateway` |
+| UniFi server container | `mcp-unifi-network`, private `http://unifi-network:8080/mcp` |
 | UniFi MCP endpoint | `http://192.168.40.39:8811/mcp`, 5 gateway tools |
 | UniFi health endpoint | `http://192.168.40.39:8811/health` |
 | SSH Manager container | `ssh-manager-mcp-gateway` |
@@ -22,10 +23,10 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 | Live Compose path | `/opt/docker/mcp-gateway/docker-compose.yml` |
 | Live configuration | `/opt/docker/mcp-gateway/config` |
 | Gateway token file | `/opt/docker/mcp-gateway/.env`, two distinct bearer tokens, root-owned mode `0600` |
-| UniFi secret file | `/opt/docker/mcp-gateway/unifi-secrets.env`, root-owned mode `0600` |
+| UniFi secret file | `/opt/docker/mcp-gateway/unifi-network.env`, root-owned mode `0600` |
 | SSH Manager secret file | `/opt/docker/mcp-gateway/ssh-manager.env`, root-owned mode `0600` |
-| Servers | UniFi Network MCP 0.29.3 with a full-access overlay, started by the gateway as a managed container; SSH Manager MCP as a persistent service the gateway reaches over HTTP |
-| Local server images | `homelab/unifi-network-mcp:0.29.3-full-access` started by the gateway, `homelab/mcp-ssh-manager:latest` run as the `mcp-ssh-manager` service |
+| Servers | UniFi Network MCP 0.29.3 with a full-access overlay and SSH Manager MCP, both persistent services reached over HTTP |
+| Local server images | `homelab/unifi-network-mcp:0.29.3-full-access-proxy` run as the `unifi-network` service, `homelab/mcp-ssh-manager:latest` run as the `mcp-ssh-manager` service |
 | SSH Manager version | 3.8.5, 37 tools, 18 configured servers |
 | UniFi controller | `192.168.1.1:443`, site `default` |
 | Catalogs | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml`, `.../ssh-manager.yaml` |
@@ -35,7 +36,9 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 
 Both MCP endpoints use Streamable HTTP and require different bearer tokens. The tokens are held in the approved credential store and the live `.env`; they are not in this repository. Executor reaches each internal HTTP endpoint directly through separate personal connections named `unifiMcpGateway` and `sshManagerMcpGateway`. No DNS record or TLS proxy fronts either gateway endpoint.
 
-The UniFi server runs through the gateway's headless catalog mode and starts as a managed stdio container when a client calls it. Lazy registration exposes the server through the gateway's five discovery and execution tools instead of publishing the entire UniFi catalog at once. The local administrator credentials and Integration API key come from the approved credential store and the root-owned UniFi secret file. Create, update, and delete are enabled, and bypass mode executes mutations without the preview-confirm gate. The local 0.29.3 image overlay makes bypass authoritative when FastMCP materializes an omitted `confirm` argument as `false`; it changes no controller logic, validation, or redaction. The catalog declares `192.168.1.1:443` as the managed container's only allowed host, but the gateway enforces `allowHosts` only under `--block-network`, which this service does not pass, so the limit is declared and not applied. I decided on 2026-09-03 to leave it that way rather than restrict either server.
+Since 2026-09-07 I run UniFi as one persistent Compose service behind mcp-proxy 0.12.0. The remote catalog points to `http://unifi-network:8080/mcp` on the project network, with no host port published. Every caller shares one process and its authenticated controller connection. The gateway waits for the service health check and sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1` for that private HTTP endpoint. The bridge uses MCP SDK 1.29.1 in a separate environment, preserving UniFi's application dependencies.
+
+Lazy registration still exposes five discovery and execution tools. Credentials come from the root-owned `unifi-network.env`, read with Compose's raw env-file format to preserve literal values. Controller settings and permissions live on the Compose service. Create, update, and delete remain enabled; the full-access overlay still makes bypass authoritative when FastMCP supplies `confirm=false`. The [cutover record](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md) contains verification of concurrent calls and process reuse.
 
 SSH Manager has no upstream image, so I build `homelab/mcp-ssh-manager:latest` on `docker-blue` from the tracked [Dockerfile](Configuration/Dockerfile.ssh-manager). The build applies a 3.8.5-specific [homelab patch](Configuration/patches/mcp-ssh-manager-3.8.5-homelab.patch) for bounded inline remote-client transfers and actual SSH2 host-key comparison.
 
@@ -43,7 +46,7 @@ Since 2026-09-03 that image runs as its own Compose service rather than as a con
 
 The eighteen server definitions live in `Configuration/ssh-manager-servers.env`, which is not versioned, and the private key and ten sudo passwords in the root-owned `ssh-manager.env`, both read by that service. The key is materialized at mode `0600` on a `/keys` tmpfs at start and is never in an image layer. All eighteen answer. The five Proxmox nodes and `docker-main` authenticate as root; `ansible-01` and `ubuntu-dev` reach root through passwordless sudo; the other ten use their configured sudo values. Every entry is unrestricted, and Executor has no approval policy for this connection. Egress is deliberately unrestricted, decided 2026-09-03: the server may reach any machine I add to it. The catalog's `allowHosts` never applied here, and it was never enforced for the managed container either because that needs `--block-network`.
 
-The official container deployment requires the host Docker socket. This gives the gateway control of Docker Engine on `docker-blue`, which is necessary for starting managed MCP server containers and is the deployment's main trust boundary. The gateway container otherwise has a read-only root filesystem, no Linux capabilities, `no-new-privileges`, a 256 MiB memory limit, a half-CPU limit, a 256-process limit, and bounded JSON logs. Future managed MCP server containers default to one CPU and 512 MiB through the gateway arguments.
+The official container deployment requires the host Docker socket. This gives the gateway control of Docker Engine on `docker-blue`, which is necessary for starting managed MCP server containers and is the deployment's main trust boundary. The gateway container otherwise has a read-only root filesystem, no Linux capabilities, `no-new-privileges`, a 256 MiB memory limit, a half-CPU limit, a 256-process limit, and bounded JSON logs. Both persistent MCP services have a one-CPU and 512 MiB limit.
 
 ## Routine Operations
 
@@ -64,9 +67,9 @@ The gateway stays on the 0.43.3 digest for now. The 2026-09-03 test of `:latest`
 
 ```bash
 cd /opt/docker/mcp-gateway
-docker build --no-cache -f Dockerfile.unifi-network -t homelab/unifi-network-mcp:0.29.3-full-access .
-docker run --rm --network none --entrypoint python homelab/unifi-network-mcp:0.29.3-full-access -c 'import importlib.metadata as m; print(m.version("unifi-network-mcp"))'
-docker compose up -d --force-recreate gateway
+docker build --no-cache -f Dockerfile.unifi-network -t homelab/unifi-network-mcp:0.29.3-full-access-proxy .
+docker run --rm --network none --entrypoint python homelab/unifi-network-mcp:0.29.3-full-access-proxy -c 'import importlib.metadata as m; print(m.version("unifi-network-mcp"))'
+docker compose up -d --wait unifi-network gateway
 ```
 
 Use a new local tag when the upstream version changes. If upstream makes bypass mode authoritative after FastMCP supplies default arguments, remove the overlay rather than carrying a redundant patch. Verify health, bearer-token enforcement, an authenticated system-information read, an Integration API read, and a no-confirm mutation probe after the recreation.
@@ -102,9 +105,11 @@ systemctl list-timers mcp-ssh-manager-restart.timer
 
 ## Records
 
+- [UniFi shared server cutover](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md)
+
 - [Compose reference](Configuration/docker-compose.yml)
 - [Environment template](Configuration/.env.example)
-- [UniFi secret template](Configuration/unifi-secrets.env.example)
+- [UniFi service secret template](Configuration/unifi-network.env.example)
 - [SSH Manager secret template](Configuration/ssh-manager.env.example)
 - SSH Manager server definitions, `Configuration/ssh-manager-servers.env`, local only
 - [UniFi catalog](Configuration/catalogs/unifi-network.yaml)

@@ -23,4 +23,4 @@ I let the login limit clear and use sequential UniFi calls with at least 30 seco
 
 The subsequent Network List readback confirmed the six new names with unchanged IDs and memberships. The final policy check matched all 23 original referencing policies to their pre-rename configurations and group IDs. I recorded the rename and the separate additions seen later that day in [Policy features and Network Lists](../../../../Infrastructure/Network/UniFi/Configuration/objects.md).
 
-A shared persistent UniFi MCP process would let requests reuse one authenticated connection. That change remains open; I did not change the gateway deployment, credentials, or controller configuration during diagnosis. The generic firewall-tool error also remains unchanged.
+I completed the [shared server cutover](../Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md) later the same day. Six concurrent network reads through separate Executor calls succeeded against one persistent process, with no new managed containers or login-limit errors. The generic firewall-tool error remains unchanged.

@@ -5,16 +5,17 @@ services:
     image: docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa
     container_name: docker-mcp-gateway
     restart: unless-stopped
+    depends_on:
+      unifi-network:
+        condition: service_healthy
     environment:
+      DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS: "1"
       MCP_GATEWAY_AUTH_TOKEN: ${UNIFI_MCP_GATEWAY_AUTH_TOKEN:?set in .env}
     command:
       - --transport=streaming
       - --port=8811
       - --catalog=unifi-network.yaml
       - --servers=unifi-network
-      - --secrets=/run/secrets/unifi_secret
-      - --cpus=1
-      - --memory=512Mb
       - --watch=true
       - --verbose=false
     ports:
@@ -22,8 +23,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./config:/root/.docker/mcp
-    secrets:
-      - unifi_secret
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8811/health"]
       interval: 10s
@@ -40,6 +39,53 @@ services:
     pids_limit: 256
     mem_limit: 256m
     cpus: 0.5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+
+  # One shared controller session, behind mcp-proxy on the project network.
+  unifi-network:
+    image: homelab/unifi-network-mcp:0.29.3-full-access-proxy
+    container_name: mcp-unifi-network
+    restart: unless-stopped
+    init: true
+    command:
+      - --stateless
+      - --
+      - unifi-network-mcp
+    env_file:
+      - path: ./unifi-network.env
+        format: raw
+    environment:
+      UNIFI_NETWORK_HOST: 192.168.1.1
+      UNIFI_NETWORK_PORT: "443"
+      UNIFI_NETWORK_SITE: default
+      UNIFI_NETWORK_VERIFY_SSL: "false"
+      UNIFI_NETWORK_CONTROLLER_TYPE: proxy
+      UNIFI_TOOL_REGISTRATION_MODE: lazy
+      UNIFI_NETWORK_MCP_CONTENT_MODE: adaptive
+      UNIFI_NETWORK_REDACT_SENSITIVE_FIELDS: "true"
+      UNIFI_NETWORK_TOOL_PERMISSION_MODE: bypass
+      UNIFI_POLICY_NETWORK_CREATE: "true"
+      UNIFI_POLICY_NETWORK_UPDATE: "true"
+      UNIFI_POLICY_NETWORK_DELETE: "true"
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/status', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 10s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 512m
+    cpus: 1
     logging:
       driver: json-file
       options:
@@ -128,10 +174,6 @@ services:
       options:
         max-size: 10m
         max-file: "3"
-
-secrets:
-  unifi_secret:
-    file: ./unifi-secrets.env
 
 volumes:
   # Created by the gateway on 2026-08-31 as an unprefixed named volume; it holds the

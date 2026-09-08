@@ -12,3 +12,13 @@ COPY patches/unifi-network-mcp-0.29.3-full-access.py /tmp/apply-full-access.py
 
 RUN python /tmp/apply-full-access.py \
     && rm /tmp/apply-full-access.py
+
+# Isolate bridge dependencies from UniFi's application environment.
+# These are the same bridge/SDK pins used by SSH Manager.
+RUN uv venv /opt/mcp-proxy \
+    && uv pip install --python /opt/mcp-proxy/bin/python 'mcp-proxy==0.12.0' 'mcp==1.29.1' \
+    && /opt/mcp-proxy/bin/mcp-proxy --help >/dev/null
+
+EXPOSE 8080
+ENTRYPOINT ["/opt/mcp-proxy/bin/mcp-proxy", "--host", "0.0.0.0", "--port", "8080", "--pass-environment"]
+CMD ["--stateless", "--", "unifi-network-mcp"]
