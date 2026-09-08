@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
+
+I verified the eight existing identity policies on 2026-09-07 and found no mismatch in their actions, enabled states, protocols, zones, or selectors. I added Allow Identity to Splunk - Security-A after checking SC4S on 192.168.72.3. The controller now returns 351 policies: 77 user-defined policies, split 69 allows to eight blocks, and 274 generated policies. The [final identity readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Final%20Identity%20Policy%20Readback.json) retains all nine custom rules and their response companions.
 
 On 2026-09-06 I read all 68 policies back from the controller during the documentation audit and compared the names. Seven rows in the table carried the corrected zone spelling `AlphaSec` where the controller still names the policy with the original `AlphSec` or `A-Servers` shorthand; the 2026-07-27 consolidation corrected the zone names, not the policy names that mention them. The rows now match the controller character for character, so a search of this file finds the live policy. The count, the 61 to seven split, and every selector I checked were as recorded.
 
@@ -107,6 +109,30 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow dkadi MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 8090 |
 | `Allow Monitor to Security monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Observability` / `AG-Security-Stack` / `PG-Node-Exporter` |
 | `Allow splunk-siem to alert bot` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Observability` / 192.168.72.3 | `AlphaSec-Observability` / 192.168.73.2 / 8080 |
+
+| `Allow Workstations to AD` | Yes | ALLOW | 10000 | TCP+UDP | Internal / Secure, Secure Client | AlphaSec-Identity / AG-Domain-Controllers / PG-AD-Client |
+| `Allow PAW to Windows Admin` | Yes | ALLOW | 10001 | TCP | Internal / AG-PAW | AlphaSec-Identity / AG-Identity-Servers / PG-Windows-Admin |
+| `Allow Identity DNS to Gateway` | Yes | ALLOW | 10000 | TCP+UDP | AlphaSec-Identity / Any | Gateway / Any / 53 |
+| `Allow Identity NTP to Gateway` | Yes | ALLOW | 10001 | UDP | AlphaSec-Identity / Any | Gateway / Any / 123 |
+| `Allow Identity to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | AlphaSec-Identity / Any | AlphaSec-Observability / 192.168.72.2 / Wazuh Ports |
+| `Allow Identity Web Egress` | Yes | ALLOW | 10000 | TCP | AlphaSec-Identity / Any | External / Any / 80,443 |
+| `Allow Monitor to Windows Exporter` | Yes | ALLOW | 10000 | TCP | AlphaSec-Observability / AG-Monitor-Collector | AlphaSec-Identity / AG-Identity-Servers / PG-Windows-Exporter |
+| `Block Identity Other External Egress` | Yes | BLOCK | 10001 | All | AlphaSec-Identity / Any | External / Any |
+| `Allow Identity to Splunk - Security-A` | Yes | ALLOW | 10001 | TCP+UDP | AlphaSec-Identity / Any | AlphaSec-Observability / 192.168.72.3 / 514 |
+
+## Identity Policy Verification
+
+I confirmed that Allow Workstations to AD selects exactly Secure and Secure Client in Internal, with no other source network. All nine identity policies are enabled, use BOTH IP versions and the Always schedule, and have no source port restriction. The table names every bound address and port group; Any and literal destinations have no address group.
+
+I verified Identity-to-External indexes 10000 for Allow Identity Web Egress and 10001 for Block Identity Other External Egress. The ordering endpoint also returned two before-system entries and no after-system entries. The web rule binds explicit TCP ports 80,443, not PG-Egress-Web, following the earlier controller rejection of a port group with an any-in-zone destination. I did not reproduce that earlier failed write.
+
+I found no SERVERS-A-to-Splunk policy in the complete 349-policy pre-change inventory, including generated rules. The only custom rule from AlphaSec-Servers to AlphaSec-Observability targets Wazuh at 192.168.72.2; the pair otherwise has a default block and a monitoring response rule. I left that gap unchanged. The [pattern check and creation readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Splunk%20Policy%20Creation%20and%20Readback.json) retain the result.
+
+I checked splunk_siem through SSH Manager. SC4S was active/running with host networking, syslog-ng was running, and TCP and UDP 514 were listening on 0.0.0.0. CEF-specific listeners use 1514; I used the standard syslog port 514 for this policy. The initial sudo commands failed because a terminal/password was required; an unprivileged follow-up confirmed the listener and service state with exit code 0. The [host capture](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Splunk%20Listener%20Checks.json) includes the failures and follow-up.
+
+I created Allow Identity to Splunk - Security-A with ID `6a9f71f1f9e5db2485af6cce`: ALLOW, enabled, TCP+UDP, AlphaSec-Identity / Any to AlphaSec-Observability / 192.168.72.3 / 514, index 10001, logging false, and `create_allow_respond: true`. The controller accepted the default and generated an enabled RELATED/ESTABLISHED return rule at index 30001. No address or port group is bound to the new policy.
+
+The workstation AD, PAW administration, Wazuh, exporter, and Splunk rules have `create_allow_respond: true`. DNS, NTP, web egress, and the external block have it false. Only the external block logs matches. All 76 pre-existing custom policies compared unchanged after creation. I left Secure and Secure Client DHCP DNS unchanged and created no VPN access. This verifies controller preparation and the Splunk listener, not event delivery from the future Windows guests.
 
 ## Kasm Retirement Result
 

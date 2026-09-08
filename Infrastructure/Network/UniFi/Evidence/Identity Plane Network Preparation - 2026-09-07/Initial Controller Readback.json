@@ -1,0 +1,1054 @@
+{
+  "captured_at": "9/7/2026, 10:23:49 PM Eastern",
+  "target": "UniFi default site",
+  "reads": [
+    {
+      "tool": "unifi_list_networks",
+      "result": {
+        "success": true,
+        "site": "default",
+        "fields": "_id,name,vlan,purpose",
+        "total_count": 23,
+        "returned_count": 23,
+        "count": 23,
+        "limit": 100,
+        "networks": [
+          {
+            "_id": "68b7cc68620e3d7fdfd2f33f",
+            "name": "Internet 1",
+            "purpose": "wan",
+            "vlan": null
+          },
+          {
+            "_id": "68b7cc68620e3d7fdfd2f340",
+            "name": "Internet 2",
+            "purpose": "wan",
+            "vlan": null
+          },
+          {
+            "_id": "68b7cc68620e3d7fdfd2f341",
+            "name": "Management",
+            "purpose": "corporate",
+            "vlan": null
+          },
+          {
+            "_id": "68b78866e9f08f1e1b2a227b",
+            "name": "IoT",
+            "purpose": "corporate",
+            "vlan": "20"
+          },
+          {
+            "_id": "68b78940e9f08f1e1b2a232b",
+            "name": "Trusted",
+            "purpose": "corporate",
+            "vlan": "10"
+          },
+          {
+            "_id": "68b78976e9f08f1e1b2a2331",
+            "name": "Personal-A",
+            "purpose": "corporate",
+            "vlan": "40"
+          },
+          {
+            "_id": "68b789dbe9f08f1e1b2a2341",
+            "name": "DMZ",
+            "purpose": "corporate",
+            "vlan": "30"
+          },
+          {
+            "_id": "68b78a68e9f08f1e1b2a2350",
+            "name": "Secure",
+            "purpose": "corporate",
+            "vlan": "50"
+          },
+          {
+            "_id": "68b790fbe9f08f1e1b2a23fe",
+            "name": "ProtonVPN",
+            "purpose": "vpn-client",
+            "vlan": null
+          },
+          {
+            "_id": "68bbda4289628952612bda0c",
+            "name": "Secure Client",
+            "purpose": "corporate",
+            "vlan": "60"
+          },
+          {
+            "_id": "68c097a089628952612c585c",
+            "name": "FamilyVPN",
+            "purpose": "remote-user-vpn",
+            "vlan": null
+          },
+          {
+            "_id": "698cc03310cb5676c296c4f6",
+            "name": "MGMT-A",
+            "purpose": "corporate",
+            "vlan": "70"
+          },
+          {
+            "_id": "698cc0b410cb5676c296c58a",
+            "name": "SERVERS-A",
+            "purpose": "corporate",
+            "vlan": "80"
+          },
+          {
+            "_id": "698cd56010cb5676c296e2d1",
+            "name": "Management Access",
+            "purpose": "remote-user-vpn",
+            "vlan": null
+          },
+          {
+            "_id": "6a0a71f586602376ce3b08c2",
+            "name": "Game-Access",
+            "purpose": "remote-user-vpn",
+            "vlan": null
+          },
+          {
+            "_id": "6a29feaf9447cbc0fed968b9",
+            "name": "Temp",
+            "purpose": "remote-user-vpn",
+            "vlan": null
+          },
+          {
+            "_id": "6a4fea550e10fae122582342",
+            "name": "Access-A",
+            "purpose": "corporate",
+            "vlan": "85"
+          },
+          {
+            "_id": "6a4fea7d0e10fae122582380",
+            "name": "Security-A",
+            "purpose": "corporate",
+            "vlan": "72"
+          },
+          {
+            "_id": "6a4feadd0e10fae122582420",
+            "name": "Cluster-Net",
+            "purpose": "corporate",
+            "vlan": "71"
+          },
+          {
+            "_id": "6a665217052792cd21405734",
+            "name": "MONITOR-A",
+            "purpose": "corporate",
+            "vlan": "73"
+          },
+          {
+            "_id": "6a6be56f052792cd21414a99",
+            "name": "Server-Provision",
+            "purpose": "corporate",
+            "vlan": "5"
+          },
+          {
+            "_id": "6a7a85ffdee8c70a32df35b3",
+            "name": "Proton-WiFi",
+            "purpose": "corporate",
+            "vlan": "45"
+          },
+          {
+            "_id": "6a9edf88f9e5db2485ad6d13",
+            "name": "IDENTITY-A",
+            "purpose": "corporate",
+            "vlan": "65"
+          }
+        ]
+      }
+    },
+    {
+      "tool": "unifi_list_firewall_zones",
+      "result": {
+        "success": true,
+        "site": "default",
+        "count": 12,
+        "zones": [
+          {
+            "id": "68b788c0e9f08f1e1b2a2288",
+            "name": "Internal",
+            "networks": []
+          },
+          {
+            "id": "68b788c0e9f08f1e1b2a2289",
+            "name": "External",
+            "networks": []
+          },
+          {
+            "id": "68b788c0e9f08f1e1b2a228a",
+            "name": "Gateway",
+            "networks": []
+          },
+          {
+            "id": "68b788c0e9f08f1e1b2a228b",
+            "name": "Vpn",
+            "networks": []
+          },
+          {
+            "id": "68b788c0e9f08f1e1b2a228c",
+            "name": "Hotspot",
+            "networks": []
+          },
+          {
+            "id": "68b788c0e9f08f1e1b2a228d",
+            "name": "Dmz",
+            "networks": []
+          },
+          {
+            "id": "68b788dee9f08f1e1b2a2301",
+            "name": "Untrusted",
+            "networks": []
+          },
+          {
+            "id": "699cfa33c9d00a2842cceae1",
+            "name": "AlphaSec-Servers",
+            "networks": []
+          },
+          {
+            "id": "699cfa5fc9d00a2842cceb51",
+            "name": "AlphaSec-Mgmt",
+            "networks": []
+          },
+          {
+            "id": "6a4e74530e10fae12247ad56",
+            "name": "AlphaSec-Access",
+            "networks": []
+          },
+          {
+            "id": "6a665585052792cd214057cb",
+            "name": "AlphaSec-Observability",
+            "networks": []
+          },
+          {
+            "id": "6a9eddbbf9e5db2485ad6613",
+            "name": "AlphaSec-Identity",
+            "networks": []
+          }
+        ]
+      }
+    },
+    {
+      "tool": "unifi_list_firewall_groups",
+      "result": {
+        "success": true,
+        "site": "default",
+        "count": 22,
+        "groups": [
+          {
+            "id": "699e018ec9d00a2842ce00a9",
+            "name": "Wazuh Ports",
+            "group_type": "port-group",
+            "members": [
+              "1514",
+              "1515"
+            ]
+          },
+          {
+            "id": "69bb4ee867f10f478687f839",
+            "name": "App Access",
+            "group_type": "port-group",
+            "members": [
+              "8000",
+              "80"
+            ]
+          },
+          {
+            "id": "69cd8ab722432d562f1c424d",
+            "name": "Proxmox-Admin-Ports",
+            "group_type": "port-group",
+            "members": [
+              "22",
+              "8006",
+              "3128"
+            ]
+          },
+          {
+            "id": "69dde070a508864f485767bd",
+            "name": "Portainer Edge Agents",
+            "group_type": "port-group",
+            "members": [
+              "8000",
+              "9443"
+            ]
+          },
+          {
+            "id": "6a0f4788c7031a4577297154",
+            "name": "Allow Identity Sync Service Connection-9543",
+            "group_type": "port-group",
+            "members": [
+              "9543"
+            ]
+          },
+          {
+            "id": "6a67a17e052792cd214090e8",
+            "name": "AG-Monitor-Collector",
+            "group_type": "address-group",
+            "members": [
+              "192.168.73.2"
+            ]
+          },
+          {
+            "id": "6a67a1b2052792cd214090eb",
+            "name": "AG-Reverse-Proxy",
+            "group_type": "address-group",
+            "members": [
+              "192.168.85.2"
+            ]
+          },
+          {
+            "id": "6a67a1d2052792cd214090ee",
+            "name": "AG-Security-Stack",
+            "group_type": "address-group",
+            "members": [
+              "192.168.72.2",
+              "192.168.72.3"
+            ]
+          },
+          {
+            "id": "6a67a1eb052792cd214090f1",
+            "name": "AG-Proxmox-Nodes",
+            "group_type": "address-group",
+            "members": [
+              "192.168.70.10",
+              "192.168.70.11",
+              "192.168.70.12",
+              "192.168.70.13",
+              "192.168.70.14"
+            ]
+          },
+          {
+            "id": "6a67a212052792cd214090f5",
+            "name": "AG-Observability-Hosts",
+            "group_type": "address-group",
+            "members": [
+              "192.168.72.2",
+              "192.168.72.3",
+              "192.168.73.2"
+            ]
+          },
+          {
+            "id": "6a67a229052792cd214090f8",
+            "name": "PG-Node-Exporter",
+            "group_type": "port-group",
+            "members": [
+              "9100",
+              "9101",
+              "9102"
+            ]
+          },
+          {
+            "id": "6a67a246052792cd214090fb",
+            "name": "PG-Egress-Web",
+            "group_type": "port-group",
+            "members": [
+              "80",
+              "443"
+            ]
+          },
+          {
+            "id": "6a67a25b052792cd214090fe",
+            "name": "PG-NTP",
+            "group_type": "port-group",
+            "members": [
+              "123"
+            ]
+          },
+          {
+            "id": "6a6cbf5285e3cf84d3d82810",
+            "name": "AG-Galaxy-PXE-Service",
+            "group_type": "address-group",
+            "members": [
+              "192.168.40.36"
+            ]
+          },
+          {
+            "id": "6a6cbf5585e3cf84d3d82813",
+            "name": "PG-Galaxy-PXE-Callback",
+            "group_type": "port-group",
+            "members": [
+              "8080"
+            ]
+          },
+          {
+            "id": "6a90577f189577efd6d1d575",
+            "name": "PG-Printing",
+            "group_type": "port-group",
+            "members": [
+              "631",
+              "9100"
+            ]
+          },
+          {
+            "id": "6a9eddbff9e5db2485ad661c",
+            "name": "AG-Domain-Controllers",
+            "group_type": "address-group",
+            "members": [
+              "192.168.65.10",
+              "192.168.65.11"
+            ]
+          },
+          {
+            "id": "6a9eddc2f9e5db2485ad6655",
+            "name": "AG-Identity-Servers",
+            "group_type": "address-group",
+            "members": [
+              "192.168.65.10",
+              "192.168.65.11",
+              "192.168.65.12"
+            ]
+          },
+          {
+            "id": "6a9ede05f9e5db2485ad6774",
+            "name": "AG-PAW",
+            "group_type": "address-group",
+            "members": [
+              "192.168.50.241"
+            ]
+          },
+          {
+            "id": "6a9ede0bf9e5db2485ad677f",
+            "name": "PG-AD-Client",
+            "group_type": "port-group",
+            "members": [
+              "53",
+              "88",
+              "123",
+              "135",
+              "389",
+              "445",
+              "464",
+              "636",
+              "3268",
+              "3269",
+              "49152-65535"
+            ]
+          },
+          {
+            "id": "6a9ede0ff9e5db2485ad67a2",
+            "name": "PG-Windows-Admin",
+            "group_type": "port-group",
+            "members": [
+              "22",
+              "3389",
+              "5985",
+              "5986"
+            ]
+          },
+          {
+            "id": "6a9ede12f9e5db2485ad67a6",
+            "name": "PG-Windows-Exporter",
+            "group_type": "port-group",
+            "members": [
+              "9182"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "tool": "unifi_list_firewall_policies",
+      "result": {
+        "success": true,
+        "site": "default",
+        "enabled_only": false,
+        "total_count": 76,
+        "returned_count": 76,
+        "count": 76,
+        "limit": 500,
+        "policies": [
+          {
+            "id": "6a9edfd3f9e5db2485ad6e5d",
+            "predefined": false,
+            "name": "Allow Workstations to AD",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10000,
+            "protocol": "tcp_udp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": true,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_mac": false,
+              "match_opposite_networks": false,
+              "match_opposite_ports": false,
+              "matching_target": "NETWORK",
+              "matching_target_type": "OBJECT",
+              "network_ids": [
+                "68b78a68e9f08f1e1b2a2350",
+                "68bbda4289628952612bda0c"
+              ],
+              "port_matching_type": "ANY",
+              "zone_id": "68b788c0e9f08f1e1b2a2288"
+            },
+            "destination": {
+              "ip_group_id": "6a9eddbff9e5db2485ad661c",
+              "ips": [],
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "OBJECT",
+              "port_group_id": "6a9ede0bf9e5db2485ad677f",
+              "port_matching_type": "OBJECT",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9edfd6f9e5db2485ad6e65",
+            "predefined": false,
+            "name": "Allow PAW to Windows Admin",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10001,
+            "protocol": "tcp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": true,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "ip_group_id": "6a9ede05f9e5db2485ad6774",
+              "ips": [],
+              "match_mac": false,
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "OBJECT",
+              "port_matching_type": "ANY",
+              "zone_id": "68b788c0e9f08f1e1b2a2288"
+            },
+            "destination": {
+              "ip_group_id": "6a9eddc2f9e5db2485ad6655",
+              "ips": [],
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "OBJECT",
+              "port_group_id": "6a9ede0ff9e5db2485ad67a2",
+              "port_matching_type": "OBJECT",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee0e4f9e5db2485ad7338",
+            "predefined": false,
+            "name": "Allow Identity DNS to Gateway",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10000,
+            "protocol": "tcp_udp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": false,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "destination": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port": "53",
+              "port_matching_type": "SPECIFIC",
+              "zone_id": "68b788c0e9f08f1e1b2a228a"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee0e7f9e5db2485ad734d",
+            "predefined": false,
+            "name": "Allow Identity NTP to Gateway",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10001,
+            "protocol": "udp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": false,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "destination": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port": "123",
+              "port_matching_type": "SPECIFIC",
+              "zone_id": "68b788c0e9f08f1e1b2a228a"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee0eef9e5db2485ad7372",
+            "predefined": false,
+            "name": "Allow Identity to Wazuh - Security-A",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10000,
+            "protocol": "tcp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": true,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "destination": {
+              "ips": [
+                "192.168.72.2"
+              ],
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "SPECIFIC",
+              "port_group_id": "699e018ec9d00a2842ce00a9",
+              "port_matching_type": "OBJECT",
+              "zone_id": "6a665585052792cd214057cb"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee1edf9e5db2485ad780b",
+            "predefined": false,
+            "name": "Allow Identity Web Egress",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10000,
+            "protocol": "tcp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": false,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "destination": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port": "80,443",
+              "port_matching_type": "SPECIFIC",
+              "zone_id": "68b788c0e9f08f1e1b2a2289"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee1f1f9e5db2485ad7817",
+            "predefined": false,
+            "name": "Allow Monitor to Windows Exporter",
+            "action": "ALLOW",
+            "enabled": true,
+            "index": 10000,
+            "protocol": "tcp",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": true,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "ip_group_id": "6a67a17e052792cd214090e8",
+              "ips": [],
+              "match_mac": false,
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "OBJECT",
+              "port_matching_type": "ANY",
+              "zone_id": "6a665585052792cd214057cb"
+            },
+            "destination": {
+              "ip_group_id": "6a9eddc2f9e5db2485ad6655",
+              "ips": [],
+              "match_opposite_ips": false,
+              "match_opposite_ports": false,
+              "matching_target": "IP",
+              "matching_target_type": "OBJECT",
+              "port_group_id": "6a9ede12f9e5db2485ad67a6",
+              "port_matching_type": "OBJECT",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "logging": false
+          },
+          {
+            "id": "6a9ee1f4f9e5db2485ad781c",
+            "predefined": false,
+            "name": "Block Identity Other External Egress",
+            "action": "BLOCK",
+            "enabled": true,
+            "index": 10001,
+            "protocol": "all",
+            "ip_version": "BOTH",
+            "connection_state_type": "ALL",
+            "connection_states": [],
+            "create_allow_respond": false,
+            "match_ip_sec": false,
+            "match_opposite_protocol": false,
+            "icmp_typename": "ANY",
+            "icmp_v6_typename": "ANY",
+            "schedule": {
+              "mode": "ALWAYS"
+            },
+            "source": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "6a9eddbbf9e5db2485ad6613"
+            },
+            "destination": {
+              "match_opposite_ports": false,
+              "matching_target": "ANY",
+              "port_matching_type": "ANY",
+              "zone_id": "68b788c0e9f08f1e1b2a2289"
+            },
+            "logging": true
+          }
+        ]
+      }
+    }
+  ],
+  "details": [
+    {
+      "tool": "unifi_get_network_details",
+      "args": {
+        "network_id": "6a9edf88f9e5db2485ad6d13"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "network_id": "6a9edf88f9e5db2485ad6d13",
+        "include": "all",
+        "summary_mode": false,
+        "details": {
+          "setting_preference": "manual",
+          "ipv6_setting_preference": "manual",
+          "purpose": "corporate",
+          "dhcpd_leasetime": 86400,
+          "igmp_snooping": false,
+          "network_isolation_enabled": false,
+          "dhcpd_start": "192.168.65.100",
+          "external_id": "787b36c5-535d-49b1-9a4f-1b8597de65ba",
+          "ipv6_ra_enabled": false,
+          "dhcpd_stop": "192.168.65.120",
+          "enabled": true,
+          "upnp_lan_enabled": false,
+          "dhcpd_enabled": true,
+          "vlan": 65,
+          "ip_subnet": "192.168.65.1/24",
+          "ipv6_interface_type": "none",
+          "networkgroup": "LAN",
+          "firewall_zone_id": "6a9eddbbf9e5db2485ad6613",
+          "name": "IDENTITY-A",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "mdns_enabled": false,
+          "_id": "6a9edf88f9e5db2485ad6d13",
+          "vlan_enabled": true
+        }
+      }
+    },
+    {
+      "tool": "unifi_get_network_details",
+      "args": {
+        "network_id": "68b78a68e9f08f1e1b2a2350"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "network_id": "68b78a68e9f08f1e1b2a2350",
+        "include": "all",
+        "summary_mode": false,
+        "details": {
+          "setting_preference": "manual",
+          "dhcpdv6_dns_auto": true,
+          "ipv6_pd_stop": "::7d1",
+          "dhcpd_gateway_enabled": false,
+          "ipv6_client_address_assignment": "slaac",
+          "dhcpd_start": "192.168.50.6",
+          "dhcpd_unifi_controller": "",
+          "ipv6_ra_enabled": true,
+          "domain_name": "",
+          "ip_subnet": "192.168.50.1/24",
+          "ipv6_interface_type": "none",
+          "dhcpdv6_stop": "::7d1",
+          "dhcpd_dns_enabled": false,
+          "dhcpdv6_enabled": false,
+          "internet_access_enabled": true,
+          "nat_outbound_ip_addresses": [],
+          "dhcp_relay_enabled": false,
+          "dhcpd_conflict_checking": true,
+          "dhcpd_wins_enabled": false,
+          "ipv6_pd_auto_prefixid_enabled": true,
+          "name": "Secure",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "dhcpdv6_leasetime": 86400,
+          "_id": "68b78a68e9f08f1e1b2a2350",
+          "lte_lan_enabled": true,
+          "dhcpd_leasetime": 86400,
+          "purpose": "corporate",
+          "igmp_snooping": false,
+          "dhcpd_time_offset_enabled": false,
+          "dhcpguard_enabled": false,
+          "dhcpdv6_allow_slaac": true,
+          "external_id": "0f3f30c0-0733-4992-95ef-67ed6c17db55",
+          "ipv6_ra_preferred_lifetime": 14400,
+          "dhcpd_stop": "192.168.50.254",
+          "enabled": true,
+          "dhcpd_enabled": true,
+          "vlan": 50,
+          "dhcpd_wpad_url": "",
+          "wan_dhcpv6_pd_size_auto": false,
+          "networkgroup": "LAN",
+          "firewall_zone_id": "68b788c0e9f08f1e1b2a2288",
+          "dhcpdv6_start": "::2",
+          "vlan_enabled": true,
+          "ipv6_setting_preference": "auto",
+          "gateway_type": "default",
+          "ipv6_ra_priority": "high",
+          "dhcpd_boot_enabled": false,
+          "ipv6_pd_start": "::2",
+          "upnp_lan_enabled": false,
+          "dhcpd_ntp_enabled": false,
+          "mdns_enabled": true,
+          "dhcpd_tftp_server": "",
+          "auto_scale_enabled": false
+        }
+      }
+    },
+    {
+      "tool": "unifi_get_network_details",
+      "args": {
+        "network_id": "68bbda4289628952612bda0c"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "network_id": "68bbda4289628952612bda0c",
+        "include": "all",
+        "summary_mode": false,
+        "details": {
+          "setting_preference": "auto",
+          "dhcpdv6_dns_auto": true,
+          "ipv6_pd_stop": "::7d1",
+          "dhcpd_gateway_enabled": false,
+          "ipv6_client_address_assignment": "slaac",
+          "dhcpd_dns_1": "",
+          "network_isolation_enabled": false,
+          "dhcp_relay_servers": [],
+          "dhcpd_start": "192.168.60.6",
+          "dhcpd_unifi_controller": "",
+          "ipv6_ra_enabled": true,
+          "domain_name": "",
+          "ip_subnet": "192.168.60.1/24",
+          "dhcpd_dns_4": "",
+          "ipv6_interface_type": "none",
+          "dhcpd_dns_2": "",
+          "dhcpd_dns_3": "",
+          "dhcpd_wins_2": "",
+          "dhcpdv6_stop": "::7d1",
+          "is_nat": true,
+          "dhcpd_wins_1": "",
+          "dhcpd_dns_enabled": false,
+          "internet_access_enabled": true,
+          "nat_outbound_ip_addresses": [],
+          "dhcp_relay_enabled": false,
+          "dhcpd_conflict_checking": true,
+          "dhcpd_wins_enabled": false,
+          "ipv6_pd_auto_prefixid_enabled": true,
+          "name": "Secure Client",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "dhcpdv6_leasetime": 86400,
+          "_id": "68bbda4289628952612bda0c",
+          "lte_lan_enabled": true,
+          "dhcpd_leasetime": 86400,
+          "purpose": "corporate",
+          "igmp_snooping": false,
+          "dhcpd_time_offset_enabled": false,
+          "dhcpguard_enabled": false,
+          "dhcpdv6_allow_slaac": true,
+          "external_id": "8cd2fa4a-7bd9-4b8f-8617-fa35f897c174",
+          "ipv6_ra_preferred_lifetime": 14400,
+          "dhcpd_stop": "192.168.60.254",
+          "enabled": true,
+          "dhcpd_enabled": true,
+          "vlan": 60,
+          "dhcpd_wpad_url": "",
+          "wan_dhcpv6_pd_size_auto": false,
+          "networkgroup": "LAN",
+          "firewall_zone_id": "68b788c0e9f08f1e1b2a2288",
+          "dhcpdv6_start": "::2",
+          "vlan_enabled": true,
+          "ipv6_setting_preference": "auto",
+          "ipv6_aliases": [],
+          "gateway_type": "default",
+          "ipv6_ra_priority": "high",
+          "dhcpd_boot_enabled": false,
+          "ipv6_pd_start": "::2",
+          "upnp_lan_enabled": false,
+          "dhcpd_ntp_enabled": false,
+          "mdns_enabled": true,
+          "ip_aliases": [],
+          "dhcpd_tftp_server": "",
+          "auto_scale_enabled": true
+        }
+      }
+    },
+    {
+      "tool": "unifi_get_port_profile_details",
+      "args": {
+        "profile_id": "698cc29d10cb5676c296c7c1"
+      },
+      "result": {
+        "success": true,
+        "profile_id": "698cc29d10cb5676c296c7c1",
+        "details": {
+          "setting_preference": "manual",
+          "port_security_enabled": false,
+          "link_debounce_auto": true,
+          "stormctrl_ucast_rate": 100,
+          "egress_rate_limit_kbps_enabled": false,
+          "stormctrl_mcast_enabled": false,
+          "lldpmed_notify_enabled": false,
+          "tagged_vlan_mgmt": "custom",
+          "stormctrl_bcast_enabled": false,
+          "multicast_router_mode": "NONE",
+          "stp_uplink": true,
+          "port_keepalive_enabled": false,
+          "excluded_networkconf_ids": [
+            "68b7cc68620e3d7fdfd2f341",
+            "68b78866e9f08f1e1b2a227b",
+            "68b78940e9f08f1e1b2a232b",
+            "68b78a68e9f08f1e1b2a2350",
+            "6a7a85ffdee8c70a32df35b3",
+            "6a9edf88f9e5db2485ad6d13"
+          ],
+          "eee_enabled": false,
+          "stp_bpdu_guard_enabled": false,
+          "stormctrl_mcast_rate": 100,
+          "native_networkconf_id": "",
+          "qos_profile": {
+            "qos_profile_mode": "custom",
+            "qos_policies": []
+          },
+          "port_security_mac_address": [],
+          "dot1x_idle_timeout": 300,
+          "precision_time_protocol_enabled": true,
+          "op_mode": "switch",
+          "poe_mode": "off",
+          "forward": "customize",
+          "stormctrl_ucast_enabled": false,
+          "stormctrl_bcast_rate": 100,
+          "isolation": false,
+          "voice_networkconf_id": "",
+          "stp_port_mode": true,
+          "name": "Proxmox-Trunk",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "_id": "698cc29d10cb5676c296c7c1",
+          "autoneg": true,
+          "flow_control_enabled": true,
+          "stp_edge_state": "disabled",
+          "lldpmed_enabled": false,
+          "dot1x_ctrl": "force_authorized"
+        }
+      }
+    },
+    {
+      "tool": "unifi_list_clients",
+      "args": {
+        "search": "grey",
+        "fields": "name,hostname,ip,status"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "filter_type": "all",
+        "search": "grey",
+        "fields": "name,hostname,ip,status",
+        "total_count": 1,
+        "returned_count": 1,
+        "count": 1,
+        "limit": 100,
+        "clients": [
+          {
+            "ip": "192.168.70.10",
+            "name": "grey-server",
+            "status": "online"
+          }
+        ]
+      }
+    },
+    {
+      "tool": "unifi_get_firewall_policy_ordering",
+      "args": {
+        "source_firewall_zone_id": "6a9eddbbf9e5db2485ad6613",
+        "destination_firewall_zone_id": "68b788c0e9f08f1e1b2a2289"
+      },
+      "result": {
+        "success": true,
+        "source_firewall_zone_id": "6a9eddbbf9e5db2485ad6613",
+        "destination_firewall_zone_id": "68b788c0e9f08f1e1b2a2289",
+        "ordering": {
+          "beforeSystemDefined": [
+            "fa53c0ac-7752-44b1-be9e-85908f2495a0",
+            "942f4e61-b54c-42c1-a7d6-9346e7137c51"
+          ],
+          "afterSystemDefined": []
+        }
+      }
+    }
+  ]
+}

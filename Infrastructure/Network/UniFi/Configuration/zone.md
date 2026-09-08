@@ -1,11 +1,13 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-07
 
-I track 11 firewall zones and their assigned networks here.
+I track 12 firewall zones and their assigned networks here.
 
-I verified the current 15 LAN rows from the network records after deleting the empty DMZ-A/VLAN 90 on 2026-08-29, and the 2026-09-06 readback returned the same 11 zones by name. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
+I verified the then-current 15 LAN rows from the network records after deleting the empty DMZ-A/VLAN 90 on 2026-08-29, and the 2026-09-06 readback returned the same 11 zones by name. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
+
+I verified AlphaSec-Identity on 2026-09-07 and resolved IDENTITY-A membership from its `firewall_zone_id`. Secure and Secure Client both remain in Internal. The [controller readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json) records the zone IDs and network assignments.
 
 ## Zone Membership
 
@@ -22,8 +24,9 @@ I verified the current 15 LAN rows from the network records after deleting the e
 | `AlphaSec-Mgmt` | Custom | MGMT-A (VLAN 70), Cluster-Net (VLAN 71) |
 | `AlphaSec-Observability` | Custom | Security-A (VLAN 72), MONITOR-A (VLAN 73) |
 | `AlphaSec-Access` | Custom | Access-A (VLAN 85) |
+| `AlphaSec-Identity` | Custom | IDENTITY-A (VLAN 65) |
 
-The controller has seven built-in and four custom zones. The custom set is `AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, and `AlphaSec-Access`.
+The controller has seven built-in and five custom zones. The custom set is `AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, and `AlphaSec-Identity`.
 
 `Proton-WiFi`/VLAN 45 joined `Internal` on 2026-08-10 and added no zone. Its containment is the network isolation toggle rather than a zone relationship, so it needs no policy of its own and nothing else in `Internal` changed. See [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
@@ -31,7 +34,7 @@ The controller has seven built-in and four custom zones. The custom set is `Alph
 
 I moved Cluster-Net into `AlphaSec-Mgmt` and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `AlphaSec-Observability`. The two shortened organisation prefixes were corrected before either merge.
 
-The 2026-07-27 consolidation reduced the live result to 14. Two Kasm zones were added on 2026-07-28, bringing that historical platform state to 16. I deleted all five Kasm zones on 2026-08-19 after removing their policies and networks. The controller now has 11 zones.
+The 2026-07-27 consolidation reduced the live result to 14. Two Kasm zones were added on 2026-07-28, bringing that historical platform state to 16. I deleted all five Kasm zones on 2026-08-19 after removing their policies and networks. That left 11 zones; AlphaSec-Identity brought the count to 12 on 2026-09-07.
 
 `Allow Monitor to Security monitoring` explicitly limits the collector to `AG-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
 

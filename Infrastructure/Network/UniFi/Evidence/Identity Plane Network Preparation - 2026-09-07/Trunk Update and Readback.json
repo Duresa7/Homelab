@@ -1,0 +1,217 @@
+{
+  "captured_at": "9/7/2026, 10:25:52 PM Eastern",
+  "target": "UniFi default site / Proxmox-Trunk / Bane Switch POE port 14",
+  "before": {
+    "tool": "unifi_get_port_profile_details",
+    "args": {
+      "profile_id": "698cc29d10cb5676c296c7c1"
+    },
+    "result": {
+      "success": true,
+      "profile_id": "698cc29d10cb5676c296c7c1",
+      "details": {
+        "setting_preference": "manual",
+        "port_security_enabled": false,
+        "link_debounce_auto": true,
+        "stormctrl_ucast_rate": 100,
+        "egress_rate_limit_kbps_enabled": false,
+        "stormctrl_mcast_enabled": false,
+        "lldpmed_notify_enabled": false,
+        "tagged_vlan_mgmt": "custom",
+        "stormctrl_bcast_enabled": false,
+        "multicast_router_mode": "NONE",
+        "stp_uplink": true,
+        "port_keepalive_enabled": false,
+        "excluded_networkconf_ids": [
+          "68b7cc68620e3d7fdfd2f341",
+          "68b78866e9f08f1e1b2a227b",
+          "68b78940e9f08f1e1b2a232b",
+          "68b78a68e9f08f1e1b2a2350",
+          "6a7a85ffdee8c70a32df35b3",
+          "6a9edf88f9e5db2485ad6d13"
+        ],
+        "eee_enabled": false,
+        "stp_bpdu_guard_enabled": false,
+        "stormctrl_mcast_rate": 100,
+        "native_networkconf_id": "",
+        "qos_profile": {
+          "qos_profile_mode": "custom",
+          "qos_policies": []
+        },
+        "port_security_mac_address": [],
+        "dot1x_idle_timeout": 300,
+        "precision_time_protocol_enabled": true,
+        "op_mode": "switch",
+        "poe_mode": "off",
+        "forward": "customize",
+        "stormctrl_ucast_enabled": false,
+        "stormctrl_bcast_rate": 100,
+        "isolation": false,
+        "voice_networkconf_id": "",
+        "stp_port_mode": true,
+        "name": "Proxmox-Trunk",
+        "site_id": "68b7cc65620e3d7fdfd2f326",
+        "_id": "698cc29d10cb5676c296c7c1",
+        "autoneg": true,
+        "flow_control_enabled": true,
+        "stp_edge_state": "disabled",
+        "lldpmed_enabled": false,
+        "dot1x_ctrl": "force_authorized"
+      }
+    }
+  },
+  "mutation": {
+    "args": {
+      "profile_id": "698cc29d10cb5676c296c7c1",
+      "profile_data": {
+        "excluded_networkconf_ids": [
+          "68b7cc68620e3d7fdfd2f341",
+          "68b78866e9f08f1e1b2a227b",
+          "68b78940e9f08f1e1b2a232b",
+          "68b78a68e9f08f1e1b2a2350",
+          "6a7a85ffdee8c70a32df35b3"
+        ]
+      },
+      "confirm": true
+    },
+    "result": {
+      "success": true,
+      "mutation_applied": true,
+      "partial_success": false,
+      "operation": "update",
+      "persisted_fields": [
+        "excluded_networkconf_ids"
+      ],
+      "unchanged_fields": [],
+      "dropped_fields": [],
+      "coerced_fields": [],
+      "unverifiable_fields": [],
+      "profile_id": "698cc29d10cb5676c296c7c1",
+      "site": "default",
+      "details": {
+        "excluded_networkconf_ids": [
+          "68b7cc68620e3d7fdfd2f341",
+          "68b78866e9f08f1e1b2a227b",
+          "68b78940e9f08f1e1b2a232b",
+          "68b78a68e9f08f1e1b2a2350",
+          "6a7a85ffdee8c70a32df35b3"
+        ],
+        "setting_preference": "manual",
+        "port_security_enabled": false,
+        "link_debounce_auto": true,
+        "stormctrl_ucast_rate": 100,
+        "egress_rate_limit_kbps_enabled": false,
+        "stormctrl_mcast_enabled": false,
+        "lldpmed_notify_enabled": false,
+        "tagged_vlan_mgmt": "custom",
+        "stormctrl_bcast_enabled": false,
+        "multicast_router_mode": "NONE",
+        "stp_uplink": true,
+        "port_keepalive_enabled": false,
+        "eee_enabled": false,
+        "stp_bpdu_guard_enabled": false,
+        "stormctrl_mcast_rate": 100,
+        "native_networkconf_id": "",
+        "qos_profile": {
+          "qos_profile_mode": "custom",
+          "qos_policies": []
+        },
+        "port_security_mac_address": [],
+        "dot1x_idle_timeout": 300,
+        "precision_time_protocol_enabled": true,
+        "op_mode": "switch",
+        "poe_mode": "off",
+        "forward": "customize",
+        "stormctrl_ucast_enabled": false,
+        "stormctrl_bcast_rate": 100,
+        "isolation": false,
+        "voice_networkconf_id": "",
+        "stp_port_mode": true,
+        "name": "Proxmox-Trunk",
+        "site_id": "68b7cc65620e3d7fdfd2f326",
+        "_id": "698cc29d10cb5676c296c7c1",
+        "autoneg": true,
+        "flow_control_enabled": true,
+        "stp_edge_state": "disabled",
+        "lldpmed_enabled": false,
+        "dot1x_ctrl": "force_authorized"
+      },
+      "message": "Port profile '698cc29d10cb5676c296c7c1' updated successfully."
+    }
+  },
+  "verification": {
+    "success": true,
+    "profile_id": "698cc29d10cb5676c296c7c1",
+    "details": {
+      "setting_preference": "manual",
+      "port_security_enabled": false,
+      "link_debounce_auto": true,
+      "stormctrl_ucast_rate": 100,
+      "egress_rate_limit_kbps_enabled": false,
+      "stormctrl_mcast_enabled": false,
+      "lldpmed_notify_enabled": false,
+      "tagged_vlan_mgmt": "custom",
+      "stormctrl_bcast_enabled": false,
+      "multicast_router_mode": "NONE",
+      "stp_uplink": true,
+      "port_keepalive_enabled": false,
+      "excluded_networkconf_ids": [
+        "68b7cc68620e3d7fdfd2f341",
+        "68b78866e9f08f1e1b2a227b",
+        "68b78940e9f08f1e1b2a232b",
+        "68b78a68e9f08f1e1b2a2350",
+        "6a7a85ffdee8c70a32df35b3"
+      ],
+      "eee_enabled": false,
+      "stp_bpdu_guard_enabled": false,
+      "stormctrl_mcast_rate": 100,
+      "native_networkconf_id": "",
+      "qos_profile": {
+        "qos_profile_mode": "custom",
+        "qos_policies": []
+      },
+      "port_security_mac_address": [],
+      "dot1x_idle_timeout": 300,
+      "precision_time_protocol_enabled": true,
+      "op_mode": "switch",
+      "poe_mode": "off",
+      "forward": "customize",
+      "stormctrl_ucast_enabled": false,
+      "stormctrl_bcast_rate": 100,
+      "isolation": false,
+      "voice_networkconf_id": "",
+      "stp_port_mode": true,
+      "name": "Proxmox-Trunk",
+      "site_id": "68b7cc65620e3d7fdfd2f326",
+      "_id": "698cc29d10cb5676c296c7c1",
+      "autoneg": true,
+      "flow_control_enabled": true,
+      "stp_edge_state": "disabled",
+      "lldpmed_enabled": false,
+      "dot1x_ctrl": "force_authorized"
+    }
+  },
+  "uplink": {
+    "client": {
+      "name": "grey-server",
+      "ip": "192.168.70.10",
+      "status": "online",
+      "switch": "Bane Switch POE",
+      "port": 14,
+      "rate": 2500
+    },
+    "port": {
+      "port_idx": 14,
+      "setting_preference": "manual",
+      "poe_mode": "off",
+      "name": "Port 14",
+      "portconf_id": "698cc29d10cb5676c296c7c1"
+    }
+  },
+  "changed_fields": [
+    "excluded_networkconf_ids"
+  ],
+  "removed_exclusion": "6a9edf88f9e5db2485ad6d13",
+  "vlan_65_admitted": true,
+  "vlan_60_admitted": true
+}

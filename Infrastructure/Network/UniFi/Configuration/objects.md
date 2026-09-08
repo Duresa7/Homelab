@@ -15,7 +15,7 @@ On 2026-07-31 I reused `AG-Proxmox-Nodes` as the source for `Allow Proxmox Nodes
 
 On 2026-09-07 I renamed the six `OBJ-` address groups to `AG-`, changing only their names; I verified unchanged IDs and members (1, 1, 2, 5, 3, and 1 in table order), all six requested `AG-` names, zero `OBJ-` names, and all ten existing port groups unchanged. The later policy check confirmed the same group-ID references and unchanged returned configurations in all 23 original referencing policies. I did not retain a separate raw transcript.
 
-The final same-day readback returned 22 Network Lists and 349 firewall policies, including 76 user-defined policies. Six Network Lists appeared between checks: `AG-Domain-Controllers`, `AG-Identity-Servers`, `AG-PAW`, `PG-AD-Client`, `PG-Windows-Admin`, and `PG-Windows-Exporter`. A new `Allow Monitor to Windows Exporter` policy also references `AG-Monitor-Collector`. I made none of those additions and changed no policies during this rename; the six renamed groups and the ten original port groups still matched their verified IDs and memberships.
+The rename follow-up readback returned 22 Network Lists and 349 firewall policies, including 76 user-defined policies. Six Network Lists appeared between checks: `AG-Domain-Controllers`, `AG-Identity-Servers`, `AG-PAW`, `PG-AD-Client`, `PG-Windows-Admin`, and `PG-Windows-Exporter`. A new `Allow Monitor to Windows Exporter` policy also references `AG-Monitor-Collector`. I made none of those additions and changed no policies during this rename; the six renamed groups and the ten original port groups still matched their verified IDs and memberships.
 
 ## OON Policies
 
@@ -42,7 +42,7 @@ I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab 
 
 These are the Network Lists in the interface. The API calls them `address-group` and `port-group`, and a policy references one through `ip_group_id` or `port_group_id`.
 
-The table below covers the 16 Network Lists present at the rename verification on 2026-09-07: six IPv4 address groups and ten port groups.
+I verified the six identity groups on 2026-09-07. The table now covers all 22 Network Lists: nine IPv4 address groups and 13 port groups. The [group readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json) includes their IDs and exact members.
 
 | Group | Type | Members |
 |---|---|---|
@@ -62,6 +62,14 @@ The table below covers the 16 Network Lists present at the rename verification o
 | PG-NTP | Port | 123 |
 | PG-Galaxy-PXE-Callback | Port | 8080 |
 | PG-Printing | Port | 631, 9100 |
+| AG-Domain-Controllers | IPv4 | 192.168.65.10, 192.168.65.11 |
+| AG-Identity-Servers | IPv4 | 192.168.65.10, 192.168.65.11, 192.168.65.12 |
+| AG-PAW | IPv4 | 192.168.50.241 |
+| PG-AD-Client | Port | 53, 88, 123, 135, 389, 445, 464, 636, 3268, 3269, 49152-65535 |
+| PG-Windows-Admin | Port | 22, 3389, 5985, 5986 |
+| PG-Windows-Exporter | Port | 9182 |
+
+I verified that Wazuh Ports contains exactly 1514 and 1515 and is bound to the identity Wazuh policy. Port groups hold port numbers; the workstation AD policy applies PG-AD-Client over TCP+UDP. The identity web rule uses explicit TCP ports 80,443 and has no PG-Egress-Web binding because the controller rejected a port group with an any-in-zone destination during the earlier preparation. That earlier rejection has no retained capture in this task; I verified the persisted inline selector.
 
 On 2026-09-02 I added 9102 to `PG-Node-Exporter` for What's Up Docker, so the three monitoring policies that reference the group admit the new exporter without their own edit.
 

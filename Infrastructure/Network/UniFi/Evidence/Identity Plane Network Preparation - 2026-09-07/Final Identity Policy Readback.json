@@ -1,0 +1,756 @@
+{
+  "captured_at": "9/7/2026, 10:25:52 PM Eastern",
+  "target": "UniFi default site",
+  "tool": "unifi_list_firewall_policies",
+  "args": {
+    "limit": 1000,
+    "include_predefined": true,
+    "summary": false
+  },
+  "total": 351,
+  "custom": 77,
+  "custom_allow": 69,
+  "custom_block": 8,
+  "policies": [
+    {
+      "id": "6a665585052792cd214057cb6a9eddbbf9e5db2485ad661330000",
+      "predefined": true,
+      "name": "Allow Identity to Wazuh - Security-A (Return)",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 30000,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "RESPOND_ONLY",
+      "connection_states": [
+        "RELATED",
+        "ESTABLISHED"
+      ],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ips": [
+          "192.168.72.2"
+        ],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "1514,1515",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a665585052792cd214057cb6a9eddbbf9e5db2485ad661330001",
+      "predefined": true,
+      "name": "Allow Identity to Splunk - Security-A (Return)",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 30001,
+      "protocol": "tcp_udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "RESPOND_ONLY",
+      "connection_states": [
+        "RELATED",
+        "ESTABLISHED"
+      ],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ips": [
+          "192.168.72.3"
+        ],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "514",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9eddbbf9e5db2485ad661368b788c0e9f08f1e1b2a228830000",
+      "predefined": true,
+      "name": "Allow Workstations to AD (Return)",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 30000,
+      "protocol": "tcp_udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "RESPOND_ONLY",
+      "connection_states": [
+        "RELATED",
+        "ESTABLISHED"
+      ],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ips": [
+          "192.168.65.10",
+          "192.168.65.11"
+        ],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "53,88,123,135,389,445,464,636,3268,3269,49152-65535",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "ips": [
+          "192.168.60.0/24",
+          "192.168.50.0/24"
+        ],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port_matching_type": "ANY",
+        "zone_id": "68b788c0e9f08f1e1b2a2288"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9eddbbf9e5db2485ad661368b788c0e9f08f1e1b2a228830001",
+      "predefined": true,
+      "name": "Allow PAW to Windows Admin (Return)",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 30001,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "RESPOND_ONLY",
+      "connection_states": [
+        "RELATED",
+        "ESTABLISHED"
+      ],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ips": [
+          "192.168.65.10",
+          "192.168.65.11",
+          "192.168.65.12"
+        ],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "22,3389,5985,5986",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "ips": [
+          "192.168.50.241"
+        ],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port_matching_type": "ANY",
+        "zone_id": "68b788c0e9f08f1e1b2a2288"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9eddbbf9e5db2485ad66136a665585052792cd214057cb30000",
+      "predefined": true,
+      "name": "Allow Monitor to Windows Exporter (Return)",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 30000,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "RESPOND_ONLY",
+      "connection_states": [
+        "RELATED",
+        "ESTABLISHED"
+      ],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ips": [
+          "192.168.65.10",
+          "192.168.65.11",
+          "192.168.65.12"
+        ],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "9182",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "ips": [
+          "192.168.73.2"
+        ],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port_matching_type": "ANY",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9edfd3f9e5db2485ad6e5d",
+      "predefined": false,
+      "name": "Allow Workstations to AD",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10000,
+      "protocol": "tcp_udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_mac": false,
+        "match_opposite_networks": false,
+        "match_opposite_ports": false,
+        "matching_target": "NETWORK",
+        "matching_target_type": "OBJECT",
+        "network_ids": [
+          "68b78a68e9f08f1e1b2a2350",
+          "68bbda4289628952612bda0c"
+        ],
+        "port_matching_type": "ANY",
+        "zone_id": "68b788c0e9f08f1e1b2a2288"
+      },
+      "destination": {
+        "ip_group_id": "6a9eddbff9e5db2485ad661c",
+        "ips": [],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "OBJECT",
+        "port_group_id": "6a9ede0bf9e5db2485ad677f",
+        "port_matching_type": "OBJECT",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9edfd6f9e5db2485ad6e65",
+      "predefined": false,
+      "name": "Allow PAW to Windows Admin",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10001,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ip_group_id": "6a9ede05f9e5db2485ad6774",
+        "ips": [],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "OBJECT",
+        "port_matching_type": "ANY",
+        "zone_id": "68b788c0e9f08f1e1b2a2288"
+      },
+      "destination": {
+        "ip_group_id": "6a9eddc2f9e5db2485ad6655",
+        "ips": [],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "OBJECT",
+        "port_group_id": "6a9ede0ff9e5db2485ad67a2",
+        "port_matching_type": "OBJECT",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee0e4f9e5db2485ad7338",
+      "predefined": false,
+      "name": "Allow Identity DNS to Gateway",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10000,
+      "protocol": "tcp_udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": false,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port": "53",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "68b788c0e9f08f1e1b2a228a"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee0e7f9e5db2485ad734d",
+      "predefined": false,
+      "name": "Allow Identity NTP to Gateway",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10001,
+      "protocol": "udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": false,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port": "123",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "68b788c0e9f08f1e1b2a228a"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee0eef9e5db2485ad7372",
+      "predefined": false,
+      "name": "Allow Identity to Wazuh - Security-A",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10000,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "ips": [
+          "192.168.72.2"
+        ],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port_group_id": "699e018ec9d00a2842ce00a9",
+        "port_matching_type": "OBJECT",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee1edf9e5db2485ad780b",
+      "predefined": false,
+      "name": "Allow Identity Web Egress",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10000,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": false,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port": "80,443",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "68b788c0e9f08f1e1b2a2289"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee1f1f9e5db2485ad7817",
+      "predefined": false,
+      "name": "Allow Monitor to Windows Exporter",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10000,
+      "protocol": "tcp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "ip_group_id": "6a67a17e052792cd214090e8",
+        "ips": [],
+        "match_mac": false,
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "OBJECT",
+        "port_matching_type": "ANY",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "destination": {
+        "ip_group_id": "6a9eddc2f9e5db2485ad6655",
+        "ips": [],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "OBJECT",
+        "port_group_id": "6a9ede12f9e5db2485ad67a6",
+        "port_matching_type": "OBJECT",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "logging": false
+    },
+    {
+      "id": "6a9ee1f4f9e5db2485ad781c",
+      "predefined": false,
+      "name": "Block Identity Other External Egress",
+      "action": "BLOCK",
+      "enabled": true,
+      "index": 10001,
+      "protocol": "all",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": false,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "68b788c0e9f08f1e1b2a2289"
+      },
+      "logging": true
+    },
+    {
+      "id": "6a9f71f1f9e5db2485af6cce",
+      "predefined": false,
+      "name": "Allow Identity to Splunk - Security-A",
+      "action": "ALLOW",
+      "enabled": true,
+      "index": 10001,
+      "protocol": "tcp_udp",
+      "ip_version": "BOTH",
+      "connection_state_type": "ALL",
+      "connection_states": [],
+      "create_allow_respond": true,
+      "match_ip_sec": false,
+      "match_opposite_protocol": false,
+      "icmp_typename": "ANY",
+      "icmp_v6_typename": "ANY",
+      "schedule": {
+        "mode": "ALWAYS"
+      },
+      "source": {
+        "match_opposite_ports": false,
+        "matching_target": "ANY",
+        "port_matching_type": "ANY",
+        "zone_id": "6a9eddbbf9e5db2485ad6613"
+      },
+      "destination": {
+        "ips": [
+          "192.168.72.3"
+        ],
+        "match_opposite_ips": false,
+        "match_opposite_ports": false,
+        "matching_target": "IP",
+        "matching_target_type": "SPECIFIC",
+        "port": "514",
+        "port_matching_type": "SPECIFIC",
+        "zone_id": "6a665585052792cd214057cb"
+      },
+      "logging": false
+    }
+  ],
+  "verification": {
+    "part_1_mismatches": [],
+    "existing_76_custom_policies_unchanged": true,
+    "secure_and_secure_client_networks_unchanged": true,
+    "identity_external_web_index": 10000,
+    "identity_external_block_index": 10001,
+    "wazuh_ports": [
+      "1514",
+      "1515"
+    ],
+    "identity_web_port_group_bound": false
+  },
+  "workstation_network_readback": [
+    {
+      "tool": "unifi_get_network_details",
+      "args": {
+        "network_id": "68b78a68e9f08f1e1b2a2350"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "network_id": "68b78a68e9f08f1e1b2a2350",
+        "include": "all",
+        "summary_mode": false,
+        "details": {
+          "setting_preference": "manual",
+          "dhcpdv6_dns_auto": true,
+          "ipv6_pd_stop": "::7d1",
+          "dhcpd_gateway_enabled": false,
+          "ipv6_client_address_assignment": "slaac",
+          "dhcpd_start": "192.168.50.6",
+          "dhcpd_unifi_controller": "",
+          "ipv6_ra_enabled": true,
+          "domain_name": "",
+          "ip_subnet": "192.168.50.1/24",
+          "ipv6_interface_type": "none",
+          "dhcpdv6_stop": "::7d1",
+          "dhcpd_dns_enabled": false,
+          "dhcpdv6_enabled": false,
+          "internet_access_enabled": true,
+          "nat_outbound_ip_addresses": [],
+          "dhcp_relay_enabled": false,
+          "dhcpd_conflict_checking": true,
+          "dhcpd_wins_enabled": false,
+          "ipv6_pd_auto_prefixid_enabled": true,
+          "name": "Secure",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "dhcpdv6_leasetime": 86400,
+          "_id": "68b78a68e9f08f1e1b2a2350",
+          "lte_lan_enabled": true,
+          "dhcpd_leasetime": 86400,
+          "purpose": "corporate",
+          "igmp_snooping": false,
+          "dhcpd_time_offset_enabled": false,
+          "dhcpguard_enabled": false,
+          "dhcpdv6_allow_slaac": true,
+          "external_id": "0f3f30c0-0733-4992-95ef-67ed6c17db55",
+          "ipv6_ra_preferred_lifetime": 14400,
+          "dhcpd_stop": "192.168.50.254",
+          "enabled": true,
+          "dhcpd_enabled": true,
+          "vlan": 50,
+          "dhcpd_wpad_url": "",
+          "wan_dhcpv6_pd_size_auto": false,
+          "networkgroup": "LAN",
+          "firewall_zone_id": "68b788c0e9f08f1e1b2a2288",
+          "dhcpdv6_start": "::2",
+          "vlan_enabled": true,
+          "ipv6_setting_preference": "auto",
+          "gateway_type": "default",
+          "ipv6_ra_priority": "high",
+          "dhcpd_boot_enabled": false,
+          "ipv6_pd_start": "::2",
+          "upnp_lan_enabled": false,
+          "dhcpd_ntp_enabled": false,
+          "mdns_enabled": true,
+          "dhcpd_tftp_server": "",
+          "auto_scale_enabled": false
+        }
+      }
+    },
+    {
+      "tool": "unifi_get_network_details",
+      "args": {
+        "network_id": "68bbda4289628952612bda0c"
+      },
+      "result": {
+        "success": true,
+        "site": "default",
+        "network_id": "68bbda4289628952612bda0c",
+        "include": "all",
+        "summary_mode": false,
+        "details": {
+          "setting_preference": "auto",
+          "dhcpdv6_dns_auto": true,
+          "ipv6_pd_stop": "::7d1",
+          "dhcpd_gateway_enabled": false,
+          "ipv6_client_address_assignment": "slaac",
+          "dhcpd_dns_1": "",
+          "network_isolation_enabled": false,
+          "dhcp_relay_servers": [],
+          "dhcpd_start": "192.168.60.6",
+          "dhcpd_unifi_controller": "",
+          "ipv6_ra_enabled": true,
+          "domain_name": "",
+          "ip_subnet": "192.168.60.1/24",
+          "dhcpd_dns_4": "",
+          "ipv6_interface_type": "none",
+          "dhcpd_dns_2": "",
+          "dhcpd_dns_3": "",
+          "dhcpd_wins_2": "",
+          "dhcpdv6_stop": "::7d1",
+          "is_nat": true,
+          "dhcpd_wins_1": "",
+          "dhcpd_dns_enabled": false,
+          "internet_access_enabled": true,
+          "nat_outbound_ip_addresses": [],
+          "dhcp_relay_enabled": false,
+          "dhcpd_conflict_checking": true,
+          "dhcpd_wins_enabled": false,
+          "ipv6_pd_auto_prefixid_enabled": true,
+          "name": "Secure Client",
+          "site_id": "68b7cc65620e3d7fdfd2f326",
+          "dhcpdv6_leasetime": 86400,
+          "_id": "68bbda4289628952612bda0c",
+          "lte_lan_enabled": true,
+          "dhcpd_leasetime": 86400,
+          "purpose": "corporate",
+          "igmp_snooping": false,
+          "dhcpd_time_offset_enabled": false,
+          "dhcpguard_enabled": false,
+          "dhcpdv6_allow_slaac": true,
+          "external_id": "8cd2fa4a-7bd9-4b8f-8617-fa35f897c174",
+          "ipv6_ra_preferred_lifetime": 14400,
+          "dhcpd_stop": "192.168.60.254",
+          "enabled": true,
+          "dhcpd_enabled": true,
+          "vlan": 60,
+          "dhcpd_wpad_url": "",
+          "wan_dhcpv6_pd_size_auto": false,
+          "networkgroup": "LAN",
+          "firewall_zone_id": "68b788c0e9f08f1e1b2a2288",
+          "dhcpdv6_start": "::2",
+          "vlan_enabled": true,
+          "ipv6_setting_preference": "auto",
+          "ipv6_aliases": [],
+          "gateway_type": "default",
+          "ipv6_ra_priority": "high",
+          "dhcpd_boot_enabled": false,
+          "ipv6_pd_start": "::2",
+          "upnp_lan_enabled": false,
+          "dhcpd_ntp_enabled": false,
+          "mdns_enabled": true,
+          "ip_aliases": [],
+          "dhcpd_tftp_server": "",
+          "auto_scale_enabled": true
+        }
+      }
+    }
+  ]
+}

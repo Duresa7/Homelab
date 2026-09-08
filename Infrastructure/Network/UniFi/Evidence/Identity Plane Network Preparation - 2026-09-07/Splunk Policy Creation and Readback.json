@@ -1,0 +1,300 @@
+{
+  "captured_at": "9/7/2026, 10:25:52 PM Eastern",
+  "target": "UniFi default site",
+  "pattern_check": {
+    "success": true,
+    "site": "default",
+    "enabled_only": false,
+    "total_count": 349,
+    "returned_count": 349,
+    "count": 349,
+    "limit": 1000,
+    "policies": [
+      {
+        "id": "699cfa33c9d00a2842cceae16a665585052792cd214057cb2147483647",
+        "predefined": true,
+        "name": "Block All Traffic",
+        "action": "BLOCK",
+        "enabled": true,
+        "index": 2147483647,
+        "protocol": "all",
+        "ip_version": "BOTH",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "699cfa33c9d00a2842cceae1"
+        },
+        "destination": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "6a665585052792cd214057cb"
+        },
+        "logging": false
+      },
+      {
+        "id": "699cfa33c9d00a2842cceae16a665585052792cd214057cb30000",
+        "predefined": true,
+        "name": "Allow Monitor to A-Servers monitoring (Return)",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 30000,
+        "protocol": "tcp",
+        "ip_version": "BOTH",
+        "connection_state_type": "RESPOND_ONLY",
+        "connection_states": [
+          "RELATED",
+          "ESTABLISHED"
+        ],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.80.10",
+            "192.168.80.30",
+            "192.168.80.118"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "9100,9101,9102",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "699cfa33c9d00a2842cceae1"
+        },
+        "destination": {
+          "ips": [
+            "192.168.73.2"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_matching_type": "ANY",
+          "zone_id": "6a665585052792cd214057cb"
+        },
+        "logging": false
+      },
+      {
+        "id": "6a5444920e10fae1226292fd",
+        "predefined": false,
+        "name": "Allow AlphSec-Servers to Wazuh - Security-A",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 10000,
+        "protocol": "tcp",
+        "ip_version": "BOTH",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "699cfa33c9d00a2842cceae1"
+        },
+        "destination": {
+          "ips": [
+            "192.168.72.2"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_group_id": "699e018ec9d00a2842ce00a9",
+          "port_matching_type": "OBJECT",
+          "zone_id": "6a665585052792cd214057cb"
+        },
+        "logging": false
+      }
+    ]
+  },
+  "pattern_result": "No SERVERS-A to Splunk policy exists. The only user-defined policy in the zone pair targets Wazuh at 192.168.72.2; the default blocks other traffic.",
+  "creation": {
+    "tool": "unifi_create_firewall_policy",
+    "args": {
+      "policy_data": {
+        "name": "Allow Identity to Splunk - Security-A",
+        "action": "ALLOW",
+        "enabled": true,
+        "protocol": "tcp_udp",
+        "source": {
+          "zone_id": "6a9eddbbf9e5db2485ad6613",
+          "matching_target": "ANY"
+        },
+        "destination": {
+          "zone_id": "6a665585052792cd214057cb",
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "ips": [
+            "192.168.72.3"
+          ],
+          "port": "514",
+          "port_matching_type": "SPECIFIC"
+        }
+      },
+      "confirm": true
+    },
+    "result": {
+      "success": true,
+      "message": "Firewall policy 'Allow Identity to Splunk - Security-A' created successfully.",
+      "policy_id": "6a9f71f1f9e5db2485af6cce",
+      "details": {
+        "_id": "6a9f71f1f9e5db2485af6cce",
+        "action": "ALLOW",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "destination": {
+          "ips": [
+            "192.168.72.3"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "514",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a665585052792cd214057cb"
+        },
+        "enabled": true,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "index": 10001,
+        "ip_version": "BOTH",
+        "logging": false,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "name": "Allow Identity to Splunk - Security-A",
+        "predefined": false,
+        "protocol": "tcp_udp",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        }
+      }
+    }
+  },
+  "verification": {
+    "tool": "unifi_get_firewall_policy_details",
+    "args": {
+      "policy_id": "6a9f71f1f9e5db2485af6cce"
+    },
+    "result": {
+      "success": true,
+      "policy_id": "6a9f71f1f9e5db2485af6cce",
+      "details": {
+        "_id": "6a9f71f1f9e5db2485af6cce",
+        "action": "ALLOW",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "destination": {
+          "ips": [
+            "192.168.72.3"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "514",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a665585052792cd214057cb"
+        },
+        "enabled": true,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "index": 10001,
+        "ip_version": "BOTH",
+        "logging": false,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "name": "Allow Identity to Splunk - Security-A",
+        "predefined": false,
+        "protocol": "tcp_udp",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        }
+      }
+    }
+  },
+  "return_policy": {
+    "id": "6a665585052792cd214057cb6a9eddbbf9e5db2485ad661330001",
+    "predefined": true,
+    "name": "Allow Identity to Splunk - Security-A (Return)",
+    "action": "ALLOW",
+    "enabled": true,
+    "index": 30001,
+    "protocol": "tcp_udp",
+    "ip_version": "BOTH",
+    "connection_state_type": "RESPOND_ONLY",
+    "connection_states": [
+      "RELATED",
+      "ESTABLISHED"
+    ],
+    "create_allow_respond": true,
+    "match_ip_sec": false,
+    "match_opposite_protocol": false,
+    "icmp_typename": "ANY",
+    "icmp_v6_typename": "ANY",
+    "schedule": {
+      "mode": "ALWAYS"
+    },
+    "source": {
+      "ips": [
+        "192.168.72.3"
+      ],
+      "match_mac": false,
+      "match_opposite_ips": false,
+      "match_opposite_ports": false,
+      "matching_target": "IP",
+      "matching_target_type": "SPECIFIC",
+      "port": "514",
+      "port_matching_type": "SPECIFIC",
+      "zone_id": "6a665585052792cd214057cb"
+    },
+    "destination": {
+      "match_opposite_ports": false,
+      "matching_target": "ANY",
+      "port_matching_type": "ANY",
+      "zone_id": "6a9eddbbf9e5db2485ad6613"
+    },
+    "logging": false
+  }
+}

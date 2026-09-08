@@ -1,0 +1,39 @@
+{
+  "captured_at": "2026-09-07 10:24:31 PM EDT",
+  "target": "splunk_siem / 192.168.72.3",
+  "initial_check": {
+    "command": "sudo ss -lntup; sudo podman ps --format '{{.Names}} {{.Status}} {{.Ports}}'",
+    "stdout": "",
+    "stderr": "sudo: a terminal is required to read the password; either use ssh's -t option or configure an askpass helper\nsudo: a password is required\nsudo: a terminal is required to read the password; either use ssh's -t option or configure an askpass helper\nsudo: a password is required\n",
+    "code": 1
+  },
+  "unprivileged_check": {
+    "args": {
+      "server": "splunk_siem",
+      "command": "ss -lntu; systemctl show sc4s.service -p ActiveState -p SubState -p ExecStart; podman ps --format '{{.Names}} {{.Status}} {{.Ports}}'; docker ps --format '{{.Names}} {{.Status}} {{.Ports}}'"
+    },
+    "result": {
+      "server": "splunk_siem",
+      "command": "ss -lntu; systemctl show sc4s.service -p ActiveState -p SubState -p ExecStart; podman ps --format '{{.Names}} {{.Status}} {{.Ports}}'; docker ps --format '{{.Names}} {{.Status}} {{.Ports}}'",
+      "stdout": "Netid State  Recv-Q Send-Q Local Address:Port  Peer Address:Port\nudp   UNCONN 0      0          127.0.0.1:323        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:601        0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:1514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:1514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:1514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:1514       0.0.0.0:*   \nudp   UNCONN 0      0              [::1]:323           [::]:*   \ntcp   LISTEN 0      4096       127.0.0.1:5435       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:45181      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:37537      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:45671      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:45607      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:37437      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:37783      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:37739      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:45839      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:40437      0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:22         0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:40649      0.0.0.0:*   \ntcp   LISTEN 0      5          127.0.0.1:8065       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:40851      0.0.0.0:*   \ntcp   LISTEN 0      255          0.0.0.0:601        0.0.0.0:*   \ntcp   LISTEN 0      255          0.0.0.0:514        0.0.0.0:*   \ntcp   LISTEN 0      255          0.0.0.0:1514       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:38947      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:39423      0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:9997       0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:6432       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:42869      0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:8194       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:33105      0.0.0.0:*   \ntcp   LISTEN 0      4096         0.0.0.0:8191       0.0.0.0:*   \ntcp   LISTEN 0      4096       127.0.0.1:41687      0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:8089       0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:8088       0.0.0.0:*   \ntcp   LISTEN 0      2048         0.0.0.0:8080       0.0.0.0:*   \ntcp   LISTEN 0      128          0.0.0.0:8000       0.0.0.0:*   \ntcp   LISTEN 0      200          0.0.0.0:5432       0.0.0.0:*   \ntcp   LISTEN 0      128             [::]:22            [::]:*   \ntcp   LISTEN 0      4096               *:9100             *:*   \ntcp   LISTEN 0      4096               *:9090             *:*   \ntcp   LISTEN 0      4096               *:36977            *:*   \ntcp   LISTEN 0      4096               *:5433             *:*   \ntcp   LISTEN 0      4096               *:5434             *:*   \nExecStart={ path=/usr/bin/podman ; argv[]=/usr/bin/podman run -e SC4S_CONTAINER_HOST=${SC4SHOST} -v $SC4S_PERSIST_MOUNT -v $SC4S_LOCAL_MOUNT -v $SC4S_ARCHIVE_MOUNT -v $SC4S_TLS_MOUNT --env-file=/opt/sc4s/env_file --health-cmd=/usr/sbin/syslog-ng-ctl healthcheck --timeout 5 --health-interval=2m --health-retries=6 --health-timeout=5s --network host --name SC4S --rm $SC4S_IMAGE ; ignore_errors=no ; start_time=[Fri 2026-09-04 17:46:27 EDT] ; stop_time=[n/a] ; pid=2417 ; code=(null) ; status=0/0 }\nActiveState=active\nSubState=running\n",
+      "stderr": "sh: line 1: docker: command not found\n",
+      "code": 127,
+      "success": false
+    }
+  },
+  "verification": {
+    "args": {
+      "server": "splunk_siem",
+      "command": "ss -lntu '( sport = :514 )'; systemctl show sc4s.service -p ActiveState -p SubState -p MainPID; ps -C syslog-ng -o pid,comm; test ! -r /opt/sc4s/env_file || grep -E '^SC4S_LISTEN_.*(PORT|ENABLE)=' /opt/sc4s/env_file"
+    },
+    "result": {
+      "server": "splunk_siem",
+      "command": "ss -lntu '( sport = :514 )'; systemctl show sc4s.service -p ActiveState -p SubState -p MainPID; ps -C syslog-ng -o pid,comm; test ! -r /opt/sc4s/env_file || grep -E '^SC4S_LISTEN_.*(PORT|ENABLE)=' /opt/sc4s/env_file",
+      "stdout": "Netid State  Recv-Q Send-Q Local Address:Port Peer Address:Port\nudp   UNCONN 0      0            0.0.0.0:514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514       0.0.0.0:*   \nudp   UNCONN 0      0            0.0.0.0:514       0.0.0.0:*   \ntcp   LISTEN 0      255          0.0.0.0:514       0.0.0.0:*   \nMainPID=2417\nActiveState=active\nSubState=running\n    PID COMMAND\n   2753 syslog-ng\nSC4S_LISTEN_CEF_UDP_PORT=1514\nSC4S_LISTEN_CEF_TCP_PORT=1514\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    }
+  },
+  "result": "SC4S active/running with host networking; syslog-ng running; TCP and UDP 514 listening. CEF-specific TCP and UDP listeners are configured on 1514."
+}
