@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-09
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -16,6 +16,7 @@ I run request management, media playback, release automation, indexer coordinati
 | Guest OS | Debian GNU/Linux 13 (trixie) |
 | Live project | `/opt/media-stack` |
 | HDD data paths | `/data/media/movies`, `/data/media/tv`, `/data/media/anime`, `/data/downloads`, `/data/transcodes` |
+| Jellyfin version | 12.0.0, verified 2026-09-09; healthy, HTTPS clients reachable, QSV H.264 encode passed |
 | Container policy | All application images intentionally track `latest`; updates are bounded and verified through the runbook |
 
 ## Services
@@ -36,6 +37,8 @@ qBittorrent has no independent container network path because I run it with `net
 I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel Quick Sync, and `/dev/net/tun` for Gluetun's tunnel.
 
 ## Records
+
+- [Jellyfin 12 upgrade](Documentation/Change%20Records/Jellyfin%2012%20Upgrade%20-%202026-09-09.md)
 
 - [Architecture overview](Documentation/Architecture-Overview.md)
 - [Deployment change record](Documentation/Change%20Records/Media%20Stack%20Deployment%20-%202026-07-17.md)
