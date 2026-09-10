@@ -1,9 +1,9 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-09  
+**Last updated:** 2026-09-10  
 
-Galaxy currently has 10 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 11 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
 
@@ -23,6 +23,8 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 
 On 2026-09-09 I added the three Windows Server 2025 guests and the template they came from. VM 300 `ws2025-template` was built on 2026-09-08 and cloned into VM 301 `HQ-DC01`, VM 302 `HQ-DC02`, and VM 303 `HQ-MGT01`, all on IDENTITY-A, VLAN 65. The two controllers hold the `ad.alphasecunited.com` forest and `HQ-MGT01` is its member server. All four run OVMF firmware with a TPM 2.0 device, which Windows Server 2025 expects, and each carries the virtio driver ISO on `ide0`. The [forest build record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md) holds the verification.
 
+On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on IDENTITY-A, VLAN 65. It is a fresh unattended install rather than a clone of the Windows Server template, and it is the client that proves the Tier 2 local-administrator policy and Windows LAPS reach a workstation. The [join record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md) holds the verification and the installer traps.
+
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -35,6 +37,7 @@ On 2026-09-09 I added the three Windows Server 2025 guests and the template they
 | 301 | HQ-DC01 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 302 | HQ-DC02 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
 | 303 | HQ-MGT01 | grey-server | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
+| 310 | HQ-WS001 | grey-server | Windows 11 Pro 25H2 | 4 | 4 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
@@ -435,6 +438,57 @@ Cloned from VM 300 on 2026-09-09 and joined to the domain, where it sits in `OU=
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 65 | 192.168.65.12/24 | 192.168.65.1 | disabled | `<REDACTED_HQ_MGT01_MAC>` |
+
+### VM 310 - HQ-WS001
+
+Installed on 2026-09-10 from `Win11_25H2_English_x64.iso` with an unattended answer file, then joined to `ad.alphasecunited.com` with an offline domain join so no domain administrator password was needed anywhere. It sits in `OU=Standard,OU=Workstations`.
+
+Its local `Administrator` password is managed by Windows LAPS, so the directory holds the authoritative value and any password manager entry for this machine is stale. `ALPHASEC\ADM-T2-WorkstationAdmins` is in its local `Administrators` group, placed there by the `C-WKS-LocalAdmins` policy.
+
+Memory is 4 GiB rather than 8 because `grey-server` was carrying 51 GiB of its 62 GiB when this guest was built. OpenSSH Server would not install on this machine, so it is not in SSH Manager; the QEMU guest agent is the management channel.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| Guest hostname | HQ-WS001 |
+| Role | Windows 11 test workstation for tiered policy and LAPS validation |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows 11 Pro, 25H2, build 26200 |
+| IPv4 | 192.168.65.20/24 |
+| Gateway | 192.168.65.1 |
+| Login account | `Administrator`, LAPS-managed |
+| Snapshot | none |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 4 GiB |
+| Ballooning | disabled (`balloon: 0`) |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled, version 2.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-310-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-310-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-310-disk-2 | 4M | disk | version 2.0 |
+
+No optical drive is attached. The installation and answer-file media were detached and deleted after the build.
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.20/24 | 192.168.65.1 | disabled | `<REDACTED_HQ_WS001_MAC>` |
 
 ### VM 401 - alpha-prod-01
 

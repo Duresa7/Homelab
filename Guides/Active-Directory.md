@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-10
 
 This is the path I took to stand up the `ad.alphasecunited.com` forest on two Windows Server 2025 domain controllers, from three cloned virtual machines to a member server that Group Policy and Windows LAPS actually reach. It is written to be followed start to finish.
 
@@ -251,7 +251,43 @@ w32tm /resync
 
 <!-- ![Tier 1 group in the local Administrators group](../Platforms/Active%20Directory/Evidence/Forest%20Build%20-%202026-09-09/Screenshots/S08-MGT01-Local-Administrators-2026-09-09.png) -->
 
-## Step 14: The network has to cooperate
+## Step 14: Join a workstation without a domain administrator password
+
+A normal `Add-Computer` needs a credential, and on Proxmox anything you pass to `qm guest exec` is written to the task log. An offline domain join avoids the problem completely: the domain controller creates the account and hands out a single-use package, and the workstation consumes it with no administrator password anywhere.
+
+Provision on the controller, running as `NT AUTHORITY\SYSTEM` through the guest agent, which is the machine account and already has the rights:
+
+```powershell
+djoin.exe /provision /domain 'ad.alphasecunited.com' /machine 'HQ-WS001' `
+  /machineou 'OU=Standard,OU=Workstations,DC=ad,DC=alphasecunited,DC=com' `
+  /savefile 'C:\Windows\Temp\ws001odj.txt' /reuse
+```
+
+Pass those arguments from PowerShell variables. Sending the same command through `cmd /c` mangles the quoting around the organisational unit path, whose commas `cmd` treats as delimiters, and it fails with `0x57`, the parameter is incorrect.
+
+Move the package to the workstation on a virtual disc rather than through a command line, so the machine password never lands in an argument or a log. Read it off the controller and decode it straight to a file without printing it:
+
+```bash
+pvesh get /nodes/grey-server/qemu/301/agent/file-read --file 'C:\Windows\Temp\ws001odj.b64' --output-format json \
+  | python3 -c 'import sys,json,base64; d=json.load(sys.stdin); open("odj.txt","wb").write(base64.b64decode(d["content"].strip()))'
+genisoimage -J -R -o /var/lib/vz/template/iso/ws001-odj.iso odj.txt
+```
+
+Attach that disc, then apply it on the workstation and reboot:
+
+```powershell
+djoin.exe /requestODJ /loadfile D:\ws001odj.txt /windowspath C:\Windows /localos
+```
+
+Two things will catch you here.
+
+**The disc will not appear until the virtual machine is power-cycled.** Attaching a CD-ROM to a running guest and then restarting from inside Windows is not enough, because a guest-initiated reboot does not rebuild the emulated device model. The guest keeps showing the previous disc. Stop and start the virtual machine.
+
+**Never hard-stop the guest between applying the join and its completing reboot.** I used a power cut rather than a shutdown to detach the disc, and Windows came up in Automatic Repair. A restart recovered it, but the repair had rolled back the pending transaction and the machine was back in a workgroup with the join undone. The computer object in the directory survived, so re-provisioning with `/reuse` and repeating the join worked. Use a graceful shutdown, and reboot from inside the guest.
+
+Shred every copy of the package afterwards: the file on the controller, the decoded copy on the hypervisor, and the disc image. It is single use and invalid after the join, but it is still a machine password.
+
+## Step 15: The network has to cooperate
 
 Two gateway settings decide whether this forest behaves, and both are easy to miss because nothing fails loudly.
 
@@ -266,7 +302,7 @@ w32tm /query /source
 
 **DNS.** Domain members must resolve through the domain controllers, not the gateway. Set the DHCP name servers on each client VLAN to the two controllers. Then confirm the firewall actually permits that path, because on a zone-based firewall the client VLANs and the identity VLAN are usually in different zones and the default between zones is a block. The port set a domain member needs is 53, 88, 123, 135, 389, 445, 464, 636, 3268, 3269, and the dynamic range 49152 to 65535.
 
-## Step 15: Verify, and do it from the right context
+## Step 16: Verify, and do it from the right context
 
 Here is the trap that will cost you the most time.
 
@@ -307,11 +343,15 @@ A healthy result is 0 failures out of 5 in both directions, both controllers lis
 - A firewall allow rule underneath a catch-all block never runs.
 - A freshly joined machine can report its old workgroup identity until it is rebooted, and applies no policy until then.
 - Replication tests fail over SSH for authentication reasons that have nothing to do with replication.
+- On Windows 11 25H2, an answer file that drives partitioning with a scripted DiskPart through `RunSynchronous` fails with `0x80070103` after partitioning and before the image is applied. Use the documented `DiskConfiguration` element instead.
+- `Press any key to boot from CD or DVD` expires in seconds and then falls through to no bootable device, so an unattended build stalls at a dead firmware prompt. Send keystrokes right after starting the guest.
+- Install the QEMU guest agent as the first first-logon command, through the virtio guest tools. It also brings the network and balloon drivers, and it is the management channel that survives when SSH does not install.
 
 ## Source Records
 
 - [Active Directory platform](../Platforms/Active%20Directory/README.md) for current state
 - [Forest Build - 2026-09-09](../Platforms/Active%20Directory/Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md) for the build and its verification
+- [HQ-WS001 Workstation Join - 2026-09-10](../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md) for the workstation and the offline join
 - [Identity NTP and Client DNS - 2026-09-09](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) for the gateway side
 - [UniFi Network](UniFi-Network.md) for zones and policy order
 - [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) for the cluster the guests run on

@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-10
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -28,7 +28,7 @@ None.
 
 | Backlog | Open items |
 |---|---|
-| [Active Directory](Platforms/Active%20Directory/README.md) | Forest `ad.alphasecunited.com` built and verified 2026-09-09 on two Windows Server 2025 controllers with a member server, tiered organisational units, Windows LAPS, and external time. Two open: the Entra Cloud Sync agent needs an interactive tenant Global Admin sign-in, and `HQ-WS001` is unbuilt, so no Windows 11 client has yet proved the Tier 2 policy and LAPS reach a workstation |
+| [Active Directory](Platforms/Active%20Directory/README.md) | Forest `ad.alphasecunited.com` built and verified 2026-09-09 on two Windows Server 2025 controllers, with a member server and, since 2026-09-10, the `HQ-WS001` Windows 11 workstation joined by offline domain join. The Tier 2 local-administrator policy and Windows LAPS are both proven on a client. Two open: the Entra Cloud Sync agent needs an interactive tenant Global Admin sign-in, and OpenSSH Server will not install on `HQ-WS001`, so it is managed through the QEMU guest agent rather than SSH Manager |
 | [Ansible](Platforms/Ansible/Documentation/TODO.md) | `ssh-key-automation` covers 17 hosts since 2026-09-07: `green-server` joined the `jedi-pc` and `mac` allowlists, `monitor-01`, `game-01` and `ansible-01` joined the inventory, and the audit found and fixed `ansible-01`'s empty `dkadi` key store. One open item: the onboarding play should create a missing `.ssh` directory with the right owner. `host-access-baseline` holds accounts and sudo; its `sudoers-rootpw.yml` put `Defaults rootpw` on all eleven guests on 2026-08-20. The 2026-07-29 reboot wait is still unexercised |
 | [Galaxy](Infrastructure/Compute/Galaxy/Documentation/TODO.md) | All five nodes resolve `permitrootlogin without-password` since 2026-09-07, when `purple-server` and `blue-server` were aligned. Keys only on all five either way. Open: `galaxy-pxe-join` now holds root on all five nodes where it used to be scoped to `grey-server`, and the mechanism that scoped it is gone |
 | [Galaxy PXE](Platforms/Galaxy%20PXE/README.md) | Physical deployment complete; keep the reusable one-use service ready for future Galaxy nodes |
