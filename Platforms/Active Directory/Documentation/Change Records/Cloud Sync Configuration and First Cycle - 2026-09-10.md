@@ -12,9 +12,9 @@ I created the AD to Microsoft Entra ID configuration in Entra Cloud Sync on 2026
 | Configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID |
 | Created | 2:10 PM |
 | Password hash sync | Enabled |
-| Device sync | Disabled at this point; next step |
+| Device sync | Enabled later the same day; see below |
 | Exchange hybrid writeback | Disabled |
-| Scope | Selected security groups: `CN=APP-EntraCloudSync-Users,OU=Applications,OU=Groups,DC=ad,DC=alphasecunited,DC=com`, saved 2:11:54 PM |
+| Scope | Selected security groups: `CN=APP-EntraCloudSync-Users,OU=Applications,OU=Groups,DC=ad,DC=alphasecunited,DC=com`, saved 2:11:54 PM; `CN=APP-EntraCloudSync-Devices,...` added after 2:58 PM |
 | Attribute mapping | Default |
 | Prevent accidental deletion | Enabled, threshold 500 |
 | Status after enabling | Healthy |
@@ -44,9 +44,24 @@ Password hash sync is on, so the tenant now holds a derived hash for each of the
 
 The first sign-in test, `testuser` at a Microsoft 365 sign-in page with its directory password, is the proof that the hash reached the tenant. It has not been run yet.
 
+## Device sync and the hybrid join of HQ-WS001
+
+Device sync, which is in preview, was enabled in the configuration's properties in the afternoon. Between 2:33 PM and 2:34 PM the configuration was deleted and recreated in the portal while that was being worked out; the audit log shows both configurations with password hash sync enabled and the scope saved again, and the users were re-imported as Add and matched to their existing tenant objects, so nothing in the tenant was disturbed. At 2:35 PM the workstation's distinguished name was pasted into the scoping filter by mistake and saved; it was removed a minute later and the filter read back as the single users group.
+
+**The skip.** Provisioning `CN=HQ-WS001,OU=Standard,OU=Workstations` on demand as a device passed import, scope and match, then stopped at the fourth step: `Object was skipped`, `SkipReason = JoinNotFound`. Microsoft does not document that value. The change on the computer object that I made to give sync a delta, a `description`, made no difference. The workstation, meanwhile, was doing its part: its computer object had carried the self-signed registration certificate since 8:43 AM, its join task was in `fallback_sync` mode, and every attempt failed at the Device Registration Service with `0x801c03f3`, *The device object by the given id (41677d01-a299-4f17-8e29-675906799ac4) is not found*. The device was waiting for sync and sync was refusing to export it.
+
+**The cause.** The provisioning log export showed the first step of every device attempt as `EntryImportDelete`: *Received computer '41677d01-...' change of type (Delete) from Active Directory*. The agent enforces a group scoping filter itself, before the cloud side evaluates anything, and returns an object that is not a member of any scope group as a delete. `HQ-WS001` was in no scope group. With nothing in the tenant to delete, the engine reported `JoinNotFound`. The later *Scoping filter evaluation passed* line is the cloud-side check and does not contradict this; the object had already been classed as a delete on the way in.
+
+**The fix.** I created `APP-EntraCloudSync-Devices`, a global security group in `OU=Applications,OU=Groups`, at 2:58 PM and made `HQ-WS001` its only member, rather than putting a computer into a group named for users. Once it had replicated to `HQ-DC02`, which is the controller the agent reads from, the group's distinguished name was added as a second row in the scoping filter. Provisioning the device on demand then went green through all four steps: *Computer '41677d01-a299-4f17-8e29-675906799ac4' was created in Microsoft Entra ID*, with `deviceTrustType` `ServerAd`, `displayName` `HQ-WS001`, `deviceOSType` `Windows`, and `userCertificate` carried over.
+
+**The join.** I ran the workstation's `Automatic-Device-Join` scheduled task through the guest agent. It succeeded on the first attempt at 3:02:54 PM: the User Device Registration log shows *Automatic registration Succeeded*, join type `DEVICE_AUTO`, and `dsregcmd /status` reports `AzureAdJoined : YES`, `DomainJoined : YES`, `DeviceId` `41677d01-a299-4f17-8e29-675906799ac4`, with the device key in the `Microsoft Platform Crypto Provider`, which is the TPM. The earlier attempts at 2:16 PM and 2:57 PM had failed with the not-found error, so the success is attributable to the export and nothing else.
+
+The two admins who had written about `JoinNotFound` before this described a workstation with no registration certificate yet. That was not the case here, and the lesson is different: with group scoping, every computer that should hybrid join must be a member of a scope group, or the agent will never export it.
+
 ## Open
 
-1. Enable device sync in the configuration's properties, then provision `HQ-WS001` on demand and confirm it reports as hybrid joined.
+1. ~~Enable device sync, provision `HQ-WS001` on demand, confirm hybrid joined.~~ Done 2026-09-10, joined 3:02 PM.
 2. Assign Business Basic to `IK-user`, `AH-user` and `testuser` in the Microsoft 365 admin center.
 3. Sign in as `testuser` to Microsoft 365 with the directory password to prove password hash sync end to end.
 4. Give `testuser` a unique password once the sign-in proof is done.
+5. Confirm in the Entra admin center that `HQ-WS001` lists as *Microsoft Entra hybrid joined* under Devices.
