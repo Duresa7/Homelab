@@ -51,7 +51,7 @@ In order, as of the end of this record. The first two closed the same day; see t
 
 1. ~~Turn off security defaults and turn on Conditional Access, excluding `BG-admin`.~~ Withdrawn. Conditional Access needs P1 per user and every user but my own is on Business Basic, so security defaults stay on. Both administrative accounts registered MFA on 2026-09-10.
 2. ~~Install the Entra provisioning agent on `HQ-MGT01`.~~ Done 2026-09-10, version 1.1.2334.0.
-3. Create the AD to Microsoft Entra ID Cloud Sync configuration, scoped to `APP-EntraCloudSync-Users`, with password hash sync. Password writeback waits for a P1 licence in scope.
+3. ~~Create the AD to Microsoft Entra ID Cloud Sync configuration, scoped to `APP-EntraCloudSync-Users`, with password hash sync.~~ Done 2026-09-10; see [Cloud Sync Configuration and First Cycle](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md). Password writeback waits for a P1 licence in scope.
 4. Enable device sync in that configuration's properties, then provision `HQ-WS001` on demand and confirm it reports as hybrid joined.
 5. Assign licences to the three synced users once they appear in the tenant.
 
