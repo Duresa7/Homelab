@@ -17,7 +17,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
-| Workstation | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, in `OU=Standard,OU=Workstations` |
+| Workstation | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10, in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
 | DNS zones | `ad.alphasecunited.com` (domain scope), `_msdcs.ad.alphasecunited.com` (forest scope), `65.168.192.in-addr.arpa` (forest scope). All primary, AD-integrated, secure dynamic update only |
@@ -28,7 +28,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
 | Remote access | `hq_dc01`, `hq_dc02`, and `hq_mgt01` in SSH Manager over OpenSSH on port 22, key only |
 | Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
-| Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, scoped to `APP-EntraCloudSync-Users`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the group in the tenant; device sync not yet enabled |
+| Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the users group in the tenant; `HQ-WS001` provisioned on demand the same day |
 
 ## Tiered Administration
 
@@ -41,6 +41,7 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 | `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2` |
 | `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser` |
 | `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser` |
+| `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
 
@@ -68,7 +69,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- Entra Cloud Sync is running and the three staff accounts exist in the tenant. Still to do: device sync and the `HQ-WS001` hybrid join, Business Basic licences for the three, and the `testuser` sign-in that proves password hash sync. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
+- Entra Cloud Sync is running, the three staff accounts exist in the tenant, and `HQ-WS001` is hybrid joined. Still to do: Business Basic licences for the three and the `testuser` sign-in that proves password hash sync. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
