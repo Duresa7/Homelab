@@ -29,7 +29,7 @@ On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on ID
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | kali-pen | grey-server | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured; stopped on 2026-09-06 | 192.168.40.1 | 40 | disabled |
-| 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 16 GiB | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
+| 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB pending / 16 GiB running | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
@@ -96,7 +96,9 @@ On 2026-09-08 I moved both disks to Grey's M.2 NVMe-backed `local-lvm` and delet
 
 This is the Ubuntu development workstation that takes over from `debian-dev`. I created it on 2026-08-12 and added it to this inventory on 2026-08-13, when CLI Proxy API moved onto it; it ran undocumented in between.
 
-It has 16 GiB with ballooning off, which is deliberate. The running instance predated that setting until the guest restarted on 2026-08-19, and the setting has been in force since: on 2026-09-06 the guest reported 15,408 MiB of total memory, where the pre-restart instance had been capped at `actual=12630` against `max_mem=16384` and saw 11.4 GiB.
+It is configured for a pending reduction to 12 GiB, while the running instance retains 16 GiB with ballooning off. The running instance predated that setting until the guest restarted on 2026-08-19, and the setting has been in force since: on 2026-09-06 the guest reported 15,408 MiB of total memory, where the pre-restart instance had been capped at `actual=12630` against `max_mem=16384` and saw 11.4 GiB.
+
+On 2026-09-10 I assessed 15 days of guest memory history. Usage averaged 5.44 GiB but peaked at 10.37 GiB with another 4.00 GiB in swap. I then chose 12 GiB and applied `qm set 105 --memory 12288` without restarting anything. Proxmox shows 12,288 MiB pending against 16,384 MiB running; the reduction will take effect on a future full VM stop/start. The [memory assessment](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md) records the initial recommendation and the subsequent decision, change, and verification.
 
 I applied the Linux Host Baseline Standard on 2026-08-13, following the single-account exception this workstation role carries. It joined fleet monitoring the same day as Wazuh agent `020` and as a node_exporter target.
 
@@ -120,7 +122,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 16 GiB |
+| Memory | 12 GiB pending / 16 GiB running; no restart performed |
 | Ballooning | disabled (`balloon: 0`); in effect since the 2026-08-19 restart |
 | BIOS | ovmf |
 | Machine | q35 |

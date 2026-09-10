@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-08
+**Last updated:** 2026-09-10
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -17,6 +17,8 @@ I verified the node and physical-storage state against all five nodes on 2026-08
 | red-server | 192.168.70.13 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | [UPS-02](Power.md) |
 
 On 2026-09-08 I moved VM 105 `ubuntu-dev` onto Grey's NVMe-backed `local-lvm` and removed its two unused SATA SSD source volumes. `ssd-lvm1` then reported 231,147,287 KiB used (12.04%), about 62.4 GiB less than immediately before deletion. The [storage move record](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) holds the disk identities and verification.
+
+On 2026-09-10 I set VM 105 `ubuntu-dev` on Grey to 12 GiB pending, leaving its running allocation at 16 GiB. I did not restart anything, so the 4 GiB reduction has not yet released host capacity. The [memory assessment and change record](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md) holds the verification.
 
 ## Physical Storage
 | Node | Device | Type | Model | Size | Used by |
