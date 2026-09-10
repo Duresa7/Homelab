@@ -24,7 +24,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | DNS forwarder | `192.168.65.1` |
 | Scavenging | Enabled, 7-day no-refresh and 7-day refresh |
 | Default password policy | 14 characters, complexity on, history 24, no expiry, lockout 10 attempts for 15 minutes |
-| Fine-grained policy | `PSO-Admins`, precedence 10, 20 characters, 365-day maximum age, lockout 5 attempts for 30 minutes |
+| Fine-grained policy | `PSO-Admins`, precedence 10, 14 characters (lowered from 20 on 2026-09-10 for a testing window; restore to 20), 365-day maximum age, lockout 5 attempts for 30 minutes |
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
 | Remote access | `hq_dc01`, `hq_dc02`, and `hq_mgt01` in SSH Manager over OpenSSH on port 22, key only |
 
@@ -75,6 +75,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [Forest Build - 2026-09-09](Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md)
 - [HQ-WS001 Workstation Join - 2026-09-10](Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md)
 - [Hybrid Identity Preparation - 2026-09-10](Documentation/Change%20Records/Hybrid%20Identity%20Preparation%20-%202026-09-10.md)
+- [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310
