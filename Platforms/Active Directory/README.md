@@ -69,7 +69,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- Entra Cloud Sync is running, the three staff accounts exist in the tenant, and `HQ-WS001` is hybrid joined. Still to do: Business Basic licences for the three and the `testuser` sign-in that proves password hash sync. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
+- Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. Next decision is moving `DK-user@alphasecunited.com` onto the directory by soft match. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
