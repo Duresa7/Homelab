@@ -118,6 +118,10 @@ From `HQ-DC01`, reading the computer object:
 
 The temporary local administrator password that the answer file set is now irrelevant: LAPS generated and stored a new one when the policy applied, so the directory holds the authoritative value.
 
+## Activation
+
+Later on 2026-09-10 I activated Windows 11 Pro on `HQ-WS001` with a retail key and rebooted it. Read through the guest agent afterwards, `SoftwareLicensingProduct` reports `LicenseStatus` `1`, which is Licensed, on the `Retail` channel, with the last boot at 12:07 the same day. The key itself is a credential and is not recorded here.
+
 ## Open
 
 OpenSSH Server is not installed, so `HQ-WS001` is not in SSH Manager. The guest agent is the working management channel. This is the only unfinished item.
