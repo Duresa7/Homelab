@@ -1,7 +1,7 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-09
 
 I track UniFi-owned VLANs, zones, firewall rules, DNS records, networks, Network Lists, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
 
@@ -10,6 +10,8 @@ On 2026-09-07 I verified the identity preparation and completed its trunk and Sp
 A full controller readback on 2026-09-06 returned 22 networks: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, 16 reusable Network Lists, 17 client groups (16 after I deleted the empty `IOT` duplicate later that day), four OON policies, one traffic route, five switch port profiles, five WLANs with three enabled, 29 enabled local DNS records, no port forwards, and no user-defined static routes. Five adopted devices were online: the gateway, three switches, and one access point, on Network application 10.6.101. Against the 2026-08-19 count, the Network Lists gained `PG-Printing`, the client groups gained an `IOT` and an `IoT` entry, and local DNS gained `mcp` and `openwebui`. The configuration records below carry the detail.
 
 The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
+
+On 2026-09-09 I verified Identity external egress in Web, NTP, Block order and DHCP DNS on Secure and Secure Client as 192.168.65.10, then 192.168.65.11. The [change record and screenshots](Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) retain the saved states.
 
 ## Configuration Records
 

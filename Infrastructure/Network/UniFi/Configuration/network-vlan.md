@@ -1,13 +1,13 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-09
 
 I verified IDENTITY-A on 2026-09-07: VLAN 65, gateway 192.168.65.1/24, DHCP 192.168.65.100 through 192.168.65.120, enabled, and assigned to AlphaSec-Identity. The network reports `mdns_enabled: false`, `ipv6_interface_type: none`, and `ipv6_ra_enabled: false`. The mDNS field is a controller mirror, not an independent verification of the site-wide mDNS setting. I retained the [network readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json). The current count is 23 networks, including 16 routed corporate LANs.
 
 I removed only IDENTITY-A from the Proxmox-Trunk exclusion list. VLANs 65 and 60 are now admitted; grey-server is online at 192.168.70.10 through Bane Switch POE port 14, which uses that profile and reports a 2.5 GbE link. The [trunk readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Trunk%20Update%20and%20Readback.json) confirms every other profile field stayed unchanged.
 
-I left DHCP DNS on Secure and Secure Client unchanged; both still use automatic DNS. I will change it only after both domain controllers answer DNS.
+On 2026-09-09 I changed DHCP DNS on Secure and Secure Client to 192.168.65.10 followed by 192.168.65.11. I verified both saved network panels with Auto DNS Server unchecked. Their gateways, /24 subnets and DHCP ranges stayed unchanged. The [change record](../Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) retains final screenshots.
 
 I re-read all 22 networks on 2026-09-06 and every row present then matched: names, VLAN IDs, subnets, and DHCP ranges. I verified this table against the controller after the [Galaxy PXE provisioning service](../../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md) on 2026-07-31. I admitted `Server-Provision`/VLAN 5 as tagged traffic on `Proxmox-Trunk`, completed the disposable UEFI test, and then completed Green's physical NVMe install and cluster join through VLAN 5.
 

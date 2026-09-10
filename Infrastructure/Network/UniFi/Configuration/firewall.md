@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-09
 
 I verified the eight existing identity policies on 2026-09-07 and found no mismatch in their actions, enabled states, protocols, zones, or selectors. I added Allow Identity to Splunk - Security-A after checking SC4S on 192.168.72.3. The controller now returns 351 policies: 77 user-defined policies, split 69 allows to eight blocks, and 274 generated policies. The [final identity readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Final%20Identity%20Policy%20Readback.json) retains all nine custom rules and their response companions.
 
@@ -117,8 +117,13 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Identity to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | AlphaSec-Identity / Any | AlphaSec-Observability / 192.168.72.2 / Wazuh Ports |
 | `Allow Identity Web Egress` | Yes | ALLOW | 10000 | TCP | AlphaSec-Identity / Any | External / Any / 80,443 |
 | `Allow Monitor to Windows Exporter` | Yes | ALLOW | 10000 | TCP | AlphaSec-Observability / AG-Monitor-Collector | AlphaSec-Identity / AG-Identity-Servers / PG-Windows-Exporter |
-| `Block Identity Other External Egress` | Yes | BLOCK | 10001 | All | AlphaSec-Identity / Any | External / Any |
+| `Allow Identity NTP Egress` | Yes | ALLOW | 10001 | UDP | AlphaSec-Identity / Any | External / Any / 123 |
+| `Block Identity Other External Egress` | Yes | BLOCK | 10002 | All | AlphaSec-Identity / Any | External / Any |
 | `Allow Identity to Splunk - Security-A` | Yes | ALLOW | 10001 | TCP+UDP | AlphaSec-Identity / Any | AlphaSec-Observability / 192.168.72.3 / 514 |
+
+## Identity Egress Order, 2026-09-09
+
+I verified the saved AlphaSec-Identity-to-External order after reload: Allow Identity Web Egress (10000), Allow Identity NTP Egress (10001), then Block Identity Other External Egress (10002). NTP allows UDP 123 and showed 34 hits. The [change record](../Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) retains the screenshot and client DHCP DNS changes. The following verification describes the earlier 2026-09-07 state.
 
 ## Identity Policy Verification
 
