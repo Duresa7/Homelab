@@ -30,15 +30,15 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 
 ## Tiered Administration
 
-The directory is laid out for a tiered administrative model. Tier 0 covers the forest itself, Tier 1 the member servers, and Tier 2 the workstations. Thirty-one organisational units carry that split, and both computer and user redirection point at `Staging` so a default-location join never lands an object in a container that no policy reaches.
+The directory is laid out for a tiered administrative model. Tier 0 covers the forest itself, Tier 1 the member servers, and Tier 2 the workstations. Thirty-three organisational units carry that split, and both computer and user redirection point at `Staging` so a default-location join never lands an object in a container that no policy reaches.
 
 | Group | Scope | Purpose | Members on 2026-09-09 |
 |---|---|---|---|
 | `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0` |
 | `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | none |
 | `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2` |
-| `ROL-Staff` | Global | Role group for standard staff accounts | none |
-| `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | none |
+| `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser` |
+| `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
 
@@ -66,14 +66,15 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- Entra Cloud Sync is not installed. The agent needs an interactive Global Admin sign-in to the tenant, so it is not something I can complete from a shell. `APP-EntraCloudSync-Users` is built and waiting.
+- Entra Cloud Sync is not yet installed. The directory side is ready: the service connection point is in the forest, three staff accounts sit in `OU=Staff,OU=People` with the `alphasecunited.com` sign-in suffix and are in the scope group. The agent itself needs an interactive Global Admin sign-in on `HQ-MGT01`. See [Hybrid Identity Preparation - 2026-09-10](Documentation/Change%20Records/Hybrid%20Identity%20Preparation%20-%202026-09-10.md).
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
-- `ADM-T1-ServerAdmins` and `ROL-Staff` are empty by design until there is a second administrator and real staff accounts.
+- `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
 
 ## Records
 
 - [Forest Build - 2026-09-09](Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md)
 - [HQ-WS001 Workstation Join - 2026-09-10](Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md)
+- [Hybrid Identity Preparation - 2026-09-10](Documentation/Change%20Records/Hybrid%20Identity%20Preparation%20-%202026-09-10.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310
