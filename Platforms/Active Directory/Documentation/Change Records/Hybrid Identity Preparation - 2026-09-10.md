@@ -31,7 +31,7 @@ Three accounts, all in `OU=Staff,OU=People`, all enabled, all with the `alphasec
 | `AH-user` | AH-user | `AH-user@alphasecunited.com` |
 | `testuser` | Test User | `testuser@alphasecunited.com` |
 
-Each is a member of `ROL-Staff` and of `APP-EntraCloudSync-Users`, the group that scopes what Cloud Sync is allowed to synchronise. Each has a generated 24-character password stored in my password manager and set on the account by reading it from standard input on the controller, so the value never appeared in a command argument, a log, or this record. Passwords are not forced to change at first sign-in; with P1 the users can reset their own through Microsoft 365 and it writes back.
+Each is a member of `ROL-Staff` and of `APP-EntraCloudSync-Users`, the group that scopes what Cloud Sync is allowed to synchronise. Each has a generated 24-character password stored in my password manager and set on the account by reading it from standard input on the controller, so the value never appeared in a command argument, a log, or this record. Passwords are not forced to change at first sign-in. I wrote here at first that the users could reset their own through Microsoft 365 with it writing back; that needs P1 per user, and these three are on Business Basic, so their passwords are managed in the directory. The correction is in the [agent install record](Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).
 
 The two tiered administrator accounts, `DK-t0` and `DK-t2`, are deliberately not in the scope group and keep their internal suffix. They must never exist in the cloud.
 
@@ -47,11 +47,11 @@ Read back from `HQ-DC01` on 2026-09-10:
 
 ## Open
 
-In order:
+In order, as of the end of this record. The first two closed the same day; see the [agent install record](Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).
 
-1. Turn off security defaults and turn on Conditional Access in the Entra admin center, excluding `BG-admin`. Owner's action.
-2. Install the Entra provisioning agent on `HQ-MGT01`, version 1.1.1107 or later so that device sync is available. Needs an interactive Global Admin sign-in. Owner's action.
-3. Create the AD to Microsoft Entra ID Cloud Sync configuration, scoped to `APP-EntraCloudSync-Users`, with password hash sync and password writeback.
+1. ~~Turn off security defaults and turn on Conditional Access, excluding `BG-admin`.~~ Withdrawn. Conditional Access needs P1 per user and every user but my own is on Business Basic, so security defaults stay on. Both administrative accounts registered MFA on 2026-09-10.
+2. ~~Install the Entra provisioning agent on `HQ-MGT01`.~~ Done 2026-09-10, version 1.1.2334.0.
+3. Create the AD to Microsoft Entra ID Cloud Sync configuration, scoped to `APP-EntraCloudSync-Users`, with password hash sync. Password writeback waits for a P1 licence in scope.
 4. Enable device sync in that configuration's properties, then provision `HQ-WS001` on demand and confirm it reports as hybrid joined.
 5. Assign licences to the three synced users once they appear in the tenant.
 
