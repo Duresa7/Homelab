@@ -3,7 +3,7 @@
 **Created:** 2026-09-10  
 **Last updated:** 2026-09-10
 
-On 2026-09-10 I set a shared password across five accounts for a testing window, at the owner's request, so that hybrid sign-in and Cloud Sync could be exercised with one simple credential. This is explicitly temporary. It weakened two controls, both recorded here so they can be restored.
+On 2026-09-10 I set a shared password across five accounts for a testing window, at the owner's request, so that hybrid sign-in and Cloud Sync could be exercised with one simple credential. This is explicitly temporary. It weakened two controls, both recorded here so they can be restored. Later the same day `testuser` left the arrangement and a third control was loosened to allow it; both are in the closing sections.
 
 ## What changed
 
@@ -15,7 +15,7 @@ The shared value is held in the password manager item `ALPHASEC - Standard User 
 | `AH-user` | staff | Set to the template. Validated. |
 | `DK-t2` | Tier 2 admin | Set to the template. Validated. |
 | `DK-t0` | Tier 0 admin | Set to the template. See the Protected Users note below. |
-| `testuser` | staff | Could **not** take the template. Set instead to the domain Administrator's password. See below. |
+| `testuser` | staff | Could **not** take the template. Set instead to the domain Administrator's password. See below. **Rotated to its own value at 5:13 PM the same day; see the closing section.** |
 
 Each account's own password manager item was updated to match, so the vault stays truthful.
 
@@ -52,6 +52,31 @@ Read back on 2026-09-10:
 - `PSO-Admins` `MinPasswordLength` read back as 14, still applied to the three `ADM-` groups.
 - Five password manager items confirmed present and consistent with the directory, values not revealed.
 
+## Control 3: default domain minimum password length lowered from 14 to 8
+
+The hybrid sign-in proof completed on the afternoon of 2026-09-10, so `testuser` no longer needed the break-glass value. The owner chose its replacement and stored it in the password manager item `Microsoft - testuser`. The value has all four character classes and does not contain the account name, but it is 13 characters, and the domain default policy required 14. The first reset attempt at 4:54 PM was refused with *the password does not meet the length, complexity, or history requirement of the domain*, and `PasswordLastSet` did not move.
+
+Rather than lengthen the value, the owner directed that the domain minimum be lowered to 8. At 5:12 PM I ran `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 8` against `HQ-DC01`, the PDC emulator. Every other setting is unchanged: complexity on, history 24, no expiry, minimum age one day, lockout 10 attempts for 15 minutes.
+
+This is the third weakening in this record and the only one that touches every ordinary account rather than the five test accounts. Two facts bound it. `PSO-Admins` has precedence over the domain default, so the tiered admin accounts still need 14. And Windows complexity stays on, so an 8-character value still needs three character classes and cannot contain the account name. Eight is the floor NIST SP 800-63B permits for a user-chosen password; the build chose 14 deliberately.
+
+One thing to know before restoring this: the domain default lives in the `Default Domain Policy` GPO's security template, and a policy change made on the PDC emulator is written back into that GPO. The template read `MinimumPasswordLength = 14` before and `MinimumPasswordLength = 8` twenty seconds after, and the GPO version moved from 3 to 4 in both `GPT.ini` and the directory. A direct attribute change is therefore not undone at the next Group Policy refresh, and the same command restores it.
+
+**To restore:** `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 14` on the PDC emulator, then confirm the template and GPO version followed. Any password set at fewer than 14 characters in the meantime keeps working until it is next changed, so rotate `testuser` again at the same time.
+
+## testuser leaves the shared arrangement
+
+With the minimum at 8 the reset succeeded at 5:13:13 PM. `testuser` now holds a value that is unique to it and is not derived from any other account. The domain item `ALPHASEC - testuser` was updated by piped JSON so the value never appeared on a command line, and its note now records the rotation; the two vault items agree, confirmed by comparing digests without printing either value. Password hash sync carries the change to the tenant on the agent's next password cycle, normally within two minutes, and the owner confirms tenant sign-in with the new value.
+
+Verification, all on 2026-09-10:
+
+- `PasswordLastSet` moved from 10:41:23 AM to 5:13:13 PM on `HQ-DC01`, and `HQ-DC02` read the same value directly.
+- `ValidateCredentials` returned True for the new value and False for the same value with one character appended, run in that order, and `badPwdCount` rose by one after the control.
+- An interactive logon attempt on the controller with the new value failed with *the user has not been granted the requested logon type at this computer*, while the wrong-password control failed with *the user name or password is incorrect*. The different messages show the credential was accepted and only the logon right was refused, which is correct for a standard user on a domain controller.
+- `Get-ADDefaultDomainPasswordPolicy` read 8 from both controllers.
+- The four other accounts in the table above were not touched, at the owner's direction.
+
 ## Open
 
-- Restore before production: `PSO-Admins` back to 20, unique passwords on the two admin accounts, and a password on `testuser` that is not the break-glass value.
+- Restore before production: `PSO-Admins` back to 20, unique passwords on the two admin accounts, and the domain default minimum back to 14 (control 3), with `testuser` rotated again at that point to a value of at least 14 characters.
+- ~~A password on `testuser` that is not the break-glass value.~~ Done 5:13 PM on 2026-09-10.
