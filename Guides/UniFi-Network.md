@@ -1,7 +1,7 @@
 # UniFi Network Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-09
 
 ## What This Guide Covers
 
@@ -56,6 +56,24 @@ I added `netbird.alphasecunited.com` as an A record for `192.168.85.2` with TTL 
 
 ![UniFi local DNS record for the NetBird host](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
+### Step 6: Order Identity Egress and Point Clients at the Domain Controllers
+
+The Active Directory build on VLAN 65 needed two gateway changes, and both are ordering or placement problems rather than new capability.
+
+The identity zone had three policies to External: an allow for TCP 80 and 443, an allow for UDP 123, and a catch-all block. The NTP allow sat below the block, so it never ran, and the controller holding the PDC emulator role fell back to its own CMOS clock. Every machine in the domain inherits that drift. Moving the NTP allow above the block is the whole fix. The saved order after reload is `Allow Identity Web Egress` at index 10000, `Allow Identity NTP Egress` at 10001, then `Block Identity Other External Egress` at 10002.
+
+<!-- ![Identity to External policy order](../Infrastructure/Network/UniFi/Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/01-Firewall-Order.png) -->
+
+Then DHCP DNS on the two client networks moved from automatic to the two domain controllers, `192.168.65.10` first and `192.168.65.11` second. Domain members have to resolve through the domain controllers; pointing them at the gateway breaks service location lookups.
+
+<!-- ![Secure VLAN 50 DNS servers](../Infrastructure/Network/UniFi/Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/02-Secure-DNS.png) -->
+
+<!-- ![Secure Client VLAN 60 DNS servers](../Infrastructure/Network/UniFi/Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/03-Secure-Client-DNS.png) -->
+
+Check the firewall before assuming the DNS change is enough. Both client networks sit in the Internal zone and the controllers sit in the identity zone, so the traffic crosses a zone boundary where the default is a block. In my case an existing policy already covered it, matching the two client networks as source and an address group of the two controllers on the domain-member port set. Verify that path exists rather than adding a second rule for it, and be careful reading a filtered policy list: the controller returns a capped page, so a rule can be absent from the list and present on the gateway.
+
+Afterwards `w32tm /query /source` on the PDC named an external server instead of `Local CMOS Clock`, and the two downstream hosts followed the domain hierarchy at stratum 5 and 6.
+
 ## What I Checked After Each Step
 
 - Web traffic returned HTTP `200` or the expected registry `401`.
@@ -81,3 +99,5 @@ This guide covers the completed Security-A, Cluster-Net, Access-A, and consolida
 - [Zone and object consolidation](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
 - [Access-A deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
 - [Local DNS inventory](../Infrastructure/Network/UniFi/Configuration/local-dns.md)
+- [Identity NTP and client DNS](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
+- [Active Directory guide](Active-Directory.md) for the forest these two changes serve

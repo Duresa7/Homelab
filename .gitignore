@@ -524,3 +524,26 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 !/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/
 /Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/*
 !/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/Verification.log
+
+# Active Directory forest build evidence. The index is published because it
+# holds no captured values; it is the map of which screenshot goes where and
+# what has to be blacked out first.
+#
+# The two Screenshots rules below are deliberately left commented. Uncomment a
+# pair only after the images in that folder have been redacted by hand, because
+# uncommenting makes the next `git add` stage every file in the directory.
+!/Platforms/Active Directory/Evidence/
+/Platforms/Active Directory/Evidence/*
+!/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/
+/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/*
+!/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/Evidence-Index.md
+# !/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/Screenshots/
+
+# Identity NTP and client DNS evidence. The three controller screenshots stay
+# unpublished until they are redacted; the guide and the change record already
+# carry the image lines for them, commented out beside the step they belong to.
+# !/Infrastructure/Network/UniFi/Evidence/
+# /Infrastructure/Network/UniFi/Evidence/*
+# !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/
+# /Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/*
+# !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/

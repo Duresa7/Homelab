@@ -1,9 +1,9 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-08  
+**Last updated:** 2026-09-09  
 
-Galaxy currently has 7 QEMU VMs & two templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy currently has 10 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
 I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
 
@@ -21,6 +21,8 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 
 `supabase-01` (VM 117) is also gone. On 2026-08-20 I confirmed I had already deleted it: the Proxmox configuration and cluster-resource entry are absent, `pvesm list ssd-lvm1 --vmid 117` returns no volume, and the local LVM inventory has no VM 117 logical volume. The [retirement record](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) records the remaining automation, SSH, monitoring, diagram, and documentation cleanup.
 
+On 2026-09-09 I added the three Windows Server 2025 guests and the template they came from. VM 300 `ws2025-template` was built on 2026-09-08 and cloned into VM 301 `HQ-DC01`, VM 302 `HQ-DC02`, and VM 303 `HQ-MGT01`, all on IDENTITY-A, VLAN 65. The two controllers hold the `ad.alphasecunited.com` forest and `HQ-MGT01` is its member server. All four run OVMF firmware with a TPM 2.0 device, which Windows Server 2025 expects, and each carries the virtio driver ISO on `ide0`. The [forest build record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md) holds the verification.
+
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -30,12 +32,16 @@ VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this f
 | 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 301 | HQ-DC01 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
+| 302 | HQ-DC02 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
+| 303 | HQ-MGT01 | grey-server | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
 | 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 101 | debian13-template | grey-server | Debian 13 | 4 | 4 GiB | 60G | none | none | 40 | disabled |
+| 300 | ws2025-template | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | none | none | 65 | disabled |
 | 9000 | ubuntu-cloud-template | grey-server | Ubuntu 24.04.4 LTS | 2 | 2 GiB | 20G | none | none | 80 | disabled |
 
 ## VM Details
@@ -292,6 +298,144 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 72 | 192.168.72.2/24 | 192.168.72.1 | enabled | `<REDACTED_SECURITY_HOST_MAC>` |
 
+### VM 301 - HQ-DC01
+
+Cloned from VM 300 on 2026-09-09 and promoted the same day. This guest holds the schema, domain naming, PDC emulator, RID, and infrastructure master roles for `ad.alphasecunited.com`, and is the forest's external time source through `time.cloudflare.com`.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| Guest hostname | HQ-DC01 |
+| Role | First domain controller; all five operations master roles, global catalog, AD-integrated DNS |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 Standard, build 26100 |
+| IPv4 | 192.168.65.10/24 |
+| Gateway | 192.168.65.1 |
+| Login account | `Administrator` |
+| Snapshot | none |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 4 GiB |
+| Ballooning | disabled |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled, version 2.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-301-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-301-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-301-disk-2 | 4M | disk | version 2.0 |
+| ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.10/24 | 192.168.65.1 | disabled | `<REDACTED_HQ_DC01_MAC>` |
+
+### VM 302 - HQ-DC02
+
+Cloned from VM 300 on 2026-09-09 and promoted into the existing domain. It holds no operations master role and synchronises time from `HQ-DC01`.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| Guest hostname | HQ-DC02 |
+| Role | Second domain controller; global catalog, AD-integrated DNS |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 Standard, build 26100 |
+| IPv4 | 192.168.65.11/24 |
+| Gateway | 192.168.65.1 |
+| Login account | `Administrator` |
+| Snapshot | none |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 4 GiB |
+| Ballooning | disabled |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled, version 2.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-302-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-302-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-302-disk-2 | 4M | disk | version 2.0 |
+| ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.11/24 | 192.168.65.1 | disabled | `<REDACTED_HQ_DC02_MAC>` |
+
+### VM 303 - HQ-MGT01
+
+Cloned from VM 300 on 2026-09-09 and joined to the domain, where it sits in `OU=Management,OU=Servers`. Its local `Administrator` password is managed by Windows LAPS, so the directory holds the authoritative value. Extending `C:` on this guest required removing the trailing recovery partition first; the recovery partition GPT type is `de94bba4-06d1-4d40-a16a-bfd50179d6ac`.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| Guest hostname | HQ-MGT01 |
+| Role | Member server for management tooling and Entra Cloud Sync |
+| High availability | disabled |
+| Template | no |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 Standard, build 26100 |
+| IPv4 | 192.168.65.12/24 |
+| Gateway | 192.168.65.1 |
+| Login account | `Administrator` |
+| Snapshot | none |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 2 |
+| CPU type | host |
+| Memory | 6 GiB |
+| Ballooning | disabled |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled, version 2.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | vm-303-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-303-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | ssd-lvm1 | vm-303-disk-2 | 4M | disk | version 2.0 |
+| ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | 192.168.65.12/24 | 192.168.65.1 | disabled | `<REDACTED_HQ_MGT01_MAC>` |
+
 ### VM 401 - alpha-prod-01
 
 #### Identity
@@ -368,6 +512,47 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 40 | none | none | enabled | `<REDACTED_DEBIAN_TEMPLATE_MAC>` |
+
+### Template 300 - ws2025-template
+
+Built on 2026-09-08 as the source for the three Windows Server 2025 guests. It carries the QEMU guest agent, OpenSSH Server, and the virtio driver media, and sysprep has been run. Sysprep does not regenerate SSH host keys, so every clone taken from this template presents the template's fingerprint until the keys under `C:\ProgramData\ssh` are deleted and `sshd` is restarted.
+
+#### Identity
+| Setting | Value |
+| --- | --- |
+| Node | grey-server |
+| High availability | disabled |
+| Template | yes |
+| OS family | Windows |
+| Guest OS | Windows Server 2025 Standard, build 26100 |
+| IPv4 | none |
+| Gateway | none |
+
+#### Hardware
+| Setting | Value |
+| --- | --- |
+| vCPU | 4 |
+| CPU type | host |
+| Memory | 4 GiB |
+| BIOS | ovmf |
+| Machine | q35 |
+| SCSI controller | virtio-scsi-single |
+| Display | default |
+| QEMU agent | enabled |
+| TPM | enabled, version 2.0 |
+
+#### Storage
+| Device | Bus | Storage | Volume | Size | Media | Options |
+| --- | --- | --- | --- | --- | --- | --- |
+| scsi0 | scsi | ssd-lvm1 | base-300-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | base-300-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | ssd-lvm1 | base-300-disk-2 | 4M | disk | version 2.0 |
+| ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
+
+#### Network
+| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| net0 | virtio | vmbr0 | 65 | none | none | disabled | `<REDACTED_WS2025_TEMPLATE_MAC>` |
 
 ### Template 9000 - ubuntu-cloud-template
 

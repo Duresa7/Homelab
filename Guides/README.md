@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-09
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -25,6 +25,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 | Guide | What it covers |
 |---|---|
+| [Active Directory](Active-Directory.md) | Forest promotion, second controller, site and subnets, AD-integrated DNS, tiered organisational units, password policy, local-admin policy, Windows LAPS, and the member-server join |
 | [Ansible SSH Identity Automation](Ansible-SSH-Identity-Automation.md) | Controller setup, identity files, audit, onboarding, rotation, Semaphore, & recovery |
 | [Immich Storage Migration](Immich-Storage-Migration.md) | Database backup, replacement pool, file copy, verification, & old-disk retirement |
 | [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
@@ -44,4 +45,4 @@ I preserved the Discord assistant configuration formerly hosted on deleted CT 10
 
 `Verified` means the linked record contains the observed command result, UI state, or screenshot. `Partial` names the exact unfinished check. I don't turn a plan into a completed result because the command appears plausible.
 
-Cloudflare doesn't have a standalone guide yet. Its current public records contain inventories or supporting steps, not a complete deployment sequence. Windows Servers moved to the archive on 2026-09-06 with the rest of the retired Active Directory records.
+Cloudflare doesn't have a standalone guide yet. Its current public records contain inventories or supporting steps, not a complete deployment sequence. The retired Windows Servers platform moved to the archive on 2026-09-06. The Active Directory guide above covers the `ad.alphasecunited.com` forest I built on 2026-09-09, which shares no state with those archived records.
