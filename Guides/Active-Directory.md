@@ -183,7 +183,7 @@ Leave the built-in `Administrator` as break-glass and stop using it. `Protected 
 
 ## Step 10: Password policy
 
-The default domain policy applies to everyone, so set it for ordinary people: 14 characters, complexity on, history 24, and no expiry. Forced rotation drives predictable passwords.
+The default domain policy applies to everyone, so set it for ordinary people: 14 characters, complexity on, history 24, and no expiry. Forced rotation drives predictable passwords. I later settled on 8 as the minimum for ordinary accounts, which is the NIST floor with complexity still on; the admin policy below is what keeps privileged accounts long.
 
 Then add a fine-grained policy for the administrative groups, which is the only way to hold administrators to a higher bar than everyone else.
 

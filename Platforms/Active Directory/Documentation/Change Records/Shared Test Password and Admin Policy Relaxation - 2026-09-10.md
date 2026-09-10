@@ -58,15 +58,15 @@ The hybrid sign-in proof completed on the afternoon of 2026-09-10, so `testuser`
 
 Rather than lengthen the value, the owner directed that the domain minimum be lowered to 8. At 5:12 PM I ran `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 8` against `HQ-DC01`, the PDC emulator. Every other setting is unchanged: complexity on, history 24, no expiry, minimum age one day, lockout 10 attempts for 15 minutes.
 
-This is the third weakening in this record and the only one that touches every ordinary account rather than the five test accounts. Two facts bound it. `PSO-Admins` has precedence over the domain default, so the tiered admin accounts still need 14. And Windows complexity stays on, so an 8-character value still needs three character classes and cannot contain the account name. Eight is the floor NIST SP 800-63B permits for a user-chosen password; the build chose 14 deliberately.
+Unlike the other two controls, this one is not temporary. After the rotation the owner confirmed that 8 is the standing minimum for ordinary accounts, so the README records it as the policy and nothing here restores it. Two facts bound it. `PSO-Admins` has precedence over the domain default, so the tiered admin accounts still need 14. And Windows complexity stays on, so an 8-character value still needs three character classes and cannot contain the account name. Eight is the floor NIST SP 800-63B permits for a user-chosen password; the build chose 14 deliberately.
 
 One thing to know before restoring this: the domain default lives in the `Default Domain Policy` GPO's security template, and a policy change made on the PDC emulator is written back into that GPO. The template read `MinimumPasswordLength = 14` before and `MinimumPasswordLength = 8` twenty seconds after, and the GPO version moved from 3 to 4 in both `GPT.ini` and the directory. A direct attribute change is therefore not undone at the next Group Policy refresh, and the same command restores it.
 
-**To restore:** `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 14` on the PDC emulator, then confirm the template and GPO version followed. Any password set at fewer than 14 characters in the meantime keeps working until it is next changed, so rotate `testuser` again at the same time.
+**If it is ever raised again:** `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength <n>` on the PDC emulator, then confirm the template and GPO version followed. A password already set below the new minimum keeps working until it is next changed.
 
 ## testuser leaves the shared arrangement
 
-With the minimum at 8 the reset succeeded at 5:13:13 PM. `testuser` now holds a value that is unique to it and is not derived from any other account. The domain item `ALPHASEC - testuser` was updated by piped JSON so the value never appeared on a command line, and its note now records the rotation; the two vault items agree, confirmed by comparing digests without printing either value. Password hash sync carries the change to the tenant on the agent's next password cycle, normally within two minutes, and the owner confirms tenant sign-in with the new value.
+With the minimum at 8 the reset succeeded at 5:13:13 PM. `testuser` now holds a value that is unique to it and is not derived from any other account. The domain item `ALPHASEC - testuser` was updated by piped JSON so the value never appeared on a command line, and its note now records the rotation; the two vault items agree, confirmed by comparing digests without printing either value. Password hash sync carried the change to the tenant, and the owner signed in to Microsoft 365 as `testuser@alphasecunited.com` with the new value shortly afterwards, which closes the loop from directory reset to tenant sign-in a second time.
 
 Verification, all on 2026-09-10:
 
@@ -78,5 +78,5 @@ Verification, all on 2026-09-10:
 
 ## Open
 
-- Restore before production: `PSO-Admins` back to 20, unique passwords on the two admin accounts, and the domain default minimum back to 14 (control 3), with `testuser` rotated again at that point to a value of at least 14 characters.
+- Restore before production: `PSO-Admins` back to 20 and unique passwords on the two admin accounts. Control 3 is the accepted policy and stays.
 - ~~A password on `testuser` that is not the break-glass value.~~ Done 5:13 PM on 2026-09-10.
