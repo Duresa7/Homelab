@@ -55,4 +55,4 @@ In order:
 4. Enable device sync in that configuration's properties, then provision `HQ-WS001` on demand and confirm it reports as hybrid joined.
 5. Assign licences to the three synced users once they appear in the tenant.
 
-The owner's own account stays cloud-only. That decision was still being confirmed when this record was written; if it changes, the change gets its own record.
+The owner's own account stays cloud-only for now. The decision, made 2026-09-10, is to prove the full path on `testuser` first: workstation sign-in, Microsoft 365 sign-in, and a password reset from Microsoft 365 that writes back to the directory. Once that holds, the owner's account is moved onto the directory by soft match in its own record. `testuser`, not `IK-user`, is the proving account.
