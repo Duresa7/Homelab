@@ -15,7 +15,7 @@ The shared value is held in the password manager item `ALPHASEC - Standard User 
 | `AH-user` | staff | Set to the template. Validated. |
 | `DK-t2` | Tier 2 admin | Set to the template. Validated. |
 | `DK-t0` | Tier 0 admin | Set to the template. See the Protected Users note below. |
-| `testuser` | staff | Could **not** take the template. See the constraint below. |
+| `testuser` | staff | Could **not** take the template. Set instead to the domain Administrator's password. See below. |
 
 Each account's own password manager item was updated to match, so the vault stays truthful.
 
@@ -33,7 +33,7 @@ The three `ADM-` groups are covered by the fine-grained policy `PSO-Admins`, whi
 
 The `testuser` account rejected the template with *the password does not meet the length, complexity, or history requirement*. The cause is Windows password complexity, which forbids a password from containing the account's own name. The template value contains part of the account's own name, confirmed structurally without printing the value, so this one account is permanently unable to use it while complexity is enabled. The other four accounts, whose names do not appear in the value, took it without trouble.
 
-Because `testuser` is the account chosen to prove the hybrid sign-in path, this matters. Until the template value is changed to one containing no account-name words, `testuser` holds a unique generated 16-character password instead, recorded in its own vault item with a note explaining why. The recommended fix is to set the template to a generic value with no names, after which all five accounts can share it.
+Because `testuser` is the account chosen to prove the hybrid sign-in path, this matters. I first gave it a unique generated password so the vault stayed truthful. The owner then chose a different route: `testuser` now carries the same password as the built-in domain `Administrator`, the break-glass account. That value is 19 characters, meets policy, and contains no part of the account name, so the directory accepted it. It is recorded in `testuser`'s own vault item with a note. This widens the exposure of the break-glass credential to a standard account and is part of the same temporary testing window; rotate it with the rest.
 
 ## Two verification traps recorded
 
@@ -48,11 +48,10 @@ Read back on 2026-09-10:
 
 - `IK-user`, `AH-user`, `DK-t2`: `ValidateCredentials` returned True against the template value, after a wrong-password negative control returned False.
 - `DK-t0`: `pwdLastSet` updated to the reset time and `Set-ADAccountPassword` raised no error; direct validation is blocked by Protected Users membership, which was confirmed.
-- `testuser`: `ValidateCredentials` returned True against its unique generated password.
+- `testuser`: `ValidateCredentials` returned True against the domain Administrator's password, after that same value was confirmed current against `Administrator` itself. `pwdLastSet` updated to the reset time.
 - `PSO-Admins` `MinPasswordLength` read back as 14, still applied to the three `ADM-` groups.
 - Five password manager items confirmed present and consistent with the directory, values not revealed.
 
 ## Open
 
-- Owner to decide whether to change the template value so `testuser` can join the shared password.
-- Restore both controls before production: `PSO-Admins` back to 20, and unique passwords on the two admin accounts.
+- Restore before production: `PSO-Admins` back to 20, unique passwords on the two admin accounts, and a password on `testuser` that is not the break-glass value.
