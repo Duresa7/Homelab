@@ -42,7 +42,7 @@ On the directory side nothing changed. `msDS-ExternalDirectoryObjectId` is empty
 
 Password hash sync is on, so the tenant now holds a derived hash for each of the three accounts. `testuser` currently carries the domain `Administrator` password, set at my request for the testing window and recorded in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). That record's restore list now has more weight behind it: a derivative of the break-glass domain password is in the cloud for as long as `testuser` keeps it, and any cloud sign-in as `testuser` types that password into a browser. Giving `testuser` its own password before real use is the first restore item, not the last.
 
-The first sign-in test, `testuser` at a Microsoft 365 sign-in page with its directory password, is the proof that the hash reached the tenant. It has not been run yet.
+The first sign-in test, `testuser` at a Microsoft 365 sign-in page with its directory password, is the proof that the hash reached the tenant. It passed later the same afternoon: `testuser` signed in at `office.com` with the directory password and registered the Authenticator app under security defaults. Business Basic was then assigned to `testuser`, `AH-user` and `IK-user` in the Microsoft 365 admin center. The Devices page lists `HQ-WS001` as *Microsoft Entra hybrid joined*, Windows `10.0.26200.6584`, registered 3:02 PM.
 
 ## Device sync and the hybrid join of HQ-WS001
 
@@ -60,8 +60,8 @@ The two admins who had written about `JoinNotFound` before this described a work
 
 ## Open
 
-1. ~~Enable device sync, provision `HQ-WS001` on demand, confirm hybrid joined.~~ Done 2026-09-10, joined 3:02 PM.
-2. Assign Business Basic to `IK-user`, `AH-user` and `testuser` in the Microsoft 365 admin center.
-3. Sign in as `testuser` to Microsoft 365 with the directory password to prove password hash sync end to end.
-4. Give `testuser` a unique password once the sign-in proof is done.
-5. Confirm in the Entra admin center that `HQ-WS001` lists as *Microsoft Entra hybrid joined* under Devices.
+Everything this record set out to do is done: three users and one workstation from the directory exist in the tenant, the workstation is hybrid joined, the users are licensed, and a directory password signs in to Microsoft 365. What remains is cleanup and the next decision.
+
+1. Give `testuser` a unique password. The sign-in proof it was kept for is complete, and a derivative of the break-glass domain password should not stay in the tenant longer than that proof needed. Listed with the rest of the restores in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md).
+2. Decide when to move `DK-user@alphasecunited.com` from cloud-only onto the directory by soft match. The 2026-09-10 decision was to prove the path on `testuser` first; that condition is now met. Separate record when it happens.
+3. Set `Credential Validation` auditing to include failures on both controllers, noted in the [agent install record](Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).
