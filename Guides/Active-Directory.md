@@ -145,11 +145,13 @@ The shape matters more than the names. Separate administrative accounts by tier,
 Admin/{Tier 0,Tier 1,Tier 2}/{Accounts,Groups,Service Accounts}
 Servers/{Management,Application}
 Workstations/Standard
-Users/Staff
+People/Staff
 Groups/{Roles,Permissions,Applications,Distribution}
 Staging/{Computers,Users}
 Disabled/{Users,Computers}
 ```
+
+Do not name the top-level people container `Users`. The domain root already holds the built-in `CN=Users` container, and the directory refuses a second object called `Users` beside it whatever its type; the attempt fails with error 8305. `People` is the conventional name for exactly this reason.
 
 Then redirect the default containers. This is the step people skip, and skipping it means a machine that joins the domain lands in `CN=Computers`, where no organisational-unit-linked policy reaches it.
 
@@ -340,6 +342,7 @@ A healthy result is 0 failures out of 5 in both directions, both controllers lis
 - A clone comes up on the Public network profile with SSH and ping blocked.
 - A blank local `Administrator` password becomes a blank domain `Administrator` password at promotion.
 - `Get-LapsADSchema` is not a command.
+- An organisational unit named `Users` cannot be created at the domain root. The built-in `CN=Users` container already owns that name.
 - A firewall allow rule underneath a catch-all block never runs.
 - A freshly joined machine can report its old workgroup identity until it is rebooted, and applies no policy until then.
 - Replication tests fail over SSH for authentication reasons that have nothing to do with replication.
@@ -352,6 +355,7 @@ A healthy result is 0 failures out of 5 in both directions, both controllers lis
 - [Active Directory platform](../Platforms/Active%20Directory/README.md) for current state
 - [Forest Build - 2026-09-09](../Platforms/Active%20Directory/Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md) for the build and its verification
 - [HQ-WS001 Workstation Join - 2026-09-10](../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md) for the workstation and the offline join
+- [Hybrid Identity Preparation - 2026-09-10](../Platforms/Active%20Directory/Documentation/Change%20Records/Hybrid%20Identity%20Preparation%20-%202026-09-10.md) for the service connection point and staff accounts
 - [Identity NTP and Client DNS - 2026-09-09](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) for the gateway side
 - [UniFi Network](UniFi-Network.md) for zones and policy order
 - [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) for the cluster the guests run on
