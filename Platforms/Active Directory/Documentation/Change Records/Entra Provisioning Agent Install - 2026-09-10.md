@@ -54,7 +54,7 @@ The two replication rights are what password hash sync requires, and the reset r
 
 ## Open
 
-1. Create the AD to Microsoft Entra ID configuration in Cloud sync: password hash sync on, scoped to `CN=APP-EntraCloudSync-Users,OU=Applications,OU=Groups,DC=ad,DC=alphasecunited,DC=com`, then enable it. Owner's action in the portal; I verify the first cycle from the directory.
+1. ~~Create the AD to Microsoft Entra ID configuration in Cloud sync.~~ Done 2026-09-10, first cycle at 2:20 PM; see [Cloud Sync Configuration and First Cycle](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 2. Enable device sync in that configuration, provision `HQ-WS001` on demand, and confirm it reports as hybrid joined.
 3. Assign Business Basic to `IK-user`, `AH-user` and `testuser` once they appear in the tenant.
 4. Set `Credential Validation` auditing to include failures on both controllers.

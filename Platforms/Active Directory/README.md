@@ -27,7 +27,8 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Fine-grained policy | `PSO-Admins`, precedence 10, 14 characters (lowered from 20 on 2026-09-10 for a testing window; restore to 20), 365-day maximum age, lockout 5 attempts for 30 minutes |
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
 | Remote access | `hq_dc01`, `hq_dc02`, and `hq_mgt01` in SSH Manager over OpenSSH on port 22, key only |
-| Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$`; no sync configuration yet |
+| Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
+| Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, scoped to `APP-EntraCloudSync-Users`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the group in the tenant; device sync not yet enabled |
 
 ## Tiered Administration
 
@@ -67,7 +68,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- Entra Cloud Sync has its agent but no configuration. The agent is registered on `HQ-MGT01` and the directory side is ready: service connection point in the forest, three staff accounts in `OU=Staff,OU=People` with the `alphasecunited.com` sign-in suffix, all in the scope group. The AD to Microsoft Entra ID configuration, device sync, and licences are next. See [Entra Provisioning Agent Install - 2026-09-10](Documentation/Change%20Records/Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).
+- Entra Cloud Sync is running and the three staff accounts exist in the tenant. Still to do: device sync and the `HQ-WS001` hybrid join, Business Basic licences for the three, and the `testuser` sign-in that proves password hash sync. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
@@ -78,6 +79,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [HQ-WS001 Workstation Join - 2026-09-10](Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md)
 - [Hybrid Identity Preparation - 2026-09-10](Documentation/Change%20Records/Hybrid%20Identity%20Preparation%20-%202026-09-10.md)
 - [Entra Provisioning Agent Install - 2026-09-10](Documentation/Change%20Records/Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md)
+- [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md)
 - [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
