@@ -457,6 +457,7 @@ Memory is 4 GiB rather than 8 because `grey-server` was carrying 51 GiB of its 6
 | Template | no |
 | OS family | Windows |
 | Guest OS | Windows 11 Pro, 25H2, build 26200 |
+| Windows activation | Licensed, retail channel, activated 2026-09-10 |
 | IPv4 | 192.168.65.20/24 |
 | Gateway | 192.168.65.1 |
 | Login account | `Administrator`, LAPS-managed |
