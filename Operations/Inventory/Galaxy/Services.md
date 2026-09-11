@@ -76,7 +76,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Internal documentation site | Static HTML served by an unprivileged Nginx container as UID 101 with a read-only root filesystem, all Linux capabilities dropped, and no writable application volume |
-| Immich | 3.1.0 photo/video stack; server and machine learning track `release`; Valkey 9 and PostgreSQL 14 with VectorChord use the exact images from the 3.1.0 release Compose file; video transcoding through NVENC and machine learning through CUDA on the GTX 1080 Ti since 2026-09-05 |
+| Immich | 3.2.0 photo/video stack, verified 2026-09-11; server and machine learning track `release`; Valkey 9 and PostgreSQL 14 with VectorChord use the exact images from the 3.1.0 release Compose file; video transcoding through NVENC and machine learning through CUDA on the GTX 1080 Ti since 2026-09-05 |
 | BookLore | v2.3.1 from `ghcr.io/booklore-app/booklore:latest`; MariaDB 11.4.8 matches the v2.3.1 release example; both containers healthy after the 2026-09-03 dependency update |
 | Forgejo | 16.0.3 from `codeberg.org/forgejo/forgejo:16`, labelled `wud.tag.include=^[0-9]+$` since 2026-09-03 so What's Up Docker offers only plain numeric tags |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
