@@ -69,6 +69,10 @@ One thing on that page predates the sync and needs a look: *Mail nickname* reads
 
 `DK-user@alphasecunited.com` is a directory-mastered account with its Business Premium seat, mailbox, MFA methods and object id intact, signing in with the same password as before the move. Its administrative roles live on the cloud-only `DK-admin@alphasecunited.com`, and `BG-admin` remains the break-glass account. The directory account is a standard user in `OU=Staff,OU=People`, member of `ROL-Staff` and `APP-EntraCloudSync-Users`, and holds no tiered admin membership.
 
+## The mail nickname, checked
+
+Both proxy address panels read at about 11:20 PM. My object carries one address, `SMTP:DK-user@alphasecunited.com`. AH-user's carries `SMTP:AH-user@alphasecunited.com` as primary and `smtp:AH-user@alphasecunit.onmicrosoft.com`, and his mail nickname is `AH-user`. So `AH-user@alphasecunited.com` belongs only to Ahmed, mail for each address reaches the right mailbox, and the `AH-user` nickname on my object is a label with no address behind it. Cosmetic, left as is. If it ever needs tidying, the clean route now that the account is synced is to set `mailNickname` to `DK-user` on the directory object and let the next cycle export it as the alias, rather than editing the cloud side.
+
 ## Open
 
-As of 11:15 PM on 2026-09-10, one item: the `AH-user` mail nickname on my object, and whether `AH-user@alphasecunited.com` sits among its proxy addresses. Described above; two clicks in the admin center.
+Nothing. Closed 11:20 PM on 2026-09-10.
