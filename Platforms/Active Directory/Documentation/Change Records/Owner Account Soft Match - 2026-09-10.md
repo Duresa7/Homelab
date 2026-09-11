@@ -62,10 +62,16 @@ The account stays outside the scope group until the cloud side is ready, because
 
 One thing on that page predates the sync and needs a look: *Mail nickname* reads `AH-user`, not `DK-user`. The export carried no alias (the directory object has no `mailNickname`, and the export detail showed *Alias* blank), so this is the cloud object's original alias and probably the name the account was first created under on Jun 30, 2026. It matters only if `AH-user@alphasecunited.com` also appears among this account's proxy addresses, because then AH-user's mailbox, whose sign-in name is `AH-user@alphasecunited.com`, could not have taken that address as its primary. Check the account's *Proxy addresses* and AH-user's *Mail nickname*; if the address is on my object, remove it there and the alias corrects itself with Ahmed's next licence change or with a mailbox alias edit in Exchange.
 
+- **Step 5, Microsoft 365, before 11:12 PM.** Signed in to Microsoft 365 as `DK-user@alphasecunited.com` with the usual password and reached the mailbox. The Overview page at that point showed the account enabled, zero assigned roles, two licences, and a sign-in identifier of `userPrincipalName` issued by the tenant. AH-user's Overview page was checked alongside it: created 2:20 PM by the first sync cycle, one licence, sign-in identifier `AH-user@alphasecunited.com`.
+- **Step 5, workstation: not verified.** I chose not to test the `HQ-WS001` sign-in tonight. I tried to do it anyway through the guest agent at 11:12 PM, with the password piped from the vault, and found VM 310 powered off, so there is no result to record. The directory side of that sign-in is proven (the account authenticates on both controllers and is a standard user in `ROL-Staff`), and the workstation side is the same path `testuser` took earlier in the day, but it has not been observed for this account.
+
+## Result
+
+`DK-user@alphasecunited.com` is a directory-mastered account with its Business Premium seat, mailbox, MFA methods and object id intact, signing in with the same password as before the move. Its administrative roles live on the cloud-only `DK-admin@alphasecunited.com`, and `BG-admin` remains the break-glass account. The directory account is a standard user in `OU=Staff,OU=People`, member of `ROL-Staff` and `APP-EntraCloudSync-Users`, and holds no tiered admin membership.
+
 ## Open
 
-As of 11:10 PM on 2026-09-10:
+As of 11:15 PM on 2026-09-10:
 
-1. Sign in to Microsoft 365 as `DK-user@alphasecunited.com` with the usual password and MFA, and confirm the mailbox is intact.
-2. Sign in to `HQ-WS001` as `ALPHASEC\DK-user`, the first domain sign-in for the daily account.
-3. Check the `AH-user` mail nickname and proxy addresses described above.
+1. First domain sign-in to `HQ-WS001` as `ALPHASEC\DK-user`, whenever the workstation is next on.
+2. The `AH-user` mail nickname on my object, and whether `AH-user@alphasecunited.com` sits among its proxy addresses. Described above; two clicks in the admin center.
