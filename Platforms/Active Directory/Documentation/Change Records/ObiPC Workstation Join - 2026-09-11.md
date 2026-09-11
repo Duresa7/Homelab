@@ -83,6 +83,12 @@ Two runs in a row have now needed provision on demand before a device joined, on
 
 I signed in at the keyboard as `ALPHASEC\DK-user`, my own directory account, rather than `testuser`. Read from the machine afterwards: Security event 4624, logon type 2 (interactive), `ALPHASEC\DK-user`, package Negotiate, at 9:56:59 AM on 2026-09-11; the profile `C:\Users\DK-user` created at 9:57:00 AM; a type 11 logon at 9:59:30 AM, which is the cached-credential unlock; and `Win32_ComputerSystem.UserName` reading `ALPHASEC\DK-user` while I was on the desktop. The account is not in the local `Administrators` group, which is the tiered model holding: daily work as a standard user, elevation through `DK-t2`. That closes the sign-in item.
 
+## Secure Boot
+
+Turned on in the BIOS at about 10:19 AM, Standard mode with the Microsoft keys, Windows UEFI Mode. Read back from the machine after the reboot: `Confirm-SecureBootUEFI` True, policy publisher `77fa9abd-0359-4d32-bd60-28f4e78f784b`, which is the Microsoft Windows production policy, last boot 10:19:44 AM. The domain secure channel and the hybrid join both survived the firmware change, and the TPM reports ready.
+
+BitLocker is off on `C:`. Nothing today asked for it, and it is not turned on here, but a physical machine that leaves the building is where it matters; a decision for the workstation baseline rather than this record.
+
 ## Open
 
-- Secure Boot is off in the firmware. Turn it on in the BIOS; nothing here depends on it, but a Windows 11 workstation should have it.
+Nothing. Closed 10:25 AM on 2026-09-11. BitLocker for physical workstations is a baseline decision, noted above.
