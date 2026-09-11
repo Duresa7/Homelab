@@ -52,7 +52,9 @@ The account stays outside the scope group until the cloud side is ready, because
 
 - **Step 1 done, 10:33 PM.** `DK-admin@alphasecunited.com`, display name `DK-admin`, created in the Microsoft 365 admin center with no licence. Global Administrator assigned as an active, direct assignment, confirmed on the account's Assigned roles page. Signed in, password changed, Microsoft Authenticator registered. Password stored in the account's own password manager item.
 - **Step 3 decided.** The generated 24-character value in the directory account's vault item is the daily password; no reset needed.
+- **Step 2 done, before 10:45 PM.** Every role removed from `DK-user@alphasecunited.com`; its Assigned roles page read *No directory roles assigned*, seen while signed in as the administrator account.
+- **Step 4 done, 10:45 PM to 10:50 PM.** `DK-user` added to `APP-EntraCloudSync-Users` on `HQ-DC01` at 10:45:27 PM; `HQ-DC02` showed the membership within thirty seconds. Provision on demand for the distinguished name then passed all four stages: imported, in scope, **Successfully matched object**, and *User 'DK-user@alphasecunited.com' was updated in Microsoft Entra ID*. Updated, not created, is the whole point: the tenant took over the existing object rather than making a second one. The exported attributes were the directory values set earlier, display name `Duresa Kadi`, given name, common name, the description, and `AccountEnabled` True. The object id read from the account's own signed-in profile is the same before and after the match, which is the direct proof that mailbox, licence and MFA methods stayed with it.
 
 ## Open
 
-Steps 2, 4 and 5 above, in order, as of 10:35 PM on 2026-09-10. Step 2 gates step 4: the account does not enter the scope group until the roles are confirmed gone from `DK-user@alphasecunited.com`.
+Step 5, the sign-in proof, as of 10:50 PM on 2026-09-10: Microsoft 365 with the directory password and MFA, the Overview page reading *On-premises sync enabled: Yes*, and a domain sign-in on `HQ-WS001`.
