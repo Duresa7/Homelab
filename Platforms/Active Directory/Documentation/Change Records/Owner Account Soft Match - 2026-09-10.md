@@ -48,6 +48,11 @@ The account stays outside the scope group until the cloud side is ready, because
 4. Add `DK-user` to `APP-EntraCloudSync-Users` and provision it on demand. The expected result is an update of the existing object, not a create, and the object id is unchanged.
 5. Prove it: sign in to Microsoft 365 with the directory password, MFA still prompts, mailbox intact, and `Duresa Kadi` shows *On-premises sync enabled: Yes*. Sign in to `HQ-WS001` as `ALPHASEC\DK-user`.
 
+## Progress
+
+- **Step 1 done, 10:33 PM.** `DK-admin@alphasecunited.com`, display name `DK-admin`, created in the Microsoft 365 admin center with no licence. Global Administrator assigned as an active, direct assignment, confirmed on the account's Assigned roles page. Signed in, password changed, Microsoft Authenticator registered. Password stored in the account's own password manager item.
+- **Step 3 decided.** The generated 24-character value in the directory account's vault item is the daily password; no reset needed.
+
 ## Open
 
-Steps 1 through 5 above, in order, as of 6:45 PM on 2026-09-10.
+Steps 2, 4 and 5 above, in order, as of 10:35 PM on 2026-09-10. Step 2 gates step 4: the account does not enter the scope group until the roles are confirmed gone from `DK-user@alphasecunited.com`.
