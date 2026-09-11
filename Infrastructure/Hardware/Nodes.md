@@ -1,11 +1,15 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-11
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
 I verified the node and physical-storage state against all five nodes on 2026-08-04. Quorum held at five votes.
+
+On 2026-09-11 I replaced app-01's 200 GiB system disk on Grey's `ssd-lvm1` with a 64 GiB volume and removed the old disk. Guest placement and physical hardware are unchanged. The [change record](../Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds verification.
+
+On 2026-09-11 I subsequently moved VM 116 `app-01` and VM 121 `edge-01` from Grey to Purple's NVMe-backed `local-lvm`. Their system disks total 94 GiB provisioned, with two 4 MiB EFI volumes. At about 3:29 AM Eastern the pool used 21,950,307 KiB (14.86%) with 125,763,740 KiB available, Purple had 6,679 MiB available memory, and its SATA `ssd-lvm2` remained empty. Both guests run on Purple and their old volumes are absent from Grey. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md).
 
 ## Nodes
 | Node | IP | CPU | Cores / Threads | Memory | GPU | Physical storage | Power source |

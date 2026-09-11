@@ -48,6 +48,9 @@ install -o wazuh -g wazuh -m 660 "$TMP" "$LIST"
 # compiles a referenced CDB list into its .cdb form when it starts, so the
 # manager has to be restarted for a rebuilt list to take effect. Agents
 # reconnect on their own afterwards.
-/var/ossec/bin/wazuh-control restart >/dev/null
+# Keep manager processes in wazuh-manager.service's cgroup. Starting them
+# directly here makes systemd kill them when this oneshot service exits.
+systemctl restart wazuh-manager.service
+systemctl is-active --quiet wazuh-manager.service
 
 echo "known-bad hash list rebuilt: $COUNT entries, manager restarted"

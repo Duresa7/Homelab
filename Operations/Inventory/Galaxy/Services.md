@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-11
 
 This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -30,8 +30,8 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
-| app-01 | VM 116 | grey-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
-| edge-01 | VM 121 | grey-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
+| app-01 | VM 116 | purple-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
+| edge-01 | VM 121 | purple-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor |
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
@@ -130,14 +130,18 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 ## app-01
 
+On 2026-09-11 at 2:33 AM Eastern I verified all seven containers healthy and PostgreSQL accepting connections after the [64 GiB disk replacement](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md). After the subsequent Purple migration and manager repair, I verified all seven containers healthy, PostgreSQL accepting connections, and Wazuh connected at about 3:23 AM Eastern.
+
 | Workload | Details |
 | --- | --- |
 | Coolify | Coolify app, Sentinel, Realtime, Postgres, Redis |
 | Traefik | Coolify ingress proxy: `traefik:v3.7`; runtime 3.7.10 verified 2026-08-09; [change record](../../../Platforms/Coolify/Documentation/Change%20Records/Coolify%20Traefik%203.7%20Minor%20Update%20-%202026-08-09.md) |
 | Generated apps | Coolify-managed application containers |
-| Wazuh agent | 4.14.6-1; enabled/active; fresh manager ID `004` as `app-01`; connected to `192.168.72.2:1514` |
+| Wazuh agent | 4.14.6-1; enabled/active; manager ID `004` as `app-01`; connected to `192.168.72.2:1514` after the manager repair on 2026-09-11 |
 
 ## edge-01
+
+I verified Caddy, cloudflared, the guest agent, `node_exporter`, and Wazuh active after the Purple migration on 2026-09-11. The local proxy returned HTTP 302, cloudflared registered four connections, and Prometheus reported the node target up.
 
 | Workload | Details |
 | --- | --- |
@@ -224,7 +228,7 @@ On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote 
 
 | Host | Manager ID | Version | Group | State |
 |---|---:|---|---|---|
-| app-01 | 004 | 4.14.6 | default | Active |
+| app-01 | 004 | 4.14.6 | default | Connected, verified 2026-09-11 |
 | edge-01 | 005 | 4.14.5 | default, edge | Active |
 | alpha-prod-01 | 006 | 4.14.6 | default | Active |
 | docker-blue | 007 | 4.14.6 | default | Active |
@@ -256,7 +260,7 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
 | monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 9 containers, `overlayfs` |
-| edge-01 | Debian package | `prometheus-node-exporter.service` | `192.168.30.10:9100` | No containers |
+| edge-01 | Manual binary | `node_exporter.service` | `192.168.30.10:9100` | No containers |
 | ubuntu-dev | Ubuntu package | `prometheus-node-exporter.service` | `192.168.40.179:9100` | Not installed |
 
 `security-01` also carries cAdvisor on 9101 with two containers; its row is in the guest table above.

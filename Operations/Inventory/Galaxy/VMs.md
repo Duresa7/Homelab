@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-10  
+**Last updated:** 2026-09-11  
 
 Galaxy currently has 11 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -31,8 +31,8 @@ On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on ID
 | 102 | kali-pen | grey-server | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured; stopped on 2026-09-06 | 192.168.40.1 | 40 | disabled |
 | 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB pending / 16 GiB running | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 116 | app-01 | grey-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 200G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
-| 121 | edge-01 | grey-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
+| 116 | app-01 | purple-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
+| 121 | edge-01 | purple-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 301 | HQ-DC01 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 302 | HQ-DC02 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
@@ -183,12 +183,16 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 
 ### VM 116 - app-01
 
+On 2026-09-11 I replaced its 200 GiB system disk with a verified 64 GiB disk on Grey and removed the original volume. Root has about 44 GiB available. The [replacement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds boot, service, and cleanup checks.
+
+I subsequently moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. Boot, containers, PostgreSQL, dashboard reachability, node exporter, and Wazuh connection checks passed.
+
 I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB QEMU allocation. Its active and configured maximum is now 8 GiB, with a 4 GiB ballooning minimum.
 
 #### Identity
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | purple-server |
 | High availability | disabled |
 | Template | no |
 | OS family | Linux |
@@ -213,8 +217,8 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-116-disk-1 | 200G | disk | I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-116-disk-0 | 4M | disk | default |
+| scsi0 | scsi | local-lvm | vm-116-disk-2 | 64G | disk | I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-116-disk-0 | 4M | disk | Configuration reports 528K; allocated volume is 4 MiB |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
@@ -229,10 +233,12 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 
 ### VM 121 - edge-01
 
+I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. The migration completed at 3:28:25 AM Eastern; boot, ingress services, monitoring, and Wazuh connection checks passed.
+
 #### Identity
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | purple-server |
 | High availability | disabled |
 | Template | no |
 | OS family | Linux |
@@ -257,8 +263,8 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-121-disk-1 | 30G | disk | I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-121-disk-0 | 4M | disk | default |
+| scsi0 | scsi | local-lvm | vm-121-disk-1 | 30G | disk | I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-121-disk-0 | 4M | disk | Configuration reports 528K; allocated volume is 4 MiB |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
