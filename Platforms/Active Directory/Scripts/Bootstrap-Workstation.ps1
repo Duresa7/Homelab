@@ -9,13 +9,14 @@ It does not join the domain and it needs no domain credential.
 
 Usage, in an elevated PowerShell:
     Set-ExecutionPolicy -Scope Process Bypass -Force
-    .\Bootstrap-Workstation.ps1 -ComputerName HQ-WS002
+    .\Bootstrap-Workstation.ps1 -ComputerName ObiPC
 
 The public key below is the SSH Manager key (ai-agent@ubuntu-dev). A public key is not a secret.
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)][ValidatePattern('^HQ-WS\d{3}$')][string]$ComputerName
+    # Any valid Windows computer name: 1 to 15 letters, digits or hyphens, not all digits.
+    [Parameter(Mandatory)][ValidatePattern('^(?!\d+$)[A-Za-z0-9-]{1,15}$')][string]$ComputerName
 )
 $ErrorActionPreference = 'Stop'
 $PublicKey = '<REDACTED_SSH_PUBLIC_KEY>'
