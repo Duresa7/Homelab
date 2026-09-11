@@ -1,26 +1,20 @@
 <#
-Bootstrap-Workstation.ps1
-Created: 2026-09-10
+Bootstrap-ObiPC.ps1
+Created: 2026-09-11
+Machine: ObiPC, physical Windows 11 Pro end-user workstation, Secure Client (VLAN 60).
+Copy of Bootstrap-Workstation.ps1 with the computer name filled in. Kept as the record of exactly
+what ran on this machine.
 
-Run once, as Administrator, on a freshly installed Windows 11 Pro machine that is plugged into
-Secure Client (VLAN 60). It gives the machine its name and a key-only OpenSSH server so that the
-rest of the build (domain join, verification, Entra hybrid join) is done remotely from SSH Manager.
-It does not join the domain and it needs no domain credential.
-
-Usage, in an elevated PowerShell:
+Run once, as Administrator, on the freshly installed machine, from an elevated PowerShell:
     Set-ExecutionPolicy -Scope Process Bypass -Force
-    .\Bootstrap-Workstation.ps1 -ComputerName <name>
+    .\Bootstrap-ObiPC.ps1
 
-This is the template. Each physical machine gets its own copy in this folder, Bootstrap-<Name>.ps1,
-with the name filled in, so the exact script run on every machine is kept.
-
-The public key below is the SSH Manager key (ai-agent@ubuntu-dev). A public key is not a secret.
+It gives the machine its name and a key-only OpenSSH server so that the rest of the build (domain
+join, verification, Entra hybrid join) is done remotely from SSH Manager. It does not join the domain
+and it needs no domain credential. The public key below is the SSH Manager key (ai-agent@ubuntu-dev).
+A public key is not a secret.
 #>
-[CmdletBinding()]
-param(
-    # Any valid Windows computer name: 1 to 15 letters, digits or hyphens, not all digits.
-    [Parameter(Mandatory)][ValidatePattern('^(?!\d+$)[A-Za-z0-9-]{1,15}$')][string]$ComputerName
-)
+$ComputerName = 'ObiPC'
 $ErrorActionPreference = 'Stop'
 $PublicKey = '<REDACTED_SSH_PUBLIC_KEY>'
 
