@@ -9,7 +9,10 @@ It does not join the domain and it needs no domain credential.
 
 Usage, in an elevated PowerShell:
     Set-ExecutionPolicy -Scope Process Bypass -Force
-    .\Bootstrap-Workstation.ps1 -ComputerName ObiPC
+    .\Bootstrap-Workstation.ps1 -ComputerName <name>
+
+This is the template. Each physical machine gets its own copy in this folder, Bootstrap-<Name>.ps1,
+with the name filled in, so the exact script run on every machine is kept.
 
 The public key below is the SSH Manager key (ai-agent@ubuntu-dev). A public key is not a secret.
 #>
