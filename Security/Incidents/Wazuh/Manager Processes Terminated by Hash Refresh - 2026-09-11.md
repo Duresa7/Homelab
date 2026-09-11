@@ -25,7 +25,7 @@ I changed the [refresh script](../../../Platforms/Wazuh/Scripts/wazuh-refresh-ha
 
 I then ran the actual `wazuh-hash-list.service` as the regression check. It finished at 2:44:25 AM Eastern with `Result=success` and `ExecMainStatus=0`. After the refresh unit became inactive, the manager remained active, both agent ports listened, and `/proc/<remoted-pid>/cgroup` placed the process in `/system.slice/wazuh-manager.service`. Fresh TCP probes from edge-01 passed for both ports, replacing the earlier timeouts. I changed no firewall rule and re-enrolled no agent.
 
-At 2:45 AM Eastern, 14 remote agents were active, blue-server was pending, and app-01 was disconnected while shut down for its planned migration. At about 3:29 AM Eastern, after both VMs booted on Purple, `agent_control -l` showed all 16 remote agents active, with no pending or disconnected agents. Both migrated guests independently reported `connected`. I summarized this final readback without a separate raw transcript. The [repair and regression captures](../../../Platforms/Wazuh/Evidence/Manager%20Recovery%20-%202026-09-11/Recovery.md) hold commands, output, and exit codes. I created no snapshot or backup.
+At 2:45 AM Eastern, 14 remote agents were active, blue-server was pending, and app-01 was disconnected while shut down for its planned migration. At about 3:29 AM Eastern, after both VMs booted on Purple, `agent_control -l` showed all 16 remote agents active, with no pending or disconnected agents. Both migrated guests independently reported `connected`. I summarized this final readback without a separate raw transcript. The repair and regression captures hold commands, output, and exit codes. I created no snapshot or backup.
 
 ## Follow-up
 

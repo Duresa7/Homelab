@@ -46,6 +46,10 @@ I keep the detailed list for my Active Directory and hybrid identity platform he
 1. I now use aliases for people in all published Active Directory and Microsoft 365 records, with the mapping kept in an unpublished file. Every new record uses IK-user, AH-user, DK-user, DK-t0, DK-t2, DK-admin, or BG-admin from the first draft; testuser stays as written. Each record is ready to publish when I have checked it against the mapping and found no real names or account names for people.
 2. I rewrote the unpushed history before the first push. That cleanup is complete; I keep the alias check as part of every new record's publication check.
 
+## Daily account elevation on ObiPC
+
+1. After I sign out and sign back in as DK-user, I will observe my first elevation prompt on ObiPC following the 2026-09-11 group change. This check is done when I see a consent prompt (Yes/No) rather than a credential prompt.
+
 ## Done in this build, kept here for the record
 
 1. 2026-09-09: I built the forest and verified replication, DNS, policy, LAPS, and external time.

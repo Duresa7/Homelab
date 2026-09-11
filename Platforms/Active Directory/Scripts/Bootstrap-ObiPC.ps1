@@ -11,12 +11,16 @@ Run once, as Administrator, on the freshly installed machine, from an elevated P
 
 It gives the machine its name and a key-only OpenSSH server so that the rest of the build (domain
 join, verification, Entra hybrid join) is done remotely from SSH Manager. It does not join the domain
-and it needs no domain credential. The public key below is the SSH Manager key (ai-agent@ubuntu-dev).
-A public key is not a secret.
+and it needs no domain credential. The SSH Manager public key comes from `authorized_key.pub`, a
+sidecar file kept beside this script and not published. Copy `authorized_key.pub.example`, rename
+it, and paste in your own key.
 #>
 $ComputerName = 'ObiPC'
 $ErrorActionPreference = 'Stop'
-$PublicKey = '<REDACTED_SSH_PUBLIC_KEY>'
+$KeyPath = Join-Path $PSScriptRoot 'authorized_key.pub'
+if (-not (Test-Path $KeyPath)) { throw "Public key file not found: $KeyPath. Copy authorized_key.pub.example, rename it, and paste in your own key." }
+$PublicKey = (Get-Content $KeyPath -Raw).Trim()
+if ([string]::IsNullOrWhiteSpace($PublicKey)) { throw "Public key file is empty: $KeyPath." }
 
 function Step($m) { Write-Host "`n== $m" -ForegroundColor Cyan }
 

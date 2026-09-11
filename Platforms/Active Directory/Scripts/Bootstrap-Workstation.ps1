@@ -14,7 +14,8 @@ Usage, in an elevated PowerShell:
 This is the template. Each physical machine gets its own copy in this folder, Bootstrap-<Name>.ps1,
 with the name filled in, so the exact script run on every machine is kept.
 
-The public key below is the SSH Manager key (ai-agent@ubuntu-dev). A public key is not a secret.
+The SSH Manager public key comes from `authorized_key.pub`, a sidecar file kept beside this script
+and not published. Copy `authorized_key.pub.example`, rename it, and paste in your own key.
 #>
 [CmdletBinding()]
 param(
@@ -22,7 +23,10 @@ param(
     [Parameter(Mandatory)][ValidatePattern('^(?!\d+$)[A-Za-z0-9-]{1,15}$')][string]$ComputerName
 )
 $ErrorActionPreference = 'Stop'
-$PublicKey = '<REDACTED_SSH_PUBLIC_KEY>'
+$KeyPath = Join-Path $PSScriptRoot 'authorized_key.pub'
+if (-not (Test-Path $KeyPath)) { throw "Public key file not found: $KeyPath. Copy authorized_key.pub.example, rename it, and paste in your own key." }
+$PublicKey = (Get-Content $KeyPath -Raw).Trim()
+if ([string]::IsNullOrWhiteSpace($PublicKey)) { throw "Public key file is empty: $KeyPath." }
 
 function Step($m) { Write-Host "`n== $m" -ForegroundColor Cyan }
 

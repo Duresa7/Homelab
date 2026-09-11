@@ -1,13 +1,13 @@
 # Hybrid Identity Preparation
 
 **Created:** 2026-09-10  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-11
 
 I prepared the directory side of the link between `ad.alphasecunited.com` and the Microsoft 365 tenant on 2026-09-10. This record covers everything that could be done before the Entra provisioning agent is installed, which needs an interactive Global Admin sign-in and is still open. The tool is Entra Cloud Sync, with device sync, which is in preview, to be enabled once the first configuration exists.
 
 ## The tenant as found
 
-The tenant was already further along than a fresh one. `alphasecunited.com` was verified and set as the default domain. A cloud-only account, `BG-admin`, existed on the tenant's `alphasecunit.onmicrosoft.com` domain and was unlicensed, which is the correct state for a break-glass account. The owner's own account, `DK-user@alphasecunited.com`, held Microsoft 365 Business Premium, which includes Entra ID P1, so password writeback, self-service password reset, and Conditional Access are all licensed. One further cloud-only user, `humesmax@alphasecunited.com`, is not part of this work and stays cloud-only.
+The tenant was already further along than a fresh one. `alphasecunited.com` was verified and set as the default domain. A cloud-only account, `BG-admin`, existed on the tenant's `alphasecunit.onmicrosoft.com` domain and was unlicensed, which is the correct state for a break-glass account. My account, `DK-user@alphasecunited.com`, held Microsoft 365 Business Premium, which includes Entra ID P1, so password writeback, self-service password reset, and Conditional Access are all licensed. One further cloud-only user, `humesmax@alphasecunited.com`, is not part of this work and stays cloud-only.
 
 ## Service connection point
 
@@ -55,4 +55,4 @@ In order, as of the end of this record. The first two closed the same day; see t
 4. ~~Enable device sync in that configuration's properties, then provision `HQ-WS001` on demand and confirm it reports as hybrid joined.~~ Done 2026-09-10, after a scope-group trap recorded in the [Cloud Sync record](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 5. ~~Assign licences to the three synced users once they appear in the tenant.~~ Done 2026-09-10, Business Basic.
 
-The owner's own account stays cloud-only for now. The decision, made 2026-09-10, is to prove the full path on `testuser` first: workstation sign-in, Microsoft 365 sign-in, and a password reset from Microsoft 365 that writes back to the directory. Once that holds, the owner's account is moved onto the directory by soft match in its own record. `testuser`, not `IK-user`, is the proving account. That happened the same evening: see [Owner Account Soft Match - 2026-09-10](Owner%20Account%20Soft%20Match%20-%202026-09-10.md), which also records why the administrative roles moved to a separate cloud-only account first.
+I kept my account cloud-only until I had proven workstation sign-in and Microsoft 365 sign-in with the directory password on `testuser`. I withdrew the password writeback test because it requires Entra ID P1 per user and `testuser` has Business Basic; writeback was not configured. With those two sign-ins proven, I moved my account onto the directory by soft match that same evening. See [Owner Account Soft Match - 2026-09-10](Owner%20Account%20Soft%20Match%20-%202026-09-10.md), which also records why I moved the administrative roles to a separate cloud-only account first.

@@ -46,7 +46,7 @@ I don't run that onboarding command until I'm ready to test the new host records
 1. Generate the replacement key on its owner device.
 2. Put only the public key in that identity's `rotation.replacement_public_key` field.
 3. Stage it with `ssh-key-stage.yml`.
-4. Run `ssh-key-verify.yml`, then manually test SSH from the owner device to every assigned target.
+4. Run `ssh-key-verify.yml`, then manually test SSH from my device to every assigned target.
 5. Set `rotation.operator_verified: true` only after those owner-device tests pass.
 6. Retire the old key with `ssh-key-retire.yml` and the phrase `RETIRE <identity-id>`.
 7. After successful retirement, promote the replacement into `current_public_key`, update `fingerprint`, clear `replacement_public_key`, and reset `operator_verified` to `false`.
