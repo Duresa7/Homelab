@@ -63,5 +63,5 @@ The two admins who had written about `JoinNotFound` before this described a work
 Everything this record set out to do is done: three users and one workstation from the directory exist in the tenant, the workstation is hybrid joined, the users are licensed, and a directory password signs in to Microsoft 365. What remains is cleanup and the next decision.
 
 1. ~~Give `testuser` a unique password.~~ Done at 5:13 PM on 2026-09-10, recorded in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md), which also records the domain minimum length being lowered to accept it.
-2. Decide when to move `DK-user@alphasecunited.com` from cloud-only onto the directory by soft match. The 2026-09-10 decision was to prove the path on `testuser` first; that condition is now met. Separate record when it happens.
+2. ~~Decide when to move `DK-user@alphasecunited.com` from cloud-only onto the directory by soft match.~~ Done 10:50 PM on 2026-09-10; see [Owner Account Soft Match](Owner%20Account%20Soft%20Match%20-%202026-09-10.md).
 3. Set `Credential Validation` auditing to include failures on both controllers, noted in the [agent install record](Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).

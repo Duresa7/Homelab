@@ -28,7 +28,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
 | Remote access | `hq_dc01`, `hq_dc02`, and `hq_mgt01` in SSH Manager over OpenSSH on port 22, key only |
 | Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
-| Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the users group in the tenant; `HQ-WS001` provisioned on demand the same day |
+| Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the users group in the tenant; `HQ-WS001` provisioned on demand the same day; `DK-user@alphasecunited.com` soft-matched onto its directory account at 10:50 PM the same day, object id unchanged |
 
 ## Tiered Administration
 
@@ -69,7 +69,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. `testuser` was rotated off the break-glass value at 5:13 PM on 2026-09-10; the other four shared-password accounts and `PSO-Admins` are still in their testing state, listed in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). Next decision is moving `DK-user@alphasecunited.com` onto the directory by soft match. See [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
+- Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. `testuser` was rotated off the break-glass value at 5:13 PM on 2026-09-10; the other four shared-password accounts and `PSO-Admins` are still in their testing state, listed in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). My own account `DK-user@alphasecunited.com` is on the directory by soft match since 10:50 PM on 2026-09-10, with its Business Premium seat and mailbox intact and its administrative roles moved to the cloud-only `DK-admin@alphasecunited.com`; remaining checks and a `mailNickname` oddity are in [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md). See also [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
@@ -82,6 +82,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [Entra Provisioning Agent Install - 2026-09-10](Documentation/Change%20Records/Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md)
 - [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md)
 - [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md)
+- [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310
