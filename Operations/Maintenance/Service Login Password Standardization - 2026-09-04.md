@@ -19,7 +19,7 @@ Two stored credentials turned out to be wrong rather than merely different. The 
 
 Changed: `dkadi` and `<REDACTED_PERSONAL_EMAIL>` web logins only.
 
-Left alone by instruction: the Jellyfin `Ilyas` account, the Portainer `dashboard` account, the Coolify `jkhamdaraphone` account, the Splunk `admin` account, the Wazuh `admin` account, the `unifi-mcp` account, and the NetBird identity that authenticates through Microsoft Entra.
+Left alone by instruction: the Jellyfin `IK-user` account, the Portainer `dashboard` account, the Coolify `jkhamdaraphone` account, the Splunk `admin` account, the Wazuh `admin` account, the `unifi-mcp` account, and the NetBird identity that authenticates through Microsoft Entra.
 
 Out of scope entirely: Proxmox, every operating system and sudo credential, and every API token. The `Sudo Splunk-Siem VM`, `splunk-siem VM`, and `docker-network LXC` items sit in the same password cluster as the changed web logins but are host credentials, so they keep the password they had.
 
@@ -99,15 +99,15 @@ Every service was tested twice, once with the shared account password and once w
 
 NetBird, Coolify, and Pelican Panel were verified by reading the stored hash back and running the same bcrypt comparison the application performs, because each authenticates through a browser flow rather than a callable endpoint. The Wazuh API on port 55000 returns 401 for `dkadi` both before and after; that account is an indexer and dashboard user and was never a Wazuh API user.
 
-Coolify still holds two rows after the change, `id = 0` and `id = 2`, and the `jkhamdaraphone` hash is untouched. Jellyfin still holds `dkadi` and `Ilyas`, and `Ilyas` was not modified.
+Coolify still holds two rows after the change, `id = 0` and `id = 2`, and the `jkhamdaraphone` hash is untouched. Jellyfin still holds `dkadi` and `IK-user`, and `IK-user` was not modified.
 
 A repeat of the stored-credential audit, run while the per-service items still existed, put twelve items on the shared account password. The items that differed were the host and sudo credentials, the `admin` accounts, the Portainer Edge Agent pairs, and the service accounts, which is the intended result.
 
 ## Open Items
 
-I re-verified the first three on 2026-09-06 in the evening: a read-only query of Jellyfin's user table on `media-01` still shows a null password for `Ilyas`, Portainer's user list on `docker-main`, read with the shared account, still shows `dashboard` at role 1 beside `dkadi`, and the indexer's `internal_users.yml` on `security-01`, unchanged since 2026-08-04, still defines the five demo users. All three remain decisions rather than fixes.
+I re-verified the first three on 2026-09-06 in the evening: a read-only query of Jellyfin's user table on `media-01` still shows a null password for `IK-user`, Portainer's user list on `docker-main`, read with the shared account, still shows `dashboard` at role 1 beside `dkadi`, and the indexer's `internal_users.yml` on `security-01`, unchanged since 2026-08-04, still defines the five demo users. All three remain decisions rather than fixes.
 
-- Jellyfin `Ilyas` has no password set at all. Its `Password` column is null, so the account authenticates with an empty credential from the user picker. It is not an administrator. Left alone by instruction; it needs a decision.
+- Jellyfin `IK-user` has no password set at all. Its `Password` column is null, so the account authenticates with an empty credential from the user picker. It is not an administrator. Left alone by instruction; it needs a decision.
 - Portainer `dashboard` holds `Role` 1, the same administrator authority as `dkadi`. It appears to exist for the Homelab Dashboard's API access and should hold a scoped role instead.
 - The Wazuh indexer still defines the shipped demo accounts `logstash`, `snapshotrestore`, `kibanaro`, `readall`, and `anomalyadmin`, none of them reserved. Their default passwords are published upstream.
 - BookLore's eight-hour hang has no root cause. A restart cleared it and the health probe has not failed since.
