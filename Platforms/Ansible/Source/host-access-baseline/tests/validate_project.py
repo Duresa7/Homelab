@@ -178,11 +178,20 @@ def main() -> int:
 
     # Only the gitignored Linux Host Baseline Standard is allowed to name the
     # password manager or the credential item each account draws from. This
-    # project is published, so it points at that standard instead. Assembled at
-    # runtime so this file does not match itself.
-    withheld_names = ("1" + "Password", "Linux Server" + " Standard")
+    # project is published, so it points at that standard instead. The strings
+    # to look for live in tests/withheld-names.local, one per line, which is
+    # gitignored; tests/withheld-names.local.example shows the shape. Without
+    # the local file the check is skipped, not failed.
+    withheld_file = ROOT / "tests" / "withheld-names.local"
+    withheld_names = ()
+    if withheld_file.is_file():
+        withheld_names = tuple(
+            line.strip()
+            for line in withheld_file.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.startswith("#")
+        )
     for path in sorted(ROOT.rglob("*")):
-        if not path.is_file() or ".git" in path.parts:
+        if not path.is_file() or ".git" in path.parts or path == withheld_file:
             continue
         body = path.read_text(encoding="utf-8", errors="ignore")
         for name in withheld_names:
