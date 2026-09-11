@@ -34,7 +34,7 @@ Created 6:43 PM on `HQ-DC01`, mirroring the three staff accounts:
 | `userPrincipalName` and `mail` | `DK-user@alphasecunited.com` |
 | Given name, surname, display name | Duresa, Kadi, Duresa Kadi, matching the cloud object |
 | Groups | `ROL-Staff` only. **Not** in `APP-EntraCloudSync-Users` yet, so Cloud Sync cannot see it. |
-| Password | generated 24 characters, stored in the account's own password manager item and set from standard input, never on a command line |
+| Password | generated 24 characters at creation, set from standard input, never on a command line; replaced at 10:59 PM with the Microsoft 365 password already in use, see below |
 
 Verified the same minute: `ValidateCredentials` True for the stored value and False for a one-character-off control; the account replicated to `HQ-DC02`.
 
@@ -55,6 +55,9 @@ The account stays outside the scope group until the cloud side is ready, because
 - **Step 2 done, before 10:45 PM.** Every role removed from `DK-user@alphasecunited.com`; its Assigned roles page read *No directory roles assigned*, seen while signed in as the administrator account.
 - **Step 4 done, 10:45 PM to 10:50 PM.** `DK-user` added to `APP-EntraCloudSync-Users` on `HQ-DC01` at 10:45:27 PM; `HQ-DC02` showed the membership within thirty seconds. Provision on demand for the distinguished name then passed all four stages: imported, in scope, **Successfully matched object**, and *User 'DK-user@alphasecunited.com' was updated in Microsoft Entra ID*. Updated, not created, is the whole point: the tenant took over the existing object rather than making a second one. The exported attributes were the directory values set earlier, display name `Duresa Kadi`, given name, common name, the description, and `AccountEnabled` True. The object id read from the account's own signed-in profile is the same before and after the match, which is the direct proof that mailbox, licence and MFA methods stayed with it.
 
+- **Step 3 revisited, 10:59 PM.** The generated value was not what I wanted. I had read an ambiguous message as accepting it, when the intent was to keep the password already in use for Microsoft 365, so for a few minutes after the match the account signed in with a value I had never typed. Corrected by resetting the directory account from the password manager item that holds the Microsoft 365 password, via standard input: `RESET OK`, `PasswordLastSet` 10:59:17 PM on both controllers, `ValidateCredentials` True for the value and False for the one-character-off control. Hash sync then returns the tenant to the password already in use. The item created earlier for the generated value was archived, not deleted, and the daily password now lives only in my own Microsoft item. The lesson is recorded as feedback: when the vault item that will become someone's daily password is a generated placeholder, confirm the intended value explicitly before the object is exported, because after the soft match the directory value is the one they type everywhere.
+- **Noted, my decision.** The administrator account and the daily account deliberately hold the same password. That recouples what the split separated: a directory compromise yields the administrator password too, and MFA on the administrator account is the remaining barrier. Recorded so the choice is visible; it can be undone by changing either account's password on its own.
+
 ## Open
 
-Step 5, the sign-in proof, as of 10:50 PM on 2026-09-10: Microsoft 365 with the directory password and MFA, the Overview page reading *On-premises sync enabled: Yes*, and a domain sign-in on `HQ-WS001`.
+Step 5, the sign-in proof, as of 11:00 PM on 2026-09-10: Microsoft 365 with the password already in use and MFA, the Overview page reading *On-premises sync enabled: Yes*, and a domain sign-in on `HQ-WS001`.
