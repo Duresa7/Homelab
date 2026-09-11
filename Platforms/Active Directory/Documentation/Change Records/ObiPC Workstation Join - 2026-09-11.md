@@ -63,8 +63,23 @@ Added as server `obipc`, user `local-obipc`, platform `windows`, in the service'
 
 Added to the device scope group at 4:07 AM. The `Automatic-Device-Join` task on the workstation then reported two failures per run: `0x801c03f3` at the join phase, which is the device not yet existing in the tenant, the same state `HQ-WS001` sat in before its export; and event 420, *Unable to acquire Kerberos ticket*, from the Windows Server 2025 Kerberos-based hybrid join path that this Windows 11 build tries first, which needs `EnableKerbHaadj` on the controllers and is not something this forest uses. The classic path is the one that completes once Cloud Sync has exported the computer.
 
+The scheduled cycle had not exported it after fourteen minutes and six task runs, so at about 4:20 AM I provisioned the computer on demand from the Cloud Sync configuration, object type Devices, by distinguished name. All four stages passed and the export read *Computer was created in Microsoft Entra ID*, `deviceTrustType ServerAd`, `deviceOSType Windows`, display name `ObiPC`, with the source anchor and the certificate carried across. The next `Automatic-Device-Join` run, started at 4:21:47 AM, logged *Automatic registration Succeeded* (event 306), and `dsregcmd /status` then read:
+
+| Field | Value |
+|---|---|
+| `AzureAdJoined` | YES |
+| `DomainJoined` | YES |
+| `DeviceId` | the id Entra reported for the created object, so the workstation bound to the right record |
+| `KeyProvider` | Microsoft Platform Crypto Provider, `TpmProtected` YES |
+| Device certificate | valid 2026-09-11 to 2036-09-11 |
+
+Two runs in a row have now needed provision on demand before a device joined, on `HQ-WS001` and here. Either the scheduled cycle does not pick up a computer that enters the scope group between cycles as quickly as a user, or it does and I have not waited long enough; fourteen minutes is the longest I have watched. Next workstation, I will let the scheduler run for thirty minutes before provisioning on demand, and record which it was.
+
+## Result
+
+`ObiPC` is a domain-joined, LAPS-managed, Microsoft Entra hybrid joined physical workstation on Secure Client, reachable through SSH Manager, with policy placing the Tier 2 group in its local Administrators. Any staff account in the directory can sign in at its keyboard and reach Microsoft 365 with the same password.
+
 ## Open
 
-- Hybrid join: waiting on the Cloud Sync export of `OBIPC` and the next successful `Automatic-Device-Join` run, as of 4:15 AM.
 - Secure Boot is off in the firmware. Turn it on in the BIOS; nothing here depends on it, but a Windows 11 workstation should have it.
 - A sign-in at the keyboard by a staff account, to be observed, not assumed.

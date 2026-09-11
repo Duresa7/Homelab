@@ -17,7 +17,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
-| Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
+| Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined and Microsoft Entra hybrid joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
 | DNS zones | `ad.alphasecunited.com` (domain scope), `_msdcs.ad.alphasecunited.com` (forest scope), `65.168.192.in-addr.arpa` (forest scope). All primary, AD-integrated, secure dynamic update only |
