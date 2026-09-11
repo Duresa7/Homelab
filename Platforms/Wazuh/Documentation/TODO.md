@@ -1,7 +1,12 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-11
+
+## Manager process health
+
+- [x] 2026-09-11: Correct the hash refresh to restart through systemd, so manager processes survive the refresh service exiting. I ran the actual refresh and verified process ownership and both agent listeners afterward. [Incident record](../../../Security/Incidents/Wazuh/Manager%20Processes%20Terminated%20by%20Hash%20Refresh%20-%202026-09-11.md).
+- [ ] Add a manager API or process/listener health check. The manager unit remained active while its daemons were stopped from September 6 to September 11; service-state monitoring alone missed the outage.
 
 ## Fleet deployment status
 

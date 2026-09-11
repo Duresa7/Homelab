@@ -1,7 +1,9 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-11
+
+On 2026-09-11 I restored the manager after the weekly hash refresh had terminated its processes. The refresh now restarts through systemd, and a full refresh run left the manager and agent listeners running. The [incident record](../../Security/Incidents/Wazuh/Manager%20Processes%20Terminated%20by%20Hash%20Refresh%20-%202026-09-11.md) holds the cause, verification, and monitoring follow-up.
 
 Wazuh provides endpoint detection and security monitoring for the homelab. The manager, indexer, & dashboard packages are version 4.14.7-1, verified on 2026-09-01. Those services and the API run on `security-01` at `192.168.72.2` on Security-A/VLAN 72. Wazuh MCP Server 4.3.0 also runs there and gives Executor a bearer-authenticated, read-only MCP path to the local Manager and Indexer. Its optional external-context tool uses You.com for caller-supplied public web searches.
 

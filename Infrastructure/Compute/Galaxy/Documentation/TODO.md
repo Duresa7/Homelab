@@ -1,9 +1,16 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-11
 
-This backlog retains completed Green recovery and Purple storage work. Its open items are the root SSH setting on Purple and Blue, and the scope of the PXE join key. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+This backlog retains completed Green recovery and Purple storage work. The app and edge move to Purple is complete; the scope of the PXE join key remains open. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+
+## app-01 and edge-01 Move to Purple
+
+- [x] Replace app-01's system disk with 64 GiB on Grey. I completed boot and service verification and removed the original 200 GiB disk on 2026-09-11. [Change record](Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md).
+- [x] Verify Purple's live switch-port VLANs and authorize the shutdown migration window for app-01 and edge-01. Both VLANs passed the controller checks.
+- [x] Move app-01 to Purple's NVMe and verify boot, containers, database, dashboard, monitoring, and Wazuh connectivity.
+- [x] Finish edge-01's disk transfer, boot on Purple, and verify ingress services, monitoring, and final disk ownership. Both guests run on Purple; source volumes are absent on Grey. [Migration record](Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md).
 
 ## Scope of the `galaxy-pxe-join` Key
 
