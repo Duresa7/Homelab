@@ -1,7 +1,7 @@
 # Physical Hardware
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-09-11
 
 I keep the specifications & power relationships for physical homelab equipment here. Virtual-machine, container, & service inventories remain under `Operations/Inventory/`.
 
@@ -10,6 +10,7 @@ I keep the specifications & power relationships for physical homelab equipment h
 | [Galaxy node specifications](Nodes.md) | Five Proxmox nodes, their processors, memory, graphics, storage, addresses, & current UPS assignments |
 | [Component inventory](Components/README.md) | Individual components, slotted or spare, one folder per type: drives now, GPUs, CPUs, & memory as I record them. Each type carries a quick-glance README & its raw evidence |
 | [Jedi PC specifications](Jedi_Specs.md) | Windows administration workstation hardware & power source |
+| [ObiPC specifications](ObiPC_Specs.md) | First physical end-user workstation on the domain, joined 2026-09-11 |
 | [Power equipment](Power.md) | UPS models, inventory identifiers, connected loads, & unresolved outlet details |
 | [Galaxy Green and Blue hardware changes](Documentation/Change%20Records/Galaxy%20Green%20and%20Blue%20Hardware%20Changes%20-%202026-07-31.md) | Green and Blue RAM redistribution, added SATA HDDs, extended SMART tests, and final blank-disk checks |
 | [Lenovo M920q remote power options](Documentation/Lenovo%20M920q%20Remote%20Power%20Options%20Research%20-%202026-07-31.md) | Intel AMT requirements, Wake-on-LAN limits, switch-port behavior, & managed-outlet recovery |
