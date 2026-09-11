@@ -1,7 +1,7 @@
 # Forest Build
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-10
 
 I built the `ad.alphasecunited.com` forest on 2026-09-09 from the Windows Server 2025 template I prepared the day before. This record covers the promotion of both domain controllers, the directory structure, Group Policy, Windows LAPS, and the member server, along with the four problems that cost real time and how each one resolved.
 
@@ -80,7 +80,8 @@ Read back from `HQ-DC01` on 2026-09-09 and again on 2026-09-10 after the time ch
 
 ## Open
 
-Entra Cloud Sync is not installed; the agent needs an interactive Global Admin sign-in. `HQ-WS001`, the Windows 11 client that would prove the Tier 2 policy and LAPS reach a workstation, is not built.
+- ~~Entra Cloud Sync is not installed; the agent needs an interactive Global Admin sign-in.~~ Done 2026-09-10; see [Entra Provisioning Agent Install - 2026-09-10](Entra%20Provisioning%20Agent%20Install%20-%202026-09-10.md).
+- ~~`HQ-WS001`, the Windows 11 client that would prove the Tier 2 policy and LAPS reach a workstation, is not built.~~ Done 2026-09-10; see [HQ-WS001 Workstation Join - 2026-09-10](HQ-WS001%20Workstation%20Join%20-%202026-09-10.md).
 
 ## Evidence
 

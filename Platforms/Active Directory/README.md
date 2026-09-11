@@ -34,7 +34,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 
 The directory is laid out for a tiered administrative model. Tier 0 covers the forest itself, Tier 1 the member servers, and Tier 2 the workstations. Thirty-three organisational units carry that split, and both computer and user redirection point at `Staging` so a default-location join never lands an object in a container that no policy reaches.
 
-| Group | Scope | Purpose | Members on 2026-09-09 |
+| Group | Scope | Purpose | Members on 2026-09-11 |
 |---|---|---|---|
 | `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0` |
 | `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | none |
@@ -55,13 +55,13 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 | `Default Domain Policy` | All settings enabled | domain root |
 | `Default Domain Controllers Policy` | All settings enabled | `Domain Controllers` |
 
-The two local-administrator policies use Group Policy Preferences local users and groups. They replace the local `Administrators` membership with the matching tier group, so a server gets `ADM-T1-ServerAdmins` and a workstation gets `ADM-T2-WorkstationAdmins`. Both halves are proven on a live machine: `HQ-MGT01` carries the Tier 1 group and `HQ-WS001` carries the Tier 2 group, each placed there by policy rather than by hand.
+The two local-administrator policies use Group Policy Preferences local users and groups. They add the matching tier group to local `Administrators` and leave existing local accounts in place, so a server gets `ADM-T1-ServerAdmins` and a workstation gets `ADM-T2-WorkstationAdmins`. ObiPC kept its setup account. Both halves are proven on a live machine: `HQ-MGT01` carries the Tier 1 group and `HQ-WS001` carries the Tier 2 group, each placed there by policy rather than by hand.
 
 ## Windows LAPS
 
 The schema is extended for Windows LAPS, confirmed by the presence of `msLAPS-EncryptedPassword`. Computers hold self-write permission on the `Servers`, `Workstations`, and `Staging` computer containers. `C-CMP-LAPS` backs passwords to Active Directory with 20 characters, a 30-day rotation, encryption on, and a post-authentication reset.
 
-`HQ-MGT01` and `HQ-WS001` are both managed and hold stored passwords, expiring 2026-10-09 and 2026-10-10. Retrieve it with `Get-LapsADPassword -Identity HQ-MGT01 -AsPlainText`. The domain controllers are not LAPS-managed, which is expected: a domain controller has no local account database to manage.
+`HQ-MGT01`, `HQ-WS001`, and ObiPC (`OBIPC`) are managed and hold stored passwords, expiring 2026-10-09, 2026-10-10, and 2026-10-11 respectively. Retrieve it with `Get-LapsADPassword -Identity HQ-MGT01 -AsPlainText`. The domain controllers are not LAPS-managed, which is expected: a domain controller has no local account database to manage.
 
 ## Credentials
 
@@ -69,6 +69,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
+- I still need to observe my first elevation as `DK-user` on ObiPC after the 2026-09-11 group change, following a sign-out and sign-in.
 - Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. `testuser` was rotated off the break-glass value at 5:13 PM on 2026-09-10; the other four shared-password accounts and `PSO-Admins` are still in their testing state, listed in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). My own account `DK-user@alphasecunited.com` is on the directory by soft match since 10:50 PM on 2026-09-10, with its Business Premium seat and mailbox intact and its administrative roles moved to the cloud-only `DK-admin@alphasecunited.com`; mailbox and `HQ-WS001` sign-ins both verified and the record closed; see [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md). See also [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.

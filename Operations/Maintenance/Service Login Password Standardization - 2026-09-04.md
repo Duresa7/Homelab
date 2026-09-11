@@ -69,7 +69,7 @@ BookLore was already failing its health check before I touched it. The container
 
 qBittorrent rejected the stored credential. I stopped the container before editing `qBittorrent.conf`, because qBittorrent rewrites that file on exit and would have discarded a live edit.
 
-`the password manager CLI's item-edit command` returned `invalid JSON provided` for all five updates when its standard input was not a terminal, because it tried to read stdin as an item template. Closing stdin resolved it.
+The password manager CLI's item-edit command returned `invalid JSON provided` for all five updates when its standard input was not a terminal, because it tried to read stdin as an item template. Closing stdin resolved it.
 
 ## Verification
 

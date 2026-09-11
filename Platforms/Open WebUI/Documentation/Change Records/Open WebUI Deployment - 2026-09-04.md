@@ -1,6 +1,7 @@
 # Open WebUI Deployment
 
-**Date:** 2026-09-04  
+**Created:** 2026-09-04  
+**Last updated:** 2026-09-05  
 **Status:** Deployed; internal HTTPS completed on 2026-09-05 in [Open WebUI Internal HTTPS](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md)
 
 ## Summary
@@ -15,7 +16,7 @@ TCP/3002 was free. The LXC had 13 GiB memory available and 61 GiB free on its ro
 
 I initially selected 0.11.1 from a stale search result. A direct read of the official GitHub latest-release API showed that 0.11.3, published on 2026-08-31, was current. I corrected the deployment before handoff and pinned `ghcr.io/open-webui/open-webui:v0.11.3` to registry digest `sha256:d428020d5f091491cf1ef6a186a7fd080f388bfbf2c2c221b78a3b1bead0d591`. The image carries a built-in health check against `/health`.
 
-At the user's request, I then changed the image to `ghcr.io/open-webui/open-webui:main`, removed the immutable digest pin, and set `pull_policy: always`. Open WebUI officially documents `main` and `latest` as identical rolling tags. On 2026-09-04, `main` resolved to registry digest `sha256:33e61767ff4254af89a1ed59483f286d33be00a3ed282248d43c263fa667d7fa`, image ID `sha256:f87fa53a5b7c1540b53e0472948b071853baf908d508391258e5bdc7be9ba5ed`, and application version 0.11.3. This intentionally trades immutable deployment reproduction for automatic tracking on future pulls and recreates.
+I then changed the image to `ghcr.io/open-webui/open-webui:main`, removed the immutable digest pin, and set `pull_policy: always`. Open WebUI officially documents `main` and `latest` as identical rolling tags. On 2026-09-04, `main` resolved to registry digest `sha256:33e61767ff4254af89a1ed59483f286d33be00a3ed282248d43c263fa667d7fa`, image ID `sha256:f87fa53a5b7c1540b53e0472948b071853baf908d508391258e5bdc7be9ba5ed`, and application version 0.11.3. This intentionally trades immutable deployment reproduction for automatic tracking on future pulls and recreates.
 
 I added `open-webui` to `/opt/docker/ollama/docker-compose.yml` and the matching versioned file. It depends on healthy Ollama, uses `OLLAMA_BASE_URL=http://ollama:11434`, enables authentication, binds only to `192.168.40.35:3002`, and mounts `ollama_open-webui-data` at `/app/backend/data`. I generated a persistent signing key in the untracked `/opt/docker/ollama/.env` file at mode `0600`.
 

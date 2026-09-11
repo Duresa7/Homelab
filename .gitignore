@@ -10,6 +10,10 @@
 # Local-only private materials
 /Sensitive/
 
+# Active Directory bootstrap sidecar key. The example stays published; the
+# real key a reader pastes in does not.
+/Platforms/Active Directory/Scripts/authorized_key.pub
+
 # Hardening standards describe my exact per-host privilege model and name the
 # credential item each account comes from. The public walkthrough of the same
 # baseline is Guides/Linux-Host-Baseline.md. History before 2026-08-05 is

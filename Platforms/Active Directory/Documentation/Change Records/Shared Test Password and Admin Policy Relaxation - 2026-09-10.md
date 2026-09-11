@@ -1,9 +1,9 @@
 # Shared Test Password and Admin Policy Relaxation
 
 **Created:** 2026-09-10  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-11
 
-On 2026-09-10 I set a shared password across five accounts for a testing window, at the owner's request, so that hybrid sign-in and Cloud Sync could be exercised with one simple credential. This is explicitly temporary. It weakened two controls, both recorded here so they can be restored. Later the same day `testuser` left the arrangement and a third control was loosened to allow it; both are in the closing sections.
+On 2026-09-10 I set a shared password across four accounts, two standard users and two admin accounts, for a testing window so that hybrid sign-in and Cloud Sync could be exercised with one simple credential. This is explicitly temporary. It weakened two controls, both recorded here so they can be restored. I set `testuser` separately. Later the same day it left that arrangement and a third control was loosened to allow it; both are in the closing sections.
 
 ## What changed
 
@@ -21,19 +21,19 @@ Each account's own password manager item was updated to match, so the vault stay
 
 ## Control 1: PSO-Admins lowered from 20 to 14
 
-The three `ADM-` groups are covered by the fine-grained policy `PSO-Admins`, which required 20 characters. The template is shorter than that, so the two admin accounts could not take it under the existing policy. At the owner's direction I lowered `PSO-Admins` `MinPasswordLength` from 20 to 14. Every other attribute of the policy is unchanged, and it still applies to `ADM-T0-DomainAdmins`, `ADM-T1-ServerAdmins`, and `ADM-T2-WorkstationAdmins`.
+The three `ADM-` groups are covered by the fine-grained policy `PSO-Admins`, which required 20 characters. The template is shorter than that, so the two admin accounts could not take it under the existing policy. I lowered `PSO-Admins` `MinPasswordLength` from 20 to 14. Every other attribute of the policy is unchanged, and it still applies to `ADM-T0-DomainAdmins`, `ADM-T1-ServerAdmins`, and `ADM-T2-WorkstationAdmins`.
 
 **To restore:** set `PSO-Admins` `MinPasswordLength` back to 20 and reset both admin accounts to fresh 20-character values from their own vault items.
 
 ## Control 2: Tier 0 and Tier 2 admins share a password with standard users
 
-`DK-t0` and `DK-t2` now hold the same password as three standard users. The tiered model exists precisely to keep admin credentials separate, so this is a deliberate, temporary regression for testing only. Rotate both admin accounts to unique values before this environment does anything real.
+`DK-t0` and `DK-t2` now hold the same password as two standard users. The tiered model exists precisely to keep admin credentials separate, so this is a deliberate, temporary regression for testing only. Rotate both admin accounts to unique values before this environment does anything real.
 
 ## The constraint I found: testuser cannot take this template
 
 The `testuser` account rejected the template with *the password does not meet the length, complexity, or history requirement*. The cause is Windows password complexity, which forbids a password from containing the account's own name. The template value contains part of the account's own name, confirmed structurally without printing the value, so this one account is permanently unable to use it while complexity is enabled. The other four accounts, whose names do not appear in the value, took it without trouble.
 
-Because `testuser` is the account chosen to prove the hybrid sign-in path, this matters. I first gave it a unique generated password so the vault stayed truthful. The owner then chose a different route: `testuser` now carries the same password as the built-in domain `Administrator`, the break-glass account. That value is 19 characters, meets policy, and contains no part of the account name, so the directory accepted it. It is recorded in `testuser`'s own vault item with a note. This widens the exposure of the break-glass credential to a standard account and is part of the same temporary testing window; rotate it with the rest.
+Because `testuser` is the account chosen to prove the hybrid sign-in path, this matters. I first gave it a unique generated password so the vault stayed truthful. I then chose a different route: `testuser` now carries the same password as the built-in domain `Administrator`, the break-glass account. That value is 19 characters, meets policy, and contains no part of the account name, so the directory accepted it. It is recorded in `testuser`'s own vault item with a note. This widens the exposure of the break-glass credential to a standard account and is part of the same temporary testing window; rotate it with the rest.
 
 ## Two verification traps recorded
 
@@ -54,11 +54,11 @@ Read back on 2026-09-10:
 
 ## Control 3: default domain minimum password length lowered from 14 to 8
 
-The hybrid sign-in proof completed on the afternoon of 2026-09-10, so `testuser` no longer needed the break-glass value. The owner chose its replacement and stored it in the password manager item `Microsoft - testuser`. The value has all four character classes and does not contain the account name, but it is 13 characters, and the domain default policy required 14. The first reset attempt at 4:54 PM was refused with *the password does not meet the length, complexity, or history requirement of the domain*, and `PasswordLastSet` did not move.
+The hybrid sign-in proof completed on the afternoon of 2026-09-10, so `testuser` no longer needed the break-glass value. I chose its replacement and stored it in the password manager item `Microsoft - testuser`. The value has all four character classes and does not contain the account name, but it is 13 characters, and the domain default policy required 14. The first reset attempt at 4:54 PM was refused with *the password does not meet the length, complexity, or history requirement of the domain*, and `PasswordLastSet` did not move.
 
-Rather than lengthen the value, the owner directed that the domain minimum be lowered to 8. At 5:12 PM I ran `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 8` against `HQ-DC01`, the PDC emulator. Every other setting is unchanged: complexity on, history 24, no expiry, minimum age one day, lockout 10 attempts for 15 minutes.
+Rather than lengthen the value, I chose to lower the domain minimum to 8. At 5:12 PM I ran `Set-ADDefaultDomainPasswordPolicy -MinPasswordLength 8` against `HQ-DC01`, the PDC emulator. Every other setting is unchanged: complexity on, history 24, no expiry, minimum age one day, lockout 10 attempts for 15 minutes.
 
-Unlike the other two controls, this one is not temporary. After the rotation the owner confirmed that 8 is the standing minimum for ordinary accounts, so the README records it as the policy and nothing here restores it. Two facts bound it. `PSO-Admins` has precedence over the domain default, so the tiered admin accounts still need 14. And Windows complexity stays on, so an 8-character value still needs three character classes and cannot contain the account name. Eight is the floor NIST SP 800-63B permits for a user-chosen password; the build chose 14 deliberately.
+Unlike the other two controls, this one is not temporary. After the rotation I confirmed that 8 is the standing minimum for ordinary accounts, so the README records it as the policy and nothing here restores it. Two facts bound it. `PSO-Admins` has precedence over the domain default, so the tiered admin accounts still need 14. And Windows complexity stays on, so an 8-character value still needs three character classes and cannot contain the account name. Eight is the floor NIST SP 800-63B permits for a user-chosen password; the build chose 14 deliberately.
 
 One thing to know before restoring this: the domain default lives in the `Default Domain Policy` GPO's security template, and a policy change made on the PDC emulator is written back into that GPO. The template read `MinimumPasswordLength = 14` before and `MinimumPasswordLength = 8` twenty seconds after, and the GPO version moved from 3 to 4 in both `GPT.ini` and the directory. A direct attribute change is therefore not undone at the next Group Policy refresh, and the same command restores it.
 
@@ -66,7 +66,7 @@ One thing to know before restoring this: the domain default lives in the `Defaul
 
 ## testuser leaves the shared arrangement
 
-With the minimum at 8 the reset succeeded at 5:13:13 PM. `testuser` now holds a value that is unique to it and is not derived from any other account. The domain item `ALPHASEC - testuser` was updated by piped JSON so the value never appeared on a command line, and its note now records the rotation; the two vault items agree, confirmed by comparing digests without printing either value. Password hash sync carried the change to the tenant, and the owner signed in to Microsoft 365 as `testuser@alphasecunited.com` with the new value shortly afterwards, which closes the loop from directory reset to tenant sign-in a second time.
+With the minimum at 8 the reset succeeded at 5:13:13 PM. `testuser` now holds a value that is unique to it and is not derived from any other account. The domain item `ALPHASEC - testuser` was updated by piped JSON so the value never appeared on a command line, and its note now records the rotation; the two vault items agree, confirmed by comparing digests without printing either value. Password hash sync carried the change to the tenant, and I signed in to Microsoft 365 as `testuser@alphasecunited.com` with the new value shortly afterwards, which closes the loop from directory reset to tenant sign-in a second time.
 
 Verification, all on 2026-09-10:
 
@@ -74,7 +74,7 @@ Verification, all on 2026-09-10:
 - `ValidateCredentials` returned True for the new value and False for the same value with one character appended, run in that order, and `badPwdCount` rose by one after the control.
 - An interactive logon attempt on the controller with the new value failed with *the user has not been granted the requested logon type at this computer*, while the wrong-password control failed with *the user name or password is incorrect*. The different messages show the credential was accepted and only the logon right was refused, which is correct for a standard user on a domain controller.
 - `Get-ADDefaultDomainPasswordPolicy` read 8 from both controllers.
-- The four other accounts in the table above were not touched, at the owner's direction.
+- I left the four other accounts in the table above unchanged.
 
 ## Open
 

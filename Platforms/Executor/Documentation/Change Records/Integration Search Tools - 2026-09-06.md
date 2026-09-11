@@ -23,6 +23,6 @@ After both logins completed, I ran the connection checks again. Default Claude a
 
 I removed the temporary login output, credential-reference environment file, and authentication helper. I retained no standalone authentication capture.
 
-I updated the local workspace instructions in `CLAUDE.md` to search the relevant integration first, inspect the returned tool path with `tools.describe.tool`, and invoke it through `execute`. The instructions include code-side search and pagination as fallbacks and explain UniFi's separate underlying catalog. I checked the search names, query parameter, and dispatch behavior against Executor's MCP tool-server source. `AGENTS.md` remains the pointer to `CLAUDE.md`; both files are intentionally gitignored.
+I updated my local workspace notes to prefer the integration search tools first, inspect the returned tool path with `tools.describe.tool`, and invoke it through `execute`. The notes include code-side search and pagination as fallbacks and explain UniFi's separate underlying catalog. I checked the search names, query parameter, and dispatch behavior against Executor's MCP tool-server source.
 
 The saved configuration change and both Claude authentications are complete. Fresh authenticated discovery in the three Codex profiles remains unverified. Existing sessions need to reconnect before they can load the new tool catalog.

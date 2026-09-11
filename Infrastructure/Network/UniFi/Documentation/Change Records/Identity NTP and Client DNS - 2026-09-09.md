@@ -24,9 +24,9 @@ Both network panels showed Auto DNS Server unchecked and the ordered DNS list ab
 
 I retained the final-state screenshots below, cropped to the relevant settings so no cursor is visible. No screenshot of the original save actions was recovered; these captures show the saved state during the resumed verification.
 
-- [Firewall order](../../Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/01-Firewall-Order.png)
-- [Secure DNS](../../Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/02-Secure-DNS.png)
-- [Secure Client DNS](../../Evidence/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09/Screenshots/03-Secure-Client-DNS.png)
+- Firewall order
+- Secure DNS
+- Secure Client DNS
 
 The requested controller changes and evidence capture are complete. I did not test DHCP renewal or DNS resolution on client devices, or time synchronization on the domain controllers.
 

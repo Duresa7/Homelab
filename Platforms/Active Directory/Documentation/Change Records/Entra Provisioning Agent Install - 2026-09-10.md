@@ -55,8 +55,8 @@ The two replication rights are what password hash sync requires, and the reset r
 ## Open
 
 1. ~~Create the AD to Microsoft Entra ID configuration in Cloud sync.~~ Done 2026-09-10, first cycle at 2:20 PM; see [Cloud Sync Configuration and First Cycle](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
-2. Enable device sync in that configuration, provision `HQ-WS001` on demand, and confirm it reports as hybrid joined.
-3. Assign Business Basic to `IK-user`, `AH-user` and `testuser` once they appear in the tenant.
+2. ~~Enable device sync in that configuration, provision `HQ-WS001` on demand, and confirm it reports as hybrid joined.~~ Done 2026-09-10; see [Cloud Sync Configuration and First Cycle - 2026-09-10](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
+3. ~~Assign Business Basic to `IK-user`, `AH-user` and `testuser` once they appear in the tenant.~~ Done 2026-09-10; see [Cloud Sync Configuration and First Cycle - 2026-09-10](Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 4. Set `Credential Validation` auditing to include failures on both controllers.
 
 Password writeback is not configured and will not be until a user in scope holds P1. Nothing in this record changes the temporary shared-password arrangement described in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md).

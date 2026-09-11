@@ -27,7 +27,7 @@ I chose this over the narrower option, a group placed into local Administrators 
 The fine-grained policy covers the three `ADM-` groups, so my daily account now falls under it.
 
 - **Lockout tightens** from 10 attempts in 15 minutes to 5 attempts in 30 minutes. A mistyped password at the keyboard, in Outlook, and on the phone in quick succession is enough. Worth knowing before it happens.
-- **The password now expires.** The domain default has no expiry, but `PSO-Admins` sets 365 days, so the directory will require a change around 2026-09-10 next year, counted from the last set at 10:59 PM on 2026-09-10. The tenant side does not fight it: synced users carry `DisablePasswordExpiration` in Entra, and the directory password is the only one. The current password is 17 characters, above the 14 the policy demands, so nothing had to change today.
+- **The password now expires.** The domain default has no expiry, but `PSO-Admins` sets 365 days, so the directory will require a change around 2027-09-10, counted from the last set at 10:59 PM on 2026-09-10. The tenant side does not fight it: synced users carry `DisablePasswordExpiration` in Entra, and the directory password is the only one. The current password is 17 characters, above the 14 the policy demands, so nothing had to change today.
 
 `ADM-T2-WorkstationAdmins` is not in the Cloud Sync scope group, so this membership does not reach the tenant and grants nothing there.
 
