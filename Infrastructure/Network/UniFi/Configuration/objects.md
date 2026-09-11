@@ -89,7 +89,7 @@ Sixteen client groups exist as of 2026-09-06. The readback that morning returned
 | family_devices | 15 | Household group |
 | D_devices | 5 | Target of enabled OON policy `QoS for D` |
 | ilyas_device | 2 | Household group |
-| Ahmed Devices | 4 | Household group |
+| AH-user Devices | 4 | Household group |
 | ifitu devices | 2 | Household group |
 | sedia_devices | 2 | Household group |
 | iot_device | 6 | Populated IoT group |
