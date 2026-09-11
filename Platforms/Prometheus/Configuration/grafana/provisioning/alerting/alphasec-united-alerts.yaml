@@ -360,6 +360,9 @@ groups:
       # fuse and fuse.lxcfs are excluded because lxcfs mirrors host values into
       # guests rather than measuring anything of its own.
       #
+      # UDF and ISO9660 installation images report zero free space by design.
+      # Exclude these image filesystems from writable-storage capacity alerts.
+      #
       # 85%: with zfs excluded, the fullest filesystem this rule watches on
       # 2026-08-31 was media-01:/data at 67.1%. hddpool-1 is the fuller thing at
       # 81.4%, and the Proxmox storage rule below is what watches that.
@@ -392,9 +395,9 @@ groups:
               maxDataPoints: 43200
               expr: >-
                 100 - 100 * (
-                  node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*"}
+                  node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*|udf|iso9660"}
                   /
-                  node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*"}
+                  node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*|udf|iso9660"}
                 )
           - refId: B
             relativeTimeRange: {from: 600, to: 0}

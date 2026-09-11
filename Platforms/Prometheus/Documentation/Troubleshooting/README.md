@@ -1,7 +1,7 @@
 # Prometheus Troubleshooting
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-11
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -15,3 +15,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | <a id="4-grafana-sqlite-locks-under-its-own-housekeeping"></a>[4](Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md) | 2026-07-26 | 25 `database is locked` errors in 10 hours across unrelated Grafana background jobs, with nobody using Grafana | SQLite's default journal mode lets a reader block the writer, and Grafana's own periodic jobs collide on their own. `GF_DATABASE_WAL=true` fixed it on Grafana 12.4.1. On 13.1.1 the environment still contains the setting, but the 2026-08-04 header read `1 1` and only `grafana.db` existed, proving rollback-journal mode. A `sudo` failure piped into `grep -c` had earlier reported this as zero errors | Monitoring; removal of the inert setting remains open for the next recreate |
 | <a id="5-container-remained-stopped-after-monitor-01-restart"></a>[5](Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md) | 2026-08-10 | Prometheus remained exited after `monitor-01` restarted while the other monitoring containers returned | Docker persisted `HasBeenManuallyStopped=true`, so `unless-stopped` skipped it. I changed the deployed and live policy to `always`, started Prometheus, and verified 52 healthy targets and 20 passing blackbox probes | Resolved |
 | <a id="6-root-filesystem-filled-by-retained-docker-images"></a>[6](Root%20Filesystem%20Filled%20by%20Retained%20Docker%20Images%20-%202026-09-04.md) | 2026-09-04 | The 16 GiB root filesystem reached 96 percent after the monitoring stack refresh | Prometheus's expected 5.2 GiB data volume left too little headroom for retained containerd image generations. I pruned four dangling images, reclaimed 4.021 GB, and verified 70 percent root usage with all nine containers and 56 Prometheus targets healthy | Resolved |
+| [7](Installation%20ISO%20Triggered%20Filesystem%20Capacity%20Alert%20-%202026-09-11.md) | 2026-09-11 | Grey’s read-only Windows installation ISO reported 100 percent and triggered the capacity alert | I excluded UDF and ISO9660, verified that only the ISO series disappeared, and restarted Grafana to load the rule | Resolved |
