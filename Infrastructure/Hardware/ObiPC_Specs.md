@@ -23,7 +23,7 @@ ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` 
 | OS | Microsoft Windows 11 Pro, 25H2, build 26200 |
 | Installed | 2026-09-11 |
 | Activation | Licensed |
-| Firmware | UEFI, Secure Boot **off** at install; turn it on in the BIOS |
+| Firmware | UEFI, Secure Boot on since 2026-09-11 (Standard mode, Microsoft keys); off at install |
 | TPM | AMD firmware TPM 2.0, version 6.32 |
 
 ## Processor (CPU)
