@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-11
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. This is a new forest built on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06, and none of those older records describe this build.
 
@@ -17,7 +17,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
-| Workstation | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10, in `OU=Standard,OU=Workstations` |
+| Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
 | DNS zones | `ad.alphasecunited.com` (domain scope), `_msdcs.ad.alphasecunited.com` (forest scope), `65.168.192.in-addr.arpa` (forest scope). All primary, AD-integrated, secure dynamic update only |
@@ -26,7 +26,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Default password policy | 8 characters (lowered from 14 on 2026-09-10, accepted as the standing minimum), complexity on, history 24, no expiry, lockout 10 attempts for 15 minutes |
 | Fine-grained policy | `PSO-Admins`, precedence 10, 14 characters (lowered from 20 on 2026-09-10 for a testing window; restore to 20), 365-day maximum age, lockout 5 attempts for 30 minutes |
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
-| Remote access | `hq_dc01`, `hq_dc02`, and `hq_mgt01` in SSH Manager over OpenSSH on port 22, key only |
+| Remote access | `hq_dc01`, `hq_dc02`, `hq_mgt01`, and `obipc` in SSH Manager over OpenSSH on port 22, key only; `HQ-WS001` through the QEMU guest agent |
 | Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
 | Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the users group in the tenant; `HQ-WS001` provisioned on demand the same day; `DK-user@alphasecunited.com` soft-matched onto its directory account at 10:50 PM the same day, object id unchanged |
 
@@ -41,7 +41,7 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 | `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2` |
 | `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser` |
 | `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser` |
-| `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001` |
+| `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001`, `OBIPC` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
 
@@ -83,6 +83,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md)
 - [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md)
 - [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md)
+- [ObiPC Workstation Join - 2026-09-11](Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310
