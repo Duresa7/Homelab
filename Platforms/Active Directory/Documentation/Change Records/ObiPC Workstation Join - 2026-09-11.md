@@ -79,7 +79,10 @@ Two runs in a row have now needed provision on demand before a device joined, on
 
 `ObiPC` is a domain-joined, LAPS-managed, Microsoft Entra hybrid joined physical workstation on Secure Client, reachable through SSH Manager, with policy placing the Tier 2 group in its local Administrators. Any staff account in the directory can sign in at its keyboard and reach Microsoft 365 with the same password.
 
+## First sign-in, observed
+
+I signed in at the keyboard as `ALPHASEC\DK-user`, my own directory account, rather than `testuser`. Read from the machine afterwards: Security event 4624, logon type 2 (interactive), `ALPHASEC\DK-user`, package Negotiate, at 9:56:59 AM on 2026-09-11; the profile `C:\Users\DK-user` created at 9:57:00 AM; a type 11 logon at 9:59:30 AM, which is the cached-credential unlock; and `Win32_ComputerSystem.UserName` reading `ALPHASEC\DK-user` while I was on the desktop. The account is not in the local `Administrators` group, which is the tiered model holding: daily work as a standard user, elevation through `DK-t2`. That closes the sign-in item.
+
 ## Open
 
 - Secure Boot is off in the firmware. Turn it on in the BIOS; nothing here depends on it, but a Windows 11 workstation should have it.
-- A sign-in at the keyboard by a staff account, to be observed, not assumed.
