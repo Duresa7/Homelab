@@ -38,9 +38,9 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 |---|---|---|---|
 | `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0` |
 | `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | none |
-| `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2` |
-| `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser` |
-| `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser` |
+| `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2`, `DK-user` (added 2026-09-11, my decision; see [Owner Account Workstation Admin](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)) |
+| `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser`, `DK-user` |
+| `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001`, `OBIPC` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
@@ -84,6 +84,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md)
 - [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md)
 - [ObiPC Workstation Join - 2026-09-11](Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md)
+- [Owner Account Workstation Admin - 2026-09-11](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310
