@@ -79,6 +79,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Records
 
+- [Staff First Login Password Change - 2026-09-12](Documentation/Change%20Records/Staff%20First%20Login%20Password%20Change%20-%202026-09-12.md): AH-user and IK-user must change their passwords at next domain logon; verified on both controllers. Their password changes remain pending.
+
 - [Windows Admin Center deployment - 2026-09-12](../Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md)
 
 - [Forest Build - 2026-09-09](Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md)
