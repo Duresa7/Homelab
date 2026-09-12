@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. This is a new forest built on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06, and none of those older records describe this build.
 
@@ -17,6 +17,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
+| Windows Admin Center | [Gateway on HQ-MGT01](../Windows%20Admin%20Center/README.md), file version `2.7.21.5`, HTTPS 443; five shared connections and AD/DNS extensions verified, browser sign-in confirmed 2026-09-12; target management checks open |
 | Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined and Microsoft Entra hybrid joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
@@ -77,6 +78,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 - Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
+
+- [Windows Admin Center deployment - 2026-09-12](../Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md)
 
 - [Forest Build - 2026-09-09](Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md)
 - [HQ-WS001 Workstation Join - 2026-09-10](Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md)

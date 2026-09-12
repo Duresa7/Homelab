@@ -1,18 +1,17 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
-## Windows Admin Center on HQ-MGT01 (decided 2026-09-11, not started)
+## Windows Admin Center on HQ-MGT01 (deployed, browser management checks open)
 
-1. I will install Windows Admin Center on HQ-MGT01 (192.168.65.12, VLAN 65) in gateway mode over SSH, using a self-signed certificate at first. I want one browser console for day-to-day management instead of the VM consoles. This step is done when the gateway service runs and listens on TCP 443.
-2. I will create a UniFi firewall policy allowing Secure Client (VLAN 60) to HQ-MGT01 on TCP 443 for browser access. This step is done when I can open the gateway from ObiPC.
-3. I will create a second UniFi firewall policy allowing HQ-MGT01 to Secure Client on TCP 5985/5986 for WinRM to workstations. The controllers share HQ-MGT01's VLAN, so they need no inter-VLAN rule. This step is done when WinRM from HQ-MGT01 reaches ObiPC.
-4. I will register HQ-DC01, HQ-DC02, HQ-MGT01, ObiPC, and HQ-WS001 as connections and enable the Active Directory and DNS extensions. This step is done when all five connections open and both extensions are available.
-5. I will sign in with DK-t0 for controller work and DK-user for workstation work. The initial setup is done when I manage a user, a DNS record, and a workstation service from the browser on ObiPC and verify each change on its target.
-6. I will replace the self-signed certificate with a proper certificate later. This follow-up is done when the gateway presents a valid certificate for its browser address and ObiPC trusts its issuer without a certificate warning.
+I installed the gateway on 2026-09-11 and verified it on 2026-09-12. TCP 443 is listening, all five shared connections are saved, the Active Directory and DNS extensions are installed, and all five targets answer WinRM. Browser access covers all of VLAN 50 and VLAN 60, plus my MacBook Air M3 and Pixel on VLAN 10. I confirmed the sign-in page from a personal device and successful browser sign-in on 2026-09-12. The [deployment record](../../Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md) holds the firewall, DNS, authentication, and cleanup results.
+
+1. Browser sign-in is confirmed. I will open each saved connection using the appropriate target account. The successful sign-in confirmation did not specify the account or device. I intend to use DK-t0 for controller work and DK-user for workstation work through **Manage as**, with no changes to DK-t0's Protected Users or no-delegation settings.
+2. I will manage a user, a DNS record, and a workstation service from the browser on ObiPC and verify each change on its target. The initial management checks are done when all three succeed; WinRM reachability alone does not close them.
+3. I will replace the self-signed certificate before it expires on 2026-11-10 at 10:54:56 PM EST. This follow-up is done when the gateway presents a valid certificate for its browser address and my client devices trust its issuer without a certificate warning.
 
 ## RSAT on ObiPC (decided 2026-09-11, not started)
 
@@ -58,3 +57,4 @@ I keep the detailed list for my Active Directory and hybrid identity platform he
 4. 2026-09-10: I soft-matched DK-user to the existing tenant account and moved its administrative roles to DK-admin.
 5. 2026-09-11: I joined ObiPC to the domain, verified its Microsoft Entra hybrid join, and enabled Secure Boot.
 6. 2026-09-11: I made DK-user a Tier 2 workstation administrator through `ADM-T2-WorkstationAdmins`.
+7. 2026-09-12: I verified the Windows Admin Center deployment, five shared connections, AD/DNS extensions, network access, browser sign-in, and setup-file cleanup; target management checks remain open above.
