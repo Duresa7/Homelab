@@ -17,7 +17,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
-| Windows Admin Center | [Gateway on HQ-MGT01](../Windows%20Admin%20Center/README.md), file version `2.7.21.5`, HTTPS 443; five shared connections and AD/DNS extensions verified, browser sign-in confirmed 2026-09-12; target management checks open |
+| Windows Admin Center | [Gateway on HQ-MGT01](../Windows%20Admin%20Center/README.md), file version `2.7.21.5`, HTTPS 443; five shared connections and AD/DNS extensions verified, browser sign-in confirmed 2026-09-12; all five WAC target queries and elevated Kerberos HTTPS sessions verified |
 | Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined and Microsoft Entra hybrid joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
@@ -35,16 +35,20 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 
 The directory is laid out for a tiered administrative model. Tier 0 covers the forest itself, Tier 1 the member servers, and Tier 2 the workstations. Thirty-three organisational units carry that split, and both computer and user redirection point at `Staging` so a default-location join never lands an object in a container that no policy reaches.
 
-| Group | Scope | Purpose | Members on 2026-09-11 |
+| Group | Scope | Purpose | Members (administrative groups verified 2026-09-12) |
 |---|---|---|---|
-| `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0` |
-| `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | none |
+| `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0`, `DK-user` |
+| `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | `DK-user` |
 | `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2`, `DK-user` (added 2026-09-11, my decision; see [Owner Account Workstation Admin](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)) |
 | `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001`, `OBIPC` |
+| `ROL-ObiPC-Restricted` | Global | Principal on the `ObiPC` AppLocker allowlist and Settings lockdown, enforced 2026-09-12 | `IK-user` |
+| `ROL-ObiPC-Unrestricted` | Global | Holds the allow-all AppLocker rule on `ObiPC`, so restriction lands on one account rather than the machine | `DK-user`, `AH-user`, `testuser` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
+
+I expanded DK-user to all three administrative tiers on 2026-09-12, by my explicit decision. Both controllers resolve its Domain Admin membership, and fresh sessions on all five Windows targets have elevated administrator tokens. This account also administers WAC, with gateway-session-only target queries verified over WinRM HTTPS. Its resultant password policy is `PSO-Admins`. See [Owner Domain Administration](Documentation/Change%20Records/Owner%20Domain%20Administration%20-%202026-09-12.md).
 
 ## Group Policy
 
@@ -53,6 +57,8 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 | `C-CMP-LAPS` | All settings enabled | `Servers`, `Workstations` |
 | `C-SRV-LocalAdmins` | All settings enabled | `Servers` |
 | `C-WKS-LocalAdmins` | All settings enabled | `Workstations` |
+| `C-WKS-ObiPC-AppControl` | AppLocker (Exe/Msi/Appx enforced, Script audit), `AppIDSvc` Automatic, loopback Merge | `Standard,Workstations`, filtered to `OBIPC` |
+| `U-WKS-ObiPC-Restricted` | Settings page allowlist, Store removed, registry tools off, Chrome extensions blocked | `Standard,Workstations`, filtered to `ROL-ObiPC-Restricted` |
 | `Default Domain Policy` | All settings enabled | domain root |
 | `Default Domain Controllers Policy` | All settings enabled | `Domain Controllers` |
 
@@ -70,16 +76,23 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
+- `IK-user` is pinned to `OBIPC` by `userWorkstations` and carries `logonHours` of 7 AM to 11 PM as a backstop to the ObiPC session-limit task. Widen `userWorkstations` before that account can use any other domain machine. Review the ObiPC AppLocker Script audit log before enforcing that collection, and decide the OneDrive per-user path exception. See [ObiPC Restricted User Setup](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md).
+
 - I still need to observe my first elevation as `DK-user` on ObiPC after the 2026-09-11 group change, following a sign-out and sign-in.
 - Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. `testuser` was rotated off the break-glass value at 5:13 PM on 2026-09-10; the other four shared-password accounts and `PSO-Admins` are still in their testing state, listed in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). My own account `DK-user@alphasecunited.com` is on the directory by soft match since 10:50 PM on 2026-09-10, with its Business Premium seat and mailbox intact and its administrative roles moved to the cloud-only `DK-admin@alphasecunited.com`; mailbox and `HQ-WS001` sign-ins both verified and the record closed; see [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md). See also [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
-- `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
+- Future WAC targets need WinRM HTTPS, trusted certificates, and delegation from HQ-MGT01 as part of onboarding; the existing administrative group policies cover servers and workstations in their scoped OUs.
+- `ObiPC` carries the [Action1 agent](../Action1/README.md) since 2026-09-12, version 6.0.664.1, so software deployment for that machine has a console. It is not Intune managed and the two products overlap on software deployment.
 - Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
 
+- [ObiPC Restricted User Setup - 2026-09-12](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md): AppLocker allowlist, Settings lockdown, daily sign-in window and usage budget, and `userWorkstations` pinning for `IK-user` on `ObiPC`. Enforced and verified on his live session.
+
 - [Staff First Login Password Change - 2026-09-12](Documentation/Change%20Records/Staff%20First%20Login%20Password%20Change%20-%202026-09-12.md): AH-user and IK-user must change their passwords at next domain logon; verified on both controllers. Their password changes remain pending.
+
+- [Owner Domain Administration - 2026-09-12](Documentation/Change%20Records/Owner%20Domain%20Administration%20-%202026-09-12.md)
 
 - [Windows Admin Center deployment - 2026-09-12](../Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md)
 

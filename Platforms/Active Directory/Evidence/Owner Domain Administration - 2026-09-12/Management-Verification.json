@@ -1,0 +1,28 @@
+{
+  "verification_date": "2026-09-12",
+  "adminGateway": {
+    "server": "hq_mgt01",
+    "command": "$ProgressPreference='SilentlyContinue';$p='C:\\ProgramData\\WAC-Access-Private';$s=curl.exe -k -s --max-time 15 -b ($p+'\\cookies.txt') -H ('@'+$p+'\\headers.txt') -o ($p+'\\admin-access.json') -w '%{http_code}' 'https://hq-mgt01.ad.alphasecunited.com/api/access/admins';@{GatewayAdminSettingsHTTP=$s;Service=(Get-Service WindowsAdminCenter).Status.ToString();WinRmOverHttps=(Get-Content 'C:\\Program Files\\WindowsAdminCenter\\Service\\appsettings.json' -Raw|ConvertFrom-Json).WindowsAdminCenter.FeatureParameters.Base.WinRmOverHttps}|ConvertTo-Json;pktmon status;pktmon filter list",
+    "stdout": "{\r\n    \"WinRmOverHttps\":  true,\r\n    \"GatewayAdminSettingsHTTP\":  \"200\",\r\n    \"Service\":  \"Running\"\r\n}\r\n\r\nPacket Monitor is not running.\r\nPacket Filters:\r\n    None\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "adminCleanup": {
+    "server": "hq_mgt01",
+    "command": "$ErrorActionPreference='Stop';$p='C:\\ProgramData\\WAC-Access-Private';$files=@(Get-ChildItem -LiteralPath $p -File);foreach($f in $files){if($f.Length -gt 0){$s=[IO.File]::Open($f.FullName,[IO.FileMode]::Open,[IO.FileAccess]::Write,[IO.FileShare]::None);try{$z=New-Object byte[] 65536;$left=$s.Length;while($left -gt 0){$n=[Math]::Min($left,$z.Length);$s.Write($z,0,[int]$n);$left-=$n};$s.Flush($true)}finally{$s.Dispose()}}};Remove-Item -LiteralPath $p -Recurse -Force;@{DirectoryRemoved=!(Test-Path -LiteralPath $p);FilesRemoved=$files.Count;Service=(Get-Service WindowsAdminCenter).Status.ToString();HTTPSListening=[bool](Get-NetTCPConnection -State Listen -LocalPort 443)}|ConvertTo-Json",
+    "stdout": "{\r\n    \"HTTPSListening\":  true,\r\n    \"FilesRemoved\":  26,\r\n    \"Service\":  \"Running\",\r\n    \"DirectoryRemoved\":  true\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "adminObiCleanup": {
+    "server": "obipc",
+    "command": "pktmon status; pktmon filter list",
+    "stdout": "\r\nPacket Monitor is not running.\r\nPacket Filters:\r\n    None\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "retained_at": "2026-09-12 8:01:32 AM EDT"
+}
