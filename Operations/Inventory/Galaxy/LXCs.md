@@ -1,16 +1,18 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-12
 
 Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 
 I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. On 2026-09-06 I read every `lxc/*.conf` back and found one change no record had captured: `docker-blue` went from one vCPU, 1 GiB, and 0.5 GiB of swap to two vCPUs, 2 GiB, and 1 GiB of swap, with `onboot` set. Its configuration file was last written at 12:51 EDT on 2026-09-01, during the Executor and Docker MCP Gateway work on that host. The active LXC allocation now totals 19 vCPUs, 39 GiB of memory, and 10.5 GiB of swap. The values below are the live settings on 2026-09-06.
 
+On 2026-09-12 I moved CT 100 to Blue's `local-lvm`, preserving its address and resource settings. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds verification and the TFTP follow-up.
+
 ## LXC Summary
 | CTID | Name | Node | HA | OS | vCPU | Memory | IP | Gateway | VLAN |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 100 | ansible-01 | grey-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
+| 100 | ansible-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 1 | 1 GiB | 192.168.40.36/24 | 192.168.40.1 | 40 |
 | 104 | monitor-01 | blue-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.73.2/24 | 192.168.73.1 | 73 |
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
@@ -23,7 +25,7 @@ I recaptured all seven containers after the [2026-08-10 resource efficiency chan
 ### Configuration
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | blue-server |
 | High availability | disabled |
 | OS | Debian GNU/Linux 13 (trixie) |
 | vCPU | 1 |
@@ -36,7 +38,7 @@ I recaptured all seven containers after the [2026-08-10 resource efficiency chan
 ### Storage
 | Device | Mount | Storage | Volume | Size | Backup |
 | --- | --- | --- | --- | --- | --- |
-| rootfs | / | ssd-lvm1 | vm-100-disk-0 | 16G | default |
+| rootfs | / | local-lvm | vm-100-disk-0 | 16G | default |
 
 ### Network
 | Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |

@@ -1,7 +1,7 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
 
@@ -14,6 +14,8 @@ On 2026-09-08 I updated the VM and node records for `ubuntu-dev`'s move to M.2 N
 On 2026-09-10 I set VM 105 `ubuntu-dev` on Grey to 12 GiB pending, leaving its running allocation at 16 GiB. I did not restart anything, so the 4 GiB reduction has not yet released host capacity. The [memory assessment and change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md) holds the verification.
 
 On 2026-09-11 I completed app-01's 64 GiB boot disk replacement on Grey and removed its old 200 GiB volume. The [change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds verification and the pre-existing Wazuh connection issue. I then completed both guests' move to Purple's NVMe-backed `local-lvm`, verified services and monitoring, and confirmed their source volumes absent on Grey. Wazuh connectivity is restored for all 16 remote agents. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md) holds final verification.
+
+On 2026-09-12 I moved CT 100 `ansible-01` to Blue and updated its LXC, service, and node records. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds the completed Proxmox task and service verification. No QEMU placement changed.
 
 ## Current state
 

@@ -25,7 +25,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
 | HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) file version 2.7.21.5, HTTPS 443<br>Active Directory extension 0.86.0<br>DNS extension 2.76.0<br>Entra provisioning agent service running<br>OpenSSH |
-| ansible-01 | LXC 100 | grey-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
+| ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |

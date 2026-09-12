@@ -1,7 +1,7 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-12
 
 I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities across 14 supported hosts, patches 12 running Linux guests through apt or dnf, updates 25 docker compose projects on 6 hosts, manages node_exporter on 10 targets, manages cAdvisor on 9 Docker hosts, and hosts the Galaxy PXE runtime. Semaphore provides 23 task templates across three projects over the same maintenance playbooks.
 
@@ -9,7 +9,7 @@ Fleet package updates include `ansible-01` through Ansible's local connection. T
 
 ## Live Deployment
 
-- Controller: `ansible-01` LXC 100, `192.168.40.36`
+- Controller: `ansible-01` LXC 100 on `blue-server`, `192.168.40.36`
 - Project: `/home/ansible/ssh-key-automation`
 - PXE project: `/home/ansible/proxmox-pxe-provisioning`
 - Execution account: `ansible`
@@ -37,6 +37,8 @@ Semaphore isn't required. Every operation also runs through `ansible-playbook` f
 | `Documentation/TODO.md` | Platform-owned backlog |
 | `Documentation/Change Records/` | Dated implementation history |
 | `Evidence/` | Sanitized verification summaries retained beside each change |
+
+I moved the controller to Blue on 2026-09-12. The [migration record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) includes fleet connectivity, service checks, and the TFTP startup limitation.
 
 ## Key Records
 
