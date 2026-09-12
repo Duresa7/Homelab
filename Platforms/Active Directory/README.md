@@ -39,7 +39,8 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 |---|---|---|---|
 | `ADM-T0-DomainAdmins` | Global | Nested into `Domain Admins` | `DK-t0`, `DK-user` |
 | `ADM-T1-ServerAdmins` | Global | Local administrator on member servers through Group Policy | `DK-user` |
-| `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2`, `DK-user` (added 2026-09-11, my decision; see [Owner Account Workstation Admin](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)) |
+| `ADM-T2-WorkstationAdmins` | Global | Local administrator on workstations through Group Policy | `DK-t2`, `DK-user` (added 2026-09-11, my decision; see [Owner Account Workstation Admin](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)); `APP-Action1-LocalAdmins` nested 2026-09-12 |
+| `APP-Action1-LocalAdmins` | Global | Action1 workstation administration through the Tier 2 group; separately added to local Administrators on `HQ-MGT01` | `svc-action1-deploy`; no Domain Admin or Tier 1 membership |
 | `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001`, `OBIPC` |
@@ -57,12 +58,15 @@ I expanded DK-user to all three administrative tiers on 2026-09-12, by my explic
 | `C-CMP-LAPS` | All settings enabled | `Servers`, `Workstations` |
 | `C-SRV-LocalAdmins` | All settings enabled | `Servers` |
 | `C-WKS-LocalAdmins` | All settings enabled | `Workstations` |
+| `C-WKS-Action1-Deployer-Network` | Domain-profile SMB, RPC endpoint mapper, and service RPC only from `192.168.65.12`; applied on both workstations 2026-09-12 | `Standard,Workstations` |
 | `C-WKS-ObiPC-AppControl` | AppLocker (Exe/Msi/Appx enforced, Script audit), `AppIDSvc` Automatic, loopback Merge | `Standard,Workstations`, filtered to `OBIPC` |
 | `U-WKS-ObiPC-Restricted` | Settings page allowlist, Store removed, registry tools off, Chrome extensions blocked | `Standard,Workstations`, filtered to `ROL-ObiPC-Restricted` |
 | `Default Domain Policy` | All settings enabled | domain root |
 | `Default Domain Controllers Policy` | All settings enabled | `Domain Controllers` |
 
 The two local-administrator policies use Group Policy Preferences local users and groups. They add the matching tier group to local `Administrators` and leave existing local accounts in place, so a server gets `ADM-T1-ServerAdmins` and a workstation gets `ADM-T2-WorkstationAdmins`. ObiPC kept its setup account. Both halves are proven on a live machine: `HQ-MGT01` carries the Tier 1 group and `HQ-WS001` carries the Tier 2 group, each placed there by policy rather than by hand.
+
+The dedicated `svc-action1-deploy` account is in `OU=Service Accounts,OU=Tier 2,OU=Admin`, is marked not delegatable, and uses the existing workstation-administration policy through its dedicated group. Its local-administrator membership on `HQ-MGT01` is specific to that host. The [Action1 deployment record](../Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md) owns the installation, account, firewall, and verification details.
 
 ## Windows LAPS
 

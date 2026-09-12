@@ -36,6 +36,13 @@
 /Infrastructure/Hardware/Images/
 **/Screenshots/
 
+# Sanitized Action1 RPC alert investigation readback
+!/Security/Incidents/UniFi/Evidence/
+/Security/Incidents/UniFi/Evidence/*
+!/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/
+/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/*
+!/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/Readback.json
+
 # Evidence images (exact filenames are allowlisted per directory)
 !/Infrastructure/Compute/Galaxy/Evidence/
 /Infrastructure/Compute/Galaxy/Evidence/*

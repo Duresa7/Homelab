@@ -3,6 +3,10 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-12
 
+At 2:50–2:54 PM on 2026-09-12 I rechecked the Action1 allow policy and investigated two IPS-blocked RPC flow records from `192.168.65.12` to `192.168.60.102`. Both matched successful Action1 Deployer operations. I made no firewall or IPS changes. [Alert investigation](../../../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md).
+
+On 2026-09-12 I added `Allow Action1 Deployer to Secure Client`, an IPv4 TCP allow from `HQ-MGT01` at `192.168.65.12` in `AlphaSec-Identity` to the Secure Client network on ports `135,139,445,49152-65535`, with logging and a response companion enabled. The workstation Windows Firewall policy separately limits these services to that source on the Domain profile. TCP 135, 139, and 445 then connected from `HQ-MGT01` to `ObiPC`, and the dedicated service account authenticated as a local administrator over WinRM HTTPS. [Action1 deployment record](../../../../Platforms/Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md).
+
 On 2026-09-12 I read back three enabled Windows Admin Center policies and their three response companions. `Allow Secure and Secure Client to WAC HTTPS` permits all of VLAN 50 and VLAN 60 to `192.168.65.12` on TCP 443. `Allow MacBook Air and Pixel to WAC HTTPS` permits those two device selectors to the same address and port while they are on VLAN 10. `Allow WAC to Secure Client WinRM` permits only `192.168.65.12` to VLAN 60 on TCP 5985/5986. The enabled local DNS A record `hq-mgt01.ad.alphasecunited.com` resolves to `192.168.65.12`, TTL 300. The [deployment record](../../../../Platforms/Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md) retains the scoped readback and endpoint verification; I did not recount all controller policies in this check.
 
 I verified the eight existing identity policies on 2026-09-07 and found no mismatch in their actions, enabled states, protocols, zones, or selectors. I added Allow Identity to Splunk - Security-A after checking SC4S on 192.168.72.3. The controller now returns 351 policies: 77 user-defined policies, split 69 allows to eight blocks, and 274 generated policies. The [final identity readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Final%20Identity%20Policy%20Readback.json) retains all nine custom rules and their response companions.
@@ -62,6 +66,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Secure and Secure Client to WAC HTTPS` | Yes | ALLOW | 10003 | TCP | Internal / Secure and Secure Client networks | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3 and Pixel device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow WAC to Secure Client WinRM` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 5985,5986 |
+| `Allow Action1 Deployer to Secure Client` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 135,139,445,49152-65535 |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
 | `VPN: Temp #2` | Yes | BLOCK | 10001 | All | Vpn / Temp | `AlphaSec-Servers` / Any |

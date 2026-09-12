@@ -1,0 +1,164 @@
+{
+  "capture_window": "2026-09-12, approximately 2:50–2:54 PM America/New_York",
+  "flow_evidence": {
+    "tool": "unifi_get_traffic_flows",
+    "arguments": {
+      "source_ip": "192.168.65.12",
+      "destination_ip": "192.168.60.102",
+      "action": "blocked",
+      "within_hours": 8,
+      "page_size": 100
+    },
+    "success": true,
+    "page_number": 0,
+    "total_element_count": 2,
+    "total_page_count": 1,
+    "flows": [
+      {
+        "id": "6aa59c4c80977b56f62b995b",
+        "action": "blocked",
+        "risk": "high",
+        "service": "DCE_ENDPOINT",
+        "count": 2,
+        "start": "2026-09-12T18:36:07.535Z",
+        "end": "2026-09-12T18:41:08.075Z",
+        "source": "192.168.65.12",
+        "destination": "192.168.60.102",
+        "policies": [
+          {
+            "internal_type": "SIGNATURE",
+            "ips_category": "EMERGING_RPC",
+            "name": "Remote Procedure Calls",
+            "type": "INTRUSION_PREVENTION"
+          },
+          {
+            "internal_type": "CONNTRACK",
+            "type": "FIREWALL"
+          }
+        ]
+      },
+      {
+        "id": "6aa594be80977b56f62b86ef",
+        "action": "blocked",
+        "risk": "high",
+        "service": "DCE_ENDPOINT",
+        "count": 2,
+        "start": "2026-09-12T18:03:53.853Z",
+        "end": "2026-09-12T18:08:53.978Z",
+        "source": "192.168.65.12",
+        "destination": "192.168.60.102",
+        "policies": [
+          {
+            "internal_type": "SIGNATURE",
+            "ips_category": "EMERGING_RPC",
+            "name": "Remote Procedure Calls",
+            "type": "INTRUSION_PREVENTION"
+          },
+          {
+            "internal_type": "CONNTRACK",
+            "type": "FIREWALL"
+          }
+        ]
+      }
+    ]
+  },
+  "action1_evidence": {
+    "server": "hq_mgt01",
+    "command": "Get-Content 'C:\\Program Files (x86)\\Action1\\Connector\\logs\\action1_log_2026-09-12_13-50-15~8024.log' | Where-Object {$_ -match '1F580E18|1F5807DC'} | Select-Object -Last 45; Get-AuthenticodeSignature 'C:\\Program Files (x86)\\Action1\\Connector\\action1_connector.exe' | Select-Object Status,@{n='Publisher';e={$_.SignerCertificate.Subject}} | ConvertTo-Json",
+    "stdout": "260912 14:03:53-0400[1,1F580E18] ProcessStateChange: Computer=ObiPC.ad.alphasecunited.com, State=0, MarkedForInstall=true, MarkedForUninstall=false, LastAttemptTime=1601/ 1/ 1  0: 0: 0, cur_time=2026/ 9/12 18: 3:53\r\n260912 14:03:53-0400[1,1F580E18] ManagedAgent::Install - ObiPC.ad.alphasecunited.com, State=0\r\n260912 14:03:53-0400[1,1F580E18] Checking if AUS is already installed...\r\n260912 14:03:53-0400[1,1F580E18] GetAgentInstallFolder: \\\\ObiPC.ad.alphasecunited.com\\admin$\\Action1\\ already exists, proceeding.\r\n260912 14:03:53-0400[1,1F580E18] Copying C:\\Program Files (x86)\\Action1\\Connector\\action1_update.exe to \\\\ObiPC.ad.alphasecunited.com\\admin$\\Action1\\action1_update.exe...\r\n260912 14:03:53-0400[1,1F580E18] CreateAgentUpdateService: ObiPC.ad.alphasecunited.com\r\n260912 14:03:53-0400[1,1F580E18] CreateAgentUpdateService: Local exe path: C:\\Windows\\Action1\\action1_update.exe\r\n260912 14:03:53-0400[1,1F580E18] CheckAgentVersion: agent=6.0.664.0, AUS=6.0.664.0, CID=<REDACTED_ACTION1_ORGANIZATION_ID>\r\n260912 14:03:54-0400[1,1F580E18] Waiting for AUS...\r\n260912 14:03:54-0400[1,1F580E18] WaitServiceToStop: initial CurrentState is 1\r\n260912 14:03:54-0400[1,1F580E18] AUS check result: 0. Status: ok\r\n260912 14:03:54-0400[1,1F580E18] Updated State=1\r\n260912 14:03:54-0400[1,1F580E18] ProcessStateChange: updated state is 1\r\n260912 14:36:07-0400[1,1F5807DC] ProcessStateChange: Computer=ObiPC.ad.alphasecunited.com, State=1, MarkedForInstall=true, MarkedForUninstall=false, LastAttemptTime=2026/ 9/12 18: 3:53, cur_time=2026/ 9/12 18:36: 7\r\n260912 14:36:07-0400[1,1F5807DC] ManagedAgent::Install - ObiPC.ad.alphasecunited.com, State=1\r\n260912 14:36:07-0400[1,1F5807DC] Checking if AUS is already installed...\r\n260912 14:36:07-0400[1,1F5807DC] CheckAgentVersion: agent=6.0.664.0, AUS=6.0.664.0, CID=<REDACTED_ACTION1_ORGANIZATION_ID>\r\n260912 14:36:07-0400[1,1F5807DC] Waiting for AUS...\r\n260912 14:36:07-0400[1,1F5807DC] WaitServiceToStop: initial CurrentState is 1\r\n260912 14:36:07-0400[1,1F5807DC] AUS check result: 0. Status: ok\r\n260912 14:36:07-0400[1,1F5807DC] Updated State=1\r\n260912 14:36:07-0400[1,1F5807DC] ProcessStateChange: updated state is 1\r\n{\r\n    \"Status\":  0,\r\n    \"Publisher\":  \"CN=Action1 Corporation, O=Action1 Corporation, S=Texas, C=US, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.2=Delaware, OID.1.3.6.1.4.1.311.60.2.1.3=US, SERIALNUMBER=6614290\"\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "obipc_evidence": {
+    "server": "obipc",
+    "command": "Get-Date -Format o; Get-Service A1Agent | Select-Object Name,Status,StartType | ConvertTo-Json; Get-WinEvent -FilterHashtable @{LogName='System';Id=7045;StartTime=(Get-Date).Date} -ErrorAction SilentlyContinue | ForEach-Object {$x=[xml]$_.ToXml();$d=@{};foreach($n in $x.Event.EventData.Data){$d[$n.Name]=$n.'#text'};if($d.ServiceName -eq 'Action1 Agent Update Service'){[pscustomobject]@{Time=$_.TimeCreated.ToString('o');ServiceName=$d.ServiceName;ImagePath=$d.ImagePath}}} | ConvertTo-Json",
+    "stdout": "2026-09-12T14:53:52.0911645-04:00\r\n{\r\n    \"Name\":  \"A1Agent\",\r\n    \"Status\":  4,\r\n    \"StartType\":  2\r\n}\r\n{\r\n    \"Time\":  \"2026-09-12T14:03:54.0053077-04:00\",\r\n    \"ServiceName\":  \"Action1 Agent Update Service\",\r\n    \"ImagePath\":  \"C:\\\\Windows\\\\Action1\\\\action1_update.exe\"\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "dc_evidence": [
+    {
+      "server": "hq_dc01",
+      "command": "[pscustomobject]@{Computer=$env:COMPUTERNAME;Action1AgentPresent=[bool](Get-Service A1Agent -ErrorAction SilentlyContinue);ArcAgentPresent=[bool](Get-Service himds -ErrorAction SilentlyContinue)} | ConvertTo-Json",
+      "stdout": "{\r\n    \"Computer\":  \"HQ-DC01\",\r\n    \"Action1AgentPresent\":  false,\r\n    \"ArcAgentPresent\":  false\r\n}\r\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "hq_dc02",
+      "command": "[pscustomobject]@{Computer=$env:COMPUTERNAME;Action1AgentPresent=[bool](Get-Service A1Agent -ErrorAction SilentlyContinue);ArcAgentPresent=[bool](Get-Service himds -ErrorAction SilentlyContinue)} | ConvertTo-Json",
+      "stdout": "{\r\n    \"Computer\":  \"HQ-DC02\",\r\n    \"Action1AgentPresent\":  false,\r\n    \"ArcAgentPresent\":  false\r\n}\r\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    }
+  ],
+  "firewall_evidence": {
+    "success": true,
+    "site": "default",
+    "search": "Action1",
+    "enabled_only": false,
+    "total_count": 1,
+    "returned_count": 1,
+    "count": 1,
+    "limit": 50,
+    "policies": [
+      {
+        "id": "6aa5868c80977b56f62b6013",
+        "predefined": false,
+        "name": "Allow Action1 Deployer to Secure Client",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 10001,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_matching_type": "ANY",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "destination": {
+          "match_opposite_networks": false,
+          "match_opposite_ports": false,
+          "matching_target": "NETWORK",
+          "matching_target_type": "OBJECT",
+          "network_ids": [
+            "68bbda4289628952612bda0c"
+          ],
+          "port": "135,139,445,49152-65535",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "logging": true
+      }
+    ]
+  },
+  "arc_evidence": {
+    "server": "hq_mgt01",
+    "command": "$arc=(& 'C:\\Program Files\\AzureConnectedMachineAgent\\azcmagent.exe' show -j | ConvertFrom-Json); $arc | Select-Object agentVersion,status,resourceName,resourceGroup,location,cloud | ConvertTo-Json",
+    "stdout": "{\r\n    \"agentVersion\":  \"1.67.03504.3207\",\r\n    \"status\":  \"Connected\",\r\n    \"resourceName\":  \"HQ-MGT01\",\r\n    \"resourceGroup\":  \"rg-homelab-arc\",\r\n    \"location\":  \"eastus\",\r\n    \"cloud\":  \"AzureCloud\"\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  }
+}
