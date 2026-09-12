@@ -3,7 +3,7 @@
 **Created:** 2026-09-12  
 **Last updated:** 2026-09-12
 
-Action1 is the cloud endpoint management plane for `ObiPC`. It handles software deployment, patching, and remote access for that machine. There is no self-hosted component: the service runs in Action1's cloud and each managed endpoint runs a local agent that polls it.
+Action1 is the cloud endpoint management plane for `ObiPC`. It handles software deployment, patching, and remote access for that machine. Each managed endpoint runs a local agent that polls the cloud. Since 2026-09-12, `HQ-MGT01` also runs Action1 Deployer for automatic enrollment across `ad.alphasecunited.com`, including servers and domain controllers. The whole-domain scope is saved; domain-controller installation is blocked by access denied because the Deployer account lacks administrator access there.
 
 I deployed it on 2026-09-12 so that application installation on `ObiPC` goes through a console I control rather than through the person using the machine. That is the deployment half of the restriction work on that workstation; the execution half is AppLocker, which is tracked with the [Active Directory](../Active%20Directory/README.md) records that own `ObiPC`.
 
@@ -11,10 +11,13 @@ I deployed it on 2026-09-12 so that application installation on `ObiPC` goes thr
 
 | Item | Current value |
 |---|---|
-| Service | Action1 cloud, no on-premises component |
+| Service | Action1 cloud with Action1 Deployer on `HQ-MGT01` |
+| Deployer | `A1Connector`, automatic startup, Running as `ALPHASEC\svc-action1-deploy`; version 6.0.664.1, verified 2026-09-12 |
+| Deployer path | `C:\Program Files (x86)\Action1\Connector\action1_connector.exe` |
+| Deployer scope | All computers in `ad.alphasecunited.com`; domain-controller, server, workstation, and named-computer exclusions all disabled, saved and read back 2026-09-12 |
 | Instance | `app.na-2.action1.com`, North America 2 |
 | Organisation identifier | Withheld. It is embedded in the agent download URL and any holder of it can enrol an endpoint into this organisation |
-| Managed endpoints | 1, `ObiPC`. Console-to-endpoint path proven 2026-09-12 by a console-initiated Chrome deployment the agent executed with result `OK` |
+| Managed endpoints | Four console records: `HQ-MGT01`, `HQ-WS001`, and `ObiPC` Connected; preexisting `win11-dev-hyper` Disconnected. Neither domain controller appeared in the 2026-09-12 readback |
 | Agent version | 6.0.664.1 |
 | Agent install path | `C:\Windows\Action1\` |
 | Agent service | `A1Agent`, display name `Action1 Agent`, `LocalSystem`, Automatic, Running |
@@ -25,6 +28,8 @@ I deployed it on 2026-09-12 so that application installation on `ObiPC` goes thr
 | Endpoint | OS | Agent | Enrolled | Notes |
 |---|---|---|---|---|
 | `ObiPC` | Windows 11 Pro 25H2, build 26200 | 6.0.664.1 | 2026-09-12 | Physical workstation, Secure Client VLAN 60, domain member in `OU=Standard,OU=Workstations` |
+
+The 2026-09-12 console readback also showed `HQ-MGT01` (Windows Server 2025) and `HQ-WS001` (Windows 11 25H2) Connected. Their agent versions were not captured in that readback. The preexisting `win11-dev-hyper` record was Disconnected.
 
 ## Why this and not Intune
 
@@ -43,4 +48,6 @@ The consequence is that software Action1 deploys is trusted by the allowlist. Th
 
 ## Records
 
+- [RPC alert investigation - 2026-09-12](../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md): UniFi blocked RPC flows to ObiPC during successful Deployer checks. I correlated both timestamps with Action1 logs, verified the running agent, and left IPS enabled.
+- [AD Deployer Preparation - 2026-09-12](Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md): Deployer installed on `HQ-MGT01` after a direct HTTPS download. Dedicated account and workstation firewall policy are applied; whole-domain scope is saved, three endpoints show Connected, and domain-controller enrollment verification remains open.
 - [ObiPC Agent Deployment - 2026-09-12](Documentation/Change%20Records/ObiPC%20Agent%20Deployment%20-%202026-09-12.md)
