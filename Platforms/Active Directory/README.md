@@ -74,6 +74,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - `ADM-T1-ServerAdmins` is empty by design until there is a second administrator.
+- Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
 
@@ -86,6 +87,7 @@ Every account here is stored in my password manager. No password, DSRM password,
 - [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md)
 - [ObiPC Workstation Join - 2026-09-11](Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md)
 - [Owner Account Workstation Admin - 2026-09-11](Documentation/Change%20Records/Owner%20Account%20Workstation%20Admin%20-%202026-09-11.md)
+- [Microsoft Intune](../Microsoft%20Intune/README.md) for device management in the same tenant, including the Apple credentials and why neither workstation here is Intune managed
 - [Active Directory guide](../../Guides/Active-Directory.md)
 - [Identity NTP and Client DNS - 2026-09-09](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md)
 - [Galaxy VMs](../../Operations/Inventory/Galaxy/VMs.md) for VMs 300 through 303 and VM 310

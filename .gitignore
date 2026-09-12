@@ -554,3 +554,17 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 # !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/
 # /Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/*
 # !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/
+
+# Microsoft Intune evidence. The Logs carry no withheld value and are published.
+# The Screenshots line is deliberately left commented, on the same rule as the
+# Active Directory folder above: the images were redacted in the live DOM before
+# capture and verified clean by assertion, but no human has looked at all eleven.
+# Uncomment it only after checking them by hand.
+!/Platforms/Microsoft Intune/Evidence/
+/Platforms/Microsoft Intune/Evidence/*
+!/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/
+/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/*
+!/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/Logs/
+/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/Logs/*
+!/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/Logs/*.md
+# !/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/Screenshots/
