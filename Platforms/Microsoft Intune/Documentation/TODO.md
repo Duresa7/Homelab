@@ -1,7 +1,7 @@
 # Microsoft Intune TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 I keep the detailed list for Intune and device management here. The root TODO.md links here for the steps and completion checks.
 
@@ -22,9 +22,9 @@ This is not a task. It is a rule that follows from the compliance decision of 20
 1. I will decide whether to configure Platform SSO on the Mac. It links the local macOS account to Entra with Secure Enclave backed keys and changes the Entra join type from registered to joined. This is a follow-on to the enrollment rather than part of it. The decision is done when I record whether I want it.
 2. If I configure it, I will choose the authentication method deliberately. The Password method syncs the local login password with the Entra password, which is a meaningful change to how I sign in to my own laptop. The Secure Enclave method leaves the local password alone. This step is done when the method is recorded alongside the configuration.
 
-## Windows co-management (separate work, not started)
+## Windows Intune enrollment (separate work, not started)
 
-1. I will decide whether `HQ-WS001` and `ObiPC` should be Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, so the tenant manages no Windows endpoint. The decision is done when I record whether co-management is wanted.
+1. I will decide whether `HQ-WS001` and `ObiPC` should be Intune managed alongside AD Group Policy. The [2026-09-12 assessment](ObiPC%20MDM%20Options%20-%202026-09-12.md) verifies ObiPC's hybrid join and absence of MDM enrollment and compares Intune, Endpoint Central, and Fleet. Intune is the recommendation; enrollment remains undecided. This is not Configuration Manager co-management.
 2. If it is, the mechanism is the MDM user scope in Entra plus the automatic enrollment Group Policy against the hybrid-joined machines. This step is done when at least one workstation reports MDM `Microsoft Intune` and I have verified it from both consoles.
 
 ## Apple credential renewals (dated, 2027)

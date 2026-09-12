@@ -1,7 +1,7 @@
 # Microsoft Intune
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 Intune is the device management plane for the `alphasecunited.com` tenant. It is the same tenant the [Active Directory](../Active%20Directory/README.md) forest synchronises into through Entra Cloud Sync, so identity comes from `ad.alphasecunited.com` and device management comes from here. The two are separate concerns and this record owns the second.
 
@@ -72,11 +72,12 @@ The decision to revisit is a fleet-size one. When this tenant manages devices I 
 
 - **Do not create a Conditional Access policy that requires a compliant device.** This follows directly from the compliance decision above. Every device in this tenant reports Compliant without being evaluated, so such a policy would pass for the wrong reason and would start failing the moment a real compliance policy landed. The tenant has one admin account and no break-glass exclusion, so that failure locks me out of my own tenant. This constraint stands until the compliance decision is revisited.
 - Decide whether FileVault is enforced on the Mac with the recovery key escrowed into Intune. That mirrors the BitLocker baseline open against the physical Windows workstation in the [Active Directory TODO](../Active%20Directory/Documentation/TODO.md), and settling both the same way keeps one disk-encryption posture across the fleet.
-- Decide whether `HQ-WS001` and `ObiPC` should be co-managed. Both are Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, so the tenant manages no Windows endpoint.
+- Decide whether `HQ-WS001` and `ObiPC` should be Intune managed alongside AD Group Policy. I verified ObiPC's hybrid join and absence of MDM enrollment locally on 2026-09-12; [MDM options and proposed scope](Documentation/ObiPC%20MDM%20Options%20-%202026-09-12.md) recommend Intune. This is not Configuration Manager co-management. Enrollment remains undecided.
 - Both Apple credentials expire 7/21/2027. Neither renews itself.
 
 ## Records
 
+- [ObiPC MDM options and live checks - 2026-09-12](Documentation/ObiPC%20MDM%20Options%20-%202026-09-12.md)
 - [MacBook Air M3 Company Portal Enrollment - 2026-09-11](Documentation/Change%20Records/MacBook%20Air%20M3%20Company%20Portal%20Enrollment%20-%202026-09-11.md)
 - [S01 Tenant Readiness Readback - 2026-09-11](Evidence/MacBook%20Air%20M3%20Enrollment%20-%202026-09-11/Logs/S01%20Tenant%20Readiness%20Readback%20-%202026-09-11.md)
 - [S02 Enrollment Verification - 2026-09-11](Evidence/MacBook%20Air%20M3%20Enrollment%20-%202026-09-11/Logs/S02%20Enrollment%20Verification%20-%202026-09-11.md)

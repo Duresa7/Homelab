@@ -1,0 +1,131 @@
+﻿<AppLockerPolicy Version="1">
+  <RuleCollection Type="Exe" EnforcementMode="Enabled">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000001" Name="Everyone: Windows folder" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePathCondition Path="%WINDIR%\*" /></Conditions>
+      <Exceptions>
+        <FilePathCondition Path="%WINDIR%\Temp\*" />
+        <FilePathCondition Path="%WINDIR%\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\Tracing\*" />
+        <FilePathCondition Path="%WINDIR%\Registration\CRMLog\*" />
+        <FilePathCondition Path="%WINDIR%\debug\WIA\*" />
+        <FilePathCondition Path="%WINDIR%\System32\FxsTmp\*" />
+        <FilePathCondition Path="%WINDIR%\System32\com\dmp\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\drivers\color\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\PRINTERS\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\FxsTmp\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\com\dmp\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks\*" />
+      </Exceptions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000002" Name="Everyone: Program Files" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePathCondition Path="%PROGRAMFILES%\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000003" Name="Administrators: all files" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000004" Name="Unrestricted users: all files" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000005" Name="Restricted: Dev folder" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="C:\Dev\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000006" Name="Restricted: VS Code extensions and CLI" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode*\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000007" Name="Restricted: npm global binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\npm\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000008" Name="Restricted: pip user scripts" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\Python\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000009" Name="Restricted: Python user install" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Local\Programs\Python\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000010" Name="Restricted: Rust cargo binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.cargo\bin\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000011" Name="Restricted: Go binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\go\bin\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000012" Name="Restricted: block Registry Editor" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\regedit.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000013" Name="Restricted: block regedt32" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\System32\regedt32.exe" /></Conditions>
+    </FilePathRule>
+  </RuleCollection>
+  <RuleCollection Type="Msi" EnforcementMode="Enabled">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000014" Name="Everyone: system installer cache" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePathCondition Path="%WINDIR%\Installer\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000015" Name="Administrators: all installers" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000016" Name="Unrestricted users: all installers" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+  </RuleCollection>
+  <RuleCollection Type="Appx" EnforcementMode="Enabled">
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000017" Name="Everyone: signed packaged apps" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000018" Name="Administrators: signed packaged apps" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000019" Name="Unrestricted users: signed packaged apps" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+  </RuleCollection>
+  <RuleCollection Type="Script" EnforcementMode="AuditOnly">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000020" Name="Everyone: Windows folder" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePathCondition Path="%WINDIR%\*" /></Conditions>
+      <Exceptions>
+        <FilePathCondition Path="%WINDIR%\Temp\*" />
+        <FilePathCondition Path="%WINDIR%\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\Tracing\*" />
+        <FilePathCondition Path="%WINDIR%\Registration\CRMLog\*" />
+        <FilePathCondition Path="%WINDIR%\debug\WIA\*" />
+        <FilePathCondition Path="%WINDIR%\System32\FxsTmp\*" />
+        <FilePathCondition Path="%WINDIR%\System32\com\dmp\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\drivers\color\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\PRINTERS\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\FxsTmp\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\com\dmp\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks\*" />
+      </Exceptions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000021" Name="Everyone: Program Files" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+      <Conditions><FilePathCondition Path="%PROGRAMFILES%\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000022" Name="Administrators: all files" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000023" Name="Unrestricted users: all files" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000024" Name="Restricted: Dev folder" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="C:\Dev\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000025" Name="Restricted: VS Code extensions and CLI" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode*\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000026" Name="Restricted: npm global binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\npm\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000027" Name="Restricted: pip user scripts" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\Python\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000028" Name="Restricted: Python user install" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Local\Programs\Python\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000029" Name="Restricted: Rust cargo binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.cargo\bin\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000030" Name="Restricted: Go binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\go\bin\*" /></Conditions>
+    </FilePathRule>
+  </RuleCollection>
+</AppLockerPolicy>
+

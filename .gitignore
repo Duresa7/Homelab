@@ -576,3 +576,9 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 /Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/*
 !/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Final-Verification.json
 !/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Browser-Sign-In.md
+
+# Reviewed owner domain-administration verification, with identities aliased.
+!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/
+/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/*
+!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Directory-Verification.json
+!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Management-Verification.json

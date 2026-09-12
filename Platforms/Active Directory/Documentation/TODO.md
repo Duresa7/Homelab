@@ -9,14 +9,18 @@ I keep the detailed list for my Active Directory and hybrid identity platform he
 
 I installed the gateway on 2026-09-11 and verified it on 2026-09-12. TCP 443 is listening, all five shared connections are saved, the Active Directory and DNS extensions are installed, and all five targets answer WinRM. Browser access covers all of VLAN 50 and VLAN 60, plus my MacBook Air M3 and Pixel on VLAN 10. I confirmed the sign-in page from a personal device and successful browser sign-in on 2026-09-12. The [deployment record](../../Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md) holds the firewall, DNS, authentication, and cleanup results.
 
-1. Browser sign-in is confirmed. I will open each saved connection using the appropriate target account. The successful sign-in confirmation did not specify the account or device. I intend to use DK-t0 for controller work and DK-user for workstation work through **Manage as**, with no changes to DK-t0's Protected Users or no-delegation settings.
-2. I will manage a user, a DNS record, and a workstation service from the browser on ObiPC and verify each change on its target. The initial management checks are done when all three succeed; WinRM reachability alone does not close them.
-3. I will replace the self-signed certificate before it expires on 2026-11-10 at 10:54:56 PM EST. This follow-up is done when the gateway presents a valid certificate for its browser address and my client devices trust its issuer without a certificate warning.
+I expanded DK-user to domain and server administration and verified gateway-session-only WAC connections and elevated Kerberos HTTPS sessions on all five targets on 2026-09-12. The [access change record](Change%20Records/Owner%20Domain%20Administration%20-%202026-09-12.md) contains the replicated memberships, gateway delegation, and final verification.
+
+1. I will sign out of WAC and sign back in with my domain-qualified username, then use **Use my Windows account**. The authenticated API path is verified; I will still click through the tools I use in the browser. Existing Windows desktop sessions need sign-out and sign-in to pick up the new administrative groups locally.
+2. I will manage a user, a DNS record, and a workstation service from the browser on ObiPC and verify each change on its target. These workflow exercises remain open; successful target queries and elevated tokens are already verified.
+3. I will replace the browser self-signed certificate before it expires on 2026-11-10 at 10:54:56 PM EST. This follow-up is done when my client devices trust the replacement without a warning.
+4. I will renew the five WinRM HTTPS certificates before 2027-09-12 and update HQ-MGT01's trust store and the target listener bindings. This is done when certificate validation and all five authenticated WAC queries pass again.
+5. I will include WinRM HTTPS, gateway certificate trust, source-restricted TCP 5986 access, a saved connection, and delegation from HQ-MGT01 when onboarding future WAC targets. Existing administrative group policy covers machines in the server and workstation OUs; transport and delegation need per-target setup.
 
 ## RSAT on ObiPC (decided 2026-09-11, not started)
 
 1. I will install the optional features `Rsat.ActiveDirectory.DS-LDS.Tools`, `Rsat.GroupPolicy.Management.Tools`, `Rsat.Dns.Tools`, and `Rsat.ServerManager.Tools` on ObiPC over SSH. This step is done when each capability shows `Installed` in `Get-WindowsCapability -Online`.
-2. I will open the consoles with "Run as different user" as DK-t0 for changes. I need RSAT for Group Policy editing because Windows Admin Center has no policy editor. This work is done when Group Policy Management opens from ObiPC and shows the domain's five policies: `C-CMP-LAPS`, `C-SRV-LocalAdmins`, `C-WKS-LocalAdmins`, `Default Domain Policy`, and `Default Domain Controllers Policy`.
+2. I will open the consoles with my regular DK-user account, which has domain administration rights since 2026-09-12. I need RSAT for Group Policy editing because Windows Admin Center has no policy editor. This work is done when Group Policy Management opens from ObiPC and shows the domain's five policies: `C-CMP-LAPS`, `C-SRV-LocalAdmins`, `C-WKS-LocalAdmins`, `Default Domain Policy`, and `Default Domain Controllers Policy`.
 
 ## Restore the temporary testing state
 
@@ -59,4 +63,5 @@ On 2026-09-12 I required IK-user and AH-user to change their passwords at next d
 4. 2026-09-10: I soft-matched DK-user to the existing tenant account and moved its administrative roles to DK-admin.
 5. 2026-09-11: I joined ObiPC to the domain, verified its Microsoft Entra hybrid join, and enabled Secure Boot.
 6. 2026-09-11: I made DK-user a Tier 2 workstation administrator through `ADM-T2-WorkstationAdmins`.
-7. 2026-09-12: I verified the Windows Admin Center deployment, five shared connections, AD/DNS extensions, network access, browser sign-in, and setup-file cleanup; target management checks remain open above.
+7. 2026-09-12: I verified the Windows Admin Center deployment, five shared connections, AD/DNS extensions, network access, browser sign-in, and setup-file cleanup; target connection verification was completed in the access change below.
+8. 2026-09-12: I added DK-user to domain and server administration, configured HQ-MGT01 delegation and WinRM HTTPS on five targets, verified all five WAC connections and elevated sessions, and removed the test credentials.
