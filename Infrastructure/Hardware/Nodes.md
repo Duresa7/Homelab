@@ -1,7 +1,7 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -10,6 +10,8 @@ I verified the node and physical-storage state against all five nodes on 2026-08
 On 2026-09-11 I replaced app-01's 200 GiB system disk on Grey's `ssd-lvm1` with a 64 GiB volume and removed the old disk. Guest placement and physical hardware are unchanged. The [change record](../Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds verification.
 
 On 2026-09-11 I subsequently moved VM 116 `app-01` and VM 121 `edge-01` from Grey to Purple's NVMe-backed `local-lvm`. Their system disks total 94 GiB provisioned, with two 4 MiB EFI volumes. At about 3:29 AM Eastern the pool used 21,950,307 KiB (14.86%) with 125,763,740 KiB available, Purple had 6,679 MiB available memory, and its SATA `ssd-lvm2` remained empty. Both guests run on Purple and their old volumes are absent from Grey. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md).
+
+On 2026-09-12 I moved CT 100 `ansible-01` from Grey's `ssd-lvm1` to Blue's NVMe-backed `local-lvm`. At 3:38 PM Eastern, Blue had 2,942 MiB available memory and its thin pool used 34.08%, with 97,618,808 KiB available. The source volume is absent from Grey. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md).
 
 ## Nodes
 | Node | IP | CPU | Cores / Threads | Memory | GPU | Physical storage | Power source |
@@ -27,7 +29,7 @@ On 2026-09-10 I set VM 105 `ubuntu-dev` on Grey to 12 GiB pending, leaving its r
 ## Physical Storage
 | Node | Device | Type | Model | Size | Used by |
 | --- | --- | --- | --- | --- | --- |
-| blue-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLW256HEHP-000L7 | 238.47 GiB | Proxmox boot, root, swap, `local-lvm`, and CTs 104/107/108 |
+| blue-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLW256HEHP-000L7 | 238.47 GiB | Proxmox boot, root, swap, `local-lvm`, and CTs 100/104/107/108 |
 | blue-server | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 465.76 GiB | Unused; empty GPT, no filesystem or LVM; passed its extended SMART test |
 | green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and `local-lvm` |
 | green-server | /dev/sda | HDD | HITACHI HTS723232A7A364 | 298.09 GiB | Blank; extended test stopped with a read failure and two pending sectors; do not use |
