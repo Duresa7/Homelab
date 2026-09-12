@@ -20,6 +20,8 @@ I installed the gateway on 2026-09-11 and verified it on 2026-09-12. TCP 443 is 
 
 ## Restore the temporary testing state
 
+On 2026-09-12 I required IK-user and AH-user to change their passwords at next domain logon and verified the flag on both controllers. Their own password changes are pending and supersede the administrator-set staff passwords proposed below. See [Staff First Login Password Change](Change%20Records/Staff%20First%20Login%20Password%20Change%20-%202026-09-12.md).
+
 1. I will restore `PSO-Admins` `MinPasswordLength` to 20 as recorded in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). This step is done when the policy reads back as 20 on both controllers.
 2. I will set unique passwords on IK-user, AH-user, DK-t0, and DK-t2 from their own vault items, with the admin passwords meeting the restored 20-character minimum. For each account I will verify that the stored password succeeds and a wrong-password control fails. For DK-t0 I will use a Kerberos interactive logon on a controller because Protected Users blocks the ordinary credential-validation method. This step is done when all four accounts pass both checks and their vault items match their directory passwords.
 3. I will record the restored policy and the four validation results without password values. The domain default minimum of 8 is my accepted standing policy and is not restored. testuser has had its own password since 2026-09-10. This work is done when the record closes the four shared-password items and confirms the domain default remains 8.
