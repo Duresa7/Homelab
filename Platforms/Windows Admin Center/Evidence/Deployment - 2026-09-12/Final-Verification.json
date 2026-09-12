@@ -1,0 +1,362 @@
+{
+  "retained_at": "2026-09-12 12:14:57 AM EDT",
+  "verification_date": "2026-09-12",
+  "wacVerify": {
+    "server": "hq_mgt01",
+    "command": "Import-Module 'C:\\Program Files\\WindowsAdminCenter\\PowerShellModules\\Microsoft.WindowsAdminCenter.Configuration'; @{Version=(Get-WACFileVersion);Services=@(Get-CimInstance Win32_Service | Where-Object {$_.Name -in 'WindowsAdminCenter','WindowsAdminCenterAccountManagement','AADConnectProvisioningAgent'} | Select-Object Name,State,StartMode);Certificate=(Get-WACSelfSignedCertificate | Select-Object Subject,@{n='Expires';e={$_.NotAfter.ToString('yyyy-MM-dd HH:mm:ss zzz')}},@{n='DNS';e={$_.DnsNameList.Unicode}});Listeners=@(Get-NetTCPConnection -State Listen -LocalPort 443 | Select-Object LocalAddress,LocalPort);SetupFiles=@(Get-ChildItem 'C:\\ProgramData\\WAC-Setup-Private' -ErrorAction SilentlyContinue|Select-Object Name,Length);WinRM=@(foreach($n in 'HQ-DC01','HQ-DC02','HQ-MGT01','ObiPC','HQ-WS001'){try{$r=Test-WSMan -ComputerName ($n+'.ad.alphasecunited.com') -ErrorAction Stop;[pscustomobject]@{Target=$n;WSMan=$true}}catch{[pscustomobject]@{Target=$n;WSMan=$false}}})}|ConvertTo-Json -Depth 5",
+    "stdout": "{\r\n    \"WinRM\":  [\r\n                  {\r\n                      \"Target\":  \"HQ-DC01\",\r\n                      \"WSMan\":  true\r\n                  },\r\n                  {\r\n                      \"Target\":  \"HQ-DC02\",\r\n                      \"WSMan\":  true\r\n                  },\r\n                  {\r\n                      \"Target\":  \"HQ-MGT01\",\r\n                      \"WSMan\":  true\r\n                  },\r\n                  {\r\n                      \"Target\":  \"ObiPC\",\r\n                      \"WSMan\":  true\r\n                  },\r\n                  {\r\n                      \"Target\":  \"HQ-WS001\",\r\n                      \"WSMan\":  true\r\n                  }\r\n              ],\r\n    \"Version\":  \"2.7.21.5\",\r\n    \"Services\":  [\r\n                     {\r\n                         \"Name\":  \"AADConnectProvisioningAgent\",\r\n                         \"State\":  \"Running\",\r\n                         \"StartMode\":  \"Auto\"\r\n                     },\r\n                     {\r\n                         \"Name\":  \"WindowsAdminCenter\",\r\n                         \"State\":  \"Running\",\r\n                         \"StartMode\":  \"Auto\"\r\n                     },\r\n                     {\r\n                         \"Name\":  \"WindowsAdminCenterAccountManagement\",\r\n                         \"State\":  \"Running\",\r\n                         \"StartMode\":  \"Manual\"\r\n                     }\r\n                 ],\r\n    \"Certificate\":  {\r\n                        \"Subject\":  \"CN=WindowsAdminCenterSelfSigned\",\r\n                        \"Expires\":  \"2026-11-10 22:54:56 -05:00\",\r\n                        \"DNS\":  \"HQ-MGT01.ad.alphasecunited.com\"\r\n                    },\r\n    \"SetupFiles\":  [\r\n                       {\r\n                           \"Name\":  \"api-read.json\",\r\n                           \"Length\":  0\r\n                       },\r\n                       {\r\n                           \"Name\":  \"authenticated.html\",\r\n                           \"Length\":  21413\r\n                       },\r\n                       {\r\n                           \"Name\":  \"connections-request.json\",\r\n                           \"Length\":  1018\r\n                       },\r\n                       {\r\n                           \"Name\":  \"connections-write.json\",\r\n                           \"Length\":  1307\r\n                       },\r\n                       {\r\n                           \"Name\":  \"connections.json\",\r\n                           \"Length\":  2097\r\n                       },\r\n                       {\r\n                           \"Name\":  \"cookies.txt\",\r\n                           \"Length\":  867\r\n                       },\r\n                       {\r\n                           \"Name\":  \"credential.json\",\r\n                           \"Length\":  72\r\n                       },\r\n                       {\r\n                           \"Name\":  \"extension-install.json\",\r\n                           \"Length\":  250622\r\n                       },\r\n                       {\r\n                           \"Name\":  \"extensions.json\",\r\n                           \"Length\":  250622\r\n                       },\r\n                       {\r\n                           \"Name\":  \"headers.txt\",\r\n                           \"Length\":  243\r\n                       },\r\n                       {\r\n                           \"Name\":  \"key-request.json\",\r\n                           \"Length\":  43\r\n                       },\r\n                       {\r\n                           \"Name\":  \"key-response.json\",\r\n                           \"Length\":  743\r\n                       },\r\n                       {\r\n                           \"Name\":  \"login-request.json\",\r\n                           \"Length\":  739\r\n                       },\r\n                       {\r\n                           \"Name\":  \"login-response.json\",\r\n                           \"Length\":  0\r\n                       },\r\n                       {\r\n                           \"Name\":  \"signin.html\",\r\n                           \"Length\":  24988\r\n                       }\r\n                   ],\r\n    \"Listeners\":  [\r\n                      {\r\n                          \"LocalAddress\":  \"::\",\r\n                          \"LocalPort\":  443\r\n                      }\r\n                  ]\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "wacFirewall": {
+    "success": true,
+    "site": "default",
+    "search": "WAC",
+    "enabled_only": false,
+    "total_count": 6,
+    "returned_count": 6,
+    "count": 6,
+    "limit": 20,
+    "policies": [
+      {
+        "id": "68b788c0e9f08f1e1b2a22886a9eddbbf9e5db2485ad661330000",
+        "predefined": true,
+        "name": "Allow WAC to Secure Client WinRM (Return)",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 30000,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "RESPOND_ONLY",
+        "connection_states": [
+          "RELATED",
+          "ESTABLISHED"
+        ],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.60.0/24"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "5985,5986",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "destination": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_matching_type": "ANY",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "logging": false
+      },
+      {
+        "id": "6a9eddbbf9e5db2485ad661368b788c0e9f08f1e1b2a228830003",
+        "predefined": true,
+        "name": "Allow Secure and Secure Client to WAC HTTPS (Return)",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 30003,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "RESPOND_ONLY",
+        "connection_states": [
+          "RELATED",
+          "ESTABLISHED"
+        ],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "443",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "destination": {
+          "ips": [
+            "192.168.50.0/24",
+            "192.168.60.0/24"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_matching_type": "ANY",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "logging": false
+      },
+      {
+        "id": "6a9eddbbf9e5db2485ad661368b788c0e9f08f1e1b2a228830004",
+        "predefined": true,
+        "name": "Allow MacBook Air and Pixel to WAC HTTPS (Return)",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 30004,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "RESPOND_ONLY",
+        "connection_states": [
+          "RELATED",
+          "ESTABLISHED"
+        ],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "443",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "destination": {
+          "match_opposite_ports": false,
+          "matching_target": "ANY",
+          "port_matching_type": "ANY",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "logging": false
+      },
+      {
+        "id": "6aa4cd2680977b56f62988c7",
+        "predefined": false,
+        "name": "Allow Secure and Secure Client to WAC HTTPS",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 10003,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "match_mac": false,
+          "match_opposite_networks": false,
+          "match_opposite_ports": false,
+          "matching_target": "NETWORK",
+          "matching_target_type": "OBJECT",
+          "network_ids": [
+            "68b78a68e9f08f1e1b2a2350",
+            "68bbda4289628952612bda0c"
+          ],
+          "port_matching_type": "ANY",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "destination": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "443",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "logging": false
+      },
+      {
+        "id": "6aa4cd3080977b56f62988dc",
+        "predefined": false,
+        "name": "Allow WAC to Secure Client WinRM",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 10000,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_mac": false,
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port_matching_type": "ANY",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "destination": {
+          "match_opposite_networks": false,
+          "match_opposite_ports": false,
+          "matching_target": "NETWORK",
+          "matching_target_type": "OBJECT",
+          "network_ids": [
+            "68bbda4289628952612bda0c"
+          ],
+          "port": "5985,5986",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "logging": false
+      },
+      {
+        "id": "6aa4ce1d80977b56f6298b92",
+        "predefined": false,
+        "name": "Allow MacBook Air and Pixel to WAC HTTPS",
+        "action": "ALLOW",
+        "enabled": true,
+        "index": 10004,
+        "protocol": "tcp",
+        "ip_version": "IPV4",
+        "connection_state_type": "ALL",
+        "connection_states": [],
+        "create_allow_respond": true,
+        "match_ip_sec": false,
+        "match_opposite_protocol": false,
+        "icmp_typename": "ANY",
+        "icmp_v6_typename": "ANY",
+        "schedule": {
+          "mode": "ALWAYS"
+        },
+        "source": {
+          "client_macs": [
+            "<REDACTED_MAC>",
+            "<REDACTED_MAC>"
+          ],
+          "match_opposite_ports": false,
+          "matching_target": "CLIENT",
+          "port_matching_type": "ANY",
+          "zone_id": "68b788c0e9f08f1e1b2a2288"
+        },
+        "destination": {
+          "ips": [
+            "192.168.65.12"
+          ],
+          "match_opposite_ips": false,
+          "match_opposite_ports": false,
+          "matching_target": "IP",
+          "matching_target_type": "SPECIFIC",
+          "port": "443",
+          "port_matching_type": "SPECIFIC",
+          "zone_id": "6a9eddbbf9e5db2485ad6613"
+        },
+        "logging": false
+      }
+    ]
+  },
+  "wacDNS": {
+    "success": true,
+    "records": [
+      {
+        "id": "6aa4cfee80977b56f62991c0",
+        "key": "hq-mgt01.ad.alphasecunited.com",
+        "value": "192.168.65.12",
+        "record_type": "A",
+        "enabled": true,
+        "ttl": 300,
+        "port": 0,
+        "priority": 0,
+        "weight": 0
+      }
+    ]
+  },
+  "wacClient": {
+    "server": "obipc",
+    "command": "$p=Join-Path $env:TEMP 'wac-signin-check.html';$status=curl.exe -k -s --connect-timeout 10 -o $p -w '%{http_code}' https://HQ-MGT01.ad.alphasecunited.com/;@{Target='https://HQ-MGT01.ad.alphasecunited.com/';HttpStatus=$status;SignInPage=([IO.File]::ReadAllText($p) -match '<title>Sign in - Windows Admin Center</title>');DNS=@(Resolve-DnsName hq-mgt01.ad.alphasecunited.com -Type A | Select-Object Name,IPAddress);GatewayDNS=@(Resolve-DnsName hq-mgt01.ad.alphasecunited.com -Server 192.168.10.1 -Type A | Select-Object Name,IPAddress);WinRMRules=@(Get-NetFirewallRule | Where-Object {$_.DisplayName -match 'WAC|WinRM' -and $_.Enabled -eq 'True'} | ForEach-Object {$r=$_;$a=$r|Get-NetFirewallAddressFilter;$p=$r|Get-NetFirewallPortFilter;[pscustomobject]@{Name=$r.DisplayName;Action=$r.Action.ToString();RemoteAddress=$a.RemoteAddress;LocalPort=$p.LocalPort}})}|ConvertTo-Json -Depth 5;Remove-Item $p -Force",
+    "stdout": "{\r\n    \"GatewayDNS\":  [\r\n                       {\r\n                           \"Name\":  \"hq-mgt01.ad.alphasecunited.com\",\r\n                           \"IPAddress\":  \"192.168.65.12\"\r\n                       }\r\n                   ],\r\n    \"WinRMRules\":  [\r\n\r\n                   ],\r\n    \"SignInPage\":  true,\r\n    \"HttpStatus\":  \"403\",\r\n    \"Target\":  \"https://HQ-MGT01.ad.alphasecunited.com/\",\r\n    \"DNS\":  [\r\n                {\r\n                    \"Name\":  \"hq-mgt01.ad.alphasecunited.com\",\r\n                    \"IPAddress\":  \"192.168.65.12\"\r\n                }\r\n            ]\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "wacCleanup": {
+    "server": "hq_mgt01",
+    "command": "$ErrorActionPreference='Stop';$p='C:\\ProgramData\\WAC-Setup-Private';$files=@(Get-ChildItem -LiteralPath $p -File);foreach($f in $files){if($f.Length -gt 0){$s=[IO.File]::Open($f.FullName,[IO.FileMode]::Open,[IO.FileAccess]::Write,[IO.FileShare]::None);try{$z=New-Object byte[] 65536;$left=$s.Length;while($left -gt 0){$n=[Math]::Min($left,$z.Length);$s.Write($z,0,[int]$n);$left-=$n};$s.Flush($true)}finally{$s.Dispose()}}};Remove-Item -LiteralPath $p -Recurse -Force;@{SetupDirectoryRemoved=!(Test-Path -LiteralPath $p);FilesRemoved=$files.Count;Service=(Get-Service WindowsAdminCenter).Status.ToString();HTTPSListening=[bool](Get-NetTCPConnection -State Listen -LocalPort 443 -ErrorAction SilentlyContinue)}|ConvertTo-Json",
+    "stdout": "{\r\n    \"HTTPSListening\":  true,\r\n    \"FilesRemoved\":  15,\r\n    \"Service\":  \"Running\",\r\n    \"SetupDirectoryRemoved\":  true\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "scope_hq_mgt01": {
+    "server": "hq_mgt01",
+    "command": "@{TrustedHosts=(Get-Item WSMan:\\localhost\\Client\\TrustedHosts).Value;HTTPSRemote=@((Get-NetFirewallRule -DisplayName WacInboundOpenException|Get-NetFirewallAddressFilter).RemoteAddress)}|ConvertTo-Json",
+    "stdout": "{\r\n    \"HTTPSRemote\":  [\r\n                        \"192.168.50.0/255.255.255.0\",\r\n                        \"192.168.60.0/255.255.255.0\",\r\n                        \"192.168.10.0/255.255.255.0\"\r\n                    ],\r\n    \"TrustedHosts\":  \"HQ-DC01.ad.alphasecunited.com,HQ-DC02.ad.alphasecunited.com,HQ-MGT01.ad.alphasecunited.com,ObiPC.ad.alphasecunited.com,HQ-WS001.ad.alphasecunited.com\"\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "scope_obipc": {
+    "server": "obipc",
+    "command": "Get-NetFirewallRule -Name 'WINRM-HTTP-In-TCP*' | ForEach-Object {[pscustomobject]@{Name=$_.Name;Enabled=$_.Enabled.ToString();RemoteAddress=@(($_|Get-NetFirewallAddressFilter).RemoteAddress)}}|ConvertTo-Json -Depth 3",
+    "stdout": "[\r\n    {\r\n        \"Name\":  \"WINRM-HTTP-In-TCP\",\r\n        \"Enabled\":  \"True\",\r\n        \"RemoteAddress\":  [\r\n                              \"192.168.65.12\"\r\n                          ]\r\n    },\r\n    {\r\n        \"Name\":  \"WINRM-HTTP-In-TCP-NoScope\",\r\n        \"Enabled\":  \"True\",\r\n        \"RemoteAddress\":  [\r\n                              \"192.168.65.12\"\r\n                          ]\r\n    }\r\n]\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "scope_grey_server": {
+    "server": "grey_server",
+    "command": "qm guest exec 310 -- powershell.exe -NoProfile -Command '$ErrorActionPreference='\\''Stop'\\'';Get-NetFirewallRule -Name '\\''WINRM-HTTP-In-TCP*'\\'' | ForEach-Object {[pscustomobject]@{Name=$_.Name;Enabled=$_.Enabled.ToString();RemoteAddress=@(($_|Get-NetFirewallAddressFilter).RemoteAddress)}}|ConvertTo-Json -Depth 3'",
+    "stdout": "{\n   \"exitcode\" : 0,\n   \"exited\" : 1,\n   \"out-data\" : \"[\\r\\n    {\\r\\n        \\\"Name\\\":  \\\"WINRM-HTTP-In-TCP\\\",\\r\\n        \\\"Enabled\\\":  \\\"True\\\",\\r\\n        \\\"RemoteAddress\\\":  [\\r\\n                              \\\"192.168.65.12\\\"\\r\\n                          ]\\r\\n    },\\r\\n    {\\r\\n        \\\"Name\\\":  \\\"WINRM-HTTP-In-TCP-NoScope\\\",\\r\\n        \\\"Enabled\\\":  \\\"True\\\",\\r\\n        \\\"RemoteAddress\\\":  [\\r\\n                              \\\"192.168.65.12\\\"\\r\\n                          ]\\r\\n    }\\r\\n]\\r\\n\"\n}\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "wacAPI": {
+    "server": "hq_mgt01",
+    "command": "$ErrorActionPreference='Stop';$p='C:\\ProgramData\\WAC-Setup-Private';$b='https://HQ-MGT01.ad.alphasecunited.com';$cs=curl.exe -k -s -b ($p+'\\cookies.txt') -o ($p+'\\connections.json') -w '%{http_code}' ($b+'/api/connections');$es=curl.exe -k -s -b ($p+'\\cookies.txt') -o ($p+'\\extensions.json') -w '%{http_code}' ($b+'/api/extensions');@{ConnectionsStatus=$cs;ExtensionsStatus=$es;SharedConnections=@(([IO.File]::ReadAllText($p+'\\connections.json')|ConvertFrom-Json).value | Where-Object {$_.properties.groupId -eq 'global'} | ForEach-Object {$_.properties|Select-Object name,type,groupId});Extensions=@(([IO.File]::ReadAllText($p+'\\extensions.json')|ConvertFrom-Json).extensions|Where-Object {$_.id -in 'msft.sme.active-directory','msft.sme.dns'}|Select-Object id,version,status)}|ConvertTo-Json -Depth 5",
+    "stdout": "{\r\n    \"Extensions\":  [\r\n                       {\r\n                           \"id\":  \"msft.sme.active-directory\",\r\n                           \"version\":  \"0.86.0\",\r\n                           \"status\":  \"Installed\"\r\n                       },\r\n                       {\r\n                           \"id\":  \"msft.sme.dns\",\r\n                           \"version\":  \"2.76.0\",\r\n                           \"status\":  \"Installed\"\r\n                       }\r\n                   ],\r\n    \"ConnectionsStatus\":  \"200\",\r\n    \"SharedConnections\":  [\r\n                              {\r\n                                  \"name\":  \"hq-dc01.ad.alphasecunited.com\",\r\n                                  \"type\":  \"msft.sme.connection-type.server\",\r\n                                  \"groupId\":  \"global\"\r\n                              },\r\n                              {\r\n                                  \"name\":  \"hq-dc02.ad.alphasecunited.com\",\r\n                                  \"type\":  \"msft.sme.connection-type.server\",\r\n                                  \"groupId\":  \"global\"\r\n                              },\r\n                              {\r\n                                  \"name\":  \"hq-mgt01.ad.alphasecunited.com\",\r\n                                  \"type\":  \"msft.sme.connection-type.server\",\r\n                                  \"groupId\":  \"global\"\r\n                              },\r\n                              {\r\n                                  \"name\":  \"hq-ws001.ad.alphasecunited.com\",\r\n                                  \"type\":  \"msft.sme.connection-type.windows-client\",\r\n                                  \"groupId\":  \"global\"\r\n                              },\r\n                              {\r\n                                  \"name\":  \"obipc.ad.alphasecunited.com\",\r\n                                  \"type\":  \"msft.sme.connection-type.windows-client\",\r\n                                  \"groupId\":  \"global\"\r\n                              }\r\n                          ],\r\n    \"ExtensionsStatus\":  \"200\"\r\n}\r\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  }
+}

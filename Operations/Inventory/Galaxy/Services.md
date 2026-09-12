@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-12
 
-This inventory maps 13 workload guests. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 14 workload guests. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the monitoring check on 2026-09-03 after the floating-tag rollout. Prometheus reported 56 active targets with all 56 up: 18 node exporters, nine cAdvisor exporters, six What's Up Docker exporters, 20 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
@@ -24,6 +24,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 ## Guest Workloads
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
+| HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) file version 2.7.21.5, HTTPS 443<br>Active Directory extension 0.86.0<br>DNS extension 2.76.0<br>Entra provisioning agent service running<br>OpenSSH |
 | ansible-01 | LXC 100 | grey-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
 | docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.6 |
