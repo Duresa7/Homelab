@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 - [x] **Restore app-01 Wazuh manager connectivity.** On September 11 I repaired the manager hash-refresh restart and verified app-01 connected after its Purple migration. [Evidence and context](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md).
 
@@ -9,7 +9,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-- [ ] **Finish the MeshCentral pilot on `docker-blue`.** Deployed 2026-09-12 at https://192.168.40.39, running beside RustDesk. Nothing is claimed yet: `NewAccounts` is still `true` and the next browser account becomes site administrator, so claim it and then set `NewAccounts` to `false`. Then install the agent on `HQ-WS001` and `ObiPC` and test console access while logged out, Ctrl+Alt+Delete, UAC elevation, and reconnect after reboot. Decide on `localSessionRecording`, which is on and is the only part that grows without bound against 7.3 GiB free. `ObiPC` was unreachable on 2026-09-12, so the VLAN 60 path is reasoned from zone membership and not yet demonstrated. Retire RustDesk only after the tests pass. [Deployment record](Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md).
+- [ ] **Finish the MeshCentral pilot on `docker-blue`.** Deployed 2026-09-12 at https://192.168.40.39, running beside RustDesk. Site administrator claimed and registration closed on 2026-09-13, and `HQ-WS001` is verified reachable on TCP 443 from the guest agent. I am installing the agent on `HQ-WS001` myself; once it is on, test console access while logged out, Ctrl+Alt+Delete, UAC elevation, and reconnect after reboot. Decide on `localSessionRecording`, which is on and is the only part that grows without bound against 7.3 GiB free. `ObiPC` has been unreachable since 2026-09-12, so its VLAN 60 path is still reasoned from zone membership rather than demonstrated. Retire RustDesk only after the tests pass. [Deployment](Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md), [registration and path verification](Platforms/MeshCentral/Documentation/Change%20Records/Registration%20Closed%20and%20Test%20Machine%20Path%20Verified%20-%202026-09-13.md).
 
 - [ ] **Complete Action1 Deployer on `HQ-MGT01`.** Whole-domain scope saved, including domain controllers. `HQ-MGT01`, `HQ-WS001`, and `ObiPC` show Connected. Resolve controller deployment access denied, verify both controllers enroll, and finish local staging cleanup. [Current state and remaining steps](Platforms/Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md).
 

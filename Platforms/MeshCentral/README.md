@@ -1,7 +1,7 @@
 # MeshCentral
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLAN 40. I deployed it on 2026-09-12 as a pilot, so RustDesk `hbbs` and `hbbr` keep running on the same host until I decide between them. I picked it over the alternatives because it is free and self-hosted, it serves the browser console and the endpoint agents from one port, and it supports LDAP and OIDC console login without a subscription. RustDesk's OSS backend has no central permissions or directory login, and those sit behind a paid plan.
 
@@ -15,7 +15,7 @@ I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLA
 | Certificate | Self-signed, `CN=192.168.40.39` |
 | Database | NeDB, the built-in default |
 | Volumes | `meshcentral_meshcentral-data`, `-files`, `-web`, and `-backups` |
-| Accounts | None. The next account created through the browser becomes site administrator |
+| Accounts | Site administrator claimed 2026-09-13; `NewAccounts` is `false`, so the browser no longer offers registration |
 | Memory cost | `docker-blue` went from 595 MiB used to 716 MiB with MeshCentral running, leaving 1,331 MiB available of its 2 GiB |
 | Disk cost | The image took the container's root filesystem from 5.7 GiB used to 6.7 GiB, leaving 7.3 GiB free of 15 GiB |
 
@@ -35,16 +35,16 @@ There is no reverse proxy in front of it. Agents pin the server certificate hash
 
 MeshCentral serves the browser and the agents over the same TCP 443.
 
-`ObiPC` on Secure Client VLAN 60 needs no firewall policy, because Secure Client and Personal-A are both in the `Internal` zone and no block policy covers that pair. IDENTITY-A VLAN 65 sits in the `AlphaSec-Identity` zone and did need one. `Allow Identity to MeshCentral` admits `192.168.65.12` and `192.168.65.20` to `192.168.40.39:443` over IPv4 TCP, with logging and a response companion enabled and the Always schedule. It is recorded in the [firewall policy inventory](../../Infrastructure/Network/UniFi/Configuration/firewall.md).
+`ObiPC` on Secure Client VLAN 60 needs no firewall policy, because Secure Client and Personal-A are both in the `Internal` zone and no block policy covers that pair. IDENTITY-A VLAN 65 sits in the `AlphaSec-Identity` zone and did need one. `Allow Identity to MeshCentral` admits `192.168.65.12` and `192.168.65.20` to `192.168.40.39:443` over IPv4 TCP, with logging and a response companion enabled and the Always schedule. It is recorded in the [firewall policy inventory](../../Infrastructure/Network/UniFi/Configuration/firewall.md). Both named hosts are demonstrated: `HQ-MGT01` on 2026-09-12 and `HQ-WS001` through its QEMU guest agent on 2026-09-13. `ObiPC` has not been tested, because it was unreachable on both days.
 
 The two domain controllers are deliberately outside that policy. Controlling a MeshCentral agent on a domain controller grants console access to the controller, so if I enroll `HQ-DC01` or `HQ-DC02` later it will be a separate decision with its own record.
 
 ## Open items
 
-Nobody has claimed the site administrator account yet, and `NewAccounts` is still `true`, so any host that can reach TCP 443 can create the first account and hold it. Claiming the account and then setting `NewAccounts` to `false` is the first thing to do, and it is tracked in the root [TODO](../../TODO.md).
+I claimed the site administrator account on 2026-09-13 and set `NewAccounts` to `false`, so the server no longer hands administrator rights to the next visitor. The [change record](Documentation/Change%20Records/Registration%20Closed%20and%20Test%20Machine%20Path%20Verified%20-%202026-09-13.md) holds that work and the `HQ-WS001` path test.
 
 `localSessionRecording` is `true` as generated. Recorded sessions are the one part of this deployment that grows without bound, and the container's root filesystem has 7.3 GiB free, so I will either point recordings at a larger volume or turn the setting off before it matters.
 
-I have not installed an agent, opened a remote desktop session, or tested console access while logged out, Ctrl+Alt+Delete, UAC elevation, or reconnect after reboot. Until those pass on `HQ-WS001` and `ObiPC`, this is a running server and nothing more, and RustDesk stays.
+No agent is installed and no remote desktop session has been opened. I am installing the agent on `HQ-WS001` myself. Until console access while logged out, Ctrl+Alt+Delete, UAC elevation, and reconnect after reboot all pass there, this is a running server and nothing more, and RustDesk stays.
 
 I took no snapshot and no backup for this work.
