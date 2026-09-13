@@ -16,6 +16,7 @@ I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLA
 | Database | NeDB, the built-in default |
 | Volumes | `meshcentral_meshcentral-data`, `-files`, `-web`, and `-backups` |
 | Accounts | Site administrator claimed 2026-09-13; `NewAccounts` is `false`, so the browser no longer offers registration |
+| Enrolled devices | `HQ-MGT01` and `DuresaGamingPC`, both connected on 2026-09-13 |
 | Memory cost | `docker-blue` went from 595 MiB used to 716 MiB with MeshCentral running, leaving 1,331 MiB available of its 2 GiB |
 | Disk cost | The image took the container's root filesystem from 5.7 GiB used to 6.7 GiB, leaving 7.3 GiB free of 15 GiB |
 
@@ -39,12 +40,27 @@ MeshCentral serves the browser and the agents over the same TCP 443.
 
 The two domain controllers are deliberately outside that policy. Controlling a MeshCentral agent on a domain controller grants console access to the controller, so if I enroll `HQ-DC01` or `HQ-DC02` later it will be a separate decision with its own record.
 
+## Enrolled devices
+
+I installed the agent by hand on two machines on 2026-09-13 and read the result back from the server at 12:19 AM EDT.
+
+| Device | Address | VLAN | How it reaches the server |
+|---|---|---|---|
+| `HQ-MGT01` | `192.168.65.12` | IDENTITY-A 65 | The `Allow Identity to MeshCentral` policy |
+| `DuresaGamingPC` | `192.168.50.241` | Secure 50 | No policy needed; Secure and Personal-A are both in the `Internal` zone |
+
+`DuresaGamingPC` is the Windows hostname of the machine UniFi lists as `Jedi PC`. Both devices held four established TCP 443 sessions to the container at that reading, and the server's database holds a record for each.
+
+That `DuresaGamingPC` needed no firewall change is the general case, not an exception: every network in the `Internal` zone except Trusted VLAN 10 already reaches Personal-A. Only IDENTITY-A sits outside it, which is why it was the one zone that needed a rule.
+
+`HQ-WS001` is still unenrolled. Its network path is verified and the existing policy covers it, so it needs no further network work.
+
 ## Open items
 
 I claimed the site administrator account on 2026-09-13 and set `NewAccounts` to `false`, so the server no longer hands administrator rights to the next visitor. The [change record](Documentation/Change%20Records/Registration%20Closed%20and%20Test%20Machine%20Path%20Verified%20-%202026-09-13.md) holds that work and the `HQ-WS001` path test.
 
-`localSessionRecording` is `true` as generated. Recorded sessions are the one part of this deployment that grows without bound, and the container's root filesystem has 7.3 GiB free, so I will either point recordings at a larger volume or turn the setting off before it matters.
+`localSessionRecording` is `true` as generated, and now that devices are enrolled it applies to every session I open. Recorded sessions are the one part of this deployment that grows without bound, and the container's root filesystem has 7.3 GiB free, so I will either point recordings at a larger volume or turn the setting off before it matters.
 
-No agent is installed and no remote desktop session has been opened. I am installing the agent on `HQ-WS001` myself. Until console access while logged out, Ctrl+Alt+Delete, UAC elevation, and reconnect after reboot all pass there, this is a running server and nothing more, and RustDesk stays.
+Two agents are enrolled and connected. I have not yet tested console access while logged out, Ctrl+Alt+Delete, UAC elevation, or reconnect after reboot, and those four are what decide whether MeshCentral replaces RustDesk. RustDesk stays until they pass.
 
 I took no snapshot and no backup for this work.
