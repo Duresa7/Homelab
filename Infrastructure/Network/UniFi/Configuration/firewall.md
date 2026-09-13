@@ -3,6 +3,8 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-12
 
+On 2026-09-12 I added three IPv4 allow policies opening RDP to the identity plane: `Allow Admin Networks to Identity RDP` from the Trusted and Secure networks in Internal, `Allow Personal-A Hosts to Identity RDP` from `192.168.40.179` and `192.168.40.39` in Internal, and `Allow VPN to Identity RDP` from the whole `10.6.0.0/24` Management Access network in Vpn. I created the second policy naming `ubuntu-dev` only and renamed it the same day when `docker-blue` was added to it. All three target `192.168.65.10`, `192.168.65.11`, `192.168.65.12`, and `192.168.65.20` on TCP and UDP 3389, with the response companion enabled and the Always schedule. I left the `FamilyVPN`, `Game-Access`, and `Temp` remote-user networks out. `ObiPC` needed no policy because Secure Client VLAN 60 and its sources are both in Internal. The user-defined total rose from 80 to 83, split 75 allows to eight blocks. TCP 3389 was refused from `ubuntu-dev` to all four identity hosts before the change and accepted after it. `docker-blue` served as the first control and was refused; once it was added to the allow list, `ansible-01` at `192.168.40.36` replaced it as the control and was refused on all five machines. [RDP enablement record](../../../../Platforms/Active%20Directory/Documentation/Change%20Records/Domain%20Machine%20RDP%20Enablement%20-%202026-09-12.md).
+
 On 2026-09-12 I removed the three dedicated Game 01 allow policies and `192.168.80.30` from `Allow Monitor to A-Servers monitoring`. The shared policy retains `192.168.80.10` and `192.168.80.118`. No remaining user policy names Game 01 or its address. The August deployment narrative below is historical.
 
 At 2:50–2:54 PM on 2026-09-12 I rechecked the Action1 allow policy and investigated two IPS-blocked RPC flow records from `192.168.65.12` to `192.168.60.102`. Both matched successful Action1 Deployer operations. I made no firewall or IPS changes. [Alert investigation](../../../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md).
@@ -69,6 +71,9 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3 and Pixel device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow WAC to Secure Client WinRM` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 5985,5986 |
 | `Allow Action1 Deployer to Secure Client` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 135,139,445,49152-65535 |
+| `Allow Admin Networks to Identity RDP` | Yes | ALLOW | 10005 | TCP+UDP (IPv4) | Internal / Trusted and Secure networks | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
+| `Allow Personal-A Hosts to Identity RDP` | Yes | ALLOW | 10006 | TCP+UDP (IPv4) | Internal / 192.168.40.179, 192.168.40.39 | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
+| `Allow VPN to Identity RDP` | Yes | ALLOW | 10000 | TCP+UDP (IPv4) | Vpn / Management Access network | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
 | `VPN: Temp #2` | Yes | BLOCK | 10001 | All | Vpn / Temp | `AlphaSec-Servers` / Any |
