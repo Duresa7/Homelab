@@ -59,7 +59,7 @@ That `DuresaGamingPC` needed no firewall change is the general case, not an exce
 
 I claimed the site administrator account on 2026-09-13 and set `NewAccounts` to `false`, so the server no longer hands administrator rights to the next visitor. The [change record](Documentation/Change%20Records/Registration%20Closed%20and%20Test%20Machine%20Path%20Verified%20-%202026-09-13.md) holds that work and the `HQ-WS001` path test.
 
-`localSessionRecording` is `true` as generated, and now that devices are enrolled it applies to every session I open. Recorded sessions are the one part of this deployment that grows without bound, and the container's root filesystem has 7.3 GiB free, so I will either point recordings at a larger volume or turn the setting off before it matters.
+`localSessionRecording` is `true` as generated, but nothing is being recorded. Server-side recording needs a `sessionRecording` block with a `filepath`, which this configuration does not have. I checked on 2026-09-13 after the first two desktop sessions: no recordings directory exists, no `.mcrec` files exist anywhere under `/opt/meshcentral`, and the event database holds no recording events. The line in the [deployment record](Documentation/Change%20Records/Deployment%20-%202026-09-12.md) calling recordings the one part that grows without bound was written from the setting name and is wrong as the server is configured. If I want an audit trail later, it is that config block plus a volume with room.
 
 Two agents are enrolled and connected. I have not yet tested console access while logged out, Ctrl+Alt+Delete, UAC elevation, or reconnect after reboot, and those four are what decide whether MeshCentral replaces RustDesk. RustDesk stays until they pass.
 
