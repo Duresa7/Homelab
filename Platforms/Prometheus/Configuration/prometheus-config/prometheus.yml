@@ -112,7 +112,7 @@ scrape_configs:
   # CPU, memory, disk and running state, all ten storages, node status and
   # quorum. Unchanged from the previous configuration.
   - job_name: proxmox
-    # Retired CT 123 remains stored offline; exclude it from metrics and alerts.
+    # Retired CT 123 is deleted; keep its ID excluded from metrics and alerts.
     metric_relabel_configs:
       - source_labels: [id]
         regex: "lxc/123"

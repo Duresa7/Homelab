@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-09-12
 
-I retired `game-01` on 2026-09-12. CT 123 remains stopped on `green-server`, boot disabled, with `local-lvm:vm-123-disk-0` (80 GiB) retained. It is excluded from the active table; its [archived guest record](../../../Archive/Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) records the retained allocation.
+I retired `game-01` on 2026-09-12. I subsequently deleted CT 123 and `local-lvm:vm-123-disk-0` (80 GiB) on `green-server`, including the game data. The guest, configuration and volumes are absent. It is excluded from the active table; its [archived guest record](../../../Archive/Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) preserves the former allocation.
 
 Galaxy currently has six active LXCs on grey, blue, or red for automation, Docker, monitoring, remote access, and media. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
 

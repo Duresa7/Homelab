@@ -3,7 +3,7 @@
 **Created:** 2026-09-12  
 **Last updated:** 2026-09-12
 
-I retired this guest on 2026-09-12. CT 123 remains stopped on Green with its 80 GiB root volume intact and `onboot: 0`. The section below preserves the last active inventory, including its former boot policy and management access; those statements are historical. The [retirement record](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) holds the verified final state.
+I retired this guest on 2026-09-12. I subsequently deleted CT 123 and its 80 GiB root volume on Green, including the game data. Proxmox confirms the guest configuration and all CT 123 volumes are absent. The section below preserves the last active inventory, including its former boot policy and management access; those statements are historical. The [retirement record](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) holds the verified final state.
 
 ## LXC 123 - game-01
 

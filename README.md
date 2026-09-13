@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-12
 
-I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md), Prometheus has 54 healthy targets, and Wazuh has 15 active remote agents. CT 123 remains stopped with boot disabled and its game data retained.
+I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md), Prometheus has 54 healthy targets, and Wazuh has 15 active remote agents. CT 123 and its 80 GiB root disk, including the game data, are deleted.
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-15_routed_LANs,_11_zones-0559C9?logo=ubiquiti&logoColor=white)
