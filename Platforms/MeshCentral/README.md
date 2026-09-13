@@ -16,7 +16,7 @@ I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLA
 | Database | NeDB, the built-in default |
 | Volumes | `meshcentral_meshcentral-data`, `-files`, `-web`, and `-backups` |
 | Accounts | Site administrator claimed 2026-09-13; `NewAccounts` is `false`, so the browser no longer offers registration |
-| Enrolled devices | `HQ-MGT01` and `DuresaGamingPC`, both connected on 2026-09-13 |
+| Enrolled devices | `HQ-MGT01`, `DuresaGamingPC`, and `ubuntu-dev`, all connected on 2026-09-13 |
 | Memory cost | `docker-blue` went from 595 MiB used to 716 MiB with MeshCentral running, leaving 1,331 MiB available of its 2 GiB |
 | Disk cost | The image took the container's root filesystem from 5.7 GiB used to 6.7 GiB, leaving 7.3 GiB free of 15 GiB |
 
@@ -48,12 +48,17 @@ I installed the agent by hand on two machines on 2026-09-13 and read the result 
 |---|---|---|---|
 | `HQ-MGT01` | `192.168.65.12` | IDENTITY-A 65 | The `Allow Identity to MeshCentral` policy |
 | `DuresaGamingPC` | `192.168.50.241` | Secure 50 | No policy needed; Secure and Personal-A are both in the `Internal` zone |
+| `ubuntu-dev` | `192.168.40.179` | Personal-A 40 | No policy needed; same VLAN as the server |
 
 `DuresaGamingPC` is the Windows hostname of the machine UniFi lists as `Jedi PC`. Both devices held four established TCP 443 sessions to the container at that reading, and the server's database holds a record for each.
 
 That `DuresaGamingPC` needed no firewall change is the general case, not an exception: every network in the `Internal` zone except Trusted VLAN 10 already reaches Personal-A. Only IDENTITY-A sits outside it, which is why it was the one zone that needed a rule.
 
 `HQ-WS001` is still unenrolled. Its network path is verified and the existing policy covers it, so it needs no further network work.
+
+I installed the `ubuntu-dev` agent on 2026-09-13 through the Linux install script, which needed patching first: it fetches the agent with no certificate flags and falls back to port 80, which this deployment does not publish. The [troubleshooting record](Documentation/Troubleshooting/Linux%20agent%20installer%20cannot%20download%20the%20agent%20over%20a%20self-signed%20certificate%20-%202026-09-13.md) holds the errors and the fix. `meshagent.service` is enabled and running from `/usr/local/mesh_services/meshagent/`.
+
+`ubuntu-dev` runs Ubuntu 26.04.1 LTS with GNOME on Wayland, and the machine offers no Xorg session at all: `/usr/share/xsessions` does not exist and `xserver-xorg` is not installed. MeshCentral captures the desktop through X11, so I expect terminal and file transfer to work there and remote desktop not to. I have not tested either yet.
 
 ## Open items
 
