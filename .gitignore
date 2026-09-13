@@ -596,3 +596,7 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 /Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/*
 !/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Directory-Verification.json
 !/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Management-Verification.json
+
+# WUD administrator environments and Prometheus scrape credentials.
+admin.env
+/Platforms/Prometheus/Configuration/prometheus-config/wud-passwords/

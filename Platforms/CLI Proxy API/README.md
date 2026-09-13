@@ -1,7 +1,7 @@
 # CLI Proxy API
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-13
 
 I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there from `ubuntu-dev` on 2026-08-19 after its earlier move from `debian-dev` on 2026-08-13. It is available to internal clients at `https://aiproxy.alphasecunited.com`; UniFi resolves that name to Nginx Proxy Manager, and NPM forwards the request to the service's main HTTP listener.
 
@@ -13,7 +13,7 @@ I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there
 | Compute | Galaxy LXC 110 `docker-main`; `192.168.40.35` on Personal-A |
 | Live Compose path | `/opt/docker/cli-proxy-api` |
 | Container | `cli-proxy-api` |
-| Image | `eceasy/cli-proxy-api:latest`; runtime version `7.2.149` on 2026-09-03 |
+| Image | `eceasy/cli-proxy-api:latest`; runtime version `7.3.0` on 2026-09-13 |
 | Restart policy | `unless-stopped` |
 | Main listener | HTTP on TCP 8317 |
 | Internal URL | `https://aiproxy.alphasecunited.com` |
@@ -49,3 +49,5 @@ Compose publishes TCP 8317 plus callback listeners 1455, 8085, 11451, 51121, and
 - [NPM proxy-host inventory](../Nginx%20Proxy%20Manager/Configuration/internal-proxy-hosts.md)
 - [UniFi local DNS inventory](../../Infrastructure/Network/UniFi/Configuration/local-dns.md)
 - [UniFi firewall inventory](../../Infrastructure/Network/UniFi/Configuration/firewall.md)
+
+The [2026-09-13 image update](../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md) passed local and HTTPS checks; an authenticated model request returned HTTP 200 with 32 models.

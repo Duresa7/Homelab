@@ -91,19 +91,81 @@ scrape_configs:
   # so a five-minute scrape loses nothing. Managed by the monitoring-exporters
   # Ansible project, published on 9102 beside node_exporter and cAdvisor.
   # Added 2026-09-02.
-  - job_name: wud
+  - job_name: wud-docker-main
     scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/docker-main
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
     static_configs:
       - targets: ["192.168.40.35:9102"]
         labels: {host: docker-main, role: docker}
+
+  - job_name: wud-docker-network
+    scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/docker-network
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
+    static_configs:
       - targets: ["192.168.85.2:9102"]
         labels: {host: docker-network, role: docker}
+
+  - job_name: wud-docker-blue
+    scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/docker-blue
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
+    static_configs:
       - targets: ["192.168.40.39:9102"]
         labels: {host: docker-blue, role: docker}
+
+  - job_name: wud-media-01
+    scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/media-01
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
+    static_configs:
       - targets: ["192.168.40.42:9102"]
         labels: {host: media-01, role: docker}
+
+  - job_name: wud-alpha-prod-01
+    scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/alpha-prod-01
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
+    static_configs:
       - targets: ["192.168.80.118:9102"]
         labels: {host: alpha-prod-01, role: app}
+
+  - job_name: wud-monitor-01
+    scrape_interval: 5m
+    basic_auth:
+      username: admin
+      password_file: /etc/prometheus/wud-passwords/monitor-01
+    # Preserve the job label used by dashboards and alerts.
+    relabel_configs:
+      - target_label: job
+        replacement: wud
+    static_configs:
       - targets: ["192.168.73.2:9102"]
         labels: {host: monitor-01, role: monitoring}
 

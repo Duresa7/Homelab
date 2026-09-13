@@ -1,7 +1,7 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 I removed retired `game-01` from this project’s active inventory on 2026-09-12 and applied the same removal on `ansible-01`. Its historical deployment details below are retained for context.
 
@@ -39,9 +39,11 @@ The play verifies itself by scraping each host and asserting `node_textfile_scra
 
 ## What's Up Docker watches images on the Compose hosts
 
-`wud.yml` runs `getwud/wud:latest`, currently resolving to 8.4.0, at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
+`wud.yml` runs `getwud/wud:latest`, verified as 9.0.2 on 2026-09-13, at `/opt/docker/wud` on each of the six Compose hosts, host port 9102, Docker socket read-only, deletion disabled. Each host's `wud_cron` is twenty minutes from the last, 6:00 AM to 7:40 AM, because Docker Hub allows an anonymous address 100 pulls in six hours and all six hosts share one. `WUD_REGISTRY_HUB_PUBLIC_WATCHDIGEST=true` makes a `:latest` tag on Hub report a new build the way GHCR does by default. The play fails a host that runs containers and registers none, and no stricter than that, because WUD skips digest-pinned images and registries it cannot query.
 
-Three limits, accepted: the interface on 9102 has no login, reachable only inside the host's VLAN and from `monitor-01`; `lscr.io` images need a GitHub token I have not issued; and WUD's default tag matching will offer a variant tag such as `16-rootless` for a `:15` image until that container gets a `wud.tag.include` label in its own Compose file, which is what Forgejo carries since 2026-09-03. Removal is `-e wud_state=absent`.
+WUD 9 requires authentication, including for `/metrics`. The playbook generates a distinct `admin` password per host in `/opt/docker/wud/admin.env`, owned by root at mode `0600`, and preserves it on subsequent runs. It copies the matching scrape credential to `monitor-01` under `/home/dkadi/monitoring/prometheus-config/wud-passwords/<host>`, owned by Prometheus UID/GID 65534 at mode `0600` inside a `0700` directory. Credential-handling tasks use `no_log`. I retrieve a UI password from the protected host file when needed; no credential is kept in this repository. Prometheus uses one scrape configuration per host with `basic_auth.password_file`, retaining `job="wud"` through relabeling.
+
+The 2026-09-13 scan also discovered the LinuxServer media images that WUD 8 had skipped. Tag variants still need a container-specific include label: Forgejo limits candidates to its numeric tags, and BookLore's MariaDB only watches rebuilds of its application-supported 11.4.8 pin. Removal is `-e wud_state=absent`. The [maintenance record](../../../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md) covers the WUD 9 migration and verification.
 
 ## cAdvisor needs GHCR and v0.60.5 or newer
 

@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-13
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -60,3 +60,5 @@ I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel 
 I moved `/data` to the 1 TB HDD on 2026-07-22. The 100 GiB NVMe keeps `/opt/media-stack`, Docker, container layers, application configuration, databases, & Jellyfin cache. The HDD holds movies, television, anime, downloads, & transcode scratch space through CT 842 `mp0`; Compose keeps the same guest paths.
 
 The migration test wrote through qBittorrent, created a hard link between the download and media trees, read an existing movie, & encoded 10 seconds with Jellyfin's `h264_qsv` path. With the HDD unmounted, CT 842 failed startup before any application could write into an empty host directory.
+
+On 2026-09-13 I updated FlareSolverr, Gluetun, Prowlarr, qBittorrent, Radarr and Sonarr. The [maintenance record](../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md) records the image identities and application, VPN and port-synchronization checks.

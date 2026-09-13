@@ -1,7 +1,7 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 On 2026-09-12 I removed Game 01’s node, cAdvisor and panel targets and its Grafana node dashboard. Prometheus reports 54 targets, all UP; Grafana has no firing or pending Game 01 alert; two resolved cache entries remain. The 24 shared alert rules continue to cover the remaining fleet.
 
@@ -35,6 +35,8 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
+WUD 9 requires authenticated scrapes. Six scrape configurations read separate protected password files under `/etc/prometheus/wud-passwords/` and relabel their series to `job="wud"`. The [2026-09-13 update](../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md) records the migration.
+
 ## Containers on monitor-01
 
 Nine containers belong to the host across four Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other eight Docker hosts. `wud` comes from `/opt/docker/wud`, deployed by that same project. PeaNUT runs from `/opt/docker/peanut`.
@@ -52,7 +54,7 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 19 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
-| `wud` | What's Up Docker `:latest`, currently 8.4.0, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
+| `wud` | What's Up Docker `:latest`, verified as 9.0.2 on 2026-09-13, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter

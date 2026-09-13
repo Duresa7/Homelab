@@ -1,0 +1,7 @@
+# MariaDB follows BookLore's exact dependency pin. Watch rebuilds of that tag;
+# do not compare unrelated historic LinuxServer variant tags as releases.
+services:
+  mariadb:
+    labels:
+      wud.tag.include: '^11[.]4[.]8$'
+      wud.watch.digest: 'true'

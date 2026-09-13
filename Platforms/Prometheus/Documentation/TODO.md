@@ -1,7 +1,7 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Twenty-four Grafana alert rules evaluate and route to the Discord alert bot, coloured by class, and delivery is proven in both directions for the infrastructure and updates classes.
 
@@ -13,7 +13,7 @@ Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 wi
 
 ## Known limits, not tracked as work
 
-What's Up Docker's default tag matching treats any newer semver-looking tag as a candidate, so it offered `16-rootless` for `forgejo:15` until 2026-09-03, when the Forgejo Compose file on `docker-main` gained the label `wud.tag.include=^[0-9]+$` and the next scan reported `16`, which is the real major release. Any other container whose tag scheme has variants needs the same label in its own Compose file. `lscr.io` images are not watched without a GitHub token, and digest-pinned images have nothing to match; both are counted and never report an update.
+What's Up Docker's default tag matching treats any newer semver-looking tag as a candidate, so it offered `16-rootless` for `forgejo:15` until 2026-09-03, when the Forgejo Compose file on `docker-main` gained the label `wud.tag.include=^[0-9]+$` and the next scan reported `16`, which is the real major release. Any other container whose tag scheme has variants needs the same label in its own Compose file. WUD 9.0.2 added working detection for the LinuxServer images on 2026-09-13. MariaDB now restricts candidates to rebuilds of the application-supported 11.4.8 pin; digest-pinned images still have no release tag to compare. See the [maintenance record](../../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md).
 
 Every registry-backed image in the monitoring, cAdvisor, and PeaNUT Compose projects follows `:latest`. `node_exporter` remains package-managed at 1.9.0 and the alert bot is a local image. Floating tags can introduce a major release during a routine pull; the Compose health checks, Ansible cAdvisor registration assertion, and Prometheus target readback are the gates after each reconciliation.
 
