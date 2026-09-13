@@ -15,6 +15,8 @@ On 2026-09-11 I subsequently moved VM 116 `app-01` and VM 121 `edge-01` from Gre
 
 On 2026-09-12 I moved CT 100 `ansible-01` from Grey's `ssd-lvm1` to Blue's NVMe-backed `local-lvm`. At 3:38 PM Eastern, Blue had 2,942 MiB available memory and its thin pool used 34.08%, with 97,618,808 KiB available. The source volume is absent from Grey. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md).
 
+On 2026-09-12 I moved VM 401 `alpha-prod-01` from Grey to Purple's NVMe-backed `local-lvm`. After startup, Purple had 3,529 MiB available memory and its thin pool was 19.50% used, with 118,909,808 KiB available. Both source volumes are absent from Grey. Provisioned thin volumes total 154.01 GiB against a roughly 140.87 GiB pool, so future allocation needs capacity monitoring. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md).
+
 ## Nodes
 | Node | IP | CPU | Cores / Threads | Memory | GPU | Physical storage | Power source |
 | --- | --- | --- | --- | --- | --- | --- | --- |

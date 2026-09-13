@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-11  
+**Last updated:** 2026-09-12  
 
 Galaxy currently has 11 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -38,7 +38,7 @@ On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on ID
 | 302 | HQ-DC02 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
 | 303 | HQ-MGT01 | grey-server | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
 | 310 | HQ-WS001 | grey-server | Windows 11 Pro 25H2 | 4 | 4 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
-| 401 | alpha-prod-01 | grey-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
+| 401 | alpha-prod-01 | purple-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -501,10 +501,12 @@ No optical drive is attached. The installation and answer-file media were detach
 
 ### VM 401 - alpha-prod-01
 
+I moved both disks to Purple on 2026-09-12. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds startup and service verification.
+
 #### Identity
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | purple-server |
 | High availability | disabled |
 | Template | no |
 | OS family | Linux |
@@ -529,8 +531,8 @@ No optical drive is attached. The installation and answer-file media were detach
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-401-disk-1 | 60G | disk | discard, I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-401-disk-0 | 4M | disk | default |
+| scsi0 | scsi | local-lvm | vm-401-disk-1 | 60G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-401-disk-0 | 4M | disk | default |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
