@@ -17,7 +17,7 @@
     "trustedProxy": "192.168.85.2",
     "SelfUpdate": false,
     "AllowFraming": false,
-    "WebRTC": false,
+    "WebRTC": true,
     "_mongoDb": "",
     "_postgres": {
       "host": "",
