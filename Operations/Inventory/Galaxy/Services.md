@@ -34,7 +34,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | app-01 | VM 116 | purple-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor |
-| alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| alpha-prod-01 | VM 401 | purple-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 
@@ -161,6 +161,8 @@ I verified Caddy, cloudflared, the guest agent, `node_exporter`, and Wazuh activ
 | Network | Static `192.168.72.2/24` on Security-A/VLAN 72 |
 
 ## alpha-prod-01
+
+I verified all eight containers running after the Purple migration on 2026-09-12, with WUD and cAdvisor healthy, TS3 Manager returning HTTP 200, both local and public voice probes up, and Wazuh connected. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds the checks.
 
 | Workload | Details |
 | --- | --- |

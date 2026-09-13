@@ -1,7 +1,7 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-12
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
@@ -9,7 +9,7 @@ I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 8
 
 | Item | Value |
 |---|---|
-| Host | `alpha-prod-01` (`192.168.80.118`), Debian 13 |
+| Host | `alpha-prod-01` (`192.168.80.118`), Debian 13; VM 401 on `purple-server`, NVMe-backed `local-lvm` |
 | Voice containers | `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`) |
 | Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:latest`, currently release 1.0.10) |
 | Administration | `https://ts3-manager.alphasecunited.com` through internal NPM; direct fallback `http://192.168.80.118:9000` |
@@ -55,6 +55,7 @@ The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each serve
 
 ## Key Records
 
+- [Purple migration (2026-09-12)](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md)
 - [Deployment record](Documentation/Teamspeak-deployment.md)
 - [Reachability monitoring (2026-07-28)](Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md)
 - [Scripts](Scripts/README.md)

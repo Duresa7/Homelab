@@ -19,6 +19,8 @@ On 2026-09-11 I completed app-01's 64 GiB boot disk replacement on Grey and remo
 
 On 2026-09-12 I moved CT 100 `ansible-01` to Blue and updated its LXC, service, and node records. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds the completed Proxmox task and service verification. No QEMU placement changed.
 
+I moved VM 401 `alpha-prod-01` to Purple on 2026-09-12, placing both disks on its NVMe-backed `local-lvm` and removing the source volumes from Grey. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds verification.
+
 ## Current state
 
 | File | Contents |
