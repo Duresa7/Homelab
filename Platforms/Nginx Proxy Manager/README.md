@@ -1,17 +1,19 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
+
+I added proxy host 29, `mesh.alphasecunited.com`, on 2026-09-13 for MeshCentral on `docker-blue`. It forwards over HTTPS to `192.168.40.39:443` with WebSocket upgrade enabled, and it is the first host here whose backend scheme is HTTPS rather than HTTP. [Record](../MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md).
 
 I retired proxy hosts 24 (`games.alphasecunited.com`) and 25 (`wings.alphasecunited.com`) on 2026-09-12. Both records are marked deleted and disabled, their generated configurations are absent, and Nginx validation and reload passed.
 
-I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 21 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
+I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 22 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
 ## Current State
 
 | Item | Current value |
 |---|---|
-| Deployment status | Runtime healthy; 22 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
+| Deployment status | Runtime healthy; 23 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network`, Debian 13, `192.168.85.2` |
 | NPM release | 2.15.1 |
 | Live path | `/opt/docker/nginx-proxy-manager` |
@@ -20,7 +22,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 | Docker network | External `proxy`, `172.31.85.0/24` |
 | Fixed container address | `172.31.85.10` |
 | Persistent data | Live `data/` and `letsencrypt/` bind mounts |
-| Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
+| Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-12-08`, read from the API on 2026-09-13. This row previously read `2026-10-08 23:49:46 UTC`, which the automated renewal has since moved. |
 | Shared TLS policy | Certificate assigned; Force SSL and HTTP/2 enabled; HSTS disabled |
 
 The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 21 internal application hosts report Online. TS3 Manager, CLI Proxy API, and Open WebUI are in the retained set. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
