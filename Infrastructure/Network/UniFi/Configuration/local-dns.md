@@ -1,11 +1,11 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
 
 On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
-I track 29 enabled local A records on the UniFi gateway. Twenty-four send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. Five resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
+On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Proxy Manager. The controller returned 28 records before the addition and 29 after, of which 23 point at `192.168.85.2`. This paragraph previously read 29 records with 24 pointing at Nginx Proxy Manager; that count had not been reduced when the two Game 01 names were removed on 2026-09-12, so I have replaced it with the live figures. Five records resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
 
 ## Host Records
 
@@ -33,6 +33,7 @@ I track 29 enabled local A records on the UniFi gateway. Twenty-four send NetBir
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
 | `mcp.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a94416df9e5db24858d3005` | Executor on `docker-blue` through NPM |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
+| `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
 | `grey.alphasecunited.com` | A | `192.168.70.10` | Controller default | Yes | `6a7dee01dee8c70a32e6ba96` | Proxmox GUI on `grey-server` |
 | `purple.alphasecunited.com` | A | `192.168.70.11` | Controller default | Yes | `6a7dee43dee8c70a32e6bb43` | Proxmox GUI on `purple-server` |
 | `blue.alphasecunited.com` | A | `192.168.70.12` | Controller default | Yes | `6a7deeabdee8c70a32e6bc70` | Proxmox GUI on `blue-server` |

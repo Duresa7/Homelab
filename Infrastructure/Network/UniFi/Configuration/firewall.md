@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-13
+
+At 1:10 AM on 2026-09-13 I added `Allow NPM to docker-blue MeshCentral`, an IPv4 TCP allow from `192.168.85.2` in `AlphaSec-Access` to `192.168.40.39:443` in Internal, with logging and a response companion enabled at creation. It carries MeshCentral's move behind Nginx Proxy Manager at `mesh.alphasecunited.com`. The existing `Allow NPM to docker-blue Executor` covers port 4788 only, so the same pair of hosts needed a second policy. I requested index 10001 and the controller assigned 10006. The user-defined total rose from 84 to 85. [MeshCentral proxy record](../../../../Platforms/MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md).
 
 At 11:47 PM on 2026-09-12 I added `Allow Identity to MeshCentral`, an IPv4 TCP allow from `192.168.65.12` and `192.168.65.20` in `AlphaSec-Identity` to `192.168.40.39:443` in Internal, with logging and a response companion enabled at creation and the Always schedule. It carries the MeshCentral pilot on `docker-blue`. `HQ-MGT01` was refused on TCP 443 before the change and accepted after it; `HQ-DC01` sits in the same zone, is deliberately outside the policy, and was refused both times, so the rule admits the two addresses it names rather than the zone. Both domain controllers stay out because controlling an agent on one grants console access to it. Secure Client VLAN 60 needed no policy, since it and Personal-A are both in Internal. The user-defined total rose from 83 to 84, split 76 allows to eight blocks. [MeshCentral deployment record](../../../../Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md).
 
@@ -77,6 +79,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Personal-A Hosts to Identity RDP` | Yes | ALLOW | 10006 | TCP+UDP (IPv4) | Internal / 192.168.40.179, 192.168.40.39 | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
 | `Allow VPN to Identity RDP` | Yes | ALLOW | 10000 | TCP+UDP (IPv4) | Vpn / Management Access network | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
 | `Allow Identity to MeshCentral` | Yes | ALLOW | 10002 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.12, 192.168.65.20 | Internal / 192.168.40.39 / 443 |
+| `Allow NPM to docker-blue MeshCentral` | Yes | ALLOW | 10006 | TCP (IPv4) | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 443 |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
 | `VPN: Temp #2` | Yes | BLOCK | 10001 | All | Vpn / Temp | `AlphaSec-Servers` / Any |
