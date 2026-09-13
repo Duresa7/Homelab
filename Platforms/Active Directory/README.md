@@ -27,7 +27,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Default password policy | 8 characters (lowered from 14 on 2026-09-10, accepted as the standing minimum), complexity on, history 24, no expiry, lockout 10 attempts for 15 minutes |
 | Fine-grained policy | `PSO-Admins`, precedence 10, 14 characters (lowered from 20 on 2026-09-10 for a testing window; restore to 20), 365-day maximum age, lockout 5 attempts for 30 minutes |
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
-| Remote access | `hq_dc01`, `hq_dc02`, `hq_mgt01`, and `obipc` in SSH Manager over OpenSSH on port 22, key only; `HQ-WS001` through the QEMU guest agent |
+| Remote access | `hq_dc01`, `hq_dc02`, `hq_mgt01`, and `obipc` in SSH Manager over OpenSSH on port 22, key only; `HQ-WS001` through the QEMU guest agent. RDP enabled on all five since 2026-09-12, Network Level Authentication required, host firewall scoped to Trusted VLAN 10, Secure VLAN 50, `192.168.40.179`, `192.168.40.39`, and the `10.6.0.0/24` Management Access VPN |
 | Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
 | Entra Cloud Sync configuration | `ad.alphasecunited.com`, AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`; first cycle 2026-09-10 created `IK-user`, `AH-user`, `testuser` and the users group in the tenant; `HQ-WS001` provisioned on demand the same day; `DK-user@alphasecunited.com` soft-matched onto its directory account at 10:50 PM the same day, object id unchanged |
 
@@ -91,6 +91,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 - Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
+
+- [Domain Machine RDP Enablement - 2026-09-12](Documentation/Change%20Records/Domain%20Machine%20RDP%20Enablement%20-%202026-09-12.md): Remote Desktop enabled on all five domain machines with Network Level Authentication required, host firewall sources scoped, and three UniFi allow policies into `AlphaSec-Identity`. Interactive sign-on proven on `HQ-WS001`; the other four are verified to the port and logon-right level only. Targets are addressed by IP.
 
 - [ObiPC Restricted User Setup - 2026-09-12](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md): AppLocker allowlist, Settings lockdown, daily sign-in window and usage budget, and `userWorkstations` pinning for `IK-user` on `ObiPC`. Enforced and verified on his live session.
 
