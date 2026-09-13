@@ -577,6 +577,13 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 # !/Platforms/Microsoft Intune/Evidence/MacBook Air M3 Enrollment - 2026-09-11/Screenshots/
 
 # Windows Admin Center: reviewed verification output and browser sign-in confirmation.
+!/Platforms/MeshCentral/Evidence/
+/Platforms/MeshCentral/Evidence/*
+!/Platforms/MeshCentral/Evidence/Deployment - 2026-09-12/
+/Platforms/MeshCentral/Evidence/Deployment - 2026-09-12/*
+!/Platforms/MeshCentral/Evidence/Deployment - 2026-09-12/Logs/
+/Platforms/MeshCentral/Evidence/Deployment - 2026-09-12/Logs/*
+!/Platforms/MeshCentral/Evidence/Deployment - 2026-09-12/Logs/Deployment-and-Verification-2026-09-12.md
 !/Platforms/Windows Admin Center/Evidence/
 /Platforms/Windows Admin Center/Evidence/*
 !/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/
