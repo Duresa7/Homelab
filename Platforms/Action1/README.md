@@ -48,6 +48,7 @@ The consequence is that software Action1 deploys is trusted by the allowlist. Th
 
 ## Records
 
+- [Deployer Health Check Blocked to ObiPC - 2026-09-12](Documentation/Troubleshooting/Deployer%20Health%20Check%20Blocked%20to%20ObiPC%20-%202026-09-12.md): the Deployer's routine agent health check against `ObiPC` fails every cycle, because the call crosses the VLAN 65 to VLAN 60 boundary and UniFi intrusion prevention blocks it. Corrects the RPC alert investigation's finding of no demonstrated outage. Fix identified, not yet applied.
 - [RPC alert investigation - 2026-09-12](../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md): UniFi blocked RPC flows to ObiPC during successful Deployer checks. I correlated both timestamps with Action1 logs, verified the running agent, and left IPS enabled.
 - [AD Deployer Preparation - 2026-09-12](Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md): Deployer installed on `HQ-MGT01` after a direct HTTPS download. Dedicated account and workstation firewall policy are applied; whole-domain scope is saved, three endpoints show Connected, and domain-controller enrollment verification remains open.
 - [ObiPC Agent Deployment - 2026-09-12](Documentation/Change%20Records/ObiPC%20Agent%20Deployment%20-%202026-09-12.md)
