@@ -1,13 +1,15 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-12
+
+I removed retired `game-01` from this project’s active inventory on 2026-09-12 and applied the same removal on `ansible-01`. Its historical deployment details below are retained for context.
 
 I run four playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on all 9 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts, and `wud.yml` runs What's Up Docker on the six Compose hosts. All use the same `ansible` account except for the single-account development workstation and `grey-server`, the same key, & the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope & single-host templates for every playbook.
 
 ## Scope
 
-`node_exporter_targets` holds 10 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, ansible-01, monitor-01, game-01, & db-13-dev. The development workstation connects as `ai-agent`; every other remote target uses the dedicated `ansible` account.
+`node_exporter_targets` holds 9 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, ansible-01, monitor-01, & db-13-dev. The development workstation connects as `ai-agent`; every other remote target uses the dedicated `ansible` account.
 
 Command allowlisting is not achievable for any Ansible-managed account, here or elsewhere. Escalation runs `sudo -u root /bin/sh -c '<token>; python3'` with the module fed on stdin, so a sudoers rule permissive enough for a play to succeed is equivalent to full root, and sudoers wildcards on command arguments are unsafe by design. The controls that actually constrain this account are the `from="192.168.40.36"` restriction on its key, the disabled pty and forwarding, and the empty group list. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` & `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
 
@@ -15,7 +17,7 @@ Command allowlisting is not achievable for any Ansible-managed account, here or 
 
 `textfile_collector_targets` holds the six hosts that run the upstream binary rather than Debian's package, because the package brings the collector with it and the binary does not: `grey-server` as root, `docker-main`, `app-01`, `edge-01`, `security-01` and `splunk-siem`. `wud_targets` holds the six Compose hosts: `docker-main`, `docker-network`, `docker-blue`, `media-01`, `alpha-prod-01` and `monitor-01`, each with its own `wud_cron`.
 
-`cadvisor_targets` holds all nine Docker hosts: the six shared targets above plus `app-01`, `security-01`, and `game-01`, which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
+`cadvisor_targets` holds all eight Docker hosts: the six shared targets above plus `app-01` and `security-01`, which run containers but get their `node_exporter` elsewhere. `splunk-siem` is out because it runs Podman, and `ansible-01` because it runs no containers.
 
 ## One exporter version, two install methods
 

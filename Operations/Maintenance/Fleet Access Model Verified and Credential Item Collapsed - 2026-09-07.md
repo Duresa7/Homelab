@@ -5,7 +5,7 @@
 
 **Change date:** 2026-09-07  
 **Status:** Complete. This closes the fleet access priority that opened on 2026-08-14  
-**Scope:** A read-only verification of the sudo and SSH model on all eleven guests, the rewrite of the unpublished Linux Host Baseline Standard to match, and the deletion of two duplicate fields from the credential item every host account draws from. No host changed in this work; the host changes it verifies are in the two [NOPASSWD](NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md) [records](NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md) from the same night
+**Scope:** A read-only verification of the sudo and SSH model on all eleven guests, the rewrite of the unpublished Linux Host Baseline Standard to match, and the deletion of two duplicate fields from the credential item every host account draws from. No host changed in this work; the host changes it verifies are in the two [NOPASSWD](../../Archive/Operations/Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md) [records](NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md) from the same night
 
 ## Outcome
 

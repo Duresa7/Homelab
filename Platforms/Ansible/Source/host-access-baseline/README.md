@@ -1,7 +1,7 @@
 # Host Access Baseline
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-12
 
 I use this project to own accounts and sudo policy on the Linux guests. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -13,7 +13,7 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - The Proxmox nodes are absent. Node root access is the cluster-backed key file that `ssh-key-automation` owns, not a POSIX account.
 - `ubuntu-dev` and `docker-main` are outside the model by decision and appear in no group. `ubuntu-dev` is the single-account workstation, and `docker-main` stays root-login only. The validator fails if either turns up in a target group.
 - The Wazuh host is `security-01`, matching the other Ansible projects and SSH Manager.
-- `game-01` is in `ai_agent_key_only`. Its `ai-agent` account already existed and its `authorized_keys` was 0 bytes, which is the only reason the account was unreachable. This project writes that one file and creates nothing there. The `/etc/sudoers.d/90-ai-agent` drop-in that came with the account was removed by hand on 2026-09-07, with `dkadi`'s `90-dkadi`, so `ai-agent` has no sudo there either.
+- `ai_agent_key_only` is empty after Game 01’s retirement on 2026-09-12.
 - The `ai-agent` key carries **no** restriction prefix: no `from=`, no forwarding limits, no `no-pty`. That is a decision taken on 2026-08-14, not an omission. The validator fails if a restriction appears, so a later reader cannot quietly "fix" it.
 - The key itself lives in `vars/ai-agent-key.yml`, which is gitignored. The repository publishes only `vars/ai-agent-key.yml.example`, following `ssh-key-automation/identities/`. The validator fails if a real key reaches the example, if the playbook hardcodes one, or if the gitignore entry disappears. See [vars/PUBLICATION-NOTICE.md](vars/PUBLICATION-NOTICE.md).
 - The console password is only ever applied at account creation. A run without the credential will not lock an account that already has one.
@@ -23,9 +23,9 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - That play will not write to a host it has not cleared. `Defaults rootpw` where root's password is locked removes sudo from every account at once, and the way back is the Proxmox console, so the play proves root's password **authenticates** on the host in front of it before writing anything there, and stops the whole run on the first host that cannot prove it. A status letter from `passwd -S` is not that proof: it says a hash is present, not that the hash is the value you hold.
 - It reads the resulting policy with `sudo -l -U <user>` as root rather than `sudo -l` as the user. Once `rootpw` is in force, `sudo -l` authenticates too, so a password-gated account cannot run it unattended. This caught the play out on the first host it ran against, and the replacement is the better check anyway: `sudo -l -U` reports the Defaults sudo actually resolved, so finding `rootpw` there proves the setting is in force where a file that parses only proves a file that parses.
 - Its negative proof reports `untestable` rather than passing on any host where `dkadi` still holds a `NOPASSWD` drop-in, which was four hosts on 2026-08-20 and none since 2026-09-07, when the last four came off by hand. The branch stays in the play for any host that arrives with a drop-in. `NOPASSWD` skips authentication entirely, so the login password would be "refused" there only in the sense that it was never read. The play detects the grant by testing it, not by looking for a filename: `media-01` calls its drop-in `dkadi` where the others use `90-dkadi`, so a filename sweep reports that host as compliant when it is not.
-- `account-passwords.yml` is the only play here that writes to `/etc/shadow`. It owns `root` and `dkadi` on all eleven and touches nothing else: `ai-agent` already carries the standard password everywhere, and `ansible` is a key-only service account that keeps its `NOPASSWD` grant and stays the route back in.
+- `account-passwords.yml` is the only play here that writes to `/etc/shadow`. It owns `root` and `dkadi` on all ten and touches nothing else: `ai-agent` already carries the standard password everywhere, and `ansible` is a key-only service account that keeps its `NOPASSWD` grant and stays the route back in.
 - That play **reports `changed` on every run, by design.** It uses `update_password: always` because its job is to converge hosts that drifted between the credential item's two sudo password fields, and a fresh salt produces a new hash each time. Reverting it to `on_create` to make the run look idempotent would skip every host that already has a password, which is every host it exists to fix. The validator fails if the setting changes.
-- An empty password variable hashes to a perfectly valid crypt string, so the play asserts both values are present before it touches an account. A run without credentials fails on the first task instead of giving root an empty password on eleven hosts.
+- An empty password variable hashes to a perfectly valid crypt string, so the play asserts both values are present before it touches an account. A run without credentials fails on the first task instead of giving root an empty password on ten hosts.
 - Reading a hash back only proves a hash landed. The play proves both passwords **authenticate**, by becoming the account through `su` with the value passed via the become plugin rather than any command string. `become` always escalates from the connection user, so this really is `su` from the unprivileged `ansible` account and really does answer a password prompt.
 - `splunk-siem` is the one Rocky host and has no `sudo` group; its administrative group is `wheel`. The play reads the group database and asserts against whichever of the two exists, rather than assuming Debian.
 - Nothing here writes to sshd. The account playbook reads `sshd -T` and reports the effective `PasswordAuthentication` value, so a run proves the setting was left alone rather than assuming it.
@@ -36,12 +36,12 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 | Group | Hosts | What happens |
 |---|---|---|
 | `ai_agent_targets` | media-01, docker-network, monitor-01, edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue, ansible-01 | Account created, key installed |
-| `ai_agent_key_only` | game-01 | Key file written, nothing created |
+| `ai_agent_key_only` | None | Reserved for key-only onboarding |
 | `dkadi_nopasswd_targets` | edge-01, app-01, alpha-prod-01, security-01, splunk-siem, docker-blue | **Superseded.** Would have given `dkadi` a NOPASSWD drop-in |
 
 The six `dkadi` hosts are the ones that still authenticate for sudo, and under the 2026-08-15 model they stay that way. The group is kept because the superseded play still refers to it, not because anything should be run against it.
 
-`sudoers-rootpw.yml` targets all eleven, `ai_agent_targets` and `ai_agent_key_only` together, because the sudo prompt changes everywhere, not only where `dkadi` authenticates.
+`sudoers-rootpw.yml` targets all ten, `ai_agent_targets` and `ai_agent_key_only` together, because the sudo prompt changes everywhere, not only where `dkadi` authenticates.
 
 ## Direct Ansible Commands
 

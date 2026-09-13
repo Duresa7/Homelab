@@ -1,7 +1,9 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-12
+
+On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
 I track 29 enabled local A records on the UniFi gateway. Twenty-four send NetBird and internal application names to Nginx Proxy Manager at `192.168.85.2`. Five resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
 
@@ -28,8 +30,6 @@ I track 29 enabled local A records on the UniFi gateway. Twenty-four send NetBir
 | `splunk.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a863` | Splunk Web through NPM |
 | `prometheus.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
 | `ts3-manager.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a68b26f052792cd2140bfdc` | TS3 Manager through NPM |
-| `games.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e27dee8c70a32d41e33` | Pelican Panel on `game-01` through NPM |
-| `wings.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a763e29dee8c70a32d41e41` | Pelican Wings API on `game-01` through NPM; the browser opens a console websocket straight to this name, so it needs its own HTTPS host rather than a path under `games` |
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
 | `mcp.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a94416df9e5db24858d3005` | Executor on `docker-blue` through NPM |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |

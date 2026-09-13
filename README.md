@@ -1,7 +1,9 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-12
+
+I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md), Prometheus has 54 healthy targets, and Wazuh has 15 active remote agents. CT 123 remains stopped with boot disabled and its game data retained.
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-15_routed_LANs,_11_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -65,7 +67,7 @@ The guides provide the reading path. Detailed records stay with the system that 
 
 Current priorities from my [central TODO](TODO.md):
 
-1. Finish the fleet access model: remove the remaining `NOPASSWD` drop-ins, `dkadi`'s on `docker-network`, `monitor-01`, `game-01` and `media-01`, and `ai-agent`'s on `game-01`, then verify the model per host and rewrite the unpublished [Linux host baseline](Guides/Linux-Host-Baseline.md) standard to match.
+1. Maintain the verified fleet access model and onboard future hosts through the [Linux host baseline](Guides/Linux-Host-Baseline.md).
 2. Move Coolify off root SSH on `app-01` and clear out its leftover keys.
 3. Put `UPS-01` back on a data cable, or accept it as unmonitored and say so once.
 4. Decide how far Threat Management coverage goes across the eight routed LANs still outside inspection.

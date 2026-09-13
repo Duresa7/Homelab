@@ -1,7 +1,7 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-12
 
 Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Twenty-four Grafana alert rules evaluate and route to the Discord alert bot, coloured by class, and delivery is proven in both directions for the infrastructure and updates classes.
 
@@ -9,7 +9,7 @@ Two items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 wi
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 
-**Sweep the two Docker hosts the resolv.conf check could not reach.** The 2026-08-27 TeamSpeak fault was a container that spent 17 days with no nameserver, because Docker copied `/etc/resolv.conf` two seconds before `dhcpcd` wrote it and never revisits that copy. I checked 52 of 60 running containers across the fleet and found no others. The eight on `security-01` and `game-01` need a root shell to check and are still unverified. The loop is in the [change record](../../Teamspeak%20Hosting/Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md#fleet-sweep).
+**Sweep security-01, which the resolv.conf check could not reach.** The 2026-08-27 TeamSpeak fault was a container that spent 17 days with no nameserver, because Docker copied `/etc/resolv.conf` two seconds before `dhcpcd` wrote it and never revisits that copy. I checked 52 of 60 running containers across the fleet and found no others. `security-01` still needs a root shell to check. I retired `game-01` on 2026-09-12, so its containers are outside this remaining task. The loop is in the [change record](../../Teamspeak%20Hosting/Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md#fleet-sweep).
 
 ## Known limits, not tracked as work
 

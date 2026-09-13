@@ -51,8 +51,6 @@ NODES = [
          pve="red-server",   vmid="lxc/842",  docker=True,  apt=True),
     dict(host="monitor-01",     role="monitoring", ip="192.168.73.2",  kind="lxc",
          pve="blue-server",  vmid="lxc/104",  docker=True,  apt=True, prometheus=True),
-    dict(host="game-01",        role="game",       ip="192.168.80.30", kind="lxc",
-         pve="green-server", vmid="lxc/123",  docker=True,  apt=True),
 ]
 
 BY_HOST = {n["host"]: n for n in NODES}
@@ -120,13 +118,13 @@ def fs_used_pct(extra: str = "") -> str:
 # empty rectangle on a dashboard reads as "fine" rather than "not applicable".
 #
 # splunk-siem runs Rocky 10 and has no /proc/pressure. edge-01 has no
-# nf_conntrack module loaded. The systemd collector is enabled on twelve hosts.
+# nf_conntrack module loaded. The systemd collector is enabled on eleven hosts.
 # cpufreq and hwmon exist on the five nodes and the seven LXC guests, but on an
 # LXC they are the node's, so the node dashboards only draw them on bare metal.
 _NO_PSI = {"splunk-siem"}
 _NO_CONNTRACK = {"edge-01"}
 _SYSTEMD = {"alpha-prod-01", "ansible-01", "blue-server", "docker-blue", "docker-network",
-            "game-01", "green-server", "media-01", "monitor-01", "purple-server",
+            "green-server", "media-01", "monitor-01", "purple-server",
             "red-server", "ubuntu-dev"}
 
 for _n in NODES:

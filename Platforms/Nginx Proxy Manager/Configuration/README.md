@@ -1,7 +1,9 @@
 # Nginx Proxy Manager Configuration
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-12
+
+I retired proxy hosts 24 (`games.alphasecunited.com`) and 25 (`wings.alphasecunited.com`) on 2026-09-12. Both records are marked deleted and disabled, their generated configurations are absent, and Nginx validation and reload passed.
 
 The live Compose project is `/opt/docker/nginx-proxy-manager` on `docker-network`. This folder holds reader-editable reference configuration.
 
@@ -24,7 +26,7 @@ NPM writes its database, proxy-host state, & generated Nginx files under `data/`
 - The Let's Encrypt wildcard/apex certificate is assigned to the NetBird host, expires `2026-10-08 23:49:46 UTC`, and has Force SSL and HTTP/2 enabled.
 - The HTTPS client path, authenticated dashboard, first-peer VPN traffic, post-restart service health, non-interactive ACME renewal path, and bounded logging are all verified.
 - Keep HTTP/2 enabled on the NetBird proxy host because its advanced configuration includes native gRPC routes.
-- The 21 internal application hosts use certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. The set includes TS3 Manager, both Pelican interfaces, and CLI Proxy API. Immich also disables request buffering and uses a 50,000 MiB body limit with 600-second timeouts. CLI Proxy API disables buffering and caching and uses 3,600-second timeouts.
+- The 21 internal application hosts use certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. The set includes TS3 Manager, and CLI Proxy API. Immich also disables request buffering and uses a 50,000 MiB body limit with 600-second timeouts. CLI Proxy API disables buffering and caching and uses 3,600-second timeouts.
 - UniFi owns the matching local A records and the narrow policies from NPM to the backend web listeners. Public DNS has no matching A records.
 
 Review the [deployment record](../Documentation/Deployment.md) and [operations runbook](../Documentation/Runbook.md) before changing the live project.

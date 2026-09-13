@@ -3,6 +3,8 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-09-12
 
+On 2026-09-12 I removed the three dedicated Game 01 allow policies and `192.168.80.30` from `Allow Monitor to A-Servers monitoring`. The shared policy retains `192.168.80.10` and `192.168.80.118`. No remaining user policy names Game 01 or its address. The August deployment narrative below is historical.
+
 At 2:50–2:54 PM on 2026-09-12 I rechecked the Action1 allow policy and investigated two IPS-blocked RPC flow records from `192.168.65.12` to `192.168.60.102`. Both matched successful Action1 Deployer operations. I made no firewall or IPS changes. [Alert investigation](../../../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md).
 
 On 2026-09-12 I added `Allow Action1 Deployer to Secure Client`, an IPv4 TCP allow from `HQ-MGT01` at `192.168.65.12` in `AlphaSec-Identity` to the Secure Client network on ports `135,139,445,49152-65535`, with logging and a response companion enabled. The workstation Windows Firewall policy separately limits these services to that source on the Domain profile. TCP 135, 139, and 445 then connected from `HQ-MGT01` to `ObiPC`, and the dedicated service account authenticated as a local administrator over WinRM HTTPS. [Action1 deployment record](../../../../Platforms/Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md).
@@ -98,9 +100,6 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
-| `Allow NPM to game-01 Panel` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 80 |
-| `Allow NPM to game-01 Wings` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 8080 |
-| `Allow game-01 to NPM HTTPS` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Servers` / 192.168.80.30 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | Internal / .35, .36, .39, .42, .179 / `PG-Node-Exporter` |

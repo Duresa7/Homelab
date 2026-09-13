@@ -42,7 +42,7 @@ EXPECTED_AI_AGENT_TARGETS = {
 # The account and its sudoers drop-in already exist here; only the key file is
 # written. Its authorized_keys was 0 bytes, which is why the account was
 # unreachable.
-EXPECTED_KEY_ONLY = {"game-01"}
+EXPECTED_KEY_ONLY = set()
 EXPECTED_DKADI_NOPASSWD = {
     "edge-01",
     "app-01",
@@ -81,7 +81,7 @@ def main() -> int:
     for group in REQUIRED_GROUPS:
         if group not in children:
             errors.append(f"inventory is missing required group {group}")
-        elif not collect_hosts(children[group]):
+        elif group != "ai_agent_key_only" and not collect_hosts(children[group]):
             errors.append(f"group {group} has no hosts")
 
     ai_agent_hosts = collect_hosts(children.get("ai_agent_targets", {}))

@@ -40,8 +40,6 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
-    # Added 2026-08-07 with the Pelican game server platform.
-    "game-01",
     # Added 2026-08-08, when this guest became the development workstation.
     # It stays out of EXPECTED_CADVISOR_HOSTS: the containers there are
     # throwaway development builds, so per-container history is noise.
@@ -60,7 +58,6 @@ EXPECTED_CADVISOR_HOSTS = {
     "app-01",
     "security-01",
     "monitor-01",
-    "game-01",
 }
 
 # The six hosts whose node_exporter is the upstream binary and so had no
@@ -77,7 +74,7 @@ EXPECTED_TEXTFILE_COLLECTOR_HOSTS = {
 }
 
 # What's Up Docker: the same six Compose hosts fleet-updates manages. app-01
-# (Coolify) and game-01 (Pelican) stay out for the reason they stay out there.
+# (Coolify) stays out because Coolify owns its image updates.
 EXPECTED_WUD_HOSTS = {
     "docker-main",
     "docker-network",
@@ -121,7 +118,6 @@ EXPECTED_IPS = {
     "splunk-siem": "192.168.72.3",
     "ansible-01": "192.168.40.36",
     "monitor-01": "192.168.73.2",
-    "game-01": "192.168.80.30",
     "db-13-dev": "192.168.40.135",
     "grey-server": "192.168.70.10",
     "edge-01": "192.168.30.10",

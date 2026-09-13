@@ -9,7 +9,7 @@
 
 ## Outcome
 
-These were the last three `dkadi` drop-ins in the fleet, following [game-01 earlier the same night](NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md). On every one of the eleven guests the model decided on 2026-08-15 is now the live state: `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a prompt that `Defaults rootpw` points at root's password, `ai-agent` cannot run sudo, and `ansible` keeps `NOPASSWD` as the unattended route and the way back in.
+These were the last three `dkadi` drop-ins in the fleet, following [game-01 earlier the same night](../../Archive/Operations/Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md). On every one of the eleven guests the model decided on 2026-08-15 is now the live state: `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a prompt that `Defaults rootpw` points at root's password, `ai-agent` cannot run sudo, and `ansible` keeps `NOPASSWD` as the unattended route and the way back in.
 
 | Host | Drop-in removed | `dkadi` after | Node for recovery |
 | --- | --- | --- | --- |

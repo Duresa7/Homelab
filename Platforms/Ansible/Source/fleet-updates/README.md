@@ -1,7 +1,9 @@
 # Fleet Updates
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-12
+
+I removed retired `game-01` from this project’s active inventory on 2026-09-12 and applied the same removal on `ansible-01`. Its historical deployment details below are retained for context.
 
 I run two playbooks from `ansible-01` to keep the Linux fleet current. `os-update.yml` patches packages through apt or dnf, and `docker-compose-update.yml` pulls new images & recreates the compose stacks. Both use the same `ansible` account, the same key, & the same inventory style as `ssh-key-automation` next door.
 
@@ -9,9 +11,9 @@ I run two playbooks from `ansible-01` to keep the Linux fleet current. `os-updat
 
 The inventory holds 12 running Linux guests for OS updates & 6 hosts with directly managed compose projects. The five Proxmox nodes, stopped guests, & every Windows host are absent on purpose. This automation patches guests, not hypervisors, and apt or dnf can't patch Windows. Keeping the Proxmox nodes out means a run here can never reboot a node that's holding the controller or another guest.
 
-`os_update_targets` covers ansible-01, monitor-01, docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, edge-01, security-01, splunk-siem, & game-01. Eleven run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager. `ansible-01` uses a local connection so the controller doesn't depend on an SSH round trip to patch itself. A hostname assertion stops that local entry from patching the wrong runner if someone invokes this copy elsewhere.
+`os_update_targets` covers ansible-01, monitor-01, docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, edge-01, security-01, & splunk-siem. Ten run apt; splunk-siem runs dnf on Rocky Linux. The playbook detects which one per host from `ansible_facts.pkg_mgr`, so I don't group hosts by package manager. `ansible-01` uses a local connection so the controller doesn't depend on an SSH round trip to patch itself. A hostname assertion stops that local entry from patching the wrong runner if someone invokes this copy elsewhere.
 
-`docker_compose_targets` covers docker-main (8 managed stacks), docker-network (3), docker-blue (4), media-01 (2), alpha-prod-01 (6), & monitor-01 (2). The four Portainer Edge Agent projects use `/opt/docker/portainer-edge-agent`. The media project requests the `vpn` profile so the update matches its deployed eight-container topology. cAdvisor follows `:latest` under the separate monitoring-exporters project, so those nine compose projects aren't duplicated here. Ollama keeps its tested release digest while still taking part in the same health-checked reconcile. The local `homelab/docusaurus` and `teamspeak-monitor` images set `pull: never` because neither has a registry source. app-01 is left out because Coolify owns its two generated projects; a manual `docker compose up -d` would fight Coolify's own reconcile. game-01 remains outside this play because its Pelican panel and native Wings binary are a matched pair. The retired `teamspeak` project is absent so a fleet run cannot recreate server 01.
+`docker_compose_targets` covers docker-main (8 managed stacks), docker-network (3), docker-blue (4), media-01 (2), alpha-prod-01 (6), & monitor-01 (2). The four Portainer Edge Agent projects use `/opt/docker/portainer-edge-agent`. The media project requests the `vpn` profile so the update matches its deployed eight-container topology. cAdvisor follows `:latest` under the separate monitoring-exporters project, so those eight compose projects aren't duplicated here. Ollama keeps its tested release digest while still taking part in the same health-checked reconcile. The local `homelab/docusaurus` and `teamspeak-monitor` images set `pull: never` because neither has a registry source. app-01 is left out because Coolify owns its two generated projects; a manual `docker compose up -d` would fight Coolify's own reconcile. The retired `teamspeak` project is absent so a fleet run cannot recreate server 01.
 
 ## os-update.yml
 
