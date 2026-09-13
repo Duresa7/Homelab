@@ -3,7 +3,7 @@
 **Created:** 2026-08-07  
 **Last updated:** 2026-09-12
 
-**Retired 2026-09-12.** I stopped treating Game 01 as an active service and removed its monitoring, enrollment, publication, and automation references. CT 123 remains stopped with boot disabled and its data intact. The [retirement record](Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) is the current answer; the deployment details below describe its former operation.
+**Retired 2026-09-12.** I stopped treating Game 01 as an active service and removed its monitoring, enrollment, publication, and automation references. CT 123 and its 80 GiB root disk, including Pelican and both Minecraft worlds, are deleted. The [retirement record](Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) is the current answer; the deployment details below describe its former operation.
 
 I host my own game servers on `game-01`, an unprivileged LXC on `green-server`. Pelican Panel manages them through a web UI, and its Wings daemon runs each game server in its own Docker container with a memory, CPU and disk limit taken from the panel.
 

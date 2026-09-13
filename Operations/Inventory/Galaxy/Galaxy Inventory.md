@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-09-12
 
-On 2026-09-12 I retired `game-01` from active service. CT 123 remains stopped on Green with boot disabled and its 80 GiB `local-lvm:vm-123-disk-0` volume retained. The 6 vCPUs and 12 GiB configured memory are inactive; the disk has not been reclaimed.
+On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s `local-lvm` pool reports 0 KiB used and 148,086,784 KiB available (0.00% used).
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
 

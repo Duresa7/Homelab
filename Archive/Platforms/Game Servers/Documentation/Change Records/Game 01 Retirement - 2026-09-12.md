@@ -3,11 +3,11 @@
 **Created:** 2026-09-12  
 **Last updated:** 2026-09-12
 
-**Status:** Retired from active service; stopped container and data retained.
+**Status:** Complete. CT 123 and all of its game data are deleted.
 
 I retired Game 01 from the homelab on 2026-09-12. CT 123 was already stopped on `green-server` when I checked it. I disabled automatic startup and removed the service's monitoring, Wazuh enrollment, DNS publication, proxy routes, dedicated firewall policies, and automation targets. I moved its platform records, deployment record, dedicated sudo maintenance record, and node dashboard into `Archive/` and repaired their links.
 
-I retained `local-lvm:vm-123-disk-0`, the 80 GiB root volume holding Pelican and the Minecraft worlds. The request to archive did not settle whether to destroy the game data, so I kept the offline container. Its 6 vCPUs, 12 GiB memory and 2 GiB swap remain configured but inactive. I created no snapshot or backup. The [archived guest record](../../../../Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) preserves its former inventory.
+I retained `local-lvm:vm-123-disk-0`, the 80 GiB root volume holding Pelican and the Minecraft worlds. The request to archive did not settle whether to destroy the game data, so I kept the offline container. After confirming permanent deletion, I destroyed CT 123 and that root volume. Its 6 vCPUs, 12 GiB memory and 2 GiB swap are no longer configured. I created no snapshot or backup. The [archived guest record](../../../../Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) preserves its former inventory.
 
 ## Changes and verification
 
@@ -33,8 +33,14 @@ An initial unprivileged Wazuh command failed with permission denied; the privile
 
 Grafana 13 keeps dashboards in unified storage and alert state outside the old `alert_instance` table. Empty results from the legacy tables did not prove deletion. I verified the dashboard count, alert states and rule health through authenticated APIs instead. Two cached Game 01 entries remained: `Metrics source stopped reporting` in `Normal (NoData)` and `CPU is pinned` in `Normal`. They are resolved state, not firing or pending alerts. The deleted scrape targets and dropped Proxmox series prevent new evaluations for this guest.
 
-## Retained state
+## Permanent deletion
 
-The offline container, its installed services, and its game data remain intact. The external Playit account's relay allocation was not deleted; its local agent cannot forward traffic while the container is stopped, and the Minecraft public DNS names no longer publish it. Historical monitoring samples and past notifications remain subject to their normal retention. Shared fleet alert rules and cross-system dated maintenance records retain their history.
+I confirmed that CT 123 was still `game-01` on Green, stopped, with exactly `local-lvm:vm-123-disk-0,size=80G` as its root volume and no additional mount points, unused disks, or lock. I then ran `pct destroy 123 --purge 1 --destroy-unreferenced-disks 1`. Proxmox reported `Logical volume "vm-123-disk-0" successfully removed` and purged the related CT configuration.
 
-Restarting CT 123 alone does not restore publication, monitoring or management. A future restoration would require restoring those registrations from the archived configuration and re-enrolling Wazuh. Permanent deletion of the retained container and game data remains a separate decision.
+Post-deletion checks confirmed that CT 123 is absent from `/cluster/resources`, `/etc/pve/lxc/123.conf` is absent, and `pvesm list local-lvm --vmid 123` returns only its header. Green’s `local-lvm` pool reports 0 KiB used and 148,086,784 KiB available (0.00% used). The container, installed services, Pelican configuration, and Minecraft worlds are deleted. I created no snapshot or backup and retained no separate transcript for this deletion.
+
+## Retained history
+
+Only the repository records and earlier monitoring history remain locally. The external Playit account's relay allocation was not deleted; its local agent was deleted with the container, and the Minecraft public DNS names no longer publish it. Historical monitoring samples and past notifications remain subject to their normal retention. Shared fleet alert rules and cross-system dated maintenance records retain their history.
+
+A future game service requires a new guest, new worlds, and restoration of the relevant publication, monitoring, and management registrations. The archived configuration is a reference, not a world backup.

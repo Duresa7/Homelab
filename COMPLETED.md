@@ -3,7 +3,7 @@
 **Created:** 2026-08-09  
 **Last updated:** 2026-09-07
 
-- 2026-09-12: [Game 01 retirement](Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md). Archived the platform, removed active monitoring and publication, and retained CT 123 stopped with boot disabled and its game data intact.
+- 2026-09-12: [Game 01 retirement](Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md). Archived the platform, removed active monitoring and publication, then deleted CT 123 and its 80 GiB root disk, including all game data.
 
 This is my public history of work closed from [TODO.md](TODO.md). Active priorities, scheduled work, and system backlogs stay in that file.
 
