@@ -107,6 +107,28 @@
             group: root
             mode: "0755"
 
+        - name: Create persistent WUD administrator credentials
+          ansible.builtin.shell:
+            cmd: |
+              python3 - <<'PY'
+              import os
+              import secrets
+              path = "{{ wud_project_dir }}/admin.env"
+              fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+              with os.fdopen(fd, "w") as stream:
+                  stream.write("WUD_AUTH_ADMIN_USER=admin\n")
+                  stream.write("WUD_AUTH_ADMIN_PASSWORD=" + secrets.token_urlsafe(48) + "\n")
+              PY
+            creates: "{{ wud_project_dir }}/admin.env"
+          no_log: true
+
+        - name: Restrict the administrator environment file
+          ansible.builtin.file:
+            path: "{{ wud_project_dir }}/admin.env"
+            owner: root
+            group: root
+            mode: "0600"
+
         - name: Write the compose file
           ansible.builtin.copy:
             dest: "{{ wud_project_dir }}/docker-compose.yml"
@@ -121,12 +143,13 @@
                   image: {{ wud_image }}
                   container_name: wud
                   restart: unless-stopped
+                  env_file:
+                    - admin.env
                   environment:
                     - TZ=America/New_York
                     - WUD_WATCHER_LOCAL_CRON={{ wud_watch_cron }}
                     - WUD_LOG_LEVEL=info
-                    # The web UI has no login. Deleting containers from it is
-                    # the one destructive thing it can do, so that is off.
+                    # WUD 9 requires an administrator. Keep deletion disabled.
                     - WUD_SERVER_FEATURE_DELETE=false
                     # Compare digests for Docker Hub images on mutable tags.
                     # Roughly fifteen such images fleet-wide, checked once a
@@ -146,33 +169,59 @@
             project_src: "{{ wud_project_dir }}"
             project_name: wud
             state: present
-            pull: missing
+            pull: always
 
-        - name: Confirm WUD answers on the published port
+        - name: Read the administrator environment for authenticated checks
+          ansible.builtin.slurp:
+            src: "{{ wud_project_dir }}/admin.env"
+          register: wud_admin_environment
+          no_log: true
+
+        - name: Select the administrator password
+          ansible.builtin.set_fact:
+            wud_admin_password: "{{ (wud_admin_environment.content | b64decode).split('WUD_AUTH_ADMIN_PASSWORD=')[1] | trim }}"
+          no_log: true
+
+        - name: Create the Prometheus credential directory
+          ansible.builtin.file:
+            path: /home/dkadi/monitoring/prometheus-config/wud-passwords
+            state: directory
+            owner: "65534"
+            group: "65534"
+            mode: "0700"
+          delegate_to: monitor-01
+
+        - name: Install this host's Prometheus scrape credential
+          ansible.builtin.copy:
+            dest: "/home/dkadi/monitoring/prometheus-config/wud-passwords/{{ inventory_hostname }}"
+            content: "{{ wud_admin_password }}"
+            owner: "65534"
+            group: "65534"
+            mode: "0600"
+          delegate_to: monitor-01
+          no_log: true
+
+        - name: Confirm WUD exports container metrics with authentication
           become: false
           changed_when: false
           ansible.builtin.uri:
             url: "http://127.0.0.1:{{ wud_host_port }}/metrics"
-            return_content: false
+            url_username: admin
+            url_password: "{{ wud_admin_password }}"
+            force_basic_auth: true
+            return_content: true
             status_code: 200
           retries: 10
           delay: 6
-          until: wud_probe is succeeded
+          until: wud_probe is succeeded and 'wud_containers{' in (wud_probe.content | default(''))
           register: wud_probe
+          no_log: true
 
-        # The first scan runs at start and takes a moment per container, so
-        # wait for the gauge to fill before comparing it to Docker's count.
         - name: Count the containers WUD reports
-          become: false
-          changed_when: false
-          ansible.builtin.shell:
-            cmd: >-
-              curl -s -m 20 http://127.0.0.1:{{ wud_host_port }}/metrics
-              | grep -c '^wud_containers{' || true
-          register: wud_count
-          retries: 10
-          delay: 6
-          until: (wud_count.stdout | trim | int) > 0
+          ansible.builtin.set_fact:
+            wud_count:
+              stdout: "{{ wud_probe.content | regex_findall('(?m)^wud_containers[{]') | length }}"
+          no_log: true
 
         - name: Count the containers Docker itself reports running
           changed_when: false
