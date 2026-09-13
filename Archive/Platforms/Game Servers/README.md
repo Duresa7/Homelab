@@ -1,7 +1,9 @@
 # Game Servers
 
 **Created:** 2026-08-07  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-12
+
+**Retired 2026-09-12.** I stopped treating Game 01 as an active service and removed its monitoring, enrollment, publication, and automation references. CT 123 remains stopped with boot disabled and its data intact. The [retirement record](Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) is the current answer; the deployment details below describe its former operation.
 
 I host my own game servers on `game-01`, an unprivileged LXC on `green-server`. Pelican Panel manages them through a web UI, and its Wings daemon runs each game server in its own Docker container with a memory, CPU and disk limit taken from the panel.
 
@@ -11,8 +13,8 @@ The current public workload is Vanilla Minecraft Java Edition 26.2 on Java 25. B
 
 ## Layout
 
-- [Configuration/](Configuration/) holds the panel Compose file, a redacted Wings configuration, and the loopback relay unit used by Playit.
-- [Tests/](Tests/) holds the Minecraft status probe used for direct and SRV-based checks.
+- [Configuration/](Configuration) holds the panel Compose file, a redacted Wings configuration, and the loopback relay unit used by Playit.
+- [Tests/](Tests) holds the Minecraft status probe used for direct and SRV-based checks.
 - [Documentation/Deployment.md](Documentation/Deployment.md) preserves the original platform build and first workload.
 - [Better Realism MC and Playit Publication - 2026-08-09](Documentation/Change%20Records/Better%20Realism%20MC%20and%20Playit%20Publication%20-%202026-08-09.md) records the destructive workload replacement and public game path.
 - [Better Realism Shutdown and Vanilla Minecraft Deployment - 2026-08-09](Documentation/Change%20Records/Better%20Realism%20Shutdown%20and%20Vanilla%20Minecraft%20Deployment%20-%202026-08-09.md) records the retained shutdown, capacity rebalance, and current Vanilla server.

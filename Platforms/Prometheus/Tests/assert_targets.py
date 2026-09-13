@@ -21,7 +21,7 @@ import sys
 
 # scrape URL -> (job, host)
 EXPECTED_TARGETS = {
-    # node_exporter, 18 hosts
+    # node_exporter, 17 hosts
     "http://192.168.70.10:9100/metrics": ("node", "grey-server"),
     "http://192.168.70.11:9100/metrics": ("node", "purple-server"),
     "http://192.168.70.12:9100/metrics": ("node", "blue-server"),
@@ -39,9 +39,7 @@ EXPECTED_TARGETS = {
     "http://192.168.80.118:9100/metrics": ("node", "alpha-prod-01"),
     "http://192.168.85.2:9100/metrics": ("node", "docker-network"),
     "http://192.168.73.2:9100/metrics": ("node", "monitor-01"),
-    # game-01, added 2026-08-07 with the Pelican game server platform.
-    "http://192.168.80.30:9100/metrics": ("node", "game-01"),
-    # cAdvisor, all 9 Docker hosts. This was docker-main alone until 2026-07-26,
+    # cAdvisor, all 8 Docker hosts. This was docker-main alone until 2026-07-26,
     # while v0.52.1 could not register containers under Docker 29's overlayfs
     # driver. v0.60.5 handles the containerd snapshotter.
     "http://192.168.40.35:9101/metrics": ("cadvisor", "docker-main"),
@@ -52,9 +50,6 @@ EXPECTED_TARGETS = {
     "http://192.168.80.10:9101/metrics": ("cadvisor", "app-01"),
     "http://192.168.72.2:9101/metrics": ("cadvisor", "security-01"),
     "http://192.168.73.2:9101/metrics": ("cadvisor", "monitor-01"),
-    # game-01 runs one container per game server, so per-container metrics are
-    # the only view of a single server against its assigned limit.
-    "http://192.168.80.30:9101/metrics": ("cadvisor", "game-01"),
     # What's Up Docker, the six Compose hosts, added 2026-09-02 for the image
     # update alert.
     "http://192.168.40.35:9102/metrics": ("wud", "docker-main"),
@@ -75,7 +70,7 @@ EXPECTED_TARGETS = {
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 
-# The 20 internal service names probed through NPM, plus the alert bot. Host label is absent; the
+# The 19 internal service names probed through NPM, plus the alert bot. Host label is absent; the
 # instance label carries the probed URL.
 #
 # wings.alphasecunited.com is deliberately absent. The Wings API answers 401 on
@@ -100,7 +95,6 @@ EXPECTED_BLACKBOX_SERVICES = {
     "prometheus",
     "splunk",
     "ts3-manager",
-    "games",
     "openwebui",
     # The Discord alert bot's /health endpoint, added 2026-09-02. Not an NPM
     # name: probed directly over the Compose network as http://alert-bot:8080.
@@ -112,7 +106,7 @@ EXPECTED_BLACKBOX_SERVICES = {
 # was on this list until 2026-07-25: it had been removed in the 2026-07-13
 # cleanup only because its exporter was unavailable, and it is now a legitimate
 # target.
-FORBIDDEN_ADDRESSES = {"192.168.70.20", "192.168.80.20"}
+FORBIDDEN_ADDRESSES = {"192.168.70.20", "192.168.80.20", "192.168.80.30"}
 
 
 def main() -> int:

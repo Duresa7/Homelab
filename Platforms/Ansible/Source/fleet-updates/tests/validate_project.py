@@ -29,10 +29,7 @@ EXPECTED_OS_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
-    # Added 2026-08-07. OS updates only: it is absent from the compose set on
-    # purpose, because the Pelican panel image and the Wings binary must move
-    # together and this automation would move only one of them.
-    "game-01",
+
 }
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {

@@ -3,6 +3,8 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-09-12
 
+On 2026-09-12 I retired `game-01` from active service. CT 123 remains stopped on Green with boot disabled and its 80 GiB `local-lvm:vm-123-disk-0` volume retained. The 6 vCPUs and 12 GiB configured memory are inactive; the disk has not been reclaimed.
+
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
 I verified the node and physical-storage state against all five nodes on 2026-08-04. Quorum held at five votes.

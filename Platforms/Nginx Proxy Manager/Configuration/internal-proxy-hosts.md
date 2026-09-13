@@ -1,7 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-12
+
+On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
 I route 24 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 23 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
@@ -27,8 +29,6 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `prometheus.alphasecunited.com` | `192.168.73.2:9090` | HTTP | Prometheus starts with this HTTPS external URL. No added NPM authentication. |
 | `splunk.alphasecunited.com` | `192.168.72.3:8000` | HTTPS | NPM connects to Splunk Web's existing HTTPS listener. HEC, syslog, & management ports remain direct backend services. |
 | `ts3-manager.alphasecunited.com` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, & Playit ports remain outside NPM. |
-| `games.alphasecunited.com` | `192.168.80.30:80` | HTTP | Pelican Panel. Its `BEHIND_PROXY` mode makes the bundled Caddy listen on plain `:80` with auto-HTTPS off, so NPM owns TLS. Game ports stay outside NPM. |
-| `wings.alphasecunited.com` | `192.168.80.30:8080` | HTTP | Pelican Wings API. It exists as a separate host because the browser opens the server console websocket directly to the daemon, and an HTTPS panel talking to a plain-HTTP daemon is blocked as mixed content. Pelican SFTP on 2022 bypasses NPM through a node alias pointing at `192.168.80.30`. |
 | `aiproxy.alphasecunited.com` | `192.168.40.35:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. I repointed the upstream from `ubuntu-dev` to `docker-main` on 2026-08-19; five provider auth files and clients are loaded. |
 | `mcp.alphasecunited.com` | `192.168.40.39:4788` | HTTP | Executor on `docker-blue`. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The administrator account is claimed. |
 | `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |

@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-09-12
 
-This inventory maps 14 workload guests. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 13 workload guests after Game 01’s retirement on 2026-09-12. Prometheus now has 54 healthy targets and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the monitoring check on 2026-09-03 after the floating-tag rollout. Prometheus reported 56 active targets with all 56 up: 18 node exporters, nine cAdvisor exporters, six What's Up Docker exporters, 20 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
@@ -37,7 +37,6 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | alpha-prod-01 | VM 401 | grey-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
 | media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
-| game-01 | LXC 123 | green-server | Self-hosted game servers (`192.168.80.30`, VLAN 80) | Pelican Panel v1.0.0-beta38<br>Pelican Wings v1.0.0-beta27<br>Docker 29.7.2<br>Vanilla Minecraft 26.2 / Java 25, running and public<br>Better Realism 7.2.0 / Minecraft 1.21.1 / Fabric 0.19.3, stopped and retained<br>Playit agent 1.0.9<br>node_exporter 1.9.0<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 
 ## ansible-01
 
@@ -194,23 +193,6 @@ I verified Caddy, cloudflared, the guest agent, `node_exporter`, and Wazuh activ
 | Storage | One 100 GiB local LVM root volume contains configuration, downloads, media, and transcodes |
 | Network | Static `192.168.40.42` on VLAN 40; no gateway inbound port forward |
 
-## game-01
-
-| Workload | Details |
-| --- | --- |
-| Pelican Panel | `ghcr.io/pelican/panel:latest`, running v1.0.0-beta38 on Laravel 13.25.0; SQLite in the `pelican-panel_pelican-data` volume; Compose under `/opt/docker/pelican-panel`; published as `games.alphasecunited.com` |
-| Pelican Wings | v1.0.0-beta27 as a native `wings.service` binary, not a container; API on `0.0.0.0:8080`, SFTP on `0.0.0.0:2022`; server volumes under `/var/lib/pelican/volumes` owned `pelican` uid 999 gid 988; published as `wings.alphasecunited.com` |
-| Node limits | 10240 MiB memory, 51200 MiB disk, 600 percent CPU, no overallocation; current assignments total 9216 MiB memory, 51200 MiB disk, and 500 percent CPU; allocations `192.168.80.30:25565` through `25575` |
-| Vanilla Minecraft 26.2 | Pelican server ID 3; official Vanilla egg; Java 25; `VANILLA_VERSION=26.2`; 8192 MiB memory, 400 percent CPU, and 20480 MiB disk on `192.168.80.30:25565`; running and public; `keep_inventory=true`, read back from the console and flushed to the world on 2026-08-11; reached `Done (0.257s)!` after a controlled restart; public status returned 26.2 and protocol 776 after the game-rule change |
-| Better Realism MC 7.2.0 | Pelican server ID 2; CurseForge server file 8570131; Minecraft 1.21.1 on Fabric 0.19.3 with Fabric Installer 1.1.2 and Java 21; stopped on 2026-08-09 and retained with its 363 MiB volume and world intact; 1024 MiB memory, 100 percent CPU, and 30720 MiB disk on `192.168.80.30:25566`; not public; its `-Xms4G` startup requires a limit restore before reactivation |
-| Playit agent | Native package 1.0.9; enabled/active; the one assigned Minecraft tunnel forwards to `127.0.0.1:25565`; persistent secret at `/etc/playit/playit.toml`, mode 0600 and not versioned |
-| Minecraft Playit relay | `minecraft-playit-relay.service`; enabled/active; dynamic user; loopback-only `127.0.0.1:25565` to Pelican allocation `192.168.80.30:25565` |
-| node_exporter | 1.9.0 from APT, held; `:9100` |
-| cAdvisor | `ghcr.io/google/cadvisor:latest`, currently v0.60.5, on `:9101`; registered 3 of 3 running containers |
-| Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `018` as `game-01` |
-| Storage | One 80 GiB `local-lvm` root volume holds the panel, Wings, and both server volumes; root used 6.0 GiB of 79 GiB at the final 2026-08-09 check; no world backup or snapshot exists |
-| Network | Static `192.168.80.30/24` on SERVERS-A/VLAN 80; `minecraft.alphasecunited.com` reaches only Vanilla Minecraft 26.2 through DNS-only Cloudflare CNAME/SRV records and Playit; no gateway inbound port forward and no Pelican interface in the tunnel |
-
 ## Galaxy Proxmox node monitoring
 
 | Node | Exporter | Service | Endpoint | State |
@@ -225,7 +207,7 @@ I verified Caddy, cloudflared, the guest agent, `node_exporter`, and Wazuh activ
 
 The Wazuh manager and dashboard verified 14 active remote agents on 2026-08-03. All five Proxmox nodes share `default, proxmox`. I enrolled `ubuntu-dev` as `020` on 2026-08-13. `debian-dev` held `019` from 2026-08-08 and was never added to this table; I decommissioned that VM on 2026-08-14 and removed agent `019` from the manager the same day via `manage_agents`, so `agent_control -l` no longer lists it.
 
-On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote agents and none disconnected or pending: the 14 rows from 2026-08-03 plus `game-01` as `018`, which had its own row in the guest table but was missing here. `docker-main` was not enrolled at all; its installed agent pointed at the manager's pre-migration address. I re-enrolled it the same day as `021`, so the manager now lists 16 active remote agents. The table below is the 2026-09-06 end state.
+On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote agents and none disconnected or pending: the 14 rows from 2026-08-03 plus `game-01` as `018`, which had its own row in the guest table but was missing here. `docker-main` was not enrolled at all; its installed agent pointed at the manager's pre-migration address. I re-enrolled it the same day as `021`, so the manager then listed 16 active remote agents. I removed retired agent 018 on 2026-09-12; the remaining 15 remote agents are active.
 
 | Host | Manager ID | Version | Group | State |
 |---|---:|---|---|---|
@@ -237,7 +219,6 @@ On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote 
 | ansible-01 | 009 | 4.14.6 | default | Active |
 | monitor-01 | 010 | 4.14.6 | default | Active |
 | docker-network | 011 | 4.14.6 | default | Active |
-| game-01 | 018 | 4.14.6 | default | Active |
 | grey-server | 013 | 4.14.6 | default, proxmox | Active |
 | purple-server | 014 | 4.14.6 | default, proxmox | Active |
 | blue-server | 015 | 4.14.6 | default, proxmox | Active |

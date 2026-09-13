@@ -3,9 +3,11 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-09-12
 
-Galaxy currently has seven active LXCs on grey, blue, red, or green for automation, Docker, monitoring, remote access, media, & game hosting. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
+I retired `game-01` on 2026-09-12. CT 123 remains stopped on `green-server`, boot disabled, with `local-lvm:vm-123-disk-0` (80 GiB) retained. It is excluded from the active table; its [archived guest record](../../../Archive/Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) records the retained allocation.
 
-I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. On 2026-09-06 I read every `lxc/*.conf` back and found one change no record had captured: `docker-blue` went from one vCPU, 1 GiB, and 0.5 GiB of swap to two vCPUs, 2 GiB, and 1 GiB of swap, with `onboot` set. Its configuration file was last written at 12:51 EDT on 2026-09-01, during the Executor and Docker MCP Gateway work on that host. The active LXC allocation now totals 19 vCPUs, 39 GiB of memory, and 10.5 GiB of swap. The values below are the live settings on 2026-09-06.
+Galaxy currently has six active LXCs on grey, blue, or red for automation, Docker, monitoring, remote access, and media. Retired CT 105 `ai-bravo-02` was deleted from grey on 2026-08-09; its final configuration and TNIO/OpenClaw-backed records remain in the archive.
+
+I recaptured all seven containers after the [2026-08-10 resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md), then raised `docker-main` to 16 GiB and attached Grey's GTX 1080 Ti on 2026-09-04. On 2026-09-06 I read every `lxc/*.conf` back and found one change no record had captured: `docker-blue` went from one vCPU, 1 GiB, and 0.5 GiB of swap to two vCPUs, 2 GiB, and 1 GiB of swap, with `onboot` set. Its configuration file was last written at 12:51 EDT on 2026-09-01, during the Executor and Docker MCP Gateway work on that host. At that capture the active LXC allocation totaled 19 vCPUs, 39 GiB of memory, and 10.5 GiB of swap. The 2026-09-12 Game 01 retirement reduces the active allocation to 13 vCPUs, 27 GiB memory, and 8.5 GiB swap. The values below are the live settings on 2026-09-06.
 
 On 2026-09-12 I moved CT 100 to Blue's `local-lvm`, preserving its address and resource settings. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds verification and the TFTP follow-up.
 
@@ -17,7 +19,6 @@ On 2026-09-12 I moved CT 100 to Blue's `local-lvm`, preserving its address and r
 | 107 | docker-network | blue-server | enabled (`started`) | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.85.2/24 | 192.168.85.1 | 85 |
 | 108 | docker-blue | blue-server | enabled | Debian GNU/Linux 13 (trixie) | 2 | 2 GiB | 192.168.40.39/24 | 192.168.40.1 | 40 |
 | 110 | docker-main | grey-server | disabled | Debian GNU/Linux 12 (bookworm) | 4 | 16 GiB | 192.168.40.35/24 | 192.168.40.1 | 40 |
-| 123 | game-01 | green-server | disabled | Debian GNU/Linux 13 (trixie) | 6 | 12 GiB | 192.168.80.30/24 | 192.168.80.1 | 80 |
 | 842 | media-01 | red-server | disabled | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 192.168.40.42 | 192.168.40.1 | 40 |
 
 ## LXC 100 - ansible-01
@@ -187,37 +188,6 @@ Until 2026-09-06 the configuration also carried `unused0: hddpool:subvol-110-dis
 
 - Root-login only, keyed, by decision. This host is outside the three-account model and has no `dkadi` account.
 - The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07. Immich and Forgejo mount the host's zone file; Immich already ran on Eastern through its own `TZ` variable, and Forgejo keeps reporting UTC until its next restart. The CLI Proxy API container carries `TZ=Asia/Shanghai` from its upstream image.
-
-## LXC 123 - game-01
-
-### Configuration
-| Setting | Value |
-| --- | --- |
-| Node | green-server |
-| High availability | disabled |
-| OS | Debian GNU/Linux 13 (trixie) |
-| vCPU | 6 |
-| Memory | 12 GiB |
-| Swap | 2 GiB |
-| Unprivileged | yes |
-| Features | nesting=1,keyctl=1 |
-| On boot | yes |
-
-### Storage
-| Device | Mount | Storage | Volume | Size | Backup |
-| --- | --- | --- | --- | --- | --- |
-| rootfs | / | local-lvm | vm-123-disk-0 | 80G | default |
-
-### Network
-| Interface | Bridge | VLAN | IP | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- |
-| eth0 | vmbr0 | 80 | 192.168.80.30/24 | 192.168.80.1 | enabled | `<REDACTED_GAME_01_MAC>` |
-
-### Administrative Access
-
-- SSH is public-key only. Root login, password authentication, and keyboard-interactive authentication are disabled.
-- SSH Manager reaches the normal administrative account as `dkadi`, which holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt. `/etc/sudoers.d/00-rootpw` points that prompt at root's password, and the SSH Manager answers it from its configured entry. The `90-dkadi` NOPASSWD drop-in I added on 2026-08-11 came off on 2026-09-07, so the host is no longer a deviation from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md). [NOPASSWD Drop-ins Removed on game-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20game-01%20-%202026-09-07.md).
-- `ansible` keeps its NOPASSWD drop-in. `ai-agent` logs in by key and is not allowed to run sudo since its `90-ai-agent` drop-in was removed the same day, matching the other ten guests. The 2026-08-11 grant is recorded in [Vanilla Keep Inventory and Host Sudo Policy - 2026-08-11](../../../Platforms/Game%20Servers/Documentation/Change%20Records/Vanilla%20Keep%20Inventory%20and%20Host%20Sudo%20Policy%20-%202026-08-11.md).
 
 ## LXC 842 - media-01
 

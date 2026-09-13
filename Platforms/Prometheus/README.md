@@ -1,9 +1,11 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-12
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 57 targets: `node_exporter` on 18 Linux hosts, cAdvisor on all 9 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 20 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+On 2026-09-12 I removed Game 01’s node, cAdvisor and panel targets and its Grafana node dashboard. Prometheus reports 54 targets, all UP; Grafana has no firing or pending Game 01 alert; two resolved cache entries remain. The 24 shared alert rules continue to cover the remaining fleet.
+
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 54 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 19 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those six public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation. I use `AG-Proxmox-Nodes` as the destination Network List for `Allow Monitor to Proxmox monitoring`; that dated record explains the membership expansion under its former name.
 
@@ -45,18 +47,18 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 
 | Job | Targets |
 |---|---|
-| `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, ubuntu-dev (configured `host` label `ubuntu-dev`), game-01 |
-| `cadvisor` | all 9 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01, game-01 |
+| `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, ubuntu-dev (configured `host` label `ubuntu-dev`) |
+| `cadvisor` | all 8 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
-| `blackbox` | the 20 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
+| `blackbox` | the 19 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `wud` | What's Up Docker `:latest`, currently 8.4.0, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
-its administrative API disabled, no historical label from the retired lab
-workload, and all 57 targets up.
+its administrative API disabled and all 54 targets up. Retired Game 01 samples
+remain in historical storage until the 15-day retention expires.
 
 cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
@@ -64,9 +66,9 @@ cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Its 2026-0
 
 Until 2026-07-25 the datasource and both imported dashboards existed only inside the `grafana_data` Docker volume. Removing that volume would have destroyed all of it with nothing in git to rebuild from.
 
-`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 24 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 26 dashboards, and 24 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
 
-The 24 rules sit in six groups. Availability, Capacity, Network and Power and hardware cover host, exporter, service, Proxmox node and named guest availability, container restart loops, filesystem, Proxmox storage, memory, CPU, load and disk capacity, service latency, TLS certificate expiry, UPS state and hardware temperature. Storage health reads the SMART and NVMe textfiles on the five nodes. Updates carries four notify-only rules for pending security updates, other OS updates, a required reboot and a newer container image, fed by the node_exporter textfile collectors on all 18 hosts and What's Up Docker on the six Compose hosts. Every rule carries a `class` label, infrastructure or updates, and Grafana holds all 24 as file-provisioned rules with no evaluation error in the folder `AlphaSec United Alerts`, renamed from `Homelab Alerts` on 2026-09-03; the bot prints the folder name in each message footer. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user and colours the message by class; a child route groups the Updates class by rule name and repeats once a year, so an update is announced once and resolved once. The records are [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md), [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md) and [Certificate, Drive Health and Update Alert Rules - 2026-09-02](Documentation/Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md).
+The 24 rules sit in six groups. Availability, Capacity, Network and Power and hardware cover host, exporter, service, Proxmox node and named guest availability, container restart loops, filesystem, Proxmox storage, memory, CPU, load and disk capacity, service latency, TLS certificate expiry, UPS state and hardware temperature. Storage health reads the SMART and NVMe textfiles on the five nodes. Updates carries four notify-only rules for pending security updates, other OS updates, a required reboot and a newer container image, fed by the node_exporter textfile collectors on all 17 hosts and What's Up Docker on the six Compose hosts. Every rule carries a `class` label, infrastructure or updates, and Grafana holds all 24 as file-provisioned rules with no evaluation error in the folder `AlphaSec United Alerts`, renamed from `Homelab Alerts` on 2026-09-03; the bot prints the folder name in each message footer. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user and colours the message by class; a child route groups the Updates class by rule name and repeats once a year, so an update is announced once and resolved once. The records are [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md), [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md) and [Certificate, Drive Health and Update Alert Rules - 2026-09-02](Documentation/Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md).
 
 Since 2026-08-27 there are two providers, because eighteen node dashboards in the same folder as the overview would bury it, and because the header dropdowns filter by tag. Their paths must not nest: Grafana's file provider walks its path recursively, so a provider pointing at the parent would claim the node dashboards too and the two would fight over the same files on every scan.
 
@@ -76,29 +78,29 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 
 ## Dashboards
 
-27 dashboards in two Grafana folders, all generated from [Tools/](Tools/README.md) and committed here.
+26 dashboards in two Grafana folders, all generated from [Tools/](Tools/README.md) and committed here.
 
 | Folder | Dashboard | UID | Purpose |
 |---|---|---|---|
 | Homelab | Homelab Overview | `homelab-overview` | Eight health tiles, one table of everything failing a check, the fleet table, service reachability, and links out |
 | Homelab | Proxmox · Galaxy Cluster | `proxmox-cluster` | Quorum, the five nodes, every guest, guest I/O, every storage |
-| Homelab | Containers | `containers` | Every container across the nine cAdvisor hosts, 71 of them on 2026-09-05, with restart and OOM tables |
+| Homelab | Containers | `containers` | Every container across the eight cAdvisor hosts, with restart and OOM tables; the nine-host set held 71 on 2026-09-05 |
 | Homelab | Services & Uptime | `services-uptime` | The 19 names through NPM: reachability, latency by request phase, TLS expiry |
 | Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
 | Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
 | Homelab | Power & UPS | `power-ups` | UPS-02 battery, runtime, load, mains, and status flags; UPS-01 is absent while its data cable remains disconnected |
-| Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 18 node_exporters |
+| Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 17 node_exporters |
 | Homelab | TeamSpeak | `teamspeak` | ts02 and ts03, with the fault isolated to the server or the path in front of it |
 | Nodes | one per host | `node-<host>` | Status, CPU, memory, filesystems, disk, network, then whatever else that host has |
 
 Every header carries two dashboard-link dropdowns filtered by tag: **Homelab** lists the nine and **Nodes** the
-eighteen, and both keep the current time range. Any table with a hostname in it links that column to that
+seventeen, and both keep the current time range. Any table with a hostname in it links that column to that
 host's dashboard, so the fleet table, the guest table, the storage tables and the target list are all routes
 into a node board.
 
 ### One dashboard per host
 
-Eighteen of the 27 are per-host. Each is a real dashboard with its own UID and its own entry in the folder,
+Seventeen of the 26 are per-host. Each is a real dashboard with its own UID and its own entry in the folder,
 not a `$host` filter on a shared one, because a host is a thing you open rather than a variable you set, and
 because a filter can only show what is true of every host. A per-host board can show `grey-server`'s ZFS pool,
 `media-01`'s containers, `red-server`'s UPS and `blue-server`'s NVMe, and omit each of those from the fifteen

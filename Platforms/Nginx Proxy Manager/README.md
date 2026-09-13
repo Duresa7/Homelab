@@ -1,15 +1,17 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-12
 
-I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 23 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
+I retired proxy hosts 24 (`games.alphasecunited.com`) and 25 (`wings.alphasecunited.com`) on 2026-09-12. Both records are marked deleted and disabled, their generated configurations are absent, and Nginx validation and reload passed.
+
+I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 21 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
 ## Current State
 
 | Item | Current value |
 |---|---|
-| Deployment status | Runtime healthy; 24 proxy hosts Online, automated renewal path, restart recovery, & bounded logging verified |
+| Deployment status | Runtime healthy; 22 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network`, Debian 13, `192.168.85.2` |
 | NPM release | 2.15.1 |
 | Live path | `/opt/docker/nginx-proxy-manager` |
@@ -21,7 +23,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 | Shared certificate | Let's Encrypt wildcard/apex certificate; expires `2026-10-08 23:49:46 UTC` |
 | Shared TLS policy | Certificate assigned; Force SSL and HTTP/2 enabled; HSTS disabled |
 
-The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 23 internal application hosts report Online. TS3 Manager, both Pelican interfaces, CLI Proxy API, and Open WebUI are in the retained set. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
+The NPM health check passes and the administrative UI returns HTTP `200` at `http://192.168.85.2:81`. I don't assign a domain name to that administrator interface. The original NetBird host remains unchanged, and 21 internal application hosts report Online. TS3 Manager, CLI Proxy API, and Open WebUI are in the retained set. Every current host redirects HTTP to HTTPS, presents the wildcard certificate, & returns an application response. Public DNS has no A record for the application names.
 
 ## Records
 

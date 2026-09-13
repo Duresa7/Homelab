@@ -1,7 +1,9 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-12
+
+I removed disconnected `game-01` agent 018 on 2026-09-12. The manager now lists 15 remote agents, all active, and no Game 01 enrollment. Earlier counts below remain dated observations.
 
 I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
 
@@ -57,7 +59,6 @@ The local image applies two patches to the pinned upstream image. The Indexer cl
 | `blue-server` | 4.14.6-1, held | ID `015`, `blue-server` | `192.168.70.12` | Enabled/active; TCP 1514 established |
 | `red-server` | 4.14.6-1, held | ID `016`, `red-server` | `192.168.70.13` | Enabled/active; TCP 1514 established |
 | `green-server` | 4.14.6-1, held | ID `017`, `green-server` | `192.168.70.14` | Enabled/active; TCP 1514 established |
-| `game-01` | 4.14.6-1, held | ID `018`, `game-01` | `192.168.80.30` | Enabled/active; TCP 1514 established |
 | `ubuntu-dev` | 4.14.6-1 | ID `020`, `ubuntu-dev` | `192.168.40.179` | Enabled/active, verified locally 2026-08-14: `wazuh-modulesd`, `wazuh-logcollector`, `wazuh-syscheckd`, `wazuh-agentd`, and `wazuh-execd` all running |
 
 The manager and dashboard verified IDs `004` through `017` active and synchronized on 2026-08-03. Both interfaces reported zero disconnected, pending, or never-connected agents.

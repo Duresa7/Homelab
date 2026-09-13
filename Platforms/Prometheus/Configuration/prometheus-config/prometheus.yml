@@ -3,7 +3,7 @@
 #
 # Job naming: one job per exporter type, with the hostname carried in a `host`
 # label. The earlier layout used one job per host, which made `job` double as a
-# hostname. The current configuration has 18 node_exporter targets and seven
+# hostname. The current configuration has 17 node_exporter targets and seven
 # jobs overall. Changing it breaks graph continuity for series that existed
 # before the switch; with 15-day retention that discontinuity ages out.
 global:
@@ -46,13 +46,11 @@ scrape_configs:
         labels: {host: docker-network, role: docker}
       - targets: ["192.168.73.2:9100"]
         labels: {host: monitor-01, role: monitoring}
-      - targets: ["192.168.80.30:9100"]
-        labels: {host: game-01, role: game}
       - targets: ["192.168.40.179:9100"]
         labels: {host: ubuntu-dev, role: workstation}
 
   # -------------------------------------------------------------- cadvisor
-  # Per-container CPU, memory and restart detection across all nine Docker
+  # Per-container CPU, memory and restart detection across all eight Docker
   # hosts.
   #
   # This job listed docker-main alone from 2026-07-25 to 2026-07-26. cAdvisor
@@ -85,8 +83,6 @@ scrape_configs:
         labels: {host: security-01, role: security}
       - targets: ["192.168.73.2:9101"]
         labels: {host: monitor-01, role: monitoring}
-      - targets: ["192.168.80.30:9101"]
-        labels: {host: game-01, role: game}
 
   # ------------------------------------------------------------------- wud
   # What's Up Docker on the six Compose hosts. One gauge row per container
@@ -116,6 +112,11 @@ scrape_configs:
   # CPU, memory, disk and running state, all ten storages, node status and
   # quorum. Unchanged from the previous configuration.
   - job_name: proxmox
+    # Retired CT 123 remains stored offline; exclude it from metrics and alerts.
+    metric_relabel_configs:
+      - source_labels: [id]
+        regex: "lxc/123"
+        action: drop
     static_configs:
       - targets: ["192.168.70.10"]
     metrics_path: /pve
@@ -131,7 +132,7 @@ scrape_configs:
   # Probes each internal service name through NPM, so a failure means the path a
   # person actually uses is broken: local DNS, the proxy, the certificate, or the
   # backend. 60s because uptime does not need 15-second resolution, and it keeps
-  # the probe load on NPM to 21 requests a minute.
+  # the probe load on NPM to 19 requests a minute.
   - job_name: blackbox
     scrape_interval: 60s
     metrics_path: /probe
@@ -158,7 +159,6 @@ scrape_configs:
           - https://splunk.alphasecunited.com/
           - https://ts3-manager.alphasecunited.com/
           - https://openwebui.alphasecunited.com/
-          - https://games.alphasecunited.com/
           # The Discord alert bot's own health endpoint, over the Compose
           # network. /health answers 200 only while its Discord session is
           # ready, so a dead bot trips "Internal service is unreachable" rather

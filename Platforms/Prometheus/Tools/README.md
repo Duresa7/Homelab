@@ -1,7 +1,7 @@
 # Dashboard Tooling
 
 **Created:** 2026-08-27  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-12
 
 Every dashboard under `Configuration/grafana/dashboards/` is generated. Do not hand-edit the JSON; change
 the source here and re-run the builder, or the next build overwrites the edit.
@@ -11,7 +11,7 @@ cd Platforms/Prometheus
 python3 Tools/build_dashboards.py
 ```
 
-That writes 27 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
+That writes 26 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
 network access and nothing but the standard library.
 
 ## The three files
@@ -19,14 +19,14 @@ network access and nothing but the standard library.
 | File | What it holds |
 |---|---|
 | `dashlib.py` | Panel constructors, the shared thresholds and colours, and the `Grid` that places panels |
-| `inventory.py` | The 18 hosts, what each one is, and which collectors it actually runs |
+| `inventory.py` | The 17 hosts, what each one is, and which collectors it actually runs |
 | `build_dashboards.py` | One function per dashboard, plus `node_dashboard()` for the per-host set |
 
 ## Making a change
 
 **Change how everything looks.** Edit a constant in `dashlib.py`. `PCT_USED` is the amber-at-80,
 red-at-95 threshold used by every capacity panel; `TS_CUSTOM` is the line weight and fill; `LEGEND_TABLE` is
-the legend shape. One edit moves all 27 dashboards together, which is the reason they are generated.
+the legend shape. One edit moves all 26 dashboards together, which is the reason they are generated.
 
 **Add a panel to every node dashboard.** Add it to `node_dashboard()` in `build_dashboards.py`. If it only
 applies to some hosts, gate it on a flag: `if n["zfs"]:`. Do not gate it on the hostname.
