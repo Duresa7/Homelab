@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-14
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It is available only through internal DNS at `https://mcp.alphasecunited.com`; no public DNS record or WAN forwarding exists.
 
@@ -17,11 +17,12 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 | Upstream listener | `192.168.40.39:4788` |
 | Live Compose path | `/opt/docker/executor/docker-compose.yml` |
 | Persistent state | `/opt/docker/executor/data` |
-| Connected integrations | Cloudflare Account MCP, Supabase MCP, UniFi MCP, SSH Manager MCP, Wazuh MCP, Miro MCP; Cloudflare API and Vercel API are registered without a connection |
+| Connected integrations | Cloudflare Account MCP, Draw.io MCP, Excalidraw (`excalidraw_app_demo`), Mermaid Chart (`mermaid_chart`), Microsoft Learn, Miro MCP, SSH Manager MCP, Supabase MCP, UniFi MCP, Wazuh MCP; connection inventory verified on 2026-09-14 |
 | Cloudflare Account MCP connection | Personal connection `cloudflareAccount` on integration `cloudflare_account` at `https://mcp.cloudflare.com/mcp`, full-access account API token as a Bearer header, every account and zone permission group by decision, 3 tools (`docs`, `execute`, `search`), `execute` runs without approval under the workspace Always run policy; OAuth on this server fails because Executor's client metadata document is not publicly reachable |
 | UniFi connection | Personal connection `unifiMcpGateway`, 5 tools |
 | SSH Manager connection | Personal connection `sshManagerMcpGateway`, 37 tools |
 | Wazuh connection | Personal connection `localWazuh`, 41 read-only tools |
+| Draw.io connection | Personal connection `drawio` on integration `drawio`, remote endpoint `https://mcp.draw.io/mcp`, no authentication, 2 tools verified through Executor on 2026-09-14 |
 | Restart policy | `unless-stopped` |
 
 Nginx Proxy Manager terminates TLS with the existing wildcard certificate and forwards to the HTTP listener on Docker Blue. UniFi resolves the name to Nginx Proxy Manager and permits only `192.168.85.2` to cross from AlphaSec-Access to `192.168.40.39:4788` for this proxy path.
@@ -34,7 +35,7 @@ The first administrator account is claimed. Credentials and Executor's generated
 
 The gateway endpoints are registered separately. `unifi-mcp-gateway` is displayed as `UniFi MCP`, uses personal connection `unifiMcpGateway`, and discovers 5 UniFi tools. `ssh-manager-mcp-gateway` is displayed as `SSH Manager MCP`, uses personal connection `sshManagerMcpGateway`, and discovers 37 SSH tools. `wazuh-mcp-server` uses personal connection `localWazuh` and discovers 41 tools from the local Manager and Indexer. Each connection keeps its own bearer token in Executor's encrypted credential provider, and all three integration header maps remain empty. The retired combined `docker-mcp-gateway` integration and `dockerMcpGateway` connection are absent.
 
-Every integration carries one workspace policy set to Always run, so no Executor approval requirement applies to any connection today; without such a policy Executor would pause tools whose annotations mark them as modifying state, as the Cloudflare `execute` tool did before its policy existed on 2026-09-06. UniFi permits read, create, update, and delete operations, and its full-access bypass executes mutations without confirmation. The Cloudflare Account MCP token can read and change anything in the Cloudflare account. SSH Manager reaches all eighteen configured servers in unrestricted mode and can obtain root on every one: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on ten hosts, and passwordless sudo on `ansible-01` and `ubuntu-dev`. Wazuh is enforced read-only at the MCP server: its bearer credential has only `wazuh:read`, so the 14 active-response and rollback tools never enter Executor's catalog.
+Each integration configured on 2026-09-06 carried a workspace policy set to Always run; draw.io was added on 2026-09-14 and now has the same explicit Always run policy (`drawio.*`), verified with concurrent tool calls; without such a policy Executor would pause tools whose annotations mark them as modifying state, as the Cloudflare `execute` tool did before its policy existed on 2026-09-06. UniFi permits read, create, update, and delete operations, and its full-access bypass executes mutations without confirmation. The Cloudflare Account MCP token can read and change anything in the Cloudflare account. SSH Manager reaches all eighteen configured servers in unrestricted mode and can obtain root on every one: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on ten hosts, and passwordless sudo on `ansible-01` and `ubuntu-dev`. Wazuh is enforced read-only at the MCP server: its bearer credential has only `wazuh:read`, so the 14 active-response and rollback tools never enter Executor's catalog.
 
 My three Codex profiles (`.codex`, `.codex_alt`, and `.codex_personal`) and two Claude Code profiles (default and `.claude_alt`) on `ubuntu-dev` use one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`. I enabled per-integration search tools in all five saved connections on 2026-09-06. I renewed OAuth for both Claude profiles and verified that both report connected at the new URL; fresh authenticated Codex discovery remains unverified. All five connections use OAuth. The direct `ssh-manager` and `unifi-network` client entries, standalone SSH Manager package, and UniFi client plugins are absent. Codex approves Executor tools without prompting, and Claude Code persistently allows `mcp__executor__*`, so the client layer does not add an approval gate to UniFi or SSH Manager.
 
@@ -42,6 +43,8 @@ I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both
 
 ## Records
 
+- [Draw.io MCP integration](Documentation/Change%20Records/Draw.io%20MCP%20Integration%20-%202026-09-14.md)
+- [Draw.io MCP compatibility assessment](Documentation/Draw.io%20MCP%20Compatibility%20-%202026-09-14.md)
 - [Cloudflare Account MCP integration](Documentation/Change%20Records/Cloudflare%20Account%20MCP%20Integration%20-%202026-09-06.md)
 - [Update to 1.6.8](Documentation/Change%20Records/Update%20to%201.6.8%20-%202026-09-06.md)
 - [Integration search tools](Documentation/Change%20Records/Integration%20Search%20Tools%20-%202026-09-06.md)
