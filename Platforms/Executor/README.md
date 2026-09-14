@@ -17,12 +17,13 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 | Upstream listener | `192.168.40.39:4788` |
 | Live Compose path | `/opt/docker/executor/docker-compose.yml` |
 | Persistent state | `/opt/docker/executor/data` |
-| Connected integrations | Cloudflare Account MCP, Draw.io MCP, Excalidraw (`excalidraw_app_demo`), Mermaid Chart (`mermaid_chart`), Microsoft Learn, Miro MCP, SSH Manager MCP, Supabase MCP, UniFi MCP, Wazuh MCP; connection inventory verified on 2026-09-14 |
+| Connected integrations | Brandfetch MCP, Cloudflare Account MCP, Draw.io MCP, Excalidraw (`excalidraw_app_demo`), Mermaid Chart (`mermaid_chart`), Microsoft Learn, Miro MCP, SSH Manager MCP, Supabase MCP, UniFi MCP, Wazuh MCP; connection inventory verified on 2026-09-14 |
 | Cloudflare Account MCP connection | Personal connection `cloudflareAccount` on integration `cloudflare_account` at `https://mcp.cloudflare.com/mcp`, full-access account API token as a Bearer header, every account and zone permission group by decision, 3 tools (`docs`, `execute`, `search`), `execute` runs without approval under the workspace Always run policy; OAuth on this server fails because Executor's client metadata document is not publicly reachable |
 | UniFi connection | Personal connection `unifiMcpGateway`, 5 tools |
 | SSH Manager connection | Personal connection `sshManagerMcpGateway`, 37 tools |
 | Wazuh connection | Personal connection `localWazuh`, 41 read-only tools |
 | Draw.io connection | Personal connection `drawio` on integration `drawio`, remote endpoint `https://mcp.draw.io/mcp`, no authentication, 2 tools verified through Executor on 2026-09-14 |
+| Brandfetch connection | Personal connection `brandfetch` on integration `brandfetch`, endpoint `https://mcp.brandfetch.io/mcp`, encrypted bearer credential, 6 tools discovered and brand search verified through Executor on 2026-09-14 |
 | Restart policy | `unless-stopped` |
 
 Nginx Proxy Manager terminates TLS with the existing wildcard certificate and forwards to the HTTP listener on Docker Blue. UniFi resolves the name to Nginx Proxy Manager and permits only `192.168.85.2` to cross from AlphaSec-Access to `192.168.40.39:4788` for this proxy path.
@@ -43,6 +44,8 @@ I permanently deleted the temporary pre-cutover archive on 2026-09-01 after both
 
 ## Records
 
+- [Brandfetch MCP integration](Documentation/Change%20Records/Brandfetch%20MCP%20Integration%20-%202026-09-14.md)
+- [Brandfetch MCP compatibility assessment](Documentation/Brandfetch%20MCP%20Compatibility%20-%202026-09-14.md)
 - [Draw.io MCP integration](Documentation/Change%20Records/Draw.io%20MCP%20Integration%20-%202026-09-14.md)
 - [Draw.io MCP compatibility assessment](Documentation/Draw.io%20MCP%20Compatibility%20-%202026-09-14.md)
 - [Cloudflare Account MCP integration](Documentation/Change%20Records/Cloudflare%20Account%20MCP%20Integration%20-%202026-09-06.md)
