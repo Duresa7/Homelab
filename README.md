@@ -9,7 +9,7 @@ I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Ga
 ![UniFi](https://img.shields.io/badge/UniFi-15_routed_LANs,_11_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_SIEM-000000?logo=splunk&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/Wazuh-16_active_agents-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-57_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-54_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
