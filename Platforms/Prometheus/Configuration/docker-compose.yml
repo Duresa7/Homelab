@@ -2,7 +2,7 @@
 # /home/dkadi/monitoring/docker-compose.yml
 #
 # cAdvisor is deliberately absent here. Ansible owns it as its own compose
-# project at /opt/docker/cadvisor so one playbook covers all nine Docker hosts
+# project at /opt/docker/cadvisor so one playbook covers all eight Docker hosts
 # identically, including this one.
 services:
   prometheus:

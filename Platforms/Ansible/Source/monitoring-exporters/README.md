@@ -55,7 +55,7 @@ v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all nine hosts and sits next to `node_exporter`.
+cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all eight hosts and sits next to `node_exporter`.
 
 ## Running the playbooks
 
@@ -75,7 +75,7 @@ ansible-playbook playbooks/node-exporter.yml
 # One host.
 ansible-playbook playbooks/node-exporter.yml -e target=splunk-siem
 
-# cAdvisor across all nine Docker hosts, then removal from one.
+# cAdvisor across all eight Docker hosts, then removal from one.
 ansible-playbook playbooks/cadvisor.yml
 ansible-playbook playbooks/cadvisor.yml -e target=media-01 -e cadvisor_state=absent
 
@@ -107,4 +107,4 @@ Scraping the new host also needs a UniFi policy from the collector's zone to the
 
 Separate projects on purpose. `fleet-updates` patches packages on 12 guests & updates 24 application Compose projects on a schedule; this project manages node_exporter on 10 targets & cAdvisor on 9 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
 
-The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so the monitoring-exporters playbook owns its updates. Its `:latest` tag follows the fleet's floating-image policy; re-running `cadvisor.yml` pulls the tag and reconciles all nine projects. The explicit move from v0.52.1 to v0.60.5 remains the historical fix for Docker's containerd snapshotter.
+The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so the monitoring-exporters playbook owns its updates. Its `:latest` tag follows the fleet's floating-image policy; re-running `cadvisor.yml` pulls the tag and reconciles all eight projects. The explicit move from v0.52.1 to v0.60.5 remains the historical fix for Docker's containerd snapshotter.

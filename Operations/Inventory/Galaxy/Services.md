@@ -27,7 +27,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) file version 2.7.21.5, HTTPS 443<br>Active Directory extension 0.86.0<br>DNS extension 2.76.0<br>Entra provisioning agent service running<br>OpenSSH |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 8.4.0<br>Wazuh agent 4.14.6 |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 9.0.2<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>MeshCentral 1.2.5<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
@@ -92,14 +92,14 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 57 of 57 targets `up` across seven jobs: node 18, cAdvisor 9, WUD 6, Proxmox 1, blackbox 21 (20 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
-| Grafana | 13.2.1 on TCP 3000; 27 provisioned dashboards and 24 provisioned alert rules in the `AlphaSec United Alerts` folder; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
+| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 54 of 54 targets `up` across seven jobs: node 17, cAdvisor 8, WUD 6, Proxmox 1, blackbox 20 (19 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
+| Grafana | 13.2.1 on TCP 3000; 26 provisioned dashboards and 24 provisioned alert rules in the `AlphaSec United Alerts` folder; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | `prom/blackbox-exporter:latest`, currently v0.28.0, on TCP 9115; probes 20 internal NPM names plus the alert bot's Compose health endpoint |
 | NUT exporter | `hon95/prometheus-nut-exporter:latest` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
 | Discord alert bot | `alphasecunited/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; running since 2026-09-02, healthy, delivery proven the same day |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
-| cAdvisor | `ghcr.io/google/cadvisor:latest`, currently v0.60.5, on TCP 9101; one of nine scraped cAdvisor endpoints |
+| cAdvisor | `ghcr.io/google/cadvisor:latest`, currently v0.60.5, on TCP 9101; one of eight scraped cAdvisor endpoints |
 | PeaNUT | `brandawg93/peanut:latest`, currently 6.0.0; authenticated UPS dashboard bound to `192.168.73.2:8090`; Compose under `/opt/docker/peanut`; reads Red and Grey NUT endpoints without a command account |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `010` as `monitor-01` |
 | Network | Static 192.168.73.2/24 on `MONITOR-A`, VLAN 73; UniFi DHCP serves .6 through .254 |
