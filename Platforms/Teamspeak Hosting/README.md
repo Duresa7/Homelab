@@ -1,7 +1,7 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-15
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
@@ -43,7 +43,7 @@ Each server is a separate Compose project with its own named volume, which is wh
 
 ## Monitoring
 
-The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each server twice a minute, once at its public address and once on its local UDP port, and reports which half is at fault. Metrics reach Prometheus through the existing node_exporter scrape on port 9100. The Grafana dashboard is `teamspeak` in the Homelab folder.
+The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each server twice a minute, once at its public address and once on its local UDP port, and reports which half is at fault. Metrics reach Prometheus through the existing node_exporter scrape on port 9100. The Grafana dashboard is `teamspeak` in the Homelab folder. Since 2026-09-15 the private [Uptime dashboard](https://grafana.alphasecunited.com/d/uptime) also shows both public Playit paths, their status histories, observed uptime, and monitoring coverage. A collector timestamp older than three minutes is unknown there.
 
 `blackbox_exporter` can't do this job because it has no UDP prober. The [change record](Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md) explains that and why the collector runs on `alpha-prod-01` rather than `monitor-01`.
 

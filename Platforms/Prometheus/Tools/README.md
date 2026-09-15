@@ -1,7 +1,7 @@
 # Dashboard Tooling
 
 **Created:** 2026-08-27  
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-15
 
 Every dashboard under `Configuration/grafana/dashboards/` is generated. Do not hand-edit the JSON; change
 the source here and re-run the builder, or the next build overwrites the edit.
@@ -11,22 +11,23 @@ cd Platforms/Prometheus
 python3 Tools/build_dashboards.py
 ```
 
-That writes 26 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
+That writes 27 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
 network access and nothing but the standard library.
 
-## The three files
+## Source files
 
 | File | What it holds |
 |---|---|
 | `dashlib.py` | Panel constructors, the shared thresholds and colours, and the `Grid` that places panels |
 | `inventory.py` | The 17 hosts, what each one is, and which collectors it actually runs |
+| `uptime.py` | Service inventory, freshness checks, status bars, sampled uptime and coverage for the Uptime dashboard |
 | `build_dashboards.py` | One function per dashboard, plus `node_dashboard()` for the per-host set |
 
 ## Making a change
 
 **Change how everything looks.** Edit a constant in `dashlib.py`. `PCT_USED` is the amber-at-80,
 red-at-95 threshold used by every capacity panel; `TS_CUSTOM` is the line weight and fill; `TINT` is the six
-resource colours a single-series graph and a neutral stat tile draw from. One edit moves all 26 dashboards
+resource colours a single-series graph and a neutral stat tile draw from. One edit moves all 27 dashboards
 together, which is the reason they are generated.
 
 **Write no prose into a dashboard.** `Grid.section()` takes a title and an optional `collapsed` flag, with
@@ -70,7 +71,7 @@ python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards
 python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090
 ```
 
-The first is offline and checks the grid. The second runs all 1,346 queries against Prometheus and fails on
+The first is offline and checks the grid. The second runs all 1,466 queries against Prometheus and fails on
 any that error or return nothing unexpectedly. Run both before deploying.
 
 ## Deploying
@@ -86,3 +87,5 @@ ssh dkadi@192.168.73.2 'cd ~/monitoring/grafana && tar xzf /tmp/d.tgz && \
 
 Changing `provisioning/dashboards/homelab.yaml` does need `docker restart grafana`, because provider
 configuration is read at startup.
+
+The Uptime calculation and collector checks are in `Tests/test_uptime.py`. I run its unit tests directly, then generate the PromQL cases with `--promql-fixtures` and pass that output to `promtool test rules`. The cases cover failed probes, partial tunnel connectivity, stale collectors, unknown time, and a brief outage inside a history bar.

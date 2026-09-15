@@ -46,6 +46,7 @@ import urllib.request
 VARIABLE_SUBSTITUTIONS = {
     "$__rate_interval": "5m",
     "$__interval": "1m",
+    "$__range_s": "21600",
     "$__range": "6h",
     "$role": ".*",
     "$host": ".*",

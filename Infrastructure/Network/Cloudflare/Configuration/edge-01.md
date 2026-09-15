@@ -1,7 +1,7 @@
 # Cloudflare Tunnel: edge-01
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-15
 
 I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Cloudflare Zero Trust dashboard rather than a local file. The connector runs as cloudflared on the edge-01 host. This tunnel is the only inbound path from the Internet to my services; the router forwards no ports.
 
@@ -50,3 +50,7 @@ I hold four zones in this Cloudflare account: `alphasecunited.com`, `alphsec.com
 ## Related
 
 - End-to-end design: [External Service Ingress](../../../../Architecture/External-Service-Ingress.md)
+
+## Uptime monitoring
+
+On 2026-09-15 I added `edge-uptime.timer`, which runs `/usr/local/lib/edge-uptime.py` every minute. I read the connector metric on loopback port 20241 and probe the local Caddy HTTP listener and Coolify origin on `192.168.80.10:8000`. The collector writes only the connection count, two origin results, and a timestamp to `/var/lib/prometheus/node-exporter/edge-uptime.prom`. The existing node_exporter scrape carries these into Prometheus without another listener or firewall rule. I verified four connections, both origins responding, and the timer active. The private [Uptime dashboard and measurement limits](../../../../Platforms/Prometheus/Documentation/Change%20Records/Uptime%20Dashboard%20-%202026-09-15.md) cover the display.

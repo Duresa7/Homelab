@@ -1,9 +1,9 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-15
 
-This inventory maps 13 workload guests after Game 01’s retirement on 2026-09-12. Prometheus now has 54 healthy targets and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I deployed MeshCentral on `docker-blue` on 2026-09-12 as a pilot beside RustDesk; both run on that host until I choose between them. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
+This inventory maps 13 workload guests after Game 01’s retirement on 2026-09-12. Prometheus has 58 healthy targets after the 2026-09-15 uptime expansion and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I deployed MeshCentral on `docker-blue` on 2026-09-12 as a pilot beside RustDesk; both run on that host until I choose between them. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
 I repeated the monitoring check on 2026-09-03 after the floating-tag rollout. Prometheus reported 56 active targets with all 56 up: 18 node exporters, nine cAdvisor exporters, six What's Up Docker exporters, 20 blackbox probes, one NUT exporter target for UPS-02, the Proxmox exporter, and Prometheus itself. No target labels or scrape URLs referenced Kasm.
 
@@ -92,10 +92,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 54 of 54 targets `up` across seven jobs: node 17, cAdvisor 8, WUD 6, Proxmox 1, blackbox 20 (19 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
+| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 58 of 58 targets `up` across seven jobs: node 17, cAdvisor 8, WUD 6, Proxmox 1, blackbox 24 (23 NPM names plus the alert bot's health endpoint), NUT 1, & self-scrape 1 |
 | Grafana | 13.2.1 on TCP 3000; 26 provisioned dashboards and 24 provisioned alert rules in the `AlphaSec United Alerts` folder; root notification policy routes to the webhook contact point `discord-bot`; `GF_DATABASE_WAL` absent since the 2026-09-02 recreate; administrator credential held outside this repository |
 | Proxmox exporter | `prompve/prometheus-pve-exporter:latest` on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
-| blackbox exporter | `prom/blackbox-exporter:latest`, currently v0.28.0, on TCP 9115; probes 20 internal NPM names plus the alert bot's Compose health endpoint |
+| blackbox exporter | `prom/blackbox-exporter:latest`, currently v0.28.0, on TCP 9115; probes 23 internal NPM names plus the alert bot's Compose health endpoint |
 | NUT exporter | `hon95/prometheus-nut-exporter:latest` on TCP 9995; Prometheus scrapes UPS-02 on grey-server; UPS-01 remains absent while its data cable is disconnected |
 | Discord alert bot | `alphasecunited/alert-bot:1` built from `Platforms/Discord Alert Bot/Source/`; receives Grafana webhooks on TCP 8080 over the Compose network only and posts to Discord `#bots` as the Anubis AS bot user; running since 2026-09-02, healthy, delivery proven the same day |
 | node_exporter | 1.9.0 on TCP 9100, installed through the monitoring-exporters Ansible project |
@@ -258,3 +258,5 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | --- | --- | --- | --- | --- |
 | red-server | 2.8.1-5 | `ups01`, APC Back-UPS Pro BR1500MS2 (UPS-01) | None | Disabled 2026-08-31: the `[ups01]` stanza is commented out in `/etc/nut/ups.conf`, `nut-server` is inactive, and `upsc -l` lists nothing. UPS-01's data cable has been disconnected since 2026-08-28. Re-read 2026-09-06 |
 | grey-server | 2.8.1-5 | `ups02`, APC Back-UPS RS 1500MS2 (UPS-02) | `192.168.70.10:3493` | Driver and server active; `nut-monitor` disabled; `upsc -l` returns `ups02`. Re-read 2026-09-06 |
+
+On 2026-09-15 I verified the [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Records/Uptime%20Dashboard%20-%202026-09-15.md): 29 service checks, 27 provisioned dashboards, 58 healthy scrape targets. `edge-uptime.timer` on edge-01 now reports Cloudflare connection count and Caddy/Coolify origin responses through the existing node_exporter textfile collector.
