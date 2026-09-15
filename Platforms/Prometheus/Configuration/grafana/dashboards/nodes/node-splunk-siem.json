@@ -1,7 +1,7 @@
 {
   "uid": "node-splunk-siem",
   "title": "splunk-siem",
-  "description": "splunk-siem — a KVM virtual machine at 192.168.72.3.",
+  "description": "splunk-siem · 192.168.72.3 · role security · a KVM virtual machine on grey-server.",
   "tags": [
     "node",
     "security",
@@ -64,26 +64,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "**splunk-siem** · `192.168.72.3` · role `security` · a KVM virtual machine, on [grey-server](/d/node-grey-server).  \nEight tiles, then one section per resource. Use **Nodes** in the header to jump to another host.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Reachable",
       "datasource": {
@@ -91,12 +71,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 3
+        "y": 1
       },
-      "description": "Whether Prometheus got a scrape, which is not the same as the workload being healthy.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -145,9 +124,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -175,10 +154,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -188,7 +167,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -209,9 +188,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -239,10 +218,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -286,8 +265,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -297,7 +276,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"}[$__rate_interval])) * 100)",
+          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"}[$__rate_interval]) and on (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"} > 0)) * 100)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -315,12 +294,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 3
+        "y": 1
       },
-      "description": "Runnable processes divided by cores. Above 1 means work is queueing.",
+      "description": "One-minute load divided by core count.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -363,8 +342,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -374,7 +353,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "node_load1{host=\"splunk-siem\"} / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"splunk-siem\"}))",
+          "expr": "node_load1{host=\"splunk-siem\"} / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -392,12 +371,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 7
+        "y": 6
       },
-      "description": "Against MemAvailable, so page cache is counted as free — which it effectively is.",
+      "description": "Against MemAvailable, so page cache counts as free.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -440,8 +419,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -469,12 +448,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 6
       },
-      "description": "Any swap in use on a host with RAM to spare is worth a look; sustained growth is a leak.",
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
@@ -514,7 +492,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -542,10 +520,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 7
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -589,8 +567,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -600,7 +578,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\", mountpoint=\"/\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\", mountpoint=\"/\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -618,12 +596,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 6
       },
-      "description": "Processes in the run queue at the moment of the scrape.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -632,7 +609,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -653,9 +630,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -688,26 +665,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Where the time goes, and whether anything is waiting for it.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "timeseries",
       "title": "CPU by mode",
       "datasource": {
@@ -718,16 +675,16 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 12
       },
-      "description": "Normalised to one core's worth, so the stack tops out at 100% however many cores the host has. A tall iowait band is a disk problem wearing a CPU costume.",
+      "description": "Normalised to one core, so the stack tops out at 100%.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -809,9 +766,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 12
       },
-      "description": "The flat line is the core count. Load above it means the run queue is longer than the machine is wide.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -898,12 +854,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -940,7 +893,7 @@
         },
         {
           "refId": "D",
-          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"splunk-siem\"}))",
+          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -958,27 +911,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 24
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Where the RAM went. Cache is not a leak.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 21
       }
     },
     {
@@ -992,16 +925,15 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 22
       },
-      "description": "Stacked to total RAM. Only the blue band is memory a process actually holds.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -1111,12 +1043,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1173,7 +1102,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 22
       },
       "fieldConfig": {
         "defaults": {
@@ -1260,12 +1189,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1304,17 +1230,16 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 35
+        "y": 31
       },
-      "description": "Faults that had to go to disk. Sustained non-zero means the working set no longer fits.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1343,7 +1268,8 @@
           },
           "unit": "reqps",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#7EB6FF"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1392,27 +1318,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 44
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Real mounts only.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 39
       }
     },
     {
@@ -1426,7 +1332,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 46
+        "y": 40
       },
       "fieldConfig": {
         "defaults": {
@@ -1483,7 +1389,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1505,7 +1411,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 46
+        "y": 40
       },
       "fieldConfig": {
         "defaults": {
@@ -1745,7 +1651,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1756,7 +1662,7 @@
         },
         {
           "refId": "B",
-          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"}",
+          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"}",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1767,7 +1673,7 @@
         },
         {
           "refId": "C",
-          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"}",
+          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"}",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1778,7 +1684,7 @@
         },
         {
           "refId": "D",
-          "expr": "100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
+          "expr": "100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1837,7 +1743,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 55
+        "y": 49
       },
       "fieldConfig": {
         "defaults": {
@@ -1919,7 +1825,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"splunk-siem\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1937,27 +1843,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 64
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical devices as this host sees them. These are this machine's own virtual disks.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 57
       }
     },
     {
@@ -1971,9 +1857,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 66
+        "y": 58
       },
-      "description": "Reads above the line, writes below it.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2028,12 +1913,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2072,7 +1954,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 66
+        "y": 58
       },
       "fieldConfig": {
         "defaults": {
@@ -2128,12 +2010,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2172,9 +2051,8 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 75
+        "y": 67
       },
-      "description": "Share of wall time with at least one request in flight. Sustained 100% is saturation.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2275,9 +2153,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 75
+        "y": 67
       },
-      "description": "Weighted I/O time: seconds of request-time accumulated per second. Above 1 means requests are queueing.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2363,27 +2240,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 83
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 84
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical and bridge interfaces. Container veths and Proxmox firewall bridges are filtered out.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 75
       }
     },
     {
@@ -2397,9 +2254,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 86
+        "y": 76
       },
-      "description": "Inbound above the line, outbound below it.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2454,12 +2310,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2498,9 +2351,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 86
+        "y": 76
       },
-      "description": "Flat zero is the healthy shape.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2560,12 +2412,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2622,7 +2471,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 95
+        "y": 85
       },
       "fieldConfig": {
         "defaults": {
@@ -2680,12 +2529,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2724,9 +2570,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 95
+        "y": 85
       },
-      "description": "Retransmits against total segments sent. The ratio is what matters, not the count.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2782,12 +2627,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2826,9 +2668,8 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 103
+        "y": 93
       },
-      "description": "Filling this table makes the host drop new connections without logging anything useful.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -2901,7 +2742,7 @@
         "h": 8,
         "w": 16,
         "x": 8,
-        "y": 103
+        "y": 93
       },
       "fieldConfig": {
         "defaults": {
@@ -2989,12 +2830,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -3031,27 +2869,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 111
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 112
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "What this machine is, and the housekeeping nobody looks at until it matters.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 101
       }
     },
     {
@@ -3065,7 +2883,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 114
+        "y": 102
       },
       "fieldConfig": {
         "defaults": {
@@ -3075,7 +2893,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3095,9 +2913,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -3128,7 +2946,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 114
+        "y": 102
       },
       "fieldConfig": {
         "defaults": {
@@ -3138,7 +2956,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3159,9 +2977,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3171,7 +2989,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"splunk-siem\"}))",
+          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"splunk-siem\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3192,7 +3010,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 114
+        "y": 102
       },
       "fieldConfig": {
         "defaults": {
@@ -3202,7 +3020,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3223,9 +3041,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3256,9 +3074,8 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 114
+        "y": 102
       },
-      "description": "Against the NTP source. A drifting clock quietly ruins every graph on this page.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -3298,7 +3115,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3308,7 +3125,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "node_timex_offset_seconds{host=\"splunk-siem\"}",
+          "expr": "abs(node_timex_offset_seconds{host=\"splunk-siem\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3329,7 +3146,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 119
+        "y": 107
       },
       "fieldConfig": {
         "defaults": {
@@ -3397,7 +3214,7 @@
         },
         {
           "refId": "C",
-          "expr": "node_exporter_build_info{host=\"splunk-siem\"}",
+          "expr": "label_replace(node_exporter_build_info{host=\"splunk-siem\"}, \"exporter_version\", \"$1\", \"version\", \"(.*)\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3419,7 +3236,7 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "pattern": "^(nodename|pretty_name|release|machine|version)$"
+              "pattern": "^(nodename|pretty_name|release|machine|exporter_version)$"
             }
           }
         },
@@ -3432,14 +3249,14 @@
               "pretty_name": "Operating system",
               "release": "Kernel",
               "machine": "Architecture",
-              "version": "node_exporter"
+              "exporter_version": "node_exporter"
             },
             "indexByName": {
               "nodename": 0,
               "pretty_name": 1,
               "release": 2,
               "machine": 3,
-              "version": 4
+              "exporter_version": 4
             }
           }
         }

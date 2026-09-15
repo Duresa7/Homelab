@@ -11,14 +11,14 @@ Output:
     Configuration/grafana/dashboards/nodes/*.json     -> Grafana folder "Nodes"
     Tests/allow-empty.json                            -> read by the query assertion
 
-Why generated. There is one dashboard per host, and eighteen hand-maintained
+Why generated. There is one dashboard per host, and seventeen hand-maintained
 copies of the same layout diverge the first time one of them is edited. The
 per-node layout lives in `node_dashboard()` once, and each host's capability
 flags in `inventory.py` decide which sections it grows.
 
 Panel form follows the data's job rather than habit:
 
-    a single current value            stat tile, with a sparkline if the trend helps
+    a single current value            stat tile: one large centred number
     a ratio against a known limit     bar gauge, one bar per thing
     change over time, <= 8 series     time series
     change over time, many series     time series of the top N, plus a table that
@@ -29,9 +29,14 @@ Panel form follows the data's job rather than habit:
     a list that should normally be
     empty                             table, with the empty state spelled out
 
-Two rules the colours follow. Green, amber and red are reserved for state, so no
-series ever wears them for identity. Multi-series graphs colour by series name,
-so a host keeps its colour when a filter changes how many series are drawn.
+A panel carries its number and nothing else: no bands of prose under a row
+header, no sparkline inside a tile, no legend table under a graph, and a
+description only where the value is computed in a way the title cannot say.
+
+Colour is either state or resource. Tiles, cells and bars are coloured by their
+thresholds. A single-series graph wears its resource's tint from dashlib.TINT,
+so CPU is the same salmon on every dashboard; a graph of several series colours
+by series name, so a host keeps its colour when a filter changes the count.
 """
 from __future__ import annotations
 
@@ -41,16 +46,12 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
-from dashlib import *          # noqa: F403
-from dashlib import (BY_NAME, CELL_COLOR_BG, CELL_COLOR_TEXT, CERT_DAYS, DS,
-                     GOOD_ABOVE_ZERO, BAD_ABOVE_ZERO, Grid, LEGEND_LIST,
-                     LEGEND_OFF, LEGEND_TABLE, LOAD_PER_CORE, MAP_OK_FAIL,
-                     MAP_UP_DOWN, PCT_LOAD, PCT_USED, TEMP_F, TEXT_ONLY,
-                     TOOLTIP_MULTI, TOOLTIP_SINGLE, bargauge, by_name, by_regex,
-                     cell_gauge, dash_links, dashboard, fixed, gauge, heatmap,
-                     mapping, override, q, stat, state_timeline, table, text,
-                     thresholds, timeseries, tq, var_constant, var_custom,
-                     var_query)
+from dashlib import (CELL_COLOR_BG, CELL_COLOR_TEXT, CERT_DAYS, GOOD_ABOVE_ZERO,
+                     BAD_ABOVE_ZERO, Grid, LEGEND_LIST, LEGEND_OFF, LOAD_PER_CORE,
+                     MAP_OK_FAIL, MAP_UP_DOWN, PCT_LOAD, PCT_USED, TEMP_F,
+                     bargauge, by_name, by_regex, cell_gauge, dashboard, fixed,
+                     gauge, mapping, out_of, q, stat, state_timeline, table,
+                     thresholds, timeseries, tq, var_query)
 import inventory as inv
 from inventory import CT, DISK, FS, NET, PKG_TEMP_F, sel
 
@@ -70,7 +71,8 @@ def empty_ok(panel: dict) -> dict:
 
 
 def joined_table(title, columns, *, w=24, h=11, desc="", sort=None, extra_overrides=None,
-                 join_on="host", keep=r"^(host|role|Value #.*)$", no_value="no data"):
+                 join_on="host", keep=r"^(host|role|Value #.*)$", no_value="no data",
+                 exclude=None, index=None):
     """A table built from one query per column, joined on a shared label.
 
     `columns` is a list of (refId, expr, display name, [field overrides]).
@@ -86,29 +88,54 @@ def joined_table(title, columns, *, w=24, h=11, desc="", sort=None, extra_overri
             overrides.append(by_name(name, props))
     order.setdefault("host", 0)
     order.setdefault("role", 1)
+    if index:
+        order.update(index)
     return table(
         title, targets, w=w, h=h, desc=desc, sort=sort, no_value=no_value,
         transformations=[
             {"id": "joinByField", "options": {"byField": join_on, "mode": "outer"}},
             {"id": "filterFieldsByName", "options": {"include": {"pattern": keep}}},
-            {"id": "organize", "options": {"excludeByName": {}, "renameByName": rename,
-                                           "indexByName": order}},
+            {"id": "organize", "options": {"excludeByName": {k: True for k in (exclude or [])},
+                                           "renameByName": rename, "indexByName": order}},
         ],
         overrides=overrides + (extra_overrides or []),
     )
 
 
+# node_exporter collectors that succeed on no host in this fleet: there is no
+# fibre channel, InfiniBand, IPVS, NFS or tape anywhere, so counting them as
+# "inactive" is noise. What is left is a per-host kernel-feature count, which
+# sits between two and six, so the step is set above that rather than at one.
+NO_COLLECTOR = "fibrechannel|infiniband|ipvs|nfs|nfsd|tapestats"
+
+# Denominators. Derive what the inventory knows; a hand-typed total goes stale
+# silently and the tile then sits amber where nobody questions it.
+HYPERVISORS = len(inv.HYPERVISORS)
+DOCKER_HOSTS = sum(1 for n in inv.NODES if n["docker"])
+ZFS_HOST = next(n["host"] for n in inv.NODES if n["zfs"])
+# The names published through Nginx Proxy Manager. Not in the inventory, which
+# describes hosts; check it against `count(probe_success{instance=~"https://.*"})`.
+PUBLISHED_SERVICES = 19
+
+# cAdvisor reports one series per interface in the container's netns, so a
+# network_mode: host container reports every bridge on the box and its traffic
+# adds up to several times the host NIC's.
+CT_IFACE = 'interface!~"br-.*|docker.*|lo|veth.*"'
+CT_KEY = '%s by (ct) (label_join(%s, "ct", "@", "name", "host"))'
+FS_KEY_A = 'label_join(%s, "fs", "@", "host", "mountpoint")'
+FS_KEY = 'max by (fs) (label_join(%s, "fs", "@", "host", "mountpoint"))'
+SMART_OK = ' and on (host, disk) smartmon_device_smart_available == 1'
+DK_KEY_A = 'label_join(%s, "dk", "@", "host", "disk")'
+DK_KEY = 'max by (dk) (label_join(%s' + SMART_OK + ', "dk", "@", "host", "disk"))'
+
+
+def all_of(n):
+    """Thresholds for a count that is only healthy at its full total."""
+    return thresholds(("red", None), ("orange", n - 1), ("green", n))
+
+
 HOST_LINK = ("links", [{"title": "Open this node's dashboard",
                         "url": "/d/node-${__value.raw}", "targetBlank": False}])
-
-NAV = """
-| | | |
-|---|---|---|
-| **[Overview](/d/homelab-overview)** — is anything wrong | **[Nodes](/dashboards/f/nodes)** — one dashboard per host | **[Proxmox](/d/proxmox-cluster)** — cluster, guests, storage |
-| **[Services](/d/services-uptime)** — reachability and TLS | **[Containers](/d/containers)** — every Docker workload | **[Storage](/d/storage-health)** — capacity and drive health |
-| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — UPS-02 | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |
-| **[TeamSpeak](/d/teamspeak)** — voice reachability | | |
-"""
 
 
 # ============================================================ Homelab Overview
@@ -116,49 +143,34 @@ NAV = """
 def overview():
     g = Grid()
 
-    g.section("Right now", "Eight numbers that answer *is anything wrong*. "
-                           "Everything below, and every dashboard in the header dropdowns, is detail behind them.")
+    g.section("Right now")
     g.extend([
         stat("Cluster quorum", [q('pve_up{id="cluster/Galaxy"}', instant=True)], w=6,
              mappings=mapping({0: ("NOT QUORATE", "red"), 1: ("QUORATE", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value",
-             desc="Corosync quorum on Galaxy. Without it Proxmox refuses to start or migrate a guest."),
+             thr=GOOD_ABOVE_ZERO, text_mode="value"),
         stat("Proxmox nodes online", [q('sum(pve_up{id=~"node/.*"})', instant=True)], w=6,
-             thr=thresholds(("red", None), ("orange", 4), ("green", 5)), maxv=5,
-             desc="Out of five."),
-        stat("Guests running", [q('sum(pve_up{id=~"(qemu|lxc)/.*"})', instant=True)], w=6,
-             thr=TEXT_ONLY, color_mode="none", graph="area",
-             desc="Every VM and container Proxmox reports as running."),
-        stat("Services reachable", [q("sum(probe_success)", instant=True)], w=6,
-             thr=thresholds(("red", None), ("orange", 18), ("green", 19)), maxv=19,
-             desc="Out of nineteen internal service names, probed end to end through Nginx Proxy Manager."),
+             unit=out_of(HYPERVISORS), thr=all_of(HYPERVISORS), maxv=HYPERVISORS),
+        stat("Guests running", [q('sum(pve_up{id=~"(qemu|lxc)/.*"})', instant=True)], w=6),
+        stat("Services reachable", [q('sum(probe_success{instance=~"https://.*"})', instant=True)], w=6,
+             unit=out_of(PUBLISHED_SERVICES), thr=all_of(PUBLISHED_SERVICES), maxv=PUBLISHED_SERVICES,
+             desc="The published names, excluding the alert bot's internal health probe."),
         stat("Scrape targets down", [q("count(up == 0) or vector(0)", instant=True)], w=6,
-             thr=BAD_ABOVE_ZERO, color_mode="background",
-             desc="A target down means a blind spot, not necessarily an outage."),
+             thr=BAD_ABOVE_ZERO),
         stat("UPS on mains", [q('min(nut_ups_status{status="OL"})', instant=True)], w=6,
              mappings=mapping({0: ("ON BATTERY", "red"), 1: ("ON MAINS", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value",
-             desc="Red as soon as the monitored UPS drops off mains."),
+             thr=GOOD_ABOVE_ZERO, text_mode="value"),
         stat("Hottest CPU package", [q("max(%s)" % (PKG_TEMP_F % 'role="hypervisor"'), instant=True)],
-             w=6, unit="fahrenheit", decimals=0, thr=TEMP_F, graph="area",
-             desc="The warmest of the five nodes, at the die rather than a core."),
+             w=6, unit="fahrenheit", decimals=0, thr=TEMP_F),
         stat("Fullest filesystem", [q("max(%s)" % inv.fs_used_pct(), instant=True)], w=6,
-             unit="percent", decimals=1, thr=PCT_USED, graph="area",
-             desc="The single tightest mount anywhere in the fleet."),
+             unit="percent", decimals=1, thr=PCT_USED),
     ])
 
-    g.section("Needs attention",
-              "One table, ten health checks, and a row only when something fails one of them. "
-              "Empty is the goal.")
+    g.section("Needs attention")
     g.add(empty_ok(table(
         "Anything failing a health check",
         [tq(NEEDS_ATTENTION)],
         h=8,
-        no_value="All clear — nothing is failing a health check.",
-        desc="Scrape targets down, services unreachable, certificates inside 21 days, ZFS pools not "
-             "online, NVMe critical warnings or spare under 10%, filesystems over 90% or mounted "
-             "read-only, a UPS on battery, a SMART self-assessment that failed, and either TeamSpeak "
-             "fault. The value column carries whichever number the check is about.",
+        no_value="All clear",
         transformations=[
             {"id": "filterFieldsByName",
              "options": {"include": {"pattern": r"^(check|object|host|Value)$"}}},
@@ -169,19 +181,18 @@ def overview():
         overrides=[by_name("Check", [CELL_COLOR_BG, ("thresholds", thresholds(("red", None)))])],
         sort=("Check", False))))
 
-    g.section("Nodes", "Every host that carries a workload. Click a hostname to open that node's own dashboard.")
+    g.section("Nodes")
     g.add(joined_table(
         "Fleet",
         [("A", 'max by (host, role) (up{job="node"})', "Up",
           [CELL_COLOR_BG, ("mappings", MAP_UP_DOWN), ("thresholds", GOOD_ABOVE_ZERO), ("custom.width", 70)]),
          ("B", "max by (host) (time() - node_boot_time_seconds)", "Uptime",
           [("unit", "s"), ("decimals", 0), ("custom.width", 120)]),
-         ("C", "count by (host) (count by (host, cpu) (node_cpu_seconds_total))", "Cores",
+         ("C", inv.CORES % "", "Cores",
           [("custom.width", 70)]),
-         ("D", inv.CPU_BUSY % "", "CPU",
+         ("D", inv.CPU_BUSY % ("", ""), "CPU",
           [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_LOAD)] + cell_gauge()),
-         ("E", "max by (host) (node_load1) / on (host) group_left () "
-               "count by (host) (count by (host, cpu) (node_cpu_seconds_total))", "Load / core",
+         ("E", "max by (host) (node_load1) / on (host) group_left () " + (inv.CORES % ""), "Load / core",
           [("decimals", 2), ("thresholds", LOAD_PER_CORE), CELL_COLOR_TEXT, ("custom.width", 100)]),
          ("F", inv.MEM_USED % ("", ""), "Memory",
           [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
@@ -193,38 +204,28 @@ def overview():
           [("unit", "fahrenheit"), ("decimals", 0), ("thresholds", TEMP_F), CELL_COLOR_TEXT,
            ("custom.width", 100), ("noValue", "—")])],
         h=12, sort=("CPU", True),
-        desc="Sorted by CPU. The temperature column is blank for guests on purpose: an LXC reads the "
-             "node's sensors, not its own, so the number would belong to a different machine.",
         extra_overrides=[by_name("host", [HOST_LINK, ("custom.width", 150),
                                           ("displayName", "Host")]),
                          by_name("role", [("custom.width", 110), ("displayName", "Role")])]))
     g.extend([
-        timeseries("CPU busy — five busiest hosts",
-                   [q("topk(5, %s)" % (inv.CPU_BUSY % ""), "{{host}}")],
-                   unit="percent", maxv=100, h=8, thr=PCT_LOAD,
-                   desc="Top five only, so the graph stays readable. The Fleet table above covers all eighteen."),
-        timeseries("Memory used — five fullest hosts",
+        timeseries("CPU · top 5",
+                   [q("topk(5, %s)" % (inv.CPU_BUSY % ("", "")), "{{host}}")],
+                   unit="percent", maxv=100, h=8, thr=PCT_LOAD),
+        timeseries("Memory · top 5",
                    [q("topk(5, %s)" % (inv.MEM_USED % ("", "")), "{{host}}")],
-                   unit="percent", maxv=100, h=8, thr=PCT_USED,
-                   desc="Top five only. The Fleet table above covers all eighteen."),
+                   unit="percent", maxv=100, h=8, thr=PCT_USED),
     ])
 
-    g.section("Services", "Every internal name, probed through the proxy a person actually goes through.")
+    g.section("Services")
     g.add(state_timeline(
         "Reachability", [q("probe_success", "{{instance}}")], h=10,
         mappings=mapping({0: ("down", "red"), 1: ("up", "green")}),
-        legend=LEGEND_OFF,
-        desc="One band per service. A gap is a scrape that never happened; red is a probe that ran and failed.",
-        overrides=[]))
-
-    g.section("Where to look next", "")
-    g.add(text(NAV, h=7))
+        legend=LEGEND_OFF))
 
     return dashboard(
         "homelab-overview", "Homelab Overview", g,
         tags=["homelab", "overview"],
-        description="The landing page. Fleet health first, then the node table, then everything else "
-                    "behind the dropdowns in the header.",
+        description="Fleet health, the node table and service reachability.",
         refresh="30s", time_from="now-6h")
 
 
@@ -287,28 +288,25 @@ NODE_ID = 'id=~"node/.*"'
 def proxmox():
     g = Grid()
 
-    g.section("Cluster", "Galaxy as one machine: does it have quorum, and is everything that should be "
-                         "running actually running.")
+    g.section("Cluster")
     g.extend([
-        stat("Quorum", [q('pve_up{id="cluster/Galaxy"}', instant=True)], w=4,
+        stat("Quorum", [q('pve_up{id="cluster/Galaxy"}', instant=True)], w=8,
              mappings=mapping({0: ("NOT QUORATE", "red"), 1: ("QUORATE", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value"),
-        stat("Nodes online", [q("sum(pve_up{%s})" % NODE_ID, instant=True)], w=4,
-             thr=thresholds(("red", None), ("orange", 4), ("green", 5)), maxv=5),
-        stat("Guests running", [q("sum(pve_up{%s})" % GUEST, instant=True)], w=4,
-             color_mode="none", graph="area"),
-        stat("Guests stopped", [q("count(pve_up{%s} == 0) or vector(0)" % GUEST, instant=True)], w=4,
+             thr=GOOD_ABOVE_ZERO, text_mode="value"),
+        stat("Nodes online", [q("sum(pve_up{%s})" % NODE_ID, instant=True)], w=8,
+             unit=out_of(HYPERVISORS), thr=all_of(HYPERVISORS), maxv=HYPERVISORS),
+        stat("Guests running", [q("sum(pve_up{%s})" % GUEST, instant=True)], w=8),
+        stat("Guests stopped", [q("count(pve_up{%s} == 0) or vector(0)" % GUEST, instant=True)], w=8,
              thr=thresholds(("green", None), ("yellow", 1)),
-             desc="Stopped is not always wrong — templates and spare guests live here too."),
-        stat("Templates", [q('sum(pve_guest_info{template="1"})', instant=True)], w=4,
-             color_mode="none"),
-        stat("Guests with no backup", [q("sum(pve_not_backed_up_total) or vector(0)", instant=True)], w=4,
+             desc="Templates and spare guests are stopped on purpose."),
+        stat("Templates", [q('sum(pve_guest_info{template="1"})', instant=True)], w=8),
+        stat("Guests with no backup", [q("sum(pve_not_backed_up_total) or vector(0)", instant=True)], w=8,
              thr=thresholds(("green", None), ("orange", 1)),
-             desc="Proxmox reports a guest as not backed up when no vzdump archive exists for it on any "
-                  "storage it can see. It says nothing about backups taken outside Proxmox."),
+             desc="No vzdump archive on any storage Proxmox can see. This lab keeps no backups, "
+                  "so it counts every guest."),
     ])
 
-    g.section("Nodes", "The five machines under the cluster. Click a node to open its own dashboard.")
+    g.section("Nodes")
     g.add(joined_table(
         "Node summary",
         [("A", "pve_up{%s}" % NODE_ID, "Up",
@@ -324,8 +322,6 @@ def proxmox():
                ' * on (id) group_left (node) pve_guest_info), "id", "node/$1", "node", "(.*)")' % GUEST,
           "Guests running", [("custom.width", 130), ("noValue", "0"), ("decimals", 0)])],
         h=8, join_on="id", keep=r"^(id|Value #.*)$", sort=("CPU", True),
-        desc="Proxmox's own view of each node, from the PVE API rather than from node_exporter. The two "
-             "disagree slightly by design: this one counts a node's memory the way the hypervisor does.",
         extra_overrides=[by_name("id", [
             ("displayName", "Node"), ("custom.width", 170),
             ("links", [{"title": "Open this node's dashboard",
@@ -339,7 +335,7 @@ def proxmox():
                    unit="percent", maxv=100, h=8, thr=PCT_USED),
     ])
 
-    g.section("Guests", "Every VM and container the cluster knows about, including templates.")
+    g.section("Guests")
     g.add(joined_table(
         "Every guest",
         [("A", "pve_up{%s} * on (id) group_left (name, node, type) pve_guest_info" % GUEST, "Up",
@@ -356,8 +352,6 @@ def proxmox():
           [("mappings", mapping({0: ("yes", "green"), 1: ("no", "orange")}, default=("yes", "green"))),
            CELL_COLOR_TEXT, ("custom.width", 100)])],
         h=14, join_on="id", keep=r"^(id|name|node|type|Value #.*)$", sort=("CPU", True),
-        desc="Sorted by CPU. A guest name links to that host's own dashboard where one exists; the two "
-             "templates and kali-pen have no node_exporter, so those links go nowhere.",
         extra_overrides=[
             by_name("id", [("displayName", "ID"), ("custom.width", 90)]),
             by_name("name", [("displayName", "Guest"), ("custom.width", 170),
@@ -368,34 +362,32 @@ def proxmox():
                                          "url": "/d/node-${__value.raw}", "targetBlank": False}])]),
             by_name("type", [("displayName", "Type"), ("custom.width", 80)])]))
     g.extend([
-        timeseries("Guest CPU — eight busiest",
+        timeseries("Guest CPU · top 8",
                    [q("topk(8, pve_cpu_usage_ratio{%s} * 100)" % GUEST, "{{id}}")],
-                   unit="percent", h=8, thr=PCT_LOAD,
-                   desc="Top eight. The guest table above covers every one."),
-        timeseries("Guest memory — eight fullest",
+                   unit="percent", h=8, thr=PCT_LOAD),
+        timeseries("Guest memory · top 8",
                    [q("topk(8, pve_memory_usage_bytes{%s} / pve_memory_size_bytes{%s} * 100)" % (GUEST, GUEST),
                       "{{id}}")],
-                   unit="percent", maxv=100, h=8, thr=PCT_USED,
-                   desc="Top eight. The guest table above covers every one."),
+                   unit="percent", maxv=100, h=8, thr=PCT_USED),
     ])
 
-    g.section("Guest I/O", "Which guests are actually moving bytes.")
+    g.section("Guest I/O")
     g.extend([
-        timeseries("Guest disk read — eight busiest",
+        timeseries("Disk read · top 8",
                    [q("topk(8, rate(pve_disk_read_bytes_total{%s}[$__rate_interval]))" % GUEST, "{{id}}")],
                    unit="Bps", h=8),
-        timeseries("Guest disk write — eight busiest",
+        timeseries("Disk write · top 8",
                    [q("topk(8, rate(pve_disk_written_bytes_total{%s}[$__rate_interval]))" % GUEST, "{{id}}")],
                    unit="Bps", h=8),
-        timeseries("Guest network in — eight busiest",
+        timeseries("Network in · top 8",
                    [q("topk(8, rate(pve_network_receive_bytes_total{%s}[$__rate_interval]))" % GUEST, "{{id}}")],
                    unit="Bps", h=8),
-        timeseries("Guest network out — eight busiest",
+        timeseries("Network out · top 8",
                    [q("topk(8, rate(pve_network_transmit_bytes_total{%s}[$__rate_interval]))" % GUEST, "{{id}}")],
                    unit="Bps", h=8),
     ])
 
-    g.section("Storage", "Every storage the cluster can see, on every node that can see it.")
+    g.section("Storage")
     g.add(bargauge(
         "Storage used",
         [q("pve_disk_usage_bytes{id=~\"storage/.*\"} / pve_disk_size_bytes{id=~\"storage/.*\"} * 100",
@@ -428,36 +420,31 @@ def containers():
     hosts = 'host=~"$dockerhost"'
     ct = sel(CT, hosts, 'name=~"$container"')
 
-    g.section("Fleet", "Fifty-odd containers across nine Docker hosts, as one population.")
+    g.section("Fleet")
     g.extend([
-        stat("Containers running", [q("count(container_last_seen{%s})" % ct, instant=True)], w=4,
-             color_mode="none", graph="area"),
+        stat("Containers running", [q("count(container_last_seen{%s})" % ct, instant=True)], w=8),
         stat("Docker hosts reporting", [q("count(count by (host) (container_last_seen{%s}))" % CT, instant=True)],
-             w=4, thr=thresholds(("red", None), ("orange", 8), ("green", 9)), maxv=9,
-             desc="Out of nine. A host missing here means cAdvisor is down, not that its containers are."),
+             w=8, unit=out_of(DOCKER_HOSTS), thr=all_of(DOCKER_HOSTS), maxv=DOCKER_HOSTS),
         stat("Started in the last hour",
              [q("count(time() - container_start_time_seconds{%s} < 3600) or vector(0)" % ct, instant=True)],
-             w=4, thr=thresholds(("green", None), ("yellow", 1), ("orange", 3)),
-             desc="A deliberate deploy and a crash loop look identical here; the table below tells them apart."),
+             w=8, thr=thresholds(("green", None), ("yellow", 1), ("orange", 3))),
         stat("OOM kills, last 24h",
              [q("sum(increase(container_oom_events_total{%s}[24h])) or vector(0)" % ct, instant=True)],
-             w=4, thr=BAD_ABOVE_ZERO, color_mode="background"),
+             w=8, thr=BAD_ABOVE_ZERO),
         stat("Being CPU throttled",
              [q("count(rate(container_cpu_cfs_throttled_seconds_total{%s}[$__rate_interval]) > 0) or vector(0)" % ct,
                 instant=True)],
-             w=4, thr=thresholds(("green", None), ("yellow", 1)),
-             desc="Throttling means the container is hitting its CPU quota, not that the host is busy."),
+             w=8, thr=thresholds(("green", None), ("yellow", 1))),
         stat("Memory in containers",
              [q("sum(container_memory_working_set_bytes{%s})" % ct, instant=True)],
-             w=4, unit="bytes", decimals=1, color_mode="none", graph="area"),
+             w=8, unit="bytes", decimals=1),
     ])
 
-    g.section("Restarts and faults", "These three tables are empty when nothing is wrong.")
+    g.section("Restarts and faults")
     g.add(empty_ok(table(
         "Started in the last 6 hours",
         [tq("time() - container_start_time_seconds{%s} < 21600" % ct)],
-        w=12, h=8, unit="s", no_value="Nothing has restarted in the last 6 hours.",
-        desc="Age since start, youngest first. A container that keeps reappearing at the top is looping.",
+        w=12, h=8, unit="s", no_value="Nothing started in 6 hours",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|name|image|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -469,8 +456,7 @@ def containers():
     g.add(empty_ok(table(
         "OOM kills, last 24 hours",
         [tq("increase(container_oom_events_total{%s}[24h]) > 0" % ct)],
-        w=12, h=8, no_value="No container has been OOM killed in 24 hours.",
-        desc="The kernel killed the process for exceeding memory. Raise the limit or fix the leak.",
+        w=12, h=8, no_value="No OOM kills in 24 hours",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|name|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -478,74 +464,71 @@ def containers():
         sort=("Kills", True),
         overrides=[by_name("Kills", [CELL_COLOR_BG, ("thresholds", BAD_ABOVE_ZERO), ("decimals", 0)])])))
 
-    g.section("CPU", "Container CPU is a share of the whole host, so 100% means one full core.")
+    g.section("CPU")
     g.extend([
-        timeseries("CPU — ten busiest containers",
+        timeseries("CPU · top 10",
                    [q("topk(10, sum by (host, name) (rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) * 100)" % ct,
                       "{{name}} · {{host}}")],
-                   unit="percent", h=9,
-                   desc="Top ten. The table below covers every container."),
-        timeseries("CPU throttling",
+                   unit="percent", h=9, desc="100% is one full core."),
+        timeseries("CPU throttling · top 10",
                    [q("topk(10, sum by (host, name) (rate(container_cpu_cfs_throttled_seconds_total{%s}[$__rate_interval])) * 100)" % ct,
                       "{{name}} · {{host}}")],
-                   unit="percent", h=9, thr=thresholds(("green", None), ("orange", 1)),
-                   desc="Seconds of runnable-but-not-scheduled time per second. Flat zero is the healthy shape."),
+                   unit="percent", h=9, thr=thresholds(("green", None), ("orange", 1))),
     ])
 
-    g.section("Memory", "Working set, which is what the kernel would have to reclaim.")
+    g.section("Memory")
     g.extend([
-        timeseries("Memory — ten largest containers",
+        timeseries("Memory · top 10",
                    [q("topk(10, sum by (host, name) (container_memory_working_set_bytes{%s}))" % ct,
                       "{{name}} · {{host}}")],
-                   unit="bytes", h=9, desc="Top ten. The table below covers every container."),
+                   unit="bytes", h=9),
         timeseries("Memory by host",
                    [q("sum by (host) (container_memory_working_set_bytes{%s})" % ct, "{{host}}")],
-                   unit="bytes", h=9, stack=True,
-                   desc="Stacked, so the height is the fleet's total container memory."),
+                   unit="bytes", h=9, stack=True),
     ])
 
-    g.section("Every container", "One row per container. Filter with the header dropdowns or the column filters.")
+    g.section("Every container")
     g.add(joined_table(
         "Containers",
-        [("A", "sum by (host, name, image) (rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) * 100" % ct,
+        [("A", 'label_join(sum by (host, name, image) '
+               '(rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) * 100, '
+               '"ct", "@", "name", "host")' % ct,
           "CPU", [("unit", "percent"), ("decimals", 2), ("thresholds", PCT_LOAD)] + cell_gauge(0, 200)),
-         ("B", "sum by (name) (container_memory_working_set_bytes{%s})" % ct, "Memory",
+         ("B", CT_KEY % ("sum", "container_memory_working_set_bytes{%s}" % ct), "Memory",
           [("unit", "bytes"), ("decimals", 1)]),
-         ("C", "sum by (name) (container_spec_memory_limit_bytes{%s} > 0)" % ct, "Limit",
+         ("C", CT_KEY % ("sum", "container_spec_memory_limit_bytes{%s} > 0" % ct), "Limit",
           [("unit", "bytes"), ("decimals", 1), ("noValue", "none")]),
-         ("D", "max by (name) (time() - container_start_time_seconds{%s})" % ct, "Up for",
+         ("D", CT_KEY % ("max", "time() - container_start_time_seconds{%s}" % ct), "Up for",
           [("unit", "s"), ("decimals", 0)]),
-         ("E", "sum by (name) (rate(container_network_receive_bytes_total{%s}[$__rate_interval]))" % ct, "Net in",
+         ("E", CT_KEY % ("sum", "rate(container_network_receive_bytes_total{%s}[$__rate_interval])"
+                                % sel(ct, CT_IFACE)), "Net in",
           [("unit", "Bps"), ("decimals", 1)]),
-         ("F", "sum by (name) (rate(container_network_transmit_bytes_total{%s}[$__rate_interval]))" % ct, "Net out",
+         ("F", CT_KEY % ("sum", "rate(container_network_transmit_bytes_total{%s}[$__rate_interval])"
+                                % sel(ct, CT_IFACE)), "Net out",
           [("unit", "Bps"), ("decimals", 1)])],
-        h=16, join_on="name", keep=r"^(name|host|image|Value #.*)$", sort=("CPU", True),
-        desc="Only two containers set a memory limit, so most rows show none. Without a limit the host's "
-             "memory is the limit.",
+        h=16, join_on="ct", keep=r"^(name|host|image|Value #.*)$", sort=("CPU", True),
         extra_overrides=[
             by_name("name", [("displayName", "Container"), ("custom.width", 220)]),
             by_name("host", [("displayName", "Host"), ("custom.width", 140), HOST_LINK]),
             by_name("image", [("displayName", "Image")])]))
 
-    g.section("Network and disk", "Container traffic, separate from the host's own.")
+    g.section("Network and disk")
     g.extend([
-        timeseries("Network in — ten busiest",
+        timeseries("Network in · top 10",
                    [q("topk(10, sum by (host, name) (rate(container_network_receive_bytes_total{%s}[$__rate_interval])))" % ct,
                       "{{name}} · {{host}}")], unit="Bps", h=9),
-        timeseries("Network out — ten busiest",
+        timeseries("Network out · top 10",
                    [q("topk(10, sum by (host, name) (rate(container_network_transmit_bytes_total{%s}[$__rate_interval])))" % ct,
                       "{{name}} · {{host}}")], unit="Bps", h=9),
-        timeseries("Writable layer size",
+        timeseries("Writable layer · top 10",
                    [q("topk(10, sum by (host, name) (container_fs_usage_bytes{%s}))" % ct, "{{name}} · {{host}}")],
-                   unit="bytes", h=9, w=24,
-                   desc="Bytes written into the container's own layer rather than into a volume. Steady growth "
-                        "here is usually a log file nobody rotates."),
+                   unit="bytes", h=9, w=24),
     ])
 
     return dashboard(
         "containers", "Containers", g,
         tags=["homelab", "containers"],
-        description="Every Docker workload across the nine cAdvisor hosts.",
+        description="Every Docker workload across the %d cAdvisor hosts." % DOCKER_HOSTS,
         refresh="1m", time_from="now-6h",
         templating=[
             var_query("dockerhost", "Host", 'label_values(container_last_seen{name!=""}, host)'),
@@ -559,39 +542,34 @@ def containers():
 # panel that wants a readable name strips the scheme and the domain here rather
 # than showing nineteen copies of ".alphasecunited.com".
 SVC_NAME = ('label_replace(%s, "service", "$1", "instance",'
-            ' "https?://([^.]+)\\\\..*")')
+            ' "https?://([^.:/]+).*")')
 
 
 def services():
     g = Grid()
     svc = 'instance=~"$service"'
 
-    g.section("Right now", "Each probe goes through Nginx Proxy Manager, so a failure means the path a "
-                           "person actually uses is broken: local DNS, the proxy, the certificate, or the "
-                           "backend behind it.")
+    g.section("Right now")
     g.extend([
-        stat("Reachable", [q("sum(probe_success)", instant=True)], w=4,
-             thr=thresholds(("red", None), ("orange", 18), ("green", 19)), maxv=19,
-             desc="Out of nineteen."),
-        stat("Failing", [q("count(probe_success == 0) or vector(0)", instant=True)], w=4,
-             thr=BAD_ABOVE_ZERO, color_mode="background"),
-        stat("Slowest probe", [q("max(probe_duration_seconds)", instant=True)], w=4,
-             unit="s", decimals=2, thr=thresholds(("green", None), ("yellow", 1), ("orange", 3), ("red", 8)),
-             graph="area"),
-        stat("Median probe", [q("quantile(0.5, probe_duration_seconds)", instant=True)], w=4,
-             unit="s", decimals=3, color_mode="none", graph="area"),
+        stat("Reachable", [q('sum(probe_success{instance=~"https://.*"})', instant=True)], w=8,
+             unit=out_of(PUBLISHED_SERVICES), thr=all_of(PUBLISHED_SERVICES), maxv=PUBLISHED_SERVICES,
+             desc="The published names, excluding the alert bot's internal health probe."),
+        stat("Failing", [q("count(probe_success == 0) or vector(0)", instant=True)], w=8,
+             thr=BAD_ABOVE_ZERO),
+        stat("Slowest probe", [q("max(probe_duration_seconds)", instant=True)], w=8,
+             unit="s", decimals=2, thr=thresholds(("green", None), ("yellow", 1), ("orange", 3), ("red", 8))),
+        stat("Median probe", [q("quantile(0.5, probe_duration_seconds)", instant=True)], w=8,
+             unit="s", decimals=3),
         stat("Nearest certificate expiry",
-             [q("min((probe_ssl_earliest_cert_expiry - time()) / 86400)", instant=True)], w=4,
-             unit="d", decimals=0, thr=CERT_DAYS,
-             desc="Days left on the soonest-expiring certificate in the chain NPM serves."),
-        stat("24-hour availability", [q("avg(avg_over_time(probe_success[24h])) * 100", instant=True)], w=4,
+             [q("min((probe_ssl_earliest_cert_expiry - time()) / 86400)", instant=True)], w=8,
+             unit="d", decimals=0, thr=CERT_DAYS),
+        stat("24-hour availability", [q("avg(avg_over_time(probe_success[24h])) * 100", instant=True)], w=8,
              unit="percent", decimals=3,
              thr=thresholds(("red", None), ("orange", 99), ("yellow", 99.5), ("green", 99.9)),
-             desc="Averaged across all nineteen probes over the last 24 hours, regardless of the time picker."),
+             desc="The last 24 hours, whatever the time picker says."),
     ])
 
-    g.section("Availability", "One band per service. A gap is a scrape that never ran; red is a probe that "
-                              "ran and failed.")
+    g.section("Availability")
     g.add(state_timeline(
         "Reachability", [q(SVC_NAME % "probe_success", "{{service}}")], h=11,
         mappings=mapping({0: ("down", "red"), 1: ("up", "green")}), legend=LEGEND_OFF))
@@ -615,38 +593,27 @@ def services():
          ("H", SVC_NAME % "probe_http_content_length", "Body",
           [("unit", "bytes"), ("decimals", 0), ("noValue", "—")])],
         h=13, join_on="service", keep=r"^(service|Value #.*)$", sort=("Total", True),
-        desc="Sorted slowest first. The accepted status codes include 301, 302, 401 and 403 on purpose: "
-             "several of these answer a redirect or an auth challenge at the root path, and calling that "
-             "an outage would make the panel lie.",
         extra_overrides=[by_name("service", [("displayName", "Service"), ("custom.width", 180)])]))
 
-    g.section("Latency", "Where the time goes on a request through the proxy.")
+    g.section("Latency")
     g.extend([
-        timeseries("Probe duration — eight slowest",
+        timeseries("Probe duration · top 8",
                    [q("topk(8, %s)" % (SVC_NAME % "probe_duration_seconds"), "{{service}}")],
-                   unit="s", h=9,
-                   desc="Top eight. The table above covers all nineteen."),
-        timeseries("Phase breakdown for $service",
+                   unit="s", h=9),
+        timeseries("Phase breakdown",
                    [q('sum by (phase) (probe_http_duration_seconds{%s})' % svc, "{{phase}}")],
-                   unit="s", h=9, stack=True,
-                   desc="Resolve, connect, TLS, process, transfer — for whichever services the Service "
-                        "dropdown has selected. Stacked, so the height is the whole request."),
+                   unit="s", h=9, stack=True),
     ])
 
-    g.section("TLS", "NPM serves a real wildcard certificate, so verification is on and this number means "
-                     "something.")
+    g.section("TLS")
     g.add(bargauge(
-        "Days until the certificate expires",
+        "Certificate days left",
         [q(SVC_NAME % "(probe_ssl_earliest_cert_expiry - time()) / 86400", "{{service}}", instant=True)],
-        w=12, h=11, unit="d", decimals=0, maxv=90, thr=CERT_DAYS,
-        desc="All nineteen share one wildcard, so they renew together — a short bar here is a fleet-wide "
-             "problem, not one service's."))
+        w=12, h=11, unit="d", decimals=0, maxv=90, thr=CERT_DAYS))
     g.add(timeseries(
-        "Certificate lifetime remaining",
+        "Certificate lifetime",
         [q(SVC_NAME % "(probe_ssl_earliest_cert_expiry - time()) / 86400", "{{service}}")],
-        w=12, h=11, unit="d", thr=CERT_DAYS, thr_style="dashed",
-        desc="The sawtooth is renewal. A line that keeps descending past 30 days is a renewal that stopped "
-             "working."))
+        w=12, h=11, unit="d", thr=CERT_DAYS, thr_style="dashed"))
 
     return dashboard(
         "services-uptime", "Services & Uptime", g,
@@ -662,79 +629,69 @@ def storage():
     g = Grid()
     HV = 'role="hypervisor"'
 
-    g.section("Headroom", "Capacity first, because a full filesystem takes a service down faster than a "
-                          "dying disk does.")
+    g.section("Headroom")
     g.extend([
-        stat("Fullest filesystem", [q("max(%s)" % inv.fs_used_pct(), instant=True)], w=4,
-             unit="percent", decimals=1, thr=PCT_USED, graph="area"),
+        stat("Fullest filesystem", [q("max(%s)" % inv.fs_used_pct(), instant=True)], w=8,
+             unit="percent", decimals=1, thr=PCT_USED),
         stat("Filesystems over 80%",
-             [q("count(%s > 80) or vector(0)" % inv.fs_used_pct(), instant=True)], w=4,
+             [q("count(%s > 80) or vector(0)" % inv.fs_used_pct(), instant=True)], w=8,
              thr=thresholds(("green", None), ("yellow", 1), ("orange", 3))),
         stat("ZFS pools online",
-             [q('sum(max by (host, zpool) (node_zfs_zpool_state{state="online",host="grey-server"}))', instant=True)],
-             w=4, thr=thresholds(("red", None), ("green", 7)),
-             desc="Seven datasets on hddpool-1, on grey-server. Only grey-server has a ZFS pool; the two "
-                  "LXC guests that appear to have one are reading its kernel."),
-        stat("NVMe critical warnings", [q("sum(nvme_critical_warning) or vector(0)", instant=True)], w=4,
-             thr=BAD_ABOVE_ZERO, color_mode="background",
-             desc="Any non-zero value is the drive itself asking for attention."),
-        stat("Lowest NVMe spare", [q("min(nvme_available_spare_ratio) * 100", instant=True)], w=4,
+             [q('sum(max by (host, zpool) (node_zfs_zpool_state{state="online",host="%s"}))' % ZFS_HOST,
+                instant=True)],
+             w=8, unit=out_of(1), thr=thresholds(("red", None), ("green", 1)), maxv=1,
+             desc="node_zfs_zpool_state emits one series per pool state, not per dataset."),
+        stat("NVMe critical warnings", [q("sum(nvme_critical_warning) or vector(0)", instant=True)], w=8,
+             thr=BAD_ABOVE_ZERO),
+        stat("Lowest NVMe spare", [q("min(nvme_available_spare_ratio) * 100", instant=True)], w=8,
              unit="percent", decimals=0,
              thr=thresholds(("red", None), ("orange", 10), ("yellow", 30), ("green", 50))),
         stat("SMART self-assessments failing",
              [q("count(smartmon_device_smart_healthy == 0"
                 " and on (host, disk) smartmon_device_smart_available == 1) or vector(0)", instant=True)],
-             w=4, thr=BAD_ABOVE_ZERO, color_mode="background",
-             desc="Only disks that actually report a self-assessment are counted. Both QEMU guests expose a "
-                  "virtual disk with none, which is absent rather than failed."),
+             w=8, thr=BAD_ABOVE_ZERO),
     ])
 
-    g.section("Filesystems", "Every real mount in the fleet. Pseudo-filesystems are excluded — they say "
-                             "nothing about capacity.")
+    g.section("Filesystems")
     g.add(joined_table(
         "Filesystem headroom",
-        [("A", inv.fs_used_pct(), "Used",
+        [("A", FS_KEY_A % inv.fs_used_pct(), "Used",
           [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
-         ("B", "node_filesystem_avail_bytes{%s}" % FS, "Free", [("unit", "bytes"), ("decimals", 1)]),
-         ("C", "node_filesystem_size_bytes{%s}" % FS, "Size", [("unit", "bytes"), ("decimals", 1)]),
-         ("D", "100 * (1 - node_filesystem_files_free{%s} / node_filesystem_files{%s})" % (FS, FS), "Inodes",
-          [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
-         ("E", "predict_linear(node_filesystem_avail_bytes{%s}[6h], 30 * 86400)" % FS, "Free in 30d",
+         ("B", FS_KEY % ("node_filesystem_avail_bytes{%s}" % FS), "Free",
+          [("unit", "bytes"), ("decimals", 1)]),
+         ("C", FS_KEY % ("node_filesystem_size_bytes{%s}" % FS), "Size",
+          [("unit", "bytes"), ("decimals", 1)]),
+         ("D", FS_KEY % ("100 * (1 - node_filesystem_files_free{%s} / node_filesystem_files{%s})" % (FS, FS)),
+          "Inodes", [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
+         ("E", FS_KEY % ("predict_linear(node_filesystem_avail_bytes{%s}[6h], 30 * 86400)" % FS), "Free in 30d",
           [("unit", "bytes"), ("decimals", 1), CELL_COLOR_TEXT,
            ("thresholds", thresholds(("red", None), ("orange", 1), ("green", 5e9)))])],
-        h=14, join_on="host", keep=r"^(host|mountpoint|device|fstype|Value #.*)$", sort=("Used", True),
-        desc="`Free in 30d` extrapolates the last six hours forward a month. It is a straight line through "
-             "noisy data, so read it as a direction, not a date — but a negative number there is a mount "
-             "worth watching.",
+        h=14, join_on="fs", keep=r"^(host|mountpoint|device|fstype|Value #.*)$", sort=("Used", True),
         extra_overrides=[
             by_name("host", [("displayName", "Host"), ("custom.width", 150), HOST_LINK]),
             by_name("mountpoint", [("displayName", "Mount"), ("custom.width", 180)]),
             by_name("device", [("displayName", "Device")]),
             by_name("fstype", [("displayName", "Type"), ("custom.width", 90)])]))
     g.add(timeseries(
-        "Filesystem fill — eight tightest",
+        "Filesystem fill · top 8",
         [q("topk(8, %s)" % inv.fs_used_pct(), "{{host}} {{mountpoint}}")],
-        w=24, h=9, unit="percent", maxv=100, thr=PCT_USED, thr_style="dashed",
-        desc="Top eight. The table above covers every mount."))
+        w=24, h=9, unit="percent", maxv=100, thr=PCT_USED, thr_style="dashed"))
 
-    g.section("Disk I/O", "Physical devices only. On an LXC guest these are the node's disks, not the "
-                          "guest's, because /proc/diskstats is not namespaced.")
+    g.section("Disk I/O")
     g.extend([
-        timeseries("Throughput — eight busiest devices",
+        timeseries("Disk throughput · top 8",
                    [q("topk(8, rate(node_disk_read_bytes_total{%s}[$__rate_interval]))" % DISK,
                       "{{host}} {{device}} read"),
                     q("topk(8, rate(node_disk_written_bytes_total{%s}[$__rate_interval]))" % DISK,
                       "{{host}} {{device}} write", ref="B")],
                    unit="Bps", h=9),
-        timeseries("Utilisation — eight busiest devices",
+        timeseries("Disk utilisation · top 8",
                    [q("topk(8, rate(node_disk_io_time_seconds_total{%s}[$__rate_interval]) * 100)" % DISK,
                       "{{host}} {{device}}")],
-                   unit="percent", maxv=100, h=9, thr=PCT_LOAD,
-                   desc="Share of wall time the device had at least one request in flight. Sustained 100% "
-                        "is a saturated disk."),
+                   unit="percent", maxv=100, h=9, thr=PCT_LOAD),
     ])
 
-    g.section("NVMe", "The four NVMe drives that report SMART data, on purple, blue, red and green.")
+    g.section("NVMe")
     g.add(joined_table(
         "NVMe health",
         [("A", "nvme_critical_warning", "Warning",
@@ -753,56 +710,51 @@ def storage():
          ("H", "nvme_data_units_written_total * 512 * 1000", "Written",
           [("unit", "bytes"), ("decimals", 1)])],
         w=24, h=8, join_on="host", keep=r"^(host|device|Value #.*)$", sort=("Endurance used", True),
-        desc="`Written` converts the NVMe data-unit counter, which counts 1000 × 512-byte units.",
         extra_overrides=[by_name("host", [("displayName", "Host"), ("custom.width", 160), HOST_LINK]),
                          by_name("device", [("displayName", "Device"), ("custom.width", 120)])]))
     g.extend([
         timeseries("NVMe temperature", [q("nvme_temperature_celsius * 9 / 5 + 32", "{{host}} {{device}}")],
                    unit="fahrenheit", h=9, thr=TEMP_F, thr_style="dashed", min_zero=False),
         bargauge("Endurance used", [q("nvme_percentage_used_ratio * 100", "{{host}} {{device}}", instant=True)],
-                 h=9, desc="The drive's own wear estimate. 100% means it has written its rated endurance, "
-                           "not that it has failed."),
+                 h=9),
     ])
 
-    g.section("SATA drives", "The four spinning and SATA-SSD drives that report a SMART self-assessment.")
+    g.section("SATA drives")
     g.add(joined_table(
         "SMART",
-        [("A", "smartmon_device_smart_healthy and on (host, disk) smartmon_device_smart_available == 1", "Healthy",
+        [("A", DK_KEY_A % ("smartmon_device_smart_healthy" + SMART_OK), "Healthy",
           [CELL_COLOR_BG, ("mappings", mapping({0: ("FAILING", "red"), 1: ("PASSED", "green")})),
            ("thresholds", GOOD_ABOVE_ZERO), ("custom.width", 100)]),
-         ("B", "(smartmon_temperature_celsius_raw_value"
-               " or smartmon_airflow_temperature_cel_raw_value) * 9 / 5 + 32", "Temp",
+         ("B", DK_KEY % "((smartmon_temperature_celsius_raw_value"
+                        " or smartmon_airflow_temperature_cel_raw_value) * 9 / 5 + 32)", "Temp",
           [("unit", "fahrenheit"), ("decimals", 0), ("thresholds", TEMP_F), CELL_COLOR_TEXT]),
-         ("C", "smartmon_power_on_hours_raw_value", "Powered on", [("unit", "h"), ("decimals", 0)]),
-         ("D", "smartmon_power_cycle_count_raw_value", "Power cycles", [("decimals", 0)]),
-         ("E", "smartmon_reallocated_sector_ct_raw_value", "Reallocated",
+         ("C", DK_KEY % "smartmon_power_on_hours_raw_value", "Powered on",
+          [("unit", "h"), ("decimals", 0)]),
+         ("D", DK_KEY % "smartmon_power_cycle_count_raw_value", "Power cycles", [("decimals", 0)]),
+         ("E", DK_KEY % "smartmon_reallocated_sector_ct_raw_value", "Reallocated",
           [("decimals", 0), CELL_COLOR_TEXT, ("thresholds", BAD_ABOVE_ZERO)]),
-         ("F", "smartmon_current_pending_sector_raw_value", "Pending",
+         ("F", DK_KEY % "smartmon_current_pending_sector_raw_value", "Pending",
           [("decimals", 0), CELL_COLOR_TEXT, ("thresholds", BAD_ABOVE_ZERO)]),
-         ("G", "smartmon_udma_crc_error_count_raw_value", "CRC errors",
+         ("G", DK_KEY % "smartmon_udma_crc_error_count_raw_value", "CRC errors",
           [("decimals", 0), CELL_COLOR_TEXT, ("thresholds", BAD_ABOVE_ZERO)])],
-        w=24, h=8, join_on="host", keep=r"^(host|disk|Value #.*)$", sort=("Powered on", True),
-        desc="Reallocated, pending and CRC counts are the three that matter: any of them climbing is a "
-             "drive on the way out, whatever the overall assessment still says.",
+        w=24, h=8, join_on="dk", keep=r"^(host|disk|Value #.*)$", sort=("Powered on", True),
         extra_overrides=[by_name("host", [("displayName", "Host"), ("custom.width", 160), HOST_LINK]),
                          by_name("disk", [("displayName", "Disk"), ("custom.width", 120)])]))
 
-    g.section("ZFS", "hddpool-1 on grey-server, the fleet's only ZFS pool.")
+    g.section("ZFS")
     g.extend([
         stat("Pool state",
              [q('max(node_zfs_zpool_state{state="online",host="grey-server"})', instant=True)], w=8, h=6,
              mappings=mapping({0: ("NOT ONLINE", "red"), 1: ("ONLINE", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value"),
+             thr=GOOD_ABOVE_ZERO, text_mode="value"),
         timeseries("ARC size", [q('node_zfs_arc_size{host="grey-server"}', "arc")],
-                   w=8, h=6, unit="bytes",
-                   desc="The adaptive replacement cache, in RAM. It grows to fill what it is allowed."),
+                   w=8, h=6, unit="bytes", tint="storage"),
         timeseries("ARC hit ratio",
                    [q('100 * rate(node_zfs_arc_hits{host="grey-server"}[$__rate_interval])'
                       ' / clamp_min(rate(node_zfs_arc_hits{host="grey-server"}[$__rate_interval])'
                       ' + rate(node_zfs_arc_misses{host="grey-server"}[$__rate_interval]), 1)', "hit ratio")],
-                   w=8, h=6, unit="percent", maxv=100,
-                   thr=thresholds(("red", None), ("orange", 80), ("green", 95)),
-                   desc="Clamped so an idle pool reads 0 rather than dividing by zero."),
+                   w=8, h=6, unit="percent", maxv=100, tint="storage",
+                   thr=thresholds(("red", None), ("orange", 80), ("green", 95))),
     ])
 
     return dashboard(
@@ -817,48 +769,44 @@ def storage():
 def network():
     g = Grid()
 
-    g.section("Right now", "Physical and bridge interfaces only. A Docker host carries a veth per container "
-                           "and a Proxmox node three interfaces per guest; grey-server has 39 interfaces, "
-                           "of which six mean anything.")
+    g.section("Right now")
     g.extend([
         stat("Fleet inbound",
              [q("sum(rate(node_network_receive_bytes_total{%s}[$__rate_interval]))" % NET, instant=True)],
-             w=4, unit="Bps", decimals=1, color_mode="none", graph="area"),
+             w=8, unit="Bps", decimals=1),
         stat("Fleet outbound",
              [q("sum(rate(node_network_transmit_bytes_total{%s}[$__rate_interval]))" % NET, instant=True)],
-             w=4, unit="Bps", decimals=1, color_mode="none", graph="area"),
+             w=8, unit="Bps", decimals=1),
         stat("Interfaces down",
-             [q("count(node_network_up{%s} == 0) or vector(0)" % NET, instant=True)], w=4,
+             [q("count(node_network_up{%s} == 0) or vector(0)" % NET, instant=True)], w=8,
              thr=thresholds(("green", None), ("yellow", 1)),
-             desc="A configured interface with no carrier. On a Proxmox node a spare NIC sits here "
-                  "permanently and is not a fault."),
+             desc="Configured interfaces with no carrier. Unused wireless adapters, a spare "
+                  "NIC on grey-server and a tunnel device sit here permanently."),
         stat("Errors and drops, last hour",
              [q("sum(increase(node_network_receive_errs_total{%s}[1h]))"
                 " + sum(increase(node_network_transmit_errs_total{%s}[1h]))"
                 " + sum(increase(node_network_receive_drop_total{%s}[1h]))"
                 " + sum(increase(node_network_transmit_drop_total{%s}[1h])) or vector(0)" % (NET, NET, NET, NET),
                 instant=True)],
-             w=4, decimals=0, thr=thresholds(("green", None), ("yellow", 1), ("orange", 100))),
+             w=8, decimals=0, thr=thresholds(("green", None), ("yellow", 900), ("orange", 2000)),
+             desc="Receive drops on the five hypervisor NICs run near 600 an hour as a steady "
+                  "state. Errors are separate and are zero fleet-wide."),
         stat("Busiest conntrack table",
              [q("max(node_nf_conntrack_entries / node_nf_conntrack_entries_limit * 100)", instant=True)],
-             w=4, unit="percent", decimals=1, thr=PCT_USED,
-             desc="Filling this table drops new connections silently."),
+             w=8, unit="percent", decimals=1, thr=PCT_USED),
         stat("TCP retransmit rate",
              [q("sum(rate(node_netstat_Tcp_RetransSegs[$__rate_interval]))", instant=True)],
-             w=4, unit="pps", decimals=2, thr=thresholds(("green", None), ("yellow", 10), ("orange", 100)),
-             desc="Segments resent per second across the fleet. Sustained non-zero means loss somewhere."),
+             w=8, unit="pps", decimals=2, thr=thresholds(("green", None), ("yellow", 10), ("orange", 100))),
     ])
 
-    g.section("Throughput", "Who is moving bytes.")
+    g.section("Throughput")
     g.extend([
-        timeseries("Inbound — eight busiest hosts",
+        timeseries("Inbound · top 8",
                    [q("topk(8, sum by (host) (rate(node_network_receive_bytes_total{%s}[$__rate_interval])))" % NET,
-                      "{{host}}")], unit="Bps", h=9,
-                   desc="Top eight. The table below covers all eighteen."),
-        timeseries("Outbound — eight busiest hosts",
+                      "{{host}}")], unit="Bps", h=9),
+        timeseries("Outbound · top 8",
                    [q("topk(8, sum by (host) (rate(node_network_transmit_bytes_total{%s}[$__rate_interval])))" % NET,
-                      "{{host}}")], unit="Bps", h=9,
-                   desc="Top eight. The table below covers all eighteen."),
+                      "{{host}}")], unit="Bps", h=9),
     ])
     g.add(joined_table(
         "Per host",
@@ -880,7 +828,7 @@ def network():
         extra_overrides=[by_name("host", [("displayName", "Host"), ("custom.width", 160), HOST_LINK]),
                          by_name("role", [("displayName", "Role"), ("custom.width", 120)])]))
 
-    g.section("Errors and drops", "This table is empty when the fleet is clean.")
+    g.section("Errors and drops")
     g.add(empty_ok(table(
         "Interfaces dropping or erroring, last hour",
         [tq("sum by (host, device) ("
@@ -888,9 +836,7 @@ def network():
             " + increase(node_network_transmit_errs_total{%s}[1h])"
             " + increase(node_network_receive_drop_total{%s}[1h])"
             " + increase(node_network_transmit_drop_total{%s}[1h])) > 0" % (NET, NET, NET, NET))],
-        w=12, h=9, no_value="No interface has dropped or errored a packet in the last hour.",
-        desc="Errors and drops summed. A bridge dropping packets it was never meant to forward is normal; "
-             "a physical NIC erroring is not.",
+        w=12, h=9, no_value="No errors or drops in the last hour",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|device|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -900,24 +846,24 @@ def network():
         overrides=[by_name("Packets", [("decimals", 0), CELL_COLOR_TEXT,
                                        ("thresholds", thresholds(("yellow", None), ("orange", 100), ("red", 10000)))])])))
     g.add(timeseries(
-        "Drops per second — eight worst interfaces",
+        "Drops · top 8 interfaces",
         [q("topk(8, sum by (host, device) ("
            "rate(node_network_receive_drop_total{%s}[$__rate_interval])"
            " + rate(node_network_transmit_drop_total{%s}[$__rate_interval])))" % (NET, NET),
            "{{host}} {{device}}")],
         w=12, h=9, unit="pps", thr=thresholds(("green", None), ("orange", 1))))
 
-    g.section("TCP and connection tracking", "State the fleet is holding, rather than bytes moving.")
+    g.section("TCP and connection tracking")
     g.extend([
-        timeseries("Established connections",
+        timeseries("Established connections · top 8",
                    [q("topk(8, sum by (host) (node_netstat_Tcp_CurrEstab))", "{{host}}")], h=9),
-        timeseries("Retransmitted segments",
+        timeseries("Retransmits · top 8",
                    [q("topk(8, sum by (host) (rate(node_netstat_Tcp_RetransSegs[$__rate_interval])))", "{{host}}")],
                    unit="pps", h=9, thr=thresholds(("green", None), ("yellow", 1), ("orange", 20))),
         bargauge("Conntrack table used",
                  [q("node_nf_conntrack_entries / node_nf_conntrack_entries_limit * 100", "{{host}}", instant=True)],
-                 w=12, h=9, desc="Reported by seventeen hosts; the eighteenth has no conntrack module loaded."),
-        timeseries("Sockets in use",
+                 w=12, h=9),
+        timeseries("Sockets in use · top 8",
                    [q("topk(8, node_sockstat_TCP_inuse)", "{{host}} TCP"),
                     q("topk(8, node_sockstat_UDP_inuse)", "{{host}} UDP", ref="B")],
                    w=12, h=9),
@@ -926,8 +872,8 @@ def network():
     return dashboard(
         "network", "Network", g,
         tags=["homelab", "network"],
-        description="Host-side networking: throughput, errors, TCP state and connection tracking. The "
-                    "switches and access points are not in here — that needs a UniFi exporter.",
+        description="Host-side networking: throughput, errors, TCP state and connection tracking. "
+                    "Switches and access points are not in here.",
         refresh="30s", time_from="now-6h")
 
 
@@ -939,55 +885,51 @@ def power():
     g = Grid()
     ups = 'ups=~"$ups"'
 
-    g.section("Right now", "APC Back-UPS Pro BR1500MS2 UPS-02, read over NUT from grey-server. "
-                           "UPS-01 is absent while its data cable remains disconnected.")
+    g.section("Right now")
     g.extend([
-        stat("Mains", [q('nut_ups_status{status="OL", %s}' % ups, "{{ups}}", instant=True)], w=4,
+        stat("Mains", [q('nut_ups_status{status="OL", %s}' % ups, "{{ups}}", instant=True)], w=8,
              mappings=mapping({0: ("ON BATTERY", "red"), 1: ("ON MAINS", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value_and_name"),
-        stat("Battery charge", [q("nut_battery_charge{%s} * 100" % ups, "{{ups}}", instant=True)], w=4,
+             thr=GOOD_ABOVE_ZERO, text_mode="value_and_name"),
+        stat("Battery charge", [q("nut_battery_charge{%s} * 100" % ups, "{{ups}}", instant=True)], w=8,
              unit="percent", decimals=0, maxv=100,
              thr=thresholds(("red", None), ("orange", 30), ("yellow", 60), ("green", 90)),
              text_mode="value_and_name"),
-        stat("Runtime left", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}", instant=True)], w=4,
+        stat("Runtime left", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}", instant=True)], w=8,
              unit="s", decimals=0,
              thr=thresholds(("red", None), ("orange", 300), ("yellow", 900), ("green", 1800)),
              text_mode="value_and_name"),
-        stat("Load", [q("nut_load{%s} * 100" % ups, "{{ups}}", instant=True)], w=4,
+        stat("Load", [q("nut_load{%s} * 100" % ups, "{{ups}}", instant=True)], w=8,
              unit="percent", decimals=0, maxv=100, thr=PCT_LOAD, text_mode="value_and_name"),
         stat("Draw", [q("nut_load{%s} * nut_real_power_nominal_watts{%s}" % (ups, ups), "{{ups}}", instant=True)],
-             w=4, unit="watt", decimals=0, color_mode="none", graph="area", text_mode="value_and_name",
-             desc="Load as a share of the 900 W nominal rating. NUT reports no true wattage on this model, "
-                  "so this is an estimate the UPS derives, not a meter reading."),
-        stat("Input voltage", [q("nut_input_voltage_volts{%s}" % ups, "{{ups}}", instant=True)], w=4,
+             w=8, unit="watt", decimals=0, text_mode="value_and_name",
+             desc="Load share times the 900 W nominal rating, as the UPS estimates it."),
+        stat("Input voltage", [q("nut_input_voltage_volts{%s}" % ups, "{{ups}}", instant=True)], w=8,
              unit="volt", decimals=0, text_mode="value_and_name",
              thr=thresholds(("red", None), ("orange", 100), ("green", 110), ("orange", 130), ("red", 140))),
     ])
 
-    g.section("Battery", "How long you have, and whether it is getting shorter.")
+    g.section("Battery")
     g.extend([
         bargauge("Charge", [q("nut_battery_charge{%s} * 100" % ups, "{{ups}}", instant=True)],
                  w=12, h=7, thr=thresholds(("red", None), ("orange", 30), ("yellow", 60), ("green", 90))),
         bargauge("Runtime remaining", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}", instant=True)],
                  w=12, h=7, unit="s", maxv=3600, decimals=0,
-                 thr=thresholds(("red", None), ("orange", 300), ("yellow", 900), ("green", 1800)),
-                 desc="Scaled to an hour. The low-battery shutdown trigger is 120 seconds."),
+                 thr=thresholds(("red", None), ("orange", 300), ("yellow", 900), ("green", 1800))),
         timeseries("Charge over time", [q("nut_battery_charge{%s} * 100" % ups, "{{ups}}")],
                    w=12, h=9, unit="percent", maxv=100),
         timeseries("Runtime over time", [q("nut_battery_runtime_seconds{%s}" % ups, "{{ups}}")],
-                   w=12, h=9, unit="s",
-                   desc="A runtime estimate that keeps falling at the same load is a battery losing capacity."),
+                   w=12, h=9, unit="s"),
         timeseries("Battery voltage", [q("nut_battery_voltage_volts{%s}" % ups, "{{ups}}")],
-                   w=24, h=8, unit="volt", min_zero=False,
-                   desc="Nominal is 24 V. A resting pack well under that is worn; a spike above it is charging."),
+                   w=24, h=8, unit="volt", min_zero=False),
     ])
 
-    g.section("Load and mains", "What the units are carrying, and what the wall is giving them.")
+    g.section("Load and mains")
     g.extend([
         bargauge("Load", [q("nut_load{%s} * 100" % ups, "{{ups}}", instant=True)], w=12, h=7, thr=PCT_LOAD),
         bargauge("Estimated draw",
                  [q("nut_load{%s} * nut_real_power_nominal_watts{%s}" % (ups, ups), "{{ups}}", instant=True)],
-                 w=12, h=7, unit="watt", maxv=900, decimals=0, thr=PCT_LOAD),
+                 w=12, h=7, unit="watt", maxv=900, decimals=0,
+                 thr=thresholds(("green", None), ("yellow", 630), ("orange", 765), ("red", 855))),
         timeseries("Load over time", [q("nut_load{%s} * 100" % ups, "{{ups}}")],
                    w=12, h=9, unit="percent", maxv=100, thr=PCT_LOAD),
         timeseries("Input voltage",
@@ -995,19 +937,16 @@ def power():
                     q("nut_input_transfer_low_volts{%s}" % ups, "{{ups}} transfer low", ref="B"),
                     q("nut_input_transfer_high_volts{%s}" % ups, "{{ups}} transfer high", ref="C")],
                    w=12, h=9, unit="volt", min_zero=False,
-                   desc="The two flat lines are the thresholds at which the unit switches to battery: 88 V "
-                        "and 144 V. Mains sagging toward either is what drains a battery without an outage.",
                    overrides=[by_regex(".*transfer.*", [("custom.lineStyle", {"fill": "dash", "dash": [8, 6]}),
                                                         ("custom.lineWidth", 1),
                                                         ("color", fixed("text"))])]),
     ])
 
-    g.section("Status history", "Every flag NUT reports, over time.")
+    g.section("Status history")
     g.add(state_timeline(
         "UPS status flags", [q("nut_ups_status{%s} == 1" % ups, "{{ups}} {{status}}")], h=9,
         mappings=mapping({1: ("set", "green")}), legend=LEGEND_LIST,
-        desc="A band appears only while its flag is set. OL is on line. OB is on battery, LB is low "
-             "battery, CHRG is charging, RB means replace battery."))
+        desc="OL on line, OB on battery, LB low battery, CHRG charging, RB replace battery."))
     g.add(joined_table(
         "Unit facts",
         [("A", "nut_real_power_nominal_watts{%s}" % ups, "Nominal", [("unit", "watt"), ("decimals", 0)]),
@@ -1037,27 +976,25 @@ def power():
 def monitoring():
     g = Grid()
 
-    g.section("Scraping", "Whether the thing that watches everything else is itself working.")
+    g.section("Scraping")
     g.extend([
-        stat("Targets up", [q("count(up == 1)", instant=True)], w=4, color_mode="none", graph="area"),
-        stat("Targets down", [q("count(up == 0) or vector(0)", instant=True)], w=4,
-             thr=BAD_ABOVE_ZERO, color_mode="background"),
-        stat("Slowest scrape", [q("max(scrape_duration_seconds)", instant=True)], w=4,
-             unit="s", decimals=2, graph="area",
-             thr=thresholds(("green", None), ("yellow", 1), ("orange", 5), ("red", 10)),
-             desc="A scrape slower than its interval is a target about to start missing samples."),
+        stat("Targets up", [q("count(up == 1)", instant=True)], w=8),
+        stat("Targets down", [q("count(up == 0) or vector(0)", instant=True)], w=8,
+             thr=BAD_ABOVE_ZERO),
+        stat("Slowest scrape", [q("max(scrape_duration_seconds)", instant=True)], w=8,
+             unit="s", decimals=2,
+             thr=thresholds(("green", None), ("yellow", 1), ("orange", 5), ("red", 10))),
         stat("Samples ingested",
              [q("sum(rate(prometheus_tsdb_head_samples_appended_total[$__rate_interval]))", instant=True)],
-             w=4, unit="wps", decimals=0, color_mode="none", graph="area"),
-        stat("Active series", [q("prometheus_tsdb_head_series", instant=True)], w=4,
-             decimals=0, color_mode="none", graph="area",
+             w=8, unit="wps", decimals=0),
+        stat("Active series", [q("prometheus_tsdb_head_series", instant=True)], w=8,
+             decimals=0,
              thr=thresholds(("green", None), ("yellow", 500000), ("orange", 1000000))),
-        stat("TSDB on disk", [q("sum(prometheus_tsdb_storage_blocks_bytes)", instant=True)], w=4,
-             unit="bytes", decimals=1, color_mode="none", graph="area",
-             desc="Compacted blocks only, so it lags the head block by up to two hours. Retention is 15 days."),
+        stat("TSDB on disk", [q("sum(prometheus_tsdb_storage_blocks_bytes)", instant=True)], w=8,
+             unit="bytes", decimals=1),
     ])
 
-    g.section("Targets", "Every scrape endpoint, its health and what it costs.")
+    g.section("Targets")
     g.add(joined_table(
         "Scrape targets",
         [("A", "up", "Up",
@@ -1071,70 +1008,65 @@ def monitoring():
            ("thresholds", thresholds(("green", None), ("yellow", 100), ("orange", 1000)))]),
          ("E", "scrape_samples_post_metric_relabeling", "Kept", [("decimals", 0)])],
         h=16, join_on="instance", keep=r"^(instance|job|host|Value #.*)$", sort=("Duration", True),
-        desc="Sorted slowest first. `New series` climbing on every scrape is a cardinality leak — a label "
-             "carrying something that changes each time.",
         extra_overrides=[by_name("instance", [("displayName", "Target"), ("custom.width", 260)]),
                          by_name("job", [("displayName", "Job"), ("custom.width", 120)]),
                          by_name("host", [("displayName", "Host"), ("custom.width", 150), HOST_LINK])]))
     g.extend([
         timeseries("Scrape duration by job",
-                   [q("max by (job) (scrape_duration_seconds)", "{{job}}")], h=9, unit="s",
-                   desc="The slowest target in each job."),
+                   [q("max by (job) (scrape_duration_seconds)", "{{job}}")], h=9, unit="s"),
         timeseries("Samples scraped by job",
-                   [q("sum by (job) (scrape_samples_scraped)", "{{job}}")], h=9, stack=True,
-                   desc="Stacked, so the height is what one full scrape cycle costs."),
+                   [q("sum by (job) (scrape_samples_scraped)", "{{job}}")], h=9, stack=True),
     ])
 
-    g.section("Storage", "How the time series database is holding up.")
+    g.section("Storage")
     g.extend([
         timeseries("Active series", [q("prometheus_tsdb_head_series", "head series")], h=9, w=8),
         timeseries("Ingestion rate",
-                   [q("rate(prometheus_tsdb_head_samples_appended_total[$__rate_interval])", "samples/s")],
+                   [q("sum(rate(prometheus_tsdb_head_samples_appended_total[$__rate_interval]))", "samples/s")],
                    h=9, w=8, unit="wps"),
         timeseries("Block storage",
-                   [q("prometheus_tsdb_storage_blocks_bytes", "on disk")], h=9, w=8, unit="bytes"),
+                   [q("prometheus_tsdb_storage_blocks_bytes", "on disk")], h=9, w=8, unit="bytes",
+                   tint="storage"),
         timeseries("Compactions and truncations",
-                   [q("increase(prometheus_tsdb_compactions_total[$__interval])", "compactions"),
-                    q("increase(prometheus_tsdb_wal_truncations_total[$__interval])", "WAL truncations", ref="B")],
-                   h=8, w=12, decimals=0,
-                   desc="Both are routine housekeeping. Compactions failing, rather than running, is the "
-                        "thing worth noticing."),
+                   [q("increase(prometheus_tsdb_compactions_total[$__rate_interval])", "compactions"),
+                    q("increase(prometheus_tsdb_wal_truncations_total[$__rate_interval])",
+                      "WAL truncations", ref="B")],
+                   h=8, w=12, decimals=0),
         timeseries("Query duration",
                    [q("prometheus_engine_query_duration_seconds{quantile=\"0.99\"}", "{{slice}} p99")],
-                   h=8, w=12, unit="s",
-                   desc="p99 by stage. A slow eval stage is usually one dashboard asking for too much."),
+                   h=8, w=12, unit="s"),
     ])
 
-    g.section("Exporters", "The 18 node_exporters, and the things they quietly fail to collect.")
+    g.section("Exporters")
     g.add(joined_table(
         "node_exporter fleet",
-        [("A", 'max by (host) (up{job="node"})', "Up",
+        [("A", 'max by (host, role) (up{job="node"})', "Up",
           [CELL_COLOR_BG, ("mappings", MAP_UP_DOWN), ("thresholds", GOOD_ABOVE_ZERO), ("custom.width", 70)]),
-         ("B", "max by (host, version) (node_exporter_build_info)", "Version", [("custom.width", 110)]),
+         ("B", "max by (host, version) (node_exporter_build_info)", "Build",
+          [("custom.hidden", True)]),
          ("C", 'max by (host) (scrape_duration_seconds{job="node"})', "Scrape",
           [("unit", "s"), ("decimals", 3)] + cell_gauge(0, 2)),
-         ("D", "count by (host) (node_scrape_collector_success == 0)", "Collectors erroring",
+         ("D", 'count by (host) (node_scrape_collector_success{collector!~"%s"} == 0)' % NO_COLLECTOR,
+          "Collectors inactive",
           [("decimals", 0), CELL_COLOR_TEXT, ("noValue", "0"),
-           ("thresholds", thresholds(("green", None), ("yellow", 1)))]),
+           ("thresholds", thresholds(("green", None), ("yellow", 8)))]),
          ("E", "max by (host) (abs(node_timex_offset_seconds))", "Clock offset",
           [("unit", "s"), ("decimals", 6), CELL_COLOR_TEXT,
            ("thresholds", thresholds(("green", None), ("yellow", 0.05), ("orange", 0.5)))]),
          ("F", "count by (host) (node_systemd_unit_state{state=\"failed\"} == 1)", "Failed units",
           [("decimals", 0), CELL_COLOR_TEXT, ("noValue", "0"), ("thresholds", thresholds(("green", None), ("orange", 1)))]),
-         ("G", "max by (host) (apt_upgrades_pending)", "Updates",
+         ("G", "sum by (host) (apt_upgrades_pending)", "Updates",
           [("decimals", 0), ("noValue", "—"), CELL_COLOR_TEXT,
            ("thresholds", thresholds(("green", None), ("yellow", 1), ("orange", 20)))])],
-        h=14, sort=("Collectors erroring", True),
-        desc="`Collectors erroring` is almost always hardware the host does not have — fibrechannel, "
-             "infiniband, tape, IPVS. It is worth reading once to learn the baseline, not worth alerting on. "
-             "`Version` is 1.9.0 fleet-wide because APT owns the binary.",
+        h=14, sort=("Collectors inactive", True),
+        keep=r"^(host|role|version|Value #.*)$", exclude=["Value #B"], index={"version": 2},
         extra_overrides=[by_name("host", [("displayName", "Host"), ("custom.width", 160), HOST_LINK]),
                          by_name("version", [("displayName", "Version"), ("custom.width", 110)]),
                          by_name("role", [("displayName", "Role"), ("custom.width", 120)])]))
     g.add(empty_ok(table(
         "Failed systemd units",
         [tq('node_systemd_unit_state{state="failed"} == 1')],
-        w=12, h=9, no_value="No unit is in the failed state anywhere in the fleet.",
+        w=12, h=9, no_value="No failed units",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|name)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName": {"host": "Host", "name": "Unit"},
@@ -1143,9 +1075,7 @@ def monitoring():
     g.add(empty_ok(table(
         "Textfile collector errors",
         [tq("node_textfile_scrape_error != 0")],
-        w=12, h=9, no_value="Every textfile collector parsed cleanly.",
-        desc="The TeamSpeak and SMART metrics arrive this way. An error here means a half-written file, "
-             "so the metrics above it are stale rather than absent — which is the more dangerous failure.",
+        w=12, h=9, no_value="No collector errors",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName": {"host": "Host", "Value": "Error"},
@@ -1154,9 +1084,7 @@ def monitoring():
     g.add(empty_ok(table(
         "Pending package updates",
         [tq("apt_upgrades_pending > 0")],
-        w=24, h=9, no_value="No host is reporting a pending update.",
-        desc="Only the Debian hosts run the APT collector; Rocky and the two hosts on an upstream binary "
-             "are absent by design rather than up to date.",
+        w=24, h=9, no_value="No pending updates",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(host|origin|arch|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -1171,7 +1099,7 @@ def monitoring():
         "monitoring-health", "Monitoring Health", g,
         tags=["homelab", "monitoring"],
         description="Prometheus watching itself: target health, scrape cost, TSDB growth, and the state of "
-                    "the 18 node_exporters.",
+                    "the %d node_exporters." % len(inv.NODES),
         refresh="1m", time_from="now-6h")
 
 
@@ -1181,77 +1109,54 @@ def teamspeak():
     g = Grid()
     s = 'server=~"$server"'
 
-    g.section(
-        "Right now",
-        "Two voice servers on alpha-prod-01, each probed twice a minute: once at the public address a "
-        "person types, and once at its local UDP port on the host. The pair is the whole point — local up "
-        "with public down is the tunnel or DNS, not TeamSpeak.")
+    g.section("Right now")
     g.extend([
         stat("Verdict", [q("teamspeak_server_fault{%s} * 2 + teamspeak_tunnel_fault{%s}" % (s, s),
                            "{{server}}", instant=True)], w=8, h=5,
              mappings=mapping({0: ("SERVING", "green"), 1: ("PUBLIC PATH DOWN", "orange"),
                                2: ("VOICE DOWN", "red"), 3: ("VOICE DOWN", "red")}),
-             thr=thresholds(("green", None), ("orange", 1), ("red", 2)),
-             color_mode="background", text_mode="value_and_name",
-             desc="PUBLIC PATH DOWN covers three different faults: the Playit relay is unreachable, the SRV "
-                  "record is wrong, or the collector cannot resolve DNS at all. The three stats to the right "
-                  "tell them apart — check Name resolution first."),
+             thr=thresholds(("green", None), ("orange", 1), ("red", 2)), text_mode="value_and_name"),
         stat("Public address", [q("teamspeak_public_up{%s}" % s, "{{server}}", instant=True)], w=8, h=5,
-             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO, color_mode="background",
-             text_mode="value_and_name",
-             desc="A real TeamSpeak Init1 handshake through the Playit relay, so UP means the voice service "
-                  "answered rather than a port merely being open."),
+             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO,
+             text_mode="value_and_name"),
         stat("Local voice", [q("teamspeak_local_up{%s}" % s, "{{server}}", instant=True)], w=8, h=5,
-             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO, color_mode="background",
-             text_mode="value_and_name",
-             desc="The same handshake against 127.0.0.1 on the host. Down here means TeamSpeak itself."),
+             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO,
+             text_mode="value_and_name"),
         stat("Name resolution", [q("teamspeak_dns_srv_up{%s}" % s, "{{server}}", instant=True)], w=8, h=5,
              mappings=mapping({0: ("CANNOT RESOLVE", "red"), 1: ("RESOLVES", "green")}),
-             thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value_and_name",
-             desc="Whether the collector could read the _ts3._udp SRV record. When this is red the public "
-                  "probe never ran, so the public panels are reporting the monitoring's own blindness rather "
-                  "than an outage. That is exactly what happened between 2026-08-10 and 2026-08-27."),
+             thr=GOOD_ABOVE_ZERO, text_mode="value_and_name"),
         stat("ServerQuery", [q("teamspeak_query_up{%s}" % s, "{{server}}", instant=True)], w=8, h=5,
-             mappings=MAP_OK_FAIL, thr=GOOD_ABOVE_ZERO, color_mode="background",
-             text_mode="value_and_name",
-             desc="The administrative login. It is how the client and channel counts below are read."),
+             mappings=MAP_OK_FAIL, thr=GOOD_ABOVE_ZERO,
+             text_mode="value_and_name"),
         stat("Collector freshness", [q("time() - teamspeak_last_probe_timestamp_seconds", instant=True)],
              w=8, h=5, unit="s", decimals=0,
-             thr=thresholds(("green", None), ("yellow", 120), ("orange", 300), ("red", 900)),
-             desc="Age of the last completed collection. The collector runs every 60 seconds, so anything "
-                  "past two minutes means it has stopped and every panel here is stale."),
+             thr=thresholds(("green", None), ("yellow", 120), ("orange", 300), ("red", 900))),
     ])
 
-    g.section("Availability over time", "Public and local, side by side. They should move together.")
+    g.section("Availability over time")
     g.add(state_timeline(
         "Reachability",
         [q("teamspeak_public_up{%s}" % s, "{{server}} public"),
          q("teamspeak_local_up{%s}" % s, "{{server}} local", ref="B"),
          q("teamspeak_dns_srv_up{%s}" % s, "{{server}} SRV record", ref="C")],
-        h=9, mappings=mapping({0: ("down", "red"), 1: ("up", "green")}), legend=LEGEND_LIST,
-        desc="Three bands per server. Local green with public red is a tunnel or DNS problem; all three red "
-             "at once is the host."))
+        h=9, mappings=mapping({0: ("down", "red"), 1: ("up", "green")}), legend=LEGEND_LIST))
     g.extend([
-        stat("Public availability over the selected range",
+        stat("Public availability",
              [q("avg_over_time(teamspeak_public_up{%s}[$__range]) * 100" % s, "{{server}}", instant=True)],
              w=8, h=7, unit="percent", decimals=3,
              thr=thresholds(("red", None), ("orange", 99), ("yellow", 99.9), ("green", 99.99)),
-             text_mode="value_and_name", graph="area"),
+             text_mode="value_and_name"),
         timeseries("Public round trip",
                    [q("teamspeak_public_rtt_seconds{%s} > 0" % s, "{{server}}")],
                    w=16, h=7, unit="s", decimals=3,
-                   thr=thresholds(("green", None), ("yellow", 0.15), ("orange", 0.3)),
-                   desc="Filtered to non-zero, because a failed probe records zero rather than a time and a "
-                        "flat zero line would read as an instant response."),
+                   thr=thresholds(("green", None), ("yellow", 0.15), ("orange", 0.3))),
     ])
 
-    g.section("The public path", "What the SRV record currently points at.")
+    g.section("The public path")
     g.add(table(
         "Relay endpoints",
         [tq("teamspeak_public_up{%s}" % s)],
         h=6,
-        desc="The relay label is written by the collector from the live SRV record on every cycle, so a "
-             "Playit port rotation shows up here without an edit. `unresolved:0` means the lookup failed.",
         transformations=[
             {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(server|address|relay|Value)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -1261,42 +1166,35 @@ def teamspeak():
                                   ("thresholds", GOOD_ABOVE_ZERO), ("custom.width", 80)]),
                    by_name("Relay", [CELL_COLOR_TEXT,
                                      ("mappings", [{"type": "regex", "options": {"pattern": "^unresolved.*",
-                                                                                 "result": {"text": "unresolved — DNS failed",
+                                                                                 "result": {"text": "unresolved",
                                                                                             "color": "red", "index": 0}}}])])]))
 
-    g.section("Server statistics", "Read over ServerQuery, so these go blank if that login stops working.")
+    g.section("Server statistics")
     g.extend([
         stat("Clients online", [q("teamspeak_clients_online{%s}" % s, "{{server}}", instant=True)],
-             w=6, h=5, color_mode="none", graph="area", text_mode="value_and_name"),
+             w=6, h=5, text_mode="value_and_name"),
         stat("Channels", [q("teamspeak_channels_online{%s}" % s, "{{server}}", instant=True)],
-             w=6, h=5, color_mode="none", text_mode="value_and_name"),
+             w=6, h=5, text_mode="value_and_name"),
         stat("Slots", [q("teamspeak_max_clients{%s}" % s, "{{server}}", instant=True)],
-             w=6, h=5, color_mode="none", text_mode="value_and_name"),
+             w=6, h=5, text_mode="value_and_name"),
         stat("Virtual server uptime", [q("teamspeak_uptime_seconds{%s}" % s, "{{server}}", instant=True)],
-             w=6, h=5, unit="s", decimals=0, color_mode="none", text_mode="value_and_name"),
+             w=6, h=5, unit="s", decimals=0, text_mode="value_and_name"),
         timeseries("Clients online", [q("teamspeak_clients_online{%s}" % s, "{{server}}")],
-                   w=24, h=9, decimals=0,
-                   desc="The two servers are separate virtual servers, not a cluster, so these counts do "
-                        "not add up to anything meaningful together."),
+                   w=24, h=9, decimals=0),
     ])
 
-    g.section("Collector", "The exporter itself, which is a textfile written on alpha-prod-01 rather than a "
-                           "scrape target.")
+    g.section("Collector")
     g.extend([
         timeseries("Collection duration", [q("teamspeak_probe_duration_seconds", "duration")],
-                   w=12, h=8, unit="s", decimals=2,
-                   desc="One cycle probes both servers twice each plus two SRV lookups. Two seconds is "
-                        "normal; a jump to the timeout ceiling means a probe is hanging."),
+                   w=12, h=8, unit="s", decimals=2),
         timeseries("Local round trip", [q("teamspeak_local_rtt_seconds{%s} > 0" % s, "{{server}}")],
-                   w=12, h=8, unit="s", decimals=4,
-                   desc="Loopback, so this is sub-millisecond whenever TeamSpeak is answering at all."),
+                   w=12, h=8, unit="s", decimals=4),
     ])
 
     return dashboard(
         "teamspeak", "TeamSpeak", g,
         tags=["homelab", "teamspeak"],
-        description="Voice reachability for ts02 and ts03, public and local, with the fault isolated to "
-                    "either the server or the path in front of it.",
+        description="Voice reachability for ts02 and ts03, public and local.",
         refresh="1m", time_from="now-24h",
         templating=[var_query("server", "Server", "label_values(teamspeak_local_up, server)")])
 
@@ -1311,64 +1209,62 @@ def node_dashboard(n: dict) -> dict:
 
     where = inv.WHAT_IS_IT[kind]
     if n.get("pve"):
-        where += ", on [%s](/d/node-%s)" % (n["pve"], n["pve"])
-    identity = ("**%s** · `%s` · role `%s` · %s.  \nEight tiles, then one section per resource. "
-                "Use **Nodes** in the header to jump to another host."
-                % (host, n["ip"], n["role"], where))
+        where += " on %s" % n["pve"]
 
-    g.section("Status", identity)
+    # /proc/uptime is not namespaced, so an LXC reports its node's boot time.
+    # Proxmox publishes the guest's own; the hypervisors keep node_exporter's.
+    if kind == "lxc":
+        up_expr = 'pve_uptime_seconds{id="%s"}' % n["vmid"]
+        boot_expr = '(time() - pve_uptime_seconds{id="%s"}) * 1000' % n["vmid"]
+    else:
+        up_expr = "time() - node_boot_time_seconds{%s}" % H
+        boot_expr = "node_boot_time_seconds{%s} * 1000" % H
+
+    g.section("Status")
     tiles = [
         stat("Reachable", [q('up{job="node", %s}' % H, instant=True)], w=6,
-             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value",
-             desc="Whether Prometheus got a scrape, which is not the same as the workload being healthy."),
-        stat("Uptime", [q("time() - node_boot_time_seconds{%s}" % H, instant=True)], w=6,
-             unit="s", decimals=0, color_mode="none"),
-        stat("CPU busy", [q(inv.CPU_BUSY % (", " + H), instant=True)], w=6,
-             unit="percent", decimals=1, thr=PCT_LOAD, graph="area"),
+             mappings=MAP_UP_DOWN, thr=GOOD_ABOVE_ZERO, text_mode="value"),
+        stat("Uptime", [q(up_expr, instant=True)], w=6,
+             unit="s", decimals=0),
+        stat("CPU busy", [q(inv.CPU_BUSY % (", " + H, ", " + H), instant=True)], w=6,
+             unit="percent", decimals=1, thr=PCT_LOAD),
         stat("Load per core",
-             [q("node_load1{%s} / on (host) group_left () count by (host) "
-                "(count by (host, cpu) (node_cpu_seconds_total{%s}))" % (H, H), instant=True)], w=6,
-             decimals=2, thr=LOAD_PER_CORE, graph="area",
-             desc="Runnable processes divided by cores. Above 1 means work is queueing."),
+             [q("node_load1{%s} / on (host) group_left () %s" % (H, inv.CORES % (", " + H)),
+                instant=True)], w=6,
+             decimals=2, thr=LOAD_PER_CORE, desc="One-minute load divided by core count."),
         stat("Memory used", [q(inv.MEM_USED % (H, H), instant=True)], w=6,
-             unit="percent", decimals=1, thr=PCT_USED, graph="area",
-             desc="Against MemAvailable, so page cache is counted as free — which it effectively is."),
+             unit="percent", decimals=1, thr=PCT_USED,
+             desc="Against MemAvailable, so page cache counts as free."),
         stat("Swap in use",
              [q("node_memory_SwapTotal_bytes{%s} - node_memory_SwapFree_bytes{%s}" % (H, H), instant=True)],
              w=6, unit="bytes", decimals=1,
-             thr=thresholds(("green", None), ("yellow", 1), ("orange", 1073741824)),
-             desc="Any swap in use on a host with RAM to spare is worth a look; sustained growth is a leak."),
+             thr=thresholds(("green", None), ("yellow", 1), ("orange", 1073741824))),
         stat("Root filesystem", [q(inv.fs_used_pct(sel(H, 'mountpoint="/"')), instant=True)], w=6,
-             unit="percent", decimals=1, thr=PCT_USED, graph="area"),
+             unit="percent", decimals=1, thr=PCT_USED),
     ]
     if n["temp"]:
         tiles.append(stat("CPU package", [q("max(%s)" % (PKG_TEMP_F % H), instant=True)], w=6,
-                          unit="fahrenheit", decimals=0, thr=TEMP_F, graph="area",
-                          desc="At the die. Intel reports it as Package id 0, AMD as Tctl."))
+                          unit="fahrenheit", decimals=0, thr=TEMP_F))
     else:
         tiles.append(stat("Processes running", [q("node_procs_running{%s}" % H, instant=True)], w=6,
-                          decimals=0, color_mode="none", graph="area",
-                          desc="Processes in the run queue at the moment of the scrape."))
+                          decimals=0))
     g.extend(tiles)
 
     # ---------------------------------------------------------------- CPU
-    g.section("CPU", "Where the time goes, and whether anything is waiting for it.")
+    g.section("CPU")
     cpu_panels = [
         timeseries("CPU by mode",
                    [q("sum by (mode) (rate(node_cpu_seconds_total{%s, mode!=\"idle\"}[$__rate_interval]))"
                       " / on () group_left () count(count by (cpu) (node_cpu_seconds_total{%s})) * 100" % (H, H),
                       "{{mode}}")],
                    unit="percent", h=9, stack=True, maxv=100,
-                   desc="Normalised to one core's worth, so the stack tops out at 100% however many cores "
-                        "the host has. A tall iowait band is a disk problem wearing a CPU costume."),
+                   desc="Normalised to one core, so the stack tops out at 100%."),
         timeseries("Load average",
                    [q("node_load1{%s}" % H, "1 minute"),
                     q("node_load5{%s}" % H, "5 minutes", ref="B"),
                     q("node_load15{%s}" % H, "15 minutes", ref="C"),
-                    q("count by (host) (count by (host, cpu) (node_cpu_seconds_total{%s}))" % H, "cores", ref="D")],
+                    q(inv.CORES % (", " + H), "cores", ref="D")],
                    h=9, decimals=2,
-                   desc="The flat line is the core count. Load above it means the run queue is longer than "
-                        "the machine is wide.",
                    overrides=[by_name("cores", [("custom.lineStyle", {"fill": "dash", "dash": [8, 6]}),
                                                 ("custom.lineWidth", 1), ("color", fixed("text"))])]),
     ]
@@ -1376,20 +1272,18 @@ def node_dashboard(n: dict) -> dict:
         cpu_panels.append(timeseries(
             "CPU pressure",
             [q("rate(node_pressure_cpu_waiting_seconds_total{%s}[$__rate_interval]) * 100" % H, "some")],
-            h=8, unit="percent", maxv=100, thr=thresholds(("green", None), ("yellow", 10), ("orange", 30)),
-            desc="Share of time at least one task was runnable but waiting for a core. This is the honest "
-                 "measure of CPU contention; utilisation is not."))
+            h=8, unit="percent", maxv=100, tint="compute",
+            thr=thresholds(("green", None), ("yellow", 10), ("orange", 30))))
     if n["cpufreq"]:
         cpu_panels.append(timeseries(
             "Clock speed", [q("node_cpu_scaling_frequency_hertz{%s}" % H, "core {{cpu}}")],
-            h=8, unit="hertz", legend=LEGEND_LIST, min_zero=False,
-            desc="Cores parked at the floor under load mean thermal or power limiting."))
+            h=8, unit="hertz", legend=LEGEND_LIST, min_zero=False))
     for i, p in enumerate(cpu_panels):
         p["gridPos"]["w"] = 12
     g.extend(cpu_panels)
 
     # ------------------------------------------------------------- Memory
-    g.section("Memory", "Where the RAM went. Cache is not a leak.")
+    g.section("Memory")
     mem_overrides = [
         by_name("used", [("color", fixed("blue"))]),
         by_name("buffers", [("color", fixed("purple"))]),
@@ -1403,8 +1297,7 @@ def node_dashboard(n: dict) -> dict:
                     q("node_memory_Buffers_bytes{%s}" % H, "buffers", ref="B"),
                     q("node_memory_Cached_bytes{%s}" % H, "cached", ref="C"),
                     q("node_memory_MemFree_bytes{%s}" % H, "free", ref="D")],
-                   w=12, h=9, unit="bytes", stack=True, overrides=mem_overrides,
-                   desc="Stacked to total RAM. Only the blue band is memory a process actually holds."),
+                   w=12, h=9, unit="bytes", stack=True, overrides=mem_overrides),
         timeseries("Swap",
                    [q("node_memory_SwapTotal_bytes{%s} - node_memory_SwapFree_bytes{%s}" % (H, H), "in use"),
                     q("node_memory_SwapTotal_bytes{%s}" % H, "configured", ref="B")],
@@ -1416,19 +1309,16 @@ def node_dashboard(n: dict) -> dict:
         mem_panels.append(timeseries(
             "Memory pressure",
             [q("rate(node_pressure_memory_waiting_seconds_total{%s}[$__rate_interval]) * 100" % H, "some")],
-            w=12, h=8, unit="percent", maxv=100,
-            thr=thresholds(("green", None), ("yellow", 1), ("orange", 10)),
-            desc="Time spent reclaiming rather than working. Non-zero here, before the OOM killer runs, is "
-                 "the early warning."))
+            w=12, h=8, unit="percent", maxv=100, tint="memory",
+            thr=thresholds(("green", None), ("yellow", 1), ("orange", 10))))
     mem_panels.append(timeseries(
         "Major page faults",
         [q("rate(node_vmstat_pgmajfault{%s}[$__rate_interval])" % H, "major faults/s")],
-        w=12, h=8, unit="reqps",
-        desc="Faults that had to go to disk. Sustained non-zero means the working set no longer fits."))
+        w=12, h=8, unit="reqps", tint="memory"))
     g.extend(mem_panels)
 
     # -------------------------------------------------------- Filesystems
-    g.section("Filesystems", "Real mounts only.")
+    g.section("Filesystems")
     g.add(bargauge("Used", [q(inv.fs_used_pct(H), "{{mountpoint}}", instant=True)], w=12, h=9))
     g.add(joined_table(
         "Detail",
@@ -1447,22 +1337,19 @@ def node_dashboard(n: dict) -> dict:
                      w=24, h=8, unit="percent", maxv=100, thr=PCT_USED, thr_style="dashed"))
 
     # --------------------------------------------------------------- Disk
-    disk_note = ("Physical devices as this host sees them. " +
-                 ("Because an LXC guest shares the node's kernel, /proc/diskstats is not namespaced: "
-                  "these are **%s**'s disks, and the traffic on them includes every other guest."
-                  % n.get("pve", "the node")
-                  if kind == "lxc" else
-                  "These are this machine's own virtual disks." if kind == "qemu" else
-                  "These are the physical drives in the machine."))
-    g.section("Disk", disk_note)
+    # /proc/diskstats is not namespaced, so an LXC reports its node's block
+    # devices and its node's traffic on them. Say so rather than imply the
+    # container owns these numbers; the section is gated only by naming.
+    g.section("Node disk" if kind == "lxc" else "Disk")
     D = sel(DISK, H)
+    disk_note = ("An LXC shares its node's /proc/diskstats, so these are the hypervisor's block "
+                 "devices and its traffic on them, not this container's.") if kind == "lxc" else ""
     disk_panels = [
         timeseries("Throughput",
                    [q("rate(node_disk_read_bytes_total{%s}[$__rate_interval])" % D, "{{device}} read"),
                     q("-1 * rate(node_disk_written_bytes_total{%s}[$__rate_interval])" % D,
                       "{{device}} write", ref="B")],
-                   w=12, h=9, unit="Bps", min_zero=False,
-                   desc="Reads above the line, writes below it."),
+                   w=12, h=9, unit="Bps", min_zero=False, desc=disk_note),
         timeseries("Operations",
                    [q("rate(node_disk_reads_completed_total{%s}[$__rate_interval])" % D, "{{device}} read"),
                     q("-1 * rate(node_disk_writes_completed_total{%s}[$__rate_interval])" % D,
@@ -1470,43 +1357,36 @@ def node_dashboard(n: dict) -> dict:
                    w=12, h=9, unit="iops", min_zero=False),
         timeseries("Utilisation",
                    [q("rate(node_disk_io_time_seconds_total{%s}[$__rate_interval]) * 100" % D, "{{device}}")],
-                   w=12, h=8, unit="percent", maxv=100, thr=PCT_LOAD,
-                   desc="Share of wall time with at least one request in flight. Sustained 100% is saturation."),
+                   w=12, h=8, unit="percent", maxv=100, thr=PCT_LOAD),
     ]
     if n["psi"]:
         disk_panels.append(timeseries(
             "I/O pressure",
             [q("rate(node_pressure_io_waiting_seconds_total{%s}[$__rate_interval]) * 100" % H, "some")],
-            w=12, h=8, unit="percent", maxv=100,
-            thr=thresholds(("green", None), ("yellow", 10), ("orange", 30)),
-            desc="Time tasks spent blocked on storage."))
+            w=12, h=8, unit="percent", maxv=100, tint="storage",
+            thr=thresholds(("green", None), ("yellow", 10), ("orange", 30))))
     else:
         disk_panels.append(timeseries(
             "Queue time",
             [q("rate(node_disk_io_time_weighted_seconds_total{%s}[$__rate_interval])" % D, "{{device}}")],
-            w=12, h=8, unit="s",
-            desc="Weighted I/O time: seconds of request-time accumulated per second. Above 1 means requests "
-                 "are queueing."))
+            w=12, h=8, unit="s"))
     g.extend(disk_panels)
 
     # ------------------------------------------------------------ Network
-    g.section("Network", "Physical and bridge interfaces. Container veths and Proxmox firewall bridges are "
-                         "filtered out.")
+    g.section("Network")
     N = sel(NET, H)
     net_panels = [
         timeseries("Throughput",
                    [q("rate(node_network_receive_bytes_total{%s}[$__rate_interval])" % N, "{{device}} in"),
                     q("-1 * rate(node_network_transmit_bytes_total{%s}[$__rate_interval])" % N,
                       "{{device}} out", ref="B")],
-                   w=12, h=9, unit="Bps", min_zero=False,
-                   desc="Inbound above the line, outbound below it."),
+                   w=12, h=9, unit="Bps", min_zero=False),
         timeseries("Errors and drops",
                    [q("rate(node_network_receive_errs_total{%s}[$__rate_interval])" % N, "{{device}} in errors"),
                     q("rate(node_network_transmit_errs_total{%s}[$__rate_interval])" % N, "{{device}} out errors", ref="B"),
                     q("rate(node_network_receive_drop_total{%s}[$__rate_interval])" % N, "{{device}} in drops", ref="C"),
                     q("rate(node_network_transmit_drop_total{%s}[$__rate_interval])" % N, "{{device}} out drops", ref="D")],
-                   w=12, h=9, unit="pps", thr=thresholds(("green", None), ("orange", 1)),
-                   desc="Flat zero is the healthy shape."),
+                   w=12, h=9, unit="pps", thr=thresholds(("green", None), ("orange", 1))),
         timeseries("TCP connections",
                    [q("node_netstat_Tcp_CurrEstab{%s}" % H, "established"),
                     q("node_sockstat_TCP_tw{%s}" % H, "time-wait", ref="B")],
@@ -1514,15 +1394,13 @@ def node_dashboard(n: dict) -> dict:
         timeseries("TCP retransmits",
                    [q("rate(node_netstat_Tcp_RetransSegs{%s}[$__rate_interval])" % H, "retransmitted"),
                     q("rate(node_netstat_Tcp_OutSegs{%s}[$__rate_interval])" % H, "sent", ref="B")],
-                   w=12, h=8, unit="pps",
-                   desc="Retransmits against total segments sent. The ratio is what matters, not the count."),
+                   w=12, h=8, unit="pps"),
     ]
     if n["conntrack"]:
         net_panels.append(gauge(
             "Connection tracking table",
             [q("node_nf_conntrack_entries{%s} / node_nf_conntrack_entries_limit{%s} * 100" % (H, H), instant=True)],
-            w=8, h=8,
-            desc="Filling this table makes the host drop new connections without logging anything useful."))
+            w=8, h=8))
         net_panels.append(timeseries(
             "Tracked connections",
             [q("node_nf_conntrack_entries{%s}" % H, "entries"),
@@ -1535,24 +1413,19 @@ def node_dashboard(n: dict) -> dict:
             "Sockets in use",
             [q("node_sockstat_TCP_inuse{%s}" % H, "TCP"),
              q("node_sockstat_UDP_inuse{%s}" % H, "UDP", ref="B")],
-            w=24, h=8, decimals=0,
-            desc="This host has no nf_conntrack module loaded, so there is no connection table to show."))
+            w=24, h=8, decimals=0))
     g.extend(net_panels)
 
     # ----------------------------------------------------------- Hardware
     if n["temp"] or n["nvme"] or n["smart"] or n["zfs"]:
-        g.section("Hardware", "Sensors and drives that belong to this physical machine.")
+        g.section("Hardware")
     if n["temp"]:
         g.add(timeseries(
             "Temperatures",
             [q("%s" % (PKG_TEMP_F % H), "package"),
              q("node_hwmon_temp_celsius{%s} * on (host, chip, sensor) group_left (label)"
                " node_hwmon_sensor_label{label=~\"Core .*|Tccd.*\"} * 9 / 5 + 32" % H, "{{label}}", ref="B")],
-            w=24, h=9, unit="fahrenheit", thr=TEMP_F, thr_style="dashed", min_zero=False,
-            desc="Package first, then each core. The four Intel nodes report per-core sensors as "
-                 "`Core N`; grey-server is AMD and reports one per-die sensor, `Tccd1`, so both are matched. "
-                 "node_hwmon reports Celsius, so the query converts and the thresholds move with it — "
-                 "changing only the display unit would label a Celsius number as Fahrenheit."))
+            w=24, h=9, unit="fahrenheit", thr=TEMP_F, thr_style="dashed", min_zero=False))
     if n["nvme"]:
         g.add(joined_table(
             "NVMe",
@@ -1588,61 +1461,58 @@ def node_dashboard(n: dict) -> dict:
               [("decimals", 0), CELL_COLOR_TEXT, ("thresholds", BAD_ABOVE_ZERO)]),
              ("E", "smartmon_power_cycle_count_raw_value{%s}" % H, "Power cycles", [("decimals", 0)])],
             w=24, h=6, join_on="disk", keep=r"^(disk|Value #.*)$",
-            desc="Only the attributes every drive here reports. Pending sectors and UDMA CRC errors are "
-                 "ATA attributes the Samsung SSD in purple-server does not expose, so they live on "
-                 "[Storage & Drive Health](/d/storage-health) instead. The NVMe controller reports no "
-                 "overall self-assessment, so its row reads `not reported`; its health is in the NVMe "
-                 "table above.",
             extra_overrides=[by_name("disk", [("displayName", "Disk"), ("custom.width", 140)])]))
     if n["zfs"]:
         g.add(stat("ZFS pool state",
                    [q('max by (zpool) (node_zfs_zpool_state{state="online", %s})' % H, "{{zpool}}", instant=True)],
                    w=8, h=7, mappings=mapping({0: ("NOT ONLINE", "red"), 1: ("ONLINE", "green")}),
-                   thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value_and_name"))
+                   thr=GOOD_ABOVE_ZERO, text_mode="value_and_name"))
         g.add(timeseries("ZFS ARC size", [q("node_zfs_arc_size{%s}" % H, "ARC")],
-                         w=8, h=7, unit="bytes"))
+                         w=8, h=7, unit="bytes", tint="storage"))
         g.add(timeseries("ZFS ARC hit ratio",
                          [q("100 * rate(node_zfs_arc_hits{%s}[$__rate_interval]) / clamp_min("
                             "rate(node_zfs_arc_hits{%s}[$__rate_interval])"
                             " + rate(node_zfs_arc_misses{%s}[$__rate_interval]), 1)" % (H, H, H), "hit ratio")],
-                         w=8, h=7, unit="percent", maxv=100,
+                         w=8, h=7, unit="percent", maxv=100, tint="storage",
                          thr=thresholds(("red", None), ("orange", 80), ("green", 95))))
 
     # ------------------------------------------------------------- Guests
     if kind == "metal":
-        g.section("Guests on this node", "What this node is actually carrying.")
+        g.section("Guests on this node")
+        on_node = ' and on (id) pve_guest_info{node="%s"}' % host
         g.add(empty_ok(joined_table(
             "Guests on %s" % host,
             [("A", 'pve_up{%s} * on (id) group_left (name, node, type) pve_guest_info{node="%s"}' % (GUEST, host), "Up",
               [CELL_COLOR_BG, ("mappings", MAP_UP_DOWN), ("thresholds", GOOD_ABOVE_ZERO), ("custom.width", 70)]),
-             ("B", "pve_cpu_usage_ratio{%s} * 100" % GUEST, "CPU",
+             ("B", "pve_cpu_usage_ratio{%s} * 100%s" % (GUEST, on_node), "CPU",
               [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_LOAD)] + cell_gauge()),
-             ("C", "pve_memory_usage_bytes{%s} / pve_memory_size_bytes{%s} * 100" % (GUEST, GUEST), "Memory",
+             ("C", "pve_memory_usage_bytes{%s} / pve_memory_size_bytes{%s} * 100%s"
+                   % (GUEST, GUEST, on_node), "Memory",
               [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
-             ("D", "pve_memory_size_bytes{%s}" % GUEST, "RAM", [("unit", "bytes"), ("decimals", 0)]),
-             ("E", "pve_disk_size_bytes{%s}" % GUEST, "Disk", [("unit", "bytes"), ("decimals", 0)]),
-             ("F", "pve_uptime_seconds{%s}" % GUEST, "Uptime", [("unit", "s"), ("decimals", 0)])],
+             ("D", "pve_memory_size_bytes{%s}%s" % (GUEST, on_node), "RAM",
+              [("unit", "bytes"), ("decimals", 0)]),
+             ("E", "pve_disk_size_bytes{%s}%s" % (GUEST, on_node), "Disk",
+              [("unit", "bytes"), ("decimals", 0)]),
+             ("F", "pve_uptime_seconds{%s}%s" % (GUEST, on_node), "Uptime",
+              [("unit", "s"), ("decimals", 0)])],
             w=24, h=9, join_on="id", keep=r"^(id|name|type|Value #.*)$", sort=("CPU", True),
-            desc="Joined against pve_guest_info filtered to this node, so only this node's guests appear.",
             extra_overrides=[
                 by_name("id", [("displayName", "ID"), ("custom.width", 90)]),
                 by_name("name", [("displayName", "Guest"), ("custom.width", 180),
                                  ("links", [{"title": "Open this host's dashboard",
                                              "url": "/d/node-${__value.raw}", "targetBlank": False}])]),
                 by_name("type", [("displayName", "Type"), ("custom.width", 80)])],
-            no_value="No guest is registered on this node.")))
+            no_value="No guests on this node")))
         g.add(empty_ok(timeseries(
-            "Guest CPU on %s" % host,
+            "Guest CPU on %s · top 8" % host,
             [q('topk(8, pve_cpu_usage_ratio{%s} * 100 * on (id) group_left () '
                'pve_guest_info{node="%s"})' % (GUEST, host), "{{id}}")],
-            w=24, h=8, unit="percent", thr=PCT_LOAD,
-            desc="Top eight guests on this node.")))
+            w=24, h=8, unit="percent", thr=PCT_LOAD)))
 
     # --------------------------------------------------------- Containers
     if n["docker"]:
         ct = sel(CT, H)
-        g.section("Containers on this host", "From cAdvisor, which sees the container boundary the host "
-                                             "itself does not.")
+        g.section("Containers on this host")
         g.add(joined_table(
             "Containers",
             [("A", "sum by (name, image) (rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) * 100" % ct,
@@ -1652,32 +1522,30 @@ def node_dashboard(n: dict) -> dict:
              ("C", "max by (name) (time() - container_start_time_seconds{%s})" % ct, "Up for",
               [("unit", "s"), ("decimals", 0), CELL_COLOR_TEXT,
                ("thresholds", thresholds(("orange", None), ("green", 3600)))]),
-             ("D", "sum by (name) (rate(container_network_receive_bytes_total{%s}[$__rate_interval]))" % ct,
-              "Net in", [("unit", "Bps"), ("decimals", 1)]),
-             ("E", "sum by (name) (rate(container_network_transmit_bytes_total{%s}[$__rate_interval]))" % ct,
-              "Net out", [("unit", "Bps"), ("decimals", 1)])],
+             ("D", "sum by (name) (rate(container_network_receive_bytes_total{%s}[$__rate_interval]))"
+                   % sel(ct, CT_IFACE), "Net in", [("unit", "Bps"), ("decimals", 1)]),
+             ("E", "sum by (name) (rate(container_network_transmit_bytes_total{%s}[$__rate_interval]))"
+                   % sel(ct, CT_IFACE), "Net out", [("unit", "Bps"), ("decimals", 1)])],
             w=24, h=10, join_on="name", keep=r"^(name|image|Value #.*)$", sort=("CPU", True),
-            desc="`Up for` turns amber under an hour, which is how a restart loop announces itself.",
             extra_overrides=[by_name("name", [("displayName", "Container"), ("custom.width", 220)]),
                              by_name("image", [("displayName", "Image")])]))
         g.add(timeseries(
-            "Container CPU",
+            "Container CPU · top 10",
             [q("topk(10, sum by (name) (rate(container_cpu_usage_seconds_total{%s}[$__rate_interval])) * 100)" % ct,
                "{{name}}")], w=12, h=9, unit="percent"))
         g.add(timeseries(
-            "Container memory",
+            "Container memory · top 10",
             [q("topk(10, sum by (name) (container_memory_working_set_bytes{%s}))" % ct, "{{name}}")],
             w=12, h=9, unit="bytes"))
 
     # ---------------------------------------------------------------- UPS
     if n.get("ups"):
         u = n["ups"]
-        g.section("Power", "This node is read by the NUT server for %s. Full detail on "
-                           "[Power & UPS](/d/power-ups)." % u)
+        g.section("Power")
         g.extend([
             stat("Mains", [q('nut_ups_status{status="OL", ups="%s"}' % u, instant=True)], w=6, h=5,
                  mappings=mapping({0: ("ON BATTERY", "red"), 1: ("ON MAINS", "green")}),
-                 thr=GOOD_ABOVE_ZERO, color_mode="background", text_mode="value"),
+                 thr=GOOD_ABOVE_ZERO, text_mode="value"),
             stat("Battery", [q('nut_battery_charge{ups="%s"} * 100' % u, instant=True)], w=6, h=5,
                  unit="percent", decimals=0, maxv=100,
                  thr=thresholds(("red", None), ("orange", 30), ("yellow", 60), ("green", 90))),
@@ -1689,37 +1557,38 @@ def node_dashboard(n: dict) -> dict:
         ])
 
     # -------------------------------------------------------------- Facts
-    g.section("Facts", "What this machine is, and the housekeeping nobody looks at until it matters.")
+    g.section("Facts")
     g.extend([
-        stat("Booted", [q("node_boot_time_seconds{%s} * 1000" % H, instant=True)], w=6, h=5,
-             unit="dateTimeAsLocal", color_mode="none", text_mode="value"),
-        stat("Cores", [q("count by (host) (count by (host, cpu) (node_cpu_seconds_total{%s}))" % H, instant=True)],
-             w=6, h=5, decimals=0, color_mode="none"),
+        stat("Booted", [q(boot_expr, instant=True)], w=6, h=5,
+             unit="dateTimeAsLocal", text_mode="value"),
+        stat("Cores", [q(inv.CORES % (", " + H), instant=True)],
+             w=6, h=5, decimals=0),
         stat("Total RAM", [q("node_memory_MemTotal_bytes{%s}" % H, instant=True)], w=6, h=5,
-             unit="bytes", decimals=1, color_mode="none"),
-        stat("Clock offset", [q("node_timex_offset_seconds{%s}" % H, instant=True)], w=6, h=5,
+             unit="bytes", decimals=1),
+        stat("Clock offset", [q("abs(node_timex_offset_seconds{%s})" % H, instant=True)], w=6, h=5,
              unit="s", decimals=6,
-             thr=thresholds(("green", None), ("yellow", 0.05), ("orange", 0.5)),
-             desc="Against the NTP source. A drifting clock quietly ruins every graph on this page."),
+             thr=thresholds(("green", None), ("yellow", 0.05), ("orange", 0.5))),
     ])
     g.add(table(
         "Identity",
         [tq("node_uname_info{%s}" % H), tq("node_os_info{%s}" % H, ref="B"),
-         tq("node_exporter_build_info{%s}" % H, ref="C")],
+         tq('label_replace(node_exporter_build_info{%s}, "exporter_version", "$1", "version", "(.*)")' % H,
+            ref="C")],
         w=24, h=4,
         transformations=[
             {"id": "joinByField", "options": {"byField": "host", "mode": "outer"}},
             {"id": "filterFieldsByName",
-             "options": {"include": {"pattern": r"^(nodename|pretty_name|release|machine|version)$"}}},
+             "options": {"include": {"pattern": r"^(nodename|pretty_name|release|machine|exporter_version)$"}}},
             {"id": "organize", "options": {"excludeByName": {}, "renameByName":
                 {"nodename": "Hostname", "pretty_name": "Operating system", "release": "Kernel",
-                 "machine": "Architecture", "version": "node_exporter"},
-             "indexByName": {"nodename": 0, "pretty_name": 1, "release": 2, "machine": 3, "version": 4}}}]))
+                 "machine": "Architecture", "exporter_version": "node_exporter"},
+             "indexByName": {"nodename": 0, "pretty_name": 1, "release": 2, "machine": 3,
+                             "exporter_version": 4}}}]))
     if n["systemd"]:
         g.add(empty_ok(table(
             "Failed units on %s" % host,
             [tq('node_systemd_unit_state{state="failed", %s} == 1' % H)],
-            w=12, h=7, no_value="No unit is in the failed state.",
+            w=12, h=7, no_value="No failed units",
             transformations=[
                 {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(name)$"}}},
                 {"id": "organize", "options": {"excludeByName": {}, "renameByName": {"name": "Unit"},
@@ -1728,7 +1597,7 @@ def node_dashboard(n: dict) -> dict:
         g.add(empty_ok(table(
             "Pending updates on %s" % host,
             [tq("apt_upgrades_pending{%s} > 0" % H)],
-            w=12, h=7, no_value="No pending updates.",
+            w=12, h=7, no_value="No pending updates",
             transformations=[
                 {"id": "filterFieldsByName", "options": {"include": {"pattern": r"^(origin|arch|Value)$"}}},
                 {"id": "organize", "options": {"excludeByName": {}, "renameByName":
@@ -1740,7 +1609,7 @@ def node_dashboard(n: dict) -> dict:
     return dashboard(
         "node-%s" % host, host, g,
         tags=["node", n["role"], kind],
-        description="%s — %s at %s." % (host, inv.WHAT_IS_IT[kind], n["ip"]),
+        description="%s · %s · role %s · %s." % (host, n["ip"], n["role"], where),
         refresh="30s", time_from="now-6h")
 
 
@@ -1771,16 +1640,19 @@ def main() -> int:
         total = 0
         for p in d["panels"]:
             if p["type"] == "row":
-                total += sum(1 for c in p.get("panels", []) if c["type"] != "text")
-            elif p["type"] != "text":
+                total += len(p.get("panels", []))
+            else:
                 total += 1
         return total
 
     print("%d dashboards" % written)
     for d in topic:
         print("  %-28s %-34s %3d panels" % (d["uid"], d["title"], count(d)))
-    print("  %-28s %-34s %3d panels (18 files)"
-          % ("node-*", "one per host", count(node_dashboard(inv.NODES[0]))))
+    # A node board grows only the sections its host has data for, so the count
+    # is a range, not one number. Printing NODES[0] read as if every board matched it.
+    sizes = sorted(count(node_dashboard(n)) for n in inv.NODES)
+    print("  %-28s %-34s %3d-%d panels (%d files)"
+          % ("node-*", "one per host", sizes[0], sizes[-1], len(inv.NODES)))
     print("%d panel titles registered as allowed-empty" % len(ALLOW_EMPTY))
     return 0
 

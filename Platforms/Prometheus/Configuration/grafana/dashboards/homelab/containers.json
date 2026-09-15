@@ -1,7 +1,7 @@
 {
   "uid": "containers",
   "title": "Containers",
-  "description": "Every Docker workload across the nine cAdvisor hosts.",
+  "description": "Every Docker workload across the 8 cAdvisor hosts.",
   "tags": [
     "homelab",
     "containers"
@@ -124,26 +124,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Fifty-odd containers across nine Docker hosts, as one population.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Containers running",
       "datasource": {
@@ -151,10 +131,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -164,7 +144,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -184,9 +164,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -214,15 +194,14 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
-      "description": "Out of nine. A host missing here means cAdvisor is down, not that its containers are.",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "suffix:/ 8",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -233,11 +212,11 @@
               },
               {
                 "color": "orange",
-                "value": 8
+                "value": 7
               },
               {
                 "color": "green",
-                "value": 9
+                "value": 8
               }
             ]
           },
@@ -245,7 +224,7 @@
             "mode": "thresholds"
           },
           "noValue": "no data",
-          "max": 9
+          "max": 8
         },
         "overrides": []
       },
@@ -259,7 +238,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -287,12 +266,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
-      "description": "A deliberate deploy and a crash loop look identical here; the table below tells them apart.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -331,7 +309,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -359,10 +337,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -396,9 +374,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -426,12 +404,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
-      "description": "Throttling means the container is hitting its CPU quota, not that the host is busy.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -466,7 +443,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -494,10 +471,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -507,7 +484,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -528,9 +505,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -559,27 +536,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "These three tables are empty when nothing is wrong.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -593,9 +550,8 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 12
       },
-      "description": "Age since start, youngest first. A container that keeps reappearing at the top is looping.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -620,7 +576,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "Nothing has restarted in the last 6 hours."
+          "noValue": "Nothing started in 6 hours"
         },
         "overrides": [
           {
@@ -738,9 +694,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 12
       },
-      "description": "The kernel killed the process for exceeding memory. Raise the limit or fix the leak.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -765,7 +720,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No container has been OOM killed in 24 hours."
+          "noValue": "No OOM kills in 24 hours"
         },
         "overrides": [
           {
@@ -874,32 +829,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 19
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Container CPU is a share of the whole host, so 100% means one full core.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 20
       }
     },
     {
       "type": "timeseries",
-      "title": "CPU — ten busiest containers",
+      "title": "CPU · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -910,7 +845,7 @@
         "x": 0,
         "y": 21
       },
-      "description": "Top ten. The table below covers every container.",
+      "description": "100% is one full core.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -989,7 +924,7 @@
     },
     {
       "type": "timeseries",
-      "title": "CPU throttling",
+      "title": "CPU throttling · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1000,7 +935,6 @@
         "x": 12,
         "y": 21
       },
-      "description": "Seconds of runnable-but-not-scheduled time per second. Flat zero is the healthy shape.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1094,28 +1028,8 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 31
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Working set, which is what the kernel would have to reclaim.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "timeseries",
-      "title": "Memory — ten largest containers",
+      "title": "Memory · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1124,9 +1038,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 33
+        "y": 31
       },
-      "description": "Top ten. The table below covers every container.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1214,16 +1127,15 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 33
+        "y": 31
       },
-      "description": "Stacked, so the height is the fleet's total container memory.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -1302,27 +1214,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 43
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "One row per container. Filter with the header dropdowns or the column filters.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 40
       }
     },
     {
@@ -1336,9 +1228,8 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 45
+        "y": 41
       },
-      "description": "Only two containers set a memory limit, so most rows show none. Without a limit the host's memory is the limit.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1583,7 +1474,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (host, name, image) (rate(container_cpu_usage_seconds_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}[$__rate_interval])) * 100",
+          "expr": "label_join(sum by (host, name, image) (rate(container_cpu_usage_seconds_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}[$__rate_interval])) * 100, \"ct\", \"@\", \"name\", \"host\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1594,7 +1485,7 @@
         },
         {
           "refId": "B",
-          "expr": "sum by (name) (container_memory_working_set_bytes{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"})",
+          "expr": "sum by (ct) (label_join(container_memory_working_set_bytes{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}, \"ct\", \"@\", \"name\", \"host\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1605,7 +1496,7 @@
         },
         {
           "refId": "C",
-          "expr": "sum by (name) (container_spec_memory_limit_bytes{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"} > 0)",
+          "expr": "sum by (ct) (label_join(container_spec_memory_limit_bytes{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"} > 0, \"ct\", \"@\", \"name\", \"host\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1616,7 +1507,7 @@
         },
         {
           "refId": "D",
-          "expr": "max by (name) (time() - container_start_time_seconds{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"})",
+          "expr": "max by (ct) (label_join(time() - container_start_time_seconds{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}, \"ct\", \"@\", \"name\", \"host\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1627,7 +1518,7 @@
         },
         {
           "refId": "E",
-          "expr": "sum by (name) (rate(container_network_receive_bytes_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}[$__rate_interval]))",
+          "expr": "sum by (ct) (label_join(rate(container_network_receive_bytes_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\", interface!~\"br-.*|docker.*|lo|veth.*\"}[$__rate_interval]), \"ct\", \"@\", \"name\", \"host\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1638,7 +1529,7 @@
         },
         {
           "refId": "F",
-          "expr": "sum by (name) (rate(container_network_transmit_bytes_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\"}[$__rate_interval]))",
+          "expr": "sum by (ct) (label_join(rate(container_network_transmit_bytes_total{name!=\"\", host=~\"$dockerhost\", name=~\"$container\", interface!~\"br-.*|docker.*|lo|veth.*\"}[$__rate_interval]), \"ct\", \"@\", \"name\", \"host\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1652,7 +1543,7 @@
         {
           "id": "joinByField",
           "options": {
-            "byField": "name",
+            "byField": "ct",
             "mode": "outer"
           }
         },
@@ -1699,32 +1590,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 62
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Container traffic, separate from the host's own.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 57
       }
     },
     {
       "type": "timeseries",
-      "title": "Network in — ten busiest",
+      "title": "Network in · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1733,7 +1604,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 58
       },
       "fieldConfig": {
         "defaults": {
@@ -1813,7 +1684,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Network out — ten busiest",
+      "title": "Network out · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1822,7 +1693,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 58
       },
       "fieldConfig": {
         "defaults": {
@@ -1902,7 +1773,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Writable layer size",
+      "title": "Writable layer · top 10",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1911,9 +1782,8 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 67
       },
-      "description": "Bytes written into the container's own layer rather than into a volume. Steady growth here is usually a log file nobody rotates.",
       "fieldConfig": {
         "defaults": {
           "custom": {

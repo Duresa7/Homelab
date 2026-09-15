@@ -63,26 +63,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Galaxy as one machine: does it have quorum, and is everything that should be running actually running.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Quorum",
       "datasource": {
@@ -90,10 +70,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -143,9 +123,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -173,14 +153,14 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "suffix:/ 5",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -217,7 +197,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -245,10 +225,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -258,7 +238,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -278,9 +258,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -308,12 +288,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
-      "description": "Stopped is not always wrong — templates and spare guests live here too.",
+      "description": "Templates and spare guests are stopped on purpose.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -348,7 +328,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -376,10 +356,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -389,7 +369,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -409,9 +389,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -439,12 +419,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
-      "description": "Proxmox reports a guest as not backed up when no vzdump archive exists for it on any storage it can see. It says nothing about backups taken outside Proxmox.",
+      "description": "No vzdump archive on any storage Proxmox can see. This lab keeps no backups, so it counts every guest.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -479,7 +459,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -508,27 +488,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "The five machines under the cluster. Click a node to open its own dashboard.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -542,9 +502,8 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 12
       },
-      "description": "Proxmox's own view of each node, from the PVE API rather than from node_exporter. The two disagree slightly by design: this one counts a node's memory the way the hypervisor does.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -985,7 +944,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 20
       },
       "fieldConfig": {
         "defaults": {
@@ -1087,7 +1046,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 20
       },
       "fieldConfig": {
         "defaults": {
@@ -1187,27 +1146,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 27
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every VM and container the cluster knows about, including templates.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 28
       }
     },
     {
@@ -1223,7 +1162,6 @@
         "x": 0,
         "y": 29
       },
-      "description": "Sorted by CPU. A guest name links to that host's own dashboard where one exists; the two templates and kali-pen have no node_exporter, so those links go nowhere.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1771,7 +1709,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Guest CPU — eight busiest",
+      "title": "Guest CPU · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1782,7 +1720,6 @@
         "x": 0,
         "y": 43
       },
-      "description": "Top eight. The guest table above covers every one.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1873,7 +1810,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Guest memory — eight fullest",
+      "title": "Guest memory · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1884,7 +1821,6 @@
         "x": 12,
         "y": 43
       },
-      "description": "Top eight. The guest table above covers every one.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1987,28 +1923,8 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 52
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Which guests are actually moving bytes.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "timeseries",
-      "title": "Guest disk read — eight busiest",
+      "title": "Disk read · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2017,7 +1933,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 52
       },
       "fieldConfig": {
         "defaults": {
@@ -2097,7 +2013,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Guest disk write — eight busiest",
+      "title": "Disk write · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2106,7 +2022,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 52
       },
       "fieldConfig": {
         "defaults": {
@@ -2186,7 +2102,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Guest network in — eight busiest",
+      "title": "Network in · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2195,7 +2111,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 62
+        "y": 60
       },
       "fieldConfig": {
         "defaults": {
@@ -2275,7 +2191,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Guest network out — eight busiest",
+      "title": "Network out · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -2284,7 +2200,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 62
+        "y": 60
       },
       "fieldConfig": {
         "defaults": {
@@ -2371,27 +2287,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 70
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 71
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every storage the cluster can see, on every node that can see it.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 68
       }
     },
     {
@@ -2405,7 +2301,7 @@
         "h": 11,
         "w": 12,
         "x": 0,
-        "y": 73
+        "y": 69
       },
       "description": "A shared storage appears once per node that mounts it.",
       "fieldConfig": {
@@ -2485,7 +2381,7 @@
         "h": 11,
         "w": 12,
         "x": 12,
-        "y": 73
+        "y": 69
       },
       "fieldConfig": {
         "defaults": {

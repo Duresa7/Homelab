@@ -63,26 +63,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Capacity first, because a full filesystem takes a service down faster than a dying disk does.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Fullest filesystem",
       "datasource": {
@@ -90,10 +70,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -137,8 +117,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -148,7 +128,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "max(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
+          "expr": "max(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -166,10 +146,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -209,7 +189,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -219,7 +199,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}) > 80) or vector(0)",
+          "expr": "count(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}) > 80) or vector(0)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -237,15 +217,15 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
-      "description": "Seven datasets on hddpool-1, on grey-server. Only grey-server has a ZFS pool; the two LXC guests that appear to have one are reading its kernel.",
+      "description": "node_zfs_zpool_state emits one series per pool state, not per dataset.",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "suffix:/ 1",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -256,14 +236,15 @@
               },
               {
                 "color": "green",
-                "value": 7
+                "value": 1
               }
             ]
           },
           "color": {
             "mode": "thresholds"
           },
-          "noValue": "no data"
+          "noValue": "no data",
+          "max": 1
         },
         "overrides": []
       },
@@ -277,7 +258,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -305,12 +286,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
-      "description": "Any non-zero value is the drive itself asking for attention.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -343,9 +323,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -373,10 +353,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -421,7 +401,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -449,12 +429,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
-      "description": "Only disks that actually report a self-assessment are counted. Both QEMU guests expose a virtual disk with none, which is absent rather than failed.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -487,9 +466,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -518,27 +497,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every real mount in the fleet. Pseudo-filesystems are excluded — they say nothing about capacity.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -552,9 +511,8 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 12
       },
-      "description": "`Free in 30d` extrapolates the last six hours forward a month. It is a straight line through noisy data, so read it as a direction, not a date — but a negative number there is a mount worth watching.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -861,7 +819,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"})",
+          "expr": "label_join(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}), \"fs\", \"@\", \"host\", \"mountpoint\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -872,7 +830,7 @@
         },
         {
           "refId": "B",
-          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}",
+          "expr": "max by (fs) (label_join(node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}, \"fs\", \"@\", \"host\", \"mountpoint\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -883,7 +841,7 @@
         },
         {
           "refId": "C",
-          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}",
+          "expr": "max by (fs) (label_join(node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}, \"fs\", \"@\", \"host\", \"mountpoint\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -894,7 +852,7 @@
         },
         {
           "refId": "D",
-          "expr": "100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"})",
+          "expr": "max by (fs) (label_join(100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}), \"fs\", \"@\", \"host\", \"mountpoint\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -905,7 +863,7 @@
         },
         {
           "refId": "E",
-          "expr": "predict_linear(node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}[6h], 30 * 86400)",
+          "expr": "max by (fs) (label_join(predict_linear(node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}[6h], 30 * 86400), \"fs\", \"@\", \"host\", \"mountpoint\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -919,7 +877,7 @@
         {
           "id": "joinByField",
           "options": {
-            "byField": "host",
+            "byField": "fs",
             "mode": "outer"
           }
         },
@@ -957,7 +915,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Filesystem fill — eight tightest",
+      "title": "Filesystem fill · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -966,9 +924,8 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 26
       },
-      "description": "Top eight. The table above covers every mount.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1049,7 +1006,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(8, 100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
+          "expr": "topk(8, 100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1067,32 +1024,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 34
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical devices only. On an LXC guest these are the node's disks, not the guest's, because /proc/diskstats is not namespaced.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 35
       }
     },
     {
       "type": "timeseries",
-      "title": "Throughput — eight busiest devices",
+      "title": "Disk throughput · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1158,12 +1095,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1193,7 +1127,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Utilisation — eight busiest devices",
+      "title": "Disk utilisation · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1204,7 +1138,6 @@
         "x": 12,
         "y": 36
       },
-      "description": "Share of wall time the device had at least one request in flight. Sustained 100% is a saturated disk.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1307,26 +1240,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 46
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "The four NVMe drives that report SMART data, on purple, blue, red and green.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "table",
       "title": "NVMe health",
       "datasource": {
@@ -1337,9 +1250,8 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 46
       },
-      "description": "`Written` converts the NVMe data-unit counter, which counts 1000 × 512-byte units.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1853,7 +1765,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 54
       },
       "fieldConfig": {
         "defaults": {
@@ -1957,9 +1869,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 54
       },
-      "description": "The drive's own wear estimate. 100% means it has written its rated endurance, not that it has failed.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -2035,27 +1946,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 65
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 66
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "The four spinning and SATA-SSD drives that report a SMART self-assessment.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 63
       }
     },
     {
@@ -2069,9 +1960,8 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 64
       },
-      "description": "Reallocated, pending and CRC counts are the three that matter: any of them climbing is a drive on the way out, whatever the overall assessment still says.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -2401,7 +2291,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "smartmon_device_smart_healthy and on (host, disk) smartmon_device_smart_available == 1",
+          "expr": "label_join(smartmon_device_smart_healthy and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2412,7 +2302,7 @@
         },
         {
           "refId": "B",
-          "expr": "(smartmon_temperature_celsius_raw_value or smartmon_airflow_temperature_cel_raw_value) * 9 / 5 + 32",
+          "expr": "max by (dk) (label_join(((smartmon_temperature_celsius_raw_value or smartmon_airflow_temperature_cel_raw_value) * 9 / 5 + 32) and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2423,7 +2313,7 @@
         },
         {
           "refId": "C",
-          "expr": "smartmon_power_on_hours_raw_value",
+          "expr": "max by (dk) (label_join(smartmon_power_on_hours_raw_value and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2434,7 +2324,7 @@
         },
         {
           "refId": "D",
-          "expr": "smartmon_power_cycle_count_raw_value",
+          "expr": "max by (dk) (label_join(smartmon_power_cycle_count_raw_value and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2445,7 +2335,7 @@
         },
         {
           "refId": "E",
-          "expr": "smartmon_reallocated_sector_ct_raw_value",
+          "expr": "max by (dk) (label_join(smartmon_reallocated_sector_ct_raw_value and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2456,7 +2346,7 @@
         },
         {
           "refId": "F",
-          "expr": "smartmon_current_pending_sector_raw_value",
+          "expr": "max by (dk) (label_join(smartmon_current_pending_sector_raw_value and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2467,7 +2357,7 @@
         },
         {
           "refId": "G",
-          "expr": "smartmon_udma_crc_error_count_raw_value",
+          "expr": "max by (dk) (label_join(smartmon_udma_crc_error_count_raw_value and on (host, disk) smartmon_device_smart_available == 1, \"dk\", \"@\", \"host\", \"disk\"))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2481,7 +2371,7 @@
         {
           "id": "joinByField",
           "options": {
-            "byField": "host",
+            "byField": "dk",
             "mode": "outer"
           }
         },
@@ -2530,27 +2420,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 76
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 77
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "hddpool-1 on grey-server, the fleet's only ZFS pool.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 72
       }
     },
     {
@@ -2564,7 +2434,7 @@
         "h": 6,
         "w": 8,
         "x": 0,
-        "y": 79
+        "y": 73
       },
       "fieldConfig": {
         "defaults": {
@@ -2614,9 +2484,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -2647,17 +2517,16 @@
         "h": 6,
         "w": 8,
         "x": 8,
-        "y": 79
+        "y": 73
       },
-      "description": "The adaptive replacement cache, in RAM. It grows to fill what it is allowed.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -2686,7 +2555,8 @@
           },
           "unit": "bytes",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#D48CF0"
           },
           "thresholds": {
             "mode": "absolute",
@@ -2737,17 +2607,16 @@
         "h": 6,
         "w": 8,
         "x": 16,
-        "y": 79
+        "y": 73
       },
-      "description": "Clamped so an idle pool reads 0 rather than dividing by zero.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -2776,7 +2645,8 @@
           },
           "unit": "percent",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#D48CF0"
           },
           "thresholds": {
             "mode": "absolute",

@@ -3,10 +3,10 @@
 #
 # Two providers, two folders. `Homelab` holds the nine topic dashboards you
 # navigate by concern; `Nodes` holds one dashboard per host. They are separate
-# because eighteen node dashboards in the same folder as the overview would bury
+# because seventeen node dashboards in the same folder as the overview would bury
 # it, and because the dashboard-link dropdowns in the header filter by tag:
 # topic dashboards are tagged `homelab`, node dashboards `node`, so each dropdown
-# lists one set rather than all twenty-seven.
+# lists one set rather than all twenty-six.
 #
 # The two paths must not nest. Grafana's file provider walks its path
 # recursively, so a provider pointing at the parent directory would claim the
