@@ -44,6 +44,8 @@ import json
 import pathlib
 import sys
 
+import uptime
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from dashlib import (CELL_COLOR_BG, CELL_COLOR_TEXT, CERT_DAYS, GOOD_ABOVE_ZERO,
@@ -115,7 +117,7 @@ DOCKER_HOSTS = sum(1 for n in inv.NODES if n["docker"])
 ZFS_HOST = next(n["host"] for n in inv.NODES if n["zfs"])
 # The names published through Nginx Proxy Manager. Not in the inventory, which
 # describes hosts; check it against `count(probe_success{instance=~"https://.*"})`.
-PUBLISHED_SERVICES = 19
+PUBLISHED_SERVICES = len(uptime.HTTP_SERVICES)
 
 # cAdvisor reports one series per interface in the container's netns, so a
 # network_mode: host container reports every bridge on the box and its traffic
@@ -618,7 +620,7 @@ def services():
     return dashboard(
         "services-uptime", "Services & Uptime", g,
         tags=["homelab", "services"],
-        description="Nineteen internal service names, probed end to end through the proxy.",
+        description="Twenty-three internal service names, probed end to end through the proxy.",
         refresh="1m", time_from="now-24h",
         templating=[var_query("service", "Service", "label_values(probe_success, instance)")])
 
@@ -1620,7 +1622,7 @@ def main() -> int:
     OUT_NODES.mkdir(parents=True, exist_ok=True)
 
     topic = [overview(), proxmox(), containers(), services(), storage(),
-             network(), power(), monitoring(), teamspeak()]
+             network(), power(), monitoring(), teamspeak(), uptime.build()]
 
     written = 0
     for d in topic:

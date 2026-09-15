@@ -1,7 +1,7 @@
 {
   "uid": "services-uptime",
   "title": "Services & Uptime",
-  "description": "Nineteen internal service names, probed end to end through the proxy.",
+  "description": "Twenty-three internal service names, probed end to end through the proxy.",
   "tags": [
     "homelab",
     "services"
@@ -109,7 +109,7 @@
       "description": "The published names, excluding the alert bot's internal health probe.",
       "fieldConfig": {
         "defaults": {
-          "unit": "suffix:/ 19",
+          "unit": "suffix:/ 23",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -120,11 +120,11 @@
               },
               {
                 "color": "orange",
-                "value": 18
+                "value": 22
               },
               {
                 "color": "green",
-                "value": 19
+                "value": 23
               }
             ]
           },
@@ -132,7 +132,7 @@
             "mode": "thresholds"
           },
           "noValue": "no data",
-          "max": 19
+          "max": 23
         },
         "overrides": []
       },
