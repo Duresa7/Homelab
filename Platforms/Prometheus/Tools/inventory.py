@@ -16,7 +16,7 @@ matching reality, the panel it generated goes empty and the assertion fails.
 #                  /proc/diskstats, /sys/class/hwmon, ZFS and SMART views
 NODES = [
     dict(host="grey-server",    role="hypervisor", ip="192.168.70.10", kind="metal",
-         zfs=True,  nvme=False, smart=False, temp=True, ups="ups02", apt=False, docker=False),
+         zfs=True,  nvme=True,  smart=True,  temp=True, ups="ups02", apt=True,  docker=False),
     dict(host="purple-server",  role="hypervisor", ip="192.168.70.11", kind="metal",
          zfs=False, nvme=True,  smart=True,  temp=True, apt=True,  docker=False),
     dict(host="blue-server",    role="hypervisor", ip="192.168.70.12", kind="metal",
@@ -27,22 +27,22 @@ NODES = [
          zfs=False, nvme=True,  smart=True,  temp=True, apt=True,  docker=False),
 
     dict(host="security-01",    role="security",   ip="192.168.72.2",  kind="qemu",
-         pve="grey-server",  vmid="qemu/200", docker=True,  apt=False),
+         pve="grey-server",  vmid="qemu/200", docker=True,  apt=True),
     dict(host="splunk-siem",    role="security",   ip="192.168.72.3",  kind="qemu",
          pve="grey-server",  vmid="qemu/109", docker=False, apt=False),
     dict(host="edge-01",        role="edge",       ip="192.168.30.10", kind="qemu",
-         pve="grey-server",  vmid="qemu/121", docker=False, apt=False),
+         pve="purple-server", vmid="qemu/121", docker=False, apt=True),
     dict(host="app-01",         role="app",        ip="192.168.80.10", kind="qemu",
-         pve="grey-server",  vmid="qemu/116", docker=True,  apt=False),
+         pve="purple-server", vmid="qemu/116", docker=True,  apt=True),
     dict(host="alpha-prod-01",  role="app",        ip="192.168.80.118", kind="qemu",
-         pve="grey-server",  vmid="qemu/401", docker=True,  apt=True, teamspeak=True),
+         pve="purple-server", vmid="qemu/401", docker=True,  apt=True, teamspeak=True),
     dict(host="ubuntu-dev",     role="workstation", ip="192.168.40.179", kind="qemu",
          pve="grey-server",  vmid="qemu/105", docker=False, apt=True),
 
     dict(host="ansible-01",     role="automation", ip="192.168.40.36", kind="lxc",
-         pve="grey-server",  vmid="lxc/100",  docker=False, apt=True),
+         pve="blue-server",  vmid="lxc/100",  docker=False, apt=True),
     dict(host="docker-main",    role="docker",     ip="192.168.40.35", kind="lxc",
-         pve="grey-server",  vmid="lxc/110",  docker=True,  apt=False),
+         pve="grey-server",  vmid="lxc/110",  docker=True,  apt=True),
     dict(host="docker-blue",    role="docker",     ip="192.168.40.39", kind="lxc",
          pve="blue-server",  vmid="lxc/108",  docker=True,  apt=True),
     dict(host="docker-network", role="docker",     ip="192.168.85.2",  kind="lxc",
@@ -66,7 +66,7 @@ WHAT_IS_IT = {
 # ------------------------------------------------------------- label filters
 
 # Pseudo-filesystems say nothing about capacity and would swamp every bar chart.
-FS = ('fstype!~"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|'
+FS = ('fstype!~"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|'
       'proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs"')
 
 # Physical and bridge interfaces only. A Docker host carries a veth per container
@@ -84,8 +84,13 @@ CT = 'name!=""'
 
 # ---------------------------------------------------------- shared PromQL
 
-CORES = 'count by (host) (count by (host, cpu) (node_cpu_seconds_total{%s}))'
-CPU_BUSY = ('100 - (avg by (host) (rate(node_cpu_seconds_total{mode="idle"%s}[$__rate_interval])) * 100)')
+# Only CPUs whose idle counter is advancing. An LXC is shown its node's full
+# cpu list but accumulates time on just its cpuset, so counting every label
+# divides by the wrong number: docker-main reads 15 cores and 77% busy where
+# it has 4 and runs at 15%.
+CORES = 'count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode="idle"%s} > 0))'
+CPU_BUSY = ('100 - (avg by (host) (rate(node_cpu_seconds_total{mode="idle"%s}[$__rate_interval])'
+            ' and on (host, cpu) (node_cpu_seconds_total{mode="idle"%s} > 0)) * 100)')
 MEM_USED = ('100 * (1 - avg by (host) (node_memory_MemAvailable_bytes{%s})'
             ' / avg by (host) (node_memory_MemTotal_bytes{%s}))')
 
@@ -118,14 +123,14 @@ def fs_used_pct(extra: str = "") -> str:
 # empty rectangle on a dashboard reads as "fine" rather than "not applicable".
 #
 # splunk-siem runs Rocky 10 and has no /proc/pressure. edge-01 has no
-# nf_conntrack module loaded. The systemd collector is enabled on eleven hosts.
-# cpufreq and hwmon exist on the five nodes and the seven LXC guests, but on an
+# nf_conntrack module loaded. The systemd collector is enabled on twelve hosts.
+# cpufreq and hwmon exist on the five nodes and the six LXC guests, but on an
 # LXC they are the node's, so the node dashboards only draw them on bare metal.
 _NO_PSI = {"splunk-siem"}
 _NO_CONNTRACK = {"edge-01"}
-_SYSTEMD = {"alpha-prod-01", "ansible-01", "blue-server", "docker-blue", "docker-network",
-            "green-server", "media-01", "monitor-01", "purple-server",
-            "red-server", "ubuntu-dev"}
+_SYSTEMD = {"alpha-prod-01", "ansible-01", "blue-server", "docker-blue", "docker-main",
+            "docker-network", "green-server", "media-01", "monitor-01",
+            "purple-server", "red-server", "ubuntu-dev"}
 
 for _n in NODES:
     _n.setdefault("apt", False)

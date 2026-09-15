@@ -94,26 +94,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "APC Back-UPS Pro BR1500MS2 UPS-02, read over NUT from grey-server. UPS-01 is absent while its data cable remains disconnected.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Mains",
       "datasource": {
@@ -121,10 +101,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -174,9 +154,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -205,10 +185,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -254,7 +234,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -283,10 +263,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -331,7 +311,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -360,10 +340,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -409,7 +389,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -438,12 +418,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
-      "description": "Load as a share of the 900 W nominal rating. NUT reports no true wattage on this model, so this is an estimate the UPS derives, not a meter reading.",
+      "description": "Load share times the 900 W nominal rating, as the UPS estimates it.",
       "fieldConfig": {
         "defaults": {
           "unit": "watt",
@@ -452,7 +432,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -473,9 +453,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -504,10 +484,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -556,7 +536,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -586,27 +566,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "How long you have, and whether it is getting shorter.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -620,7 +580,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 12
       },
       "fieldConfig": {
         "defaults": {
@@ -699,9 +659,8 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 12
       },
-      "description": "Scaled to an hour. The low-battery shutdown trigger is 120 seconds.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -780,7 +739,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 17
+        "y": 19
       },
       "fieldConfig": {
         "defaults": {
@@ -870,9 +829,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 17
+        "y": 19
       },
-      "description": "A runtime estimate that keeps falling at the same load is a battery losing capacity.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -960,9 +918,8 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 28
       },
-      "description": "Nominal is 24 V. A resting pack well under that is worn; a spike above it is charging.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1047,27 +1004,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 34
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 35
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "What the units are carrying, and what the wall is giving them.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 36
       }
     },
     {
@@ -1174,15 +1111,15 @@
               },
               {
                 "color": "yellow",
-                "value": 70
+                "value": 630
               },
               {
                 "color": "orange",
-                "value": 85
+                "value": 765
               },
               {
                 "color": "red",
-                "value": 95
+                "value": 855
               }
             ]
           },
@@ -1344,7 +1281,6 @@
         "x": 12,
         "y": 44
       },
-      "description": "The two flat lines are the thresholds at which the unit switches to battery: 88 V and 144 V. Mains sagging toward either is what drains a battery without an outage.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1429,12 +1365,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1484,26 +1417,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 54
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every flag NUT reports, over time.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "state-timeline",
       "title": "UPS status flags",
       "datasource": {
@@ -1514,9 +1427,9 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 56
+        "y": 54
       },
-      "description": "A band appears only while its flag is set. OL is on line. OB is on battery, LB is low battery, CHRG is charging, RB means replace battery.",
+      "description": "OL on line, OB on battery, LB low battery, CHRG charging, RB replace battery.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1599,7 +1512,7 @@
         "h": 7,
         "w": 24,
         "x": 0,
-        "y": 65
+        "y": 63
       },
       "fieldConfig": {
         "defaults": {

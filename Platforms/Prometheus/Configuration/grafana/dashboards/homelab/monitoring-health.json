@@ -1,7 +1,7 @@
 {
   "uid": "monitoring-health",
   "title": "Monitoring Health",
-  "description": "Prometheus watching itself: target health, scrape cost, TSDB growth, and the state of the 18 node_exporters.",
+  "description": "Prometheus watching itself: target health, scrape cost, TSDB growth, and the state of the 17 node_exporters.",
   "tags": [
     "homelab",
     "monitoring"
@@ -63,26 +63,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Whether the thing that watches everything else is itself working.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Targets up",
       "datasource": {
@@ -90,10 +70,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -103,7 +83,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -123,9 +103,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -153,10 +133,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -190,9 +170,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -220,12 +200,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
-      "description": "A scrape slower than its interval is a target about to start missing samples.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -268,8 +247,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -297,10 +276,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -310,7 +289,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -331,9 +310,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -361,10 +340,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -403,9 +382,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -433,12 +412,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
-      "description": "Compacted blocks only, so it lags the head block by up to two hours. Retention is 15 days.",
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
@@ -447,7 +425,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -468,9 +446,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -499,27 +477,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every scrape endpoint, its health and what it costs.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -533,9 +491,8 @@
         "h": 16,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 12
       },
-      "description": "Sorted slowest first. `New series` climbing on every scrape is a cardinality leak — a label carrying something that changes each time.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -920,9 +877,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 26
+        "y": 28
       },
-      "description": "The slowest target in each job.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1010,16 +966,15 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 26
+        "y": 28
       },
-      "description": "Stacked, so the height is what one full scrape cycle costs.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -1098,27 +1053,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 36
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "How the time series database is holding up.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 37
       }
     },
     {
@@ -1140,8 +1075,8 @@
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1170,7 +1105,8 @@
           },
           "unit": "short",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#AFA6F5"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1229,8 +1165,8 @@
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1259,7 +1195,8 @@
           },
           "unit": "wps",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#AFA6F5"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1290,7 +1227,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(prometheus_tsdb_head_samples_appended_total[$__rate_interval])",
+          "expr": "sum(rate(prometheus_tsdb_head_samples_appended_total[$__rate_interval]))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1318,8 +1255,8 @@
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1348,7 +1285,8 @@
           },
           "unit": "bytes",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#D48CF0"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1401,7 +1339,6 @@
         "x": 0,
         "y": 47
       },
-      "description": "Both are routine housekeeping. Compactions failing, rather than running, is the thing worth noticing.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1458,12 +1395,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1473,7 +1407,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "increase(prometheus_tsdb_compactions_total[$__interval])",
+          "expr": "increase(prometheus_tsdb_compactions_total[$__rate_interval])",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1482,7 +1416,7 @@
         },
         {
           "refId": "B",
-          "expr": "increase(prometheus_tsdb_wal_truncations_total[$__interval])",
+          "expr": "increase(prometheus_tsdb_wal_truncations_total[$__rate_interval])",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1504,7 +1438,6 @@
         "x": 12,
         "y": 47
       },
-      "description": "p99 by stage. A slow eval stage is usually one dashboard asking for too much.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1594,26 +1527,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 56
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "The 18 node_exporters, and the things they quietly fail to collect.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "table",
       "title": "node_exporter fleet",
       "datasource": {
@@ -1624,9 +1537,8 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 58
+        "y": 56
       },
-      "description": "`Collectors erroring` is almost always hardware the host does not have — fibrechannel, infiniband, tape, IPVS. It is worth reading once to learn the baseline, not worth alerting on. `Version` is 1.9.0 fleet-wide because APT owns the binary.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1714,12 +1626,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Version"
+              "options": "Build"
             },
             "properties": [
               {
-                "id": "custom.width",
-                "value": 110
+                "id": "custom.hidden",
+                "value": true
               }
             ]
           },
@@ -1758,7 +1670,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Collectors erroring"
+              "options": "Collectors inactive"
             },
             "properties": [
               {
@@ -1786,7 +1698,7 @@
                     },
                     {
                       "color": "yellow",
-                      "value": 1
+                      "value": 8
                     }
                   ]
                 }
@@ -1988,7 +1900,7 @@
         },
         "sortBy": [
           {
-            "displayName": "Collectors erroring",
+            "displayName": "Collectors inactive",
             "desc": true
           }
         ]
@@ -1996,7 +1908,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "max by (host) (up{job=\"node\"})",
+          "expr": "max by (host, role) (up{job=\"node\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2029,7 +1941,7 @@
         },
         {
           "refId": "D",
-          "expr": "count by (host) (node_scrape_collector_success == 0)",
+          "expr": "count by (host) (node_scrape_collector_success{collector!~\"fibrechannel|infiniband|ipvs|nfs|nfsd|tapestats\"} == 0)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2062,7 +1974,7 @@
         },
         {
           "refId": "G",
-          "expr": "max by (host) (apt_upgrades_pending)",
+          "expr": "sum by (host) (apt_upgrades_pending)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2084,33 +1996,36 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "pattern": "^(host|role|Value #.*)$"
+              "pattern": "^(host|role|version|Value #.*)$"
             }
           }
         },
         {
           "id": "organize",
           "options": {
-            "excludeByName": {},
+            "excludeByName": {
+              "Value #B": true
+            },
             "renameByName": {
               "Value #A": "Up",
-              "Value #B": "Version",
+              "Value #B": "Build",
               "Value #C": "Scrape",
-              "Value #D": "Collectors erroring",
+              "Value #D": "Collectors inactive",
               "Value #E": "Clock offset",
               "Value #F": "Failed units",
               "Value #G": "Updates"
             },
             "indexByName": {
               "Up": 2,
-              "Version": 3,
+              "Build": 3,
               "Scrape": 4,
-              "Collectors erroring": 5,
+              "Collectors inactive": 5,
               "Clock offset": 6,
               "Failed units": 7,
               "Updates": 8,
               "host": 0,
-              "role": 1
+              "role": 1,
+              "version": 2
             }
           }
         }
@@ -2127,7 +2042,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 72
+        "y": 70
       },
       "fieldConfig": {
         "defaults": {
@@ -2153,7 +2068,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No unit is in the failed state anywhere in the fleet."
+          "noValue": "No failed units"
         },
         "overrides": [
           {
@@ -2242,9 +2157,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 72
+        "y": 70
       },
-      "description": "The TeamSpeak and SMART metrics arrive this way. An error here means a half-written file, so the metrics above it are stale rather than absent — which is the more dangerous failure.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -2269,7 +2183,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "Every textfile collector parsed cleanly."
+          "noValue": "No collector errors"
         },
         "overrides": [
           {
@@ -2358,9 +2272,8 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 81
+        "y": 79
       },
-      "description": "Only the Debian hosts run the APT collector; Rocky and the two hosts on an upstream binary are absent by design rather than up to date.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -2385,7 +2298,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No host is reporting a pending update."
+          "noValue": "No pending updates"
         },
         "overrides": [
           {

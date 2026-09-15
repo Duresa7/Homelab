@@ -1,7 +1,7 @@
 {
   "uid": "teamspeak",
   "title": "TeamSpeak",
-  "description": "Voice reachability for ts02 and ts03, public and local, with the fault isolated to either the server or the path in front of it.",
+  "description": "Voice reachability for ts02 and ts03, public and local.",
   "tags": [
     "homelab",
     "teamspeak"
@@ -94,26 +94,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Two voice servers on alpha-prod-01, each probed twice a minute: once at the public address a person types, and once at its local UDP port on the host. The pair is the whole point — local up with public down is the tunnel or DNS, not TeamSpeak.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Verdict",
       "datasource": {
@@ -124,9 +104,8 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
-      "description": "PUBLIC PATH DOWN covers three different faults: the Playit relay is unreachable, the SRV record is wrong, or the collector cannot resolve DNS at all. The three stats to the right tell them apart — check Name resolution first.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -189,9 +168,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -223,9 +202,8 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 3
+        "y": 1
       },
-      "description": "A real TeamSpeak Init1 handshake through the Playit relay, so UP means the voice service answered rather than a port merely being open.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -274,9 +252,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -308,9 +286,8 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 3
+        "y": 1
       },
-      "description": "The same handshake against 127.0.0.1 on the host. Down here means TeamSpeak itself.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -359,9 +336,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -393,9 +370,8 @@
         "h": 5,
         "w": 8,
         "x": 0,
-        "y": 8
+        "y": 6
       },
-      "description": "Whether the collector could read the _ts3._udp SRV record. When this is red the public probe never ran, so the public panels are reporting the monitoring's own blindness rather than an outage. That is exactly what happened between 2026-08-10 and 2026-08-27.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -444,9 +420,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -478,9 +454,8 @@
         "h": 5,
         "w": 8,
         "x": 8,
-        "y": 8
+        "y": 6
       },
-      "description": "The administrative login. It is how the client and channel counts below are read.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -529,9 +504,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -563,9 +538,8 @@
         "h": 5,
         "w": 8,
         "x": 16,
-        "y": 8
+        "y": 6
       },
-      "description": "Age of the last completed collection. The collector runs every 60 seconds, so anything past two minutes means it has stopped and every panel here is stale.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -609,7 +583,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -638,27 +612,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 13
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 14
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Public and local, side by side. They should move together.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
@@ -672,9 +626,8 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 12
       },
-      "description": "Three bands per server. Local green with public red is a tunnel or DNS problem; all three red at once is the host.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -771,7 +724,7 @@
     },
     {
       "type": "stat",
-      "title": "Public availability over the selected range",
+      "title": "Public availability",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -780,7 +733,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 25
+        "y": 21
       },
       "fieldConfig": {
         "defaults": {
@@ -824,8 +777,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -857,9 +810,8 @@
         "h": 7,
         "w": 16,
         "x": 8,
-        "y": 25
+        "y": 21
       },
-      "description": "Filtered to non-zero, because a failed probe records zero rather than a time and a flat zero line would read as an instant response.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -954,27 +906,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 33
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "What the SRV record currently points at.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 28
       }
     },
     {
@@ -988,9 +920,8 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 29
       },
-      "description": "The relay label is written by the collector from the live SRV record on every cycle, so a Playit port rotation shows up here without an edit. `unresolved:0` means the lookup failed.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1095,7 +1026,7 @@
                     "options": {
                       "pattern": "^unresolved.*",
                       "result": {
-                        "text": "unresolved — DNS failed",
+                        "text": "unresolved",
                         "color": "red",
                         "index": 0
                       }
@@ -1171,27 +1102,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 42
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Read over ServerQuery, so these go blank if that login stops working.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 35
       }
     },
     {
@@ -1205,7 +1116,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 44
+        "y": 36
       },
       "fieldConfig": {
         "defaults": {
@@ -1215,7 +1126,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -1235,9 +1146,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -1269,7 +1180,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 44
+        "y": 36
       },
       "fieldConfig": {
         "defaults": {
@@ -1279,7 +1190,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -1299,9 +1210,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -1333,7 +1244,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 44
+        "y": 36
       },
       "fieldConfig": {
         "defaults": {
@@ -1343,7 +1254,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -1363,9 +1274,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -1397,7 +1308,7 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 44
+        "y": 36
       },
       "fieldConfig": {
         "defaults": {
@@ -1407,7 +1318,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -1428,9 +1339,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value_and_name",
         "orientation": "auto",
         "wideLayout": true,
@@ -1462,9 +1373,8 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 41
       },
-      "description": "The two servers are separate virtual servers, not a cluster, so these counts do not add up to anything meaningful together.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1551,27 +1461,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 58
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 59
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "The exporter itself, which is a textfile written on alpha-prod-01 rather than a scrape target.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 50
       }
     },
     {
@@ -1585,17 +1475,16 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 61
+        "y": 51
       },
-      "description": "One cycle probes both servers twice each plus two SRV lookups. Two seconds is normal; a jump to the timeout ceiling means a probe is hanging.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1624,7 +1513,8 @@
           },
           "unit": "s",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#AFA6F5"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1676,9 +1566,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 61
+        "y": 51
       },
-      "description": "Loopback, so this is sub-millisecond whenever TeamSpeak is answering at all.",
       "fieldConfig": {
         "defaults": {
           "custom": {

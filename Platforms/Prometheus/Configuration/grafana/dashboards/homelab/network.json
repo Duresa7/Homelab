@@ -1,7 +1,7 @@
 {
   "uid": "network",
   "title": "Network",
-  "description": "Host-side networking: throughput, errors, TCP state and connection tracking. The switches and access points are not in here — that needs a UniFi exporter.",
+  "description": "Host-side networking: throughput, errors, TCP state and connection tracking. Switches and access points are not in here.",
   "tags": [
     "homelab",
     "network"
@@ -63,26 +63,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical and bridge interfaces only. A Docker host carries a veth per container and a Proxmox node three interfaces per guest; grey-server has 39 interfaces, of which six mean anything.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Fleet inbound",
       "datasource": {
@@ -90,10 +70,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
+        "h": 5,
+        "w": 8,
         "x": 0,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -103,7 +83,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -124,9 +104,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -154,10 +134,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -167,7 +147,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -188,9 +168,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -218,12 +198,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 1
       },
-      "description": "A configured interface with no carrier. On a Proxmox node a spare NIC sits here permanently and is not a fault.",
+      "description": "Configured interfaces with no carrier. Unused wireless adapters, a spare NIC on grey-server and a tunnel device sit here permanently.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -258,7 +238,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -286,11 +266,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 12,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
       },
+      "description": "Receive drops on the five hypervisor NICs run near 600 an hour as a steady state. Errors are separate and are zero fleet-wide.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -304,11 +285,11 @@
               },
               {
                 "color": "yellow",
-                "value": 1
+                "value": 900
               },
               {
                 "color": "orange",
-                "value": 100
+                "value": 2000
               }
             ]
           },
@@ -330,7 +311,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -358,12 +339,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 16,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
       },
-      "description": "Filling this table drops new connections silently.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -407,7 +387,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -435,12 +415,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 20,
-        "y": 3
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
       },
-      "description": "Segments resent per second across the fleet. Sustained non-zero means loss somewhere.",
       "fieldConfig": {
         "defaults": {
           "unit": "pps",
@@ -480,7 +459,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -509,32 +488,12 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 8
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Who is moving bytes.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 11
       }
     },
     {
       "type": "timeseries",
-      "title": "Inbound — eight busiest hosts",
+      "title": "Inbound · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -543,9 +502,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 12
       },
-      "description": "Top eight. The table below covers all eighteen.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -624,7 +582,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Outbound — eight busiest hosts",
+      "title": "Outbound · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -633,9 +591,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 12
       },
-      "description": "Top eight. The table below covers all eighteen.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -723,7 +680,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 21
       },
       "fieldConfig": {
         "defaults": {
@@ -1124,27 +1081,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "This table is empty when the fleet is clean.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 33
       }
     },
     {
@@ -1160,7 +1097,6 @@
         "x": 0,
         "y": 34
       },
-      "description": "Errors and drops summed. A bridge dropping packets it was never meant to forward is normal; a physical NIC erroring is not.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1185,7 +1121,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No interface has dropped or errored a packet in the last hour."
+          "noValue": "No errors or drops in the last hour"
         },
         "overrides": [
           {
@@ -1288,7 +1224,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Drops per second — eight worst interfaces",
+      "title": "Drops · top 8 interfaces",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1392,28 +1328,8 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 44
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "State the fleet is holding, rather than bytes moving.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "timeseries",
-      "title": "Established connections",
+      "title": "Established connections · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1422,7 +1338,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 46
+        "y": 44
       },
       "fieldConfig": {
         "defaults": {
@@ -1502,7 +1418,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Retransmitted segments",
+      "title": "Retransmits · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1511,7 +1427,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 46
+        "y": 44
       },
       "fieldConfig": {
         "defaults": {
@@ -1608,9 +1524,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 55
+        "y": 53
       },
-      "description": "Reported by seventeen hosts; the eighteenth has no conntrack module loaded.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -1679,7 +1594,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Sockets in use",
+      "title": "Sockets in use · top 8",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1688,7 +1603,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 55
+        "y": 53
       },
       "fieldConfig": {
         "defaults": {
@@ -1745,12 +1660,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",

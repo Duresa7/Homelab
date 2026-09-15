@@ -1,11 +1,11 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-14
 
 ## Health Check
 
-On `monitor-01`, the stack is healthy when the Compose project's six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is the sixth container on the host and belongs to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion.
+On `monitor-01`, the stack is healthy when the Compose project's six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is not one of those six: it is an extra container belonging to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion. Nine containers run on the host altogether, the monitoring six plus cAdvisor, `wud` and `peanut`.
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 49 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query (1,390 across the 27), failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 54 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query (1,346 across the 26), failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`. `assert_dashboard_queries.py` reads `allow-empty.json` from beside itself and falls back to one stale title without it, turning any of them that is empty at the time into a failure. Send `Tests/allow-empty.json` up with the scripts and remove it with them, or run that assertion from the repository.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -44,7 +44,7 @@ the next build overwrites it.
 3. `python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards` (offline); catches overlapping
    panels and anything past column 24, which Grafana accepts and then silently reflows.
 4. `python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090`;
-   runs all 1,390 queries and fails on any that error or come back empty unexpectedly.
+   runs all 1,346 queries and fails on any that error or come back empty unexpectedly.
 5. Upload `dashboards/` to `~/monitoring/grafana/` on `monitor-01` and `chmod 0644` the files.
 6. Wait 30 seconds. Grafana re-reads both provider directories on its own interval, so no restart is needed.
 
@@ -71,7 +71,7 @@ panel-edit and Explore reachable so a query can be read; provisioning still refu
 
 ## Change Alert Rules
 
-The alert rules live in `Configuration/grafana/provisioning/alerting/alphasec-united-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 15 rule UIDs remain present, and that no rule instance holds an evaluation error.
+The alert rules live in `Configuration/grafana/provisioning/alerting/alphasec-united-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 24 rule UIDs remain present, and that no rule instance holds an evaluation error.
 
 Delivery is `contact-points.yaml` in the same directory: one webhook contact point into the `alert-bot` container and the root policy that routes to it. Its bearer secret is `$ALERT_BOT_SECRET`, which Grafana reads from its environment, which Compose reads from the untracked mode-0600 `.env` beside `docker-compose.yml`. Changing that secret means recreating both `grafana` and `alert-bot`. Do not call a delivery change complete until one throwaway rule has fired and its message has appeared in `#bots`.
 
@@ -79,7 +79,7 @@ Delivery is `contact-points.yaml` in the same directory: one webhook contact poi
 
 The relocation deleted the old host-side backups with the retired stack. Roll back the current service by rebuilding from [Configuration](../Configuration/) on a prepared host, creating a new untracked mode-0600 `pve.yml`, and starting the Compose project. Then check readiness, run `promtool`, and verify the intended target set.
 
-`GF_DATABASE_WAL=true` remains in the running Grafana 13.2.0 container. I removed it from the repository Compose file on 2026-08-04, but the live Compose file still carries the line. The 2026-08-31 fleet pull recreated Grafana from that live file, and a 2026-09-01 inspection still found one matching environment entry. Removing it requires deploying the versioned Compose file and recreating Grafana again. I confirmed the database state on 2026-08-04: the variable was `true`, SQLite header bytes 18 and 19 were `1 1`, and only `grafana.db` existed, with no `-wal` or `-shm` sidecar. `grafana.db` was therefore the whole database at that measurement. Check again before relying on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or stop the container first so SQLite checkpoints the log back into the main file. The measured history is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
+`GF_DATABASE_WAL` is gone. I removed it from the repository Compose file on 2026-08-04, but the live Compose file kept the line: the 2026-08-31 fleet pull recreated Grafana from that live file, and a 2026-09-01 inspection still found one matching environment entry. The 2026-09-02 Discord alert bot deployment put the versioned file on the host and recreated Grafana from it, which is what removed it. The versioned Compose file now carries only a comment saying the variable is deliberately absent. Checked again on 2026-09-14: the running container holds zero `GF_DATABASE_WAL` environment entries, and no `grafana.db-wal` or `grafana.db-shm` sits beside the database. I confirmed the database state on 2026-08-04: the variable was `true`, SQLite header bytes 18 and 19 were `1 1`, and only `grafana.db` existed, with no `-wal` or `-shm` sidecar. `grafana.db` was therefore the whole database at that measurement. Check again before relying on that: if `grafana.db-wal` and `grafana.db-shm` exist beside it, WAL is on and all three files travel together, or stop the container first so SQLite checkpoints the log back into the main file. The measured history is in [issue 4](Troubleshooting/Grafana%20SQLite%20Locks%20Under%20Its%20Own%20Housekeeping%20-%202026-07-26.md).
 
 The old `grafana.db` and Prometheus TSDB were deleted by design during the relocation and have no project backup. Rebuilding starts with a fresh database and the provisioned datasource and dashboard from git. To roll back only the current provisioning layer, restore the prior versioned files and recreate Grafana.
 
@@ -111,7 +111,7 @@ cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Do not mov
 - Prometheus: `https://prometheus.alphasecunited.com/`; direct fallback `http://192.168.73.2:9090/`
 - Grafana: `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/`
 
-Exporter endpoints on 9100, 9101, 9115, 9221, and 9995 are backend services. Query them through Prometheus except during diagnostics.
+Exporter endpoints on 9100, 9101, 9102, 9115, 9221, and 9995 are backend services. Query them through Prometheus except during diagnostics.
 
 Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
 

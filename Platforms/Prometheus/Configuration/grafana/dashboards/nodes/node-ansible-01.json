@@ -1,7 +1,7 @@
 {
   "uid": "node-ansible-01",
   "title": "ansible-01",
-  "description": "ansible-01 — an LXC container, sharing its node's kernel at 192.168.40.36.",
+  "description": "ansible-01 · 192.168.40.36 · role automation · an LXC container, sharing its node's kernel on blue-server.",
   "tags": [
     "node",
     "automation",
@@ -64,26 +64,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "**ansible-01** · `192.168.40.36` · role `automation` · an LXC container, sharing its node's kernel, on [grey-server](/d/node-grey-server).  \nEight tiles, then one section per resource. Use **Nodes** in the header to jump to another host.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Reachable",
       "datasource": {
@@ -91,12 +71,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 3
+        "y": 1
       },
-      "description": "Whether Prometheus got a scrape, which is not the same as the workload being healthy.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -145,9 +124,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -175,10 +154,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -188,7 +167,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -209,9 +188,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -221,7 +200,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "time() - node_boot_time_seconds{host=\"ansible-01\"}",
+          "expr": "pve_uptime_seconds{id=\"lxc/100\"}",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -239,10 +218,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 3
+        "y": 1
       },
       "fieldConfig": {
         "defaults": {
@@ -286,8 +265,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -297,7 +276,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"}[$__rate_interval])) * 100)",
+          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"}[$__rate_interval]) and on (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"} > 0)) * 100)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -315,12 +294,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 3
+        "y": 1
       },
-      "description": "Runnable processes divided by cores. Above 1 means work is queueing.",
+      "description": "One-minute load divided by core count.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -363,8 +342,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -374,7 +353,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "node_load1{host=\"ansible-01\"} / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"ansible-01\"}))",
+          "expr": "node_load1{host=\"ansible-01\"} / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -392,12 +371,12 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 7
+        "y": 6
       },
-      "description": "Against MemAvailable, so page cache is counted as free — which it effectively is.",
+      "description": "Against MemAvailable, so page cache counts as free.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -440,8 +419,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -469,12 +448,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 6
       },
-      "description": "Any swap in use on a host with RAM to spare is worth a look; sustained growth is a leak.",
       "fieldConfig": {
         "defaults": {
           "unit": "bytes",
@@ -514,7 +492,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -542,10 +520,10 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 7
+        "y": 6
       },
       "fieldConfig": {
         "defaults": {
@@ -589,8 +567,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -600,7 +578,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\", mountpoint=\"/\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\", mountpoint=\"/\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -618,12 +596,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 6
       },
-      "description": "Processes in the run queue at the moment of the scrape.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -632,7 +609,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -653,9 +630,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -688,26 +665,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Where the time goes, and whether anything is waiting for it.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "timeseries",
       "title": "CPU by mode",
       "datasource": {
@@ -718,16 +675,16 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 12
       },
-      "description": "Normalised to one core's worth, so the stack tops out at 100% however many cores the host has. A tall iowait band is a disk problem wearing a CPU costume.",
+      "description": "Normalised to one core, so the stack tops out at 100%.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -809,9 +766,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 12
       },
-      "description": "The flat line is the core count. Load above it means the run queue is longer than the machine is wide.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -898,12 +854,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -940,7 +893,7 @@
         },
         {
           "refId": "D",
-          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"ansible-01\"}))",
+          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -960,17 +913,16 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 21
       },
-      "description": "Share of time at least one task was runnable but waiting for a core. This is the honest measure of CPU contention; utilisation is not.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -999,7 +951,8 @@
           },
           "unit": "percent",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#F0776C"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1057,27 +1010,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Where the RAM went. Cache is not a leak.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 29
       }
     },
     {
@@ -1091,16 +1024,15 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 34
+        "y": 30
       },
-      "description": "Stacked to total RAM. Only the blue band is memory a process actually holds.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 1,
-            "fillOpacity": 28,
+            "fillOpacity": 22,
             "gradientMode": "none",
             "showPoints": "never",
             "pointSize": 5,
@@ -1210,12 +1142,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1272,7 +1201,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 34
+        "y": 30
       },
       "fieldConfig": {
         "defaults": {
@@ -1359,12 +1288,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -1403,17 +1329,16 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 43
+        "y": 39
       },
-      "description": "Time spent reclaiming rather than working. Non-zero here, before the OOM killer runs, is the early warning.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1442,7 +1367,8 @@
           },
           "unit": "percent",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#7EB6FF"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1502,17 +1428,16 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 43
+        "y": 39
       },
-      "description": "Faults that had to go to disk. Sustained non-zero means the working set no longer fits.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -1541,7 +1466,8 @@
           },
           "unit": "reqps",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#7EB6FF"
           },
           "thresholds": {
             "mode": "absolute",
@@ -1590,27 +1516,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 52
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Real mounts only.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 47
       }
     },
     {
@@ -1624,7 +1530,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 54
+        "y": 48
       },
       "fieldConfig": {
         "defaults": {
@@ -1681,7 +1587,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1703,7 +1609,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 54
+        "y": 48
       },
       "fieldConfig": {
         "defaults": {
@@ -1943,7 +1849,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1954,7 +1860,7 @@
         },
         {
           "refId": "B",
-          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"}",
+          "expr": "node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"}",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1965,7 +1871,7 @@
         },
         {
           "refId": "C",
-          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"}",
+          "expr": "node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"}",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1976,7 +1882,7 @@
         },
         {
           "refId": "D",
-          "expr": "100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
+          "expr": "100 * (1 - node_filesystem_files_free{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_files{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2035,7 +1941,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 57
       },
       "fieldConfig": {
         "defaults": {
@@ -2117,7 +2023,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
+          "expr": "100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", host=\"ansible-01\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -2128,34 +2034,14 @@
     },
     {
       "type": "row",
-      "title": "Disk",
+      "title": "Node disk",
       "collapsed": false,
       "panels": [],
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 71
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 72
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical devices as this host sees them. Because an LXC guest shares the node's kernel, /proc/diskstats is not namespaced: these are **grey-server**'s disks, and the traffic on them includes every other guest.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 65
       }
     },
     {
@@ -2169,9 +2055,9 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 66
       },
-      "description": "Reads above the line, writes below it.",
+      "description": "An LXC shares its node's /proc/diskstats, so these are the hypervisor's block devices and its traffic on them, not this container's.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2226,12 +2112,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2270,7 +2153,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 66
       },
       "fieldConfig": {
         "defaults": {
@@ -2326,12 +2209,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2370,9 +2250,8 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 83
+        "y": 75
       },
-      "description": "Share of wall time with at least one request in flight. Sustained 100% is saturation.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2473,17 +2352,16 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 83
+        "y": 75
       },
-      "description": "Time tasks spent blocked on storage.",
       "fieldConfig": {
         "defaults": {
           "custom": {
             "drawStyle": "line",
             "lineInterpolation": "linear",
             "lineWidth": 2,
-            "fillOpacity": 0,
-            "gradientMode": "none",
+            "fillOpacity": 14,
+            "gradientMode": "opacity",
             "showPoints": "never",
             "pointSize": 5,
             "spanNulls": false,
@@ -2512,7 +2390,8 @@
           },
           "unit": "percent",
           "color": {
-            "mode": "palette-classic-by-name"
+            "mode": "fixed",
+            "fixedColor": "#D48CF0"
           },
           "thresholds": {
             "mode": "absolute",
@@ -2570,27 +2449,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 92
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Physical and bridge interfaces. Container veths and Proxmox firewall bridges are filtered out.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 83
       }
     },
     {
@@ -2604,9 +2463,8 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 94
+        "y": 84
       },
-      "description": "Inbound above the line, outbound below it.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2661,12 +2519,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2705,9 +2560,8 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 94
+        "y": 84
       },
-      "description": "Flat zero is the healthy shape.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2767,12 +2621,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2829,7 +2680,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 103
+        "y": 93
       },
       "fieldConfig": {
         "defaults": {
@@ -2887,12 +2738,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -2931,9 +2779,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 103
+        "y": 93
       },
-      "description": "Retransmits against total segments sent. The ratio is what matters, not the count.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -2989,12 +2836,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -3033,9 +2877,8 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 111
+        "y": 101
       },
-      "description": "Filling this table makes the host drop new connections without logging anything useful.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -3108,7 +2951,7 @@
         "h": 8,
         "w": 16,
         "x": 8,
-        "y": 111
+        "y": 101
       },
       "fieldConfig": {
         "defaults": {
@@ -3196,12 +3039,9 @@
       "options": {
         "legend": {
           "showLegend": true,
-          "displayMode": "table",
+          "displayMode": "list",
           "placement": "bottom",
-          "calcs": [
-            "lastNotNull",
-            "max"
-          ]
+          "calcs": []
         },
         "tooltip": {
           "mode": "multi",
@@ -3238,27 +3078,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 119
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 120
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "What this machine is, and the housekeeping nobody looks at until it matters.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 109
       }
     },
     {
@@ -3272,7 +3092,7 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 122
+        "y": 110
       },
       "fieldConfig": {
         "defaults": {
@@ -3282,7 +3102,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3302,9 +3122,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -3314,7 +3134,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "node_boot_time_seconds{host=\"ansible-01\"} * 1000",
+          "expr": "(time() - pve_uptime_seconds{id=\"lxc/100\"}) * 1000",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3335,7 +3155,7 @@
         "h": 5,
         "w": 6,
         "x": 6,
-        "y": 122
+        "y": 110
       },
       "fieldConfig": {
         "defaults": {
@@ -3345,7 +3165,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3366,9 +3186,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3378,7 +3198,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{host=\"ansible-01\"}))",
+          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\", host=\"ansible-01\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3399,7 +3219,7 @@
         "h": 5,
         "w": 6,
         "x": 12,
-        "y": 122
+        "y": 110
       },
       "fieldConfig": {
         "defaults": {
@@ -3409,7 +3229,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -3430,9 +3250,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3463,9 +3283,8 @@
         "h": 5,
         "w": 6,
         "x": 18,
-        "y": 122
+        "y": 110
       },
-      "description": "Against the NTP source. A drifting clock quietly ruins every graph on this page.",
       "fieldConfig": {
         "defaults": {
           "unit": "s",
@@ -3505,7 +3324,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -3515,7 +3334,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "node_timex_offset_seconds{host=\"ansible-01\"}",
+          "expr": "abs(node_timex_offset_seconds{host=\"ansible-01\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3536,7 +3355,7 @@
         "h": 4,
         "w": 24,
         "x": 0,
-        "y": 127
+        "y": 115
       },
       "fieldConfig": {
         "defaults": {
@@ -3604,7 +3423,7 @@
         },
         {
           "refId": "C",
-          "expr": "node_exporter_build_info{host=\"ansible-01\"}",
+          "expr": "label_replace(node_exporter_build_info{host=\"ansible-01\"}, \"exporter_version\", \"$1\", \"version\", \"(.*)\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -3626,7 +3445,7 @@
           "id": "filterFieldsByName",
           "options": {
             "include": {
-              "pattern": "^(nodename|pretty_name|release|machine|version)$"
+              "pattern": "^(nodename|pretty_name|release|machine|exporter_version)$"
             }
           }
         },
@@ -3639,14 +3458,14 @@
               "pretty_name": "Operating system",
               "release": "Kernel",
               "machine": "Architecture",
-              "version": "node_exporter"
+              "exporter_version": "node_exporter"
             },
             "indexByName": {
               "nodename": 0,
               "pretty_name": 1,
               "release": 2,
               "machine": 3,
-              "version": 4
+              "exporter_version": 4
             }
           }
         }
@@ -3663,7 +3482,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 131
+        "y": 119
       },
       "fieldConfig": {
         "defaults": {
@@ -3689,7 +3508,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No unit is in the failed state."
+          "noValue": "No failed units"
         },
         "overrides": []
       },
@@ -3753,7 +3572,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 131
+        "y": 119
       },
       "fieldConfig": {
         "defaults": {
@@ -3779,7 +3598,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "No pending updates."
+          "noValue": "No pending updates"
         },
         "overrides": [
           {

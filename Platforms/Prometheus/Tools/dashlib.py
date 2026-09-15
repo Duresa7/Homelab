@@ -6,12 +6,18 @@ one look: the same line weight, the same legend shape, the same threshold
 colours, the same row banding. Editing a constant here changes every dashboard
 at once, which is the reason the dashboards are generated rather than hand-kept.
 
-Two conventions are load-bearing:
+Three conventions are load-bearing:
 
-- Colour means one thing at a time. Green, yellow, orange and red are reserved
-  for state, so a series never wears them for identity; multi-series graphs use
-  `palette-classic-by-name`, which hashes the series name, so a host keeps its
-  colour when a filter changes how many series are on screen.
+- A panel carries its number and nothing else. No markdown bands under row
+  headers, no sparklines inside stat tiles, no table legends under graphs, and
+  no description unless the value is computed in a way the title cannot say.
+- Colour is either state or resource. A stat tile, table cell or bar gauge is
+  coloured by its thresholds, so green, amber and red keep meaning something. A
+  single-series graph wears the tint of its resource from `TINT`, so CPU is the
+  same colour on every dashboard; an informational tile wears the neutral tint.
+  Multi-series graphs use `palette-classic-by-name`, which hashes the series
+  name, so a host keeps its colour when a filter changes how many series are on
+  screen.
 - Panels are placed by `Grid`, never by hand-written gridPos. Hand-placed panels
   drift the moment a panel's height changes, and Grafana silently reflows them
   into an order nobody chose.
@@ -24,8 +30,9 @@ DS = {"type": "prometheus", "uid": "bfgnkdi47u5tsa"}
 
 # ---------------------------------------------------------------- house style
 
-# 2px lines, no fill, no point markers: thin marks read at a glance and stay
-# legible when eight series overlap. Areas opt in explicitly via `stack=`.
+# 2px lines, no point markers. A single series gets a soft gradient under the
+# line (see timeseries()); overlapping series stay unfilled so eight of them
+# remain legible. Areas opt in explicitly via `stack=`.
 TS_CUSTOM = {
     "drawStyle": "line",
     "lineInterpolation": "linear",
@@ -48,12 +55,6 @@ TS_CUSTOM = {
     "hideFrom": {"legend": False, "tooltip": False, "viz": False},
 }
 
-LEGEND_TABLE = {
-    "showLegend": True,
-    "displayMode": "table",
-    "placement": "bottom",
-    "calcs": ["lastNotNull", "max"],
-}
 LEGEND_LIST = {
     "showLegend": True,
     "displayMode": "list",
@@ -66,6 +67,19 @@ TOOLTIP_MULTI = {"mode": "multi", "sort": "desc"}
 TOOLTIP_SINGLE = {"mode": "single", "sort": "none"}
 
 BY_NAME = {"mode": "palette-classic-by-name"}
+
+# One hue per resource. A single-series graph about CPU is this salmon on every
+# dashboard, memory is always this blue, and a count that judges nothing is the
+# neutral lavender. None of the six is a threshold colour, so a tinted line is
+# never mistaken for a state.
+TINT = {
+    "compute": "#F0776C",
+    "memory":  "#7EB6FF",
+    "storage": "#D48CF0",
+    "network": "#5FD0C8",
+    "power":   "#F5D66B",
+    "neutral": "#AFA6F5",
+}
 
 
 def fixed(color: str) -> dict:
@@ -82,6 +96,17 @@ def thresholds(*steps, mode: str = "absolute") -> dict:
 
 GREEN_ONLY = thresholds(("green", None))
 TEXT_ONLY = thresholds(("text", None))
+# A stat tile that reports a fact rather than judging one: uptime, cores, RAM.
+INFO = thresholds((TINT["neutral"], None))
+
+
+def out_of(n: int) -> str:
+    """A unit that renders `5 / 5`: the count, then the denominator in smaller type.
+
+    No leading space. Grafana maps `suffix:X` to toFixedUnit(X, false), which
+    returns `{ text, suffix: " " + unit }` and so supplies the space itself; a
+    space here would render a double space."""
+    return "suffix:/ %d" % n
 
 # Shared operational thresholds, so "80% is amber" means the same thing on every
 # dashboard rather than being re-invented per panel.
@@ -154,15 +179,25 @@ def _base(kind: str, title: str, w: int, h: int, desc: str = "") -> dict:
 
 
 def timeseries(title, targets, *, w=12, h=8, unit="short", desc="", legend=None,
-               tooltip=None, thr=None, color=None, minv=None, maxv=None,
+               tooltip=None, thr=None, color=None, tint=None, minv=None, maxv=None,
                decimals=None, stack=False, fill=None, width=None, overrides=None,
                points=False, min_zero=True, log=False, thr_style=None) -> dict:
+    """`tint` names a TINT key and fixes the line colour. It is the default for a
+    single query, since one line has no identity to distinguish; a graph with
+    several queries colours by series name unless `color` says otherwise."""
     p = _base("timeseries", title, w, h, desc)
     custom = copy.deepcopy(TS_CUSTOM)
+    # One query can still draw many lines: `topk(5, ...)` with a `{{host}}`
+    # legend is five series. Only a query with a fixed legend is one line.
+    single = (len(targets) == 1 and not stack
+              and "{{" not in targets[0].get("legendFormat", ""))
     if stack:
         custom["stacking"] = {"group": "A", "mode": "normal"}
-        custom["fillOpacity"] = 28 if fill is None else fill
+        custom["fillOpacity"] = 22 if fill is None else fill
         custom["lineWidth"] = 1
+    elif single and fill is None:
+        custom["fillOpacity"] = 14
+        custom["gradientMode"] = "opacity"
     if fill is not None:
         custom["fillOpacity"] = fill
     if width is not None:
@@ -173,10 +208,17 @@ def timeseries(title, targets, *, w=12, h=8, unit="short", desc="", legend=None,
         custom["scaleDistribution"] = {"type": "log", "log": 10}
     if thr_style:
         custom["thresholdsStyle"] = {"mode": thr_style}
+    if color is None:
+        if tint:
+            color = fixed(TINT[tint])
+        elif single:
+            color = fixed(TINT["neutral"])
+        else:
+            color = BY_NAME
     defaults = {
         "custom": custom,
         "unit": unit,
-        "color": color or BY_NAME,
+        "color": color,
         "thresholds": thr or TEXT_ONLY,
         "mappings": [],
     }
@@ -187,21 +229,23 @@ def timeseries(title, targets, *, w=12, h=8, unit="short", desc="", legend=None,
     if decimals is not None:
         defaults["decimals"] = decimals
     p["fieldConfig"] = {"defaults": defaults, "overrides": overrides or []}
-    p["options"] = {"legend": legend or (LEGEND_TABLE if len(targets) > 1 else LEGEND_LIST),
+    p["options"] = {"legend": legend or LEGEND_LIST,
                     "tooltip": tooltip or TOOLTIP_MULTI}
     p["targets"] = targets
     return p
 
 
-def stat(title, targets, *, w=6, h=4, unit="short", desc="", thr=None, mappings=None,
+def stat(title, targets, *, w=6, h=5, unit="short", desc="", thr=None, mappings=None,
          color_mode="value", graph="none", text_mode="auto", decimals=None,
          no_value="no data", calc="lastNotNull", overrides=None, orientation="auto",
          maxv=None, minv=None, links=None) -> dict:
+    """One large centred number, coloured by its thresholds. A tile with no
+    thresholds of its own is a fact, not a judgement, and wears the neutral tint."""
     p = _base("stat", title, w, h, desc)
     defaults = {
         "unit": unit,
         "mappings": mappings or [],
-        "thresholds": thr or TEXT_ONLY,
+        "thresholds": thr or INFO,
         "color": {"mode": "thresholds"},
         "noValue": no_value,
     }
@@ -218,7 +262,7 @@ def stat(title, targets, *, w=6, h=4, unit="short", desc="", thr=None, mappings=
         "reduceOptions": {"calcs": [calc], "fields": "", "values": False},
         "colorMode": color_mode,
         "graphMode": graph,
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": text_mode,
         "orientation": orientation,
         "wideLayout": True,
@@ -369,15 +413,6 @@ def heatmap(title, targets, *, w=12, h=9, desc="", unit="s", scheme="Turbo") -> 
     return p
 
 
-def text(content: str, *, w=24, h=2, title="", transparent=True) -> dict:
-    p = _base("text", title, w, h)
-    p.pop("datasource", None)
-    p["transparent"] = transparent
-    p["options"] = {"mode": "markdown", "content": content,
-                    "code": {"language": "plaintext", "showLineNumbers": False, "showMiniMap": False}}
-    return p
-
-
 # --------------------------------------------------------------- field config
 
 def override(matcher_id: str, matcher_opts, props: list) -> dict:
@@ -411,9 +446,8 @@ class Grid:
     """Places panels on Grafana's 24-column grid so no gridPos is written by hand.
 
     Panels are added in reading order and wrap when the row fills. `section()`
-    opens a collapsible row with a one-line band under it explaining what the
-    section answers, because Grafana's own row header is a thin grey rule that
-    reads as no boundary at all.
+    opens a collapsible row: one thin titled rule, and nothing under it but the
+    panels. The row is a place to fold a dashboard, not a place to write.
     """
 
     def __init__(self):
@@ -446,24 +480,18 @@ class Grid:
         for p in panels:
             self.add(p)
 
-    def section(self, title: str, blurb: str = "", collapsed: bool = False):
+    def section(self, title: str, collapsed: bool = False):
         self._newline()
         row = {"type": "row", "title": title, "collapsed": collapsed, "panels": [],
                "gridPos": {"h": 1, "w": 24, "x": 0, "y": self._y}}
         self.panels.append(row)
         self._y += 1
-        if blurb:
-            self.add(text(blurb + "\n\n---", h=2))
-            self._newline()
         return row
 
-    def collapsed_section(self, title: str, blurb: str, panels: list):
+    def collapsed_section(self, title: str, panels: list):
         """A row that carries its children, so they cost nothing until opened."""
         self._newline()
         inner = Grid()
-        if blurb:
-            inner.add(text(blurb + "\n\n---", h=2))
-            inner._newline()
         inner.extend(panels)
         for p in inner.panels:
             p["gridPos"]["y"] += self._y + 1

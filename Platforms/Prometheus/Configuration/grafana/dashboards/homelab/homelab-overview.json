@@ -1,7 +1,7 @@
 {
   "uid": "homelab-overview",
   "title": "Homelab Overview",
-  "description": "The landing page. Fleet health first, then the node table, then everything else behind the dropdowns in the header.",
+  "description": "Fleet health, the node table and service reachability.",
   "tags": [
     "homelab",
     "overview"
@@ -63,26 +63,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Eight numbers that answer *is anything wrong*. Everything below, and every dashboard in the header dropdowns, is detail behind them.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "stat",
       "title": "Cluster quorum",
       "datasource": {
@@ -90,12 +70,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 3
+        "y": 1
       },
-      "description": "Corosync quorum on Galaxy. Without it Proxmox refuses to start or migrate a guest.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -144,9 +123,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -174,15 +153,14 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 3
+        "y": 1
       },
-      "description": "Out of five.",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "suffix:/ 5",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -219,7 +197,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -247,12 +225,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 3
+        "y": 1
       },
-      "description": "Every VM and container Proxmox reports as running.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -261,7 +238,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
+                "color": "#AFA6F5",
                 "value": null
               }
             ]
@@ -281,9 +258,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -311,15 +288,15 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 3
+        "y": 1
       },
-      "description": "Out of nineteen internal service names, probed end to end through Nginx Proxy Manager.",
+      "description": "The published names, excluding the alert bot's internal health probe.",
       "fieldConfig": {
         "defaults": {
-          "unit": "short",
+          "unit": "suffix:/ 19",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -356,7 +333,7 @@
         },
         "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -366,7 +343,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(probe_success)",
+          "expr": "sum(probe_success{instance=~\"https://.*\"})",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -384,12 +361,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 0,
-        "y": 7
+        "y": 6
       },
-      "description": "A target down means a blind spot, not necessarily an outage.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -422,9 +398,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -452,12 +428,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 6,
-        "y": 7
+        "y": 6
       },
-      "description": "Red as soon as the monitored UPS drops off mains.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -506,9 +481,9 @@
           "fields": "",
           "values": false
         },
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
-        "justifyMode": "auto",
+        "justifyMode": "center",
         "textMode": "value",
         "orientation": "auto",
         "wideLayout": true,
@@ -536,12 +511,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 12,
-        "y": 7
+        "y": 6
       },
-      "description": "The warmest of the five nodes, at the die rather than a core.",
       "fieldConfig": {
         "defaults": {
           "unit": "fahrenheit",
@@ -588,8 +562,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -617,12 +591,11 @@
         "uid": "bfgnkdi47u5tsa"
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 6,
         "x": 18,
-        "y": 7
+        "y": 6
       },
-      "description": "The single tightest mount anywhere in the fleet.",
       "fieldConfig": {
         "defaults": {
           "unit": "percent",
@@ -665,8 +638,8 @@
           "values": false
         },
         "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
+        "graphMode": "none",
+        "justifyMode": "center",
         "textMode": "auto",
         "orientation": "auto",
         "wideLayout": true,
@@ -676,7 +649,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "max(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
+          "expr": "max(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"}))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -699,26 +672,6 @@
       }
     },
     {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 12
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "One table, ten health checks, and a row only when something fails one of them. Empty is the goal.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
-    },
-    {
       "type": "table",
       "title": "Anything failing a health check",
       "datasource": {
@@ -729,9 +682,8 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 14
+        "y": 12
       },
-      "description": "Scrape targets down, services unreachable, certificates inside 21 days, ZFS pools not online, NVMe critical warnings or spare under 10%, filesystems over 90% or mounted read-only, a UPS on battery, a SMART self-assessment that failed, and either TeamSpeak fault. The value column carries whichever number the check is about.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -756,7 +708,7 @@
             "mode": "thresholds"
           },
           "mappings": [],
-          "noValue": "All clear — nothing is failing a health check."
+          "noValue": "All clear"
         },
         "overrides": [
           {
@@ -811,7 +763,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "label_replace(label_replace(up == 0, \"check\", \"scrape target down\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(probe_success == 0, \"check\", \"service unreachable\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(round((probe_ssl_earliest_cert_expiry - time()) / 86400) < 21, \"check\", \"TLS certificate expiring (days)\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(max by (host, zpool) (node_zfs_zpool_state{state!=\"online\"}) == 1, \"check\", \"ZFS pool not online\", \"\", \"\"), \"object\", \"$1\", \"zpool\", \"(.*)\") or label_replace(label_replace(nvme_critical_warning > 0, \"check\", \"NVMe critical warning\", \"\", \"\"), \"object\", \"$1\", \"device\", \"(.*)\") or label_replace(label_replace(round(100 * nvme_available_spare_ratio) < 10, \"check\", \"NVMe spare remaining (%)\", \"\", \"\"), \"object\", \"$1\", \"device\", \"(.*)\") or label_replace(label_replace(round(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"})) > 90, \"check\", \"filesystem over 90% (used %)\", \"\", \"\"), \"object\", \"$1\", \"mountpoint\", \"(.*)\") or label_replace(label_replace(node_filesystem_readonly{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} == 1, \"check\", \"filesystem read-only\", \"\", \"\"), \"object\", \"$1\", \"mountpoint\", \"(.*)\") or label_replace(label_replace(nut_ups_status{status=\"OB\"} == 1, \"check\", \"UPS on battery\", \"\", \"\"), \"object\", \"$1\", \"ups\", \"(.*)\") or label_replace(label_replace(smartmon_device_smart_healthy == 0 and on (host, disk) smartmon_device_smart_available == 1, \"check\", \"SMART self-assessment failed\", \"\", \"\"), \"object\", \"$1\", \"disk\", \"(.*)\") or label_replace(label_replace(teamspeak_server_fault == 1, \"check\", \"TeamSpeak voice down\", \"\", \"\"), \"object\", \"$1\", \"server\", \"(.*)\") or label_replace(label_replace(teamspeak_tunnel_fault == 1, \"check\", \"TeamSpeak public path down\", \"\", \"\"), \"object\", \"$1\", \"server\", \"(.*)\")",
+          "expr": "label_replace(label_replace(up == 0, \"check\", \"scrape target down\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(probe_success == 0, \"check\", \"service unreachable\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(round((probe_ssl_earliest_cert_expiry - time()) / 86400) < 21, \"check\", \"TLS certificate expiring (days)\", \"\", \"\"), \"object\", \"$1\", \"instance\", \"(.*)\") or label_replace(label_replace(max by (host, zpool) (node_zfs_zpool_state{state!=\"online\"}) == 1, \"check\", \"ZFS pool not online\", \"\", \"\"), \"object\", \"$1\", \"zpool\", \"(.*)\") or label_replace(label_replace(nvme_critical_warning > 0, \"check\", \"NVMe critical warning\", \"\", \"\"), \"object\", \"$1\", \"device\", \"(.*)\") or label_replace(label_replace(round(100 * nvme_available_spare_ratio) < 10, \"check\", \"NVMe spare remaining (%)\", \"\", \"\"), \"object\", \"$1\", \"device\", \"(.*)\") or label_replace(label_replace(round(100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"})) > 90, \"check\", \"filesystem over 90% (used %)\", \"\", \"\"), \"object\", \"$1\", \"mountpoint\", \"(.*)\") or label_replace(label_replace(node_filesystem_readonly{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\"} == 1, \"check\", \"filesystem read-only\", \"\", \"\"), \"object\", \"$1\", \"mountpoint\", \"(.*)\") or label_replace(label_replace(nut_ups_status{status=\"OB\"} == 1, \"check\", \"UPS on battery\", \"\", \"\"), \"object\", \"$1\", \"ups\", \"(.*)\") or label_replace(label_replace(smartmon_device_smart_healthy == 0 and on (host, disk) smartmon_device_smart_available == 1, \"check\", \"SMART self-assessment failed\", \"\", \"\"), \"object\", \"$1\", \"disk\", \"(.*)\") or label_replace(label_replace(teamspeak_server_fault == 1, \"check\", \"TeamSpeak voice down\", \"\", \"\"), \"object\", \"$1\", \"server\", \"(.*)\") or label_replace(label_replace(teamspeak_tunnel_fault == 1, \"check\", \"TeamSpeak public path down\", \"\", \"\"), \"object\", \"$1\", \"server\", \"(.*)\")",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -859,27 +811,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 23
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every host that carries a workload. Click a hostname to open that node's own dashboard.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 20
       }
     },
     {
@@ -893,9 +825,8 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 21
       },
-      "description": "Sorted by CPU. The temperature column is blank for guests on purpose: an LXC reads the node's sensors, not its own, so the number would belong to a different machine.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1391,7 +1322,7 @@
         },
         {
           "refId": "C",
-          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total))",
+          "expr": "count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1402,7 +1333,7 @@
         },
         {
           "refId": "D",
-          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])) * 100)",
+          "expr": "100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval]) and on (host, cpu) (node_cpu_seconds_total{mode=\"idle\"} > 0)) * 100)",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1413,7 +1344,7 @@
         },
         {
           "refId": "E",
-          "expr": "max by (host) (node_load1) / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total))",
+          "expr": "max by (host) (node_load1) / on (host) group_left () count by (host) (count by (host, cpu) (node_cpu_seconds_total{mode=\"idle\"} > 0))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1446,7 +1377,7 @@
         },
         {
           "refId": "H",
-          "expr": "max by (host) (100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", mountpoint=\"/\"}))",
+          "expr": "max by (host) (100 * (1 - node_filesystem_avail_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", mountpoint=\"/\"} / node_filesystem_size_bytes{fstype!~\"tmpfs|devtmpfs|overlay|squashfs|fuse.*|nsfs|ramfs|autofs|iso9660|udf|proc|sysfs|cgroup.*|debugfs|tracefs|mqueue|configfs|binfmt_misc|efivarfs\", mountpoint=\"/\"}))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1517,7 +1448,7 @@
     },
     {
       "type": "timeseries",
-      "title": "CPU busy — five busiest hosts",
+      "title": "CPU · top 5",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1526,9 +1457,8 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 37
+        "y": 33
       },
-      "description": "Top five only, so the graph stays readable. The Fleet table above covers all eighteen.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1609,7 +1539,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "topk(5, 100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval])) * 100))",
+          "expr": "topk(5, 100 - (avg by (host) (rate(node_cpu_seconds_total{mode=\"idle\"}[$__rate_interval]) and on (host, cpu) (node_cpu_seconds_total{mode=\"idle\"} > 0)) * 100))",
           "datasource": {
             "type": "prometheus",
             "uid": "bfgnkdi47u5tsa"
@@ -1620,7 +1550,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Memory used — five fullest hosts",
+      "title": "Memory · top 5",
       "datasource": {
         "type": "prometheus",
         "uid": "bfgnkdi47u5tsa"
@@ -1629,9 +1559,8 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 37
+        "y": 33
       },
-      "description": "Top five only. The Fleet table above covers all eighteen.",
       "fieldConfig": {
         "defaults": {
           "custom": {
@@ -1730,27 +1659,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 45
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 2,
-        "w": 24,
-        "x": 0,
-        "y": 46
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "Every internal name, probed through the proxy a person actually goes through.\n\n---",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
+        "y": 41
       }
     },
     {
@@ -1764,9 +1673,8 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 42
       },
-      "description": "One band per service. A gap is a scrape that never happened; red is a probe that ran and failed.",
       "fieldConfig": {
         "defaults": {
           "unit": "short",
@@ -1842,38 +1750,6 @@
           "legendFormat": "{{instance}}"
         }
       ]
-    },
-    {
-      "type": "row",
-      "title": "Where to look next",
-      "collapsed": false,
-      "panels": [],
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 58
-      }
-    },
-    {
-      "type": "text",
-      "title": "",
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 59
-      },
-      "transparent": true,
-      "options": {
-        "mode": "markdown",
-        "content": "\n| | | |\n|---|---|---|\n| **[Overview](/d/homelab-overview)** — is anything wrong | **[Nodes](/dashboards/f/nodes)** — one dashboard per host | **[Proxmox](/d/proxmox-cluster)** — cluster, guests, storage |\n| **[Services](/d/services-uptime)** — reachability and TLS | **[Containers](/d/containers)** — every Docker workload | **[Storage](/d/storage-health)** — capacity and drive health |\n| **[Network](/d/network)** — throughput, errors, TCP | **[Power](/d/power-ups)** — UPS-02 | **[Monitoring](/d/monitoring-health)** — does Prometheus itself work |\n| **[TeamSpeak](/d/teamspeak)** — voice reachability | | |\n",
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
-        }
-      }
     }
   ]
 }
