@@ -103,9 +103,12 @@ groups:
             Whatever this target measures is now unmonitored and will stay that
             way silently. In August 2026 that condition lasted three and a half
             days.
-        # A filtered expression returns nothing when everything is healthy, so
-        # empty must read as OK rather than as missing data.
-        noDataState: OK
+        # `up` is reported raw and the threshold below picks the zeros. Do not
+        # reintroduce a `== 0` filter here: a PromQL comparison keeps the sample's
+        # own value, so the matched series would carry 0 and a `gt` evaluator
+        # could never fire. Empty means Prometheus itself is unreachable, which
+        # is worth an alert rather than an OK.
+        noDataState: NoData
         execErrState: Error
         isPaused: false
         data:
@@ -119,7 +122,7 @@ groups:
               range: false
               intervalMs: 1000
               maxDataPoints: 43200
-              expr: 'up{job!="node"} == 0 unless on(host) (up{job="node"} == 0)'
+              expr: 'up{job!="node"} unless on(host) (up{job="node"} == 0)'
           - refId: B
             relativeTimeRange: {from: 600, to: 0}
             datasourceUid: __expr__
@@ -134,7 +137,7 @@ groups:
                   query: {params: [A]}
                   reducer: {type: last, params: []}
                   operator: {type: and}
-                  evaluator: {type: gt, params: [0.5]}
+                  evaluator: {type: lt, params: [0.5]}
 
       # Lost connectivity, from the direction that matters: the blackbox prober
       # walks the real user path, so a failure here means local DNS, the proxy,
