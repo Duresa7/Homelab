@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-16
 
 I keep retired records under their original category so the old owner & date remain obvious. Current records stay with their owner; this directory isn't a holding area for files that lack a clear location.
 
@@ -10,6 +10,7 @@ I keep retired records under their original category so the old owner & date rem
 | System | Retained records |
 |---|---|
 | `game-01` / Game Servers | [Retirement record](Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md), [platform records](Platforms/Game%20Servers/README.md), and [guest record](Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md). CT 123 and its 80 GiB root volume are deleted, including the game data; monitoring and publication are removed |
+| Portainer & its Edge Agents | [Retirement record](Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md), [platform records](Platforms/Portainer/README.md), & [walkthrough](Guides/Portainer.md); the server on `docker-main` and four Edge Agents came out on 2026-09-16 with their data, images, publication, dedicated credentials, and automation and monitoring entries. [Dockhand](../Platforms/Dockhand/README.md) replaced them |
 | `ai-alpha-01` / OpenClaw | [Retired guest record](Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md), [platform documentation](Platforms/Openclaw/Documentation/OpenClaw-Setup-Overview.md), & [walkthrough](Guides/OpenClaw.md) |
 | `ai-bravo-02` / TNIO AI Bot | [Retired guest record](Operations/Inventory/Galaxy/AI%20Bravo%2002%20Archived%20Guest%20-%202026-07-25.md), [platform source & records](Platforms/TNIO%20AI%20Bot/README.md), & [walkthrough](Guides/TNIO-AI-Bot.md); the TNIO and OpenClaw-backed source, tests, configuration, and evidence remain archived after CT 105 and its root volume were deleted on 2026-08-09 |
 | Windows Active Directory domain | [Platform README](Platforms/Windows%20Servers/README.md), moved here on 2026-09-06, with the private plan, dated change record, and evidence beside it under `Platforms/Windows Servers/`; all three guests and their backups were destroyed on 2026-07-27 |

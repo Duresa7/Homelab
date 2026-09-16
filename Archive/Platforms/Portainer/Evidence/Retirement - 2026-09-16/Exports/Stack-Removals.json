@@ -1,0 +1,27 @@
+[
+  {
+    "host": "docker_blue",
+    "stack": "portainer-edge-agent",
+    "removed": true
+  },
+  {
+    "host": "docker_network",
+    "stack": "portainer-edge-agent",
+    "removed": true
+  },
+  {
+    "host": "media_01",
+    "stack": "portainer-edge-agent",
+    "removed": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "portainer-edge-agent",
+    "removed": true
+  },
+  {
+    "host": "docker_main",
+    "stack": "portainer",
+    "removed": true
+  }
+]

@@ -1,9 +1,13 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-16
+
+I removed portainer.alphasecunited.com on 2026-09-16. The controller now holds 29 static DNS records, 23 of them pointing at `192.168.85.2`, including the unchanged Dockhand record `6aa9de4e25574794b908a860`. The same readback returned `hq-mgt01.ad.alphasecunited.com`, which this table had not carried since the 2026-09-12 Windows Admin Center deployment, so I added its row without changing the controller.
 
 On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
+
+On 2026-09-15 I replaced the Dockge A record with `dockhand.alphasecunited.com` pointing to NPM. The live controller returned 30 DNS records. HTTPS login and all six Hawser connections passed. [Replacement record](../../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md).
 
 On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Proxy Manager. The controller returned 28 records before the addition and 29 after, of which 23 point at `192.168.85.2`. This paragraph previously read 29 records with 24 pointing at Nginx Proxy Manager; that count had not been reduced when the two Game 01 names were removed on 2026-09-12, so I have replaced it with the live figures. Five records resolve the Galaxy Proxmox node names to their MGMT-A addresses. Public authoritative DNS stays in Cloudflare and doesn't contain these internal names.
 
@@ -23,7 +27,6 @@ On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Pro
 | `booklore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookLore through NPM |
 | `dashboard.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84f` | Homelab dashboard through NPM |
 | `forgejo.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
-| `portainer.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a852` | Portainer through NPM |
 | `peanut.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a853` | PeaNUT through NPM |
 | `wazuh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a85a` | Wazuh dashboard through NPM |
 | `grafana.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a862` | Grafana through NPM |
@@ -33,7 +36,9 @@ On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Pro
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
 | `mcp.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a94416df9e5db24858d3005` | Executor on `docker-blue` through NPM |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
+| `dockhand.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa9de4e25574794b908a860` | Dockhand on `docker-main` through NPM proxy host 31 |
 | `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
+| `hq-mgt01.ad.alphasecunited.com` | A | `192.168.65.12` | 300 | Yes | `6aa4cfee80977b56f62991c0` | Windows Admin Center on `HQ-MGT01` |
 | `grey.alphasecunited.com` | A | `192.168.70.10` | Controller default | Yes | `6a7dee01dee8c70a32e6ba96` | Proxmox GUI on `grey-server` |
 | `purple.alphasecunited.com` | A | `192.168.70.11` | Controller default | Yes | `6a7dee43dee8c70a32e6bb43` | Proxmox GUI on `purple-server` |
 | `blue.alphasecunited.com` | A | `192.168.70.12` | Controller default | Yes | `6a7deeabdee8c70a32e6bc70` | Proxmox GUI on `blue-server` |

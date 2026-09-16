@@ -1,13 +1,15 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-15
+**Last updated:** 2026-09-16
+
+On 2026-09-16 I removed the retired Portainer HTTPS probe and regenerated the three affected Grafana dashboards. The target API reports 57 healthy targets; Uptime covers 28 checks and Services & Uptime covers 23 probes. [Retirement record](../../Archive/Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md).
 
 On 2026-09-15 I added the private [Uptime dashboard](https://grafana.alphasecunited.com/d/uptime), covering 29 service checks with status bars, a 99.99% sampled-uptime target, and monitoring coverage. I added four missing HTTP probes and a local Cloudflare/Caddy/Coolify collector. All 58 scrape targets are healthy. The [change record](Documentation/Change%20Records/Uptime%20Dashboard%20-%202026-09-15.md) records the measurement limits and verification.
 
 On 2026-09-12 I removed Game 01’s node, cAdvisor and panel targets and its Grafana node dashboard. Prometheus reports 54 targets, all UP; Grafana has no firing or pending Game 01 alert; two resolved cache entries remain. The 24 shared alert rules continue to cover the remaining fleet.
 
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 58 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 23 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 57 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 22 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation. I use `AG-Proxmox-Nodes` as the destination Network List for `Allow Monitor to Proxmox monitoring`; that dated record explains the membership expansion under its former name.
 
@@ -42,7 +44,7 @@ WUD 9 requires authenticated scrapes. Six scrape configurations read separate pr
 
 ## Containers on monitor-01
 
-Nine containers belong to the host across four Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other seven Docker hosts. `wud` comes from `/opt/docker/wud`, deployed by that same project. PeaNUT runs from `/opt/docker/peanut`.
+Ten containers belong to the host across five Compose projects. `prometheus`, `grafana`, `pve-exporter`, `blackbox-exporter`, `nut-exporter`, and `alert-bot` come from `~/monitoring/docker-compose.yml`. `cadvisor` comes from `/opt/docker/cadvisor`, deployed by the same Ansible playbook that manages the other seven Docker hosts. `wud` comes from `/opt/docker/wud`, deployed by that same project. PeaNUT runs from `/opt/docker/peanut`. `hawser` runs from `/opt/docker/hawser`: it is the [Dockhand](../Dockhand/README.md) agent, added on 2026-09-15, and its one-shot `hawser-updater` companion sits exited beside it rather than running.
 
 The 2026-08-10 restart exposed a limit in the old policy: Docker held `HasBeenManuallyStopped=true` for Prometheus, so `unless-stopped` skipped it while the other containers returned. I changed Prometheus alone to `restart: always`, started it, and verified both readiness paths, 52 healthy targets, and 20 passing probes. The diagnosis and correction are in [issue 5](Documentation/Troubleshooting/Container%20Remained%20Stopped%20After%20monitor-01%20Restart%20-%202026-08-10.md).
 
@@ -55,14 +57,14 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, ubuntu-dev (configured `host` label `ubuntu-dev`) |
 | `cadvisor` | all 8 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
-| `blackbox` | the 23 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
+| `blackbox` | the 22 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `wud` | What's Up Docker `:latest`, verified as 9.0.2 on 2026-09-13, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
-its administrative API disabled and all 58 targets up, verified on 2026-09-15. Retired Game 01 samples
+its administrative API disabled and all 57 targets up, verified on 2026-09-16. Retired Game 01 samples
 remain in historical storage until the 15-day retention expires.
 
 cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
@@ -90,8 +92,8 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 | Homelab | Homelab Overview | `homelab-overview` | Eight health tiles, one table of everything failing a check, the fleet table, and service reachability |
 | Homelab | Proxmox · Galaxy Cluster | `proxmox-cluster` | Quorum, the five nodes, every guest, guest I/O, every storage |
 | Homelab | Containers | `containers` | Every container across the eight cAdvisor hosts, with restart and OOM tables; the nine-host set held 71 on 2026-09-05 |
-| Homelab | Uptime | `uptime` | 29 checks: TeamSpeak through Playit, Cloudflare connector, Caddy and Coolify origins, 23 internal HTTPS names, and the alert bot; status bars, observed uptime, and coverage |
-| Homelab | Services & Uptime | `services-uptime` | The 23 published names through NPM plus the alert bot's health endpoint, 24 probes: reachability, latency by request phase, TLS expiry |
+| Homelab | Uptime | `uptime` | 28 checks: TeamSpeak through Playit, Cloudflare connector, Caddy and Coolify origins, 22 internal HTTPS names, and the alert bot; status bars, observed uptime, and coverage |
+| Homelab | Services & Uptime | `services-uptime` | The 22 published names through NPM plus the alert bot's health endpoint, 23 probes: reachability, latency by request phase, TLS expiry |
 | Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
 | Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
 | Homelab | Power & UPS | `power-ups` | UPS-02 battery, runtime, load, mains, and status flags; UPS-01 is absent while its data cable remains disconnected |

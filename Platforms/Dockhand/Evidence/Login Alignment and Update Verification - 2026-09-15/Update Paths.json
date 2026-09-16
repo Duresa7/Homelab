@@ -1,0 +1,65 @@
+[
+  {
+    "host": "alpha-prod-01",
+    "environment_id": 6,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "docker-blue",
+    "environment_id": 2,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "docker-main",
+    "environment_id": 1,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "docker-network",
+    "environment_id": 3,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "media-01",
+    "environment_id": 5,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "monitor-01",
+    "environment_id": 4,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  },
+  {
+    "host": "security-01",
+    "environment_id": 7,
+    "pull_and_recreate_passed": true,
+    "replacement_running": true,
+    "temporary_container_absent": true,
+    "existing_container_ids_and_states_unchanged": true,
+    "temporary_image_cleaned_or_preexisting": true
+  }
+]

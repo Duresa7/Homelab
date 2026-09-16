@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-16
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -31,7 +31,6 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
 | [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [Portainer](Portainer.md) | Portainer server 2.45.0 and four Edge Agent 2.45.0 hosts verified 2026-09-06, UniFi ports, & environment registration |
 | [Prometheus](Prometheus.md) | Prometheus 3.14.0, 57 targets across seven jobs verified 2026-09-06, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
 | [Wazuh](Wazuh.md) | Wazuh 4.14.7, 16 active remote agents verified 2026-09-06, manager checks, dashboard state, & recovery |
@@ -39,7 +38,7 @@ The original records still own the facts. A guide explains the path; its Source 
 
 ## Archived & Retired Guides
 
-I preserved the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01` in the [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md). I preserved the lore-retrieval & Discord-bot workflow from deleted CT 105 `ai-bravo-02` in the [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md). The [archived TeamSpeak walkthrough](../Archive/Guides/TeamSpeak.md) preserves the three-server layout retired on 2026-08-09.
+I preserved the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01` in the [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md). I preserved the lore-retrieval & Discord-bot workflow from deleted CT 105 `ai-bravo-02` in the [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md). The [archived TeamSpeak walkthrough](../Archive/Guides/TeamSpeak.md) preserves the three-server layout retired on 2026-08-09. The [archived Portainer walkthrough](../Archive/Guides/Portainer.md) preserves the server and four Edge Agent hosts I retired on 2026-09-16, when [Dockhand](../Platforms/Dockhand/README.md) took over container management.
 
 ## Status Language
 

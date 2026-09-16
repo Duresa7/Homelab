@@ -109,7 +109,7 @@
       "description": "The published names, excluding the alert bot's internal health probe.",
       "fieldConfig": {
         "defaults": {
-          "unit": "suffix:/ 23",
+          "unit": "suffix:/ 22",
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -120,11 +120,11 @@
               },
               {
                 "color": "orange",
-                "value": 22
+                "value": 21
               },
               {
                 "color": "green",
-                "value": 23
+                "value": 22
               }
             ]
           },
@@ -132,7 +132,7 @@
             "mode": "thresholds"
           },
           "noValue": "no data",
-          "max": 23
+          "max": 22
         },
         "overrides": []
       },

@@ -1,0 +1,44 @@
+[
+  {
+    "environment": 1,
+    "connection_passed": true,
+    "containers": 15,
+    "stacks": 10
+  },
+  {
+    "environment": 2,
+    "connection_passed": true,
+    "containers": 12,
+    "stacks": 7
+  },
+  {
+    "environment": 3,
+    "connection_passed": true,
+    "containers": 7,
+    "stacks": 5
+  },
+  {
+    "environment": 4,
+    "connection_passed": true,
+    "containers": 11,
+    "stacks": 5
+  },
+  {
+    "environment": 5,
+    "connection_passed": true,
+    "containers": 12,
+    "stacks": 4
+  },
+  {
+    "environment": 6,
+    "connection_passed": true,
+    "containers": 9,
+    "stacks": 8
+  },
+  {
+    "environment": 7,
+    "connection_passed": true,
+    "containers": 4,
+    "stacks": 3
+  }
+]

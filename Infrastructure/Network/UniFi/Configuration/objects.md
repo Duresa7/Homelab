@@ -1,7 +1,9 @@
 # UniFi Policy Features and Network Lists
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-16
+
+I removed the unused Portainer Edge Agents port group on 2026-09-16 after deleting its two referencing policies. The controller now holds 22 Network Lists, ten IPv4 address groups and 12 port groups, and no group named for Portainer. The same readback returned `AG-Automation-Hosts`, which this table had not carried, so I added its row without changing the controller.
 
 ## How I Build UniFi Policies
 
@@ -42,7 +44,7 @@ I deleted `Non-tracking` before deleting Secure-V/VLAN 100. I deleted `KASM Lab 
 
 These are the Network Lists in the interface. The API calls them `address-group` and `port-group`, and a policy references one through `ip_group_id` or `port_group_id`.
 
-I verified the six identity groups on 2026-09-07. The table now covers all 22 Network Lists: nine IPv4 address groups and 13 port groups. The [group readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json) includes their IDs and exact members.
+I verified the six identity groups on 2026-09-07, and the [group readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json) includes their IDs and exact members. The table covers all 22 Network Lists the controller returned on 2026-09-16: ten IPv4 address groups and 12 port groups.
 
 | Group | Type | Members |
 |---|---|---|
@@ -55,7 +57,6 @@ I verified the six identity groups on 2026-09-07. The table now covers all 22 Ne
 | Wazuh Ports | Port | 1514, 1515 |
 | App Access | Port | 80, 8000 |
 | Proxmox-Admin-Ports | Port | 22, 8006, 3128 |
-| Portainer Edge Agents | Port | 8000, 9443 |
 | Allow Identity Sync Service Connection-9543 | Port | 9543 |
 | PG-Node-Exporter | Port | 9100, 9101, 9102 |
 | PG-Egress-Web | Port | 80, 443 |
@@ -68,6 +69,7 @@ I verified the six identity groups on 2026-09-07. The table now covers all 22 Ne
 | PG-AD-Client | Port | 53, 88, 123, 135, 389, 445, 464, 636, 3268, 3269, 49152-65535 |
 | PG-Windows-Admin | Port | 22, 3389, 5985, 5986 |
 | PG-Windows-Exporter | Port | 9182 |
+| AG-Automation-Hosts | IPv4 | 192.168.40.179, 192.168.40.39 |
 
 I verified that Wazuh Ports contains exactly 1514 and 1515 and is bound to the identity Wazuh policy. Port groups hold port numbers; the workstation AD policy applies PG-AD-Client over TCP+UDP. The identity web rule uses explicit TCP ports 80,443 and has no PG-Egress-Web binding because the controller rejected a port group with an any-in-zone destination during the earlier preparation. That earlier rejection has no retained capture in this task; I verified the persisted inline selector.
 

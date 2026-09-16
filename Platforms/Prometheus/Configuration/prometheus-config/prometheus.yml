@@ -213,7 +213,6 @@ scrape_configs:
           - https://booklore.alphasecunited.com/
           - https://dashboard.alphasecunited.com/
           - https://forgejo.alphasecunited.com/
-          - https://portainer.alphasecunited.com/
           - https://peanut.alphasecunited.com/
           - https://wazuh.alphasecunited.com/
           - https://grafana.alphasecunited.com/

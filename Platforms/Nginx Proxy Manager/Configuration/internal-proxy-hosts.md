@@ -1,11 +1,11 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-16
 
 On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
-I route 24 enabled internal service names through Nginx Proxy Manager at `192.168.85.2`: the 23 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I verified 23 enabled proxy hosts on 2026-09-16 after retiring Portainer. I route these internal service names through Nginx Proxy Manager at `192.168.85.2`: the 22 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -22,7 +22,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `booklore.alphasecunited.com` | `192.168.40.35:6060` | HTTP | Direct IP access remains available. |
 | `dashboard.alphasecunited.com` | `192.168.40.35:3001` | HTTP | No added NPM authentication. |
 | `forgejo.alphasecunited.com` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
-| `portainer.alphasecunited.com` | `192.168.40.35:9443` | HTTPS | NPM connects to Portainer's existing HTTPS listener. |
+| `dockhand.alphasecunited.com` | `192.168.40.35:3003` | HTTP | Dockhand, proxy host 31. HTTPS login and Hawser WebSockets verified; buffering off, read/send timeouts 3,600 seconds. |
 | `peanut.alphasecunited.com` | `192.168.73.2:8090` | HTTP | Existing application authentication remains in place. |
 | `wazuh.alphasecunited.com` | `192.168.72.2:443` | HTTPS | NPM connects to Wazuh's existing HTTPS listener. |
 | `grafana.alphasecunited.com` | `192.168.73.2:3000` | HTTP | Grafana's domain & root URL use the HTTPS name. |

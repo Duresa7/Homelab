@@ -1,0 +1,91 @@
+[
+  {
+    "host": "docker_main",
+    "adopted": [
+      "dockhand",
+      "booklore",
+      "ollama",
+      "cli-proxy-api",
+      "wud",
+      "immich",
+      "cadvisor",
+      "forgejo",
+      "portainer",
+      "docusaurus",
+      "homelab-dashboard-aio"
+    ],
+    "failed": []
+  },
+  {
+    "host": "docker_blue",
+    "adopted": [
+      "hawser",
+      "docker-mcp-gateway",
+      "wud",
+      "meshcentral",
+      "executor",
+      "portainer-edge-agent",
+      "cadvisor",
+      "rustdesk"
+    ],
+    "failed": []
+  },
+  {
+    "host": "docker_network",
+    "adopted": [
+      "hawser",
+      "wud",
+      "netbird",
+      "portainer-edge-agent",
+      "cadvisor",
+      "nginx-proxy-manager"
+    ],
+    "failed": []
+  },
+  {
+    "host": "monitor_01",
+    "adopted": [
+      "hawser",
+      "wud",
+      "peanut",
+      "monitoring",
+      "cadvisor"
+    ],
+    "failed": []
+  },
+  {
+    "host": "media_01",
+    "adopted": [
+      "hawser",
+      "media-stack",
+      "wud",
+      "portainer-edge-agent",
+      "cadvisor"
+    ],
+    "failed": []
+  },
+  {
+    "host": "alpha_prod_01",
+    "adopted": [
+      "teamspeak-monitor",
+      "hawser",
+      "wud",
+      "playit-agent",
+      "portainer-edge-agent",
+      "cadvisor",
+      "ts3-manager",
+      "teamspeak-03",
+      "teamspeak-02"
+    ],
+    "failed": []
+  },
+  {
+    "host": "security_01",
+    "adopted": [
+      "hawser",
+      "wazuh-mcp-server",
+      "cadvisor"
+    ],
+    "failed": []
+  }
+]

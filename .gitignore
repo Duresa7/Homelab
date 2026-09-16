@@ -297,18 +297,18 @@
 !/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S03-NPM-Proxy-Host-2026-07-28.md
 !/Platforms/Nginx Proxy Manager/Evidence/TS3 Manager Internal HTTPS - 2026-07-28/Logs/S04-Monitoring-and-Final-Verification-2026-07-28.md
 
-!/Platforms/Portainer/Evidence/
-/Platforms/Portainer/Evidence/*
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/
-/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/*
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/
-/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/*
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S01-Preflight-and-Pattern-2026-07-28.md
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S02-Portainer-Registrations-2026-07-28.md
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S03-Agent-Deployment-and-Verification-2026-07-28.md
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S04-docker-blue-Containerd-Failure-2026-07-28.md
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S05-docker-network-Firewall-and-Tunnel-2026-07-28.md
-!/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S06-docker-blue-Runtime-Repair-and-Fleet-Verification-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/
+/Archive/Platforms/Portainer/Evidence/*
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/
+/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/*
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/
+/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/*
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S01-Preflight-and-Pattern-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S02-Portainer-Registrations-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S03-Agent-Deployment-and-Verification-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S04-docker-blue-Containerd-Failure-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S05-docker-network-Firewall-and-Tunnel-2026-07-28.md
+!/Archive/Platforms/Portainer/Evidence/Portainer Edge Agent Fleet Expansion - 2026-07-28/Logs/S06-docker-blue-Runtime-Repair-and-Fleet-Verification-2026-07-28.md
 
 !/Security/Evidence/
 /Security/Evidence/*
@@ -600,3 +600,48 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 # WUD administrator environments and Prometheus scrape credentials.
 admin.env
 /Platforms/Prometheus/Configuration/prometheus-config/wud-passwords/
+
+# Portainer retirement: reviewed structured verification only
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/
+/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/*
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/
+/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/*
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Dockhand-Verification.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Host-Cleanup.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Host-Verification.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Monitoring-Verification.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Network-Changes.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Network-Verification.json
+!/Archive/Platforms/Portainer/Evidence/Retirement - 2026-09-16/Exports/Stack-Removals.json
+
+# Dockhand migration: reviewed structured verification only
+!/Platforms/Dockhand/Evidence/
+/Platforms/Dockhand/Evidence/*
+!/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/
+/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/*
+!/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/Verification.json
+!/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/
+/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/*
+!/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/
+/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/*
+!/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/Dockhand-Update-Results.json
+!/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/Host-Verification.json
+!/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/
+/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/*
+!/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/Update Paths.json
+!/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/
+/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/*
+!/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/
+/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/*
+!/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/Fleet-Update-Checks.json
+!/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/Host-Verification.json
+!/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/Stack-Verification.json
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/
+/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/*
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/
+/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/*
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Image-Push-Verification.json
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Private-Image-Verification.json
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Stack-Imports.json
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Stack-Lifecycle-Verification.json
+!/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Unchanged-Container-Verification.json

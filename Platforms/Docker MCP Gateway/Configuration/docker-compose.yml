@@ -47,7 +47,10 @@ services:
 
   # One shared controller session, behind mcp-proxy on the project network.
   unifi-network:
-    image: homelab/unifi-network-mcp:0.29.3-full-access-proxy
+    build:
+      context: /opt/docker/mcp-gateway
+      dockerfile: Dockerfile.unifi-network
+    image: forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable
     container_name: mcp-unifi-network
     restart: unless-stopped
     init: true
@@ -96,7 +99,10 @@ services:
   # as a remote server on the project network, so every client session shares this one
   # process and no per-session container is started. Not published on any host port.
   ssh-manager:
-    image: homelab/mcp-ssh-manager:latest
+    build:
+      context: /opt/docker/mcp-gateway
+      dockerfile: Dockerfile.ssh-manager
+    image: forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable
     container_name: mcp-ssh-manager
     restart: unless-stopped
     init: true

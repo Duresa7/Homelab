@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: wazuh-mcp-server-local:4.3.0-compat
+    image: forgejo.alphasecunited.com/homelab-images/wazuh-mcp-server:stable
     container_name: wazuh-mcp-server
     restart: unless-stopped
     network_mode: host

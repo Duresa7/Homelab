@@ -1,7 +1,7 @@
 # UniFi Network Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-16
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ This guide follows the network work that supports Galaxy & the hosted platforms:
 
 ## Current Status and Verified Versions
 
-The controller has 22 networks, including 15 routed corporate LANs, and 11 zones. The active records cover VLAN 30 for the DMZ, VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, and VLAN 85 for Access-A. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 29 enabled local DNS entries as of 2026-09-06: 24 NPM names at `192.168.85.2` plus five Proxmox node names on MGMT-A. The same readback returned 68 user-defined firewall policies and 16 reusable Network Lists.
+The controller has 23 networks, including 16 routed corporate LANs, and 12 zones. The active records cover VLAN 30 for the DMZ, VLAN 40 for personal workloads, VLAN 71 for Cluster-Net, VLAN 72 for Security-A, VLAN 73 for MONITOR-A, VLAN 80 for servers, and VLAN 85 for Access-A. Cluster-Net shares the management zone. Security-A and MONITOR-A share the observability zone. UniFi also holds 29 static local DNS records as of 2026-09-16: 23 names at `192.168.85.2` through Nginx Proxy Manager, five Proxmox node names on MGMT-A, and `hq-mgt01.ad.alphasecunited.com` on IDENTITY-A. The same readback returned 86 user-defined firewall policies, 85 of them enabled, and 22 reusable Network Lists.
 
 ## What You Need
 

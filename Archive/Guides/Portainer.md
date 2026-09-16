@@ -1,15 +1,17 @@
 # Portainer Edge Agent Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-16
+
+I retired Portainer on 2026-09-16. This guide preserves the server and the four Edge Agent hosts as they ran; [Dockhand](../../Platforms/Dockhand/README.md) took over container management, and the [retirement record](../Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md) covers the removal and its verification.
 
 ## What This Guide Covers
 
 I connected a Docker host on VLAN 80 to the Portainer server on VLAN 40 with an Edge Agent, then expanded the same pattern to three more hosts. This guide covers both Compose projects, cross-VLAN rules, environment registration, & the checks used after enrollment.
 
-## Current Status and Verified Versions
+## Recorded Status and Verified Versions
 
-Portainer server 2.45.0 runs on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. I verified the server version on 2026-09-06 from the unauthenticated `https://localhost:9443/api/status` response. Four remote hosts run Edge Agent 2.45.0 from `portainer/agent:latest`: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network`. They use `EDGE_INSECURE_POLL=1` across their approved internal paths. The walkthrough below records the 2.39.5 server and pinned 2.39.1 agents I built with on 2026-07-28; the floating tag arrived with the 2026-09-01 Compose reconciliation and the versions have tracked upstream since.
+Portainer server 2.45.0 ran on `docker-main` at `192.168.40.35` with HTTPS on 9443 and the Edge tunnel on 8000. I verified the server version on 2026-09-06 from the unauthenticated `https://localhost:9443/api/status` response. Four remote hosts ran Edge Agent 2.45.0 from `portainer/agent:latest`: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network`. They used `EDGE_INSECURE_POLL=1` across their approved internal paths. The walkthrough below records the 2.39.5 server and pinned 2.39.1 agents I built with on 2026-07-28; the floating tag arrived with the 2026-09-01 Compose reconciliation and the versions tracked upstream until retirement.
 
 ## What You Need
 
@@ -20,7 +22,7 @@ Portainer server 2.45.0 runs on `docker-main` at `192.168.40.35` with HTTPS on 9
 
 ## How the Pieces Fit Together
 
-![Portainer server and Edge Agent across a VLAN boundary](../Assets/Diagrams/portainer.svg)
+![Portainer server and Edge Agent across a VLAN boundary](../../Assets/Diagrams/portainer.svg)
 
 ## Walkthrough
 
@@ -82,7 +84,7 @@ If the agent stays offline, test TCP 8000 and 9443 from the agent, then compare 
 
 ## Known Limits
 
-The agents still use `EDGE_INSECURE_POLL=1`; certificate hardening for that polling path has not been implemented.
+The agents used `EDGE_INSECURE_POLL=1` to the end; certificate hardening for that polling path was never implemented.
 
 ## Source Records
 

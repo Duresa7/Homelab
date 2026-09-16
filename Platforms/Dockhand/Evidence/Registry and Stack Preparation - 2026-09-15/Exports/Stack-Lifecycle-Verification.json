@@ -1,0 +1,44 @@
+[
+  {
+    "host": "alpha-prod-01",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "docker-blue",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "docker-main",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "docker-network",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "media-01",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "monitor-01",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  },
+  {
+    "host": "security-01",
+    "create_deploy_read_save_passed": true,
+    "application_ids_and_states_unchanged": true,
+    "temporary_stack_removed": true
+  }
+]

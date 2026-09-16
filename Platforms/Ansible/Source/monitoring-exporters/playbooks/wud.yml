@@ -12,7 +12,7 @@
 # but not for Docker Hub, where each digest lookup counts against the
 # anonymous pull quota, so the Hub registry is told to watch digests
 # explicitly. Several projects here float on :latest on purpose (Jellyfin,
-# NPM, Grafana, Prometheus, Portainer, NetBird among them) and without this
+# NPM, Grafana, Prometheus, NetBird among them) and without this
 # WUD would report nothing for any of them.
 #
 # Run with -e wud_state=absent to remove it from a host cleanly.

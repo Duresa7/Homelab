@@ -39,7 +39,7 @@ The live run recreated these containers from newer images between 11:43 PM and 1
 | `alpha-prod-01` | `portainer_edge_agent` | Edge Agent 2.45.0 |
 | `monitor-01` | `prometheus`, `grafana`, `pve-exporter` | Prometheus 3.14.0 ready; Grafana 13.2.0 with database `ok` |
 
-The Portainer server and all four Edge Agent endpoints reported operational state. The dedicated [Portainer upgrade record](../../../Portainer/Documentation/Change%20Records/Portainer%202.45.0%20Upgrade%20-%202026-08-31.md) holds that platform's version and endpoint verification.
+The Portainer server and all four Edge Agent endpoints reported operational state. The dedicated [Portainer upgrade record](../../../../Archive/Platforms/Portainer/Documentation/Change%20Records/Portainer%202.45.0%20Upgrade%20-%202026-08-31.md) holds that platform's version and endpoint verification.
 
 ## Verification
 

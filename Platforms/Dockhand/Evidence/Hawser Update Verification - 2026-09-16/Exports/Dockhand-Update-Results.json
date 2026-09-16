@@ -1,0 +1,62 @@
+[
+  {
+    "host": "docker_network",
+    "environment": 3,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:43 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:44 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  },
+  {
+    "host": "monitor_01",
+    "environment": 4,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:46 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:47 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  },
+  {
+    "host": "media_01",
+    "environment": 5,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:48 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:49 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  },
+  {
+    "host": "alpha_prod_01",
+    "environment": 6,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:51 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:51 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  },
+  {
+    "host": "security_01",
+    "environment": 7,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:53 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:54 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  },
+  {
+    "host": "docker_blue",
+    "environment": 2,
+    "updater_exit_code": 0,
+    "updater_started_at": "2026-09-16 04:15:55 AM EDT",
+    "updater_finished_at": "2026-09-16 04:15:56 AM EDT",
+    "dockhand_connection_passed": true,
+    "version": "0.2.48",
+    "agent_image_id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f"
+  }
+]

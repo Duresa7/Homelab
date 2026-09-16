@@ -1,0 +1,29 @@
+name: hawser
+services:
+  hawser:
+    image: ghcr.io/finsys/hawser:latest
+    container_name: hawser
+    labels:
+      dockhand.update: "false"
+    restart: unless-stopped
+    environment:
+      DOCKHAND_SERVER_URL: wss://dockhand.alphasecunited.com/api/hawser/connect
+      TOKEN: ${TOKEN}
+      AGENT_NAME: media-01
+      STACKS_DIR: /opt/docker/hawser/stacks
+    extra_hosts:
+      - "dockhand.alphasecunited.com:192.168.85.2"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker:/opt/docker
+      - /opt/media-stack:/opt/media-stack
+
+  hawser-updater:
+    image: docker:29-cli
+    container_name: hawser-updater
+    profiles: [maintenance]
+    restart: "no"
+    entrypoint: ["/bin/sh", "/opt/docker/hawser/update-hawser.sh"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker:/opt/docker:ro

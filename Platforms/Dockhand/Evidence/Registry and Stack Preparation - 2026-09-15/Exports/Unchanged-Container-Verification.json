@@ -1,0 +1,51 @@
+[
+  {
+    "host": "docker_main",
+    "existing_containers": 16,
+    "current_containers": 16,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "docker_blue",
+    "existing_containers": 12,
+    "current_containers": 12,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "docker_network",
+    "existing_containers": 7,
+    "current_containers": 7,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "monitor_01",
+    "existing_containers": 10,
+    "current_containers": 10,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "media_01",
+    "existing_containers": 12,
+    "current_containers": 12,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "existing_containers": 9,
+    "current_containers": 9,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  },
+  {
+    "host": "security_01",
+    "existing_containers": 3,
+    "current_containers": 3,
+    "ids_start_times_running_unchanged": true,
+    "test_containers_absent": true
+  }
+]

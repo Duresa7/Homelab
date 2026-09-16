@@ -1,0 +1,32 @@
+[
+  {
+    "host": "docker_main",
+    "image": "docusaurus",
+    "native_push_passed": true
+  },
+  {
+    "host": "docker_blue",
+    "image": "mcp-ssh-manager",
+    "native_push_passed": true
+  },
+  {
+    "host": "docker_blue",
+    "image": "unifi-network-mcp",
+    "native_push_passed": true
+  },
+  {
+    "host": "monitor_01",
+    "image": "alert-bot",
+    "native_push_passed": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "image": "teamspeak-monitor",
+    "native_push_passed": true
+  },
+  {
+    "host": "security_01",
+    "image": "wazuh-mcp-server",
+    "native_push_passed": true
+  }
+]
