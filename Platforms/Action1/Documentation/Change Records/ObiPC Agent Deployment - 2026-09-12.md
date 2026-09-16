@@ -17,7 +17,7 @@ Read from the machine over SSH Manager before the install:
 
 ## The agent download URL is a credential
 
-The download URL carries the organisation identifier as a path segment, in the form `https://app.na-2.action1.com/agent/<REDACTED_ACTION1_ORG_ID>/Windows/agent(My_Organization).msi`. Action1's own dialog says no login is required to use it, which is the point: anyone holding that URL can enrol a machine into this organisation. I treat it as withheld under the [publication policy](../../../../Governance/Decisions/0001-publication-policy.md) for the same reason a tunnel identifier is withheld, and it does not appear in this repository.
+The download URL carries the organisation identifier as a path segment, in the form `https://app.na-2.action1.com/agent/<REDACTED_ACTION1_ORG_ID>/Windows/agent(My_Organization).msi`. Action1's own dialog says no login is required to use it, which is the point: anyone holding that URL can enrol a machine into this organisation. I treat it as withheld under my publication policy for the same reason a tunnel identifier is withheld, and it does not appear in this repository.
 
 ## Sequence, all 2026-09-12 Eastern
 
