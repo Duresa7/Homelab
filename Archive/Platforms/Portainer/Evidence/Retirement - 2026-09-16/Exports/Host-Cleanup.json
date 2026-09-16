@@ -1,0 +1,67 @@
+[
+  {
+    "host": "docker_blue",
+    "volumes": [],
+    "images": [
+      "portainer/agent:2.45.0",
+      "portainer/agent:latest",
+      "portainer/agent:2.39.1"
+    ],
+    "directories": [
+      "/opt/docker/portainer-edge-agent"
+    ],
+    "networks": []
+  },
+  {
+    "host": "docker_network",
+    "volumes": [],
+    "images": [
+      "portainer/agent:2.45.0",
+      "portainer/agent:latest",
+      "portainer/agent:2.39.1"
+    ],
+    "directories": [
+      "/opt/docker/portainer-edge-agent"
+    ],
+    "networks": []
+  },
+  {
+    "host": "media_01",
+    "volumes": [],
+    "images": [
+      "portainer/agent:2.45.0",
+      "portainer/agent:latest",
+      "portainer/agent:2.39.1"
+    ],
+    "directories": [
+      "/opt/docker/portainer-edge-agent"
+    ],
+    "networks": []
+  },
+  {
+    "host": "alpha_prod_01",
+    "volumes": [],
+    "images": [
+      "portainer/agent:2.45.0",
+      "portainer/agent:latest",
+      "portainer/agent:2.39.1"
+    ],
+    "directories": [
+      "/opt/docker/portainer-edge-agent"
+    ],
+    "networks": []
+  },
+  {
+    "host": "docker_main",
+    "volumes": [
+      "portainer_data"
+    ],
+    "images": [
+      "portainer/portainer-ce:latest"
+    ],
+    "directories": [
+      "/opt/docker/portainer"
+    ],
+    "networks": []
+  }
+]

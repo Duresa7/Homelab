@@ -12,7 +12,7 @@ HTTP_SERVICES = {
     'forgejo': 'Forgejo', 'grafana': 'Grafana', 'immich': 'Immich',
     'jellyfin': 'Jellyfin', 'mcp': 'Executor', 'mesh': 'MeshCentral',
     'netbird': 'NetBird', 'openwebui': 'Open WebUI', 'peanut': 'PeaNUT',
-    'portainer': 'Portainer', 'prometheus': 'Prometheus', 'prowlarr': 'Prowlarr',
+    'prometheus': 'Prometheus', 'prowlarr': 'Prowlarr',
     'qbittorrent': 'qBittorrent', 'radarr': 'Radarr', 'seerr': 'Seerr',
     'semaphore': 'Semaphore', 'sonarr': 'Sonarr', 'splunk': 'Splunk',
     'ts3-manager': 'TS3 Manager', 'wazuh': 'Wazuh',

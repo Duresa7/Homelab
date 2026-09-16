@@ -1,0 +1,15 @@
+name: dockhand
+services:
+  dockhand:
+    image: fnsys/dockhand:v1.0.48@sha256:63ffc7dd086f5d10506ccf488bcb30ce40401975212fcc1bed9ec891243c9fb4
+    container_name: dockhand
+    restart: unless-stopped
+    ports:
+      - "192.168.40.35:3003:3000"
+    environment:
+      DATA_DIR: /opt/docker/dockhand/data
+      STACKS_DIR: /opt/docker/dockhand/stacks
+      ORIGIN: https://dockhand.alphasecunited.com
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/docker:/opt/docker

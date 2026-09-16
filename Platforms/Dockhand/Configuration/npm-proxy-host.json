@@ -1,0 +1,16 @@
+{
+  "id": 31,
+  "domain_names": [
+    "dockhand.alphasecunited.com"
+  ],
+  "forward_host": "192.168.40.35",
+  "forward_port": 3003,
+  "forward_scheme": "http",
+  "certificate_id": 1,
+  "ssl_forced": true,
+  "allow_websocket_upgrade": true,
+  "http2_support": true,
+  "block_exploits": true,
+  "enabled": true,
+  "advanced_config": "proxy_read_timeout 3600s;\nproxy_send_timeout 3600s;\nproxy_connect_timeout 60s;\nproxy_buffering off;"
+}

@@ -1,0 +1,658 @@
+[
+  {
+    "environment": 6,
+    "containers": 10,
+    "running": 9,
+    "checks": [
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "teamspeak-monitor",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "playit-agent",
+        "imageName": "ghcr.io/playit-cloud/playit-agent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "portainer_edge_agent",
+        "imageName": "portainer/agent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "ts3-manager",
+        "imageName": "joni1802/ts3-manager",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "ts-valorant-03",
+        "imageName": "teamspeak",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "ts-valorant-02",
+        "imageName": "teamspeak",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 2,
+    "containers": 13,
+    "running": 12,
+    "checks": [
+      {
+        "containerName": "mcp-unifi-network",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "mcp-ssh-manager",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "meshcentral",
+        "imageName": "ghcr.io/ylianst/meshcentral:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "docker-mcp-gateway",
+        "imageName": "docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "executor",
+        "imageName": "ghcr.io/usefulsoftwareco/executor-selfhost:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "ssh-manager-mcp-gateway",
+        "imageName": "docker.io/docker/mcp-gateway:v0.43.3@sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "portainer_edge_agent",
+        "imageName": "portainer/agent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hbbs",
+        "imageName": "rustdesk/rustdesk-server:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hbbr",
+        "imageName": "rustdesk/rustdesk-server:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 1,
+    "containers": 16,
+    "running": 16,
+    "checks": [
+      {
+        "containerName": "docusaurus",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/docusaurus:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "dockhand",
+        "imageName": "fnsys/dockhand:v1.0.48",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "mariadb",
+        "imageName": "lscr.io/linuxserver/mariadb:11.4.8",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "open-webui",
+        "imageName": "ghcr.io/open-webui/open-webui:main",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cli-proxy-api",
+        "imageName": "eceasy/cli-proxy-api:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "immich_machine_learning",
+        "imageName": "ghcr.io/immich-app/immich-machine-learning:release-cuda",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "immich_server",
+        "imageName": "ghcr.io/immich-app/immich-server:release",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "ollama",
+        "imageName": "ollama/ollama:0.33.3@sha256:32931b46719f673c05fdbaa81ccb26da18ea4a1c57590a754874ab28ba269eb2",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "immich_postgres",
+        "imageName": "ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0@sha256:bcf63357191b76a916ae5eb93464d65c07511da41e3bf7a8416db519b40b1c23",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "immich_redis",
+        "imageName": "docker.io/valkey/valkey:9@sha256:8e8d64b405ce18f41b8e5ee20aa4687a8ed0022d1298f2ce31cdcf3a76e09411",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "forgejo",
+        "imageName": "codeberg.org/forgejo/forgejo:16",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "portainer_ce",
+        "imageName": "portainer/portainer-ce:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "booklore",
+        "imageName": "ghcr.io/booklore-app/booklore:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "homelab-dashboard",
+        "imageName": "ghcr.io/duresa7/homelab-dashboard-aio:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 3,
+    "containers": 8,
+    "running": 7,
+    "checks": [
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "netbird-server",
+        "imageName": "netbirdio/netbird-server:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "netbird-dashboard",
+        "imageName": "netbirdio/dashboard:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "portainer_edge_agent",
+        "imageName": "portainer/agent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "nginx-proxy-manager",
+        "imageName": "jc21/nginx-proxy-manager:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 5,
+    "containers": 13,
+    "running": 12,
+    "checks": [
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "qbittorrent",
+        "imageName": "lscr.io/linuxserver/qbittorrent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "radarr",
+        "imageName": "lscr.io/linuxserver/radarr:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "sonarr",
+        "imageName": "lscr.io/linuxserver/sonarr:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "prowlarr",
+        "imageName": "lscr.io/linuxserver/prowlarr:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "gluetun",
+        "imageName": "qmcgaw/gluetun:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "flaresolverr",
+        "imageName": "ghcr.io/flaresolverr/flaresolverr:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "jellyfin",
+        "imageName": "jellyfin/jellyfin:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "portainer_edge_agent",
+        "imageName": "portainer/agent:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "jellyseerr",
+        "imageName": "ghcr.io/seerr-team/seerr:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 4,
+    "containers": 11,
+    "running": 10,
+    "checks": [
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "alert-bot",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/alert-bot:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wud",
+        "imageName": "getwud/wud:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "peanut",
+        "imageName": "brandawg93/peanut:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "grafana",
+        "imageName": "grafana/grafana:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "blackbox-exporter",
+        "imageName": "prom/blackbox-exporter:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "nut-exporter",
+        "imageName": "hon95/prometheus-nut-exporter:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "prometheus",
+        "imageName": "prom/prometheus:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "pve-exporter",
+        "imageName": "prompve/prometheus-pve-exporter:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  },
+  {
+    "environment": 7,
+    "containers": 4,
+    "running": 3,
+    "checks": [
+      {
+        "containerName": "hawser-updater",
+        "imageName": "docker:29-cli",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "hawser",
+        "imageName": "ghcr.io/finsys/hawser:latest",
+        "error": null,
+        "updateDisabled": true,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "wazuh-mcp-server",
+        "imageName": "forgejo.alphasecunited.com/homelab-images/wazuh-mcp-server:stable",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      },
+      {
+        "containerName": "cadvisor",
+        "imageName": "ghcr.io/google/cadvisor:latest",
+        "error": null,
+        "updateDisabled": false,
+        "isLocalImage": null,
+        "updateAvailable": null
+      }
+    ],
+    "errors": 0
+  }
+]

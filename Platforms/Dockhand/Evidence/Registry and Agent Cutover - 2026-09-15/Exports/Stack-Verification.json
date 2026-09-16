@@ -1,0 +1,313 @@
+[
+  {
+    "host": "docker_main",
+    "stack": "dockhand",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "booklore",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "ollama",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "cli-proxy-api",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "immich",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "forgejo",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "portainer",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_main",
+    "stack": "docusaurus",
+    "readable": true,
+    "image_references": {
+      "docusaurus": "forgejo.alphasecunited.com/homelab-images/docusaurus:stable"
+    }
+  },
+  {
+    "host": "docker_main",
+    "stack": "homelab-dashboard-aio",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "docker_blue",
+    "stack": "docker-mcp-gateway",
+    "readable": true,
+    "image_references": {
+      "ssh-manager": "forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable",
+      "unifi-network": "forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable"
+    }
+  },
+  {
+    "host": "docker_blue",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "meshcentral",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "executor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "portainer-edge-agent",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_blue",
+    "stack": "rustdesk",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_network",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "docker_network",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_network",
+    "stack": "netbird",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_network",
+    "stack": "portainer-edge-agent",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_network",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "docker_network",
+    "stack": "nginx-proxy-manager",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "monitor_01",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "monitor_01",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "monitor_01",
+    "stack": "peanut",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "monitor_01",
+    "stack": "monitoring",
+    "readable": true,
+    "image_references": {
+      "alert-bot": "forgejo.alphasecunited.com/homelab-images/alert-bot:stable"
+    }
+  },
+  {
+    "host": "monitor_01",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "media_01",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "media_01",
+    "stack": "media-stack",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "media_01",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "media_01",
+    "stack": "portainer-edge-agent",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "media_01",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "teamspeak-monitor",
+    "readable": true,
+    "image_references": {
+      "teamspeak-monitor": "forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable"
+    }
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "wud",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "playit-agent",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "portainer-edge-agent",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "ts3-manager",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "teamspeak-03",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "alpha_prod_01",
+    "stack": "teamspeak-02",
+    "readable": true,
+    "image_references": {}
+  },
+  {
+    "host": "security_01",
+    "stack": "hawser",
+    "readable": true,
+    "image_references": {
+      "hawser": "ghcr.io/finsys/hawser:latest",
+      "hawser-updater": "docker:29-cli"
+    }
+  },
+  {
+    "host": "security_01",
+    "stack": "wazuh-mcp-server",
+    "readable": true,
+    "image_references": {
+      "wazuh-mcp-server": "forgejo.alphasecunited.com/homelab-images/wazuh-mcp-server:stable"
+    }
+  },
+  {
+    "host": "security_01",
+    "stack": "cadvisor",
+    "readable": true,
+    "image_references": {}
+  }
+]

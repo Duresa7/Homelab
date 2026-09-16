@@ -1,9 +1,11 @@
 # UniFi VPNs, Network Lists & Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-16
 
-I track five WireGuard servers, one WireGuard client, one traffic route, 16 reusable Network Lists, and five switch port profiles here. I read the networks, Network Lists, port profiles, and traffic routes back on 2026-09-06.
+I removed the unused Portainer Edge Agents port group on 2026-09-16. The controller now holds 22 Network Lists. That readback also returned the six identity groups and `AG-Automation-Hosts`, none of which this table carried, so I added their rows and the table now matches the controller. The historical VPN verification below is unchanged.
+
+I track five WireGuard servers, one WireGuard client, one traffic route, 22 reusable Network Lists, and five switch port profiles here. I read the networks, port profiles, and traffic routes back on 2026-09-06, and the Network Lists back on 2026-09-16.
 
 ## VPN Servers
 
@@ -46,7 +48,6 @@ Reusable port/address groups referenced by firewall policies.
 | Wazuh Ports | Port group | 1514, 1515 |
 | App Access | Port group | 80, 8000 |
 | Proxmox-Admin-Ports | Port group | 22, 8006, 3128 |
-| Portainer Edge Agents | Port group | 8000, 9443 |
 | Allow Identity Sync Service Connection-9543 | Port group | 9543 |
 | AG-Monitor-Collector | IPv4 address group | 192.168.73.2 |
 | AG-Reverse-Proxy | IPv4 address group | 192.168.85.2 |
@@ -59,6 +60,13 @@ Reusable port/address groups referenced by firewall policies.
 | AG-Galaxy-PXE-Service | IPv4 address group | 192.168.40.36 |
 | PG-Galaxy-PXE-Callback | Port group | 8080 |
 | PG-Printing | Port group | 631, 9100 |
+| AG-Domain-Controllers | IPv4 address group | 192.168.65.10, 192.168.65.11 |
+| AG-Identity-Servers | IPv4 address group | 192.168.65.10, 192.168.65.11, 192.168.65.12 |
+| AG-PAW | IPv4 address group | 192.168.50.241 |
+| AG-Automation-Hosts | IPv4 address group | 192.168.40.179, 192.168.40.39 |
+| PG-AD-Client | Port group | 53, 88, 123, 135, 389, 445, 464, 636, 3268, 3269, 49152-65535 |
+| PG-Windows-Admin | Port group | 22, 3389, 5985, 5986 |
+| PG-Windows-Exporter | Port group | 9182 |
 
 ## Port Profiles
 

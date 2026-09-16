@@ -1,0 +1,7 @@
+{
+  "name": "Homelab Images (Forgejo)",
+  "url": "https://forgejo.alphasecunited.com",
+  "username": "dockhand-images",
+  "password": "<REDACTED_REGISTRY_TOKEN>",
+  "isDefault": false
+}

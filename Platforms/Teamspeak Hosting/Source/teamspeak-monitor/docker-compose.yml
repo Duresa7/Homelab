@@ -11,7 +11,8 @@
 services:
   teamspeak-monitor:
     build: .
-    image: teamspeak-monitor:local
+    image: forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable
+    # Build and publish source changes before checking for registry updates.
     container_name: teamspeak-monitor
     restart: unless-stopped
     network_mode: host

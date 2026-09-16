@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-15
+**Last updated:** 2026-09-16
 
 This inventory maps 13 workload guests after Game 01’s retirement on 2026-09-12. Prometheus has 58 healthy targets after the 2026-09-15 uptime expansion and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I deployed MeshCentral on `docker-blue` on 2026-09-12 as a pilot beside RustDesk; both run on that host until I choose between them. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -27,16 +27,16 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) file version 2.7.21.5, HTTPS 443<br>Active Directory extension 0.86.0<br>DNS extension 2.76.0<br>Entra provisioning agent service running<br>OpenSSH |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6<br>SSH<br>cron |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation; VM display name and guest hostname `ubuntu-dev` | GNOME Shell 50.1<br>GDM 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>SSH |
-| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Portainer<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 9.0.2<br>Wazuh agent 4.14.6 |
-| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
-| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>MeshCentral 1.2.5<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| docker-main | LXC 110 | grey-server | Docker apps | Internal documentation site<br>Immich<br>BookLore<br>Forgejo<br>Homelab Dashboard<br>Dockhand 1.0.48<br>CLI Proxy API<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI `main` / 0.11.3<br>What's Up Docker 9.0.2<br>Wazuh agent 4.14.6 |
+| monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
+| docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>MeshCentral 1.2.5<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
 | app-01 | VM 116 | purple-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
-| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor |
-| alpha-prod-01 | VM 401 | purple-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.48 |
+| alpha-prod-01 | VM 401 | purple-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunkd<br>SC4S |
-| media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Portainer Edge Agent `latest` / 2.45.0<br>Wazuh agent 4.14.6 |
+| media-01 | LXC 842 | red-server | Media automation and playback; request-to-play acquisition verified | Jellyfin<br>Seerr<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr<br>qBittorrent through Gluetun / Proton VPN<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
 
 ## ansible-01
 
@@ -71,6 +71,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | node_exporter | `prometheus-node-exporter` 1.10.2, `192.168.40.179:9100` |
 | SSH | key-based login; host signing key registered on GitHub for verified commits |
 
+## Dockhand management
+
+I replaced Dockge with [Dockhand 1.0.48](../../../Platforms/Dockhand/README.md) on 2026-09-15 at `https://dockhand.alphasecunited.com`. The local Docker socket connects `docker-main`; Hawser Edge 0.2.48 connects `docker-blue`, `docker-network`, `monitor-01`, `media-01`, `alpha-prod-01`, and `security-01`. The initial replacement preserved all 62 existing workloads. The later monitor-only repair recreated `teamspeak-monitor`. Dockhand and six Hawser agents bring the fleet to 64 running containers and 42 visible projects, plus six stopped Hawser updater containers after Portainer retirement on 2026-09-16. All 42 remaining Compose projects are imported for UI editing. The import was not read-only: Dockhand rewrote 11 of the 42 host files into its own JSON form at mode 0600 with `env_file` values resolved inline, and left the other 31 untouched as authored YAML. A file edited through the Dockhand UI loses its comments on the host, so the tracked copies under each platform's `Configuration/` are the authored reference rather than a literal copy of what now sits on disk. I completed the [custom-image and agent cutover](../../../Platforms/Dockhand/Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md): all six custom applications use Forgejo registry images, all seven update checks report zero registry errors, and the updater helpers are ready. I ran all six helpers on 2026-09-16: exit code 0 on every host, 0.2.48 confirmed current, all agents healthy and connected, and all application containers unchanged. [Update verification](../../../Platforms/Dockhand/Documentation/Change%20Records/Hawser%20Update%20Verification%20-%202026-09-16.md). I excluded `app-01` and Coolify. I removed Portainer and all four Edge Agents, their stored data, and their network, automation, and monitoring entries. [Retirement](../../../Archive/Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md).
+
 ## docker-main
 
 | Workload | Details |
@@ -80,13 +84,13 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | BookLore | v2.3.1 from `ghcr.io/booklore-app/booklore:latest`; MariaDB 11.4.8 matches the v2.3.1 release example; both containers healthy after the 2026-09-03 dependency update |
 | Forgejo | 16.0.3 from `codeberg.org/forgejo/forgejo:16`, labelled `wud.tag.include=^[0-9]+$` since 2026-09-03 so What's Up Docker offers only plain numeric tags |
 | Homelab Dashboard | `ghcr.io/Duresa7/homelab-dashboard-aio:latest` |
-| Portainer CE | Server 2.45.0 from `portainer/portainer-ce:latest`, verified 2026-09-01 from the unauthenticated `/api/status` response; local Docker environment plus four Edge Agent 2.45.0 hosts: `alpha-prod-01`, `docker-blue`, `media-01`, & `docker-network` |
+| Dockhand | 1.0.48; hub on TCP 3003; NPM host 31; six Hawser Edge agents; [deployment and verification](../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md) |
 | CLI Proxy API | Version 7.2.149 from `eceasy/cli-proxy-api:latest`; Compose under `/opt/docker/cli-proxy-api`; published internally as `https://aiproxy.alphasecunited.com` |
 | Ollama | 0.33.3 pinned by tag and digest; `qwen3.5:2b` model ID `324d162be6ca` is the only installed model; GTX 1080 Ti at 100% GPU offload; Compose under `/opt/docker/ollama`; API bound to `192.168.40.35:11434` without NPM or WAN publication |
 | Open WebUI | Tracks rolling `main` with `pull_policy: always`; currently reports 0.11.3; authenticated frontend in the Ollama Compose project; internal HTTPS active at `openwebui.alphasecunited.com` through NPM host 28; direct recovery path on `192.168.40.35:3002`; model discovery verified |
 | What's Up Docker | 8.4.0 from `getwud/wud:latest`; Compose under `/opt/docker/wud`; one of the six WUD exporters Prometheus scrapes on 9102 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `021` as `docker-main`, enrolled 2026-09-06. Until that day the host ran 4.14.0-1 with `ossec.conf` still naming `192.168.40.227`, the manager's pre-migration address, so it had never connected to the manager at `192.168.72.2`; see [docker-main Agent Re-enrollment](../../../Platforms/Wazuh/Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) |
-| Project directories | `/opt/docker` holds the ten Compose projects above and nothing else since 2026-09-06, when I removed five container-less leftovers: `wyze-bridge` and `docker-proxy` (empty), `backups` (empty), `nginx-proxy-manager` (a 2026-04-14 tree from before the proxy moved to `docker-network`, including its old certificates), and `docusaurus.prev` (a 2026-08-03 copy of the documentation site project). All 15 containers stayed up and `docusaurus` stayed healthy |
+| Project directories | I added the Dockhand project under `/opt/docker` on 2026-09-15. That directory held ten Compose projects after the cleanup on 2026-09-06, when I removed five container-less leftovers: `wyze-bridge` and `docker-proxy` (empty), `backups` (empty), `nginx-proxy-manager` (a 2026-04-14 tree from before the proxy moved to `docker-network`, including its old certificates), and `docusaurus.prev` (a 2026-08-03 copy of the documentation site project). All 15 containers stayed up and `docusaurus` stayed healthy |
 
 ## monitor-01
 
@@ -114,7 +118,6 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Executor | Self-hosted 1.6.8 from `ghcr.io/usefulsoftwareco/executor-selfhost:latest`, OCI version label read 2026-09-06; Compose under `/opt/docker/executor`; persistent SQLite and key state under `/opt/docker/executor/data`; internal HTTPS at `mcp.alphasecunited.com`; administrator claimed; separate healthy connections for UniFi MCP Gateway with 5 tools, SSH Manager MCP Gateway with 37 tools, and local Wazuh MCP with 41 read-only tools |
 | RustDesk | `hbbs` and `hbbr` using `rustdesk/rustdesk-server:latest` |
 | MeshCentral | 1.2.5 from `ghcr.io/ylianst/meshcentral:latest`, deployed 2026-09-12; Compose under `/opt/docker/meshcentral`; HTTPS on `192.168.40.39:443` only, self-signed `CN=192.168.40.39`; NeDB; four named volumes; no account claimed yet. Pilot running beside RustDesk |
-| Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; environment 7; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-03 |
 | Docker runtime | Docker Engine 29.8.0, containerd 2.3.4, & runc 1.5.1 on 2026-09-06. The 2026-07-28 repair of a containerd 2.2.4 shim panic took the host to 29.6.2 / 2.2.6 / 1.3.6, and ordinary package updates have carried it forward since. Every Debian 13 Docker host reads 29.8.0; `security-01` is on 29.6.2 and `ubuntu-dev` on 29.7.2 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `007` as `docker-blue` |
 
@@ -125,7 +128,6 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
 | NetBird | Management server 0.78.1 and dashboard 2.92.0 under `/opt/docker/netbird`; the management server moved from 0.78.0 to 0.78.1 on 2026-09-04, and on 2026-09-06 the container's own `netbird version` returned 0.78.1 while the dashboard OCI label still read v2.92.0; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
-| Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; environment 9; compose under `/opt/docker/portainer-edge-agent`; UniFi policy `6a68eb3f052792cd2140c9ad` permits only `192.168.85.2` to `192.168.40.35` on TCP 8000 & 9443; endpoint status 1 on 2026-09-03 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
 | Operational status | First peer/VPN path, non-interactive ACME renewal, and bounded logging verified; no further hardening tracked after the 2026-07-12 descope decision |
 
@@ -171,7 +173,6 @@ I verified all eight containers running after the Purple migration on 2026-09-12
 | TS3 Manager | `joni1802/ts3-manager` |
 | TeamSpeak reachability collector | `teamspeak-monitor` from the locally built `teamspeak-monitor:local` image, rebuilt 2026-09-04; runs `collector.py` under `unless-stopped`, reads each server's public SRV record every cycle, and feeds the reachability dashboard; source under [Teamspeak Hosting](../../../Platforms/Teamspeak%20Hosting/Source/teamspeak-monitor/) |
 | Playit agent | `ghcr.io/playit-cloud/playit-agent:latest`, currently release 1.0.10 |
-| Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; one of four remote Edge Agent hosts managed by Portainer server 2.45.0; endpoint status 1 on 2026-09-03 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `006` as `alpha-prod-01` |
 
 ## splunk-siem
@@ -191,7 +192,6 @@ I verified all eight containers running after the Purple migration on 2026-09-12
 | Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr has separate television and anime roots, its synced indexer includes anime category 5070, and Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
 | FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |
 | Download path | LinuxServer qBittorrent `latest` shares `qmcgaw/gluetun:latest` network namespace; Proton WireGuard, kill switch, and provider-side port synchronization verified; qBittorrent rejects the documented 100-pattern executable/script payload baseline for new torrents |
-| Portainer Edge Agent | `portainer/agent:latest`, currently 2.45.0; environment 8; compose under `/opt/docker/portainer-edge-agent`; endpoint status 1 on 2026-09-03 |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `008` as `media-01` |
 | Storage | One 100 GiB local LVM root volume contains configuration, downloads, media, and transcodes |
 | Network | Static `192.168.40.42` on VLAN 40; no gateway inbound port forward |
@@ -216,12 +216,12 @@ On 2026-09-06 `agent_control -l` on `security-01` first listed 15 active remote 
 |---|---:|---|---|---|
 | app-01 | 004 | 4.14.6 | default | Connected, verified 2026-09-11 |
 | edge-01 | 005 | 4.14.5 | default, edge | Active |
-| alpha-prod-01 | 006 | 4.14.6 | default | Active |
-| docker-blue | 007 | 4.14.6 | default | Active |
-| media-01 | 008 | 4.14.6 | default | Active |
+| alpha-prod-01 | 006 | 4.14.6 | default | Active<br>Hawser Edge 0.2.48 |
+| docker-blue | 007 | 4.14.6 | default | Active<br>Hawser Edge 0.2.48 |
+| media-01 | 008 | 4.14.6 | default | Active<br>Hawser Edge 0.2.48 |
 | ansible-01 | 009 | 4.14.6 | default | Active |
-| monitor-01 | 010 | 4.14.6 | default | Active |
-| docker-network | 011 | 4.14.6 | default | Active |
+| monitor-01 | 010 | 4.14.6 | default | Active<br>Hawser Edge 0.2.48 |
+| docker-network | 011 | 4.14.6 | default | Active<br>Hawser Edge 0.2.48 |
 | grey-server | 013 | 4.14.6 | default, proxmox | Active |
 | purple-server | 014 | 4.14.6 | default, proxmox | Active |
 | blue-server | 015 | 4.14.6 | default, proxmox | Active |
@@ -237,14 +237,14 @@ Added 2026-07-25, completed 2026-07-28. Every running Linux guest now exports on
 | Guest | Install method | Service | Endpoint | cAdvisor |
 |---|---|---|---|---|
 | docker-main | Upstream binary (Debian 12 bookworm) | `node_exporter.service` | `192.168.40.35:9100` | 9101, 15 containers, `overlay2` |
-| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 6 containers, `overlayfs` |
-| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 9 containers, `overlayfs` |
-| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 11 containers, `overlayfs` |
-| alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | 9101, 8 containers, `overlayfs` |
+| docker-network | Debian package | `prometheus-node-exporter.service` | `192.168.85.2:9100` | 9101, 6 containers, `overlayfs`<br>Hawser Edge 0.2.48 |
+| docker-blue | Debian package | `prometheus-node-exporter.service` | `192.168.40.39:9100` | 9101, 9 containers, `overlayfs`<br>Hawser Edge 0.2.48 |
+| media-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.42:9100` | 9101, 11 containers, `overlayfs`<br>Hawser Edge 0.2.48 |
+| alpha-prod-01 | Debian package | `prometheus-node-exporter.service` | `192.168.80.118:9100` | 9101, 8 containers, `overlayfs`<br>Hawser Edge 0.2.48 |
 | ansible-01 | Debian package | `prometheus-node-exporter.service` | `192.168.40.36:9100` | No containers |
 | splunk-siem | Upstream binary (Rocky Linux 10.2) | `node_exporter.service` | `192.168.72.3:9100` | Podman, not applicable |
 | app-01 | Pre-existing manual binary, left alone | `node_exporter.service` | `192.168.80.10:9100` | 9101, 7 containers, `overlayfs` |
-| monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 9 containers, `overlayfs` |
+| monitor-01 | Debian package | `prometheus-node-exporter.service` | `192.168.73.2:9100` | 9101, 9 containers, `overlayfs`<br>Hawser Edge 0.2.48 |
 | edge-01 | Manual binary | `node_exporter.service` | `192.168.30.10:9100` | No containers |
 | ubuntu-dev | Ubuntu package | `prometheus-node-exporter.service` | `192.168.40.179:9100` | Not installed |
 

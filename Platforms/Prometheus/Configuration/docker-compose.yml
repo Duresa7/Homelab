@@ -109,7 +109,7 @@ services:
   # is the only cross-VLAN path to this port. /grafana still needs its bearer.
   alert-bot:
     build: ./alert-bot
-    image: alphasecunited/alert-bot:1
+    image: forgejo.alphasecunited.com/homelab-images/alert-bot:stable
     container_name: alert-bot
     restart: unless-stopped
     environment:

@@ -1,0 +1,19 @@
+{
+  "dns_count": 29,
+  "portainer_dns": [],
+  "group_count": 22,
+  "portainer_groups": [],
+  "portainer_rules": [],
+  "npm_web_ports": "2283,3000,3001,3002,3003,6060",
+  "dockhand_dns": {
+    "id": "6aa9de4e25574794b908a860",
+    "key": "dockhand.alphasecunited.com",
+    "value": "192.168.85.2",
+    "record_type": "A",
+    "enabled": true,
+    "ttl": 300,
+    "port": 0,
+    "priority": 0,
+    "weight": 0
+  }
+}

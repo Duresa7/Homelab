@@ -1,15 +1,17 @@
 # My Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-16
 
-I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md), Prometheus has 54 healthy targets, and Wazuh has 15 active remote agents. CT 123 and its 80 GiB root disk, including the game data, are deleted.
+I retired Portainer on 2026-09-16. Its [records are archived](Archive/Platforms/Portainer/README.md) and [Dockhand](Platforms/Dockhand/README.md) took over container management across seven Docker hosts. Prometheus has 57 healthy targets and Wazuh has 15 active remote agents.
+
+I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md). CT 123 and its 80 GiB root disk, including the game data, are deleted.
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
-![UniFi](https://img.shields.io/badge/UniFi-15_routed_LANs,_11_zones-0559C9?logo=ubiquiti&logoColor=white)
+![UniFi](https://img.shields.io/badge/UniFi-16_routed_LANs,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_SIEM-000000?logo=splunk&logoColor=white)
-![Wazuh](https://img.shields.io/badge/Wazuh-16_active_agents-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-54_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
+![Wazuh](https://img.shields.io/badge/Wazuh-15_active_remote_agents-3585BB)
+![Prometheus](https://img.shields.io/badge/Prometheus-57_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
@@ -33,7 +35,7 @@ A version figure in this repository is a point-in-time observation, not a durabl
 
 [![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 22 networks, including 15 routed LAN networks, and enforces policy across 11 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 16 active remote agents, & Prometheus reports 57 targets `UP` across seven jobs. I verified these figures on 2026-09-06, alongside a full audit of the inventory records against the cluster and the controller and the fixes that audit produced.
+Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 23 networks, including 16 routed LAN networks, and enforces policy across 12 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 57 targets `UP` across seven jobs. I verified these figures on 2026-09-16. The earlier 2026-09-06 readback came alongside a full audit of the inventory records against the cluster and the controller, and the fixes that audit produced.
 
 ## Repository layout
 

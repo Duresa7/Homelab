@@ -1,7 +1,11 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-16
+
+On 2026-09-16 I removed Portainer proxy host 14. The 23 remaining proxy hosts retain their shared certificate; Nginx configuration validation passed.
+
+I replaced Dockge proxy host 30 with Dockhand proxy host 31 on 2026-09-15: `dockhand.alphasecunited.com` forwards to `http://192.168.40.35:3003` with certificate 1, Force SSL, HTTP/2, and WebSockets. HTTPS login and all seven environment reads passed. [Replacement record](../Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md).
 
 I added proxy host 29, `mesh.alphasecunited.com`, on 2026-09-13 for MeshCentral on `docker-blue`. It forwards over HTTPS to `192.168.40.39:443` with WebSocket upgrade enabled, and it is the first host here whose backend scheme is HTTPS rather than HTTP. [Record](../MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md).
 
@@ -52,5 +56,5 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 
 - NPM holds fixed address `172.31.85.10`; NetBird trusts only `172.31.85.10/32` as its HTTP proxy.
 - TCP 80, 81, & 443 bind on `192.168.85.2`; no WAN ingress points at the guest.
-- UniFi resolves the 23 internal application names to `192.168.85.2` and permits NPM to their approved backend web ports.
+- UniFi resolves the 22 internal application names to `192.168.85.2` and permits NPM to their approved backend web ports.
 - NPM's `Public` access-list label means no NPM access list is assigned. The new names still have no public DNS record or Internet path.

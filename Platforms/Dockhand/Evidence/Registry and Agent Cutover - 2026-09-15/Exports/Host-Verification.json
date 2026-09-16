@@ -1,0 +1,212 @@
+[
+  {
+    "host": "docker_main",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "docusaurus",
+        "image": "forgejo.alphasecunited.com/homelab-images/docusaurus:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 16,
+    "total_count": 16,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "docusaurus"
+    ],
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "docker_blue",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      },
+      {
+        "container": "mcp-ssh-manager",
+        "image": "forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      },
+      {
+        "container": "mcp-unifi-network",
+        "image": "forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 12,
+    "total_count": 13,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "hawser",
+      "docker-mcp-gateway"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  },
+  {
+    "host": "docker_network",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 7,
+    "total_count": 8,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "hawser"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  },
+  {
+    "host": "monitor_01",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "alert-bot",
+        "image": "forgejo.alphasecunited.com/homelab-images/alert-bot:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      },
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 10,
+    "total_count": 11,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "monitoring",
+      "hawser"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  },
+  {
+    "host": "media_01",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 12,
+    "total_count": 13,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "hawser"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "teamspeak-monitor",
+        "image": "forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "none",
+        "runtime_settings_preserved": true
+      },
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 9,
+    "total_count": 10,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "teamspeak-monitor",
+      "hawser"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  },
+  {
+    "host": "security_01",
+    "status": "complete",
+    "completed": [
+      {
+        "container": "wazuh-mcp-server",
+        "image": "forgejo.alphasecunited.com/homelab-images/wazuh-mcp-server:stable",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      },
+      {
+        "container": "hawser",
+        "image": "ghcr.io/finsys/hawser:latest",
+        "image_id_preserved": true,
+        "running": true,
+        "health": "healthy",
+        "runtime_settings_preserved": true
+      }
+    ],
+    "updater_created_stopped": true,
+    "unrelated_ids_and_start_times_unchanged": true,
+    "running_count": 3,
+    "total_count": 4,
+    "unrelated_unchanged_from_original_baseline": true,
+    "active_compose_matches_approved": [
+      "wazuh-mcp-server",
+      "hawser"
+    ],
+    "all_running_healthchecks_pass": true,
+    "updater_runtime_preflight_passed": true
+  }
+]

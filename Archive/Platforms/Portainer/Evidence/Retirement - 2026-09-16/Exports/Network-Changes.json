@@ -1,0 +1,25 @@
+[
+  {
+    "action": "delete_policy",
+    "id": "69dde0a1a508864f48576830",
+    "success": true
+  },
+  {
+    "action": "delete_policy",
+    "id": "6a68eb3f052792cd2140c9ad",
+    "success": true
+  },
+  {
+    "action": "unifi_delete_firewall_group",
+    "success": true
+  },
+  {
+    "action": "unifi_delete_dns_record",
+    "success": true
+  },
+  {
+    "action": "remove_9443_from_npm",
+    "ports": "2283,3000,3001,3002,3003,6060",
+    "success": true
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "host": "docker_main",
+    "image": "docusaurus",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  },
+  {
+    "host": "docker_blue",
+    "image": "mcp-ssh-manager",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  },
+  {
+    "host": "docker_blue",
+    "image": "unifi-network-mcp",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  },
+  {
+    "host": "monitor_01",
+    "image": "alert-bot",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "image": "teamspeak-monitor",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  },
+  {
+    "host": "security_01",
+    "image": "wazuh-mcp-server",
+    "registry_check_and_pull_recreate_passed": true,
+    "application_ids_and_states_unchanged": true
+  }
+]

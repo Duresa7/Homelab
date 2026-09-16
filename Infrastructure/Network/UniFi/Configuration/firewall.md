@@ -1,7 +1,11 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-16
+
+I removed the two Portainer Edge allow policies on 2026-09-16 and removed TCP 9443 from the NPM-to-docker-main web UI policy. Its remaining ports are 2283, 3000, 3001, 3002, 3003, and 6060. The readback that day returned 86 user-defined policies, split 78 allows to eight blocks, with 85 enabled and no policy name or selector matching Portainer. It also returned two policies this table had never carried, so I added their rows without changing the controller. `Allow Automation to Identity SSH` admits `AG-Automation-Hosts` in Internal to `AG-Identity-Servers` in `AlphaSec-Identity` on TCP 22. `Allow Surface SSH replies to Automation` matches established and related IPv4 TCP replies only, from `192.168.10.211` source port 22 back to `192.168.40.179` and `192.168.40.39`, all in Internal. The second of those was created after the 2026-09-13 count of 85, which is why the total reads 86 rather than the 85 that two removals and two additions would give on their own.
+
+On 2026-09-15 I replaced Dockge with Dockhand. I replaced TCP 5001 with 3003 in `Allow NPM to docker-main web UIs` (`6a60fd2c2d027bb05525a873`) and added narrow TCP 443 allows from `alpha-prod-01` and `security-01` to NPM for Hawser Edge. All seven hosts respond through Dockhand. [Replacement record](../../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md).
 
 At 1:10 AM on 2026-09-13 I added `Allow NPM to docker-blue MeshCentral`, an IPv4 TCP allow from `192.168.85.2` in `AlphaSec-Access` to `192.168.40.39:443` in Internal, with logging and a response companion enabled at creation. It carries MeshCentral's move behind Nginx Proxy Manager at `mesh.alphasecunited.com`. The existing `Allow NPM to docker-blue Executor` covers port 4788 only, so the same pair of hosts needed a second policy. I requested index 10001 and the controller assigned 10006. The user-defined total rose from 84 to 85. [MeshCentral proxy record](../../../../Platforms/MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md).
 
@@ -70,7 +74,6 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
 | `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 5 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
 | `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / 1 MAC | Internal / Management |
-| `Allow A-Servers to Portainer Edge` | Yes | ALLOW | 10000 | All | `AlphaSec-Servers` / Any | Internal / 192.168.40.35 / `Portainer Edge Agents` |
 | `Allow Secure and Secure Client to WAC HTTPS` | Yes | ALLOW | 10003 | TCP | Internal / Secure and Secure Client networks | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3 and Pixel device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow WAC to Secure Client WinRM` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 5985,5986 |
@@ -104,12 +107,14 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
-| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 3002, 6060, 9443 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 3002, 3003, 6060 |
+| `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
+| `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
-| `Allow docker-network to Portainer Edge` | Yes | ALLOW | 10003 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / `Portainer Edge Agents` |
+| `Allow Surface SSH replies to Automation` | Yes | ALLOW | 10000 | TCP (IPv4) | Internal / 192.168.10.211 / source port 22 | Internal / 192.168.40.179, 192.168.40.39 |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
@@ -140,6 +145,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Identity NTP Egress` | Yes | ALLOW | 10001 | UDP | AlphaSec-Identity / Any | External / Any / 123 |
 | `Block Identity Other External Egress` | Yes | BLOCK | 10002 | All | AlphaSec-Identity / Any | External / Any |
 | `Allow Identity to Splunk - Security-A` | Yes | ALLOW | 10001 | TCP+UDP | AlphaSec-Identity / Any | AlphaSec-Observability / 192.168.72.3 / 514 |
+| `Allow Automation to Identity SSH` | Yes | ALLOW | 10002 | TCP | Internal / AG-Automation-Hosts | AlphaSec-Identity / AG-Identity-Servers / 22 |
 
 ## Identity Egress Order, 2026-09-09
 

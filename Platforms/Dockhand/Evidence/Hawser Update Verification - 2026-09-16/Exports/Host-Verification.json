@@ -1,0 +1,102 @@
+{
+  "host_verification": [
+    {
+      "host": "docker_blue",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": false,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    },
+    {
+      "host": "docker_network",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": false,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    },
+    {
+      "host": "monitor_01",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": false,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    },
+    {
+      "host": "media_01",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": false,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    },
+    {
+      "host": "alpha_prod_01",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": false,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    },
+    {
+      "host": "security_01",
+      "application_ids_start_times_images_unchanged": true,
+      "agent_recreated": true,
+      "agent_image_unchanged": true,
+      "agent_version": "0.2.48",
+      "agent_health": "healthy",
+      "updater_status": "exited",
+      "updater_exit_code": 0
+    }
+  ],
+  "registry_verification": [
+    {
+      "host": "docker_blue",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    },
+    {
+      "host": "docker_network",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    },
+    {
+      "host": "monitor_01",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    },
+    {
+      "host": "media_01",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    },
+    {
+      "host": "alpha_prod_01",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    },
+    {
+      "host": "security_01",
+      "running_image_matches_pulled_latest": true,
+      "updater_completion_confirmed": true,
+      "version": "0.2.48"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "prometheus_targets": 57,
+  "healthy_targets": 57,
+  "portainer_target_absent": true,
+  "dashboard_layout_checks": 27,
+  "live_dashboard_queries": {
+    "uptime": 116,
+    "services-uptime": 19,
+    "homelab-overview": 21
+  },
+  "query_errors": 0,
+  "unexpected_empty_queries": 0,
+  "grafana_resource_panels_match_deployed_files": true
+}

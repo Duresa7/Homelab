@@ -1,0 +1,58 @@
+[
+  {
+    "host": "docker_main",
+    "remaining_containers": 15,
+    "running": 15,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "docker_blue",
+    "remaining_containers": 12,
+    "running": 11,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "docker_network",
+    "remaining_containers": 7,
+    "running": 6,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "monitor_01",
+    "remaining_containers": 11,
+    "running": 10,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "media_01",
+    "remaining_containers": 12,
+    "running": 11,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "alpha_prod_01",
+    "remaining_containers": 9,
+    "running": 8,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  },
+  {
+    "host": "security_01",
+    "remaining_containers": 4,
+    "running": 3,
+    "unrelated_containers_unchanged": true,
+    "portainer_resources_absent": true,
+    "all_running_healthchecks_pass": true
+  }
+]
