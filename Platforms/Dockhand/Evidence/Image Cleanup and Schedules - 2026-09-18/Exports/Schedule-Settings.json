@@ -1,0 +1,197 @@
+{
+  "captured_at": "2026-09-18T16:45:30.628655+00:00",
+  "environments": [
+    {
+      "id": 1,
+      "name": "docker-main",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    },
+    {
+      "id": 2,
+      "name": "docker-blue",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    },
+    {
+      "id": 3,
+      "name": "docker-network",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    },
+    {
+      "id": 4,
+      "name": "monitor-01",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    },
+    {
+      "id": 5,
+      "name": "media-01",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    },
+    {
+      "id": 6,
+      "name": "alpha-prod-01",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * 1",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "critical_high"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "both"
+    },
+    {
+      "id": 7,
+      "name": "security-01",
+      "timezone": "America/New_York",
+      "update_check": {
+        "enabled": true,
+        "cron": "0 3 * * *",
+        "autoUpdate": true,
+        "vulnerabilityCriteria": "never"
+      },
+      "image_prune": {
+        "enabled": true,
+        "cronExpression": "0 4 * * 1",
+        "pruneMode": "dangling"
+      },
+      "vulnerability_scanner": "none"
+    }
+  ],
+  "container_auto_updates": [],
+  "recent_executions": [
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T16:30:00.001Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T16:00:00.001Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T15:30:00.000Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T15:00:00.001Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T14:30:00.002Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T14:00:00.003Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T13:30:00.001Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T13:00:00.000Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T12:30:00.000Z",
+      "status": "success"
+    },
+    {
+      "schedule_type": "system_cleanup",
+      "environment_id": null,
+      "entity_name": "Volume helper cleanup",
+      "triggered_at": "2026-09-18T12:00:00.001Z",
+      "status": "success"
+    }
+  ]
+}

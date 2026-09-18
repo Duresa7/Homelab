@@ -1,0 +1,58 @@
+{
+  "server": "security_01",
+  "exit_code": 0,
+  "captured_at": "2026-09-18T16:48:13.934456+00:00",
+  "containers": [
+    {
+      "id": "6b3469805686752acfed1fffd386fc5cb7e5ea2c185c60d7f077ffc6b2a4d232",
+      "name": "cadvisor",
+      "image": "sha256:763aecf1c32c2be8a1a75f9abfc2fc461005c9dbbaa39cb356b354aac1296dbe",
+      "status": "running",
+      "started_at": "2026-09-03T15:01:57.853989213Z",
+      "restart_count": 0,
+      "health": "healthy",
+      "mounts_hash": "63e1f529ca7e4b9367b75366dbd37138ac2a34456489f873ae08b79c291c8722"
+    },
+    {
+      "id": "8d61ae18e1f2686403d7931a61e8acf24feb6d829fe1109f77b4de65645b762c",
+      "name": "hawser",
+      "image": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f",
+      "status": "running",
+      "started_at": "2026-09-16T08:15:54.261074275Z",
+      "restart_count": 0,
+      "health": "healthy",
+      "mounts_hash": "8bee032812367b8d4dbb5b1a74a75f7124dcc043dcf9a079c2bd1db836ac5594"
+    },
+    {
+      "id": "8df24449f2071d6266a73de91fe4f849b09a9c5c2951910f10dba1e086759d31",
+      "name": "hawser-updater",
+      "image": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "status": "exited",
+      "started_at": "2026-09-16T08:15:53.584497051Z",
+      "restart_count": 0,
+      "health": null,
+      "mounts_hash": "089b65553dc9a701ebc451da463ea5f8919a5e988d31613b844368f39bcb2639"
+    },
+    {
+      "id": "060b6981f6c701d57d1c8e8883eb6e0640096da41cca88ff75413798759a21b0",
+      "name": "wazuh-mcp-server",
+      "image": "sha256:b59c1c86ba148008e142c91178843fcb6f737288ea69d956f883fe7f060846bc",
+      "status": "running",
+      "started_at": "2026-09-16T03:24:47.663423801Z",
+      "restart_count": 0,
+      "health": "healthy",
+      "mounts_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ],
+  "mount_order_variants": {
+    "hawser": 6,
+    "hawser-updater": 2,
+    "wazuh-mcp-server": 1,
+    "cadvisor": 120
+  },
+  "previous_hashes_reproduced_by_mount_order_only": {
+    "526b8cf7ed7751e4b36b15ba70e90fcaa7ea289f38507cf785a821ed9bafccb8": true,
+    "e6eb3daeecc5b8023508e300477e8a7215cba649fb731eba9dce55c3f8f57242": true
+  },
+  "both_matched": true
+}

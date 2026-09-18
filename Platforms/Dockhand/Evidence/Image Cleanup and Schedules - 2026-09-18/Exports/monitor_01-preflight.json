@@ -1,0 +1,99 @@
+{
+  "captured_at": "2026-09-18T16:45:05.955126+00:00",
+  "docker_version": "29.8.0",
+  "snapshot": {
+    "container_count": 11,
+    "running_count": 10,
+    "containers": [
+      {
+        "name": "alert-bot",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "blackbox-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "grafana",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "nut-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "peanut",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "prometheus",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "pve-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "79246ffd0d8a03b31869fcc2cfd1076da9d71900f4f0380de6991621d1f4da30",
+    "volume_count": 4,
+    "volume_definitions_hash": "ac40a11d4197f115c8545b3fcc42201a67ae4e9d984677c84dd9e79a54f235e6",
+    "tagged_images_count": 21,
+    "tagged_images_hash": "89b9fd64340a5573e8eee81a3372e2b40e6f5fe2759fb362871448ac349d9029",
+    "dangling_images": [
+      {
+        "id": "sha256:3765bc5b7303cf6c80d89ecfb41e3a9c2767729826e080be963c48f43b4ee150",
+        "size": 390732667,
+        "created": "2026-09-03T11:49:48.395170702Z",
+        "tags": [
+          "getwud/wud:8.4.0"
+        ],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+        "size": 236821513,
+        "created": "2026-09-15T23:35:18.553230883Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:f772d434e8fab0049deb2b1b30abd43342bcfca1537614aa8d36080232cf4283",
+        "size": 1909014946,
+        "created": "2026-08-28T16:39:41Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      }
+    ]
+  },
+  "server": "monitor_01"
+}

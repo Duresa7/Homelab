@@ -1,0 +1,221 @@
+{
+  "server": "docker_network",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:47:20.144997+00:00",
+  "finished_at": "2026-09-18T16:47:24.861100+00:00",
+  "before": {
+    "container_count": 7,
+    "running_count": 6,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "netbird-dashboard",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "netbird-server",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "nginx-proxy-manager",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "fb44e0663ffae671b2980e21eeba34a359272c0d4355e923a995f7983265c65b",
+    "volume_count": 3,
+    "volume_definitions_hash": "d339d9c358ed419ee810e435e7060c129383811d73167e9c595291fe6a62f6b5",
+    "tagged_images_count": 12,
+    "tagged_images_hash": "1bd7ece661166186f32fdb02352ea8ace1bf2f78c02acf1c6a5d7f5f66377582",
+    "dangling_image_count": 8
+  },
+  "after": {
+    "container_count": 7,
+    "running_count": 6,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "netbird-dashboard",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "netbird-server",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "nginx-proxy-manager",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "fb44e0663ffae671b2980e21eeba34a359272c0d4355e923a995f7983265c65b",
+    "volume_count": 3,
+    "volume_definitions_hash": "d339d9c358ed419ee810e435e7060c129383811d73167e9c595291fe6a62f6b5",
+    "tagged_images_count": 12,
+    "tagged_images_hash": "1bd7ece661166186f32fdb02352ea8ace1bf2f78c02acf1c6a5d7f5f66377582",
+    "dangling_image_count": 1
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 24154763264,
+    "docker_usage": [
+      {
+        "Active": "7",
+        "Reclaimable": "2.237GB (38%)",
+        "Size": "5.789GB",
+        "TotalCount": "17",
+        "Type": "Images"
+      },
+      {
+        "Active": "6",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "112.3MB",
+        "TotalCount": "7",
+        "Type": "Containers"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "0B (0%)",
+        "Size": "78.85MB",
+        "TotalCount": "3",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "0",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 25770717184,
+    "docker_usage": [
+      {
+        "Active": "7",
+        "Reclaimable": "739MB (17%)",
+        "Size": "4.174GB",
+        "TotalCount": "10",
+        "Type": "Images"
+      },
+      {
+        "Active": "6",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "112.3MB",
+        "TotalCount": "7",
+        "Type": "Containers"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "0B (0%)",
+        "Size": "78.85MB",
+        "TotalCount": "3",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "0",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:3086534361a18573b85897383a0753a97b8c75d68dee9926fbd7eccab1f2fe89",
+      "exit_code": 0,
+      "stdout_hash": "6c59bea7083c6d7169011faeb82d2ebf715e3ad5002ad586f28243ca32a2951b",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:6b3df5d07cbcf8fb81a6a18bb99fadb220e66a554c0e0fe71cd17a93c15769b1",
+      "exit_code": 0,
+      "stdout_hash": "8646d057323de60174ad34ae1818076285e98e129fd8a2505da4fed5f331fa3f",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "exit_code": 0,
+      "stdout_hash": "e2c1b3e01935eef8cfe99077169fef2ed4631bb862b99df220e89a2fb2baf3a0",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:c676e314bb8b07da9c670db6d4f5a1be678c2287e20e1a627b09b698ca5aa82d",
+      "exit_code": 0,
+      "stdout_hash": "0cd8154608de411a8cd4f5960c0d4d7d848056f586d59456782b3386227165b1",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:dc30cc0f36001dd70e167d2b06b051eaabf8d8930bbf10dde106fe3d06aa9083",
+      "exit_code": 0,
+      "stdout_hash": "052de890830543cbe179af3e4cd2d8bd9ae104563e459b03aee2714e272e045c",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:e71f39cefcd90956d818dc4179084fd47d39f0741d1211b818ec640766b5794d",
+      "exit_code": 0,
+      "stdout_hash": "1ea7a22263c3e0df922f855e41e07b37f5b8242bd1cf61cae2a957dd3e92b5fd",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:f3eb26c93ca9901a7385e88e12f6ad98d04e075e8817c664d73557fea123875f",
+      "exit_code": 0,
+      "stdout_hash": "d99a8b1b6f265838ee0ebd03515ebd34ef81ae1c3aaf098f08de1fb2a997d6eb",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

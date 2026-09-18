@@ -1,0 +1,391 @@
+{
+  "server": "docker_main",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:46:45.846698+00:00",
+  "finished_at": "2026-09-18T16:46:56.154526+00:00",
+  "before": {
+    "container_count": 15,
+    "running_count": 15,
+    "containers": [
+      {
+        "name": "booklore",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cli-proxy-api",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "dockhand",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docusaurus",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "forgejo",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "homelab-dashboard",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_machine_learning",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_postgres",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_redis",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_server",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mariadb",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "ollama",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "open-webui",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "68a641432d356bb8e0a836d3df4e7027856a34e7a75657ab91fd456ba62b12ca",
+    "volume_count": 6,
+    "volume_definitions_hash": "3189a0679a760252af4c218188e75d6fc75cbd9d2f1704f015c175973b83a1e6",
+    "tagged_images_count": 27,
+    "tagged_images_hash": "a153cc2da15b67ad75f9d89dec5ed808a7b0a3edb334262f8d8b57e7ed82c5e7",
+    "dangling_image_count": 25
+  },
+  "after": {
+    "container_count": 15,
+    "running_count": 15,
+    "containers": [
+      {
+        "name": "booklore",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cli-proxy-api",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "dockhand",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docusaurus",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "forgejo",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "homelab-dashboard",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_machine_learning",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_postgres",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_redis",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_server",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mariadb",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "ollama",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "open-webui",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "68a641432d356bb8e0a836d3df4e7027856a34e7a75657ab91fd456ba62b12ca",
+    "volume_count": 6,
+    "volume_definitions_hash": "3189a0679a760252af4c218188e75d6fc75cbd9d2f1704f015c175973b83a1e6",
+    "tagged_images_count": 27,
+    "tagged_images_hash": "a153cc2da15b67ad75f9d89dec5ed808a7b0a3edb334262f8d8b57e7ed82c5e7",
+    "dangling_image_count": 3
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 39159783424,
+    "docker_usage": [
+      {
+        "Active": "15",
+        "Reclaimable": "14.87GB (39%)",
+        "Size": "37.62GB",
+        "TotalCount": "50",
+        "Type": "Images"
+      },
+      {
+        "Active": "15",
+        "Reclaimable": "0B (0%)",
+        "Size": "174.1MB",
+        "TotalCount": "15",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "595.9kB (0%)",
+        "Size": "9.718GB",
+        "TotalCount": "6",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "2.028GB",
+        "Size": "2.046GB",
+        "TotalCount": "54",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 47714877440,
+    "docker_usage": [
+      {
+        "Active": "15",
+        "Reclaimable": "9GB (30%)",
+        "Size": "29.72GB",
+        "TotalCount": "28",
+        "Type": "Images"
+      },
+      {
+        "Active": "15",
+        "Reclaimable": "0B (0%)",
+        "Size": "174.1MB",
+        "TotalCount": "15",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "595.9kB (0%)",
+        "Size": "9.718GB",
+        "TotalCount": "6",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "2.043GB",
+        "Size": "2.046GB",
+        "TotalCount": "54",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:1295f3807b9c5ede99e83dd829f710756f8c427ab7f7dec63f186c1e77a33401",
+      "exit_code": 0,
+      "stdout_hash": "2640e050a3190e2137933215f952f0b1d4c9c6ffc2913e238fc99c10bafb0bfe",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:1cbeee7666b9849dba2d4815b2ed6b4da14e4fb17647290de73daf489371592e",
+      "exit_code": 0,
+      "stdout_hash": "a4eb354896560b0733e7241d0a3799fe20db461f10c070f17fcbab10f54cf255",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:22b1f4ca4642685d3c9411132a5b7c4684efa2008fcc8674a26f58fa3c61c4ff",
+      "exit_code": 0,
+      "stdout_hash": "7657e47f06b9e0682e3f6a2cadc29a327cfa0f6436796adcaa1b148671b22f16",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:319ca283b97b54e97e13a892e4ff47b6b2681de0b45b9b19f3a6aa2fe50963c9",
+      "exit_code": 0,
+      "stdout_hash": "e0c61c21d89bc4d21cbac213ebe3cce7f13ff7ff7517ee6701896082912767b3",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:431580f0dc29c1aa52e5b16983ca6c24df0dfd2778863fd343e09ddf169c5ad4",
+      "exit_code": 0,
+      "stdout_hash": "526a3238a2f97d04350b30ac14a202efdcf8d229ef58257bee5107d869e88fe6",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:49147810b507c3408877b9187a73c68d61d65405d776f4aa5727a46d6f5bd0a9",
+      "exit_code": 0,
+      "stdout_hash": "39b4287386b07a2685d85e600b8f8d8d55a85e7be9a47ad8753453ec910553f2",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:49298b63af7d7049732036bccdef98a6268b4df72e312532d33159f99e83f7ab",
+      "exit_code": 0,
+      "stdout_hash": "45ed8b70f0578348fe8c5b3a5ba54d62626740d77f5c9a924d58105014da4ff0",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:4b452421e71e8c6e37bf547d22e294d600fc034525b0d05fcf751e7074feb19e",
+      "exit_code": 0,
+      "stdout_hash": "15d8c325809e5d4904f9aa5e6b17a279a1fa5552f1c72af56e2539cec6ccb2a8",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:6acd702586954e1f5716dd1e5b063074d8be0ae2a6d136b3ddf902d7304b293c",
+      "exit_code": 0,
+      "stdout_hash": "135e6a88e135d45d7e325e8205813dd64eab4fef7755cf0015affee5409b595f",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:742fe12f71df25db19c5148d280ed8b2264ae07b60743bdf7dc28b4e44db1e1d",
+      "exit_code": 0,
+      "stdout_hash": "3b8e4dfeea251c2f9b929f8aa5781738d9e3f42edb930c2f5a621f1927c1e8ae",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:7463dcfe88b6b2cb03b9d6c60c2f614ab680e86ea0d2c3ddac1c0b24ddd0602c",
+      "exit_code": 0,
+      "stdout_hash": "628f1ab810a898f606e34bc8fe231753ed60d63c499a74ebdb80e0557e9015bc",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:7cb874b6878d1a539328fa947200bfae55d8af78a3884209a99733eef7d0d970",
+      "exit_code": 0,
+      "stdout_hash": "e5b4a86f446caff3f8c4497a522d311b72026309d497f88b0cc917578bf35707",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:86a9b06ef82525cd385caaa029b5fb21e8206ddf12a5441e66e9dec4348609c7",
+      "exit_code": 0,
+      "stdout_hash": "91a9decad5c1f5b6f852bd7654aa9f6ac8edd531e5ecf72b5870dd4ef98e55a0",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:8c6b230769c61601016067d898e76271a27069d42c51b4aa708fce8ef7c865e7",
+      "exit_code": 0,
+      "stdout_hash": "a13a85ccb1f5b9048e38b75b98f63abd5a5af363a8192043afcd6af50c97c4f5",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:ae8bb6e44633226ad9cad36acf922521b1b2b060ba5ae9c4bf8129b55c36fa68",
+      "exit_code": 0,
+      "stdout_hash": "bc5db806d24431944080294c4c02c1c4f0088ed7f0af0223fc7a12ca61b6fa8c",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:af4a28807ed90bc9345a65c644da77e6f2ec63aa5ca83339b28fe079947c656b",
+      "exit_code": 0,
+      "stdout_hash": "15baa161e93e40e37a8090f616c8fb4d4275fe72da3845b1a3d5ac4902abf91a",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:be26dc26896a81fa6a3d44afef76807f0cbdd1d3fa64ac0fefe46b9801ed37a5",
+      "exit_code": 0,
+      "stdout_hash": "68efcb3cb6f64398d5a80532f0ad0d8cf340eae729efe3b7f6a1236e84eb450f",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:d9db6a7ac1c083a14e89f7893a7d6494e8fc2accc8e2ef375aa30e2435cd5a7a",
+      "exit_code": 0,
+      "stdout_hash": "38f8a570c820129b4594efed6ae957cb191fb54bf397ad79f085b0a78c3834fd",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:e171c3e1f7e6f3f5daa0e78c085958410adeb21982f7f153c58c9f49f5a60d8d",
+      "exit_code": 0,
+      "stdout_hash": "e8c2875273377128d9d2eaca6ebbe17a6a81dcef46e2e4a58158f96bc3a36e16",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:f02d6cf97a7f3fdace01407e840bb6600acd94fa592d05134e71726d93aaaf8b",
+      "exit_code": 0,
+      "stdout_hash": "24985637161daf406da7941126212b7ab8a4140a2a239e1e8c6d8ad7d5a177ad",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:fa3dd90e8ab63ca4385691ad80e960671f1b11eea788244eab80da003727c59b",
+      "exit_code": 0,
+      "stdout_hash": "4518040dfc3bbd3d3bfa4601170b9fc12241250f8d740cbc68da7276612e2ab5",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:fb24cd9c39e0adc4ef755bcf688bf897cb7a8a98fb3ccb3b5f976e7d92234232",
+      "exit_code": 0,
+      "stdout_hash": "fe3b1ae5ad70344c64b0168bec3b0741b804f008013dc2f80f9bd5b5d5fb0411",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

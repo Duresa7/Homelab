@@ -1,0 +1,148 @@
+{
+  "server": "security_01",
+  "exit_code": 2,
+  "started_at": "2026-09-18T16:47:43.550580+00:00",
+  "finished_at": "2026-09-18T16:47:44.697093+00:00",
+  "before": {
+    "container_count": 4,
+    "running_count": 3,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "exited",
+        "health": null
+      },
+      {
+        "name": "wazuh-mcp-server",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "e6eb3daeecc5b8023508e300477e8a7215cba649fb731eba9dce55c3f8f57242",
+    "volume_count": 1,
+    "volume_definitions_hash": "9a4ed95183f01d91db844771831906ab2abd1e8806bab2e93e5d00eb6f47b719",
+    "tagged_images_count": 9,
+    "tagged_images_hash": "8c871a4af169cf38097ebb3c9657439018657239858f56b1a902fe9c4b7a3e1a",
+    "dangling_image_count": 0
+  },
+  "after": {
+    "container_count": 4,
+    "running_count": 3,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "exited",
+        "health": null
+      },
+      {
+        "name": "wazuh-mcp-server",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "526b8cf7ed7751e4b36b15ba70e90fcaa7ea289f38507cf785a821ed9bafccb8",
+    "volume_count": 1,
+    "volume_definitions_hash": "9a4ed95183f01d91db844771831906ab2abd1e8806bab2e93e5d00eb6f47b719",
+    "tagged_images_count": 9,
+    "tagged_images_hash": "8c871a4af169cf38097ebb3c9657439018657239858f56b1a902fe9c4b7a3e1a",
+    "dangling_image_count": 0
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 70027522048,
+    "docker_usage": [
+      {
+        "Active": "4",
+        "Reclaimable": "118.9kB (0%)",
+        "Size": "804.4MB",
+        "TotalCount": "6",
+        "Type": "Images"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "16.38kB (22%)",
+        "Size": "73.73kB",
+        "TotalCount": "4",
+        "Type": "Containers"
+      },
+      {
+        "Active": "1",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "1",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "37.34MB",
+        "Size": "75MB",
+        "TotalCount": "27",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 70027522048,
+    "docker_usage": [
+      {
+        "Active": "4",
+        "Reclaimable": "118.9kB (0%)",
+        "Size": "804.4MB",
+        "TotalCount": "6",
+        "Type": "Images"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "16.38kB (22%)",
+        "Size": "73.73kB",
+        "TotalCount": "4",
+        "Type": "Containers"
+      },
+      {
+        "Active": "1",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "1",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "37.34MB",
+        "Size": "75MB",
+        "TotalCount": "27",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [],
+  "checks": {
+    "containers_unchanged": false,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

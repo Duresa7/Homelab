@@ -1,0 +1,99 @@
+{
+  "captured_at": "2026-09-18T16:45:05.916157+00:00",
+  "docker_version": "29.8.0",
+  "snapshot": {
+    "container_count": 9,
+    "running_count": 8,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "playit-agent",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "teamspeak-monitor",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-02",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-03",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts3-manager",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "5ff4d8d68381b84373030957af82208fb1838a30d1eb804fa85ab704c2af19c9",
+    "volume_count": 4,
+    "volume_definitions_hash": "0437f905467620d2d406c01af9b8dbf3d23825b2aca30d1acc781435c5f5a8a6",
+    "tagged_images_count": 19,
+    "tagged_images_hash": "a7a847834afd036f76e13b7138332220b2334cbc1bae95aa67b4bde7266d7c8a",
+    "dangling_images": [
+      {
+        "id": "sha256:15acbc64c92f57ef1fd8dd203791fa7f70a14707e60ee494132f26b5ca265c6b",
+        "size": 47367285,
+        "created": "2026-06-22T19:53:07.447891631Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:3765bc5b7303cf6c80d89ecfb41e3a9c2767729826e080be963c48f43b4ee150",
+        "size": 390724475,
+        "created": "2026-09-03T11:49:48.395170702Z",
+        "tags": [
+          "getwud/wud:8.4.0"
+        ],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+        "size": 236821513,
+        "created": "2026-09-15T23:35:18.553230883Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:c1c8b926298206da5fc5344420466655ac6b0c94282d40e38d1103123953c88f",
+        "size": 323991827,
+        "created": "2026-09-14T07:27:01.163334935Z",
+        "tags": [
+          "ghcr.io/finsys/hawser:0.2.48"
+        ],
+        "used_by_container": false,
+        "prune_excluded": false
+      }
+    ]
+  },
+  "server": "alpha_prod_01"
+}
