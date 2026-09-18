@@ -1,0 +1,47 @@
+Target: app-01 (SSH Manager profile app_01)
+Capture timestamp: 2026-09-18 12:13:29 PM EDT
+Purpose: Follow-up verification after the Coolify 4.3.23 update.
+
+COMMAND
+python3 - <<'PY'
+import datetime,json,subprocess,urllib.request
+from zoneinfo import ZoneInfo
+print('Captured:',datetime.datetime.now(ZoneInfo('America/New_York')).strftime('%Y-%m-%d %I:%M:%S %p %Z'))
+print('Target: app-01')
+req=urllib.request.Request('https://api.github.com/repos/coollabsio/coolify/releases/latest',headers={'User-Agent':'Coolify-version-check'})
+with urllib.request.urlopen(req,timeout=15) as response:
+ release=json.load(response)
+print('LATEST_RELEASE',release['tag_name'],release['prerelease'])
+for n in ['coolify','coolify-db','coolify-redis','coolify-realtime','coolify-proxy','coolify-sentinel','cadvisor']:
+ c=json.loads(subprocess.check_output(['docker','inspect','--type','container',n],text=True))[0]
+ labels=c['Config'].get('Labels') or {}
+ print(json.dumps({'name':n,'image':c['Config']['Image'],'health':c['State'].get('Health',{}).get('Status'),'status':c['State']['Status'],'restarts':c['RestartCount'],'compose_files':labels.get('com.docker.compose.project.config_files')}))
+print(subprocess.check_output(['docker','exec','coolify-proxy','traefik','version'],text=True).strip())
+for path in ['/login','/api/health']:
+ result=subprocess.run(['curl','-s','-o','/dev/null','-w','%{http_code}','--max-time','10','http://127.0.0.1:8000'+path],capture_output=True,text=True)
+ print('HTTP',path,result.stdout,'curl_exit',result.returncode)
+PY
+
+STDOUT
+Captured: 2026-09-18 12:13:29 PM EDT
+Target: app-01
+LATEST_RELEASE v4.3.23 False
+{"name": "coolify", "image": "docker.io/coollabsio/coolify:4.3.23", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/data/coolify/source/docker-compose.yml,/data/coolify/source/docker-compose.prod.yml"}
+{"name": "coolify-db", "image": "postgres:15-alpine", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/data/coolify/source/docker-compose.yml,/data/coolify/source/docker-compose.prod.yml"}
+{"name": "coolify-redis", "image": "redis:7-alpine", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/data/coolify/source/docker-compose.yml,/data/coolify/source/docker-compose.prod.yml"}
+{"name": "coolify-realtime", "image": "docker.io/coollabsio/coolify-realtime:1.0.19", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/data/coolify/source/docker-compose.yml,/data/coolify/source/docker-compose.prod.yml"}
+{"name": "coolify-proxy", "image": "traefik:v3.7", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/data/coolify/proxy/docker-compose.yml"}
+{"name": "coolify-sentinel", "image": "docker.io/coollabsio/sentinel:1.0.1", "health": "healthy", "status": "running", "restarts": 0, "compose_files": null}
+{"name": "cadvisor", "image": "ghcr.io/google/cadvisor:latest", "health": "healthy", "status": "running", "restarts": 0, "compose_files": "/opt/docker/cadvisor/docker-compose.yml"}
+Version:      3.7.12
+Codename:     langres
+Go version:   go1.26.7
+Built:        2026-08-26T13:34:26Z
+OS/Arch:      linux/amd64
+HTTP /login 200 curl_exit 0
+HTTP /api/health 200 curl_exit 0
+
+STDERR
+(empty)
+
+EXIT CODE: 0
