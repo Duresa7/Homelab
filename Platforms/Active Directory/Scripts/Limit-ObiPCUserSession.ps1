@@ -58,8 +58,16 @@ function Write-Line {
 function Get-InteractiveSession {
     # query.exe is the only reliable way to see the state of a session, which
     # matters because a disconnected or locked session should not spend budget.
-    $raw = & query.exe user 2>$null
-    if (-not $raw -or $raw.Count -lt 2) { return @() }
+    # With $ErrorActionPreference = 'Stop', query.exe writing "No User exists for *"
+    # to stderr (nobody signed in) becomes a terminating NativeCommandError and the
+    # whole tick dies with exit code 1. Relax the preference around the call only.
+    $raw = $null
+    $previous = $ErrorActionPreference
+    try {
+        $ErrorActionPreference = 'Continue'
+        $raw = & query.exe user 2>$null
+    } finally { $ErrorActionPreference = $previous }
+    if ($LASTEXITCODE -ne 0 -or -not $raw -or $raw.Count -lt 2) { return @() }
 
     $sessions = @()
     foreach ($line in $raw[1..($raw.Count - 1)]) {

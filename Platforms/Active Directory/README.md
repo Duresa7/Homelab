@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-18
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. This is a new forest built on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06, and none of those older records describe this build.
 
@@ -18,7 +18,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |
 | Member server | `HQ-MGT01` at `192.168.65.12` (VM 303) in `OU=Management,OU=Servers` |
 | Windows Admin Center | [Gateway on HQ-MGT01](../Windows%20Admin%20Center/README.md), file version `2.7.21.5`, HTTPS 443; five shared connections and AD/DNS extensions verified, browser sign-in confirmed 2026-09-12; all five WAC target queries and elevated Kerberos HTTPS sessions verified |
-| Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined and Microsoft Entra hybrid joined 2026-09-11. Both in `OU=Standard,OU=Workstations` |
+| Workstations | `HQ-WS001` at `192.168.65.20` (VM 310), Windows 11 Pro 25H2, activated 2026-09-10, Microsoft Entra hybrid joined 2026-09-10; `ObiPC`, physical, Secure Client VLAN 60 by DHCP, Windows 11 Pro 25H2, joined and Microsoft Entra hybrid joined 2026-09-11, Windows reinstalled and rejoined to the same computer and device objects 2026-09-18. Both in `OU=Standard,OU=Workstations` |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
 | DNS zones | `ad.alphasecunited.com` (domain scope), `_msdcs.ad.alphasecunited.com` (forest scope), `65.168.192.in-addr.arpa` (forest scope). All primary, AD-integrated, secure dynamic update only |
@@ -80,17 +80,19 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
-- `IK-user` is pinned to `OBIPC` by `userWorkstations` and carries `logonHours` of 7 AM to 11 PM as a backstop to the ObiPC session-limit task. Widen `userWorkstations` before that account can use any other domain machine. Review the ObiPC AppLocker Script audit log before enforcing that collection, and decide the OneDrive per-user path exception. See [ObiPC Restricted User Setup](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md).
+- `IK-user` is pinned to `OBIPC` by `userWorkstations` and carries `logonHours` of 7 AM to 11 PM. Those hours were the backstop to the ObiPC session-limit task, which I removed on 2026-09-18 after the rebuild; the hours now stand alone and are the only sign-in window control left. Widen `userWorkstations` before that account can use any other domain machine. Review the ObiPC AppLocker Script audit log before enforcing that collection, and decide the OneDrive per-user path exception. See [ObiPC Restricted User Setup](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md).
 
 - I still need to observe my first elevation as `DK-user` on ObiPC after the 2026-09-11 group change, following a sign-out and sign-in.
 - Hybrid identity is proven end to end as of 2026-09-10: `IK-user`, `AH-user` and `testuser` are in the tenant on Business Basic, `HQ-WS001` is Microsoft Entra hybrid joined, and `testuser` signs in to Microsoft 365 with its directory password. `testuser` was rotated off the break-glass value at 5:13 PM on 2026-09-10; the other four shared-password accounts and `PSO-Admins` are still in their testing state, listed in [Shared Test Password and Admin Policy Relaxation - 2026-09-10](Documentation/Change%20Records/Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). My own account `DK-user@alphasecunited.com` is on the directory by soft match since 10:50 PM on 2026-09-10, with its Business Premium seat and mailbox intact and its administrative roles moved to the cloud-only `DK-admin@alphasecunited.com`; mailbox and `HQ-WS001` sign-ins both verified and the record closed; see [Owner Account Soft Match - 2026-09-10](Documentation/Change%20Records/Owner%20Account%20Soft%20Match%20-%202026-09-10.md). See also [Cloud Sync Configuration and First Cycle - 2026-09-10](Documentation/Change%20Records/Cloud%20Sync%20Configuration%20and%20First%20Cycle%20-%202026-09-10.md).
 - Neither controller audits credential-validation failures (`Credential Validation` is `Success` only), so a lockout leaves no 4776 trail. Add failure auditing.
 - OpenSSH Server will not install on `HQ-WS001`. `Add-WindowsCapability` leaves the capability `NotPresent` and `Get-WindowsCapability -Online` hangs while the servicing stack is busy. Outbound HTTPS from that machine works, so it is not a network path problem. The workstation is therefore not in SSH Manager and is managed through the QEMU guest agent.
 - Future WAC targets need WinRM HTTPS, trusted certificates, and delegation from HQ-MGT01 as part of onboarding; the existing administrative group policies cover servers and workstations in their scoped OUs.
-- `ObiPC` carries the [Action1 agent](../Action1/README.md) since 2026-09-12, version 6.0.664.1, so software deployment for that machine has a console. It is not Intune managed and the two products overlap on software deployment.
+- `ObiPC` carried the [Action1 agent](../Action1/README.md) from 2026-09-12, version 6.0.664.1, so software deployment for that machine had a console. The 2026-09-18 operating system reinstall removed it and the Deployer on `HQ-MGT01` pushed it back the same evening once I lifted the console exclusion on `ObiPC`. It is not Intune managed and the two products overlap on software deployment.
 - Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
+
+- [ObiPC Rebuild and Rejoin - 2026-09-18](Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md): Windows reinstalled on `ObiPC` after a corruption, rejoined by offline join with `/reuse` against the existing object, SSH Manager host keys replaced, and everything that lived on the disk restored by hand: time zone, Chrome, Visual Studio Code, Remote Desktop scope, and `C:\Dev`; the session-limit task came back with a fix for idle-machine ticks and was then removed by decision the same evening, and the Action1 Deployer pushed the agent back once its exclusion was lifted.
 
 - [Domain Machine RDP Enablement - 2026-09-12](Documentation/Change%20Records/Domain%20Machine%20RDP%20Enablement%20-%202026-09-12.md): Remote Desktop enabled on all five domain machines with Network Level Authentication required, host firewall sources scoped, and three UniFi allow policies into `AlphaSec-Identity`. Interactive sign-on proven on `HQ-WS001`; the other four are verified to the port and logon-right level only. Targets are addressed by IP.
 

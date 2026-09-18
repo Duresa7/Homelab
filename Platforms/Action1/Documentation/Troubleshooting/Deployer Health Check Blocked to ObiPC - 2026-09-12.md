@@ -1,7 +1,7 @@
 # Deployer Health Check Blocked to ObiPC
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12  
+**Last updated:** 2026-09-18  
 **Investigated:** 2026-09-12
 
 Action1 Deployer's routine agent health check against `ObiPC` fails on every cycle because UniFi's intrusion prevention blocks the remote service control call that carries it. The failure is real and recurring, not alert noise. No fix is applied yet.
@@ -56,6 +56,16 @@ I considered and rejected opening the IPS path so the health check succeeds. Rem
 
 Every cycle in the same log also records `Agent deployment failed on HQ-DC01.ad.alphasecunited.com. Access is denied.(5)` and the same for `HQ-DC02`. That is the open domain-controller enrollment item in the [deployment record](../Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md) and the root [TODO](../../../../TODO.md), not a new problem.
 
-## Verification still owed
+## Applied, found on 2026-09-18
 
-Nothing is fixed yet, so nothing is verified. Once the console exclusion is saved, the checks are: the Deployer log stops naming `ObiPC` in its health-check cycle, UniFi returns no new intrusion-prevention block from `192.168.65.12` to `192.168.60.102` over a period longer than one cycle, and the console still shows `ObiPC` Connected.
+The exclusion was applied the same night and this record was not updated at the time. On 2026-09-18 I read `a1config.json` on `HQ-MGT01` back while working out why the Deployer had not reinstalled the agent after the [ObiPC rebuild](../../../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md): `exclude_computers_list` is `ObiPC.ad.alphasecunited.com`, `exclude_computers_list_enabled` is `1`, the three class exclusions are still `0`, and the file was written at 11:43:58 PM on 2026-09-12, which is the console pushing the saved scope down. The Deployer log for 2026-09-18 bears it out: each cycle enumerates `ObiPC` with the other four computers and then queues agent operations for the other four only, and the day's log has no health-check, install, or `MarkedForInstall` line for `ObiPC` at all.
+
+The side effect is the reason I found it. With `ObiPC` excluded, the Deployer will never reinstall the agent there. I expected that lifting the exclusion would not help either, because the install uses remote service control across the same VLAN 65 to VLAN 60 path, and I was wrong: I removed `ObiPC` from the exclusion list at 6:58 PM on 2026-09-18, the Deployer picked the change up the same second, and installed the agent in five seconds, share created, package copied, update service created, *installed successfully* at 6:58:21 PM, with the agent registered to the cloud by 6:58:20 PM. So the push path is not blocked, or not blocked reliably; the blocked signature is on the health check's service-manager query, which is a different call from the install.
+
+I could not read the intrusion-prevention side of the 6:58 PM install from the controller: both the legacy IPS event endpoint and the alarm list, archived included, returned nothing at all for the last hours, so they are not where this controller version reports blocks. The Discord `UniFi - Intrusion detection blocked` rule is the working observable. With `ObiPC` back in scope the health check runs again every cycle, about 55 minutes apart, so if the block still fires the hourly message returns from the next cycle after 6:58 PM. If it does, the exclusion goes back on in the console, now that the agent is installed and polling the cloud on its own; if it stays quiet for a few cycles, the exclusion is not needed and the 2026-09-12 finding no longer holds.
+
+## Verification
+
+Of the three checks below, the first is met by the 2026-09-18 log readback. I have not re-read the UniFi block count or the console state since the rebuild, and the console record is stale until the agent is reinstalled.
+
+Written on 2026-09-12, before the fix was applied: Once the console exclusion is saved, the checks are: the Deployer log stops naming `ObiPC` in its health-check cycle, UniFi returns no new intrusion-prevention block from `192.168.65.12` to `192.168.60.102` over a period longer than one cycle, and the console still shows `ObiPC` Connected.

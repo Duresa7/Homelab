@@ -1,9 +1,9 @@
 # PC Specifications: ObiPC
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-18
 
-ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` domain. It has an 8-core Ryzen 7 7700X, 32 GB of DDR5, an RTX 3070, a 1 TB and a 500 GB NVMe drive, and a 2.5 Gbps Ethernet adapter. Read from the machine over SSH on 2026-09-11.
+ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` domain. It has an 8-core Ryzen 7 7700X, 32 GB of DDR5, an RTX 3070, a 1 TB and a 500 GB NVMe drive, and a 2.5 Gbps Ethernet adapter. Read from the machine over SSH on 2026-09-11. The operating system was reinstalled on 2026-09-18 after a corruption I did not diagnose; the hardware rows below still hold, and the rows the reinstall changed say so.
 
 ## System Overview
 
@@ -21,9 +21,9 @@ ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` 
 | Property | Value |
 |---|---|
 | OS | Microsoft Windows 11 Pro, 25H2, build 26200 |
-| Installed | 2026-09-11 |
+| Installed | 2026-09-18, a clean reinstall of the same edition; first installed 2026-09-11 |
 | Activation | Licensed |
-| Firmware | UEFI, Secure Boot on since 2026-09-11 (Standard mode, Microsoft keys); off at install |
+| Firmware | UEFI, Secure Boot on since 2026-09-11 (Standard mode, Microsoft keys); off at the first install, on for the 2026-09-18 reinstall |
 | TPM | AMD firmware TPM 2.0, version 6.32 |
 
 ## Processor (CPU)
@@ -64,7 +64,7 @@ Both modules report the same slot label to Windows; the second row is the second
 
 | Disk | Capacity | Type | Bus | Health | Use |
 |---|---|---|---|---|---|
-| Samsung SSD 980 1TB | 932 GB | SSD | NVMe | Healthy | `C:`, Windows, 867 GB free after install |
+| Samsung SSD 980 1TB | 932 GB | SSD | NVMe | Healthy | `C:`, Windows, 867 GB free after the 2026-09-11 install and 865 GB free after the 2026-09-18 reinstall |
 | Crucial P310 500GB (`CT500P310SSD8`) | 466 GB | SSD | NVMe | Healthy | `D:` `Storage`, empty |
 
 ## Network
@@ -76,4 +76,4 @@ Both modules report the same slot label to Windows; the second row is the second
 
 ## Management
 
-OpenSSH Server, key only, reached as `local-obipc` from SSH Manager as server `obipc`. The local account's password is in my password manager; the built-in `Administrator` password is managed by Windows LAPS and retrieved with `Get-LapsADPassword -Identity OBIPC -AsPlainText`. The build is recorded in [ObiPC Workstation Join - 2026-09-11](../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md).
+OpenSSH Server, key only, reached as `local-obipc` from SSH Manager as server `obipc`. The local account's password is in my password manager; the built-in `Administrator` password is managed by Windows LAPS and retrieved with `Get-LapsADPassword -Identity OBIPC -AsPlainText`. The build is recorded in [ObiPC Workstation Join - 2026-09-11](../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md) and the rebuild in [ObiPC Rebuild and Rejoin - 2026-09-18](../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md).

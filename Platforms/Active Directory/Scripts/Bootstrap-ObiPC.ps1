@@ -3,7 +3,8 @@ Bootstrap-ObiPC.ps1
 Created: 2026-09-11
 Machine: ObiPC, physical Windows 11 Pro end-user workstation, Secure Client (VLAN 60).
 Copy of Bootstrap-Workstation.ps1 with the computer name filled in. Kept as the record of exactly
-what ran on this machine.
+what ran on this machine. Ran 2026-09-11 on the first install and again 2026-09-18 after the
+operating system was reinstalled; unchanged between the two runs.
 
 Run once, as Administrator, on the freshly installed machine, from an elevated PowerShell:
     Set-ExecutionPolicy -Scope Process Bypass -Force
