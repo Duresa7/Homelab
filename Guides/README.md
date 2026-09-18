@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-18
 
 This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
 
@@ -33,7 +33,7 @@ The original records still own the facts. A guide explains the path; its Source 
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
 | [Prometheus](Prometheus.md) | Prometheus 3.14.0, 57 targets across seven jobs verified 2026-09-06, config validation, reload behavior, & exact target checks |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
-| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 16 active remote agents verified 2026-09-06, manager checks, dashboard state, & recovery |
+| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 15 active remote agents verified 2026-09-18, manager checks, dashboard state, & recovery |
 | [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, agent group file monitoring, malware detection built twice, CIM mapping, & the one-page dashboard |
 
 ## Archived & Retired Guides

@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-18
 
 - [x] **Restore app-01 Wazuh manager connectivity.** On September 11 I repaired the manager hash-refresh restart and verified app-01 connected after its Purple migration. [Evidence and context](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md).
 
@@ -49,5 +49,5 @@ None.
 | [NetBird](Platforms/Netbird/Documentation/TODO.md) | No open items after the 2026-07-12 descope |
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Open WebUI became the 24th proxy host on 2026-09-05 |
 | [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | No open items; provider state and the authenticated model list are verified, and the deployment moved to `docker-main` on 2026-08-19 |
-| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Twenty-four Grafana alert rules deliver to `#bots` through the Discord alert bot, coloured by class, with update alerts announced once and resolved once; 54 targets, after What's Up Docker joined on 2026-09-02, the Open WebUI probe on 2026-09-05 and Game 01's retirement on 2026-09-12. The inert Grafana WAL setting is gone from the host. UniFi gateway metrics. Prometheus uses `restart: always` after Docker's manual-stop flag caused `unless-stopped` to skip the 2026-08-10 boot |
+| [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Twenty-four Grafana alert rules deliver to `#bots` through the Discord alert bot, coloured by class, with update alerts announced once and resolved once; 57 targets, after What's Up Docker joined on 2026-09-02, the Open WebUI probe on 2026-09-05, Game 01's retirement on 2026-09-12, the uptime expansion on 2026-09-15 and Portainer's retirement on 2026-09-16. The inert Grafana WAL setting is gone from the host. UniFi gateway metrics. Prometheus uses `restart: always` after Docker's manual-stop flag caused `unless-stopped` to skip the 2026-08-10 boot |
 | [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Alerts forwarded to Splunk, file-integrity monitoring widened, and malware detection added 2026-08-30. Phase two of FIM covers the other 14 agents. Four Wazuh searches alert through Splunk to Discord as of 2026-09-03; no active response, by decision. Central stack upgraded to 4.14.7 on 2026-08-04. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5. `docker-main`'s 4.14.0 agent turned out on 2026-09-06 to be pointed at the pre-migration manager address and had never connected; I re-enrolled it as `021` on 4.14.6 the same day, so the fleet is 16 active remote agents. The clock deviation is fixed. |
