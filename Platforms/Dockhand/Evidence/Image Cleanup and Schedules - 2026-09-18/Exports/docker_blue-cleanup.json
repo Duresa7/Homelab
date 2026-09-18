@@ -1,0 +1,241 @@
+{
+  "server": "docker_blue",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:47:15.328365+00:00",
+  "finished_at": "2026-09-18T16:47:19.901055+00:00",
+  "before": {
+    "container_count": 12,
+    "running_count": 11,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docker-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "executor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "hbbr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hbbs",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "mcp-ssh-manager",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mcp-unifi-network",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "meshcentral",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ssh-manager-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "fdcf2bbf9abae328b27427ce204bf3ad68948ddd93724a06e6f7b9e777010082",
+    "volume_count": 9,
+    "volume_definitions_hash": "f73596e6cfe0833490a1753d9b50c1f85b43e3de610997946999d1d4e1261fa0",
+    "tagged_images_count": 22,
+    "tagged_images_hash": "eded282d03adaf7656a13da67376596e5842041c3c4a68c69c5970ea69dc2334",
+    "dangling_image_count": 4
+  },
+  "after": {
+    "container_count": 12,
+    "running_count": 11,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docker-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "executor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "hbbr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hbbs",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "mcp-ssh-manager",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mcp-unifi-network",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "meshcentral",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ssh-manager-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "fdcf2bbf9abae328b27427ce204bf3ad68948ddd93724a06e6f7b9e777010082",
+    "volume_count": 9,
+    "volume_definitions_hash": "f73596e6cfe0833490a1753d9b50c1f85b43e3de610997946999d1d4e1261fa0",
+    "tagged_images_count": 22,
+    "tagged_images_hash": "eded282d03adaf7656a13da67376596e5842041c3c4a68c69c5970ea69dc2334",
+    "dangling_image_count": 2
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 6707998720,
+    "docker_usage": [
+      {
+        "Active": "10",
+        "Reclaimable": "1.824GB (32%)",
+        "Size": "5.554GB",
+        "TotalCount": "20",
+        "Type": "Images"
+      },
+      {
+        "Active": "11",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "12.95MB",
+        "TotalCount": "12",
+        "Type": "Containers"
+      },
+      {
+        "Active": "9",
+        "Reclaimable": "0B (0%)",
+        "Size": "114.4MB",
+        "TotalCount": "9",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "208.8MB",
+        "Size": "1.149GB",
+        "TotalCount": "52",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 7150592000,
+    "docker_usage": [
+      {
+        "Active": "10",
+        "Reclaimable": "1.327GB (26%)",
+        "Size": "5.057GB",
+        "TotalCount": "18",
+        "Type": "Images"
+      },
+      {
+        "Active": "11",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "12.95MB",
+        "TotalCount": "12",
+        "Type": "Containers"
+      },
+      {
+        "Active": "9",
+        "Reclaimable": "0B (0%)",
+        "Size": "114.4MB",
+        "TotalCount": "9",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "481.3MB",
+        "Size": "1.149GB",
+        "TotalCount": "52",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:16ba8e8d546b05ea37f485b3c76f940b3bf0862d473198346d4eae6a4dc3175d",
+      "exit_code": 0,
+      "stdout_hash": "bafa92a0e2499412df4463d24ddc11a84200926a4aefd958272c4d06f9ca0e82",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "exit_code": 0,
+      "stdout_hash": "e2c1b3e01935eef8cfe99077169fef2ed4631bb862b99df220e89a2fb2baf3a0",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "captured_at": "2026-09-18T16:45:05.902774+00:00",
+  "docker_version": "29.8.0",
+  "snapshot": {
+    "container_count": 12,
+    "running_count": 11,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docker-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "executor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "hbbr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hbbs",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "mcp-ssh-manager",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mcp-unifi-network",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "meshcentral",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ssh-manager-mcp-gateway",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "fdcf2bbf9abae328b27427ce204bf3ad68948ddd93724a06e6f7b9e777010082",
+    "volume_count": 9,
+    "volume_definitions_hash": "f73596e6cfe0833490a1753d9b50c1f85b43e3de610997946999d1d4e1261fa0",
+    "tagged_images_count": 22,
+    "tagged_images_hash": "eded282d03adaf7656a13da67376596e5842041c3c4a68c69c5970ea69dc2334",
+    "dangling_images": [
+      {
+        "id": "sha256:16ba8e8d546b05ea37f485b3c76f940b3bf0862d473198346d4eae6a4dc3175d",
+        "size": 504396320,
+        "created": "2026-09-03T18:57:47.956784351Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:3765bc5b7303cf6c80d89ecfb41e3a9c2767729826e080be963c48f43b4ee150",
+        "size": 390728571,
+        "created": "2026-09-03T11:49:48.395170702Z",
+        "tags": [
+          "getwud/wud:8.4.0"
+        ],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+        "size": 236821513,
+        "created": "2026-09-15T23:35:18.553230883Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:c8dd83a5dba8ac992dfe1ded4aa65ae4e7f52ec31fddbe2af5b49ffebe5bbfa7",
+        "size": 428106338,
+        "created": "2026-08-30T05:36:50.028414744Z",
+        "tags": [
+          "ghcr.io/usefulsoftwareco/executor-selfhost@sha256:c8dd83a5dba8ac992dfe1ded4aa65ae4e7f52ec31fddbe2af5b49ffebe5bbfa7"
+        ],
+        "used_by_container": false,
+        "prune_excluded": false
+      }
+    ]
+  },
+  "server": "docker_blue"
+}

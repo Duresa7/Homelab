@@ -650,3 +650,26 @@ admin.env
 !/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Stack-Imports.json
 !/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Stack-Lifecycle-Verification.json
 !/Platforms/Dockhand/Evidence/Registry and Stack Preparation - 2026-09-15/Exports/Unchanged-Container-Verification.json
+
+# Reviewed image-cleanup evidence and execution script
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/
+/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/*
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/cleanup.py
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/
+/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/*
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_main-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_main-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_blue-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_blue-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_network-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_network-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/monitor_01-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/monitor_01-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/media_01-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/media_01-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/alpha_prod_01-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/alpha_prod_01-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/security_01-preflight.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/security_01-cleanup.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/Schedule-Settings.json
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/security_01-mount-order-verification.json

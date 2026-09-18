@@ -1,0 +1,293 @@
+{
+  "captured_at": "2026-09-18T16:45:05.801906+00:00",
+  "docker_version": "29.8.0",
+  "snapshot": {
+    "container_count": 15,
+    "running_count": 15,
+    "containers": [
+      {
+        "name": "booklore",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "cli-proxy-api",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "dockhand",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "docusaurus",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "forgejo",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "homelab-dashboard",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_machine_learning",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_postgres",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_redis",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "immich_server",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "mariadb",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "ollama",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "open-webui",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "68a641432d356bb8e0a836d3df4e7027856a34e7a75657ab91fd456ba62b12ca",
+    "volume_count": 6,
+    "volume_definitions_hash": "3189a0679a760252af4c218188e75d6fc75cbd9d2f1704f015c175973b83a1e6",
+    "tagged_images_count": 27,
+    "tagged_images_hash": "a153cc2da15b67ad75f9d89dec5ed808a7b0a3edb334262f8d8b57e7ed82c5e7",
+    "dangling_images": [
+      {
+        "id": "sha256:1295f3807b9c5ede99e83dd829f710756f8c427ab7f7dec63f186c1e77a33401",
+        "size": 1290000248,
+        "created": "2026-07-14T21:11:47.04038893Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:178719aeb38df6f0ce8edc1d8320008379fcf04eb3444e76419cc98d9861e331",
+        "size": 755756304,
+        "created": "2025-10-07T12:09:13.605869304Z",
+        "tags": [],
+        "used_by_container": true,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:1cbeee7666b9849dba2d4815b2ed6b4da14e4fb17647290de73daf489371592e",
+        "size": 62719933,
+        "created": "2026-08-03T04:00:42.744097357Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:22b1f4ca4642685d3c9411132a5b7c4684efa2008fcc8674a26f58fa3c61c4ff",
+        "size": 184699329,
+        "created": "2026-07-15T09:13:14.110671693Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:2a5d0462221131b2313d838e99c30cf4190a5207236f065b246acd11ae718e85",
+        "size": 5462370756,
+        "created": "2026-09-03T17:04:13.963556691Z",
+        "tags": [],
+        "used_by_container": true,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:319ca283b97b54e97e13a892e4ff47b6b2681de0b45b9b19f3a6aa2fe50963c9",
+        "size": 65315022,
+        "created": "2026-08-08T16:31:30.177751057Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:431580f0dc29c1aa52e5b16983ca6c24df0dfd2778863fd343e09ddf169c5ad4",
+        "size": 62720391,
+        "created": "2026-08-03T03:55:15.562612701Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:49147810b507c3408877b9187a73c68d61d65405d776f4aa5727a46d6f5bd0a9",
+        "size": 65312109,
+        "created": "2026-08-03T12:00:26.606711376Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:49298b63af7d7049732036bccdef98a6268b4df72e312532d33159f99e83f7ab",
+        "size": 4849557901,
+        "created": "2026-07-27T18:23:39.791331157Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:4b452421e71e8c6e37bf547d22e294d600fc034525b0d05fcf751e7074feb19e",
+        "size": 62720364,
+        "created": "2026-08-03T03:52:01.447151447Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:6acd702586954e1f5716dd1e5b063074d8be0ae2a6d136b3ddf902d7304b293c",
+        "size": 190489691,
+        "created": "2026-08-10T14:56:36.866176474Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:742fe12f71df25db19c5148d280ed8b2264ae07b60743bdf7dc28b4e44db1e1d",
+        "size": 65281537,
+        "created": "2026-08-09T16:35:47.947186553Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:7463dcfe88b6b2cb03b9d6c60c2f614ab680e86ea0d2c3ddac1c0b24ddd0602c",
+        "size": 65179778,
+        "created": "2026-08-20T02:58:02.471546477Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:7cb874b6878d1a539328fa947200bfae55d8af78a3884209a99733eef7d0d970",
+        "size": 112534682,
+        "created": "2025-08-14T23:38:00.801633023Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:86a9b06ef82525cd385caaa029b5fb21e8206ddf12a5441e66e9dec4348609c7",
+        "size": 754324994,
+        "created": "2025-07-23T21:04:20.550084367Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:8c6b230769c61601016067d898e76271a27069d42c51b4aa708fce8ef7c865e7",
+        "size": 2175100725,
+        "created": "2026-07-29T14:25:43.334912945Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:ae8bb6e44633226ad9cad36acf922521b1b2b060ba5ae9c4bf8129b55c36fa68",
+        "size": 2173981845,
+        "created": "2026-07-15T14:37:46.443037797Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:af4a28807ed90bc9345a65c644da77e6f2ec63aa5ca83339b28fe079947c656b",
+        "size": 62720008,
+        "created": "2026-08-03T04:03:26.204143075Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:be26dc26896a81fa6a3d44afef76807f0cbdd1d3fa64ac0fefe46b9801ed37a5",
+        "size": 145357868,
+        "created": "2026-07-13T22:13:05.0479682Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:d49bf19b0eff47e3b6d9a264fdb5eff4ac55de54d343e7fa7244a0f3f16b668d",
+        "size": 114110333,
+        "created": "2026-07-14T22:47:26.967704976Z",
+        "tags": [],
+        "used_by_container": true,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:d9db6a7ac1c083a14e89f7893a7d6494e8fc2accc8e2ef375aa30e2435cd5a7a",
+        "size": 191978255,
+        "created": "2026-09-03T13:32:17.066036509Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:e171c3e1f7e6f3f5daa0e78c085958410adeb21982f7f153c58c9f49f5a60d8d",
+        "size": 193350833,
+        "created": "2026-09-13T15:43:46.67481623Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:f02d6cf97a7f3fdace01407e840bb6600acd94fa592d05134e71726d93aaaf8b",
+        "size": 192784760,
+        "created": "2026-08-20T05:30:48.748576922Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:fa3dd90e8ab63ca4385691ad80e960671f1b11eea788244eab80da003727c59b",
+        "size": 1751327349,
+        "created": "2026-09-10T16:04:02.904137762Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      },
+      {
+        "id": "sha256:fb24cd9c39e0adc4ef755bcf688bf897cb7a8a98fb3ccb3b5f976e7d92234232",
+        "size": 4511081747,
+        "created": "2026-09-10T16:02:56.949702563Z",
+        "tags": [],
+        "used_by_container": false,
+        "prune_excluded": false
+      }
+    ]
+  },
+  "server": "docker_main"
+}

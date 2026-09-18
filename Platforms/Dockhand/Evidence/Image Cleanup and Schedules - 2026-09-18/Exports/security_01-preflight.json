@@ -1,0 +1,37 @@
+{
+  "captured_at": "2026-09-18T16:45:05.906026+00:00",
+  "docker_version": "29.6.2",
+  "snapshot": {
+    "container_count": 4,
+    "running_count": 3,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "exited",
+        "health": null
+      },
+      {
+        "name": "wazuh-mcp-server",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "e6eb3daeecc5b8023508e300477e8a7215cba649fb731eba9dce55c3f8f57242",
+    "volume_count": 1,
+    "volume_definitions_hash": "9a4ed95183f01d91db844771831906ab2abd1e8806bab2e93e5d00eb6f47b719",
+    "tagged_images_count": 9,
+    "tagged_images_hash": "8c871a4af169cf38097ebb3c9657439018657239858f56b1a902fe9c4b7a3e1a",
+    "dangling_images": []
+  },
+  "server": "security_01"
+}

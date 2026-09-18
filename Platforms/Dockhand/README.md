@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-18
 
 I run Dockhand 1.0.48 on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com). After retiring Portainer on 2026-09-16, I verified seven connected Docker hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers. Dockhand and six Hawser 0.2.48 agents manage the remaining applications.
 
@@ -51,6 +51,12 @@ Dockhand's own update check passed with no error. Its self-update flow is in Set
 
 On 2026-09-16 I ran all six updater helpers through Dockhand. Each exited with code 0; every agent matched the pulled `latest` image at 0.2.48 and passed the connection test. Only security-01's agent was recreated, with unchanged image contents. All application containers remained unchanged. The helpers are stopped in `exited` state and can be started again. [Update verification](Documentation/Change%20Records/Hawser%20Update%20Verification%20-%202026-09-16.md).
 
+## Schedules and image cleanup
+
+On 2026-09-18 I verified the live schedules. Six environments check and automatically apply image updates daily at 3:00 AM Eastern without a vulnerability scanner. alpha-prod-01 checks and automatically updates on Mondays at 3:00 AM, uses both scanners, and blocks updates with critical or high vulnerabilities. All seven environments prune dangling images on Mondays at 4:00 AM. Each uses `America/New_York`. I did not change these settings or test a scheduled update during this verification.
+
+I also removed 57 reviewed untagged, unused images and measured a 23.97 GB increase in available filesystem space. All 70 containers, 30 volume definitions, and tagged image references were preserved; all 64 running containers stayed running. I excluded images with tags or container references even when Docker listed them as dangling. [Cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md).
+
 ## Records
 
 - [Dockge replacement and verification](Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md)
@@ -59,3 +65,4 @@ On 2026-09-16 I ran all six updater helpers through Dockhand. Each exited with c
 - [Login alignment and update-path verification](Documentation/Change%20Records/Login%20Alignment%20and%20Update%20Verification%20-%202026-09-15.md)
 - [Private registry and editable stack preparation](Documentation/Change%20Records/Registry%20and%20Stack%20Preparation%20-%202026-09-15.md)
 - [Registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md)
+- [Image cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md)

@@ -1,0 +1,361 @@
+{
+  "server": "media_01",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:47:29.048271+00:00",
+  "finished_at": "2026-09-18T16:47:40.640830+00:00",
+  "before": {
+    "container_count": 12,
+    "running_count": 11,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "flaresolverr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "gluetun",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "jellyfin",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "jellyseerr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "prowlarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "qbittorrent",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "radarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "sonarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "15d320bd9cff1dc786632ac2b3955cae0d8a2b8b4a11328c94918199b61f16d3",
+    "volume_count": 3,
+    "volume_definitions_hash": "4456d75d1a7599deb40a7f8b8e91cfbebb0661459fde15610ca581844a865a4b",
+    "tagged_images_count": 17,
+    "tagged_images_hash": "176bf02fd4c61d81af9904740a415be05aa277a2c299104222fcf0b9e8989ea4",
+    "dangling_image_count": 23
+  },
+  "after": {
+    "container_count": 12,
+    "running_count": 11,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "flaresolverr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "gluetun",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "jellyfin",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "jellyseerr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "prowlarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "qbittorrent",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "radarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "sonarr",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "15d320bd9cff1dc786632ac2b3955cae0d8a2b8b4a11328c94918199b61f16d3",
+    "volume_count": 3,
+    "volume_definitions_hash": "4456d75d1a7599deb40a7f8b8e91cfbebb0661459fde15610ca581844a865a4b",
+    "tagged_images_count": 17,
+    "tagged_images_hash": "176bf02fd4c61d81af9904740a415be05aa277a2c299104222fcf0b9e8989ea4",
+    "dangling_image_count": 1
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 75577548800,
+    "docker_usage": [
+      {
+        "Active": "12",
+        "Reclaimable": "13.66GB (65%)",
+        "Size": "21.01GB",
+        "TotalCount": "37",
+        "Type": "Images"
+      },
+      {
+        "Active": "11",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "84.5MB",
+        "TotalCount": "12",
+        "Type": "Containers"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "0B (0%)",
+        "Size": "4.862MB",
+        "TotalCount": "3",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "0",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 86556549120,
+    "docker_usage": [
+      {
+        "Active": "12",
+        "Reclaimable": "2.863GB (28%)",
+        "Size": "10.03GB",
+        "TotalCount": "15",
+        "Type": "Images"
+      },
+      {
+        "Active": "11",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "84.5MB",
+        "TotalCount": "12",
+        "Type": "Containers"
+      },
+      {
+        "Active": "3",
+        "Reclaimable": "0B (0%)",
+        "Size": "4.862MB",
+        "TotalCount": "3",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "0B",
+        "Size": "0B",
+        "TotalCount": "0",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:119aaa4a4f7349bcd2a136c5373a0d7925b5479915c7dfe0c0ad352db2a6d438",
+      "exit_code": 0,
+      "stdout_hash": "83eb6649d0be557505d170aae4ebea628650fa5a1c16f9c872a037170905ff79",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:139dfee1c6f89249c8d665d1333a42e8ec74ec0a86bc6bb1c8461e10d3a66a47",
+      "exit_code": 0,
+      "stdout_hash": "181d9140bd5593114d7d176388b03f3f9e4234d95e7ba0517d9b24ad270ad4b6",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:24acea2956a0ccb11f103877d9f4f8576600fb34bff34820ed749c2256dab89f",
+      "exit_code": 0,
+      "stdout_hash": "291b50ad284acf720671cdf5e01529fde27a9ba2ecb6e79146b7898f210c129b",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:2f3d31307beba3ba2dd226d191f5f5c14ee3b4d8b49277c64683f5ed97083179",
+      "exit_code": 0,
+      "stdout_hash": "8b9b895e107d8041697249f00e5ea18f4c2d5b4398af2f67de73d4244675dd74",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:65dc8922f1ea3fa732d8aa9210143d98d16c3e75897c21f8acdb04ea2dbb313a",
+      "exit_code": 0,
+      "stdout_hash": "c7859f4f5d6e231af03e0d60c859f10bc755a21c2d148f383b457c1984e04af2",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:688bd15396f7f47b56351f645d8c8d24e5da935a9ff86c89bcd1e51ea287da3e",
+      "exit_code": 0,
+      "stdout_hash": "5e6a6376f8f4b43f86f7712ac93bd342edda8471da983501bdc8ac791122ee37",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:6bdf70ced4f3ea33b9091f3af7a710b47be003673b6ea94abfeed3343a580d8c",
+      "exit_code": 0,
+      "stdout_hash": "b85045d2ac1e780c8cb4fbf066a96d2993cde0859b6ffd0b878677604d2ae07f",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:82172b363f9eddc02aca544f880a044f2ceb9aaf190bc87e4454e2f705eb91d0",
+      "exit_code": 0,
+      "stdout_hash": "119ec0cfbdbe7f0fd310935bcc801b7884fd78490872413137e1f950f9c221e2",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:89e3cbe22e0d6f09a18d3e86269392fd9f7f08e8991040741e577f8f127cdfe4",
+      "exit_code": 0,
+      "stdout_hash": "8fdbef7216603537d5d5fec43348e9d862432f788ccc07c9bd725566fa01d426",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:91844fa2c927ad6ede5630127183cc7868b175f6223e83e6a5da1fffea2aa782",
+      "exit_code": 0,
+      "stdout_hash": "b52fba20e7fc352d6321054322fadae101e4879d7ae1e1ee5daca474db41ca7b",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:95ba0801df4d9d1d79d0d9a3849f656542497dab061d91b87ad4f53a71aff3ef",
+      "exit_code": 0,
+      "stdout_hash": "b1e9387364624bf7a8dfe2275b5c0017d91fb3601c6d8f649c7dfdec0e0ca3c4",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "exit_code": 0,
+      "stdout_hash": "e2c1b3e01935eef8cfe99077169fef2ed4631bb862b99df220e89a2fb2baf3a0",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:a00b6a597a3832a1814cde0ef60abc55c94644f3f80902c3432f6af6de8d4a96",
+      "exit_code": 0,
+      "stdout_hash": "64f8f5a1d914cabe5eae72068633973dc6aa2db7a291e9c70551ec389ea8bad1",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:a45b5ab0f850f39edb4cc9c95bbd967b52ddc3d4574a4dfb45561177db6c88f4",
+      "exit_code": 0,
+      "stdout_hash": "b7b15d9eb2a8afdf30f751ef311d841a90607860ca4b8bfa86a24acd8066f5fc",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:ab91301778251f82a31bbfc87f0497376d59e84439d9a1ceff6a61d594d1e3d7",
+      "exit_code": 0,
+      "stdout_hash": "9e90bc071a2833da4133156d683de3861c889e64ec2298f4c3814f7c9980610f",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db",
+      "exit_code": 0,
+      "stdout_hash": "2fa8a186970574a025faf274ccde014754d91e7801e6f2e0f6b01cbf487955a6",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:b024436f8ca665d16d9a997d26fd27fdf867ee5566ba09f32764e7b2976d3e02",
+      "exit_code": 0,
+      "stdout_hash": "45cc74d60cbccf9dc6b1099a8f2d64a8f3a5acd42f82235857bcd9eb84657d23",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:baba630419915985442f315f08b0cf46d9f4c8a0cc4bd38e94a6d35751dd5ef5",
+      "exit_code": 0,
+      "stdout_hash": "3dfeabc0e32b790deb46e4b52cb1384d9dc41d9398e41f48b7f8e20af60e5e9a",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:c19aa4ecdf03d73e1d5c901da33744cb7eb4d921f89bafed1ca264601d7fa224",
+      "exit_code": 0,
+      "stdout_hash": "620fd41a6c3607522d697367c7942039e2883cd4fc9ec8c41073fa4d5f2a5919",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:c7502a75b021d964481c129c84590b9cbc40f83aadd4e553f173871bc0deaa3c",
+      "exit_code": 0,
+      "stdout_hash": "36b9d2106dd5fba81354e8f29f1a12c93b34875893fcf8ecaa9722df672a0dfa",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:d206d9e4056bb90178297df58047791196e7721e6dc19384579b0530702fe086",
+      "exit_code": 0,
+      "stdout_hash": "e16e28e6e5f8fce4ba0838f0ac3a792dce75b4cd9ed80c93cf317fd86e2a7d0b",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:e35056574cdc695a9ee745aa1ecda9eab3842450bf4b7b8471b023790fa3861d",
+      "exit_code": 0,
+      "stdout_hash": "34a9cd5342e6fdb5bf5a96366ca4a963096fc3b1bc99c6f009a4742c0d898d7a",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

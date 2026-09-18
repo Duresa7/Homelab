@@ -1,0 +1,211 @@
+{
+  "server": "alpha_prod_01",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:47:40.884011+00:00",
+  "finished_at": "2026-09-18T16:47:43.323332+00:00",
+  "before": {
+    "container_count": 9,
+    "running_count": 8,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "playit-agent",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "teamspeak-monitor",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-02",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-03",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts3-manager",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "5ff4d8d68381b84373030957af82208fb1838a30d1eb804fa85ab704c2af19c9",
+    "volume_count": 4,
+    "volume_definitions_hash": "0437f905467620d2d406c01af9b8dbf3d23825b2aca30d1acc781435c5f5a8a6",
+    "tagged_images_count": 19,
+    "tagged_images_hash": "a7a847834afd036f76e13b7138332220b2334cbc1bae95aa67b4bde7266d7c8a",
+    "dangling_image_count": 4
+  },
+  "after": {
+    "container_count": 9,
+    "running_count": 8,
+    "containers": [
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "playit-agent",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "teamspeak-monitor",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-02",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-03",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "ts3-manager",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "5ff4d8d68381b84373030957af82208fb1838a30d1eb804fa85ab704c2af19c9",
+    "volume_count": 4,
+    "volume_definitions_hash": "0437f905467620d2d406c01af9b8dbf3d23825b2aca30d1acc781435c5f5a8a6",
+    "tagged_images_count": 19,
+    "tagged_images_hash": "a7a847834afd036f76e13b7138332220b2334cbc1bae95aa67b4bde7266d7c8a",
+    "dangling_image_count": 2
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 48579575808,
+    "docker_usage": [
+      {
+        "Active": "8",
+        "Reclaimable": "2.812GB (63%)",
+        "Size": "4.405GB",
+        "TotalCount": "18",
+        "Type": "Images"
+      },
+      {
+        "Active": "8",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "3.359MB",
+        "TotalCount": "9",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "0B (0%)",
+        "Size": "6.173MB",
+        "TotalCount": "4",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "67.68MB",
+        "Size": "157.1MB",
+        "TotalCount": "20",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 48838168576,
+    "docker_usage": [
+      {
+        "Active": "8",
+        "Reclaimable": "2.553GB (61%)",
+        "Size": "4.146GB",
+        "TotalCount": "16",
+        "Type": "Images"
+      },
+      {
+        "Active": "8",
+        "Reclaimable": "4.096kB (0%)",
+        "Size": "3.359MB",
+        "TotalCount": "9",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "0B (0%)",
+        "Size": "6.173MB",
+        "TotalCount": "4",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "67.68MB",
+        "Size": "157.1MB",
+        "TotalCount": "20",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:15acbc64c92f57ef1fd8dd203791fa7f70a14707e60ee494132f26b5ca265c6b",
+      "exit_code": 0,
+      "stdout_hash": "67a3373e0d88b0bff8c407bac74405a5c691e6aada4e09b2676143106dc13d31",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "exit_code": 0,
+      "stdout_hash": "e2c1b3e01935eef8cfe99077169fef2ed4631bb862b99df220e89a2fb2baf3a0",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}

@@ -1,0 +1,231 @@
+{
+  "server": "monitor_01",
+  "exit_code": 0,
+  "started_at": "2026-09-18T16:47:25.093249+00:00",
+  "finished_at": "2026-09-18T16:47:28.815264+00:00",
+  "before": {
+    "container_count": 11,
+    "running_count": 10,
+    "containers": [
+      {
+        "name": "alert-bot",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "blackbox-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "grafana",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "nut-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "peanut",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "prometheus",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "pve-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "79246ffd0d8a03b31869fcc2cfd1076da9d71900f4f0380de6991621d1f4da30",
+    "volume_count": 4,
+    "volume_definitions_hash": "ac40a11d4197f115c8545b3fcc42201a67ae4e9d984677c84dd9e79a54f235e6",
+    "tagged_images_count": 21,
+    "tagged_images_hash": "89b9fd64340a5573e8eee81a3372e2b40e6f5fe2759fb362871448ac349d9029",
+    "dangling_image_count": 3
+  },
+  "after": {
+    "container_count": 11,
+    "running_count": 10,
+    "containers": [
+      {
+        "name": "alert-bot",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "blackbox-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "cadvisor",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "grafana",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "hawser",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "status": "created",
+        "health": null
+      },
+      {
+        "name": "nut-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "peanut",
+        "status": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "prometheus",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "pve-exporter",
+        "status": "running",
+        "health": null
+      },
+      {
+        "name": "wud",
+        "status": "running",
+        "health": "healthy"
+      }
+    ],
+    "containers_hash": "79246ffd0d8a03b31869fcc2cfd1076da9d71900f4f0380de6991621d1f4da30",
+    "volume_count": 4,
+    "volume_definitions_hash": "ac40a11d4197f115c8545b3fcc42201a67ae4e9d984677c84dd9e79a54f235e6",
+    "tagged_images_count": 21,
+    "tagged_images_hash": "89b9fd64340a5573e8eee81a3372e2b40e6f5fe2759fb362871448ac349d9029",
+    "dangling_image_count": 1
+  },
+  "storage_before": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 4797624320,
+    "docker_usage": [
+      {
+        "Active": "12",
+        "Reclaimable": "2.929GB (41%)",
+        "Size": "7.115GB",
+        "TotalCount": "18",
+        "Type": "Images"
+      },
+      {
+        "Active": "10",
+        "Reclaimable": "4.096kB (2%)",
+        "Size": "172kB",
+        "TotalCount": "11",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "0B (0%)",
+        "Size": "6.393GB",
+        "TotalCount": "4",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "530.6kB",
+        "Size": "227.8MB",
+        "TotalCount": "29",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "storage_after": {
+    "docker_root": "/var/lib/docker",
+    "filesystem_probe_path": "/var/lib/docker",
+    "filesystem_available_bytes": 6917926912,
+    "docker_usage": [
+      {
+        "Active": "12",
+        "Reclaimable": "808.6MB (16%)",
+        "Size": "4.995GB",
+        "TotalCount": "16",
+        "Type": "Images"
+      },
+      {
+        "Active": "10",
+        "Reclaimable": "4.096kB (2%)",
+        "Size": "172kB",
+        "TotalCount": "11",
+        "Type": "Containers"
+      },
+      {
+        "Active": "4",
+        "Reclaimable": "0B (0%)",
+        "Size": "6.394GB",
+        "TotalCount": "4",
+        "Type": "Local Volumes"
+      },
+      {
+        "Active": "0",
+        "Reclaimable": "530.6kB",
+        "Size": "227.8MB",
+        "TotalCount": "29",
+        "Type": "Build Cache"
+      }
+    ]
+  },
+  "results": [
+    {
+      "id": "sha256:9f36dfce2d1fd053d700a4eca00c358df79bf7d8cb69d4a9e8d9981af18834ea",
+      "exit_code": 0,
+      "stdout_hash": "e2c1b3e01935eef8cfe99077169fef2ed4631bb862b99df220e89a2fb2baf3a0",
+      "stderr": ""
+    },
+    {
+      "id": "sha256:f772d434e8fab0049deb2b1b30abd43342bcfca1537614aa8d36080232cf4283",
+      "exit_code": 0,
+      "stdout_hash": "1174c9b09d476c08bb16a698ef8c9bfa8ea834af2b964c088400498e04874b07",
+      "stderr": ""
+    }
+  ],
+  "checks": {
+    "containers_unchanged": true,
+    "volumes_unchanged": true,
+    "tagged_images_unchanged": true,
+    "removed_images_absent": true,
+    "all_candidates_removed": true
+  }
+}
