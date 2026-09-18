@@ -1,7 +1,7 @@
 # Action1
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-18
 
 Action1 is the cloud endpoint management plane for `ObiPC`. It handles software deployment, patching, and remote access for that machine. Each managed endpoint runs a local agent that polls the cloud. Since 2026-09-12, `HQ-MGT01` also runs Action1 Deployer for automatic enrollment across `ad.alphasecunited.com`, including servers and domain controllers. The whole-domain scope is saved; domain-controller installation is blocked by access denied because the Deployer account lacks administrator access there.
 
@@ -14,7 +14,7 @@ I deployed it on 2026-09-12 so that application installation on `ObiPC` goes thr
 | Service | Action1 cloud with Action1 Deployer on `HQ-MGT01` |
 | Deployer | `A1Connector`, automatic startup, Running as `ALPHASEC\svc-action1-deploy`; version 6.0.664.1, verified 2026-09-12 |
 | Deployer path | `C:\Program Files (x86)\Action1\Connector\action1_connector.exe` |
-| Deployer scope | All computers in `ad.alphasecunited.com`; domain-controller, server, workstation, and named-computer exclusions all disabled, saved and read back 2026-09-12 |
+| Deployer scope | All computers in `ad.alphasecunited.com`; domain-controller, server, and workstation class exclusions disabled. `ObiPC.ad.alphasecunited.com` was on the named-computer exclusion list from 11:43 PM on 2026-09-12 until 6:58 PM on 2026-09-18, when I removed it so the Deployer would reinstall the agent after the rebuild, which it did in five seconds; whether the exclusion goes back on is open, see [Deployer Health Check Blocked to ObiPC](Documentation/Troubleshooting/Deployer%20Health%20Check%20Blocked%20to%20ObiPC%20-%202026-09-12.md) |
 | Instance | `app.na-2.action1.com`, North America 2 |
 | Organisation identifier | Withheld. It is embedded in the agent download URL and any holder of it can enrol an endpoint into this organisation |
 | Managed endpoints | Four console records: `HQ-MGT01`, `HQ-WS001`, and `ObiPC` Connected; preexisting `win11-dev-hyper` Disconnected. Neither domain controller appeared in the 2026-09-12 readback |
@@ -27,7 +27,7 @@ I deployed it on 2026-09-12 so that application installation on `ObiPC` goes thr
 
 | Endpoint | OS | Agent | Enrolled | Notes |
 |---|---|---|---|---|
-| `ObiPC` | Windows 11 Pro 25H2, build 26200 | 6.0.664.1 | 2026-09-12 | Physical workstation, Secure Client VLAN 60, domain member in `OU=Standard,OU=Workstations` |
+| `ObiPC` | Windows 11 Pro 25H2, build 26200 | 6.0.664.1 | 2026-09-12 | Physical workstation, Secure Client VLAN 60, domain member in `OU=Standard,OU=Workstations`. Lost in the 2026-09-18 operating system reinstall and pushed back by the Deployer at 6:58 PM the same day, same version, see [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md) |
 
 The 2026-09-12 console readback also showed `HQ-MGT01` (Windows Server 2025) and `HQ-WS001` (Windows 11 25H2) Connected. Their agent versions were not captured in that readback. The preexisting `win11-dev-hyper` record was Disconnected.
 
