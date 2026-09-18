@@ -1,7 +1,7 @@
 # Wazuh Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-18
 
 ## What This Guide Covers
 
@@ -9,7 +9,7 @@ I run the Wazuh manager, indexer, dashboard, & API on the security host. This gu
 
 ## Current Status and Verified Versions
 
-The Wazuh 4.14.7 manager, indexer, & dashboard run on `security-01` at `192.168.72.2`. The dashboard uses HTTPS 443, the API uses 55000, agent events use TCP 1514, & enrollment uses TCP 1515. Checked on 2026-09-06, the manager reports 16 active remote agents plus its own agent 000, 17 in total. Fifteen of the remote agents run 4.14.6; `edge-01` alone runs 4.14.5. The sixteenth is `docker-main`, enrolled that day after the audit found its agent had been pointed at the manager's old address since before the Security-A migration.
+The Wazuh 4.14.7 manager, indexer, & dashboard run on `security-01` at `192.168.72.2`. The dashboard uses HTTPS 443, the API uses 55000, agent events use TCP 1514, & enrollment uses TCP 1515. Checked on 2026-09-06, the manager reported 16 active remote agents plus its own agent 000, 17 in total. Checked again on 2026-09-18, it reports 15 active remote agents plus agent 000, 16 in total; Game 01's agent left with that guest's retirement on 2026-09-12. Fifteen of the remote agents run 4.14.6; `edge-01` alone runs 4.14.5. The sixteenth is `docker-main`, enrolled that day after the audit found its agent had been pointed at the manager's old address since before the Security-A migration.
 
 Agents are grouped, & the group is what carries file-integrity configuration: `default` on all 17, `proxmox` on the five nodes, `edge` on `edge-01`, & `workstation` on `ubuntu-dev`. Those groups & what feeds them into Splunk are covered in [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md).
 
