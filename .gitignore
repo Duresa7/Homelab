@@ -211,6 +211,11 @@
 # Coolify Traefik update evidence records
 !/Platforms/Coolify/Evidence/
 /Platforms/Coolify/Evidence/*
+!/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/
+/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/*
+!/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/
+/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/*
+!/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/Follow-up-Verification.txt
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/
 /Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/*
 !/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Evidence-Index.md

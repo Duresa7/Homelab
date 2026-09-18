@@ -1,13 +1,17 @@
 # Coolify Architecture
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-18
 
 Coolify runs as a six-container stack on app-01 & manages a Traefik proxy that routes public traffic to the applications I deploy. This document covers how the pieces fit & how a deployment turns into a working URL. The live state table is in the [platform README](../README.md); the end-to-end ingress path is in the [External Service Ingress design](../../../Architecture/External-Service-Ingress.md).
 
 ## The stack
 
 Coolify installs itself with Docker Compose & keeps everything on the `coolify` bridge network. The `coolify` container is the control panel & API; it publishes port 8000 on the host for the dashboard. `coolify-db` (PostgreSQL 15) holds state, `coolify-redis` runs the queue, `coolify-realtime` serves the live dashboard over ports 6001-6002, & `coolify-sentinel` collects host & container metrics. Only ports 80, 443, & 8000 matter to ingress, & the edge firewall permits just 80 & 8000 from edge-01.
+
+I confirmed the installation method from app-01's shell history: the official `install.sh` was invoked through `curl` and `sudo bash`. The live Docker labels identify Compose project `source`, with `/data/coolify/source/docker-compose.yml` and `/data/coolify/source/docker-compose.prod.yml` supplying the control panel, PostgreSQL, Redis, and realtime containers. Traefik belongs to the separate `coolify-proxy` project at `/data/coolify/proxy/docker-compose.yml`. Sentinel has no Compose project labels. These observations establish an installer-based deployment; I did not establish whether the Compose files were edited manually later.
+
+I updated the control panel with the official `upgrade.sh` on 2026-09-18. That restarted the four core Compose containers; Traefik, Sentinel, and cAdvisor retained their container IDs. The [update record](Change%20Records/Update%20to%204.3.23%20-%202026-09-18.md) holds the exact invocation and verification.
 
 ## Traefik & per-app routing
 

@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-18
 
 This inventory maps 13 workload guests after Game 01’s retirement on 2026-09-12. Prometheus has 58 healthy targets after the 2026-09-15 uptime expansion and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I deployed MeshCentral on `docker-blue` on 2026-09-12 as a pilot beside RustDesk; both run on that host until I choose between them. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -31,7 +31,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN. K
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus<br>Grafana<br>Proxmox exporter<br>blackbox exporter<br>NUT exporter<br>Discord alert bot<br>cAdvisor<br>PeaNUT<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird management 0.78.1 / dashboard 2.92.0<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
 | docker-blue | LXC 108 | blue-server | Remote access and lightweight integrations | Docker MCP Gateway 0.43.3<br>SSH Manager MCP 3.8.5<br>Executor `latest` / 1.6.8<br>RustDesk hbbs / hbbr<br>MeshCentral 1.2.5<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
-| app-01 | VM 116 | purple-server | App platform | Coolify<br>Traefik 3.7.10<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
+| app-01 | VM 116 | purple-server | App platform | Coolify 4.3.23<br>Traefik 3.7.12<br>Postgres / Redis / Realtime<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy<br>cloudflared<br>Wazuh agent 4.14.5 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server 4.3.0<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.48 |
 | alpha-prod-01 | VM 401 | purple-server | Voice/game services | TeamSpeak<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit<br>Wazuh agent 4.14.6<br>Hawser Edge 0.2.48 |
@@ -137,8 +137,8 @@ On 2026-09-11 at 2:33 AM Eastern I verified all seven containers healthy and Pos
 
 | Workload | Details |
 | --- | --- |
-| Coolify | Coolify app, Sentinel, Realtime, Postgres, Redis |
-| Traefik | Coolify ingress proxy: `traefik:v3.7`; runtime 3.7.10 verified 2026-08-09; [change record](../../../Platforms/Coolify/Documentation/Change%20Records/Coolify%20Traefik%203.7%20Minor%20Update%20-%202026-08-09.md) |
+| Coolify | 4.3.23, updated from 4.3.21 on 2026-09-18; Sentinel 1.0.1, Realtime 1.0.19, PostgreSQL 15, Redis 7; all six Coolify containers and cAdvisor healthy, local dashboard and API health HTTP 200; [update record](../../../Platforms/Coolify/Documentation/Change%20Records/Update%20to%204.3.23%20-%202026-09-18.md) |
+| Traefik | Coolify ingress proxy: `traefik:v3.7`; runtime 3.7.12 verified 2026-09-18; not restarted by the Coolify update |
 | Generated apps | Coolify-managed application containers |
 | Wazuh agent | 4.14.6-1; enabled/active; manager ID `004` as `app-01`; connected to `192.168.72.2:1514` after the manager repair on 2026-09-11 |
 
