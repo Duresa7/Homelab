@@ -132,6 +132,40 @@ Store-delivered updates for apps he already has should keep working, because the
 
 A tooling note worth keeping: `Test-AppLockerPolicy` cannot evaluate a packaged app. Piping `Get-AppLockerFileInformation` for an `.appx` into it fails with `Cannot find path`, because the cmdlet binds the object as a file system path. The executable control above is how I showed the policy itself is sound. Functional proof for the Store denies needs his session, which is already on the open list.
 
+## Follow-up on 2026-09-19: a test account inside the restricted group
+
+Everything above is verified against the policy file and the machine's effective policy. None of it is verified against a session, because the only member of `ROL-ObiPC-Restricted` is `IK-user` and I have not had his machine in front of me since the rebuild. I wanted a way to sit in his seat without borrowing his account, so `testuser` now takes it.
+
+Two things ruled out the obvious shortcuts before I made the change:
+
+- **My Tier 2 account cannot reproduce any of this.** `duresa.kadi-t2` is in `ADM-T2-WorkstationAdmins`, which policy makes a local administrator, and every rule collection carries an explicit allow for `S-1-5-32-544`. The Store denies name the restricted group's SID and nothing else. An administrator seeing a working Store is the design behaving correctly, not the policy failing.
+- **`HQ-WS001` is the wrong machine.** It sits in the same `OU=Standard,OU=Workstations` as `ObiPC`, but `C-WKS-ObiPC-AppControl` is security-filtered to `OBIPC$` alone, so that workstation receives no AppLocker policy at all and never has. Nothing can be tested there without widening the filter, and widening it would put a machine-wide allowlist on a computer that has never carried one.
+
+So the test has to be a member of `ROL-ObiPC-Restricted` signing in on `ObiPC`, and it may as well be the shared test account.
+
+**`testuser` moved from `ROL-ObiPC-Unrestricted` to `ROL-ObiPC-Restricted`.** Both halves matter. Adding it to the restricted group is what binds the deny rules and the `U-WKS-ObiPC-Restricted` user policy into its token. Removing it from the unrestricted group is what makes the test faithful: that group holds *Unrestricted users: all files*, an allow for every path in the Exe collection, and while a deny still beats an allow for the binaries named by rule, the allow would have let `testuser` run a program out of its own Downloads folder when `IK-user` cannot. A half-moved account would have produced a test that passes on the Store and quietly lies about everything else.
+
+It also keeps the rule from the [original setup](ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md): every account that signs in to `ObiPC` belongs to one of the two groups, because an account in neither matches no allow rule and AppLocker blocks what no rule allows.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| `testuser` group membership on `HQ-DC01` | `APP-EntraCloudSync-Users`, `ROL-ObiPC-Restricted`, `ROL-Staff` |
+| Group counts on `HQ-DC01` | Restricted 1 → 2, Unrestricted 3 → 2 |
+| Replication to `HQ-DC02` | Same counts read from the second controller, 2 and 2 |
+| Application Identity service on `ObiPC` | `Running`, start type `Automatic` |
+| Rule caches on `ObiPC` | `Appx`, `Exe`, `Msi` and `Script` under `C:\Windows\System32\AppLocker`, all written 2026-09-19 10:27 |
+| Log baseline before the test | Newest entry in `Microsoft-Windows-AppLocker/Packaged app-Execution` is 8020 at 10:23:35, so any 8022 after that timestamp belongs to this test |
+
+No workstation restriction sits on the account and its `userWorkstations` attribute is empty, so it can sign in on `ObiPC` directly. The membership is in the token at sign-in, which means a session that is already open will not pick it up.
+
+### What that session will look like
+
+The Store, the Store purchase app and the Xbox app refuse to launch and write 8022. Beyond the Store, the whole 2026-09-18 lockdown comes with it: Settings reduced to the `showonly:` allowlist, no power menu, no Control Panel, no registry editor, no MSI installs, and nothing runnable outside `%WINDIR%` and the two Program Files trees. That is a feature for this exercise, since one sign-in exercises every user-side control at once, but it will read as a broken machine to anyone who was not expecting it. It also creates a profile for `testuser` on `ObiPC`.
+
+This membership is a test fixture and does not belong in the steady state. Moving it back is on the [platform TODO](../TODO.md).
+
 ## Open
 
 - **User-side verification.** Settings allowlist, Control Panel allowlist, `NoClose`, MMC restriction, Edge blocklist: all take effect at `IK-user`'s next sign-in, and I have not seen his session since the rebuild. Check `gpresult /user` and the AppLocker 8004 events after his first day.
@@ -140,6 +174,6 @@ A tooling note worth keeping: `Test-AppLockerPolicy` cannot evaluate a packaged 
 - **Script collection enforcement** after a week of 8003 audit, with `npm-cache` now allowed ahead of it; then `msiexec.exe` after its own audit; `rundll32.exe` only as a standalone change with a test pass.
 - **Watch the 8004 events from his first week** for a legitimate tool the closed carve-out now blocks, and deploy it through Action1 or add a publisher rule rather than reopening a path.
 - **Appx narrowing** to Microsoft publishers, after an inventory of installed packages, as a separate change with a shell test. The Store, purchase app and Xbox app are denied as of 2026-09-19; the broad `Everyone` allow is still there.
-- **Confirm the Store denies on his session** and confirm that Store-delivered updates for apps he already has still arrive. Both need him signed in. The packaged-app block events are 8022 in `Microsoft-Windows-AppLocker/Packaged app-Execution`.
+- **Confirm the Store denies from a session.** A `testuser` sign-in on `ObiPC` proves the rules fire, per the section above; confirming that Store-delivered updates for apps he already has still arrive needs `IK-user` himself, since it is his installed apps that would stall. The packaged-app block events are 8022 in `Microsoft-Windows-AppLocker/Packaged app-Execution`.
 - **After every feature update**, confirm the task turned the recovery environment back off: `recovery.log` shows it.
 - Unchanged from before: Git, Node.js and Python from Action1; the OneDrive path; RSAT.

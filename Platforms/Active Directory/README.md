@@ -44,8 +44,8 @@ The directory is laid out for a tiered administrative model. Tier 0 covers the f
 | `ROL-Staff` | Global | Role group for standard staff accounts | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Users` | Global | Scope group for Entra Cloud Sync | `IK-user`, `AH-user`, `testuser`, `DK-user` |
 | `APP-EntraCloudSync-Devices` | Global | Scope group for Entra Cloud Sync device sync; a computer not in a scope group is never exported | `HQ-WS001`, `OBIPC` |
-| `ROL-ObiPC-Restricted` | Global | Principal on the `ObiPC` AppLocker allowlist and Settings lockdown, enforced 2026-09-12 | `IK-user` |
-| `ROL-ObiPC-Unrestricted` | Global | Holds the allow-all AppLocker rule on `ObiPC`, so restriction lands on one account rather than the machine | `DK-user`, `AH-user`, `testuser` |
+| `ROL-ObiPC-Restricted` | Global | Principal on the `ObiPC` AppLocker allowlist and Settings lockdown, enforced 2026-09-12 | `IK-user`, `testuser` (added 2026-09-19 to test the lockdown from a session; a fixture, to be moved back) |
+| `ROL-ObiPC-Unrestricted` | Global | Holds the allow-all AppLocker rule on `ObiPC`, so restriction lands on one account rather than the machine | `DK-user`, `AH-user` |
 
 `Domain Admins` holds the built-in `Administrator` account and `ADM-T0-DomainAdmins`, nothing else. `DK-t0` is in `Protected Users` and is flagged as sensitive and not delegated. The built-in `Administrator` is the break-glass account and is not used for daily work.
 
