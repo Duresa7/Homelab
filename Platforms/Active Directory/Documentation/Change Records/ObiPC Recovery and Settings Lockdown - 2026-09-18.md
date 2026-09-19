@@ -1,7 +1,7 @@
 # ObiPC Recovery and Settings Lockdown
 
 **Created:** 2026-09-18  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-19
 
 On 2026-09-18 `IK-user` wiped `ObiPC` from the Windows recovery menu, which on Windows 11 offers a full reset with no credentials; the account of that is the [incident report](../../../../Security/Incidents/Active%20Directory/ObiPC%20Wiped%20from%20the%20Recovery%20Menu%20-%202026-09-18.md). This record is the response, applied the same night after the [rebuild](ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md) in two passes: close every path from a standard user to a reset, a reinstall, the recovery environment or Safe Mode, take away every setting on the machine that is administrative or changes its state, and then, in the second pass, make [Action1](../../../Action1/README.md) the only way software reaches this account, by closing the developer carve-out that would have let a downloaded program run. It extends the [2026-09-12 restriction work](ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md); the two role groups, the loopback design and the developer carve-out are unchanged. **It is in force** on the machine as of 11:14 PM. The user side takes effect when `IK-user` next signs in, which he has not done since the rebuild.
 
@@ -99,6 +99,39 @@ One caveat on the AppLocker test: `Test-AppLockerPolicy -User <SID>` matches onl
 - **The `WinSxS` and `servicing\LCU` denies** are broader than anything Microsoft recommends. Nothing in a user's session should launch from either tree, but if something does, the AppLocker 8004 event will name it.
 - **The developer carve-out is gone.** He runs what Action1 and Windows put under Program Files and Windows, and nothing else. Node and Python scripts still run under their interpreters; anything that needs its own executable is a deployment request. This reverses the 2026-09-12 decision that allowed `C:\Dev` and the toolchain paths, by your instruction.
 
+## Follow-up on 2026-09-19: the Microsoft Store
+
+Closing the developer carve-out left one install path open that I named but did not close: the Microsoft Store. You asked for it, so it is shut.
+
+The Store installs an application into the signed-in user's profile with no elevation and no administrator involved, which is the same property that made `C:\Dev` worth closing. The obvious control does not work here. "Turn off the Store application" is ignored by design on Windows 11 Pro, which Microsoft records in KB3135657, so the policy exists in the editor and does nothing on this machine. AppLocker packaged-app rules do work on Pro, and the App Installer deny from the day before already proved it.
+
+I read the packages on the machine first rather than guessing their identifiers. All of them report the same publisher, `CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US`, and these product names:
+
+| Package | Version on ObiPC | Why it is a download path |
+|---|---|---|
+| `Microsoft.WindowsStore` | 22608.1401.3.0 | The Store itself |
+| `Microsoft.StorePurchaseApp` | 22607.1401.4.0 | The acquisition flow behind it; leaving it would leave half the path open |
+| `Microsoft.GamingApp` | 2608.1001.17.0 | The Xbox app installs games from the Store without opening the Store |
+| `Microsoft.DesktopAppInstaller` | 1.29.290.0 | Already denied on 2026-09-18 |
+
+Three new deny rules, scoped to the restricted group and nobody else, take the packaged-app collection from four rules to seven. I left `Microsoft.Xbox.TCUI`, `Microsoft.XboxGamingOverlay` and `Microsoft.XboxIdentityProvider` alone: they are sign-in dialogs, the Game Bar and an authentication provider, and none of them installs anything.
+
+The web storefront is closed by the same rules. Choosing Get on a page under `apps.microsoft.com` hands off to the `ms-windows-store:` protocol, which launches the package that is now denied. Downloading an `.appx` or `.msix` directly is already covered twice over, by the browser download restriction and by the App Installer deny.
+
+Store-delivered updates for apps he already has should keep working, because the deployment service that installs them runs as `LocalSystem` and AppLocker does not evaluate `LocalSystem`. That is the design, not an observation, and it is in the open list below.
+
+### Verification
+
+| Check | Result |
+|---|---|
+| Policy version | `C-WKS-ObiPC-AppControl` moved from 8 to 9 on import |
+| File on the controller | SHA-256 matched the file in this repository, `72bfe5d9…8699b4` |
+| Effective policy on `ObiPC` after a computer refresh | Packaged-app collection `Enabled`, seven rules, the four denies naming the restricted group |
+| Deployed rule content | Publisher and product strings on the machine match what the packages themselves report, character for character, with an unbounded version range |
+| Control | `regedit.exe` tests `Denied` for the restricted group against the same policy file, so the file and the cmdlet both work |
+
+A tooling note worth keeping: `Test-AppLockerPolicy` cannot evaluate a packaged app. Piping `Get-AppLockerFileInformation` for an `.appx` into it fails with `Cannot find path`, because the cmdlet binds the object as a file system path. The executable control above is how I showed the policy itself is sound. Functional proof for the Store denies needs his session, which is already on the open list.
+
 ## Open
 
 - **User-side verification.** Settings allowlist, Control Panel allowlist, `NoClose`, MMC restriction, Edge blocklist: all take effect at `IK-user`'s next sign-in, and I have not seen his session since the rebuild. Check `gpresult /user` and the AppLocker 8004 events after his first day.
@@ -106,6 +139,7 @@ One caveat on the AppLocker test: `Test-AppLockerPolicy -User <SID>` matches onl
 - **BitLocker, now TPM+PIN.** The recovery environment reads a plaintext disk. A TPM-only protector would not have stopped this reset; Microsoft lists only TPM+PIN and password protectors as forcing the recovery key first. Recorded as the recommended baseline in the [platform TODO](../TODO.md).
 - **Script collection enforcement** after a week of 8003 audit, with `npm-cache` now allowed ahead of it; then `msiexec.exe` after its own audit; `rundll32.exe` only as a standalone change with a test pass.
 - **Watch the 8004 events from his first week** for a legitimate tool the closed carve-out now blocks, and deploy it through Action1 or add a publisher rule rather than reopening a path.
-- **Appx narrowing** to Microsoft publishers, after an inventory of installed packages, as a separate change with a shell test.
+- **Appx narrowing** to Microsoft publishers, after an inventory of installed packages, as a separate change with a shell test. The Store, purchase app and Xbox app are denied as of 2026-09-19; the broad `Everyone` allow is still there.
+- **Confirm the Store denies on his session** and confirm that Store-delivered updates for apps he already has still arrive. Both need him signed in. The packaged-app block events are 8022 in `Microsoft-Windows-AppLocker/Packaged app-Execution`.
 - **After every feature update**, confirm the task turned the recovery environment back off: `recovery.log` shows it.
 - Unchanged from before: Git, Node.js and Python from Action1; the OneDrive path; RSAT.

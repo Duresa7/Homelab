@@ -197,6 +197,15 @@
     <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000113" Name="Restricted: block App Installer (winget)" Description="A signed MSIX installs without elevation; App Installer is the channel" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
       <Conditions><FilePublisherCondition PublisherName="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProductName="Microsoft.DesktopAppInstaller" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
     </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000114" Name="Restricted: block the Microsoft Store" Description="Store installs an app for the signed-in user with no elevation" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProductName="Microsoft.WindowsStore" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000115" Name="Restricted: block the Store purchase app" Description="Acquisition flow behind the Store; denying it closes the purchase path" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProductName="Microsoft.StorePurchaseApp" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000116" Name="Restricted: block the Xbox app" Description="Installs games from the Store without opening the Store app" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProductName="Microsoft.GamingApp" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
   </RuleCollection>
   <RuleCollection Type="Script" EnforcementMode="AuditOnly">
     <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000120" Name="Everyone: Windows folder" Description="Same exceptions as the Exe collection" UserOrGroupSid="S-1-1-0" Action="Allow">

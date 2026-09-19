@@ -1,7 +1,7 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-19
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
@@ -43,7 +43,8 @@ The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockd
 2. I will watch what Shift+Restart and `shutdown /r /o` present with the recovery environment unmapped, from a session of my own. Done when the observed menu is recorded and nothing in it launches a reset.
 3. During his first week I will read the AppLocker 8004 events for anything the closed developer carve-out blocks that he legitimately needs, and answer each with an Action1 deployment or a publisher rule, never by reopening a user-writable path. Done when a week passes with every 8004 either deployed or declined in writing.
 4. After a week of Script-collection 8003 audit events, I will add whatever paths the log shows and switch that collection to enforced; then a separate audit for `msiexec.exe` before denying it; `rundll32.exe` only as its own change with a test pass. Done when each is enforced with a readback.
-5. I will narrow the Appx allow to Microsoft publishers after inventorying installed packages, as a standalone change verified against Start, Search, Settings, Photos, Terminal and Notepad.
+5. I will narrow the Appx allow to Microsoft publishers after inventorying installed packages, as a standalone change verified against Start, Search, Settings, Photos, Terminal and Notepad. The Microsoft Store, the Store purchase app and the Xbox app are already denied for the restricted group as of 2026-09-19; this step is about the remaining broad `Everyone` allow.
+6. I will confirm on `IK-user`'s next sign-in that the Store denies take effect, by looking for event 8022 in `Microsoft-Windows-AppLocker/Packaged app-Execution`, and that Store-delivered updates for his existing apps still arrive. This step is done when a blocked Store launch is in the log and no app update has stalled.
 6. After every Windows feature update I will confirm `recovery.log` shows the task turning the recovery environment back off. Done when the log line for that boot reads `WinRE=Disabled`.
 
 ## BitLocker for physical workstations (baseline decision, open)
