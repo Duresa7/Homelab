@@ -13,7 +13,7 @@ Source is a separate public repository: [Duresa7/app-portal](https://github.com/
 
 | Item | Current value |
 |---|---|
-| Deployment status | Server running and healthy on `docker-main` since 2026-09-19, talking to the tenant with a live API credential since the afternoon of the same day. Every catalog package resolves. `HQ-WS001` is enrolled as the test device since 2026-09-19; `ObiPC` is not yet |
+| Deployment status | Server running and healthy on `docker-main` since 2026-09-19, talking to the tenant with a live API credential since the afternoon of the same day. Every catalog package resolves. `HQ-WS001` is enrolled as the test device since 2026-09-19 and `testuser` installed 7-Zip through it the same evening, thirty seconds end to end; `ObiPC` is not yet |
 | Compute | Galaxy CT 110 `docker-main`, `192.168.40.35`, VLAN 40 |
 | Live path | `/opt/docker/app-portal`, a clone of the public repository |
 | Container | `app-portal`, image `app-portal-server:local`, 220 MB, `restart: unless-stopped` |
