@@ -558,6 +558,14 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 !/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/Evidence-Index.md
 # !/Platforms/Active Directory/Evidence/Forest Build - 2026-09-09/Screenshots/
 
+# Online sign-in verification contains policy settings and machine state only.
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/
+/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/*
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Workstation-Verification.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Network-Disconnect-Test.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Policy-Verification.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/ObiPC-AppLocker-Verification.json
+
 # Identity NTP and client DNS evidence. The three controller screenshots stay
 # unpublished until they are redacted; the guide and the change record already
 # carry the image lines for them, commented out beside the step they belong to.

@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-19
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. This is a new forest built on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06, and none of those older records describe this build.
 
@@ -58,6 +58,8 @@ I expanded DK-user to all three administrative tiers on 2026-09-12, by my explic
 | `C-CMP-LAPS` | All settings enabled | `Servers`, `Workstations` |
 | `C-SRV-LocalAdmins` | All settings enabled | `Servers` |
 | `C-WKS-LocalAdmins` | All settings enabled | `Workstations` |
+| `C-WKS-OnlineLogon` | Cached domain passwords disabled, online unlock required, foreground network wait enabled, Hello provisioning and alternative PIN/biometric/picture/FIDO sign-in providers disabled; applied and read back on both workstations 2026-09-19 | `Workstations` |
+| `C-WKS-ObiPC-OnlineLogon` | Existing cached-logon and online-unlock settings, matching `C-WKS-OnlineLogon` | `Standard,Workstations`, filtered to `OBIPC` |
 | `C-WKS-Action1-Deployer-Network` | Domain-profile SMB, RPC endpoint mapper, and service RPC only from `192.168.65.12`; applied on both workstations 2026-09-12 | `Standard,Workstations` |
 | `C-WKS-ObiPC-AppControl` | AppLocker (Exe/Msi/Appx enforced, Script audit; since 2026-09-18 48 executable rules, 44 of them denies for the restricted group, no executable allow of its own for that group, and 23 writable-folder exceptions; since 2026-09-19 seven packaged-app rules, denying the Microsoft Store, the Store purchase app, the Xbox app and App Installer for that group), loopback Merge, restricted-user UAC prompt for credentials. `AppIDSvc` is set Automatic on the machine itself, not by this policy | `Standard,Workstations`, filtered to `OBIPC` |
 | `U-WKS-ObiPC-Restricted` | Settings `showonly:` allowlist, Control Panel allowlist, power menu removed, MMC snap-ins blocked, Store removed, registry tools off, Chrome and Edge extensions blocked and executable downloads blocked in both; widened 2026-09-18 | `Standard,Workstations`, filtered to `ROL-ObiPC-Restricted` |
@@ -81,6 +83,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Open Items
 
+- Online workstation sign-in policy is applied to both clients. I verified that `HQ-WS001` keeps its domain membership and settings during a network disconnect and recovers its secure channel afterward. Interactive offline sign-in/unlock and ObiPC's restricted session still need observation. Existing sessions are not automatically locked by cable removal, and local recovery accounts remain available. See [Online Workstation Sign-In](Documentation/Change%20Records/Online%20Workstation%20Sign-In%20-%202026-09-19.md).
+
 - `IK-user` is pinned to `OBIPC` by `userWorkstations` and carries `logonHours` of 7 AM to 11 PM. Those hours were the backstop to the ObiPC session-limit task, which I removed on 2026-09-18 after the rebuild; the hours now stand alone and are the only sign-in window control left. Widen `userWorkstations` before that account can use any other domain machine. Review the ObiPC AppLocker Script audit log before enforcing that collection, and decide the OneDrive per-user path exception. See [ObiPC Restricted User Setup](Documentation/Change%20Records/ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md). On 2026-09-18 he wiped the machine from the recovery menu, which Windows 11 allows with no credentials; the recovery environment is now disabled and kept disabled by a SYSTEM task, every recovery tool requires an administrator account, and the sign-in screen, power menu, Settings, Control Panel, MMC and the script and recovery binaries are closed to him. The developer carve-out is closed: his group has no executable allow of its own, so Action1 is the only way software reaches him, and Chrome and Edge refuse executable downloads for him. Other accounts on the machine are unaffected apart from the recovery and sign-in screen controls. The user-side half has not been observed on his session yet. See [ObiPC Recovery and Settings Lockdown](Documentation/Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md).
 
 - I still need to observe my first elevation as `DK-user` on ObiPC after the 2026-09-11 group change, following a sign-out and sign-in.
@@ -92,6 +96,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 - Neither `HQ-WS001` nor `ObiPC` is Intune managed. Both are Microsoft Entra hybrid joined through Cloud Sync device sync and both read `MDM: None`, confirmed against the tenant on 2026-09-11. Whether they should be co-managed is an open decision recorded in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).
 
 ## Records
+
+- [Online Workstation Sign-In - 2026-09-19](Documentation/Change%20Records/Online%20Workstation%20Sign-In%20-%202026-09-19.md): online domain-password sign-in and unlock policy on the Workstations OU, alternative credential-provider exclusion, both client readbacks, and a network-disconnect/reconnect test on `HQ-WS001`.
 
 - [ObiPC Recovery and Settings Lockdown - 2026-09-18](Documentation/Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md): response to the recovery-menu wipe. Recovery environment disabled and re-disabled on a schedule, administrator credentials required for every recovery tool through the MDM bridge and Group Policy, sign-in screen power button and the restricted user's power menu removed, a new AppLocker policy with 44 denies, 23 writable-folder exceptions and the developer carve-out removed so Action1 is the only install path, browser executable downloads blocked, a `showonly:` Settings allowlist replacing the undocumented `hideonly:` one, Control Panel and MMC allowlists, and the install channels closed. Verified on the machine; user side pending his next sign-in.
 

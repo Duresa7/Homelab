@@ -22,6 +22,14 @@ I expanded DK-user to domain and server administration and verified gateway-sess
 1. I will install the optional features `Rsat.ActiveDirectory.DS-LDS.Tools`, `Rsat.GroupPolicy.Management.Tools`, `Rsat.Dns.Tools`, and `Rsat.ServerManager.Tools` on ObiPC over SSH. This step is done when each capability shows `Installed` in `Get-WindowsCapability -Online`.
 2. I will open the consoles with my regular DK-user account, which has domain administration rights since 2026-09-12. I need RSAT for Group Policy editing because Windows Admin Center has no policy editor. This work is done when Group Policy Management opens from ObiPC and shows the domain's five policies: `C-CMP-LAPS`, `C-SRV-LocalAdmins`, `C-WKS-LocalAdmins`, `Default Domain Policy`, and `Default Domain Controllers Policy`.
 
+## Online workstation sign-in (applied 2026-09-19, interactive checks open)
+
+I applied `C-WKS-OnlineLogon` to the Workstations OU and verified both clients and a disconnect/reconnect on `HQ-WS001`. The [change record](Change%20Records/Online%20Workstation%20Sign-In%20-%202026-09-19.md) distinguishes those checks from the remaining interactive tests.
+
+1. With work saved, I will sign in using a domain password while connected, disconnect the network, lock, and confirm that offline unlock is rejected. I will then reconnect and confirm that the same password unlocks the session. Done when both outcomes are observed on each workstation.
+2. I will confirm a fresh offline domain sign-in is rejected and the PIN, face, fingerprint, picture-password, and FIDO sign-in tiles are unavailable. I will verify the next foreground startup/sign-in policy cycle. Done when the sign-in screen agrees with the applied registry settings and reconnecting restores domain sign-in.
+3. During the ObiPC restricted-account walkthrough, I will disconnect the network and verify the existing application and Settings restrictions still hold. Done when the offline behavior and relevant AppLocker events are recorded. The Script collection is still audit-only; the sign-in policy does not change that.
+
 ## Restore the temporary testing state
 
 On 2026-09-12 I required IK-user and AH-user to change their passwords at next domain logon and verified the flag on both controllers. Their own password changes are pending and supersede the administrator-set staff passwords proposed below. See [Staff First Login Password Change](Change%20Records/Staff%20First%20Login%20Password%20Change%20-%202026-09-12.md).

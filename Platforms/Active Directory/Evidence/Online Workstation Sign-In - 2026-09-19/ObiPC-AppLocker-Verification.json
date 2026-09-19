@@ -1,0 +1,8 @@
+{
+  "server": "obipc",
+  "command": "$ErrorActionPreference='Stop'; [pscustomobject]@{ReadAt=(Get-Date).ToString('o');Computer=$env:COMPUTERNAME;AppIDSvcStatus=[string](Get-Service AppIDSvc).Status;AppIDSvcStartType=[string](Get-Service AppIDSvc).StartType;Collections=@(([xml](Get-AppLockerPolicy -Effective -Xml)).AppLockerPolicy.RuleCollection | ForEach-Object {[pscustomobject]@{Type=$_.Type;EnforcementMode=$_.EnforcementMode;RuleCount=@($_.ChildNodes | Where-Object NodeType -eq Element).Count}});HelloProvisioned=(Test-Path 'C:\\Windows\\ServiceProfiles\\LocalService\\AppData\\Local\\Microsoft\\Ngc\\*');EnabledLocalAccounts=@(Get-LocalUser | Where-Object Enabled | ForEach-Object {[pscustomobject]@{BuiltInAdministrator=([string]$_.SID -match '-500$');PasswordRequired=$_.PasswordRequired}})} | ConvertTo-Json -Depth 4 -Compress",
+  "stdout": "{\"ReadAt\":\"2026-09-19T10:28:21.2392504-04:00\",\"Computer\":\"OBIPC\",\"AppIDSvcStatus\":\"Running\",\"AppIDSvcStartType\":\"Automatic\",\"Collections\":[{\"Type\":\"Appx\",\"EnforcementMode\":\"Enabled\",\"RuleCount\":7},{\"Type\":\"Exe\",\"EnforcementMode\":\"Enabled\",\"RuleCount\":48},{\"Type\":\"Msi\",\"EnforcementMode\":\"Enabled\",\"RuleCount\":4},{\"Type\":\"Script\",\"EnforcementMode\":\"AuditOnly\",\"RuleCount\":12}],\"HelloProvisioned\":true,\"EnabledLocalAccounts\":[{\"BuiltInAdministrator\":false,\"PasswordRequired\":false}]}\r\n",
+  "stderr": "",
+  "code": 0,
+  "success": true
+}
