@@ -1,5 +1,11 @@
 name: media-stack
 
+x-lsio-environment: &lsio-environment
+  PUID: 1000
+  PGID: 1000
+  TZ: ${TZ:-America/New_York}
+  UMASK: "002"
+
 services:
   jellyfin:
     image: jellyfin/jellyfin:latest
@@ -37,11 +43,9 @@ services:
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     pull_policy: always
-    environment: &lsio-environment
-      PUID: 1000
-      PGID: 1000
-      TZ: ${TZ:-America/New_York}
-      UMASK: "002"
+    environment:
+      <<: *lsio-environment
+      SONARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
     volumes:
       - /opt/media-stack/config/sonarr:/config
       - /data:/data
@@ -53,7 +57,9 @@ services:
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     pull_policy: always
-    environment: *lsio-environment
+    environment:
+      <<: *lsio-environment
+      RADARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
     volumes:
       - /opt/media-stack/config/radarr:/config
       - /data:/data
@@ -65,7 +71,9 @@ services:
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     pull_policy: always
-    environment: *lsio-environment
+    environment:
+      <<: *lsio-environment
+      PROWLARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
     volumes:
       - /opt/media-stack/config/prowlarr:/config
     ports:
