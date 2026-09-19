@@ -1,7 +1,7 @@
 # ObiPC Restricted User Setup
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-18
 
 `IK-user` is a software developer using `ObiPC`, and I wanted that account allowlisted rather than trusted: an approved set of applications, a Settings app that stays out of his way but does not let him change the machine, no installing software without my approval, and a limit on how long the machine is used each day. This record is the whole job, from the design through to enforcement, all on 2026-09-12. **It is in force.** By the end of the day `IK-user` was running under the allowlist on his own live session.
 
@@ -35,7 +35,7 @@ The two-group split is the heart of the design and worth stating plainly. AppLoc
 
 Costs that belong in the record rather than in my memory:
 
-**The developer carve-out is a deliberate hole.** Allowlisting `C:\Dev` and the per-user toolchain directories (`.vscode`, npm, pip, cargo, go) is what makes development possible, because every binary a developer compiles is a new unapproved executable. Those paths are writable by the user, so the policy stops casual installs and drive-by downloads, not a person who understands it and drops an executable into `C:\Dev`. It is not a security boundary against the human at the keyboard.
+**The developer carve-out is a deliberate hole** (closed 2026-09-18: the executable allows for `C:\Dev` and the toolchain paths were removed in [ObiPC Recovery and Settings Lockdown](ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md), so that Action1 is the only way software reaches the account; the Script-collection allows remain). Allowlisting `C:\Dev` and the per-user toolchain directories (`.vscode`, npm, pip, cargo, go) is what makes development possible, because every binary a developer compiles is a new unapproved executable. Those paths are writable by the user, so the policy stops casual installs and drive-by downloads, not a person who understands it and drops an executable into `C:\Dev`. It is not a security boundary against the human at the keyboard.
 
 **Logon hours as stored are a backstop, not the enforcer.** The window is enforced by the scheduled task in the machine's local time, so it follows daylight saving with no intervention. The Active Directory logon-hours attribute is set wider on purpose, 7:00 AM to 11:00 PM, so daylight saving drift in the stored UTC bytes can never lock him out inside a legitimate hour. If the script is broken or disabled, the directory still refuses a sign-in outside 7 to 11.
 
@@ -47,7 +47,7 @@ Costs that belong in the record rather than in my memory:
 
 **Two Group Policy objects, linked to `OU=Standard,OU=Workstations`, each security-filtered.**
 
-- `C-WKS-ObiPC-AppControl`, computer side, filtered to the `OBIPC` computer account. Carries the AppLocker rules, sets `AppIDSvc` to Automatic through the registry, sets User Policy loopback to Merge, and sets the restricted-user UAC prompt to prompt for credentials. User side disabled.
+- `C-WKS-ObiPC-AppControl`, computer side, filtered to the `OBIPC` computer account. Carries the AppLocker rules, sets User Policy loopback to Merge (the policy report read on 2026-09-18 carries no `AppIDSvc` start value, so the Automatic start type I claimed here was never in the policy; the service is a protected process and I set it with `sc.exe` on the machine on 2026-09-18), and sets the restricted-user UAC prompt to prompt for credentials. User side disabled.
 - `U-WKS-ObiPC-Restricted`, user side, filtered to `ROL-ObiPC-Restricted`, applied through loopback merge. Hides all Settings pages except a named allowlist (see below), removes the Microsoft Store, disables the registry-editing tools, and blocks all Chrome extension installs. Computer side disabled.
 
 Loopback merge is why a user-side GPO filtered to a group takes effect from a policy linked at the computer's OU: the machine pulls the restricted user's settings on top of the user's own because the computer is in scope.
@@ -60,6 +60,8 @@ Loopback merge is why a user-side GPO filtered to a group takes effect from a po
 - **Script, audit only.** Same baseline as Exe, logging without blocking, because script blocking is the noisiest and a developer's tooling runs scripts constantly. This is the one collection deliberately not enforced.
 
 The Settings allowlist (`SettingsPageVisibility` = `hideonly:...`) hides Windows Update, Defender, Windows Insider, other users, date and time, proxy and VPN, recovery, troubleshoot, backup, activation, optional features, default apps, apps and features, workplace, email and accounts, your info, and sync. Personalisation, display, sound, and the like stay available.
+
+Correction, 2026-09-18: `hideonly:` is not a documented prefix. Microsoft documents `showonly:` and `hide:` only, so this list may never have taken effect; I did not test the Settings app on his session that day. It was replaced by a `showonly:` allowlist in [ObiPC Recovery and Settings Lockdown](ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md), after he reset the machine from the recovery menu, a path this record never considered.
 
 **Session limits.** [`Scripts/Limit-ObiPCUserSession.ps1`](../../Scripts/Limit-ObiPCUserSession.ps1) runs every minute from the scheduled task `ObiPC Session Limit`, as `SYSTEM`. Each tick it finds the active interactive sessions, checks Active Directory for restricted-group membership, accumulates observed minutes for the day into `C:\ProgramData\ObiPC-SessionLimit` (writable only by SYSTEM and administrators), warns at 15 and 5 minutes, and signs the session out when the window closes or the budget is spent. It reads group membership from the directory rather than the session token, so a newly added member is covered on the next tick. If the directory cannot be reached it does nothing and logs it: failing open, because a wrongly-signed-out person losing work is worse than a missed hour.
 

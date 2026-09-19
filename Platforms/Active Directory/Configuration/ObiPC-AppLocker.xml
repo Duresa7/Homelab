@@ -1,131 +1,264 @@
-﻿<AppLockerPolicy Version="1">
+<AppLockerPolicy Version="1">
   <RuleCollection Type="Exe" EnforcementMode="Enabled">
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000001" Name="Everyone: Windows folder" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000001" Name="Everyone: Windows folder" Description="Default rule with every user-writable subfolder found on ObiPC excepted (2026-09-18 ACL sweep)" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePathCondition Path="%WINDIR%\*" /></Conditions>
       <Exceptions>
         <FilePathCondition Path="%WINDIR%\Temp\*" />
         <FilePathCondition Path="%WINDIR%\Tasks\*" />
         <FilePathCondition Path="%WINDIR%\Tracing\*" />
         <FilePathCondition Path="%WINDIR%\Registration\CRMLog\*" />
-        <FilePathCondition Path="%WINDIR%\debug\WIA\*" />
+        <FilePathCondition Path="%WINDIR%\debug\*" />
+        <FilePathCondition Path="%WINDIR%\PLA\*" />
+        <FilePathCondition Path="%WINDIR%\Panther\*" />
+        <FilePathCondition Path="%WINDIR%\Logs\PBR\*" />
         <FilePathCondition Path="%WINDIR%\System32\FxsTmp\*" />
         <FilePathCondition Path="%WINDIR%\System32\com\dmp\*" />
         <FilePathCondition Path="%WINDIR%\System32\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Tasks_Migrated\*" />
+        <FilePathCondition Path="%WINDIR%\System32\AppLocker\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Microsoft\Crypto\RSA\MachineKeys\*" />
         <FilePathCondition Path="%WINDIR%\System32\spool\drivers\color\*" />
         <FilePathCondition Path="%WINDIR%\System32\spool\PRINTERS\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\SERVERS\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\FxsTmp\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\com\dmp\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks_Migrated\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\AppLocker\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Microsoft\Crypto\RSA\MachineKeys\*" />
       </Exceptions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000002" Name="Everyone: Program Files" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000002" Name="Everyone: Program Files" Description="Default rule; both Program Files trees" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePathCondition Path="%PROGRAMFILES%\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000003" Name="Administrators: all files" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000003" Name="Administrators: all files" Description="Local administrators are not restricted" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000004" Name="Unrestricted users: all files" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000004" Name="Unrestricted users: all files" Description="ROL-ObiPC-Unrestricted; membership is a complete bypass of this policy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000005" Name="Restricted: Dev folder" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="C:\Dev\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000006" Name="Restricted: VS Code extensions and CLI" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode*\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000007" Name="Restricted: npm global binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\npm\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000008" Name="Restricted: pip user scripts" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\Python\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000009" Name="Restricted: Python user install" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Local\Programs\Python\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000010" Name="Restricted: Rust cargo binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.cargo\bin\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000011" Name="Restricted: Go binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\go\bin\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000012" Name="Restricted: block Registry Editor" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000020" Name="Restricted: block Registry Editor" Description="Pairs with the DisableRegistryTools user policy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
       <Conditions><FilePathCondition Path="%WINDIR%\regedit.exe" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000013" Name="Restricted: block regedt32" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
-      <Conditions><FilePathCondition Path="%WINDIR%\System32\regedt32.exe" /></Conditions>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000021" Name="Restricted: block 32-bit Registry Editor" Description="The SysWOW64 copy was not covered before 2026-09-18" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\SysWOW64\regedit.exe" /></Conditions>
     </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000022" Name="Restricted: block regedt32" Description="%SYSTEM32% covers System32 and SysWOW64" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\regedt32.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000030" Name="Restricted: block shutdown.exe" Description="shutdown /r /o reboots into the recovery menu; the 2026-09-18 wipe used that menu" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\shutdown.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000031" Name="Restricted: block SystemReset" Description="Legacy Reset this PC entry point" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\SystemReset.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000032" Name="Restricted: block admin Settings flows" Description="Modern Reset this PC and other elevated Settings flows" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\SystemSettingsAdminFlows.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000033" Name="Restricted: block ReAgentc" Description="Recovery environment configuration" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\ReAgentc.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000034" Name="Restricted: block bcdedit" Description="Boot configuration; Safe Mode entry" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\bcdedit.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000035" Name="Restricted: block msconfig" Description="Boot tab sets Safe boot" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\msconfig.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000036" Name="Restricted: block DISM" Description="Image servicing" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\dism.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000037" Name="Restricted: block wusa" Description="Standalone update installer" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\wusa.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000038" Name="Restricted: block recovery drive creation" Description="Recovery media" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\RecoveryDrive.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000039" Name="Restricted: block repair disc creation" Description="Recovery media" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\recdisc.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000040" Name="Restricted: block System Restore" Description="Restore point UI" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\rstrui.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000041" Name="Restricted: block WinSxS copies" Description="Every System32 binary has a copy here; a path deny on System32 alone is bypassed by running the copy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\WinSxS\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000042" Name="Restricted: block servicing LCU copies" Description="Cumulative updates leave full binary copies here" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\servicing\LCU\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000050" Name="Restricted: block HTML Application host" Description=".hta is in no AppLocker collection" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\mshta.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000051" Name="Restricted: block wscript" Description="Windows Script Host; Script collection is still audit only" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\wscript.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000052" Name="Restricted: block cscript" Description="Windows Script Host" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\cscript.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000053" Name="Restricted: block regsvr32" Description="Remote scriptlet execution with nothing on disk" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\regsvr32.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000054" Name="Restricted: block .NET Framework tooling" Description="MSBuild inline tasks, InstallUtil, RegAsm, RegSvcs, csc; the modern dotnet SDK lives under Program Files and is unaffected" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\Microsoft.NET\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000055" Name="Restricted: block Control Panel applet host" Description=".cpl files are DLLs and the DLL collection is off; Settings is unaffected" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\control.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000056" Name="Restricted: block WMIC" Description="Absent on this build; deny costs nothing if it returns" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\wbem\WMIC.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000057" Name="Restricted: block HTML Help host" Description=".chm scripting" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%WINDIR%\hh.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000058" Name="Restricted: block forfiles" Description="Process launch proxy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\forfiles.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000059" Name="Restricted: block pcalua" Description="Process launch proxy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\pcalua.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000060" Name="Restricted: block ie4uinit" Description="Runs commands from a sibling .inf" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\ie4uinit.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000061" Name="Restricted: block sdclt" Description="Backup UI and launch proxy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\sdclt.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000062" Name="Restricted: block bitsadmin" Description="Scripted download staging" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\bitsadmin.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000063" Name="Restricted: block certutil" Description="Scripted download and decode staging; lift if certificate work is ever needed" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\certutil.exe" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000064" Name="Restricted: block ftp" Description="Scripted download staging" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePathCondition Path="%SYSTEM32%\ftp.exe" /></Conditions>
+    </FilePathRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000070" Name="Restricted: block shutdown.exe (publisher)" Description="Catalog-signed; matches the copy in C:\Dev or WinSxS too" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="SHUTDOWN.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000071" Name="Restricted: block admin Settings flows (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="SYSTEMSETTINGSADMINFLOWS.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000072" Name="Restricted: block ReAgentc (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="REAGENTC.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000073" Name="Restricted: block bcdedit (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="BCDEDIT.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000074" Name="Restricted: block msconfig (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="MSCONFIG.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000075" Name="Restricted: block regsvr32 (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="REGSVR32.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000076" Name="Restricted: block control.exe (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="CONTROL.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000077" Name="Restricted: block Registry Editor (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® WINDOWS® OPERATING SYSTEM" BinaryName="REGEDIT.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000078" Name="Restricted: block mshta (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="INTERNET EXPLORER" BinaryName="MSHTA.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000079" Name="Restricted: block wscript (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT ® WINDOWS SCRIPT HOST" BinaryName="WSCRIPT.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000080" Name="Restricted: block cscript (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT ® WINDOWS SCRIPT HOST" BinaryName="CSCRIPT.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000081" Name="Restricted: block MSBuild (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® .NET FRAMEWORK" BinaryName="MSBUILD.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000082" Name="Restricted: block InstallUtil (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® .NET FRAMEWORK" BinaryName="INSTALLUTIL.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
   </RuleCollection>
   <RuleCollection Type="Msi" EnforcementMode="Enabled">
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000014" Name="Everyone: system installer cache" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000100" Name="Everyone: system installer cache" Description="Default rule" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePathCondition Path="%WINDIR%\Installer\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000015" Name="Administrators: all installers" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000101" Name="Administrators: all installers" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000016" Name="Unrestricted users: all installers" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000102" Name="Unrestricted users: all installers" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+      <Conditions><FilePathCondition Path="*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000103" Name="Restricted: no installers" Description="Explicit deny so a future Everyone allow cannot silently open MSI installs for the restricted group" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
   </RuleCollection>
   <RuleCollection Type="Appx" EnforcementMode="Enabled">
-    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000017" Name="Everyone: signed packaged apps" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000110" Name="Everyone: signed packaged apps" Description="Keeps the Start menu, Settings and inbox apps working" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
     </FilePublisherRule>
-    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000018" Name="Administrators: signed packaged apps" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000111" Name="Administrators: signed packaged apps" Description="Keeps the Start menu, Settings and inbox apps working" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
     </FilePublisherRule>
-    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000019" Name="Unrestricted users: signed packaged apps" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000112" Name="Unrestricted users: signed packaged apps" Description="Keeps the Start menu, Settings and inbox apps working" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
       <Conditions><FilePublisherCondition PublisherName="*" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000113" Name="Restricted: block App Installer (winget)" Description="A signed MSIX installs without elevation; App Installer is the channel" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
+      <Conditions><FilePublisherCondition PublisherName="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" ProductName="Microsoft.DesktopAppInstaller" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
     </FilePublisherRule>
   </RuleCollection>
   <RuleCollection Type="Script" EnforcementMode="AuditOnly">
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000020" Name="Everyone: Windows folder" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000120" Name="Everyone: Windows folder" Description="Same exceptions as the Exe collection" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePathCondition Path="%WINDIR%\*" /></Conditions>
       <Exceptions>
         <FilePathCondition Path="%WINDIR%\Temp\*" />
         <FilePathCondition Path="%WINDIR%\Tasks\*" />
         <FilePathCondition Path="%WINDIR%\Tracing\*" />
         <FilePathCondition Path="%WINDIR%\Registration\CRMLog\*" />
-        <FilePathCondition Path="%WINDIR%\debug\WIA\*" />
+        <FilePathCondition Path="%WINDIR%\debug\*" />
+        <FilePathCondition Path="%WINDIR%\PLA\*" />
+        <FilePathCondition Path="%WINDIR%\Panther\*" />
+        <FilePathCondition Path="%WINDIR%\Logs\PBR\*" />
         <FilePathCondition Path="%WINDIR%\System32\FxsTmp\*" />
         <FilePathCondition Path="%WINDIR%\System32\com\dmp\*" />
         <FilePathCondition Path="%WINDIR%\System32\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Tasks_Migrated\*" />
+        <FilePathCondition Path="%WINDIR%\System32\AppLocker\*" />
+        <FilePathCondition Path="%WINDIR%\System32\Microsoft\Crypto\RSA\MachineKeys\*" />
         <FilePathCondition Path="%WINDIR%\System32\spool\drivers\color\*" />
         <FilePathCondition Path="%WINDIR%\System32\spool\PRINTERS\*" />
+        <FilePathCondition Path="%WINDIR%\System32\spool\SERVERS\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\FxsTmp\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\com\dmp\*" />
         <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Tasks_Migrated\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\AppLocker\*" />
+        <FilePathCondition Path="%WINDIR%\SysWOW64\Microsoft\Crypto\RSA\MachineKeys\*" />
       </Exceptions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000021" Name="Everyone: Program Files" Description="" UserOrGroupSid="S-1-1-0" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000121" Name="Everyone: Program Files" Description="Default rule; both Program Files trees" UserOrGroupSid="S-1-1-0" Action="Allow">
       <Conditions><FilePathCondition Path="%PROGRAMFILES%\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000022" Name="Administrators: all files" Description="" UserOrGroupSid="S-1-5-32-544" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000122" Name="Administrators: all files" Description="Local administrators are not restricted" UserOrGroupSid="S-1-5-32-544" Action="Allow">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000023" Name="Unrestricted users: all files" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000123" Name="Unrestricted users: all files" Description="ROL-ObiPC-Unrestricted; membership is a complete bypass of this policy" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1120" Action="Allow">
       <Conditions><FilePathCondition Path="*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000024" Name="Restricted: Dev folder" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000124" Name="Restricted: Dev folder" Description="Script shims only: the Exe allow for this path was removed 2026-09-18 so a downloaded program copied here cannot run" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
       <Conditions><FilePathCondition Path="C:\Dev\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000025" Name="Restricted: VS Code extensions and CLI" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode*\*" /></Conditions>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000125" Name="Restricted: VS Code extensions" Description="Per-user extension host binaries" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000026" Name="Restricted: npm global binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000126" Name="Restricted: VS Code Insiders extensions" Description="Same for the Insiders channel" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.vscode-insiders\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000127" Name="Restricted: npm global binaries" Description="npm -g install target" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
       <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\npm\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000027" Name="Restricted: pip user scripts" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000128" Name="Restricted: npx cache" Description="npx unpacks packages here before running them" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Local\npm-cache\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000129" Name="Restricted: npx cache (roaming)" Description="Older npm releases use the roaming profile" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\npm-cache\*" /></Conditions>
+    </FilePathRule>
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000130" Name="Restricted: pip user scripts" Description="pip --user script entry points" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
       <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Roaming\Python\*" /></Conditions>
     </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000028" Name="Restricted: Python user install" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000131" Name="Restricted: Python user install" Description="Per-user Python installer target" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
       <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\AppData\Local\Programs\Python\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000029" Name="Restricted: Rust cargo binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\.cargo\bin\*" /></Conditions>
-    </FilePathRule>
-    <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000030" Name="Restricted: Go binaries" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
-      <Conditions><FilePathCondition Path="%OSDRIVE%\Users\*\go\bin\*" /></Conditions>
     </FilePathRule>
   </RuleCollection>
 </AppLockerPolicy>
-
