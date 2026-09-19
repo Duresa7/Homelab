@@ -47,6 +47,18 @@ The identity plane could not reach the portal at all, which is the network doing
 
 Two things worth knowing for the next enrollment. Action1 carries **two** `ObiPC` endpoints, one last seen 2026-09-13 and therefore the machine before the rebuild; the current one is the entry seen today. And `testuser`'s membership of `ROL-ObiPC-Restricted`, put in place this morning for the AppLocker test, changes nothing on `HQ-WS001`: the AppLocker policy is filtered to `OBIPC$`, and the restricted user policy reaches a session only through loopback processing that exists on `ObiPC`'s computer policy alone. On the test VM `testuser` is an ordinary standard user, which is the right seat for this test.
 
+## A standard user installed 7-Zip, which is the whole point
+
+The client went onto `HQ-WS001` from the release archive, run under my Tier 2 account because the installer writes into Program Files and registers a task as `SYSTEM`. It took the device token from the vault item at the prompt and wrote `client.json` beside the binary. Everything the installer claims to do, it did: the executable reports 0.2.0, `AppPortal.Updater.exe` is beside it, the configuration points at `http://192.168.40.35:3004` with a ten-second refresh, the **App Portal Updater** task reads `Ready`, and the Start menu shortcut exists.
+
+The updater then ran on its own before anyone asked it to, at 12:35:54, reached GitHub, compared v0.2.0 against the installed 0.2.0 and wrote `UpToDate` into `update.json`. That is the self-update path working on a real machine for the first time, and it worked without the client ever being opened.
+
+Then the part that matters. Signed in as `testuser`, a standard user with no administrative rights anywhere on that machine, opened App Portal from the Start menu and pressed Install on 7-Zip. The server accepted the request at 16:40:17 and recorded it complete at 16:40:47: **thirty seconds**, state `Succeeded`, detail *The action completed successfully*, through an Action1 automation named `App Portal: 7-Zip 26.03.00.0 on HQ-WS001`. The machine itself agrees — `7-Zip 26.03 (x64 edition)`, version 26.03.00.0, with `C:\Program Files\7-Zip\7zFM.exe` on disk.
+
+A user who cannot write to Program Files, cannot run an installer, and holds no credential for anything caused software to be installed into Program Files. The elevation happens in the Action1 agent, which already runs as `SYSTEM` and was already trusted to patch the machine. No local admin was granted, no password was shared, and nothing was added to the AppLocker allow list. That is the outcome the project exists to produce, and it is now demonstrated rather than designed.
+
+One note for the next person reading logs: `docker logs app-portal` was empty for the whole exchange. Request logging went to Warning when I scrubbed identifiers out of the log, so the evidence is the server's own state file, `/app/data/installs.json`, and the Action1 console.
+
 ## Verification
 
 | Check | Result |
@@ -64,6 +76,11 @@ Two things worth knowing for the next enrollment. Action1 carries **two** `ObiPC
 | Network path before the firewall change | **Dropped.** From `HQ-WS001` itself, through its guest agent, TCP to `192.168.40.35:3004` timed out at five seconds while LDAP to `HQ-DC01` answered at once. Nginx Proxy Manager was equally unreachable from the zone |
 | Network path after the firewall change | TCP 3004 connects and `http://192.168.40.35:3004/healthz` returns `{"status":"ok"}` from `HQ-WS001` |
 | Firewall control | `HQ-MGT01` at `192.168.65.12`, same zone, outside the policy, refused on 3004 both before and after |
+| Install on `HQ-WS001` | Executable 0.2.0, updater present, `client.json` pointing at `192.168.40.35:3004`, **App Portal Updater** task `Ready`, Start menu shortcut present |
+| First unattended updater run | 12:35:54 local, reached GitHub, `UpToDate`, `update.json` written; the client had never been opened |
+| Device as the client sees it | `HQ-WS001`, `Connected`, five apps in the catalog, zero installs |
+| 7-Zip install as `testuser` | Requested 16:40:17 UTC, `Succeeded` 16:40:47 UTC, automation `App Portal: 7-Zip 26.03.00.0 on HQ-WS001` |
+| 7-Zip on the machine | `7-Zip 26.03 (x64 edition)` 26.03.00.0 in the uninstall registry; `C:\Program Files\7-Zip\7zFM.exe` present |
 | Release `v0.2.0` | CI run 35450364737: *Build and test*, *Publish Windows client* and *Build server image* all `success`; assets `AppPortal-client-win-x64.zip` (106.7 MB) and `SHA256SUMS`; the archive verifies against the checksum file and contains `client/AppPortal.Updater.exe` and `client/Uninstall-AppPortalClient.ps1` |
 
 ## Open
@@ -72,4 +89,4 @@ Two things worth knowing for the next enrollment. Action1 carries **two** `ObiPC
 - **The path to the server is a test fixture, not the end state.** `HQ-WS001` sits on VLAN 65, which by design reaches neither `docker-main` nor Nginx Proxy Manager. On 2026-09-19 I opened `Allow Identity to App Portal`, a narrow IPv4 TCP allow from that one address to `192.168.40.35:3004`, recorded in the [firewall configuration](../../../../Infrastructure/Network/UniFi/Configuration/firewall.md). It carries a bearer token over plain HTTP on the LAN, which is acceptable for a test on a machine I control and not acceptable as a standing arrangement. The durable answer is an Nginx Proxy Manager host with the wildcard certificate and a name the controllers resolve, after which this policy is removed.
 - **Signed releases.** The updater trusts the GitHub release; a signature checked against a key embedded in the updater would remove that dependency.
 - **TLS.** The listener is plain HTTP on the LAN. Putting it behind Nginx Proxy Manager is unchanged from the first record.
-- **The client has not run on a real machine.** The Windows-specific paths in the updater, the scheduled task registration and the swap on a running executable are all tested only in their cross-platform parts.
+- **The swap itself is still untested on Windows.** The installer, the scheduled task and an unattended update check all ran on `HQ-WS001`, but every run so far found the machine already current. The rename-based swap of a running executable, and the rollback path behind it, have only been exercised in their cross-platform parts. Cutting a release while the client is installed there is the test.
