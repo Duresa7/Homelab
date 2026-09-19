@@ -22,7 +22,7 @@ Source is a separate public repository: [Duresa7/app-portal](https://github.com/
 | Catalog | `deploy/config/catalog.json`, mounted read-only, five apps: Google Chrome, Mozilla Firefox, 7-Zip, VLC media player, Visual Studio Code. Package identifiers are unverified placeholders except Chrome and 7-Zip |
 | State | Named volume `deploy_app-portal-data` at `/app/data`, holding `devices.json` and `installs.json` |
 | Secrets on the host | `deploy/server.env`, mode 600, gitignored. `Action1__ClientId` and `Action1__ClientSecret` are empty until the credential exists |
-| Client | Avalonia desktop app for Windows, published by the repository's CI as `AppPortal-client-win-x64.zip`. Not deployed to any machine yet |
+| Client | Avalonia desktop app for Windows, published by the repository's CI as `AppPortal-client-win-x64.zip`, currently release v0.1.1. Not deployed to any machine yet. `AppPortal.exe --demo` runs the whole interface from in-memory sample data with no server, which is how to look at it on a machine that is not enrolled |
 
 ## How a request flows
 
