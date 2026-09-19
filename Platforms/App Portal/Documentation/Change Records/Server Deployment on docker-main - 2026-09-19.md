@@ -58,9 +58,22 @@ Run against the container on `docker-main` after the rebuild, on 2026-09-19.
 | `POST /api/v1/installs` with that token | HTTP 502, "Action1 API credentials are not configured", which is the correct answer while the credential is absent |
 | `device remove` | Removed |
 | Container | `Up (healthy)`, `192.168.40.35:3004->8080/tcp` |
-| Test suite | 13 passed, 0 failed |
+| Test suite | 17 passed, 0 failed |
 
 The verification device was created and removed inside a single shell pipeline on the host, so its token never reached a transcript.
+
+## Four defects a review found, and what they would have done
+
+I reviewed the code after the deployment and fixed everything it turned up, with a test for each.
+
+| Defect | What it would have done |
+|---|---|
+| No lock across the check-then-act in `CreateAsync` | Two overlapping requests both read a snapshot showing nothing in flight, both pass the duplicate and concurrency checks, and both start an Action1 deployment. A client retry after a slow answer was enough to trigger it |
+| `Upsert` overwrote a record wholesale | The background poller and every client refresh update the same install from their own snapshots. A slow earlier call landing after a fast later one pushed a finished install back to Running and cleared its completion time |
+| `devices.json` written in place with no parse guard | A crash mid-write left a truncated file, and the resulting parse error was thrown out of `Authenticate` on every request to every API route until someone repaired the file by hand |
+| The client assumed every response body was JSON | An empty body or an unexpected content type, which a reverse proxy in front of the server can produce, threw out of a timer callback and ended the process |
+
+The fixes are a per-device gate around install creation, a stale-write guard in `Upsert` that also refuses to move a terminal state back to active, a write-then-rename for the device file with the same parse guard the catalog already had, and response-body handling in the client that surfaces a message in the window instead of throwing. The test suite went from 13 to 17. I confirmed the client fix by pointing it at a server that answers HTTP 200 with HTML: it draws an error banner and keeps running.
 
 ## What this cannot do yet
 
