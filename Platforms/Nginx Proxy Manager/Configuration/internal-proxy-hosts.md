@@ -1,11 +1,11 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-19
 
 On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
-I verified 23 enabled proxy hosts on 2026-09-16 after retiring Portainer. I route these internal service names through Nginx Proxy Manager at `192.168.85.2`: the 22 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I verified 24 enabled proxy hosts on 2026-09-19 after adding App Portal. I route these internal service names through Nginx Proxy Manager at `192.168.85.2`: the 23 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -33,10 +33,13 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & Web
 | `mcp.alphasecunited.com` | `192.168.40.39:4788` | HTTP | Executor on `docker-blue`. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The administrator account is claimed. |
 | `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |
 | `mesh.alphasecunited.com` | `192.168.40.39:443` | HTTPS | MeshCentral on `docker-blue`, proxy host 29, added 2026-09-13. Forwards over HTTPS so the hop to the backend stays encrypted. WebSocket upgrade is on, which both the browser and the agents need. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. |
+| `appportal.alphasecunited.com` | `192.168.40.35:3004` | HTTP | App Portal on `docker-main`, proxy host 32, added 2026-09-19. Serves the desktop client's API, so it carries a device bearer token and exists to keep that token off the wire in the clear. WebSocket upgrade is off; the client polls. |
 
 The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 
 The implementation and rollback record is [Internal HTTPS Service Onboarding - 2026-07-22](../Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+I added App Portal as proxy host 32 on 2026-09-19: [Internal HTTPS, ObiPC Enrollment and the First Self-Update - 2026-09-19](../../App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 
 I added Open WebUI as proxy host 28 on 2026-09-05: [Open WebUI Internal HTTPS - 2026-09-05](../Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md).
 

@@ -1,7 +1,9 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-19
+
+On 2026-09-19 I added proxy host 32, `appportal.alphasecunited.com`, for App Portal on `docker-main`. It forwards to `http://192.168.40.35:3004` with certificate 1, Force SSL and HTTP/2. The UniFi policy `Allow NPM to docker-main web UIs` lists destination ports explicitly, so it needed TCP 3004 before the proxy could reach the portal at all. [Record](../App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 
 On 2026-09-16 I removed Portainer proxy host 14. The 23 remaining proxy hosts retain their shared certificate; Nginx configuration validation passed.
 
@@ -11,13 +13,13 @@ I added proxy host 29, `mesh.alphasecunited.com`, on 2026-09-13 for MeshCentral 
 
 I retired proxy hosts 24 (`games.alphasecunited.com`) and 25 (`wings.alphasecunited.com`) on 2026-09-12. Both records are marked deleted and disabled, their generated configurations are absent, and Nginx validation and reload passed.
 
-I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 22 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
+I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for internal services: it provides internal HTTPS for NetBird and 23 application interfaces while keeping the administrator UI on its existing IP and port. External ingress isn't NPM's job; Caddy on `edge-01` (VM 121) fronts public traffic alongside cloudflared.
 
 ## Current State
 
 | Item | Current value |
 |---|---|
-| Deployment status | Runtime healthy; 23 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
+| Deployment status | Runtime healthy; 24 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network`, Debian 13, `192.168.85.2` |
 | NPM release | 2.15.1 |
 | Live path | `/opt/docker/nginx-proxy-manager` |
