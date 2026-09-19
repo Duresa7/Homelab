@@ -1,19 +1,26 @@
+# Media stack on media-01 (CT 842 on red-server), deployed at
+# /opt/media-stack/compose.yml
+#
+# Copied 2026-09-18 before adding <APP>__SERVER__TRUSTEDNETWORKS to sonarr,
+# radarr and prowlarr. This is the file as it stood before that edit.
+#
+# No redaction was needed. The Proton WireGuard key and the LAN subnet are
+# variable references resolved from /opt/media-stack/.env, which is root-owned
+# and stays on the host.
+#
+# The issue that prompted the edit is Platforms/Media Stack/Documentation/
+# Troubleshooting/Lost Proxy Trust Broke Arr HTTPS Redirects - 2026-09-18.md
 name: media-stack
-
-x-lsio-environment: &lsio-environment
-  PUID: 1000
-  PGID: 1000
-  TZ: ${TZ:-America/New_York}
-  UMASK: "002"
 
 services:
   jellyfin:
     image: jellyfin/jellyfin:latest
     pull_policy: always
+    container_name: jellyfin
     user: "1000:1000"
     environment:
       TZ: ${TZ:-America/New_York}
-      JELLYFIN_PublishedServerUrl: ${JELLYFIN_PUBLISHED_SERVER_URL:?supply HTTPS URL outside repository}
+      JELLYFIN_PublishedServerUrl: https://jellyfin.alphasecunited.com
     volumes:
       - /opt/media-stack/config/jellyfin:/config
       - /opt/media-stack/cache/jellyfin:/cache
@@ -24,12 +31,14 @@ services:
     ports:
       - "8096:8096"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   jellyseerr:
     image: ghcr.io/seerr-team/seerr:latest
-    pull_policy: always
     init: true
+    pull_policy: always
+    container_name: jellyseerr
     environment:
       TZ: ${TZ:-America/New_York}
       LOG_LEVEL: info
@@ -38,52 +47,66 @@ services:
     ports:
       - "5055:5055"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     pull_policy: always
+    container_name: sonarr
     environment:
-      <<: *lsio-environment
-      SONARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ:-America/New_York}
+      UMASK: "002"
     volumes:
       - /opt/media-stack/config/sonarr:/config
       - /data:/data
     ports:
       - "8989:8989"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     pull_policy: always
+    container_name: radarr
     environment:
-      <<: *lsio-environment
-      RADARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ:-America/New_York}
+      UMASK: "002"
     volumes:
       - /opt/media-stack/config/radarr:/config
       - /data:/data
     ports:
       - "7878:7878"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     pull_policy: always
+    container_name: prowlarr
     environment:
-      <<: *lsio-environment
-      PROWLARR__SERVER__TRUSTEDNETWORKS: "192.168.85.2"
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ:-America/New_York}
+      UMASK: "002"
     volumes:
       - /opt/media-stack/config/prowlarr:/config
     ports:
       - "9696:9696"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   flaresolverr:
     image: ghcr.io/flaresolverr/flaresolverr:latest
     pull_policy: always
+    container_name: flaresolverr
     environment:
       TZ: ${TZ:-America/New_York}
       LOG_LEVEL: info
@@ -91,20 +114,23 @@ services:
       CAPTCHA_SOLVER: none
     shm_size: 1gb
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   gluetun:
     image: qmcgaw/gluetun:latest
     pull_policy: always
-    profiles: [vpn]
-    cap_add: [NET_ADMIN]
+    container_name: gluetun
+    profiles: ["vpn"]
+    cap_add:
+      - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
       TZ: ${TZ:-America/New_York}
       VPN_SERVICE_PROVIDER: protonvpn
       VPN_TYPE: wireguard
-      WIREGUARD_PRIVATE_KEY: ${PROTON_WIREGUARD_PRIVATE_KEY:?supply outside repository}
+      WIREGUARD_PRIVATE_KEY: ${PROTON_WIREGUARD_PRIVATE_KEY}
       SERVER_COUNTRIES: ${PROTON_SERVER_COUNTRIES:-United States}
       PORT_FORWARD_ONLY: "on"
       VPN_PORT_FORWARDING: "on"
@@ -114,24 +140,29 @@ services:
         "json={\"listen_port\":{{PORT}},\"random_port\":false,\"upnp\":false}"
         http://127.0.0.1:8080/api/v2/app/setPreferences'
       FIREWALL_INPUT_PORTS: "8080"
-      FIREWALL_OUTBOUND_SUBNETS: ${MEDIA_LAN_SUBNET:?supply outside repository}
+      FIREWALL_OUTBOUND_SUBNETS: 192.168.40.0/24
     volumes:
       - /opt/media-stack/config/gluetun:/gluetun
     ports:
       - "8080:8080"
     restart: unless-stopped
-    networks: [media]
+    networks:
+      - media
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     pull_policy: always
-    profiles: [vpn]
+    container_name: qbittorrent
+    profiles: ["vpn"]
     network_mode: service:gluetun
     depends_on:
       gluetun:
         condition: service_healthy
     environment:
-      <<: *lsio-environment
+      PUID: 1000
+      PGID: 1000
+      TZ: ${TZ:-America/New_York}
+      UMASK: "002"
       WEBUI_PORT: 8080
     volumes:
       - /opt/media-stack/config/qbittorrent:/config

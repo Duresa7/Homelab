@@ -1,7 +1,7 @@
 # Media Stack Troubleshooting
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-18
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -9,6 +9,7 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 
 | Date | Issue |
 |---|---|
+| 2026-09-18 | [Lost Proxy Trust Broke Arr HTTPS Redirects](Lost%20Proxy%20Trust%20Broke%20Arr%20HTTPS%20Redirects%20-%202026-09-18.md) |
 | 2026-09-09 | [Jellyfin 12 Encoding Configuration Reset](Jellyfin%2012%20Encoding%20Configuration%20Reset%20-%202026-09-09.md) |
 | 2026-08-23 | [Anime Completed Downloads Missing from Jellyfin](Anime%20Completed%20Downloads%20Missing%20from%20Jellyfin%20-%202026-08-23.md) |
 | 2026-07-25 | [SSH Reload Failed During Ansible Account Onboarding](SSH%20Reload%20Failed%20During%20Ansible%20Account%20Onboarding%20-%202026-07-25.md) |

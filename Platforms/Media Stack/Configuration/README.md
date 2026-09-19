@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-18
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -48,5 +48,7 @@ The live qBittorrent configuration also enables `excluded_file_names_enabled` wi
 ## Internal HTTPS
 
 Jellyfin advertises `JELLYFIN_PUBLISHED_SERVER_URL` as its internal HTTPS URL and trusts NPM at `192.168.85.2`. qBittorrent's persistent `WebUI\ServerDomains` value is the semicolon-separated `qbittorrent.alphasecunited.com;gluetun;192.168.40.42`. Those entries preserve the NPM hostname, the Arr clients' Docker path, & direct access without disabling Host-header validation. UniFi resolves all six media UI names to NPM and permits NPM only to TCP 5055, 7878, 8080, 8096, 8989, & 9696 on `media-01`.
+
+Sonarr, Radarr, and Prowlarr each carry `<APP>__SERVER__TRUSTEDNETWORKS` set to `192.168.85.2` in Compose, which is the Servarr `TrustedNetworks` setting. Without it, `ForwardedHeadersMiddleware` treats NPM as an unknown proxy, discards its `X-Forwarded-Proto: https`, and the apps answer an HTTPS request with an `http://` login redirect. The value is comma separated and a bare address means a single host. The [lost proxy trust issue](../Documentation/Troubleshooting/Lost%20Proxy%20Trust%20Broke%20Arr%20HTTPS%20Redirects%20-%202026-09-18.md) records the failure that exposed it and the verification.
 
 The names, upstreams, verification, & rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). The [qBittorrent Host Validation issue](../Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) records why all three entries are required.
