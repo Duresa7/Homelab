@@ -1,7 +1,7 @@
 # MeshCentral
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-18
 
 I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLAN 40. I deployed it on 2026-09-12 as a pilot, so RustDesk `hbbs` and `hbbr` keep running on the same host until I decide between them. I picked it over the alternatives because it is free and self-hosted, it serves the browser console and the endpoint agents from one port, and it supports LDAP and OIDC console login without a subscription. RustDesk's OSS backend has no central permissions or directory login, and those sit behind a paid plan.
 
@@ -45,13 +45,15 @@ The two domain controllers are deliberately outside that policy. Controlling a M
 
 ## Enrolled devices
 
-I installed the agent by hand on two machines on 2026-09-13 and read the result back from the server at 12:19 AM EDT.
+I installed the agent by hand on two machines on 2026-09-13 and read the result back from the server at 12:19 AM EDT. `ObiPC` followed on 2026-09-18.
 
 | Device | Address | VLAN | How it reaches the server |
 |---|---|---|---|
 | `HQ-MGT01` | `192.168.65.12` | IDENTITY-A 65 | The `Allow Identity to MeshCentral` policy |
 | `DuresaGamingPC` | `192.168.50.241` | Secure 50 | No policy needed; Secure and Personal-A are both in the `Internal` zone |
 | `ubuntu-dev` | `192.168.40.179` | Personal-A 40 | Through Nginx Proxy Manager since its 2026-09-13 reinstall |
+| `ObiPC` | `192.168.60.102` | Secure Client 60 | No policy needed, same `Internal` zone; enrolled 2026-09-18 as Background & Interactive, see [ObiPC Agent Enrolment - 2026-09-18](Documentation/Change%20Records/ObiPC%20Agent%20Enrolment%20-%202026-09-18.md) |
+| `dkadi-mb-air3`, `dkadi-surface-pro` | | | Present in the database on 2026-09-18, enrolled without a record |
 
 `DuresaGamingPC` is the Windows hostname of the machine UniFi lists as `Jedi PC`. Both devices held four established TCP 443 sessions to the container at that reading, and the server's database holds a record for each.
 
@@ -69,6 +71,6 @@ I claimed the site administrator account on 2026-09-13 and set `NewAccounts` to 
 
 `localSessionRecording` is `true` as generated, but nothing is being recorded. Server-side recording needs a `sessionRecording` block with a `filepath`, which this configuration does not have. I checked on 2026-09-13 after the first two desktop sessions: no recordings directory exists, no `.mcrec` files exist anywhere under `/opt/meshcentral`, and the event database holds no recording events. The line in the [deployment record](Documentation/Change%20Records/Deployment%20-%202026-09-12.md) calling recordings the one part that grows without bound was written from the setting name and is wrong as the server is configured. If I want an audit trail later, it is that config block plus a volume with room.
 
-Two agents are enrolled and connected. I have not yet tested console access while logged out, Ctrl+Alt+Delete, UAC elevation, or reconnect after reboot, and those four are what decide whether MeshCentral replaces RustDesk. RustDesk stays until they pass.
+Six devices are in the database as of 2026-09-18, with `ObiPC` the first on Secure Client. I have not yet tested console access while logged out, Ctrl+Alt+Delete, UAC elevation, or reconnect after reboot, and those four are what decide whether MeshCentral replaces RustDesk. RustDesk stays until they pass.
 
 I took no snapshot and no backup for this work.
