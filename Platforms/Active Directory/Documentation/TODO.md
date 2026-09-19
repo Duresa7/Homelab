@@ -1,7 +1,7 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-18
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
@@ -35,11 +35,22 @@ On 2026-09-12 I required IK-user and AH-user to change their passwords at next d
 1. I will set the `Credential Validation` audit subcategory to `Success and Failure` on HQ-DC01 and HQ-DC02. Both currently audit Success only, so lockouts leave no 4776 failure trail.
 2. I will run `auditpol /get /subcategory:"Credential Validation"` on each controller and record the results. This work is done when both read back `Success and Failure` and the change record includes both checks.
 
+## ObiPC lockdown follow-ups (applied 2026-09-18, user side unobserved)
+
+The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md) and the [incident](../../../Security/Incidents/Active%20Directory/ObiPC%20Wiped%20from%20the%20Recovery%20Menu%20-%202026-09-18.md) hold the detail.
+
+1. After `IK-user`'s first sign-in since the rebuild, I will read `gpresult /user` for his session and the AppLocker 8004 events from his first day, and confirm the Settings `showonly:` list, the Control Panel allowlist, `NoClose` and the MMC restriction are in effect and that nothing he needs was denied. Done when each is observed on his session and any needed page or path is added.
+2. I will watch what Shift+Restart and `shutdown /r /o` present with the recovery environment unmapped, from a session of my own. Done when the observed menu is recorded and nothing in it launches a reset.
+3. During his first week I will read the AppLocker 8004 events for anything the closed developer carve-out blocks that he legitimately needs, and answer each with an Action1 deployment or a publisher rule, never by reopening a user-writable path. Done when a week passes with every 8004 either deployed or declined in writing.
+4. After a week of Script-collection 8003 audit events, I will add whatever paths the log shows and switch that collection to enforced; then a separate audit for `msiexec.exe` before denying it; `rundll32.exe` only as its own change with a test pass. Done when each is enforced with a readback.
+5. I will narrow the Appx allow to Microsoft publishers after inventorying installed packages, as a standalone change verified against Start, Search, Settings, Photos, Terminal and Notepad.
+6. After every Windows feature update I will confirm `recovery.log` shows the task turning the recovery environment back off. Done when the log line for that boot reads `WinRE=Disabled`.
+
 ## BitLocker for physical workstations (baseline decision, open)
 
-1. I will settle the physical workstation baseline as TPM-only BitLocker with recovery keys backed into Active Directory by policy. ObiPC's system drive is unencrypted, and the directory schema supports recovery-key storage. The decision is done when I record the baseline and its scope, `OU=Standard,OU=Workstations`.
+1. I will settle the physical workstation baseline as BitLocker with **TPM+PIN** and recovery keys backed into Active Directory by policy. I had planned TPM-only; the 2026-09-18 wipe changed that, because Microsoft lists only TPM+PIN and password protectors as forcing the recovery key before a "Remove everything" reset from the recovery environment, so TPM-only would not have stopped it. ObiPC's system drive is unencrypted, and the directory schema supports recovery-key storage. The decision is done when I record the baseline and its scope, `OU=Standard,OU=Workstations`.
 2. I will configure and apply the recovery-key policy to that OU. This step is done when ObiPC's resultant policy requires recovery information to be stored in Active Directory before BitLocker is enabled.
-3. I will enable BitLocker on ObiPC's system drive with TPM-only startup protection. This work is done when the drive reports fully encrypted with protection on and I verify that the matching recovery-key object exists beneath ObiPC's computer object in Active Directory.
+3. I will enable BitLocker on ObiPC's system drive with TPM+PIN startup protection. This work is done when the drive reports fully encrypted with protection on and I verify that the matching recovery-key object exists beneath ObiPC's computer object in Active Directory.
 
 ## Cloud Sync device export timing (observation to settle)
 
