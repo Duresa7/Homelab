@@ -18,7 +18,7 @@
 
 ## Summary
 
-While building the `unifi_insights` app I staged the Splunk administrator credential into `/home/dkadi/.splunk_netrc` on `splunk-siem`, using `op inject` so the value went from the password manager to a mode-600 file without passing through a command line. That part worked as intended.
+While building the `unifi_insights` app I staged the Splunk administrator credential into `/home/dkadi/.splunk_netrc` on `splunk-siem`, using the password manager's inject command so the value went from the manager to a mode-600 file without passing through a command line. That part worked as intended.
 
 REST calls against that file then started returning `Unauthorized`, so I went to check which host the file was scoped to. I ran:
 
@@ -54,7 +54,7 @@ None observable on the service. Splunk stayed healthy throughout and authenticat
 
 | Time | Event |
 |---|---|
-| 2026-08-28 1:57 PM EDT | I staged the credential to `/home/dkadi/.splunk_netrc` through `op inject`, mode 600, owner `dkadi`. |
+| 2026-08-28 1:57 PM EDT | I staged the credential to `/home/dkadi/.splunk_netrc` through the manager's inject command, mode 600, owner `dkadi`. |
 | 2026-08-29, exact minute not retained | REST calls returned `Unauthorized` because the netrc named `127.0.0.1` and the requests targeted `localhost`. |
 | 2026-08-29, exact minute not retained | I ran the `awk` above to inspect the file's structure, and it printed the credential. |
 | 2026-08-29, exact minute not retained | I repointed the requests at `127.0.0.1`, which resolved the original `Unauthorized`. |
@@ -69,7 +69,7 @@ None observable on the service. Splunk stayed healthy throughout and authenticat
 - A sweep of every readable text file under `$HOME`, excluding only `.git`, `node_modules` and cache directories, returned zero matches.
 - A sweep of all 3,371 blobs across every reachable commit in this repository returned zero matches. Nothing was ever committed.
 - `/home/dkadi/.splunk_netrc` no longer exists. The eleven scratch scripts staged beside it during the work are also gone.
-- The staging itself followed the rule it was supposed to: `op inject` wrote the file directly, so the value was never a command-line argument or a shell variable. The failure was reading the file back, not writing it.
+- The staging itself followed the rule it was supposed to: the inject command wrote the file directly, so the value was never a command-line argument or a shell variable. The failure was reading the file back, not writing it.
 - The `"password <redacted>"` literal in the command made the output *look* sanitised. That is worse than no attempt, because it invites a reader to skim past the line.
 
 ## Root Cause
