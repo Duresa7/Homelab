@@ -13,16 +13,16 @@ Source is a separate public repository: [Duresa7/app-portal](https://github.com/
 
 | Item | Current value |
 |---|---|
-| Deployment status | Server running and healthy on `docker-main` since 2026-09-19. Not yet usable: the Action1 API credential does not exist, so every install attempt answers HTTP 502 by design |
+| Deployment status | Server running and healthy on `docker-main` since 2026-09-19, talking to the tenant with a live API credential since the afternoon of the same day. Every catalog package resolves. No device is registered yet, so nothing can be installed through it until `ObiPC` is enrolled |
 | Compute | Galaxy CT 110 `docker-main`, `192.168.40.35`, VLAN 40 |
 | Live path | `/opt/docker/app-portal`, a clone of the public repository |
 | Container | `app-portal`, image `app-portal-server:local`, 220 MB, `restart: unless-stopped` |
 | Listener | `192.168.40.35:3004` mapped to container port 8080. Plain HTTP on the LAN; TLS is an open item |
 | Compose project | `/opt/docker/app-portal/deploy/compose.yaml` |
-| Catalog | `deploy/config/catalog.json`, mounted read-only, five apps: Google Chrome, Mozilla Firefox, 7-Zip, VLC media player, Visual Studio Code. Package identifiers are unverified placeholders except Chrome and 7-Zip |
+| Catalog | `deploy/config/catalog.json`, mounted read-only, five apps: Google Chrome, Mozilla Firefox, 7-Zip, VLC media player, Visual Studio Code. All five identifiers verified against the tenant on 2026-09-19 |
 | State | Named volume `deploy_app-portal-data` at `/app/data`, holding `devices.json` and `installs.json` |
-| Secrets on the host | `deploy/server.env`, mode 600, gitignored. `Action1__ClientId` and `Action1__ClientSecret` are empty until the credential exists |
-| Client | Avalonia desktop app for Windows, published by the repository's CI as `AppPortal-client-win-x64.zip`, currently release v0.1.1. Not deployed to any machine yet. `AppPortal.exe --demo` runs the whole interface from in-memory sample data with no server, which is how to look at it on a machine that is not enrolled |
+| Secrets on the host | `deploy/server.env`, mode 600, gitignored, rendered from vault references (item *<REDACTED_CREDENTIAL_ITEM_NAME>*: client id, secret, organisation id). Re-render and recreate the container to rotate |
+| Client | Avalonia desktop app for Windows, published by the repository's CI as `AppPortal-client-win-x64.zip` with `SHA256SUMS`, currently release v0.2.0. Not deployed to any machine yet. `AppPortal.exe --demo` runs the whole interface from in-memory sample data with no server. From v0.2.0 the archive carries `AppPortal.Updater.exe`, and a machine installed once keeps itself current |
 
 ## How a request flows
 
@@ -37,9 +37,14 @@ The Action1 API credential exists only in `server.env` on `docker-main`. A devic
 
 The client installs to `%ProgramFiles%\App Portal`, which the `ObiPC` AppLocker allowlist already covers through its `Everyone` Program Files rule, so no new rule is needed. The client never runs an installer itself; the Action1 agent does that as `LocalSystem`, which AppLocker does not evaluate. That keeps the property I set on 2026-09-18: Action1 remains the only install path for `IK-user`.
 
+## How the client stays current
+
+The install script registers a scheduled task, **App Portal Updater**, that runs `AppPortal.Updater.exe` as `SYSTEM` after boot, after logon, daily, and on request. It reads the newest GitHub release, verifies the archive against the release's `SHA256SUMS`, stages it inside Program Files and swaps it in by renaming, so a running client is never killed and the updater can replace itself. The client shows an *Update now* banner, then *Restart to update* once a build is staged. The trust boundary is the GitHub account: the releases are unsigned, and signing is the open hardening item. The full design is in the [record](Documentation/Change%20Records/Credential%2C%20Catalog%20Verification%20and%20Self-Update%20-%202026-09-19.md).
+
 ## Records
 
 - [Server Deployment on docker-main - 2026-09-19](Documentation/Change%20Records/Server%20Deployment%20on%20docker-main%20-%202026-09-19.md): first deployment, the two defects the deployment exposed, and the verification results.
+- [Credential, Catalog Verification and Self-Update - 2026-09-19](Documentation/Change%20Records/Credential%2C%20Catalog%20Verification%20and%20Self-Update%20-%202026-09-19.md): the API credential going live, the empty-body crash the first live call found, the corrected package identifiers, and the self-updating client shipped as v0.2.0.
 
 ## Related
 

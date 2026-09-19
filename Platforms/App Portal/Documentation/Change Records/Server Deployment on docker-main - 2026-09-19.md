@@ -88,7 +88,7 @@ The listener is plain HTTP on VLAN 40. A device token is a bearer secret, so bef
 ## Next steps
 
 1. Create the Action1 API credential in the console with `view_endpoints`, `view_software_repository`, `view_installed_software`, `view_automations` and `run_automations`, and store it in the vault with the organisation identifier.
-2. Render `deploy/server.env` from that item with `op inject` and restart the container.
+2. Render `deploy/server.env` from that item's references with the manager's CLI and recreate the container.
 3. Run `catalog verify` and correct the package identifiers it rejects.
 4. Add a proxy host so the server is reached over HTTPS rather than port 3004.
 5. Register `ObiPC` with `device add`, store the token in the vault, and deploy the client through Action1 with `Install-AppPortalClient.ps1`.
