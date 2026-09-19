@@ -85,8 +85,8 @@ The middleware configures `X-Forwarded-For` alongside `X-Forwarded-Proto`, so tr
 
 I copied `/opt/media-stack/compose.yml` before editing it. The copy holds no withheld value, because the VPN key is a variable reference rather than a literal. It is committed as [media-01-docker-compose-2026-09-18.yml](../../../../Backups/media-01-docker-compose-2026-09-18.yml) and removed from the host.
 
-## Open
+## Follow-up
 
-- The alert that fired says "responding slowly" for a probe that was failing outright. A probe that times out trips the latency rule and not the unreachable rule, so the text points at DNS, the proxy or backend load when the real state is a hard failure. The Grafana alert rules are worth revisiting for that.
-- The blackbox target for each of these three is `/`, which on an authenticated app tests the login redirect chain. `/ping` answers 200 with no redirect on all three and would not depend on a cross-VLAN hop. I did not change the target set.
+- The alert that fired said "responding slowly" for a probe that was failing outright, because a probe that times out reports its deadline as its duration and clears the 5 second threshold by definition. Corrected the same day: the latency rule is now multiplied by `probe_success`, so a failed probe is zeroed and `Internal service is unreachable` reports it at critical instead. The rule defect, which applied to all 23 blackbox targets rather than only these three, is recorded in [Latency Rule Fired on Failed Probes](../../../Prometheus/Documentation/Troubleshooting/Latency%20Rule%20Fired%20on%20Failed%20Probes%20-%202026-09-18.md).
+- The blackbox target for each of these three stays at `/`. Probing the root is what caught this fault, and `/ping` would have answered 200 throughout it. The cross-VLAN hop that made the failure slow came from the broken redirect scheme and not from the target path, and with the scheme corrected the chain is one TCP connection on 443. I recorded that decision as a comment in the blackbox job in `prometheus.yml` so it is answered where it would next be asked.
 - Jellyfin, Seerr and qBittorrent probe clean without this setting, so I left them alone. Jellyfin redirects relatively, to `/web/`, and never leaves HTTPS.
