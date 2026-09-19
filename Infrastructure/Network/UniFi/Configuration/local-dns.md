@@ -1,7 +1,9 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-19
+
+On 2026-09-19 I added `appportal.alphasecunited.com` for App Portal behind Nginx Proxy Manager. The controller returns 30 static DNS records, 24 of them pointing at `192.168.85.2`. Both `ObiPC` and `HQ-WS001` resolve the name through the domain controllers and reach the portal over HTTPS. [Internal HTTPS record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 
 I removed portainer.alphasecunited.com on 2026-09-16. The controller now holds 29 static DNS records, 23 of them pointing at `192.168.85.2`, including the unchanged Dockhand record `6aa9de4e25574794b908a860`. The same readback returned `hq-mgt01.ad.alphasecunited.com`, which this table had not carried since the 2026-09-12 Windows Admin Center deployment, so I added its row without changing the controller.
 
@@ -38,6 +40,7 @@ On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Pro
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
 | `dockhand.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa9de4e25574794b908a860` | Dockhand on `docker-main` through NPM proxy host 31 |
 | `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
+| `appportal.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aaed06c25574794b9154d90` | App Portal on `docker-main` through NPM proxy host 32 |
 | `hq-mgt01.ad.alphasecunited.com` | A | `192.168.65.12` | 300 | Yes | `6aa4cfee80977b56f62991c0` | Windows Admin Center on `HQ-MGT01` |
 | `grey.alphasecunited.com` | A | `192.168.70.10` | Controller default | Yes | `6a7dee01dee8c70a32e6ba96` | Proxmox GUI on `grey-server` |
 | `purple.alphasecunited.com` | A | `192.168.70.11` | Controller default | Yes | `6a7dee43dee8c70a32e6bb43` | Proxmox GUI on `purple-server` |
