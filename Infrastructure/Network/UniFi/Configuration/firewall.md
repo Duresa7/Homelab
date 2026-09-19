@@ -1,7 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-19
+
+On 2026-09-19 I added `Allow Identity to App Portal`, an IPv4 TCP allow from `192.168.65.20` in `AlphaSec-Identity` to `192.168.40.35:3004` in Internal, with logging and a response companion enabled at creation and the Always schedule. It carries the App Portal client test on `HQ-WS001`. The identity plane reaches neither `docker-main` nor Nginx Proxy Manager without a rule, and that VM is the only machine in the zone that needs the portal, so the policy names the one address rather than the zone. Before the change, TCP 3004 from `HQ-WS001` timed out at five seconds while LDAP to `HQ-DC01` answered at once; after it, the same probe connected and `http://192.168.40.35:3004/healthz` returned `{"status":"ok"}`. `HQ-MGT01` at `192.168.65.12` sits in the same zone, is deliberately outside the policy, and was refused both times, so the rule admits the address it names. I requested no index and the controller assigned 10003. The user-defined total rose from 86 to 87, split 79 allows to eight blocks. `ObiPC` will need no policy when its turn comes, because Secure Client VLAN 60 and Personal-A are both in Internal. This is a plain-HTTP path for a bearer token on the LAN and is meant to last only as long as the test; the durable answer is a proxy host with TLS. [App Portal record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Credential%2C%20Catalog%20Verification%20and%20Self-Update%20-%202026-09-19.md).
 
 I removed the two Portainer Edge allow policies on 2026-09-16 and removed TCP 9443 from the NPM-to-docker-main web UI policy. Its remaining ports are 2283, 3000, 3001, 3002, 3003, and 6060. The readback that day returned 86 user-defined policies, split 78 allows to eight blocks, with 85 enabled and no policy name or selector matching Portainer. It also returned two policies this table had never carried, so I added their rows without changing the controller. `Allow Automation to Identity SSH` admits `AG-Automation-Hosts` in Internal to `AG-Identity-Servers` in `AlphaSec-Identity` on TCP 22. `Allow Surface SSH replies to Automation` matches established and related IPv4 TCP replies only, from `192.168.10.211` source port 22 back to `192.168.40.179` and `192.168.40.39`, all in Internal. The second of those was created after the 2026-09-13 count of 85, which is why the total reads 86 rather than the 85 that two removals and two additions would give on their own.
 
@@ -82,6 +84,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Personal-A Hosts to Identity RDP` | Yes | ALLOW | 10006 | TCP+UDP (IPv4) | Internal / 192.168.40.179, 192.168.40.39 | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
 | `Allow VPN to Identity RDP` | Yes | ALLOW | 10000 | TCP+UDP (IPv4) | Vpn / Management Access network | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
 | `Allow Identity to MeshCentral` | Yes | ALLOW | 10002 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.12, 192.168.65.20 | Internal / 192.168.40.39 / 443 |
+| `Allow Identity to App Portal` | Yes | ALLOW | 10003 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.20 | Internal / 192.168.40.35 / 3004 |
 | `Allow NPM to docker-blue MeshCentral` | Yes | ALLOW | 10006 | TCP (IPv4) | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 443 |
 | `Allow Identity Sync Service Connection` | Yes | ALLOW | 10000 | All | External / Any | Gateway / TCP 9543 group |
 | `VPN: Temp Ban` | Yes | BLOCK | 10000 | All | Vpn / Temp | Internal / Personal-A, Secure, Secure Client, Management |
