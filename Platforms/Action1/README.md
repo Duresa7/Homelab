@@ -1,7 +1,7 @@
 # Action1
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-19
 
 Action1 is the cloud endpoint management plane for `ObiPC`. It handles software deployment, patching, and remote access for that machine. Each managed endpoint runs a local agent that polls the cloud. Since 2026-09-12, `HQ-MGT01` also runs Action1 Deployer for automatic enrollment across `ad.alphasecunited.com`, including servers and domain controllers. The whole-domain scope is saved; domain-controller installation is blocked by access denied because the Deployer account lacks administrator access there.
 
@@ -36,6 +36,10 @@ The 2026-09-12 console readback also showed `HQ-MGT01` (Windows Server 2025) and
 The [ObiPC MDM options](../Microsoft%20Intune/Documentation/ObiPC%20MDM%20Options%20-%202026-09-12.md) assessment on 2026-09-12 put Intune first for this machine, on the strength of the existing tenant. Action1 is what I actually deployed, for a narrower reason: I needed a way to install software on `ObiPC` for a restricted user on the same day, without scoping an automatic-enrollment GPO or re-checking licence assignment first.
 
 This does not retire that assessment and does not close the co-management decision in the [Intune TODO](../Microsoft%20Intune/Documentation/TODO.md). `ObiPC` is still Microsoft Entra hybrid joined and still reads `MDM: None`. If Intune enrollment happens later, the overlap to settle is software deployment, because both products can install applications and configuring the same thing in two places is how a machine ends up in a state neither console describes.
+
+## Self-service portal
+
+Action1 announced a Self-Service App Portal on 2025-10-30 and, as of 2026-09-19, still lists it on the "Upcoming release" tab of its roadmap; no service release through May 2026 mentions it. Until it ships I am building my own: [app-portal](https://github.com/Duresa7/app-portal), a separate public repository. A Docker-hosted server holds the Action1 API credential and turns a device's request into a `deploy_package` automation on that one endpoint; a Windows client installed to Program Files shows the catalog, progress, and history. The client fits the `ObiPC` AppLocker allowlist because it lives in Program Files and never runs an installer itself: the Action1 agent does, as `LocalSystem`. Not deployed yet; the API credential has to be created in the console first and stored in the vault, and the catalog's package IDs verified with `catalog verify`.
 
 ## Agent behaviour worth knowing
 
