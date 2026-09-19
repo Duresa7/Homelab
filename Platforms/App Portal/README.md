@@ -13,13 +13,14 @@ Source is a separate public repository: [Duresa7/app-portal](https://github.com/
 
 | Item | Current value |
 |---|---|
-| Deployment status | Server running and healthy on `docker-main` since 2026-09-19, talking to the tenant with a live API credential since the afternoon of the same day. Every catalog package resolves. No device is registered yet, so nothing can be installed through it until `ObiPC` is enrolled |
+| Deployment status | Server running and healthy on `docker-main` since 2026-09-19, talking to the tenant with a live API credential since the afternoon of the same day. Every catalog package resolves. `HQ-WS001` is enrolled as the test device since 2026-09-19; `ObiPC` is not yet |
 | Compute | Galaxy CT 110 `docker-main`, `192.168.40.35`, VLAN 40 |
 | Live path | `/opt/docker/app-portal`, a clone of the public repository |
 | Container | `app-portal`, image `app-portal-server:local`, 220 MB, `restart: unless-stopped` |
 | Listener | `192.168.40.35:3004` mapped to container port 8080. Plain HTTP on the LAN; TLS is an open item |
 | Compose project | `/opt/docker/app-portal/deploy/compose.yaml` |
 | Catalog | `deploy/config/catalog.json`, mounted read-only, five apps: Google Chrome, Mozilla Firefox, 7-Zip, VLC media player, Visual Studio Code. All five identifiers verified against the tenant on 2026-09-19 |
+| Devices | `HQ-WS001` (test VM, VLAN 65), enrolled 2026-09-19; its token is in the vault item *<REDACTED_CREDENTIAL_ITEM_NAME>*. Rotate with `device add` for the same name |
 | State | Named volume `deploy_app-portal-data` at `/app/data`, holding `devices.json` and `installs.json` |
 | Secrets on the host | `deploy/server.env`, mode 600, gitignored, rendered from vault references (item *<REDACTED_CREDENTIAL_ITEM_NAME>*: client id, secret, organisation id). Re-render and recreate the container to rotate |
 | Client | Avalonia desktop app for Windows, published by the repository's CI as `AppPortal-client-win-x64.zip` with `SHA256SUMS`, currently release v0.2.0. Not deployed to any machine yet. `AppPortal.exe --demo` runs the whole interface from in-memory sample data with no server. From v0.2.0 the archive carries `AppPortal.Updater.exe`, and a machine installed once keeps itself current |

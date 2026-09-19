@@ -11,6 +11,8 @@ You created the API credential in the Action1 console and stored it in the vault
 
 `server.env` on `docker-main` is rendered from vault references only. The template names the three fields; the manager's CLI resolves them into a local file that never appears on a terminal, `scp` carries it to the host as `server.env.new` with mode 600, and a rename puts it in place. The container is then recreated, because Compose reads `env_file` at creation and not on restart. The local copy is shredded afterwards. Neither value was printed at any point; each field was checked by length only (36, 92 and 32 characters).
 
+The public repository's README and templates named the manager and its CLI; as of this evening they say "secrets manager" and carry placeholders, so the two repositories follow the same rule.
+
 One exposure to record, at your decision: the item stores the client id in the `username` field, which the API Credential template treats as plain text, so a metadata read of the item printed it into my session. The secret was masked and never shown. You judged that no rotation was warranted. The client id is not in this repository and stays out of it.
 
 ## The first live call found a crash
@@ -37,6 +39,12 @@ What the checksum proves and does not prove: a truncated or corrupted download, 
 
 Versioning moved to one place, `Directory.Build.props`, and a release build takes its version from the tag, because the updater compares the tag with the installed file version and the two must agree. The previous release, v0.1.1, shipped binaries stamped 0.1.0 for that reason; it did not matter then and would have mattered now.
 
+## The test machine is enrolled
+
+You want to try the client on `HQ-WS001` as `testuser` before anything touches `ObiPC`. Action1 lists that VM as a managed endpoint, connected, Windows 11 25H2, so it qualifies. I registered it on the server with `device add`, which printed the device token once; the token went from that output into a vault item, *<REDACTED_CREDENTIAL_ITEM_NAME>*, without appearing on a terminal, alongside the server address and the install command that takes it. The server keeps only the token's SHA-256, and its device store re-reads `devices.json` by timestamp, so the new record was live without a restart.
+
+Two things worth knowing for the next enrollment. Action1 carries **two** `ObiPC` endpoints, one last seen 2026-09-13 and therefore the machine before the rebuild; the current one is the entry seen today. And `testuser`'s membership of `ROL-ObiPC-Restricted`, put in place this morning for the AppLocker test, changes nothing on `HQ-WS001`: the AppLocker policy is filtered to `OBIPC$`, and the restricted user policy reaches a session only through loopback processing that exists on `ObiPC`'s computer policy alone. On the test VM `testuser` is an ordinary standard user, which is the right seat for this test.
+
 ## Verification
 
 | Check | Result |
@@ -49,11 +57,15 @@ Versioning moved to one place, `Directory.Build.props`, and a release build take
 | Test suite | 31 passing: 20 server, 11 updater |
 | Updater publish, win-x64 | one file, `AppPortal.Updater.exe`, 37.6 MB |
 | Update banners | Rendered under Xvfb in both themes from a fabricated status file; images are in the repository's `docs/images/` |
+| `device list` on the server | `HQ-WS001`, enabled, registered 2026-09-19 15:12 UTC |
+| Vault item for the token | *<REDACTED_CREDENTIAL_ITEM_NAME>*, credential field concealed, server address in the hostname field |
+| Network path from the test machine | **Dropped.** From `HQ-MGT01`, on the same VLAN 65 as `HQ-WS001`, TCP to `192.168.40.35` on 3004 and 22 and to `192.168.85.2` on 443 and 80 all time out at four seconds while LDAP to `HQ-DC01` answers at once. The identity VLAN reaches neither the portal nor Nginx Proxy Manager |
 | Release `v0.2.0` | CI run 35450364737: *Build and test*, *Publish Windows client* and *Build server image* all `success`; assets `AppPortal-client-win-x64.zip` (106.7 MB) and `SHA256SUMS`; the archive verifies against the checksum file and contains `client/AppPortal.Updater.exe` and `client/Uninstall-AppPortalClient.ps1` |
 
 ## Open
 
-- **No device is registered yet**, so no machine can install anything through the portal. Registering `ObiPC` with `device add`, vaulting the token, and deploying the client through Action1 is the next piece of work.
+- **`HQ-WS001` is enrolled for the test; `ObiPC` is not.** Registering `ObiPC` with `device add` against its current Action1 endpoint, vaulting the token, and deploying the client through Action1 is the next piece of work once the test passes.
+- **The identity VLAN has no path to the server.** `HQ-WS001` sits on VLAN 65, which by design reaches neither `docker-main` nor Nginx Proxy Manager. The test cannot start until a path exists: either a narrow allow from the identity zone to `192.168.40.35` on TCP 3004, or the proper front door, an NPM proxy host reachable from that zone over 443 with a name the domain controllers can resolve. That is your decision and is proposed in the conversation of 2026-09-19 rather than made here.
 - **Signed releases.** The updater trusts the GitHub release; a signature checked against a key embedded in the updater would remove that dependency.
 - **TLS.** The listener is plain HTTP on the LAN. Putting it behind Nginx Proxy Manager is unchanged from the first record.
 - **The client has not run on a real machine.** The Windows-specific paths in the updater, the scheduled task registration and the swap on a running executable are all tested only in their cross-platform parts.
