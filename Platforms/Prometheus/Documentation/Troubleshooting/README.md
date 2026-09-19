@@ -1,7 +1,7 @@
 # Prometheus Troubleshooting
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-18
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -17,3 +17,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | <a id="6-root-filesystem-filled-by-retained-docker-images"></a>[6](Root%20Filesystem%20Filled%20by%20Retained%20Docker%20Images%20-%202026-09-04.md) | 2026-09-04 | The 16 GiB root filesystem reached 96 percent after the monitoring stack refresh | Prometheus's expected 5.2 GiB data volume left too little headroom for retained containerd image generations. I pruned four dangling images, reclaimed 4.021 GB, and verified 70 percent root usage with all nine containers and 56 Prometheus targets healthy | Resolved |
 | [7](Installation%20ISO%20Triggered%20Filesystem%20Capacity%20Alert%20-%202026-09-11.md) | 2026-09-11 | Grey’s read-only Windows installation ISO reported 100 percent and triggered the capacity alert | I excluded UDF and ISO9660, verified that only the ISO series disappeared, and restarted Grafana to load the rule | Resolved for alerting on 2026-09-11. The dashboards kept their own selector, which still included UDF, so five panels read 100 percent until 2026-09-14 |
 | [8](Exporter%20Down%20Alert%20Could%20Never%20Fire%20-%202026-09-14.md) | 2026-09-14 | `Metrics source stopped reporting` had never fired, including through a three and a half day exporter outage in August | A PromQL comparison keeps the sample's own value, so the rule's `up == 0` filter returned 0 and the `gt 0.5` evaluator could never be true. I dropped the filter and moved the evaluator to `lt 0.5`, matching the three sibling availability rules, and verified firing against a target forced down | Resolved. Deployed 2026-09-15 with a Grafana restart; 24 rules reload with no evaluation error and the rule now tracks all 37 non-node targets |
+| [9](Latency%20Rule%20Fired%20on%20Failed%20Probes%20-%202026-09-18.md) | 2026-09-18 | `Internal service is responding slowly` fired for three probes that were failing outright, describing a dead path as a backend that is alive but struggling | A probe that times out reports its 9.5s deadline as its duration, so any hard failure clears the 5s threshold by definition. I multiplied the expression by `probe_success`, which zeroes a failed probe and leaves `Internal service is unreachable` to report it at critical | Resolved. Deployed 2026-09-18 with a Grafana restart; 24 rules reload with no evaluation error and both blackbox rules track 23 instances |

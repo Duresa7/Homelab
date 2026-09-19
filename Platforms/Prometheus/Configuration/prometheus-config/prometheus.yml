@@ -195,6 +195,14 @@ scrape_configs:
   # person actually uses is broken: local DNS, the proxy, the certificate, or the
   # backend. 60s because uptime does not need 15-second resolution, and it keeps
   # the probe load on NPM to 23 requests a minute.
+  #
+  # Every target is the service root and stays that way. A health endpoint such
+  # as the Arr /ping would answer faster and skip the login redirect, and that
+  # is exactly the reason not to use it: probing the root is what caught the Arr
+  # apps answering an HTTPS request with an http:// redirect on 2026-09-18, and
+  # /ping would have passed straight through it. The redirect chain is part of
+  # the path a person walks, so it is part of what this job checks. Reviewed and
+  # kept 2026-09-18.
   - job_name: blackbox
     scrape_interval: 60s
     metrics_path: /probe

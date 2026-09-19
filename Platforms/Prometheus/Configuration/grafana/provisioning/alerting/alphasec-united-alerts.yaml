@@ -686,6 +686,17 @@ groups:
       # Network lag on the path people actually use. Every probe on 2026-08-31
       # answered in 0.12s or less, so 5s is roughly forty times the worst normal
       # case and will not fire on a slow page load.
+      #
+      # The expression is multiplied by probe_success on purpose and the
+      # multiplication must not be removed. A probe that times out reports its
+      # deadline as the duration, 9.5s here, which is Prometheus' 10s
+      # scrape_timeout less blackbox's 0.5s --timeout-offset. Ungated, every hard
+      # probe failure also raised this warning and described a dead path as a
+      # backend that is alive but struggling. Multiplying by probe_success zeroes
+      # a failed probe so it cannot reach the 5s threshold, and leaves
+      # homelab-service-unreachable to report it at critical. Zeroing rather than
+      # filtering keeps all 23 targets in the rule, so no instance drops out while
+      # it is down. Added 2026-09-18, after the three Arr probes did exactly this.
       - uid: homelab-service-slow
         title: Internal service is responding slowly
         condition: B
@@ -696,9 +707,11 @@ groups:
         annotations:
           summary: '{{ $labels.instance }} is taking {{ humanize $values.A.Value }}s to respond.'
           description: >-
-            This probe normally completes in well under a second. Ten minutes
-            above 5 seconds points at DNS resolution, the proxy, or a backend
-            that is alive but struggling.
+            This probe completed and still took over 5 seconds for ten minutes. It
+            normally finishes in well under a second, so this points at DNS
+            resolution, the proxy, or a backend that is alive but struggling. A
+            probe that fails outright is zeroed here and reported by Internal
+            service is unreachable instead.
         noDataState: NoData
         execErrState: Error
         isPaused: false
@@ -713,7 +726,7 @@ groups:
               range: false
               intervalMs: 1000
               maxDataPoints: 43200
-              expr: 'probe_duration_seconds'
+              expr: 'probe_duration_seconds * probe_success'
           - refId: B
             relativeTimeRange: {from: 600, to: 0}
             datasourceUid: __expr__
