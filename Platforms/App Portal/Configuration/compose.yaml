@@ -1,0 +1,30 @@
+# App Portal server. From the repository root:
+#   docker compose -f deploy/compose.yaml up -d            pulls the released image from GHCR
+#   docker compose -f deploy/compose.yaml up -d --build    builds from this checkout instead
+# APP_PORTAL_VERSION in .env pins a release, for example APP_PORTAL_VERSION=0.2.1; unset it pulls latest.
+#
+# Two files sit beside this one, both gitignored:
+#   server.env  container environment, including the Action1 API credential. Copy it from
+#               server.env.example and fill in the values, or render it from your secrets manager.
+#   .env        compose variable interpolation, read only by compose itself. It sets
+#               APP_PORTAL_BIND, for example APP_PORTAL_BIND=192.0.2.10:8080. Compose does not
+#               interpolate from env_file, so the bind address cannot live in server.env.
+services:
+  app-portal:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    image: ghcr.io/duresa7/app-portal-server:${APP_PORTAL_VERSION:-latest}
+    container_name: app-portal
+    restart: unless-stopped
+    env_file:
+      - server.env
+    ports:
+      # APP_PORTAL_BIND pins the listener to one interface, for example 192.0.2.10:8080
+      - "${APP_PORTAL_BIND:-8080}:8080"
+    volumes:
+      - ./config:/app/config:ro
+      - app-portal-data:/app/data
+
+volumes:
+  app-portal-data:
