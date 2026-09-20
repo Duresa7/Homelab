@@ -3,7 +3,7 @@
 **Created:** 2026-09-20  
 **Last updated:** 2026-09-20
 
-The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account and then with my own Tier 2 administrator account, and stopped at the pull request, because a human merges and a human tags in that repository.
+The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account and then with both of my own directory accounts, and stopped at the pull request, because a human merges and a human tags in that repository.
 
 Work package [M1-11](https://github.com/Duresa7/app-portal/blob/plan/M1-11/docs/plans/M1-11-directory-sign-in.md), pull request [#19](https://github.com/Duresa7/app-portal/pull/19).
 
@@ -63,6 +63,9 @@ Then again with my own accounts, which is the point of the exercise:
 | My Tier 0 domain administrator account | HTTP 401, refused at the bind rather than at the group check |
 | Browser sign-in, then all seven admin pages | 302 to `/admin`, then `/admin`, `/admin/catalog`, `/admin/devices`, `/admin/installs`, `/admin/requests`, `/admin/keys` and `/admin/admins` all 200 |
 | Sign out | POST returns 302 to the sign-in page, and `/admin` then redirects to it, so the session row is gone and not just the cookie |
+| My daily account, UPN as stored | HTTP 200 with a token |
+| Same account as `DOMAIN\user` and as a bare user name | HTTP 200 both times, and all three forms resolved to the one administrator row: one provisioning event, not three accounts |
+| Same account, wrong password | HTTP 401 |
 
 The test deployment, its image and its configuration were removed afterwards. Production still runs 0.3.0 with local sign-in and was not touched.
 
@@ -71,6 +74,6 @@ The test deployment, its image and its configuration were removed afterwards. Pr
 - The pull request is not merged and no release is cut. Production picks this up when 0.3.1 exists; the repository's rule is that a human merges and a human tags.
 - When it is deployed, `deploy/.env` needs the `Directory__*` settings and `deploy/compose.yaml` needs the controller names resolvable and the authority bundle mounted at `/app/config/dc-certs.pem`.
 - **Tier 0 cannot use this, and should not.** My Tier 0 account is in `Protected Users`, and the controller refused its bind outright: the portal logged no group refusal, which is the path a wrong password takes, and that group exists to stop exactly this kind of password-based authentication. A domain administrator account has no business signing in to a web application anyway. Tier 2 is the right account and is what I verified.
-- My daily account is still in the group alongside the Tier 2 one. If the tiering model should hold here, the daily account comes out and only the administrator account signs in; I left the choice open rather than removing my own access.
+- My daily account is in the group alongside the Tier 2 one and signs in. If the tiering model should hold here, the daily account comes out and only the administrator account administers the portal; I left the choice open rather than removing my own access.
 - Every administrator is a full administrator. Group-to-role mapping is out of scope and stays out.
 - The local `dkadi` account remains, deliberately: it is what gets you in when the controllers are down.
