@@ -97,6 +97,8 @@ Every account here is stored in my password manager. No password, DSRM password,
 
 ## Records
 
+- [LDAPS on the Domain Controllers - 2026-09-20](Documentation/Change%20Records/LDAPS%20on%20the%20Domain%20Controllers%20-%202026-09-20.md): LDAP over TLS never worked on either controller. Schannel had no usable default server credential because the 2026-09-12 WinRM certificate is self-signed and untrusted; each controller now issues its LDAPS certificate from a small local authority it trusts, and both serve TLS 1.3.
+
 - [Online Workstation Sign-In - 2026-09-19](Documentation/Change%20Records/Online%20Workstation%20Sign-In%20-%202026-09-19.md): online domain-password sign-in and unlock policy on the Workstations OU, alternative credential-provider exclusion, both client readbacks, and a network-disconnect/reconnect test on `HQ-WS001`.
 
 - [ObiPC Recovery and Settings Lockdown - 2026-09-18](Documentation/Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md): response to the recovery-menu wipe. Recovery environment disabled and re-disabled on a schedule, administrator credentials required for every recovery tool through the MDM bridge and Group Policy, sign-in screen power button and the restricted user's power menu removed, a new AppLocker policy with 44 denies, 23 writable-folder exceptions and the developer carve-out removed so Action1 is the only install path, browser executable downloads blocked, a `showonly:` Settings allowlist replacing the undocumented `hideonly:` one, Control Panel and MMC allowlists, and the install channels closed. Verified on the machine; user side pending his next sign-in.
