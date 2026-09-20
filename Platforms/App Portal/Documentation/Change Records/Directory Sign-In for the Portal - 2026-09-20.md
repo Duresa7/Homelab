@@ -3,7 +3,7 @@
 **Created:** 2026-09-20  
 **Last updated:** 2026-09-20
 
-The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account, and stopped at the pull request, because a human merges and a human tags in that repository.
+The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account and then with my own Tier 2 administrator account, and stopped at the pull request, because a human merges and a human tags in that repository.
 
 Work package [M1-11](https://github.com/Duresa7/app-portal/blob/plan/M1-11/docs/plans/M1-11-directory-sign-in.md), pull request [#19](https://github.com/Duresa7/app-portal/pull/19).
 
@@ -24,7 +24,7 @@ Three things had to exist before a bind could work, and none of them did.
 
 **LDAPS was broken on both controllers.** They listened on 636 and reset every handshake. That is its own change record: [LDAPS on the Domain Controllers](../../../Active%20Directory/Documentation/Change%20Records/LDAPS%20on%20the%20Domain%20Controllers%20-%202026-09-20.md).
 
-**A group to check.** I created `APP-AppPortal-Admins`, a global security group in `OU=Applications,OU=Groups`, holding my `DK-user` daily account. `testuser` joined it for the test and was removed afterwards, so the group has one member.
+**A group to check.** I created `APP-AppPortal-Admins`, a global security group in `OU=Applications,OU=Groups`. It holds my `DK-user` daily account and my `DK-user` Tier 2 workstation administrator account. `testuser` joined it for the first test and was removed afterwards.
 
 **A path through the firewall.** `docker-main` could not reach the identity plane at all. `Allow App Portal to Identity LDAPS` admits `192.168.40.35` in Internal to `192.168.65.10` and `192.168.65.11` in `AlphaSec-Identity` on TCP 636 only, index 10008. Plain 389 stays refused, which I checked as a control.
 
@@ -53,12 +53,24 @@ Against the live forest, using a temporary container built from the branch on `d
 | Firewall | 636 open from `docker-main` to both controllers, 389 refused |
 | Continuous integration | Every job green on the branch: version, tests on Linux and Windows, client archive verified and started on a Windows runner, server image smoke tested |
 
+Then again with my own accounts, which is the point of the exercise:
+
+| Check | Observed result |
+|---|---|
+| My Tier 2 administrator account, `DOMAIN\user` form | HTTP 200 with a token; the portal created `ALPHASEC\` and that account, source `directory` |
+| Same account, UPN form | HTTP 200 |
+| Same account, wrong password | HTTP 401 |
+| My Tier 0 domain administrator account | HTTP 401, refused at the bind rather than at the group check |
+| Browser sign-in, then all seven admin pages | 302 to `/admin`, then `/admin`, `/admin/catalog`, `/admin/devices`, `/admin/installs`, `/admin/requests`, `/admin/keys` and `/admin/admins` all 200 |
+| Sign out | POST returns 302 to the sign-in page, and `/admin` then redirects to it, so the session row is gone and not just the cookie |
+
 The test deployment, its image and its configuration were removed afterwards. Production still runs 0.3.0 with local sign-in and was not touched.
 
 ## Open
 
 - The pull request is not merged and no release is cut. Production picks this up when 0.3.1 exists; the repository's rule is that a human merges and a human tags.
 - When it is deployed, `deploy/.env` needs the `Directory__*` settings and `deploy/compose.yaml` needs the controller names resolvable and the authority bundle mounted at `/app/config/dc-certs.pem`.
-- My own account has never signed in through it. Its membership is in place, but I verified with `testuser` because that password is in the vault and mine is not.
+- **Tier 0 cannot use this, and should not.** My Tier 0 account is in `Protected Users`, and the controller refused its bind outright: the portal logged no group refusal, which is the path a wrong password takes, and that group exists to stop exactly this kind of password-based authentication. A domain administrator account has no business signing in to a web application anyway. Tier 2 is the right account and is what I verified.
+- My daily account is still in the group alongside the Tier 2 one. If the tiering model should hold here, the daily account comes out and only the administrator account signs in; I left the choice open rather than removing my own access.
 - Every administrator is a full administrator. Group-to-role mapping is out of scope and stays out.
 - The local `dkadi` account remains, deliberately: it is what gets you in when the controllers are down.
