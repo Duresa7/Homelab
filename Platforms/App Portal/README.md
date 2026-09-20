@@ -28,6 +28,16 @@ Source is a separate public repository: [Duresa7/app-portal](https://github.com/
 
 I captured the live [Compose file](Configuration/compose.yaml), its [interpolation settings](Configuration/compose.env) (named `.env` beside Compose on the host), and a [catalog export](Configuration/catalog.json) on 2026-09-20. These are versioned references; the live catalog is in SQLite.
 
+## Directory and agent integration
+
+I checked both workstations and the server on 2026-09-20. `HQ-WS001` and `ObiPC` are joined to `ad.alphasecunited.com`, and the `A1Agent` service is running on both. The portal runs with `Action1__Mode=Live`; both enabled device registrations have Action1 endpoint mappings. All five recorded installs used the `action1` engine and finished `Succeeded`.
+
+Portal administrator accounts are local to its SQLite database. Version 0.3.0 has no AD sign-in, directory synchronization or AD-group catalog assignments. The Windows client sends the current domain and username as a requester label; the device token authenticates the call. Saving a matching username and password in the portal does not connect that account to AD.
+
+The separate App Portal Windows agent is not deployed: neither PC has that service, and both device rows report `has_agent = 0`. The [project roadmap](https://github.com/Duresa7/app-portal/blob/v0.3.0/docs/ROADMAP.md) places automatic enrollment, the agent service and MSI installation in milestone 2 (planned v0.4.0), and agent-driven winget or direct-installer execution in milestone 3 (planned v0.5.0). Version 0.3.0 exposes enrollment-key management but still requires manual device registration and Action1 for installations. Client updates currently use the `App Portal Updater` scheduled task, which was `Ready` on both PCs.
+
+I retained these observations rather than full command transcripts. The live checks read domain membership, service state, container configuration and database integration flags without changing either workstation or the server.
+
 ## How a request flows
 
 1. The client reads `%ProgramData%\AppPortal\client.json` for the server address and this device's token, then shows the catalog.
