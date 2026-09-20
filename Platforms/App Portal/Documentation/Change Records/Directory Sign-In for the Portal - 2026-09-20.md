@@ -69,10 +69,28 @@ Then again with my own accounts, which is the point of the exercise:
 
 The test deployment, its image and its configuration were removed afterwards. Production still runs 0.3.0 with local sign-in and was not touched.
 
+## Staged on docker-main
+
+Everything the cutover needs is in place except the release itself, so upgrading is the only step left rather than a configuration exercise at the same time:
+
+- `deploy/config/dc-certs.pem` holds both controller authorities. That directory is already mounted read-only at `/app/config`, so no volume changes.
+- `deploy/compose.override.yaml` carries `extra_hosts` for the two controllers, because they are addressed by the names their certificates carry and this host's resolver does not serve the `ad.alphasecunited.com` zone. It is gitignored, so a `git pull` leaves it alone. Both files parse together.
+- `server.env` gained eight `Directory__` settings, still mode 600. Version 0.3.0 has no such section and ignores them; 0.3.1 reads them.
+
+The cutover, once 0.3.1 exists:
+
+```bash
+cd /opt/docker/app-portal && git pull
+sed -i 's/^APP_PORTAL_VERSION=.*/APP_PORTAL_VERSION=0.3.1/' deploy/.env
+docker compose -f deploy/compose.yaml -f deploy/compose.override.yaml up -d --no-build --pull always
+```
+
+Then check `/healthz`, sign in at `/admin/login` with a directory account, and confirm `admin list` shows it with source `directory` beside the local `dkadi` account.
+
 ## Open
 
 - The pull request is not merged and no release is cut. Production picks this up when 0.3.1 exists; the repository's rule is that a human merges and a human tags.
-- When it is deployed, `deploy/.env` needs the `Directory__*` settings and `deploy/compose.yaml` needs the controller names resolvable and the authority bundle mounted at `/app/config/dc-certs.pem`.
+- The upgrade itself has not happened. Production runs 0.3.0, which cannot use any of the settings now sitting beside it.
 - **Tier 0 cannot use this, and should not.** My Tier 0 account is in `Protected Users`, and the controller refused its bind outright: the portal logged no group refusal, which is the path a wrong password takes, and that group exists to stop exactly this kind of password-based authentication. A domain administrator account has no business signing in to a web application anyway. Tier 2 is the right account and is what I verified.
 - My daily account is in the group alongside the Tier 2 one and signs in. If the tiering model should hold here, the daily account comes out and only the administrator account administers the portal; I left the choice open rather than removing my own access.
 - Every administrator is a full administrator. Group-to-role mapping is out of scope and stays out.
