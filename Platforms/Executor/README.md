@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-21
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It is available only through internal DNS at `https://mcp.alphasecunited.com`; no public DNS record or WAN forwarding exists.
 
@@ -9,9 +9,9 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 
 | Item | Value |
 |---|---|
-| Version | 1.6.8 on 2026-09-06 |
+| Version | 1.6.10, verified live on 2026-09-21 |
 | OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:latest` |
-| Image policy | Rolling `latest`; it resolved to 1.6.8 at the last pull |
+| Image policy | Rolling `latest`; the running image matches the upstream 1.6.10 digest, verified on 2026-09-21 |
 | Host | `docker-blue` (`192.168.40.39`) |
 | Internal URL | `https://mcp.alphasecunited.com` |
 | Upstream listener | `192.168.40.39:4788` |
@@ -25,6 +25,8 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It is a
 | Draw.io connection | Personal connection `drawio` on integration `drawio`, remote endpoint `https://mcp.draw.io/mcp`, no authentication, 2 tools verified through Executor on 2026-09-14 |
 | Brandfetch connection | Personal connection `brandfetch` on integration `brandfetch`, endpoint `https://mcp.brandfetch.io/mcp`, encrypted bearer credential, 6 tools discovered and brand search verified through Executor on 2026-09-14 |
 | Restart policy | `unless-stopped` |
+
+I checked for updates on 2026-09-21 through SSH Manager on `docker_blue`. The running container and image labels both report 1.6.10, the container reports `healthy`, and the direct `/api/health` endpoint returns `{"status":"ok"}`. Its repository digest, `sha256:b9e001775d3eb7d662d347c8f7054333c78c1a4fd97cb5a86dc1d1d1406093b9`, matches the official [container package](https://github.com/UsefulSoftwareCo/executor/pkgs/container/executor-selfhost) tagged `latest`, `1.6.10`, and `v1.6.10`. GitHub lists [v1.6.10](https://github.com/UsefulSoftwareCo/executor/releases/tag/v1.6.10), published on 2026-09-18, as the latest release. No update was needed, and I did not pull an image or restart the service. I did not retain a separate terminal capture for this check; the date and procedure of the earlier upgrade to 1.6.10 remain unverified.
 
 Nginx Proxy Manager terminates TLS with the existing wildcard certificate and forwards to the HTTP listener on Docker Blue. UniFi resolves the name to Nginx Proxy Manager and permits only `192.168.85.2` to cross from AlphaSec-Access to `192.168.40.39:4788` for this proxy path.
 
