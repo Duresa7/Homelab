@@ -1,9 +1,9 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-21
 
-On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s `local-lvm` pool reports 0 KiB used and 148,086,784 KiB available (0.00% used).
+On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s pool was empty after that deletion; VM 103 now occupies it as described below.
 
 This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
 
@@ -20,6 +20,8 @@ On 2026-09-11 I completed app-01's 64 GiB boot disk replacement on Grey and remo
 On 2026-09-12 I moved CT 100 `ansible-01` to Blue and updated its LXC, service, and node records. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds the completed Proxmox task and service verification. No QEMU placement changed.
 
 I moved VM 401 `alpha-prod-01` to Purple on 2026-09-12, placing both disks on its NVMe-backed `local-lvm` and removing the source volumes from Grey. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds verification.
+
+I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
 
 ## Current state
 

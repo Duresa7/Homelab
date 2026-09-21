@@ -1,9 +1,9 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-21
 
-On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s `local-lvm` pool reports 0 KiB used and 148,086,784 KiB available (0.00% used).
+On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s pool was empty after that deletion. On 2026-09-20 I allocated VM 103 `win11-dev` with 4 vCPUs, 8 GiB RAM and a 120 GiB system disk. Its first Windows installation crashed and an 8 GiB online host memory test produced 25 failure lines. I chose to continue on this host and completed Windows 11 Pro and SSH on 2026-09-21. VM 103 now runs with `onboot=1`; the host memory fault remains unresolved. At 3:25:56 AM Eastern on 2026-09-21 the pool used 34,193,238 KiB (23.09%), with 113,893,545 KiB available. [Completion record](../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md). [Memory-failure record](../Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md).
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. I keep each model, capacity, management address, and reported UPS assignment separate.
 
@@ -35,7 +35,7 @@ On 2026-09-10 I set VM 105 `ubuntu-dev` on Grey to 12 GiB pending, leaving its r
 | --- | --- | --- | --- | --- | --- |
 | blue-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLW256HEHP-000L7 | 238.47 GiB | Proxmox boot, root, swap, `local-lvm`, and CTs 100/104/107/108 |
 | blue-server | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 465.76 GiB | Unused; empty GPT, no filesystem or LVM; passed its extended SMART test |
-| green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and `local-lvm` |
+| green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and `local-lvm`; VM 103 running; host memory errors remain unresolved |
 | green-server | /dev/sda | HDD | HITACHI HTS723232A7A364 | 298.09 GiB | Blank; extended test stopped with a read failure and two pending sectors; do not use |
 | grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot and `local-lvm`, including VM 105 system and EFI disks |
 | grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin |

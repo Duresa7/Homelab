@@ -1,13 +1,15 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-20
+**Last updated:** 2026-09-21
 
 - [x] **Restore app-01 Wazuh manager connectivity.** On September 11 I repaired the manager hash-refresh restart and verified app-01 connected after its Purple migration. [Evidence and context](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md).
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Repair Green memory and activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete, including verification after a restart. Host memory repair and Windows activation remain open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
 
 - [ ] **Observe offline sign-in and unlock on the domain workstations.** I applied the online-sign-in policy on 2026-09-19, verified both clients, and confirmed `HQ-WS001` retained domain membership through a disconnect and recovered its secure channel. Interactive checks remain in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#online-workstation-sign-in-applied-2026-09-19-interactive-checks-open).
 
