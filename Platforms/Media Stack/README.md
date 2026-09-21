@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-21
 
 I run request management, media playback, release automation, indexer coordination, challenge handling, & VPN-isolated downloading from one Debian LXC.
 
@@ -24,6 +24,7 @@ I run request management, media playback, release automation, indexer coordinati
 | Service | Purpose | LAN port |
 | --- | --- | --- |
 | Jellyfin | Media library and playback | 8096 |
+| [Weebarr](../Weebarr/README.md) | Seasonal anime discovery and requests through Seerr | 18080 |
 | Seerr | User request workflow; migrated from Jellyseerr | 5055 |
 | Sonarr | Television and anime automation | 8989 |
 | Radarr | Movie automation | 7878 |
@@ -35,6 +36,8 @@ I run request management, media playback, release automation, indexer coordinati
 qBittorrent has no independent container network path because I run it with `network_mode: service:gluetun`. Gluetun selects a Proton P2P endpoint, requests a forwarded port, and writes the active port into qBittorrent while keeping router-level UPnP/NAT-PMP disabled.
 
 I pass `/dev/dri/renderD128` into the unprivileged guest so Jellyfin gets Intel Quick Sync, and `/dev/net/tun` for Gluetun's tunnel.
+
+I added [Weebarr](../Weebarr/README.md) on 2026-09-21 at `https://weebarr.alphasecunited.com`. Its Seerr connection resolves anime profile 7 and `/data/media/anime`; all automatic-request buckets are disabled. HTTPS login, seasonal availability, persistent settings, and the Prometheus probe passed.
 
 ## Records
 
