@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-12  
+**Last updated:** 2026-09-21  
 
 Galaxy currently has 11 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
 
@@ -25,10 +25,13 @@ On 2026-09-09 I added the three Windows Server 2025 guests and the template they
 
 On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on IDENTITY-A, VLAN 65. It is a fresh unattended install rather than a clone of the Windows Server template, and it is the client that proves the Tier 2 local-administrator policy and Windows LAPS reach a workstation. The [join record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md) holds the verification and the installer traps.
 
+I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+
 ## Virtual Machines
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | kali-pen | grey-server | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured; stopped on 2026-09-06 | 192.168.40.1 | 40 | disabled |
+| 103 | win11-dev | green-server | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.40.117/24 | 192.168.40.1 | 40 | disabled |
 | 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB pending / 16 GiB running | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | purple-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
@@ -48,6 +51,12 @@ On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on ID
 | 9000 | ubuntu-cloud-template | grey-server | Ubuntu 24.04.4 LTS | 2 | 2 GiB | 20G | none | none | 80 | disabled |
 
 ## VM Details
+
+### VM 103 - win11-dev
+
+I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+
+OVMF with pre-enrolled Secure Boot keys, TPM 2.0, `virtio-scsi-single`, and `vmbr0` VLAN 40. Disks: `local-lvm:vm-103-disk-0` (4 MiB EFI), `vm-103-disk-1` (120 GiB system), and `vm-103-disk-2` (4 MiB TPM). `onboot=1`; no installation discs remain attached. Secure Boot is enabled and TPM is ready. `sshd` and `QEMU-GA` start automatically; the final device query reports no unresolved drivers. No development tools are in scope. I chose to run on Green despite its unresolved memory errors.
 
 ### VM 102 - kali-pen
 

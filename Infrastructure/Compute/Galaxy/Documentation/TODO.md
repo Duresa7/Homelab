@@ -1,9 +1,20 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-21
 
 This backlog retains completed Green recovery and Purple storage work. The app and edge move to Purple is complete; the scope of the PXE join key remains open. The root [TODO](../../../../TODO.md) links here without copying detailed implementation steps.
+
+## Green Memory Repair and win11-dev Provisioning
+
+**Status:** Windows and SSH completed on 2026-09-21 after I chose to continue on Green. Host memory repair and Windows activation remain open. [Diagnosis](Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md); [completion record](Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+
+- [x] Create VM 103 with 4 vCPUs, 8 GiB RAM and a 120 GiB NVMe disk.
+- [x] Reproduce memory corruption outside Windows; retain the unresolved hardware finding separately from guest provisioning.
+- [x] Rebuild Windows 11 Pro from verified media using a fresh local credential. Keep it standalone; Windows and SSH only.
+- [x] Verify local first login, all drivers, standalone membership, reserved addressing and SSH Manager key authentication after a restart. Remove credential staging and installation discs; enable automatic startup.
+- [ ] Activate Windows with a valid license.
+- [ ] Repair and validate Green's memory hardware. Physical module/slot isolation and offline testing remain a separate maintenance task.
 
 ## app-01 and edge-01 Move to Purple
 
@@ -79,7 +90,7 @@ This backlog retains completed Green recovery and Purple storage work. The app a
 
 ## `green-server` Cross-Process Faults and Status Loss
 
-**Status:** Closed 2026-08-09 after service recovery and a controlled reboot. I am not running the offline Memtest86+ pass the record names as its next conclusive step, so Green's hardware cause stays unproven rather than ruled out  
+**Status:** Service-recovery work closed 2026-08-09; hardware follow-up reopened 2026-09-20 under Green Memory Repair above after the larger online test failed. The following records my August decision. I am not running the offline Memtest86+ pass the record names as its next conclusive step, so Green's hardware cause stays unproven rather than ruled out  
 **Troubleshooting record:** [Status Unknown and Cross-Process Faults](Troubleshooting/Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md)
 
 - [x] Confirm the `unknown` status with a cluster-side pass/fail loop. `pvestatd` had aborted and stayed failed because its unit has `Restart=no`.

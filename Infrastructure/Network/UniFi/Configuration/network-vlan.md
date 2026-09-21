@@ -1,7 +1,9 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-09
+**Last updated:** 2026-09-21
+
+On 2026-09-21 I verified the new `win11-dev` DHCP reservation at `192.168.40.117` on Personal-A VLAN 40. The controller returned `use_fixedip=true` and online status. [Provisioning and reservation record](../../../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
 
 I verified IDENTITY-A on 2026-09-07: VLAN 65, gateway 192.168.65.1/24, DHCP 192.168.65.100 through 192.168.65.120, enabled, and assigned to AlphaSec-Identity. The network reports `mdns_enabled: false`, `ipv6_interface_type: none`, and `ipv6_ra_enabled: false`. The mDNS field is a controller mirror, not an independent verification of the site-wide mDNS setting. I retained the [network readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json). The current count is 23 networks, including 16 routed corporate LANs.
 

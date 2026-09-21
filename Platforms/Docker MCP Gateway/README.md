@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-21
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -27,10 +27,10 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 | SSH Manager secret file | `/opt/docker/mcp-gateway/ssh-manager.env`, root-owned mode `0600` |
 | Servers | UniFi Network MCP 0.29.3 with a full-access overlay and SSH Manager MCP, both persistent services reached over HTTP |
 | Local server images | `homelab/unifi-network-mcp:0.29.3-full-access-proxy` run as the `unifi-network` service, `homelab/mcp-ssh-manager:latest` run as the `mcp-ssh-manager` service |
-| SSH Manager version | 3.8.5, 37 tools, 21 configured servers |
+| SSH Manager version | 3.8.5, 37 tools, 24 configured servers |
 | UniFi controller | `192.168.1.1:443`, site `default` |
 | Catalogs | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml`, `.../ssh-manager.yaml` |
-| SSH Manager server definitions | `/opt/docker/mcp-gateway/ssh-manager-servers.env`, twenty-one entries: seventeen Linux hosts, the three Windows servers added 2026-09-08, and the Windows workstation `obipc` added 2026-09-11 |
+| SSH Manager server definitions | Resolved environment in `/opt/docker/mcp-gateway/docker-compose.yml`; Dockhand imported definition at `/opt/docker/dockhand/stacks/imported/docker_blue/docker-mcp-gateway/compose.yaml` on `docker-main`; 24 live entries verified 2026-09-21 |
 | SSH Manager server lifetime | One persistent `mcp-ssh-manager` Compose service shared by every client session |
 | Restart policy | `unless-stopped` |
 
@@ -44,7 +44,7 @@ SSH Manager has no upstream image, so I build `homelab/mcp-ssh-manager:latest` o
 
 Since 2026-09-03 that image runs as its own Compose service rather than as a container the gateway starts. `mcp-ssh-manager` speaks stdio only, so [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) 0.12.0 is installed in the image and fronts it: it spawns the server once and serves it over Streamable HTTP on port 8080, multiplexing every HTTP caller onto that one process. The catalog entry is a `remote` server at `http://ssh-manager:8080/mcp`, reached over the project network and published on no host port. Because the gateway rejects a non-HTTPS remote by default, its service sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1`. The reasoning and the alternatives are in the [shared server change record](Documentation/Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md).
 
-The server definitions live in `Configuration/ssh-manager-servers.env`, which is not versioned, and the private key and nine sudo passwords in the root-owned `ssh-manager.env`, both read by that service. The key is materialized at mode `0600` on a `/keys` tmpfs at start and is never in an image layer. Game 01 was removed on 2026-09-12. A Windows host needs all three host key types it offers enrolled in `known_hosts`, not only ed25519, because the client may negotiate another type and the verifier compares the presented key against the enrolled ones; see [ObiPC Workstation Join - 2026-09-11](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md). An operating system reinstall regenerates those keys, so the host's lines have to be replaced, not appended to; `ObiPC` needed that on 2026-09-18, recorded in [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md). The five Proxmox nodes and `docker-main` authenticate as root; `ansible-01` and `ubuntu-dev` reach root through passwordless sudo; the other nine use their configured sudo values. Every entry is unrestricted, and Executor has no approval policy for this connection. Egress is deliberately unrestricted, decided 2026-09-03: the server may reach any machine I add to it. The catalog's `allowHosts` never applied here, and it was never enforced for the managed container either because that needs `--block-network`.
+The live service now reads resolved environment settings from its root-owned Compose definition. Dockhand's imported definition must receive the same edits. The older `ssh-manager-servers.env` and `ssh-manager.env` files remain references but are not loaded by the current resolved definition. I verified this while adding `win11_dev` on 2026-09-21. [Completion and SSH verification](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md). The key is materialized at mode `0600` on a `/keys` tmpfs at start and is never in an image layer. Game 01 was removed on 2026-09-12. A Windows host needs all three host key types it offers enrolled in `known_hosts`, not only ed25519, because the client may negotiate another type and the verifier compares the presented key against the enrolled ones; see [ObiPC Workstation Join - 2026-09-11](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md). An operating system reinstall regenerates those keys, so the host's lines have to be replaced, not appended to; `ObiPC` needed that on 2026-09-18, recorded in [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md). The five Proxmox nodes and `docker-main` authenticate as root; `ansible-01` and `ubuntu-dev` reach root through passwordless sudo; the other nine use their configured sudo values. Every entry is unrestricted, and Executor has no approval policy for this connection. Egress is deliberately unrestricted, decided 2026-09-03: the server may reach any machine I add to it. The catalog's `allowHosts` never applied here, and it was never enforced for the managed container either because that needs `--block-network`.
 
 The official container deployment requires the host Docker socket. This gives the gateway control of Docker Engine on `docker-blue`, which is necessary for starting managed MCP server containers and is the deployment's main trust boundary. The gateway container otherwise has a read-only root filesystem, no Linux capabilities, `no-new-privileges`, a 256 MiB memory limit, a half-CPU limit, a 256-process limit, and bounded JSON logs. Both persistent MCP services have a one-CPU and 512 MiB limit.
 
@@ -111,7 +111,7 @@ systemctl list-timers mcp-ssh-manager-restart.timer
 - [Environment template](Configuration/.env.example)
 - [UniFi service secret template](Configuration/unifi-network.env.example)
 - [SSH Manager secret template](Configuration/ssh-manager.env.example)
-- SSH Manager server definitions, `Configuration/ssh-manager-servers.env`, local only
+- Legacy SSH Manager server reference, `Configuration/ssh-manager-servers.env`, local only
 - [UniFi catalog](Configuration/catalogs/unifi-network.yaml)
 - [UniFi full-access Dockerfile](Configuration/Dockerfile.unifi-network)
 - [UniFi full-access build patch](Configuration/patches/unifi-network-mcp-0.29.3-full-access.py)
