@@ -1,17 +1,18 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-21
 
 On 2026-09-12 I removed `games.alphasecunited.com` and `wings.alphasecunited.com` for the Game 01 retirement. Their historical onboarding below does not describe an active endpoint.
 
-I verified 24 enabled proxy hosts on 2026-09-19 after adding App Portal. I route these internal service names through Nginx Proxy Manager at `192.168.85.2`: the 23 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
+I verified 25 enabled proxy hosts on 2026-09-21 after adding Weebarr. I route these internal service names through Nginx Proxy Manager at `192.168.85.2`: the 24 rows below plus NetBird. UniFi holds the matching local A records. I don't publish these names in public DNS.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
 | Service name | Upstream | Scheme | Notes |
 |---|---|---|---|
 | `jellyfin.alphasecunited.com` | `192.168.40.42:8096` | HTTP | Jellyfin trusts `192.168.85.2` and advertises this HTTPS URL. |
+| `weebarr.alphasecunited.com` | `192.168.40.42:18080` | HTTP | Proxy host 33; local login; Seerr backend; health and HTTPS login verified 2026-09-21. |
 | `seerr.alphasecunited.com` | `192.168.40.42:5055` | HTTP | WebSockets enabled. |
 | `sonarr.alphasecunited.com` | `192.168.40.42:8989` | HTTP | Direct IP access remains available. |
 | `radarr.alphasecunited.com` | `192.168.40.42:7878` | HTTP | Direct IP access remains available. |

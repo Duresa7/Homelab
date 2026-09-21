@@ -1,7 +1,9 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-21
+
+On 2026-09-21 I added `weebarr.alphasecunited.com` pointing to `192.168.85.2`, record `6ab17b2625574794b91d2402`, TTL 300. Internal HTTPS resolves and the public resolver returns NXDOMAIN.
 
 On 2026-09-19 I added `appportal.alphasecunited.com` for App Portal behind Nginx Proxy Manager. The controller returns 30 static DNS records, 24 of them pointing at `192.168.85.2`. Both `ObiPC` and `HQ-WS001` resolve the name through the domain controllers and reach the portal over HTTPS. [Internal HTTPS record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 
@@ -19,6 +21,7 @@ On 2026-09-13 I added `mesh.alphasecunited.com` for MeshCentral behind Nginx Pro
 |---|---|---|---:|---|---|---|
 | `netbird.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a518ca70e10fae1225ad3ba` | Internal resolution for the NetBird dashboard through Nginx Proxy Manager on `docker-network` |
 | `jellyfin.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a834` | Jellyfin through NPM |
+| `weebarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ab17b2625574794b91d2402` | Weebarr through NPM |
 | `seerr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a837` | Seerr through NPM |
 | `sonarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83a` | Sonarr through NPM |
 | `radarr.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a83d` | Radarr through NPM |

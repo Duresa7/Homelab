@@ -191,6 +191,7 @@ I verified all eight containers running after the Purple migration on 2026-09-12
 | Workload | Details |
 | --- | --- |
 | Jellyfin | `jellyfin/jellyfin:latest` 10.11.11; Movies, TV Shows, and Anime libraries; AniList 13.0.0.0 is first for Anime series metadata and images; Moonbase 2.1.0.0 serves the Moonfin clients, hosts the Moonfin web app at `/Moonfin/Web/`, and proxies Seerr through a server-side SSO session; Intel Quick Sync render device and GPU-active playback verified; LAN port 8096 |
+| Weebarr | `ghcr.io/deepdaddyttv/weebarr:latest` 0.2.0, verified 2026-09-21; seasonal anime requests through Seerr; anime profile 7 and `/data/media/anime`; LAN 18080; internal HTTPS `weebarr.alphasecunited.com`; automatic requests disabled |
 | Seerr | `ghcr.io/seerr-team/seerr:latest` 3.4.1; migrated from Jellyseerr with its existing configuration retained; Anime, Movies, and TV Shows enabled in Jellyfin sync; standard series route to `/data/media/tv` and anime to `/data/media/anime` through Sonarr |
 | Arr services | LinuxServer Sonarr, Radarr, and Prowlarr `latest`; Sonarr has separate television and anime roots, its synced indexer includes anime category 5070, and Sonarr and Radarr link to qBittorrent through separate categories; a 2026-07-21 episode and movie acquisition passed request, download, hard-link import, payload, library scan, and playback checks |
 | FlareSolverr | `ghcr.io/flaresolverr/flaresolverr:latest`; a challenge-protected indexer was verified through the `flaresolverr` Prowlarr tag during the acquisition pass |

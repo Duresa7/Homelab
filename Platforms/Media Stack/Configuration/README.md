@@ -1,13 +1,15 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-21
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, & automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
 [`media-stack.env.example`](media-stack.env.example) lists the required deployment-specific variables. Both examples require editing before use.
 
 The request service intentionally retains the Compose key and configuration path name `jellyseerr` so the existing database is reused, but it runs the successor image `ghcr.io/seerr-team/seerr:latest` with `init: true`.
+
+Weebarr uses the existing `media` network and Seerr at `http://jellyseerr:5055`. Its login and backend key persist in `/opt/media-stack/config/weebarr`; no secret is embedded in the Compose reference. The [deployment record](../../Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md) covers setup and verification.
 
 ## Library Routing
 
@@ -47,7 +49,7 @@ The live qBittorrent configuration also enables `excluded_file_names_enabled` wi
 
 ## Internal HTTPS
 
-Jellyfin advertises `JELLYFIN_PUBLISHED_SERVER_URL` as its internal HTTPS URL and trusts NPM at `192.168.85.2`. qBittorrent's persistent `WebUI\ServerDomains` value is the semicolon-separated `qbittorrent.alphasecunited.com;gluetun;192.168.40.42`. Those entries preserve the NPM hostname, the Arr clients' Docker path, & direct access without disabling Host-header validation. UniFi resolves all six media UI names to NPM and permits NPM only to TCP 5055, 7878, 8080, 8096, 8989, & 9696 on `media-01`.
+Jellyfin advertises `JELLYFIN_PUBLISHED_SERVER_URL` as its internal HTTPS URL and trusts NPM at `192.168.85.2`. qBittorrent's persistent `WebUI\ServerDomains` value is the semicolon-separated `qbittorrent.alphasecunited.com;gluetun;192.168.40.42`. Those entries preserve the NPM hostname, the Arr clients' Docker path, & direct access without disabling Host-header validation. UniFi resolves all seven media UI names to NPM and permits NPM only to TCP 5055, 7878, 8080, 8096, 8989, 9696, & 18080 on `media-01`.
 
 Sonarr, Radarr, and Prowlarr each carry `<APP>__SERVER__TRUSTEDNETWORKS` set to `192.168.85.2` in Compose, which is the Servarr `TrustedNetworks` setting. Without it, `ForwardedHeadersMiddleware` treats NPM as an unknown proxy, discards its `X-Forwarded-Proto: https`, and the apps answer an HTTPS request with an `http://` login redirect. The value is comma separated and a bare address means a single host. The [lost proxy trust issue](../Documentation/Troubleshooting/Lost%20Proxy%20Trust%20Broke%20Arr%20HTTPS%20Redirects%20-%202026-09-18.md) records the failure that exposed it and the verification.
 

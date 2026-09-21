@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-21
 
 On 2026-09-20 I added `Allow App Portal to Identity LDAPS`, an IPv4 TCP allow from `192.168.40.35` in Internal to `192.168.65.10` and `192.168.65.11` in `AlphaSec-Identity` on port 636, with logging and a response companion enabled and the Always schedule. It lets the App Portal server check an administrator's directory sign-in against a domain controller. The controller assigned index 10008. I opened 636 and nothing else: plain LDAP on 389 was refused from `docker-main` before the change and is still refused after it, which is the control that proves the rule admits the one port it names. LDAPS itself did not work on either controller until the same day; see [LDAPS on the Domain Controllers](../../../../Platforms/Active%20Directory/Documentation/Change%20Records/LDAPS%20on%20the%20Domain%20Controllers%20-%202026-09-20.md). The user-defined total rose from 88 to 89, split 81 allows to eight blocks. [Directory sign-in record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Directory%20Sign-In%20for%20the%20Portal%20-%202026-09-20.md).
 
@@ -118,7 +118,7 @@ Every custom policy uses the `Always` schedule. The source and destination colum
 | `Allow Galaxy nodes to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 | `AlphaSec-Observability` / 192.168.72.2 / `Wazuh Ports` |
 | `Allow VPN --> Internal Zone` | Yes | ALLOW | 10001 | All | Vpn / Management Access | Internal / Any |
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
-| `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
+| `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696, 18080 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3001, 3002, 3003, 3004, 6060 |
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |

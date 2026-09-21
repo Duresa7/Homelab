@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-21
 
 I run Dockhand 1.0.48 on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com). After retiring Portainer on 2026-09-16, I verified seven connected Docker hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers. Dockhand and six Hawser 0.2.48 agents manage the remaining applications.
 
@@ -28,6 +28,8 @@ The hub runs `/opt/docker/dockhand/compose.yaml`, stores state at `/opt/docker/d
 I imported all 47 Compose projects on 2026-09-15; 42 remain after removing the five Portainer projects. Dockhand now reads their editable definitions from `/opt/docker/dockhand/stacks/imported/<host>/<project>/compose.yaml` on `docker-main`. I resolved environment files into protected mode-0600 definitions, merged BookLore's override, retained absolute bind and build paths, and enabled the already-running media VPN services in the imported definition. The host directory names use underscores, such as `docker_blue`.
 
 I validated each normalized definition against its source with Docker Compose before adoption. Import did not deploy or restart any application. I then created, deployed, read, saved, and removed a disposable stack through Dockhand on every host. All seven tests passed. The 69 existing container IDs, start times, and running states remained unchanged during this preparation.
+
+On 2026-09-21 I added Weebarr to both the live media-stack Compose project and its imported definition. Both validate; the imported definition remains mode 0600. Weebarr keeps its backend credential in its persistent application settings, so the stack definition needs no environment secret file.
 
 The imported files are the source for future Dockhand stack edits. Deploying a project through Dockhand also writes its normalized definition over the project's own Compose file. The [registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md) did that to eleven of the 42 on 2026-09-15: five application projects and the six Hawser projects. Those eleven are now JSON with their environment files resolved inline, at mode 0600. The other 31 still hold their original YAML at their original modes, and a UI edit does not reach them, so I must reconcile one of those before using it for a later command-line deployment. The copies tracked in this repository stay in the authored YAML form, referencing secrets rather than resolving them, so they are the readable reference and never a byte match for a rewritten host file.
 
