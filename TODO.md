@@ -1,13 +1,15 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 - [x] **Restore app-01 Wazuh manager connectivity.** On September 11 I repaired the manager hash-refresh restart and verified app-01 connected after its Purple migration. [Evidence and context](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md).
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 
 - [ ] **Repair Green memory and activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete, including verification after a restart. Host memory repair and Windows activation remain open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
 

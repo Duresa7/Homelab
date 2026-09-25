@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 I run Dockhand 1.0.48 on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com). After retiring Portainer on 2026-09-16, I verified seven connected Docker hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers. Dockhand and six Hawser 0.2.48 agents manage the remaining applications.
 
@@ -57,6 +57,8 @@ On 2026-09-16 I ran all six updater helpers through Dockhand. Each exited with c
 
 On 2026-09-18 I verified the live schedules. Six environments check and automatically apply image updates daily at 3:00 AM Eastern without a vulnerability scanner. alpha-prod-01 checks and automatically updates on Mondays at 3:00 AM, uses both scanners, and blocks updates with critical or high vulnerabilities. All seven environments prune dangling images on Mondays at 4:00 AM. Each uses `America/New_York`. I did not change these settings or test a scheduled update during this verification.
 
+On 2026-09-25 the first scheduled run to find an NPM release stopped NPM and then lost the Hawser connection that runs through it, so the replacement was never created and every agent stayed disconnected until I started NPM by hand at 6:12 AM. Anything Dockhand's own connection depends on must be excluded from these updates: that is the Hawser containers and NPM today. I gave NPM the label `dockhand.update: "false"` in its live Compose file and in the imported definition under `stacks/imported/docker_network/`. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
+
 I also removed 57 reviewed untagged, unused images and measured a 23.97 GB increase in available filesystem space. All 70 containers, 30 volume definitions, and tagged image references were preserved; all 64 running containers stayed running. I excluded images with tags or container references even when Docker listed them as dangling. [Cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md).
 
 ## Records
@@ -68,3 +70,4 @@ I also removed 57 reviewed untagged, unused images and measured a 23.97 GB incre
 - [Private registry and editable stack preparation](Documentation/Change%20Records/Registry%20and%20Stack%20Preparation%20-%202026-09-15.md)
 - [Registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md)
 - [Image cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md)
+- [NPM scheduled update outage](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md)

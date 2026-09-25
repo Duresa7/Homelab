@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 This inventory maps 14 workload guests after win11-dev completion on 2026-09-21. Prometheus has 57 healthy targets after the 2026-09-15 uptime expansion and the 2026-09-16 Portainer retirement, and Wazuh has 15 active remote agents. I added HQ-MGT01 here on 2026-09-12 after verifying its Windows Admin Center gateway and existing provisioning service. I deployed MeshCentral on `docker-blue` on 2026-09-12 as a pilot beside RustDesk; both run on that host until I choose between them. I added `ubuntu-dev` on 2026-08-13, removed `debian-dev` on 2026-08-14 when I decommissioned it, moved CLI Proxy API from `ubuntu-dev` to `docker-main` on 2026-08-19, and removed `kasm-01` with VM 122 later that day. I confirmed deleted VM 117 `supabase-01` absent on 2026-08-20; it was stopped and did not carry a workload in this inventory. I added separate anime routing to the media stack on 2026-08-23. Twelve guests were running during the 2026-08-03 staleness audit; `game-01` was added on 2026-08-07. Wazuh and Prometheus cover all five Proxmox nodes.
 
@@ -128,7 +128,7 @@ I replaced Dockge with [Dockhand 1.0.48](../../../Platforms/Dockhand/README.md) 
 
 | Workload | Details |
 | --- | --- |
-| Nginx Proxy Manager | Version 2.15.1; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
+| Nginx Proxy Manager | Version 2.15.1, pinned by tag and excluded from Dockhand updates since 2026-09-25; Docker Compose project under `/opt/docker/nginx-proxy-manager`; administrator initialized; wildcard/apex Let's Encrypt certificate assigned with Force SSL and HTTP/2 |
 | NetBird | Management server 0.78.1 and dashboard 2.92.0 under `/opt/docker/netbird`; the management server moved from 0.78.0 to 0.78.1 on 2026-09-04, and on 2026-09-06 the container's own `netbird version` returned 0.78.1 while the dashboard OCI label still read v2.92.0; HTTPS returned `200`; also runs as the Access-A routing peer (overlay `100.121.111.204`) advertising the `AlphaSec-Access` network `192.168.85.0/24` |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | Wazuh agent | 4.14.6-1, held; enabled/active; manager ID `011` as `docker-network` |
