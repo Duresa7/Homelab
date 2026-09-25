@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-25
 
 ## Scope
 
@@ -26,11 +26,12 @@ Expected baseline:
 - Container state is `running` and health is `healthy`.
 - Address on `proxy` is `172.31.85.10`.
 - Restart policy is `unless-stopped`.
+- Label `dockhand.update` is `false`, and the image is a pinned version tag rather than `latest`.
 - The administrator UI returns HTTP `200`.
 - The NetBird HTTPS host returns a successful application response and presents the certificate expiring `2026-10-08 23:49:46 UTC`.
 - Each host in the [internal proxy inventory](../Configuration/internal-proxy-hosts.md) returns 200 or an expected application redirect. None returns 502 or 504.
 
-The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. I retrieve the shared web account through the repository's password-manager workflow and keep the password and short-lived API token out of shell output and files. `POST /api/tokens` authenticated on 2026-09-05 and the API created Open WebUI proxy host 28. The API is a supported path for scripted host changes; the browser stays the path for certificate work.
+The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. I retrieve the `email` and `password` fields from the standard `Account dkadi` login item through the repository's credential workflow. NPM uses that email as its login identity. The [service-login standardization record](../../../Operations/Maintenance/Service%20Login%20Password%20Standardization%20-%202026-09-04.md) documents this shared source. I keep the email, password, and short-lived API token out of shell output and files. `POST /api/tokens` authenticated on 2026-09-05 and the API created Open WebUI proxy host 28. The API is a supported path for scripted host changes; the browser stays the path for certificate work.
 
 ## Logs
 

@@ -1,7 +1,9 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
+
+On 2026-09-25 Dockhand's 3:00 AM auto-update stopped NPM to replace it and lost its own connection, which runs through NPM, before the replacement started. Everything behind `192.168.85.2` was down until 6:12 AM. I pinned the image to `jc21/nginx-proxy-manager:2.15.1` and added the label `dockhand.update: "false"`, so Dockhand no longer updates NPM; I upgrade it by hand. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
 
 On 2026-09-19 I added proxy host 32, `appportal.alphasecunited.com`, for App Portal on `docker-main`. It forwards to `http://192.168.40.35:3004` with certificate 1, Force SSL and HTTP/2. The UniFi policy `Allow NPM to docker-main web UIs` lists destination ports explicitly, so it needed TCP 3004 before the proxy could reach the portal at all. [Record](../App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 
@@ -21,7 +23,7 @@ I run Nginx Proxy Manager on the `docker-network` LXC. It's my reverse proxy for
 |---|---|
 | Deployment status | Runtime healthy; 24 proxy hosts enabled, automated renewal path, restart recovery, & bounded logging verified |
 | Compute | Galaxy CT 107 `docker-network`, Debian 13, `192.168.85.2` |
-| NPM release | 2.15.1 |
+| NPM release | 2.15.1, pinned by tag and excluded from Dockhand updates since 2026-09-25 |
 | Live path | `/opt/docker/nginx-proxy-manager` |
 | Container | `nginx-proxy-manager` |
 | Guest bindings | TCP 80, 81, and 443 |
@@ -35,6 +37,7 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 
 ## Records
 
+- [Scheduled update outage (2026-09-25)](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md)
 - [Deployment record](Documentation/Deployment.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
@@ -46,7 +49,7 @@ The NPM health check passes and the administrative UI returns HTTP `200` at `htt
 - [Open WebUI internal HTTPS (2026-09-05)](Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md)
 - [CLI Proxy API internal HTTPS (2026-08-10)](../CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md)
 - [CLI Proxy API relocation to docker-main (2026-08-19)](../CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md)
-- [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
+- [NetBird/NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
 - [NetBird platform](../Netbird/README.md)
 
 ## Layout
