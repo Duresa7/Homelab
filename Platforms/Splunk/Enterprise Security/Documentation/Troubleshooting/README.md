@@ -1,11 +1,11 @@
-# Troubleshooting
+# Splunk Enterprise Security Troubleshooting
 
 **Created:** 2026-07-02  
 **Last updated:** 2026-08-04
 
-I record Splunk Enterprise Security failures here with the cause, correction, & observed result. The [build log](../Build-Log.md) holds the installation sequence.
+I record Splunk Enterprise Security failures here with the cause, correction, and observed result. The [build log](../Build%20Log.md) holds the installation sequence.
 
-I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
+I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, and verification for each issue.
 
 ## Issue Index
 

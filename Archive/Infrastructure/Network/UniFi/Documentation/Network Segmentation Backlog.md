@@ -13,10 +13,10 @@ I've built the `AlphaSec-Access`, `AlphaSec-Security`, & `AlphaSec-Cluster` zone
 
 - [x] Deploy network-access / connectivity tooling onto Access-A: Nginx Proxy Manager 2.15.1 and NetBird 0.74.3 now run on LXC 107 `docker-network`
 - [x] Assign a static IP from the reserved range: `192.168.85.2/24` (DHCP pool starts at `.6`)
-- [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
+- [x] Confirm reachability from both Internal and VPN. I verified internal DNS and application administration; I validated the VPN-client path into Access-A on 2026-07-12 via a NetBird routing peer (see the [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md))
 - [x] Add least-privilege outbound policies: TCP 80/443 and UDP 123 are allowed only from `192.168.85.2`, followed by an ordered block for all other `AlphaSec-Access`-to-External IPv4 traffic
 
-The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+The infrastructure implementation is recorded in [Galaxy Docker-Network LXC Deployment - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md). Certificate, proxy-host, HTTPS login, and Compose restart validation are complete; I completed the first-peer enrollment and VPN-client path into Access-A on 2026-07-12 and recorded them in the NetBird [change record](../../../../../Platforms/Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
 I left the web and NTP destination addresses dynamic because Debian mirrors, container registries, certificate services, and NTP pools can rotate. Least privilege is enforced through the single-host source match, required ports only, ordered catch-all block, and logging rather than a brittle destination-IP list.
 
@@ -55,4 +55,4 @@ I disabled the broad Internal-to-MGMT policy, narrowed `docker-main` to TCP 8006
 - [x] Verify cluster health after the change (`pvecm status` showed all 4 nodes, quorum intact, both links active)
 - [x] Confirm GUI/SSH access via the original 192.168.70.10 – .13 addresses is unaffected
 
-Completed 2026-07-10. The addresses, configuration, commands, checks, & screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
+Completed 2026-07-10. The addresses, configuration, commands, checks, & screenshots are in [Galaxy Cluster-Net Corosync Link Addition - 2026-07-10](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).

@@ -212,7 +212,6 @@ scrape_configs:
       - targets:
           - https://jellyfin.alphasecunited.com/
           - https://seerr.alphasecunited.com/
-          - https://weebarr.alphasecunited.com/
           - https://sonarr.alphasecunited.com/
           - https://radarr.alphasecunited.com/
           - https://prowlarr.alphasecunited.com/

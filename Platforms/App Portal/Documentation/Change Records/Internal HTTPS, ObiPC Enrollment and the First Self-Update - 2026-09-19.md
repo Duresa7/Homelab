@@ -3,7 +3,7 @@
 **Created:** 2026-09-19  
 **Last updated:** 2026-09-19
 
-Three pieces of work in one evening, all of them the parts that only a real machine can settle: the client updated itself while it was running, the portal moved behind the reverse proxy with a certificate, and `ObiPC` — the machine this project exists for — got the client.
+Three pieces of work in one evening, all of them the parts that only a real machine can settle: the client updated itself while it was running, the portal moved behind the reverse proxy with a certificate, and `ObiPC`, the machine this project exists for, got the client.
 
 ## The updater replaced a running client
 
@@ -11,7 +11,7 @@ I cut **v0.2.1** for no reason other than to make an update exist. The version b
 
 The first run found the release, downloaded 101.8 MB, verified its SHA-256 against the published `SHA256SUMS`, unpacked it, and then did the right thing: it refused to swap under a running client, wrote `Staged` with the message *Close App Portal to finish updating*, and waited its twenty seconds before giving up gracefully. Download to staged took four seconds.
 
-With the client closed, the next run swapped it. `AppPortal.exe` read 0.2.0.0 before and 0.2.1.0 after. The rename of the running updater into `.previous` behaved as designed and logged its own limitation plainly — *`.previous` stays for now: Access to the path 'AppPortal.Updater.exe' is denied* — because the updater cannot delete the copy of itself it is executing. The run after that deleted both `.previous` and `.update` and wrote `UpToDate` at 0.2.1.
+With the client closed, the next run swapped it. `AppPortal.exe` read 0.2.0.0 before and 0.2.1.0 after. The rename of the running updater into `.previous` behaved as designed and logged its own limitation plainly (*`.previous` stays for now: Access to the path 'AppPortal.Updater.exe' is denied*), because the updater cannot delete the copy of itself it is executing. The run after that deleted both `.previous` and `.update` and wrote `UpToDate` at 0.2.1.
 
 One rough edge I looked at and decided was not one. `update.json` still described the staged state for the half-minute between the swap and the following run, so a client reopened inside that window would read a status file claiming an update was ready. It does not matter, because the banner is a version comparison rather than a status flag: *ready* requires the staged version to be newer than the running one, and 0.2.1 is not newer than 0.2.1. The banner stays hidden and the next run corrects the file.
 
@@ -21,19 +21,19 @@ One rough edge I looked at and decided was not one. `update.json` still describe
 
 `appportal.alphasecunited.com` resolves to `192.168.85.2` through the controller's local DNS and terminates on Nginx Proxy Manager as proxy host 32, forwarding to `http://192.168.40.35:3004` with the shared wildcard certificate, Force SSL, HTTP/2 and Block Common Exploits. That matches every other internal host; nothing here is special.
 
-What actually blocked it was a firewall rule nobody would think to check. `Allow NPM to docker-main web UIs` lists destination ports explicitly — 2283, 3000, 3001, 3002, 3003 and 6060 — so the proxy could reach Dockhand on 3003 and timed out on the portal's 3004. From the proxy itself, `curl` to 3003 returned 307 and 3004 returned nothing at all. I added 3004 to that policy's port list rather than creating a new one, because the policy already means *the approved docker-main web interfaces* and the portal is one of them.
+What actually blocked it was a firewall rule nobody would think to check. `Allow NPM to docker-main web UIs` lists destination ports explicitly (2283, 3000, 3001, 3002, 3003 and 6060), so the proxy could reach Dockhand on 3003 and timed out on the portal's 3004. From the proxy itself, `curl` to 3003 returned 307 and 3004 returned nothing at all. I added 3004 to that policy's port list rather than creating a new one, because the policy already means *the approved docker-main web interfaces* and the portal is one of them.
 
 ## The plain-HTTP allow is gone
 
 `HQ-WS001` now points at `https://appportal.alphasecunited.com`. Its device token did not change; only `serverUrl` in `client.json` did.
 
-The path it takes changed completely. `Allow HQ-WS001 to NPM HTTPS` admits `192.168.65.20` to `192.168.85.2:443` and nothing else, and `Allow Identity to App Portal` — the plain-HTTP allow to `192.168.40.35:3004` that carried the afternoon's test — is deleted. A bearer token no longer crosses the LAN in the clear.
+The path it takes changed completely. `Allow HQ-WS001 to NPM HTTPS` admits `192.168.65.20` to `192.168.85.2:443` and nothing else, and `Allow Identity to App Portal`, the plain-HTTP allow to `192.168.40.35:3004` that carried the afternoon's test, is deleted. A bearer token no longer crosses the LAN in the clear.
 
 Two things are worth writing down. **An interrupted create still creates.** I cancelled the policy-creation call mid-flight and the controller had already taken it twice, a millisecond apart, leaving two identical policies; I deleted the second. This is the same trap as a preview call that mutates, and the rule stands: check the live list before retrying anything that creates. **A deleted policy is not instantly enforced.** Immediately after the delete, `HQ-WS001` still connected to `192.168.40.35:3004`. About a minute later the same probe was refused, with TCP 3003 refused as a control and the TLS path still answering. If I had tested once and stopped, I would have recorded exactly the wrong conclusion.
 
 ## ObiPC carries the client
 
-Action1 lists two `ObiPC` endpoints. One was last seen 2026-09-13 and is the machine as it existed before the rebuild; the live one has today's timestamp and `192.168.60.102`. I registered the live one with `device add`, and the token went into the vault item *<REDACTED_CREDENTIAL_ITEM_NAME>* without appearing on a terminal. Registering by name a second time simply rotates the token, which is what happened while I was getting the vault item's shape right; the value in the vault is the one the server's hash matches, and I proved that by calling the server's device endpoint with it before installing anything.
+Action1 lists two `ObiPC` endpoints. One was last seen 2026-09-13 and is the machine as it existed before the rebuild; the live one has today's timestamp and `192.168.60.102`. I registered the live one with `device add`, and the token went into the device-token item for `ObiPC` without appearing on a terminal. Registering by name a second time simply rotates the token, which is what happened while I was getting the vault item's shape right; the value in the vault is the one the server's hash matches, and I proved that by calling the server's device endpoint with it before installing anything.
 
 The client went on over SSH as an elevated session, from the release archive, after checking its SHA-256 against the release's `SHA256SUMS` on the machine itself. `ObiPC` runs 0.2.1 pointing at the TLS name, with the updater task registered and the Start menu shortcut in place for everyone.
 

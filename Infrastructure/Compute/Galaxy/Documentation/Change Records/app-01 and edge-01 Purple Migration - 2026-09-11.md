@@ -1,11 +1,11 @@
 # app-01 and edge-01 Purple Migration
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-25
 
 **Status:** Complete 2026-09-11. Both guests run on Purple; source volumes are removed.
 
-I approved continuing the move after completing app-01's [64 GiB disk replacement](app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md). I moved VM 116 app-01 and VM 121 edge-01 from Grey to Purple, placing both system and EFI disks on Purple's NVMe-backed `local-lvm`. I retain their addresses, VLANs, CPU settings, and memory allocations. The [initial assessment](app-01%20and%20edge-01%20Purple%20Migration%20Assessment%20-%202026-09-10.md) explains the AMD-to-Intel shutdown migration.
+I continued the move after completing app-01's [64 GiB disk replacement](app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md). I moved VM 116 app-01 and VM 121 edge-01 from Grey to Purple, placing both system and EFI disks on Purple's NVMe-backed `local-lvm`. I retain their addresses, VLANs, CPU settings, and memory allocations. The [initial assessment](app-01%20and%20edge-01%20Purple%20Migration%20Assessment%20-%202026-09-10.md) explains the AMD-to-Intel shutdown migration.
 
 ## Preflight
 

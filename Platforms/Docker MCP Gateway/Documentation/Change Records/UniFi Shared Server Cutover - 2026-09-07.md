@@ -1,7 +1,7 @@
 # UniFi Shared Server Cutover
 
 **Created:** 2026-09-07  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 ## Change
 
@@ -15,7 +15,7 @@ I moved controller settings and full-access permission flags from the catalog to
 
 ## Verification
 
-I checked the live Compose file, catalog, and original Dockerfile against their tracked SHA-256 hashes before editing; all three matched. I validated the staged Compose with `config --quiet`, built the image successfully, then ran `up -d --wait --wait-timeout 90 unifi-network gateway`. Both containers became healthy. The initial unprivileged catalog hash read returned permission denied; the elevated read succeeded. I observed these steps in the working session and did not retain a separate complete terminal transcript.
+I checked the live Compose file, catalog, and original Dockerfile against their tracked SHA-256 hashes before editing; all three matched. I validated the staged Compose with `config --quiet`, built the image successfully, then ran `up -d --wait --wait-timeout 90 unifi-network gateway`. Both containers became healthy. The initial unprivileged catalog hash read returned permission denied; the elevated read succeeded.
 
 A first Executor network-list call returned success with 23 networks. I then issued six concurrent reads as six separate Executor executions. Every call returned success with 23 networks and no connection error. Before and after that burst:
 
@@ -29,7 +29,7 @@ The gateway health endpoint returned HTTP 200; an unauthenticated MCP request re
 
 ## Cleanup and Open State
 
-Before committing, I repeated live Compose validation and checked the deployed Compose file, Dockerfile, and UniFi catalog against the repository references. All three SHA-256 hashes matched, and all four MCP containers remained healthy with zero restarts. The first verification request used `docker-blue` as the SSH Manager server key and failed before execution; retrying with the registered key `docker_blue` succeeded with exit code 0. I observed this check in the working session without retaining a separate terminal transcript.
+Before committing, I repeated live Compose validation and checked the deployed Compose file, Dockerfile, and UniFi catalog against the repository references. All three SHA-256 hashes matched, and all four MCP containers remained healthy with zero restarts. The first verification request used `docker-blue` as the SSH Manager server key and failed before execution; retrying with the registered key `docker_blue` succeeded with exit code 0.
 
 I removed the superseded `unifi-secrets.env`, temporary staging directory, and build log after verification. Compose validation passed again after cleanup. No snapshot or backup copy was created. The old full-access image remains available locally; the new service uses the distinct proxy tag.
 

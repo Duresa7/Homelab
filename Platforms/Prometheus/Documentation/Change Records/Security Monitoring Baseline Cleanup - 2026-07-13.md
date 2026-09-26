@@ -10,7 +10,7 @@
 
 ## Scope
 
-I installed `node_exporter` on the three Galaxy nodes that lacked it, removed two obsolete Wazuh registrations, & replaced the stale Prometheus target set. The final configuration contains seven jobs, all reporting `UP`.
+I installed `node_exporter` on the three Galaxy nodes that lacked it, removed two obsolete Wazuh registrations, and replaced the stale Prometheus target set. The final configuration contains seven jobs, all reporting `UP`.
 
 ## Starting State
 

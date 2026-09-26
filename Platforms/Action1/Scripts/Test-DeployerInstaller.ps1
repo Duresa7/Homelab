@@ -1,4 +1,4 @@
-# Read-only check. Run on HQ-MGT01 after the approved installer transfer succeeds.
+# Read-only check. Run on HQ-MGT01 after the installer transfer succeeds.
 [CmdletBinding()]
 param(
     [string]$Path = 'C:\Windows\Temp\Action1-Setup\deployer.exe'

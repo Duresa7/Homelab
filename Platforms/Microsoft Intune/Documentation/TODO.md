@@ -1,7 +1,7 @@
 # Microsoft Intune TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-25
 
 I keep the detailed list for Intune and device management here. The root TODO.md links here for the steps and completion checks.
 
@@ -9,12 +9,12 @@ I keep the detailed list for Intune and device management here. The root TODO.md
 
 This is not a task. It is a rule that follows from the compliance decision of 2026-09-11 recorded in the [platform README](../README.md), and it holds until that decision is revisited.
 
-1. I will not create any Conditional Access policy that requires a compliant device. Every device in this tenant reports Compliant without being evaluated, so the policy would pass for the wrong reason today and would begin failing the moment a real compliance policy landed. With one admin account and no break-glass exclusion, that failure locks me out of my own tenant.
+1. I will not create any Conditional Access policy that requires a compliant device. Every device in this tenant reports Compliant without being evaluated, so the policy would pass for the wrong reason today and would begin failing the moment a real compliance policy landed. `DK-admin` holds Global Administrator and `BG-admin` is the break-glass account, but neither is excluded from anything, so that failure would catch both and lock me out of my own tenant.
 2. If I ever build a Conditional Access policy for any other purpose, I will create the break-glass exclusion first and confirm it works before enabling the policy. This step is done when a second path into the tenant is proven to survive the policy being on.
 
 ## FileVault with recovery key escrow (decision open)
 
-1. I will decide whether Intune enforces FileVault on `dkadi-mb-air3` with the recovery key escrowed into Intune. This mirrors the TPM-only BitLocker baseline still open for the physical Windows workstation in the [Active Directory TODO](../../Active%20Directory/Documentation/TODO.md), and settling both the same way keeps one disk-encryption posture across the fleet. The decision is done when I record the baseline and its scope.
+1. I will decide whether Intune enforces FileVault on `dkadi-mb-air3` with the recovery key escrowed into Intune. This mirrors the TPM+PIN BitLocker baseline still open for the physical Windows workstation in the [Active Directory TODO](../../Active%20Directory/Documentation/TODO.md), and settling both the same way keeps one disk-encryption posture across the fleet. The decision is done when I record the baseline and its scope.
 2. If I enforce it, I will confirm the recovery key is retrievable from the Intune console before I rely on it. A key escrow I have never read back is not a recovery path. This step is done when I have retrieved the key once and recorded that it worked, without recording the key.
 
 ## Platform SSO (optional, not started)

@@ -14,7 +14,7 @@ Unable to communicate with qBittorrent via Proton VPN.
 Failed to connect to qBittorrent. Check your settings and qBittorrent configuration.
 ```
 
-Gluetun remained healthy, qBittorrent remained running, & both Arr containers resolved and opened TCP connections to `gluetun:8080`. The failure occurred after the HTTP connection reached qBittorrent.
+Gluetun remained healthy, qBittorrent remained running, and both Arr containers resolved and opened TCP connections to `gluetun:8080`. The failure occurred after the HTTP connection reached qBittorrent.
 
 ## Reproduction
 
@@ -28,7 +28,7 @@ Changing only the HTTP `Host` header isolated the rejection:
 | `192.168.40.42:8080` | HTTP `401` |
 | `qbittorrent.alphasecunited.com` | HTTP `200`, body `v5.2.3` |
 
-The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md) retains the request commands and outputs, safe configuration readback, container network state, & the explicit boundary for the filtered Arr log lines that weren't copied into the local artifact.
+The [diagnosis transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S01-Diagnosis-2026-07-22.md) retains the request commands and outputs, safe configuration readback, container network state, and the explicit boundary for the filtered Arr log lines that weren't copied into the local artifact.
 
 ## Hypotheses and Tests
 
@@ -53,7 +53,7 @@ I kept Host-header validation enabled and changed the semicolon-separated server
 qbittorrent.alphasecunited.com;gluetun;192.168.40.42
 ```
 
-The direct hostname supports NPM, `gluetun` supports Sonarr and Radarr, & `192.168.40.42` preserves direct IP-and-port access. The qBittorrent [WebUI API reference](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-%28qBittorrent-4.1%29) defines `web_ui_domain_list` as a semicolon-separated list.
+The direct hostname supports NPM, `gluetun` supports Sonarr and Radarr, and `192.168.40.42` preserves direct IP-and-port access. The qBittorrent [WebUI API reference](https://github.com/qbittorrent/qBittorrent/wiki/WebUI-API-%28qBittorrent-4.1%29) defines `web_ui_domain_list` as a semicolon-separated list.
 
 I created no backup. The API serialized the corrected value to the existing qBittorrent configuration at 20:49:22 EDT.
 
@@ -65,7 +65,7 @@ I created no backup. The API serialized the corrected value to the existing qBit
 - Radarr and Sonarr `downloadclient/testall` each returned HTTP `200`.
 - Both `/api/v3/health` responses were empty arrays.
 - Direct `http://192.168.40.42:8080/` and NPM HTTPS access returned HTTP `200`; TLS verification returned `0`.
-- Gluetun was healthy, qBittorrent shared Gluetun's exact container namespace, & forwarded port `51342` matched qBittorrent's listening port.
+- Gluetun was healthy, qBittorrent shared Gluetun's exact container namespace, and forwarded port `51342` matched qBittorrent's listening port.
 - Radarr and Sonarr logged zero qBittorrent connection errors after 20:49:22 EDT.
 
 The [correction and verification transcript](../../../../Security/Incidents/qBittorrent/Evidence/Host%20Validation%20Recovery%20-%202026-07-22/Logs/S02-Correction-and-Verification-2026-07-22.md) records the API change and resulting checks.

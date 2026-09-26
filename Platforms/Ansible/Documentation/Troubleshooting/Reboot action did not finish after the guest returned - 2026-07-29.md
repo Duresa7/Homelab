@@ -1,15 +1,15 @@
 # Reboot action did not finish after the guest returned
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-09-25
 
 **Investigated:** 2026-07-29
 
 ## Symptom
 
-The approved security-01 run reached `ansible.builtin.reboot`, rebooted the guest, & stayed on that task until the SSH Manager call reached its five-minute timeout. The remote Ansible process remained in the reboot action afterward.
+The security-01 run reached `ansible.builtin.reboot`, rebooted the guest, and stayed on that task until the SSH Manager call reached its five-minute timeout. The remote Ansible process remained in the reboot action afterward.
 
-security-01 was already reachable. Its uptime showed a new boot, `/var/run/reboot-required` was gone, all four Wazuh and Docker units were active, cAdvisor was healthy, & systemd reported no failed unit.
+security-01 was already reachable. Its uptime showed a new boot, `/var/run/reboot-required` was gone, all four Wazuh and Docker units were active, cAdvisor was healthy, and systemd reported no failed unit.
 
 ## Failed attempt
 
@@ -34,18 +34,18 @@ I replaced the action plugin with explicit remote steps:
 1. Read the guest boot ID.
 2. Schedule `systemctl reboot` through a transient systemd timer outside the SSH session.
 3. Wait for a new SSH connection.
-4. Read the boot ID again & require it to differ.
+4. Read the boot ID again and require it to differ.
 5. Retry the systemd state until startup checks settle.
 
 The play still runs one automatic reboot at a time. It refuses `reboot=auto` through a local connection, so the controller cannot reboot itself through its local inventory entry.
 
 ## Verification
 
-The corrected path rebooted splunk-siem, reconnected over SSH, & proved a changed boot ID before continuing. Its final check-mode pass reported `reboot_required=False` on security-01 and splunk-siem.
+The corrected path rebooted splunk-siem, reconnected over SSH, and proved a changed boot ID before continuing. Its final check-mode pass reported `reboot_required=False` on security-01 and splunk-siem.
 
-The final readback returned `system_state=running` and zero failed units on all 11 in-scope guests. security-01 retained active Wazuh services, healthy cAdvisor, HTTP 302 from the dashboard, & the expected unauthenticated HTTP 401 from the API.
+The final readback returned `system_state=running` and zero failed units on all 11 in-scope guests. security-01 retained active Wazuh services, healthy cAdvisor, HTTP 302 from the dashboard, and the expected unauthenticated HTTP 401 from the API.
 
-Evidence: [security-01 reboot attempt](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S08-security-01-reboot.log), [splunk-siem corrected reboot path](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S09-splunk-siem-reboot.log), [post-reboot final readback](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10-post-reboot-final-verification.log), & [final reboot-automation check](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10c-final-reboot-automation-check.log)
+Evidence: [security-01 reboot attempt](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S08-security-01-reboot.log), [splunk-siem corrected reboot path](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S09-splunk-siem-reboot.log), [post-reboot final readback](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10-post-reboot-final-verification.log), and [final reboot-automation check](../../Evidence/Fleet%20Maintenance%20-%202026-07-28/Logs/S10c-final-reboot-automation-check.log)
 
 ## Follow-up correction on 2026-07-29
 

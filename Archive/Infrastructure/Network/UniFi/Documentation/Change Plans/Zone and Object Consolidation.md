@@ -33,7 +33,7 @@ Also out of scope: merging `AlphaSec-Access` into the observability zone. Its eg
 
 ## Verified starting state
 
-I read this from the controller on 2026-07-27, not from these records. Zone membership isn't available from the zone endpoint; see [UniFi zone membership is absent from the zone-matrix endpoint](../../../../../../Infrastructure/Network/UniFi/Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md) for why, and for the read that does work.
+I read this from the controller on 2026-07-27, not from these records. Zone membership isn't available from the zone endpoint; see [UniFi zone membership is absent from the zone-matrix endpoint](../../../../../../Infrastructure/Network/UniFi/Documentation/Troubleshooting/Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md) for why, and for the read that does work.
 
 | Zone | Networks (verified by `firewall_zone_id`) |
 |---|---|

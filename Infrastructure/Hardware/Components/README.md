@@ -1,11 +1,11 @@
 # Component Inventory
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-07-24
+**Last updated:** 2026-09-25
 
-I track the individual hardware components I own here, whether they're installed in a machine or sitting on the shelf as spares. Each component type gets its own folder with a quick-glance README: model, serial, key specs, and condition. Raw evidence (SMART logs, benchmark output, photos) stays in the type folder next to its README.
+I track the individual hardware components I own here, whether they're installed in a machine or sitting on the shelf as spares. Each component type gets its own folder with a quick-glance README: model, last four characters of the serial, key specs, and condition. Raw evidence (SMART logs, benchmark output, photos) stays in the type folder next to its README.
 
-This is the parts-level view. For whole-machine specs, which node has which processor, memory, and slotted storage, see [Galaxy node specifications](../Nodes.md) and [Jedi PC specifications](../Jedi_Specs.md).
+This is the parts-level view. For whole-machine specs, which node has which processor, memory, and slotted storage, see [Galaxy node specifications](../Nodes.md) and [Jedi PC specifications](../Workstations/Jedi%20PC.md).
 
 | Component | Records |
 | --- | --- |

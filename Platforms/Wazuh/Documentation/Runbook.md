@@ -1,7 +1,7 @@
 # Wazuh Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-25
 
 ## Manager Health
 
@@ -27,15 +27,15 @@ sudo /var/ossec/bin/agent_groups -S -i <agent-id>
 
 1. Confirm the host is intended for monitoring and its hostname is correct.
 2. Confirm the endpoint can reach `192.168.72.2` on TCP 1514 and 1515 before changing its package state.
-3. Add the exact inventory name, connection settings, & any required existing Wazuh groups under `Source/agent-deployment/inventory/hosts.yml`.
+3. Add the exact inventory name, connection settings, and any required existing Wazuh groups under `Source/agent-deployment/inventory/hosts.yml`.
 4. Run `ansible-playbook --syntax-check` and `--list-hosts` from the deployment project.
-5. Limit the first live run to the intended host or approved batch.
+5. Limit the first live run to the intended host or a named batch with `--limit`.
 6. Verify package version and hold, enabled and active service state, a non-empty client key, and an established TCP 1514 session.
 7. Verify the manager reports the exact identity active and synchronized.
 
 The play pins new agents to manager version 4.14.6-1, disables the Wazuh APT source after installation, and holds the package. It stops before package work when either manager port is unavailable. I used it for IDs `006` through `017` on 2026-08-03; the final seven-host and Green-only runs changed zero hosts.
 
-Grey, Purple, Blue, Red, & Green set `WAZUH_AGENT_GROUP=default,proxmox`. Verify both groups after enrollment with `agent_groups -s -i <agent-id>`.
+Grey, Purple, Blue, Red, and Green set `WAZUH_AGENT_GROUP=default,proxmox`. Verify both groups after enrollment with `agent_groups -s -i <agent-id>`.
 
 ## MCP Server
 
@@ -75,7 +75,23 @@ Do not replace `docker compose build --pull` with `docker compose pull`: the fin
 
 ## Remove an Obsolete Agent
 
-Stop the endpoint agent first, create rollback copies, remove the exact manager ID with `manage_agents -r`, & verify `agent_control -l`.
+Stop the endpoint agent first, create rollback copies, remove the exact manager ID with `manage_agents -r`, and verify `agent_control -l`.
+
+## Recovery
+
+Bring the manager back in this order:
+
+1. Verify VM 200 is running with VLAN tag 72 and address `192.168.72.2`.
+2. Verify `wazuh-indexer`, then `wazuh-manager`, then `wazuh-dashboard` are active.
+3. Verify TCP listeners 1514, 1515, 443 and 55000.
+4. Verify the dashboard and API responses locally before testing from another zone.
+5. List the manager's agents with `agent_control -l` and confirm the expected 15 are active.
+
+Do not weaken a firewall policy to compensate for a failed local service. The 2026-09-11 manager outage and its restore are in the [incident record](../../../Security/Incidents/Wazuh/Manager%20Processes%20Terminated%20by%20Hash%20Refresh%20-%202026-09-11.md).
+
+An endpoint agent has no rollback point. The 2026-07-13 clean removal deleted `/var/ossec` from `app-01` and `edge-01`, and restoring an old manager `client.keys` would reintroduce identities with no endpoint state behind them. Recover an endpoint by installing a current supported agent and enrolling a fresh exact-name identity against `192.168.72.2`, then verify it active.
+
+A network-level rollback of VM 200 follows the [Security-A migration change record](../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md#rollback-points). It is not a routine agent recovery step.
 
 ## URLs
 

@@ -1,17 +1,19 @@
 # Splunk Enterprise Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-I built a Rocky Linux VM for Splunk Enterprise, connected UniFi CEF events through SC4S and HEC, routed network data into `netops`, & installed Splunk Enterprise Security. The screenshots below stay with the original Splunk record and appear beside the steps they show.
+I built a Rocky Linux VM for Splunk Enterprise, connected UniFi CEF events through SC4S and HEC, routed network data into `netops`, and installed Splunk Enterprise Security. The build started on 2026-06-28. The screenshots below stay with the original Splunk record and appear beside the steps they show.
 
 ## Current Status and Verified Versions
 
-VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3`. The current VM has 6 vCPU, 12 GiB memory, & a 150 GiB disk. Splunk Enterprise 10.4.0 build `f798d4d49089` receives SC4S events through HEC on 8088; SC4S 3.45.0 listens for CEF on TCP and UDP 1514. Since 2026-08-29 it also listens on 9997 for the Wazuh Universal Forwarder, & `/` is 142 GB after the expansion recorded in [Root Filesystem Expansion](../Platforms/Splunk/Enterprise/Documentation/Change%20Records/Root%20Filesystem%20Expansion%20-%202026-08-29.md).
+Verified on the host on 2026-09-24. VM 109 `splunk-siem` runs Rocky Linux 10.2 on VLAN 72 at `192.168.72.3` with 6 vCPU, 12 GiB memory, and a 150 GiB disk. Splunk Enterprise 10.4.0 build `f798d4d49089` runs with Enterprise Security 8.5.1. SC4S runs in Podman from the `container3:latest` image (3.45.0 when I built it), listens for CEF on TCP and UDP 1514, and hands events to Splunk through HEC on 8088. My own apps `unifi_insights` and `wazuh_insights` sit among the 65 in `/opt/splunk/etc/apps`.
 
-The endpoint side of the SIEM is a separate walkthrough: [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) covers the forwarder, the CIM mapping & the dashboard.
+Since 2026-08-29 Splunk also listens on 9997 for the Wazuh Universal Forwarder, and `/` is 142 GB after the expansion recorded in [Root Filesystem Expansion](../Platforms/Splunk/Enterprise/Documentation/Change%20Records/Root%20Filesystem%20Expansion%20-%202026-08-29.md).
+
+The endpoint side of the SIEM is a separate walkthrough: [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) covers the forwarder, the CIM mapping, and the dashboard.
 
 ## What You Need
 
@@ -19,7 +21,7 @@ The endpoint side of the SIEM is a separate walkthrough: [Wazuh Alerts in Splunk
 - Rocky Linux 10.2 installation media.
 - A Splunk Enterprise license and installation package.
 - A UniFi console that can export System Logging/SIEM events.
-- Network paths for Splunk Web, HEC, management, & CEF ingestion.
+- Network paths for Splunk Web, HEC, management, and CEF ingestion.
 
 ## How the Pieces Fit Together
 
@@ -29,23 +31,23 @@ The endpoint side of the SIEM is a separate walkthrough: [Wazuh Alerts in Splunk
 
 ### Step 1: Create the VM
 
-I created VM 109 with UEFI, q35, a host CPU type, guest agent, SSD emulation, discard, iothread, & Proxmox firewall enabled. I started with 4 vCPU and later raised it to 6 for the Enterprise Security setup.
+I created VM 109 with UEFI, q35, a host CPU type, guest agent, SSD emulation, discard, iothread, and Proxmox firewall enabled. I started with 4 vCPU and later raised it to 6 for the Enterprise Security setup.
 
 ![Splunk VM configuration](../Platforms/Splunk/Enterprise/Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S01-VM-Sizing-and-Network-Configuration.png)
 
 ### Step 2: Install Rocky Linux
 
-I installed Rocky Linux 10.2 without a desktop, set hostname `splunk-siem`, & configured the administrator account and network. The build later moved from its initial management address to `192.168.72.3` on Security-A.
+I installed Rocky Linux 10.2 without a desktop, set hostname `splunk-siem`, and configured the administrator account and network. The build later moved from its initial management address to `192.168.72.3` on Security-A.
 
 ![Rocky Linux network setup](../Platforms/Splunk/Enterprise/Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S02-Installer-Network-Configuration.png)
 
 ### Step 3: Update and Lock Down SSH
 
-I ran the full package update, installed three Ed25519 public keys, set `PasswordAuthentication no` and `PermitRootLogin no`, validated `sshd`, & tested a second key session before closing the first.
+I ran the full package update, installed three Ed25519 public keys, set `PasswordAuthentication no` and `PermitRootLogin no`, validated `sshd`, and tested a second key session before closing the first.
 
 ### Step 4: Install Splunk Enterprise
 
-I installed the Splunk 10.4.0 RPM under the dedicated `splunk` account and enabled its systemd-managed boot service. That service applies the required process, file, & Transparent Huge Pages settings.
+I installed the Splunk 10.4.0 RPM under the dedicated `splunk` account and enabled its systemd-managed boot service. That service applies the required process, file, and Transparent Huge Pages settings.
 
 ```sh
 sudo rpm -i /tmp/splunk-10.4.0-f798d4d49089.x86_64.rpm
@@ -65,19 +67,19 @@ I created the bounded network indexes and an HEC input for SC4S, then checked th
 
 ### Step 6: Deploy SC4S
 
-I ran SC4S 3.45.0 in Podman under systemd, set the receive buffers, opened TCP and UDP 1514, & pointed its HEC output at Splunk. I checked the listeners, container health, HEC reachability, & SC4S logs before sending UniFi data.
+I ran SC4S 3.45.0 in Podman under systemd, set the receive buffers, opened TCP and UDP 1514, and pointed its HEC output at Splunk. I checked the listeners, container health, HEC reachability, and SC4S logs before sending UniFi data.
 
 ![SC4S running](../Platforms/Splunk/Enterprise/Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06B-Container-and-Firewall-Verification.png)
 
 ### Step 7: Send UniFi CEF Events
 
-I enabled Network, UniFi OS, & Protect categories in UniFi's System Logging/SIEM settings and sent them to `192.168.72.3:1514`. I generated a test event and found its parsed CEF fields in Splunk.
+I enabled the Network, UniFi OS, and Protect categories in UniFi's System Logging/SIEM settings and sent them to `192.168.72.3:1514`. I generated a test event and found its parsed CEF fields in Splunk.
 
 ![First UniFi CEF event](../Platforms/Splunk/Enterprise/Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06C-UniFi-CEF-Events.png)
 
 ### Step 8: Route Network Data to netops
 
-I updated the SC4S routing so new UniFi Network, OS, & Protect events landed in `netops`. I searched both `netops` and `main` over the same time window to confirm new CEF data stopped leaking into `main`.
+I updated the SC4S routing so new UniFi Network, OS, and Protect events landed in `netops`. I searched both `netops` and `main` over the same time window to confirm new CEF data stopped leaking into `main`.
 
 ![Final netops search](../Platforms/Splunk/Enterprise/Evidence/Initial%20Build%20-%202026-06-28/Screenshots/S06E-UniFi-Protect-Routing-Verification.png)
 
@@ -96,7 +98,7 @@ I uploaded the Enterprise Security package through Splunk Web. Its setup was CPU
 
 ## Troubleshooting and Recovery
 
-If SC4S receives packets but Splunk has no events, check the HEC health endpoint, token assignment, SC4S destination, & container logs. If data reaches the wrong index, search by `_time`, `host`, and `sourcetype` before editing the routing file. Restore the last working SC4S environment and restart its systemd unit if a route change breaks ingestion.
+If SC4S receives packets but Splunk has no events, check the HEC health endpoint, token assignment, SC4S destination, and container logs. If data reaches the wrong index, search by `_time`, `host`, and `sourcetype` before editing the routing file. If a route change breaks ingestion, put back the last working SC4S environment file and restart its systemd unit.
 
 ## Known Limits
 
@@ -104,8 +106,8 @@ Enterprise Security installation is recorded, but its broader configuration back
 
 ## Source Records
 
-- [Splunk Enterprise build log](../Platforms/Splunk/Enterprise/Documentation/Build-Log.md)
-- [VM specifications](../Platforms/Splunk/Enterprise/Documentation/VM-Specs.md)
-- [UniFi CEF reference](../Platforms/Splunk/Enterprise/Documentation/UniFi-CEF-Reference.md)
+- [Splunk Enterprise build log](../Platforms/Splunk/Enterprise/Documentation/Build%20Log.md)
+- [VM specifications](../Platforms/Splunk/Enterprise/Documentation/VM%20Specs.md)
+- [UniFi CEF reference](../Platforms/Splunk/Enterprise/Documentation/UniFi%20CEF%20Reference.md)
 - [Splunk Enterprise troubleshooting index](../Platforms/Splunk/Enterprise/Documentation/Troubleshooting/README.md)
-- [Enterprise Security build log](../Platforms/Splunk/Enterprise%20Security/Documentation/Build-Log.md)
+- [Enterprise Security build log](../Platforms/Splunk/Enterprise%20Security/Documentation/Build%20Log.md)

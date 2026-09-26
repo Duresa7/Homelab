@@ -1,19 +1,19 @@
 # Credential, Catalog Verification and Self-Update - 2026-09-19
 
 **Created:** 2026-09-19  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
 
 The [first deployment](Server%20Deployment%20on%20docker-main%20-%202026-09-19.md) left App Portal running with nothing to talk to: the Action1 API credential did not exist, so every install request answered HTTP 502. This record covers the afternoon that changed that, and what the first live call against the tenant turned up.
 
 ## The credential goes live
 
-You created the API credential in the Action1 console and stored it in the vault under the title *<REDACTED_CREDENTIAL_ITEM_NAME>*, in the vault my automation account can read. The item carried the client id and the secret; the organisation identifier that every API path needs was not in it, so I resolved it from the API itself, listing organisations with the fresh token (there is one, *AlphaSec United*), and added it to the item as a third field. The client id turns out to embed the organisation identifier, so that field is a convenience rather than a second secret.
+I created the API credential in the Action1 console and stored it in the password manager as the Action1 API item, in the vault my automation account can read. The item carried the client id and the secret; the organisation identifier that every API path needs was not in it, so I resolved it from the API itself, listing organisations with the fresh token (there is one, *AlphaSec United*), and added it to the item as a third field. The client id turns out to embed the organisation identifier, so that field is a convenience rather than a second secret.
 
 `server.env` on `docker-main` is rendered from vault references only. The template names the three fields; the manager's CLI resolves them into a local file that never appears on a terminal, `scp` carries it to the host as `server.env.new` with mode 600, and a rename puts it in place. The container is then recreated, because Compose reads `env_file` at creation and not on restart. The local copy is shredded afterwards. Neither value was printed at any point; each field was checked by length only (36, 92 and 32 characters).
 
 The public repository's README and templates named the manager and its CLI; as of this evening they say "secrets manager" and carry placeholders, so the two repositories follow the same rule.
 
-One exposure to record, at your decision: the item stores the client id in the `username` field, which the API Credential template treats as plain text, so a metadata read of the item printed it into my session. The secret was masked and never shown. You judged that no rotation was warranted. The client id is not in this repository and stays out of it.
+One exposure to record, and my decision on it: the item stores the client id in the `username` field, which the API Credential template treats as plain text, so a metadata read of the item printed it to my terminal. The secret was masked and never shown. I judged that no rotation was warranted. The client id is not in this repository and stays out of it.
 
 ## The first live call found a crash
 
@@ -29,7 +29,7 @@ Both problems are fixed in the repository rather than on the host:
 
 ## The client updates itself
 
-You asked for a way to stop re-downloading the client for every release. The constraint is the same one that shaped the whole design: the person at the keyboard cannot write to Program Files, and on `ObiPC` cannot run anything outside it, so the client cannot update itself and a per-user updater would be blocked by AppLocker.
+I wanted a way to stop re-downloading the client for every release. The constraint is the same one that shaped the whole design: the person at the keyboard cannot write to Program Files, and on `ObiPC` cannot run anything outside it, so the client cannot update itself and a per-user updater would be blocked by AppLocker.
 
 `AppPortal.Updater.exe`, a single self-contained executable beside the client, runs from a scheduled task named **App Portal Updater** as `SYSTEM`: five minutes after boot, a minute after any logon, daily at a random time between noon and one, and whenever a user presses the button in the client. A run asks GitHub for the latest release, compares the tag with the installed file version, downloads the archive while hashing it, checks the hash against the `SHA256SUMS` the release publishes, unpacks the client folder into `.staged` inside Program Files, and swaps it in by renaming: current files into `.previous`, staged files into place. Windows permits renaming a running executable, which is how the updater replaces itself and why a client that is open does not have to be killed; the swap simply waits for the next run, or for twenty seconds after the client asks and exits. A move that fails half-way restores the old files. `.previous` is deleted on the following run.
 
@@ -41,7 +41,7 @@ Versioning moved to one place, `Directory.Build.props`, and a release build take
 
 ## The test machine is enrolled and can now reach the server
 
-You want to try the client on `HQ-WS001` as `testuser` before anything touches `ObiPC`. Action1 lists that VM as a managed endpoint, connected, Windows 11 25H2, so it qualifies. I registered it on the server with `device add`, which printed the device token once; the token went from that output into a vault item, *<REDACTED_CREDENTIAL_ITEM_NAME>*, without appearing on a terminal, alongside the server address and the install command that takes it. The server keeps only the token's SHA-256, and its device store re-reads `devices.json` by timestamp, so the new record was live without a restart.
+I wanted to try the client on `HQ-WS001` as `testuser` before anything touched `ObiPC`. Action1 lists that VM as a managed endpoint, connected, Windows 11 25H2, so it qualifies. I registered it on the server with `device add`, which printed the device token once; the token went from that output into the device-token item for `HQ-WS001`, without appearing on a terminal, alongside the server address and the install command that takes it. The server keeps only the token's SHA-256, and its device store re-reads `devices.json` by timestamp, so the new record was live without a restart.
 
 The identity plane could not reach the portal at all, which is the network doing what it was built to do: `HQ-WS001` is `192.168.65.20` on VLAN 65, and nothing in that zone routes to `docker-main` on VLAN 40 without a policy. I added one, scoped to that single address and that single port, and proved it both ways: the machine now answers `{"status":"ok"}` from the portal's health endpoint, while `HQ-MGT01` in the same zone stays refused. `ObiPC` will need nothing equivalent, since Secure Client and Personal-A are both inside the Internal zone.
 
@@ -53,7 +53,7 @@ The client went onto `HQ-WS001` from the release archive, run under my Tier 2 ac
 
 The updater then ran on its own before anyone asked it to, at 12:35:54, reached GitHub, compared v0.2.0 against the installed 0.2.0 and wrote `UpToDate` into `update.json`. That is the self-update path working on a real machine for the first time, and it worked without the client ever being opened.
 
-Then the part that matters. Signed in as `testuser`, a standard user with no administrative rights anywhere on that machine, opened App Portal from the Start menu and pressed Install on 7-Zip. The server accepted the request at 16:40:17 and recorded it complete at 16:40:47: **thirty seconds**, state `Succeeded`, detail *The action completed successfully*, through an Action1 automation named `App Portal: 7-Zip 26.03.00.0 on HQ-WS001`. The machine itself agrees — `7-Zip 26.03 (x64 edition)`, version 26.03.00.0, with `C:\Program Files\7-Zip\7zFM.exe` on disk.
+Then the part that matters. Signed in as `testuser`, a standard user with no administrative rights anywhere on that machine, I opened App Portal from the Start menu and pressed Install on 7-Zip. The server accepted the request at 16:40:17 and recorded it complete at 16:40:47: **thirty seconds**, state `Succeeded`, detail *The action completed successfully*, through an Action1 automation named `App Portal: 7-Zip 26.03.00.0 on HQ-WS001`. The machine itself agrees: `7-Zip 26.03 (x64 edition)`, version 26.03.00.0, with `C:\Program Files\7-Zip\7zFM.exe` on disk.
 
 A user who cannot write to Program Files, cannot run an installer, and holds no credential for anything caused software to be installed into Program Files. The elevation happens in the Action1 agent, which already runs as `SYSTEM` and was already trusted to patch the machine. No local admin was granted, no password was shared, and nothing was added to the AppLocker allow list. That is the outcome the project exists to produce, and it is now demonstrated rather than designed.
 
@@ -72,7 +72,7 @@ One note for the next person reading logs: `docker logs app-portal` was empty fo
 | Updater publish, win-x64 | one file, `AppPortal.Updater.exe`, 37.6 MB |
 | Update banners | Rendered under Xvfb in both themes from a fabricated status file; images are in the repository's `docs/images/` |
 | `device list` on the server | `HQ-WS001`, enabled, registered 2026-09-19 15:12 UTC |
-| Vault item for the token | *<REDACTED_CREDENTIAL_ITEM_NAME>*, credential field concealed, server address in the hostname field |
+| Vault item for the token | The device-token item for `HQ-WS001`, credential field concealed, server address in the hostname field |
 | Network path before the firewall change | **Dropped.** From `HQ-WS001` itself, through its guest agent, TCP to `192.168.40.35:3004` timed out at five seconds while LDAP to `HQ-DC01` answered at once. Nginx Proxy Manager was equally unreachable from the zone |
 | Network path after the firewall change | TCP 3004 connects and `http://192.168.40.35:3004/healthz` returns `{"status":"ok"}` from `HQ-WS001` |
 | Firewall control | `HQ-MGT01` at `192.168.65.12`, same zone, outside the policy, refused on 3004 both before and after |

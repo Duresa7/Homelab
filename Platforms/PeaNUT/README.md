@@ -1,7 +1,7 @@
 # PeaNUT UPS Dashboard
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each USB connection on its physical Proxmox host; PeaNUT reads the TCP/3493 endpoints from one container on `monitor-01`.
 
@@ -12,18 +12,20 @@ I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each 
 | Component | Location | Role |
 | --- | --- | --- |
 | NUT `ups01` | `red-server` | Disabled 2026-08-31. Stanza commented out in `/etc/nut/ups.conf`, `nut-server` and the driver disabled, nothing listening on `192.168.70.13:3493` |
-| NUT `ups02` | `grey-server` | Reads `UPS-02` through USB & publishes telemetry on `192.168.70.10:3493` |
-| PeaNUT `latest`, currently 6.0.0 | `monitor-01` | Displays the enabled NUT endpoints at `https://peanut.alphasecunited.com`; direct fallback `http://192.168.73.2:8090`. The `192.168.70.13` entry is present with `DISABLED: true` |
+| NUT `ups02` | `grey-server` | Reads `UPS-02` through USB and publishes telemetry on `192.168.70.10:3493` |
+| PeaNUT `latest`, 6.0.0 on 2026-09-24 (`/app/package.json`) | `monitor-01` | Displays the enabled NUT endpoints at `https://peanut.alphasecunited.com`; direct fallback `http://192.168.73.2:8090`. The `192.168.70.13` entry is present with `DISABLED: true` |
 
 The dashboard login is held outside this repository. The versioned configuration contains no password, UPS serial number, or command-capable NUT account.
 
+[settings.yml](Configuration/settings.yml) and [NUT/red-server/ups.conf](Configuration/NUT/red-server/ups.conf) predate the 2026-08-31 change: they still carry an enabled `192.168.70.13` entry and an active `[ups01]` stanza. A rebuild from them as they stand would restart the driver loop, so apply the two changes in the troubleshooting record first.
+
 ## Records
 
-- [Relocation record to monitor-01](Documentation/Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md)
-- [Relocation plan to monitor-01](Documentation/Change%20Plans/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md) (completed)
-- [Deployment plan](Documentation/Change%20Plans/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
-- [Deployment record](Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
-- [Evidence index](Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Evidence-Index.md)
+- [Relocation record to monitor-01](Documentation/Change%20Records/Relocation%20to%20monitor-01%20-%202026-07-26.md)
+- [Relocation plan to monitor-01](Documentation/Change%20Plans/Relocation%20to%20monitor-01%20-%202026-07-26.md) (completed)
+- [Deployment plan](Documentation/Change%20Plans/UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
+- [Deployment record](Documentation/Change%20Records/UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
+- [Evidence index](Evidence/UPS%20Dashboard%20Deployment%20-%202026-07-22/Evidence-Index.md)
 - [UPS monitoring research](../../Infrastructure/Hardware/Documentation/UPS%20Monitoring%20Options%20Research%20-%202026-07-22.md)
 - [Power equipment inventory](../../Infrastructure/Hardware/Power.md)
 - [Internal HTTPS onboarding](../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md)

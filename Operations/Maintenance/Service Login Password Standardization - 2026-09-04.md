@@ -1,7 +1,7 @@
 # Service Login Password Standardization
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-25
 
 **Implementation date:** 2026-09-04  
 **Status:** Complete  
@@ -9,7 +9,7 @@
 
 ## Outcome
 
-I put every `dkadi` and `<REDACTED_PERSONAL_EMAIL>` web login on one password, the credential stored as `Account dkadi`. Fifteen web logins now authenticate with it. Three already did and needed no change, eleven were changed, and one is new.
+I put every `dkadi` and `<REDACTED_PERSONAL_EMAIL>` web login on one password, the credential held in my standard application account item. Fifteen web logins now authenticate with it. Three already did and needed no change, eleven were changed, and one is new.
 
 The audit that preceded the change found two passwords in circulation rather than one. Seven stored items already held the standard, and a separate cluster of eight shared a different password among themselves. Eleven services with `dkadi` logins had no stored credential at all, so their state could not be compared until I reached each one directly.
 
@@ -19,9 +19,9 @@ Two stored credentials turned out to be wrong rather than merely different. The 
 
 Changed: `dkadi` and `<REDACTED_PERSONAL_EMAIL>` web logins only.
 
-Left alone by instruction: the Jellyfin `IK-user` account, the Portainer `dashboard` account, the Coolify `jkhamdaraphone` account, the Splunk `admin` account, the Wazuh `admin` account, the `unifi-mcp` account, and the NetBird identity that authenticates through Microsoft Entra.
+I left these alone on purpose: the Jellyfin `IK-user` account, the Portainer `dashboard` account, the second Coolify account, the Splunk `admin` account, the Wazuh `admin` account, the `unifi-mcp` account, and the NetBird identity that authenticates through Microsoft Entra.
 
-Out of scope entirely: Proxmox, every operating system and sudo credential, and every API token. The `Sudo Splunk-Siem VM`, `splunk-siem VM`, and `docker-network LXC` items sit in the same password cluster as the changed web logins but are host credentials, so they keep the password they had.
+Out of scope entirely: Proxmox, every operating system and sudo credential, and every API token. The two `splunk-siem` host items and the `docker-network` host item sit in the same password cluster as the changed web logins but are host credentials, so they keep the password they had.
 
 Prometheus has no authentication, so there was nothing to set.
 
@@ -53,11 +53,11 @@ Splunk cannot rename a user, so `admin` could not become `dkadi`. I created `dka
 
 ## Credential Storage
 
-The stored arrangement changed once the rotation was done. Rather than one item per service, the account credential is now centralized in a single `Account dkadi` login holding the username `dkadi`, the password, and the email `<REDACTED_PERSONAL_EMAIL>`. That one item is the answer for every web login covered here.
+The stored arrangement changed once the rotation was done. Rather than one item per service, the account credential is now centralized in the single standard application account item holding the username `dkadi`, the password, and the email `<REDACTED_PERSONAL_EMAIL>`. That one item is the answer for every web login covered here.
 
-I first updated the five items that had held stale or divergent values, then renamed them to drop the host suffix, since the hostname was not what identified them and one of them named the wrong host outright. Four of the five were then deleted as redundant against `Account dkadi`: Grafana Administrator, Nginx Proxy Manager, qBittorrent, and Pelican Panel. `PeaNUT Dashboard` was kept. The eleven services that never had an item still have none and do not need one under this arrangement.
+I first updated the five items that had held stale or divergent values, then renamed them to drop the host suffix, since the hostname was not what identified them and one of them named the wrong host outright. Four of the five were then deleted as redundant against the standard application account item: the Grafana, Nginx Proxy Manager, qBittorrent, and Pelican Panel logins. The PeaNUT dashboard item was kept. The eleven services that never had an item still have none and do not need one under this arrangement.
 
-`Account Standard` was deleted after `Account dkadi` was created and confirmed to hold the same password, so that two items could not drift apart while claiming to be the same credential.
+The older standard-password item was deleted after the standard application account item was created and confirmed to hold the same password, so that two items could not drift apart while claiming to be the same credential.
 
 Service API tokens, machine accounts, and host credentials keep their own items and are unaffected.
 
@@ -99,7 +99,7 @@ Every service was tested twice, once with the shared account password and once w
 
 NetBird, Coolify, and Pelican Panel were verified by reading the stored hash back and running the same bcrypt comparison the application performs, because each authenticates through a browser flow rather than a callable endpoint. The Wazuh API on port 55000 returns 401 for `dkadi` both before and after; that account is an indexer and dashboard user and was never a Wazuh API user.
 
-Coolify still holds two rows after the change, `id = 0` and `id = 2`, and the `jkhamdaraphone` hash is untouched. Jellyfin still holds `dkadi` and `IK-user`, and `IK-user` was not modified.
+Coolify still holds two rows after the change, `id = 0` and `id = 2`, and the second account's hash is untouched. Jellyfin still holds `dkadi` and `IK-user`, and `IK-user` was not modified.
 
 A repeat of the stored-credential audit, run while the per-service items still existed, put twelve items on the shared account password. The items that differed were the host and sudo credentials, the `admin` accounts, the Portainer Edge Agent pairs, and the service accounts, which is the intended result.
 
@@ -107,7 +107,7 @@ A repeat of the stored-credential audit, run while the per-service items still e
 
 I re-verified the first three on 2026-09-06 in the evening: a read-only query of Jellyfin's user table on `media-01` still shows a null password for `IK-user`, Portainer's user list on `docker-main`, read with the shared account, still shows `dashboard` at role 1 beside `dkadi`, and the indexer's `internal_users.yml` on `security-01`, unchanged since 2026-08-04, still defines the five demo users. All three remain decisions rather than fixes.
 
-- Jellyfin `IK-user` has no password set at all. Its `Password` column is null, so the account authenticates with an empty credential from the user picker. It is not an administrator. Left alone by instruction; it needs a decision.
+- Jellyfin `IK-user` has no password set at all. Its `Password` column is null, so the account authenticates with an empty credential from the user picker. It is not an administrator. I left it alone; it needs a decision.
 - Portainer `dashboard` holds `Role` 1, the same administrator authority as `dkadi`. It appears to exist for the Homelab Dashboard's API access and should hold a scoped role instead.
 - The Wazuh indexer still defines the shipped demo accounts `logstash`, `snapshotrestore`, `kibanaro`, `readall`, and `anomalyadmin`, none of them reserved. Their default passwords are published upstream.
 - BookLore's eight-hour hang has no root cause. A restart cleared it and the health probe has not failed since.

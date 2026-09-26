@@ -1,16 +1,16 @@
-# To-Do
+# Splunk Enterprise TODO
 
 **Created:** 2026-07-02  
 **Last updated:** 2026-09-03
 
-I track unfinished Splunk Enterprise work here. Completed deployment steps are in [Build-Log.md](Build-Log.md).
+I track unfinished Splunk Enterprise work here. Completed deployment steps are in [Build Log.md](Build%20Log.md).
 
 ## TLS and Naming
 
 - [x] Assigned a static SIEM address: `192.168.72.3/24` on Security-A, gateway/DNS `192.168.72.1`.
 - [x] Enabled HTTPS on the Splunk web UI (`enableSplunkWebSSL`, Splunk's default self-signed cert). Reachable at `https://192.168.72.3:8000`.
 - [x] 2026-07-22: Assigned `splunk.alphasecunited.com` as the internal FQDN through UniFi local DNS.
-- [x] 2026-07-22: Published Splunk Web through NPM with the existing Let's Encrypt wildcard certificate, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support. NPM connects to the existing HTTPS 8000 listener; HEC and syslog remain direct backend ports. See [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+- [x] 2026-07-22: Published Splunk Web through NPM with the existing Let's Encrypt wildcard certificate, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. NPM connects to the existing HTTPS 8000 listener; HEC and syslog remain direct backend ports. See [Internal HTTPS Service Onboarding - 2026-07-22](../../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 
 ## Data sources
 
@@ -26,7 +26,7 @@ I track unfinished Splunk Enterprise work here. Completed deployment steps are i
 ## Analytics
 
 - [x] 2026-08-28: Built the `unifi_insights` app: three Dashboard Studio views over `netfw` and `netops`, plus the field mapping they rest on.
-- [x] 2026-08-28: Repaired the CEF space-truncation fault that reduced every signature to `ET` or `GPL`. The extractions are in the app's `props.conf` and the detail is in the [CEF reference](UniFi-CEF-Reference.md#parsing-fault-values-containing-spaces).
+- [x] 2026-08-28: Repaired the CEF space-truncation fault that reduced every signature to `ET` or `GPL`. The extractions are in the app's `props.conf` and the detail is in the [CEF reference](UniFi%20CEF%20Reference.md#parsing-fault-values-containing-spaces).
 - [x] 2026-08-29: Added [Tests/verify_unifi_insights.py](../Tests/verify_unifi_insights.py), which runs every deployed panel query, every correlation search and a probe of each CIM data model. It reads the views off disk rather than holding a copy of the queries, so it does not drift when a panel changes.
 - [x] 2026-08-30: Built the `wazuh_insights` app: one Dashboard Studio view over the `wazuh` index, seven glance tiles and six panels, plus the CIM mapping under it. See [Wazuh Insights App - 2026-08-29](Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md).
 - [x] 2026-09-03: Nine saved searches across `unifi_insights` and `wazuh_insights` post to Discord through the alert bot's `/splunk` endpoint: five UniFi and four Wazuh, each tuned against 30 days of history, one message per source or machine, with suppression per pair. Splunk is the only thing that notifies on security events. See [Discord Delivery for UniFi and Wazuh Alerts - 2026-09-03](Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).

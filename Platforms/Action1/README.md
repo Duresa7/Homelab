@@ -1,7 +1,7 @@
 # Action1
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
 
 Action1 is the cloud endpoint management plane for `ObiPC`. It handles software deployment, patching, and remote access for that machine. Each managed endpoint runs a local agent that polls the cloud. Since 2026-09-12, `HQ-MGT01` also runs Action1 Deployer for automatic enrollment across `ad.alphasecunited.com`, including servers and domain controllers. The whole-domain scope is saved; domain-controller installation is blocked by access denied because the Deployer account lacks administrator access there.
 
@@ -27,7 +27,7 @@ I deployed it on 2026-09-12 so that application installation on `ObiPC` goes thr
 
 | Endpoint | OS | Agent | Enrolled | Notes |
 |---|---|---|---|---|
-| `ObiPC` | Windows 11 Pro 25H2, build 26200 | 6.0.664.1 | 2026-09-12 | Physical workstation, Secure Client VLAN 60, domain member in `OU=Standard,OU=Workstations`. Lost in the 2026-09-18 operating system reinstall and pushed back by the Deployer at 6:58 PM the same day, same version, see [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md) |
+| `ObiPC` | Windows 11 Pro 25H2, build 26200 | 6.0.664.1 | 2026-09-12 | Physical workstation, Secure Client VLAN 60, domain member in `OU=Standard,OU=Workstations`. Lost in the 2026-09-18 operating system reinstall and pushed back by the Deployer at 6:58 PM the same day, same version, see [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md). Unreachable on 2026-09-24 |
 
 The 2026-09-12 console readback also showed `HQ-MGT01` (Windows Server 2025) and `HQ-WS001` (Windows 11 25H2) Connected. Their agent versions were not captured in that readback. The preexisting `win11-dev-hyper` record was Disconnected.
 
@@ -39,7 +39,9 @@ This does not retire that assessment and does not close the co-management decisi
 
 ## Self-service portal
 
-Action1 announced a Self-Service App Portal on 2025-10-30 and, as of 2026-09-19, still lists it on the "Upcoming release" tab of its roadmap; no service release through May 2026 mentions it. Until it ships I built my own, [App Portal](../App%20Portal/README.md), with its source in the separate public repository [Duresa7/app-portal](https://github.com/Duresa7/app-portal). Its server runs on `docker-main` and turns a device's request into a `deploy_package` automation on that one endpoint; a Windows client installed to Program Files shows the catalog, progress, and history. The client fits the `ObiPC` AppLocker allowlist because it lives in Program Files and never runs an installer itself: the Action1 agent does, as `LocalSystem`. The API credential it uses was created here under Configuration, API Credentials, on 2026-09-19 and lives in the vault with the organisation identifier; the server has talked to the tenant with it since that afternoon, and every catalog package resolves. Nothing is enrolled yet, so no install has run through it. One thing the first live call taught me about this API: a lookup for a package identifier it does not know answers HTTP 200 with an empty body, not 404.
+Action1 announced a Self-Service App Portal on 2025-10-30. As of 2026-09-19 it is still on the "Upcoming release" tab of the roadmap. Until it ships I run my own, [App Portal](../App%20Portal/README.md), on `docker-main`. Its `action1` engine turns a device's request into a `deploy_package` automation on that one endpoint, using an API credential I created here under Configuration, API Credentials, on 2026-09-19. The first install through it was 7-Zip on `HQ-WS001` by `testuser`, a standard user, on 2026-09-19, which succeeded in thirty seconds ([record](../App%20Portal/Documentation/Change%20Records/Credential%2C%20Catalog%20Verification%20and%20Self-Update%20-%202026-09-19.md)). Both `HQ-WS001` and `ObiPC` have been enrolled since 2026-09-19. Since 2026-09-20 the portal also has its own agent engine, and the five game and media applications added that day do not use Action1, because its Software Repository carries none of them.
+
+One thing the first live call showed about this API: a lookup for a package identifier it does not know answers HTTP 200 with an empty body, not 404.
 
 ## Agent behaviour worth knowing
 
@@ -52,7 +54,7 @@ The consequence is that software Action1 deploys is trusted by the allowlist. Th
 
 ## Records
 
-- [Deployer Health Check Blocked to ObiPC - 2026-09-12](Documentation/Troubleshooting/Deployer%20Health%20Check%20Blocked%20to%20ObiPC%20-%202026-09-12.md): the Deployer's routine agent health check against `ObiPC` fails every cycle, because the call crosses the VLAN 65 to VLAN 60 boundary and UniFi intrusion prevention blocks it. Corrects the RPC alert investigation's finding of no demonstrated outage. Fix identified, not yet applied.
+- [Deployer Health Check Blocked to ObiPC - 2026-09-12](Documentation/Troubleshooting/Deployer%20Health%20Check%20Blocked%20to%20ObiPC%20-%202026-09-12.md): the Deployer's routine agent health check against `ObiPC` fails every cycle, because the call crosses the VLAN 65 to VLAN 60 boundary and UniFi intrusion prevention blocks it. Corrects the RPC alert investigation's finding of no demonstrated outage. Exclusion applied 2026-09-12, lifted 2026-09-18; whether it goes back on is open.
 - [RPC alert investigation - 2026-09-12](../../Security/Incidents/UniFi/Action1%20Remote%20Service%20Control%20Alert%20-%202026-09-12.md): UniFi blocked RPC flows to ObiPC during successful Deployer checks. I correlated both timestamps with Action1 logs, verified the running agent, and left IPS enabled.
 - [AD Deployer Preparation - 2026-09-12](Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md): Deployer installed on `HQ-MGT01` after a direct HTTPS download. Dedicated account and workstation firewall policy are applied; whole-domain scope is saved, three endpoints show Connected, and domain-controller enrollment verification remains open.
 - [ObiPC Agent Deployment - 2026-09-12](Documentation/Change%20Records/ObiPC%20Agent%20Deployment%20-%202026-09-12.md)

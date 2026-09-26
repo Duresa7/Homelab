@@ -34,7 +34,7 @@ All three arrive at sourcetype `cef`, which is what confirms they reached the CE
 
 After the export came back, UniFi OS events were indexing but carried no `cef_name`, `cef_product` or `cef_severity`. That reads like a delivery problem and is not one.
 
-UniFi Network and UniFi Protect begin the line at `CEF:0|`. UniFi OS puts a truncated ISO date first, in the shape `YYYY-MM-DDTHH:`, on all 477 of its events. The header extraction was anchored with `^CEF:`, so it matched two products and silently skipped the third. Removing the anchor fixed it, and UniFi Network showed no regression from the change. Detail and a redacted sample are in the [CEF reference](../UniFi-CEF-Reference.md#unifi-os-prefixes-a-partial-timestamp-before-the-cef-header).
+UniFi Network and UniFi Protect begin the line at `CEF:0|`. UniFi OS puts a truncated ISO date first, in the shape `YYYY-MM-DDTHH:`, on all 477 of its events. The header extraction was anchored with `^CEF:`, so it matched two products and silently skipped the third. Removing the anchor fixed it, and UniFi Network showed no regression from the change. Detail and a redacted sample are in the [CEF reference](../UniFi%20CEF%20Reference.md#unifi-os-prefixes-a-partial-timestamp-before-the-cef-header).
 
 ## Extending the app to all three products
 
@@ -125,5 +125,5 @@ The community add-ons on GitHub target the same legacy BSD format as SC4S. So th
 ## Related
 
 - [UniFi Flow Collection and Insights App](UniFi%20Flow%20Collection%20and%20Insights%20App%20-%202026-08-28.md), the change this continues
-- [UniFi CEF Reference](../UniFi-CEF-Reference.md) for the class tables, the timestamp prefix and the whitespace fault
-- [Build-Log.md](../Build-Log.md) for the original SC4S and HEC setup
+- [UniFi CEF Reference](../UniFi%20CEF%20Reference.md) for the class tables, the timestamp prefix and the whitespace fault
+- [Build Log.md](../Build%20Log.md) for the original SC4S and HEC setup

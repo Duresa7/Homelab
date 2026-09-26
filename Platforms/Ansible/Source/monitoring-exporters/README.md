@@ -1,17 +1,15 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-25
 
-I removed retired `game-01` from this project’s active inventory on 2026-09-12 and applied the same removal on `ansible-01`. Its historical deployment details below are retained for context.
-
-I run four playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on all 9 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts, and `wud.yml` runs What's Up Docker on the six Compose hosts. All use the same `ansible` account except for the single-account development workstation and `grey-server`, the same key, & the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope & single-host templates for every playbook.
+I run four playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on 8 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts, and `wud.yml` runs What's Up Docker on the six Compose hosts. All use the same `ansible` account except for `db-13-dev` and `grey-server`, the same key, and the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope and single-host templates for every playbook.
 
 ## Scope
 
-`node_exporter_targets` holds 9 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, ansible-01, monitor-01, & db-13-dev. The development workstation connects as `ai-agent`; every other remote target uses the dedicated `ansible` account.
+`node_exporter_targets` holds 9 hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, splunk-siem, ansible-01, monitor-01, and db-13-dev. `db-13-dev` is the decommissioned `debian-dev` (2026-08-14) and connects as `ai-agent`; every other remote target uses the dedicated `ansible` account.
 
-Command allowlisting is not achievable for any Ansible-managed account, here or elsewhere. Escalation runs `sudo -u root /bin/sh -c '<token>; python3'` with the module fed on stdin, so a sudoers rule permissive enough for a play to succeed is equivalent to full root, and sudoers wildcards on command arguments are unsafe by design. The controls that actually constrain this account are the `from="192.168.40.36"` restriction on its key, the disabled pty and forwarding, and the empty group list. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` & `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
+Command allowlisting is not achievable for any Ansible-managed account, here or elsewhere. Escalation runs `sudo -u root /bin/sh -c '<token>; python3'` with the module fed on stdin, so a sudoers rule permissive enough for a play to succeed is equivalent to full root, and sudoers wildcards on command arguments are unsafe by design. The controls that actually constrain this account are the `from="192.168.40.36"` restriction on its key, the disabled pty and forwarding, and the empty group list. It deliberately excludes the hosts that already export. The four Proxmox nodes got theirs in the 2026-07-13 baseline cleanup, `edge-01` and `security-01` have had theirs longer, and `app-01` runs a hand-installed `node_exporter.service` binary already bound to 9100. Adding the Debian package there would collide with a working listener, so the playbook leaves it alone and Prometheus just scrapes it.
 
 `ansible-01` manages itself over `ansible_connection: local`, so the controller doesn't depend on its own key sitting in its own `authorized_keys`.
 
@@ -89,22 +87,22 @@ Both plays verify their own work. `node-exporter.yml` probes the exporter and as
 
 `node-exporter.yml` also refuses to overwrite an unmanaged listener. If something already answers on 9100 and neither the Debian package nor a managed `node_exporter.service` is present, the play stops and asks for `-e allow_port_takeover=true`. That guard exists because of `app-01`.
 
-A `--check` run of `node-exporter.yml` isn't a pass/fail gate. On a binary-managed host, `get_url` predicts the download without creating the staging archive, then `unarchive` & `copy` can't read that missing file. Ansible also skips the `uri` & shell verification modules in check mode, so installed package-managed hosts report an unknown version. I keep that command as a command-line preview of package decisions, but I don't expose it as a Semaphore template that looks like a health check.
+A `--check` run of `node-exporter.yml` isn't a pass/fail gate. On a binary-managed host, `get_url` predicts the download without creating the staging archive, then `unarchive` and `copy` can't read that missing file. Ansible also skips the `uri` and shell verification modules in check mode, so installed package-managed hosts report an unknown version. I keep that command as a command-line preview of package decisions, but I don't expose it as a Semaphore template that looks like a health check.
 
 The deployed SHA256 matches this repository, and
-`python3 tests/validate_project.py` passes with 10 node-exporter hosts, nine
-cAdvisor hosts, six textfile-collector hosts and six What's Up Docker hosts. The
+`python3 tests/validate_project.py` passes with 9 node-exporter hosts and 8
+cAdvisor hosts (read 2026-09-25); the manifest also covers six textfile-collector hosts and six What's Up Docker hosts. The
 `node_exporter_targets` entry for `db-13-dev` at `192.168.40.135` is stale; the
 validator pins the set, so removing it is its own change.
 
 ## Adding a host
 
-Add it under `node_exporter_targets`, `cadvisor_targets`, `textfile_collector_targets` or `wud_targets` with its `ansible_host` & `ansible_user`, and a `wud_cron` for the last, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
+Add it under `node_exporter_targets`, `cadvisor_targets`, `textfile_collector_targets` or `wud_targets` with its `ansible_host` and `ansible_user`, and a `wud_cron` for the last, confirm the controller key already reaches it, then update the matching `EXPECTED_*` set and `EXPECTED_IPS` in `tests/validate_project.py`. The validator is deliberately strict about both host sets so an unreviewed addition fails rather than quietly widening scope.
 
 Scraping the new host also needs a UniFi policy from the collector's zone to the target, and possibly a rule in the Proxmox cluster firewall. Test reachability from the active Prometheus host before adding it to `prometheus.yml`.
 
 ## Relationship to fleet-updates
 
-Separate projects on purpose. `fleet-updates` patches packages on 12 guests & updates 24 application Compose projects on a schedule; this project manages node_exporter on 10 targets & cAdvisor on 9 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
+Separate projects on purpose. `fleet-updates` patches packages on 11 guests and updates 20 application Compose projects; this project manages node_exporter on 9 targets and cAdvisor on 8 Docker hosts. They share the `ansible` account and inventory style but not their target groups.
 
 The cAdvisor compose project at `/opt/docker/cadvisor` is not in the `fleet-updates` compose inventory, so the monitoring-exporters playbook owns its updates. Its `:latest` tag follows the fleet's floating-image policy; re-running `cadvisor.yml` pulls the tag and reconciles all eight projects. The explicit move from v0.52.1 to v0.60.5 remains the historical fix for Docker's containerd snapshotter.

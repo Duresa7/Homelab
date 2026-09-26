@@ -1,16 +1,17 @@
 # Architecture
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-25
 
-Architecture holds designs that cross more than one owner: dependency maps, data flows, trust boundaries, & the diagrams, whose sources live with every other diagram in [Assets/Diagrams](../Assets/Diagrams).
+Architecture holds designs that cross more than one owner: dependency maps, data flows and trust boundaries. The diagrams live in [Assets/Diagrams](../Assets/Diagrams).
 
 Service-specific architecture stays with the service under `Platforms/<Service>/Documentation/`, and Galaxy-specific architecture stays under `Infrastructure/Compute/Galaxy/Documentation/Architecture/`.
 
 ## Contents
 
-- [External Service Ingress](External-Service-Ingress.md) - how every public service reaches its container through Cloudflare, the edge-01 tunnel, Caddy, & Traefik
-- [Diagrams/](../Assets/Diagrams/) - Excalidraw sources & exported SVGs for the current architecture
+- [Access Paths](Access-Paths.md): the five ways into the lab (public ingress, internal HTTPS, remote access, remote control, agent access)
+- [External Service Ingress](External-Service-Ingress.md): the public path in detail, from Cloudflare through the edge-01 tunnel, Caddy and Traefik
+- [Diagrams](../Assets/Diagrams/): the diagram sources and SVGs
 
 ## Archived Designs
 

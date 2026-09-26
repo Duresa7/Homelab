@@ -3,7 +3,7 @@
 **Created:** 2026-07-24  
 **Last updated:** 2026-09-15
 
-I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Cloudflare Zero Trust dashboard rather than a local file. The connector runs as cloudflared on the edge-01 host. This tunnel is the only inbound path from the Internet to my services; the router forwards no ports.
+I run one Cloudflare Tunnel, `edge-01`, and manage its configuration from the Cloudflare Zero Trust dashboard rather than a local file. The connector runs as cloudflared on the edge-01 host. This tunnel is the only inbound path from the Internet to my services; the router forwards no ports.
 
 ## Identity
 
@@ -20,7 +20,7 @@ I run one Cloudflare Tunnel, `edge-01`, & manage its configuration from the Clou
 
 ## Ingress rules
 
-Cloudflare evaluates these in order. I edit them in the dashboard. The local `/etc/cloudflared/config.yml` on edge-01 holds only the tunnel ID, the credentials-file path, & a placeholder `http_status:404` ingress that the dashboard configuration overrides, so reading that file alone won't show the live routing.
+Cloudflare evaluates these in order. I edit them in the dashboard. The local `/etc/cloudflared/config.yml` on edge-01 holds only the tunnel ID, the credentials-file path, and a placeholder `http_status:404` ingress that the dashboard configuration overrides, so reading that file alone won't show the live routing.
 
 | Order | Hostname | Origin service | Notes |
 |---|---|---|---|
@@ -39,13 +39,13 @@ Both hostnames are proxied CNAMEs into the tunnel in the `alphsec.com` zone:
 
 The connector authenticates with `/home/dkadi/.cloudflared/<REDACTED_TUNNEL_ID>.json` on edge-01. I don't store that file or its contents in this repository.
 
-## Access & firewall
+## Access and firewall
 
-Cloudflare Access protects `coolify-a1.alphsec.com`; see [Access applications](applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 & 8000; see the UniFi section of the [Coolify Access Hardening record](../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
+Cloudflare Access protects `coolify-a1.alphsec.com`; see [Access applications](applications.md). A UniFi policy limits edge-01 to app-01 on TCP 80 and 8000; see the UniFi section of the [Coolify Access Hardening record](../Documentation/Change%20Records/Coolify%20Access%20Hardening%20-%202026-07-22.md).
 
 ## Account zones
 
-I hold four zones in this Cloudflare account: `alphasecunited.com`, `alphsec.com`, `duresakadi.com`, & `duresakadi.me`. External service ingress currently uses `alphsec.com`.
+I hold four zones in this Cloudflare account: `alphasecunited.com`, `alphsec.com`, `duresakadi.com`, and `duresakadi.me`. External service ingress currently uses `alphsec.com`.
 
 ## Related
 

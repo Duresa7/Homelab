@@ -1,47 +1,31 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-21  
+**Last updated:** 2026-09-25
 
-Galaxy currently has 11 QEMU VMs & three templates. This inventory records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, & QEMU-agent state.
+Galaxy has 12 QEMU VMs and three templates. I read every figure below back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24. Ten VMs were running; `kali-pen` and `HQ-WS001` were stopped. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
-I captured the live cluster after moving VM 122 to Purple on 2026-07-28, then recaptured its storage after expanding `scsi0` from 100G to 200G in two steps later that day. On 2026-07-30 I corrected VM 122's detail block to its live six vCPUs and 12 GiB, added `discard=on`, and recorded its one replacement snapshot. The cluster resource API listed 10 QEMU VMs and two templates. On 2026-08-08 I recaptured after confirming VM 111's deletion and correcting VM 102 to its live size, and the API now lists 9 QEMU VMs and two templates.
+## Recent changes
 
-On 2026-08-10 I recaptured the active VMs after the [guest resource efficiency change](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md). Five VMs now use a maximum and a lower ballooning minimum, while Splunk remains fixed. The table and hardware blocks below show the post-restart state.
-
-On 2026-08-13 I added VM 105 `ubuntu-dev`, which had been running since 2026-08-12 without an entry here. I found the gap while moving CLI Proxy API onto it, so this file was one guest short of the cluster for a day.
-
-On 2026-09-06 I audited this file against `pvesh get /cluster/resources` and every `qemu-server/*.conf` on the cluster. `kali-pen` had been rebuilt without a record: grey-server's task log shows `qmdestroy 106` at 10:42 EDT on 2026-08-26 and `qmcreate 102` ten minutes later, so the new Kali VM reused VMID 102, the number `debian-dev` carried until 2026-08-14. It is a 6 vCPU, 8 GiB guest with a 100G `local-lvm` disk, the Kali 2026.2 installer attached, tagged VLAN 40 without the Proxmox firewall flag, and it was stopped when I read it. Its detail block below replaces the retired VM 106 block. The same pass confirmed the other six VMs and both templates match their configuration files, and it closed the `ubuntu-dev` restart note. The audit is recorded in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
-
-VM 111 `fedora-dev` is gone, and I deleted it deliberately. I added it to this file on 2026-07-26 after the PVE API surfaced a guest I had never written down, and I decided to keep it on 2026-07-27. I reversed that decision: `debian-dev` (VM 102) is the machine I develop on, so a second development guest that had been stopped since 2026-07-15 was paying for nothing. I confirmed the deletion against the cluster on 2026-08-08. `pvesh get /cluster/resources` returns no VMID 111, `/etc/pve/qemu-server/111.conf` does not exist, and `pvesm list ssd-lvm1` holds no `vm-111-*` volume, so its 80 GiB is back.
-
-`debian-dev` (VM 102) is also gone now. `ubuntu-dev` (VM 105) took over as the machine I develop on when CLI Proxy API moved across on 2026-08-13, and VM 102 sat idle from that point. I shut it down cleanly on 2026-08-14 and destroyed it with `qm destroy 102 --purge`. It carried no snapshot, backup job, HA resource, or replication job, so there was nothing to reconcile first. At that point `pvesh get /cluster/resources` returned no VMID 102, `/etc/pve/qemu-server/102.conf` did not exist, and `pvesm list ssd-lvm1` held no `vm-102-*` volume; its 120 GiB was back. VMID 102 has been in use again since 2026-08-26, when I rebuilt `kali-pen` under it on `local-lvm`, so a `102.conf` exists today and describes the Kali VM rather than `debian-dev`. The full decommission record, including the documentation archival, is [debian-dev Decommission - 2026-08-14](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md), and the final configuration snapshot is [Debian Dev Archived Guest - 2026-08-14](../../../Archive/Operations/Inventory/Galaxy/Debian%20Dev%20Archived%20Guest%20-%202026-08-14.md).
-
-`kasm-01` (VM 122) is gone. On 2026-08-19 I shut it down cleanly and destroyed it with its cloud-init, EFI, 200 GiB system, and baseline snapshot volumes. The cluster resource API returns no VMID 122 and `pvesm list ssd-lvm2 --vmid 122` returns no volumes. The [decommission record](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) records the completed monitoring, proxy, automation, security-agent, and UniFi cleanup.
-
-`supabase-01` (VM 117) is also gone. On 2026-08-20 I confirmed I had already deleted it: the Proxmox configuration and cluster-resource entry are absent, `pvesm list ssd-lvm1 --vmid 117` returns no volume, and the local LVM inventory has no VM 117 logical volume. The [retirement record](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) records the remaining automation, SSH, monitoring, diagram, and documentation cleanup.
-
-On 2026-09-09 I added the three Windows Server 2025 guests and the template they came from. VM 300 `ws2025-template` was built on 2026-09-08 and cloned into VM 301 `HQ-DC01`, VM 302 `HQ-DC02`, and VM 303 `HQ-MGT01`, all on IDENTITY-A, VLAN 65. The two controllers hold the `ad.alphasecunited.com` forest and `HQ-MGT01` is its member server. All four run OVMF firmware with a TPM 2.0 device, which Windows Server 2025 expects, and each carries the virtio driver ISO on `ide0`. The [forest build record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/Forest%20Build%20-%202026-09-09.md) holds the verification.
-
-On 2026-09-10 I added VM 310 `HQ-WS001`, a Windows 11 Pro test workstation on IDENTITY-A, VLAN 65. It is a fresh unattended install rather than a clone of the Windows Server template, and it is the client that proves the Tier 2 local-administrator policy and Windows LAPS reach a workstation. The [join record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20Workstation%20Join%20-%202026-09-10.md) holds the verification and the installer traps.
-
-I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+- 2026-09-24: I found `HQ-WS001` at 8 GiB and stopped, and `ubuntu-dev` running on its 12 GiB setting. [HQ-WS001 Memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md), [ubuntu-dev 12 GiB Applied](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%2012%20GiB%20Applied%20-%202026-09-24.md).
+- 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey's `local-lvm`. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
+- 2026-09-21: I completed VM 103 `win11-dev` as a standalone Windows 11 Pro 25H2 workstation. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
 
 ## Virtual Machines
-| VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 102 | kali-pen | grey-server | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured; stopped on 2026-09-06 | 192.168.40.1 | 40 | disabled |
-| 103 | win11-dev | green-server | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.40.117/24 | 192.168.40.1 | 40 | disabled |
-| 105 | ubuntu-dev | grey-server | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB pending / 16 GiB running | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
-| 109 | splunk-siem | grey-server | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 116 | app-01 | purple-server | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
-| 121 | edge-01 | purple-server | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
-| 200 | security-01 | grey-server | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
-| 301 | HQ-DC01 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
-| 302 | HQ-DC02 | grey-server | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
-| 303 | HQ-MGT01 | grey-server | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
-| 310 | HQ-WS001 | grey-server | Windows 11 Pro 25H2 | 4 | 4 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
-| 401 | alpha-prod-01 | purple-server | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
+| VMID | Name | Node | State | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 102 | kali-pen | grey-server | stopped | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured | 192.168.40.1 | 40 | disabled |
+| 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.40.117/24 | 192.168.40.1 | 40 | disabled |
+| 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
+| 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
+| 116 | app-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
+| 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
+| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
+| 302 | HQ-DC02 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
+| 303 | HQ-MGT01 | grey-server | running | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
+| 310 | HQ-WS001 | grey-server | stopped | Windows 11 Pro 25H2 | 4 | 8 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
+| 401 | alpha-prod-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -54,13 +38,13 @@ I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vC
 
 ### VM 103 - win11-dev
 
-I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+I built this guest on Green between 2026-09-20 and 2026-09-21 and moved it to Grey on 2026-09-23 after Green's memory test failures. It runs standalone in `WORKGROUP` with local `dkadi`, and SSH Manager reaches it as `win11_dev`. Windows activation is still open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
 
-OVMF with pre-enrolled Secure Boot keys, TPM 2.0, `virtio-scsi-single`, and `vmbr0` VLAN 40. Disks: `local-lvm:vm-103-disk-0` (4 MiB EFI), `vm-103-disk-1` (120 GiB system), and `vm-103-disk-2` (4 MiB TPM). `onboot=1`; no installation discs remain attached. Secure Boot is enabled and TPM is ready. `sshd` and `QEMU-GA` start automatically; the final device query reports no unresolved drivers. No development tools are in scope. I chose to run on Green despite its unresolved memory errors.
+OVMF with pre-enrolled Secure Boot keys, TPM 2.0, `virtio-scsi-single`, and `vmbr0` VLAN 40. Disks: `local-lvm:vm-103-disk-0` (4 MiB EFI), `vm-103-disk-1` (120 GiB system), and `vm-103-disk-2` (4 MiB TPM). `onboot=1`; no installation discs remain attached. Secure Boot is enabled and TPM is ready. `sshd` and `QEMU-GA` start automatically; the final device query reports no unresolved drivers. No development tools are installed.
 
 ### VM 102 - kali-pen
 
-I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.86 GiB guest with a 50G disk, no VLAN tag, and the Kali 2025.2 installer; I destroyed it at 10:42 EDT and created this one at 10:52 EDT under VMID 102. The new guest is tagged VLAN 40, carries the Kali 2026.2 installer, and has the QEMU agent and a QXL display enabled. It was stopped when I captured it on 2026-09-06, so its address is not recorded here; the previous VM held 192.168.40.226 and the rebuilt one has not been read back.
+I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.86 GiB guest with a 50G disk, no VLAN tag, and the Kali 2025.2 installer; I destroyed it at 10:42 EDT and created this one at 10:52 EDT under VMID 102. The new guest is tagged VLAN 40, carries the Kali 2026.2 installer, and has the QEMU agent and a QXL display enabled. It was stopped on 2026-09-06 and again on 2026-09-24, so its address has never been read back; the previous VM held 192.168.40.226.
 
 #### Identity
 | Setting | Value |
@@ -70,7 +54,7 @@ I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.
 | Template | no |
 | OS family | Linux |
 | Guest OS | Kali Linux, 2026.2 installer |
-| IPv4 | Not captured; the VM was stopped on 2026-09-06 |
+| IPv4 | Not captured; the VM was stopped at every readback |
 | Gateway | 192.168.40.1 |
 
 #### Hardware
@@ -101,13 +85,9 @@ I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.
 
 ### VM 105 - ubuntu-dev
 
-On 2026-09-08 I moved both disks to Grey's M.2 NVMe-backed `local-lvm` and deleted the two unused `ssd-lvm1` source volumes. The VM remained running and its guest agent responded after cleanup. The [storage move record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) holds the verification and reclaimed-space figures.
+This is the Ubuntu development workstation that took over from `debian-dev`. I created it on 2026-08-12 and added it here on 2026-08-13. On 2026-09-08 I moved both disks to Grey's NVMe-backed `local-lvm`. [Storage move record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md).
 
-This is the Ubuntu development workstation that takes over from `debian-dev`. I created it on 2026-08-12 and added it to this inventory on 2026-08-13, when CLI Proxy API moved onto it; it ran undocumented in between.
-
-It is configured for a pending reduction to 12 GiB, while the running instance retains 16 GiB with ballooning off. The running instance predated that setting until the guest restarted on 2026-08-19, and the setting has been in force since: on 2026-09-06 the guest reported 15,408 MiB of total memory, where the pre-restart instance had been capped at `actual=12630` against `max_mem=16384` and saw 11.4 GiB.
-
-On 2026-09-10 I assessed 15 days of guest memory history. Usage averaged 5.44 GiB but peaked at 10.37 GiB with another 4.00 GiB in swap. I then chose 12 GiB and applied `qm set 105 --memory 12288` without restarting anything. Proxmox shows 12,288 MiB pending against 16,384 MiB running; the reduction will take effect on a future full VM stop/start. The [memory assessment](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md) records the initial recommendation and the subsequent decision, change, and verification.
+It runs with 12 GiB and ballooning off. I set 12 GiB on 2026-09-10 without a restart; the guest's uptime of 192,960 seconds on the evening of 2026-09-24 puts the restart that applied it at about 1:50 PM Eastern on 2026-09-22. [Memory assessment](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md), [12 GiB applied](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%2012%20GiB%20Applied%20-%202026-09-24.md).
 
 I applied the Linux Host Baseline Standard on 2026-08-13, following the single-account exception this workstation role carries. It joined fleet monitoring the same day as Wazuh agent `020` and as a node_exporter target.
 
@@ -131,8 +111,8 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 12 GiB pending / 16 GiB running; no restart performed |
-| Ballooning | disabled (`balloon: 0`); in effect since the 2026-08-19 restart |
+| Memory | 12 GiB (`memory: 12288`), applied at the restart of about 2026-09-22 |
+| Ballooning | disabled (`balloon: 0`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
@@ -192,11 +172,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 
 ### VM 116 - app-01
 
-On 2026-09-11 I replaced its 200 GiB system disk with a verified 64 GiB disk on Grey and removed the original volume. Root has about 44 GiB available. The [replacement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds boot, service, and cleanup checks.
-
-I subsequently moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. Boot, containers, PostgreSQL, dashboard reachability, node exporter, and Wazuh connection checks passed.
-
-I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB QEMU allocation. Its active and configured maximum is now 8 GiB, with a 4 GiB ballooning minimum.
+On 2026-09-11 I replaced its 200 GiB system disk with a 64 GiB disk and then moved both disks to Purple's NVMe-backed `local-lvm`. [Replacement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md). A stop and start on 2026-08-10 cleared a stale 24 GiB QEMU allocation. [Resource tuning record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md).
 
 #### Identity
 | Setting | Value |
@@ -242,7 +218,7 @@ I stopped and started this guest on 2026-08-10, which cleared the stale 24 GiB Q
 
 ### VM 121 - edge-01
 
-I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. The migration completed at 3:28:25 AM Eastern; boot, ingress services, monitoring, and Wazuh connection checks passed.
+I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md).
 
 #### Identity
 | Setting | Value |
@@ -462,7 +438,9 @@ Installed on 2026-09-10 from `Win11_25H2_English_x64.iso` with an unattended ans
 
 Its local `Administrator` password is managed by Windows LAPS, so the directory holds the authoritative value and any password manager entry for this machine is stale. `ALPHASEC\ADM-T2-WorkstationAdmins` is in its local `Administrators` group, placed there by the `C-WKS-LocalAdmins` policy.
 
-Memory is 4 GiB rather than 8 because `grey-server` was carrying 51 GiB of its 62 GiB when this guest was built. OpenSSH Server would not install on this machine, so it is not in SSH Manager; the QEMU guest agent is the management channel.
+I built it with 4 GiB because `grey-server` was carrying 51 GiB of its 62 GiB at the time. On 2026-09-24 the configuration read `memory: 8192`, `balloon: 0`, `onboot: 0`, and the VM was stopped. [HQ-WS001 Memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md).
+
+OpenSSH Server has been enabled on this machine since 2026-09-19, and `Allow Secure to HQ-WS001 SSH` admits VLAN 50 to it. It is not enrolled in SSH Manager. [SSH enablement record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20SSH%20Enablement%20-%202026-09-19.md).
 
 #### Identity
 | Setting | Value |
@@ -470,6 +448,7 @@ Memory is 4 GiB rather than 8 because `grey-server` was carrying 51 GiB of its 6
 | Node | grey-server |
 | Guest hostname | HQ-WS001 |
 | Role | Windows 11 test workstation for tiered policy and LAPS validation |
+| State | stopped, `onboot: 0`, on 2026-09-24 |
 | High availability | disabled |
 | Template | no |
 | OS family | Windows |
@@ -485,7 +464,7 @@ Memory is 4 GiB rather than 8 because `grey-server` was carrying 51 GiB of its 6
 | --- | --- |
 | vCPU | 4 |
 | CPU type | host |
-| Memory | 4 GiB |
+| Memory | 8 GiB |
 | Ballooning | disabled (`balloon: 0`) |
 | BIOS | ovmf |
 | Machine | q35 |
@@ -665,3 +644,13 @@ Built on 2026-09-08 as the source for the three Windows Server 2025 guests. It c
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 80 | none | none | disabled | `<REDACTED_UBUNTU_TEMPLATE_MAC>` |
+
+## Retired VMs
+
+| VMID | Name | Removed | Record |
+| --- | --- | --- | --- |
+| 111 | fedora-dev | Deleted; absent from the cluster, its config and `ssd-lvm1` on 2026-08-08 | No separate record |
+| 102 | debian-dev | Destroyed 2026-08-14; VMID 102 was reused for `kali-pen` on 2026-08-26 | [debian-dev Decommission](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md), [archived guest](../../../Archive/Operations/Inventory/Galaxy/Debian%20Dev%20Archived%20Guest%20-%202026-08-14.md) |
+| 106 | kali-pen (first build) | Destroyed 10:42 AM Eastern 2026-08-26 and rebuilt as VM 102 | Detail block above |
+| 122 | kasm-01 | Destroyed 2026-08-19 with all volumes | [Kasm Workspaces Decommission](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md) |
+| 117 | supabase-01 | Confirmed deleted 2026-08-20 | [Supabase 01 Retirement](../../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Supabase%2001%20Retirement%20-%202026-08-20.md) |

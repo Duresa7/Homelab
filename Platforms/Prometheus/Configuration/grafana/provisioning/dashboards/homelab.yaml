@@ -20,7 +20,7 @@
 # themselves carry "editable": true, which is not a contradiction: provisioning
 # still refuses to persist a browser edit, but panel-edit and Explore stay
 # reachable so a query can be read without hunting for it in git. To iterate,
-# change Tools/build_dashboards.py and re-run it — the JSON is generated, so a
+# change Tools/build_dashboards.py and re-run it: the JSON is generated, so a
 # hand edit to a file under here is overwritten by the next build.
 apiVersion: 1
 

@@ -1,16 +1,31 @@
 # Samba
 
 **Created:** 2026-09-14  
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-25
 
-I run Samba on `ubuntu-dev` (`192.168.40.179`), listening on TCP 445 on loopback and `ens18`. The versioned [configuration](Configuration/smb.conf) records the live shares.
+I run Samba on `ubuntu-dev` (VM 105, `192.168.40.179`) as a file server for my own machines. The versioned [configuration](Configuration/smb.conf) is the live `smb.conf`.
 
-On 2026-09-14 I created `/home/ai-agent/Documents/shared-folder`, owned by `ai-agent` with mode `0700`, and added the writable `shared-folder` share. It uses the existing Samba login `dkadi` and performs file operations as `ai-agent`. It has no client-host restriction; other machines with network access and the existing SMB credentials can use it. Upstream network policy still applies. The existing `ai-agent` home share remains configured.
+| Item | Value |
+|---|---|
+| Host | `ubuntu-dev`, VLAN 40 |
+| Protocols | SMB2 (`SMB2_02`) to SMB3 only; NetBIOS off |
+| Listener | TCP 445 on `lo` and `ens18` |
+| Authentication | Samba user `dkadi`; file operations run as `ai-agent` (`force user`) |
+| Guest access | Off (`map to guest = never`) |
+| Client restriction | None in Samba; the upstream UniFi policy decides who reaches TCP 445 |
 
-I validated the configuration with `testparm -s`, reloaded it using `smbcontrol all reload-config`, and confirmed `smbd` remained active. An authenticated SMB test against `192.168.40.179` uploaded a temporary file, downloaded it, compared its bytes, and deleted it successfully. This test ran on `ubuntu-dev`; I did not perform an authenticated transfer from `docker-blue`.
+## Shares
 
-Through SSH Manager, I verified `docker-blue` can open TCP 445 to `192.168.40.179`. I installed `smbclient` there using the gateway's configured sudo authentication after ordinary execution and passwordless sudo failed. Installation exited 0. No persistent mount or stored SMB credential was added on the client. These checks were observed in the task output; no separate raw transcript was retained.
+| Share | Path | Access |
+|---|---|---|
+| `ai-agent` | `/home/ai-agent` | Read-write, `dkadi` only, dot-files visible, links cannot escape the tree |
+| `shared-folder` | `/home/ai-agent/Documents/shared-folder` | Read-write, `dkadi` only; added 2026-09-14 |
 
-Windows path: `\\192.168.40.179\shared-folder`. Linux/macOS file-manager address: `smb://192.168.40.179/shared-folder`.
+New files get no group or other permission bits (`create mask = 0700`, `force create mode = 0600`), directories are `0700`, and both are owned by `ai-agent`. The `catia`, `fruit` and `streams_xattr` modules keep macOS metadata and filenames intact.
 
-From `docker-blue`, `smbclient //192.168.40.179/shared-folder -U dkadi` prompts for the existing SMB password. Its `put` and `get` commands upload and download files. A persistent client mount remains unconfigured.
+Addresses: `\\192.168.40.179\shared-folder` from Windows, `smb://192.168.40.179/shared-folder` from a Linux or macOS file manager.
+
+## Records
+
+- [Configuration](Configuration/smb.conf)
+- [Shared Folder Share - 2026-09-14](Documentation/Change%20Records/Shared%20Folder%20Share%20-%202026-09-14.md)

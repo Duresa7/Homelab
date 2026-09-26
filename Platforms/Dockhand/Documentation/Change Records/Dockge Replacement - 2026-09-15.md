@@ -31,7 +31,7 @@ I compared live Docker inspection with the pre-removal capture: all 62 original 
 
 I logged in through HTTPS and read all seven environments, 69 containers, and 47 projects through Dockhand's API. All reported running. The six remote reads use Hawser Edge through NPM, exercising the WSS transport. Unauthenticated environment and container API requests return 401. HTTP redirects to HTTPS with 301; the HTTPS root redirects to login with 307. DNS resolves to NPM and TLS certificate verification passes.
 
-All seven manager definitions pass `docker compose config --quiet`. Hawser token files are mode 0600; temporary bootstrap keys are absent. The old Dockge credential can no longer be retrieved. I retained only configuration references and [verification evidence](../../Evidence/Dockge%20Replacement%20-%202026-09-15/Verification.json), with no credential values. No snapshot or host-side configuration backup was created.
+All seven manager definitions pass `docker compose config --quiet`. Hawser token files are mode 0600; temporary bootstrap keys are absent. The old Dockge credential can no longer be retrieved. I retained only configuration references and [verification evidence](../../Evidence/Dockge%20Replacement%20-%202026-09-15/Exports/Verification.json), with no credential values. No snapshot or host-side configuration backup was created.
 
 ## Open work
 

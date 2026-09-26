@@ -1,7 +1,7 @@
 # Open WebUI Operations Runbook
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-05
+**Last updated:** 2026-09-25
 
 ## Routine Check
 
@@ -20,7 +20,7 @@ The expected health response is `{"status":true}`. The model response must conta
 
 ## Access and Initial Administrator
 
-I normally open `https://openwebui.alphasecunited.com` from an approved internal client. The direct `http://192.168.40.35:3002` URL remains available only as a recovery path. The first registered Open WebUI account becomes the administrator and automatically closes initial signup. I then sign out and back in before treating the account path as verified.
+I normally open `https://openwebui.alphasecunited.com` from a trusted internal client. The direct `http://192.168.40.35:3002` URL remains available only as a recovery path. The first registered Open WebUI account becomes the administrator and automatically closes initial signup. I then sign out and back in before treating the account path as verified.
 
 NPM proxy host 28 forwards HTTP to `192.168.40.35:3002`. Force SSL, HTTP/2, WebSockets, Block Common Exploits, and wildcard certificate ID 1 are enabled; caching, HSTS, and an NPM access list are disabled. UniFi resolves the name only on the internal resolver, and the narrow firewall rule admits only NPM to the backend port.
 

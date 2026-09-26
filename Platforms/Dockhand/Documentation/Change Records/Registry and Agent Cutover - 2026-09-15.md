@@ -1,12 +1,12 @@
 # Registry and Agent Cutover
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-15
+**Last updated:** 2026-09-25
 
 **Status:** Complete.  
 **Verification:** 2026-09-15, 11:27 PM Eastern.
 
-I applied the approved cutover from [Registry and Stack Preparation](Registry%20and%20Stack%20Preparation%20-%202026-09-15.md). All six custom applications now run under their private Forgejo image names. Six Hawser agents use `ghcr.io/finsys/hawser:latest` with direct container updates excluded, and each remote host has a stopped `hawser-updater` container. The twelve recreated containers retain their previous image contents, environment, command, entrypoint, user, working directory, mounts, and published ports.
+I applied the planned cutover from [Registry and Stack Preparation](Registry%20and%20Stack%20Preparation%20-%202026-09-15.md). All six custom applications now run under their private Forgejo image names. Six Hawser agents use `ghcr.io/finsys/hawser:latest` with direct container updates excluded, and each remote host has a stopped `hawser-updater` container. The twelve recreated containers retain their previous image contents, environment, command, entrypoint, user, working directory, mounts, and published ports.
 
 ## Applied changes
 
@@ -40,12 +40,12 @@ The earlier preparation already tested registry pull/replacement and push for al
 
 ## Interrupted attempt and corrections
 
-The previous session stopped after its cutover script reported `Source drift before apply`, before replacing a container. The Docusaurus source still matched its original byte hash. The script's prepare step read bytes, while its apply step read text and normalized 28 CRLF line endings. I changed apply and rollback to preserve raw bytes and verified preparation on every host. [Cutover validation failures](../Troubleshooting/Cutover%20Validation%20Failures%20-%202026-09-15.md) records this and the subsequent helper creation failure.
+My first attempt stopped after its cutover script reported `Source drift before apply`, before replacing a container. The Docusaurus source still matched its original byte hash. The script's prepare step read bytes, while its apply step read text and normalized 28 CRLF line endings. I changed apply and rollback to preserve raw bytes and verified preparation on every host. [Cutover validation failures](../Troubleshooting/Cutover%20Validation%20Failures%20-%202026-09-15.md) records this and the subsequent helper creation failure.
 
 The first docker-network attempt recreated Hawser successfully, then rejected `docker compose create --no-deps` because that subcommand does not support the flag. The script restored the original definition and successfully rolled Hawser back. I removed the unsupported flag and reran that host successfully; the helper has no dependencies. The final validation compares both definitions after Compose normalization, which accounts for the updater's generated default network and command fields.
 
 ## Cleanup
 
-I retained structured verification results instead of full terminal transcripts. Individual command results and the two failed attempts were observed in the working sessions; no complete shell transcript is retained for those steps. The metrics freshness check and credential validation are recorded above without separate exports.
+The evidence is the structured verification results; the two failed attempts are described above. The metrics freshness check and credential validation are recorded above without separate exports.
 
 I removed `/opt/docker/.dockhand-cutover` from all seven hosts and the completed `/opt/docker/dockhand/cutover` tree from docker-main after verification. The protected imported definitions and six updater scripts remain active configuration. Disposable updater validation containers removed themselves. I created no snapshot or persistent backup.

@@ -1,7 +1,7 @@
 # Splunk Administrator Credential Printed to an Agent Session
 
 **Created:** 2026-08-29  
-**Last updated:** 2026-08-29
+**Last updated:** 2026-09-25
 
 ## Incident Metadata
 
@@ -12,7 +12,7 @@
 | Mitigated | 2026-08-29 3:05 AM EDT, when the staged credential file was shredded off `splunk-siem` |
 | Status | Closed |
 | Severity | SEV-5 |
-| Impact type | Credential disclosure into an agent session context; no persisted copy, no confirmed unauthorized use |
+| Impact type | Credential disclosure into my MCP client's session context; no persisted copy, no confirmed unauthorized use |
 | Affected service | Splunk Enterprise 10.4.0 on `splunk-siem` |
 | Affected asset | The Splunk administrator credential |
 
@@ -32,7 +32,7 @@ The real fault was 214 bytes further up: the file said `machine 127.0.0.1` and I
 
 ## Impact
 
-The value entered the agent session's working context and was therefore included in the model request for that turn. That path cannot be recalled and is the exposure this record exists for.
+The value entered my MCP client's session context on `ubuntu-dev` and was therefore included in the request that client sent to its hosted model for that turn. That path cannot be recalled and is the exposure this record exists for.
 
 It did not reach disk. The session transcript persists the tool result with `<REDACTED_PASSWORD>` in the position the value occupied, so the file on disk never carried it.
 
@@ -42,7 +42,7 @@ Splunk Web is not published to the internet and has no WAN port forward. The man
 
 - Splunk Enterprise 10.4.0 on `splunk-siem` at `192.168.72.3`, and its administrator account.
 - `/home/dkadi/.splunk_netrc`, staged 2026-08-28 1:57 PM EDT and shredded 2026-08-29 3:05 AM EDT.
-- The agent session transcript at `~/.claude_alt/projects/-home-ai-agent-Documents-Homelab/`.
+- My MCP client's session transcript on `ubuntu-dev`.
 
 No Splunk data, index, app or search was affected. The `unifi_insights` work continued and completed on the same instance.
 
@@ -97,7 +97,7 @@ The evidence for closure is negative and it is complete for every path that pers
 | Value present in repository history | No; zero matches across 3,371 blobs |
 | Staged credential file still on `splunk-siem` | No; shredded 3:05 AM EDT |
 
-What this does not prove is the model-request path, which is the one channel that carried the value off the host and cannot be swept. That is why the record exists at all rather than being a note in a change record.
+What this does not prove is the request to the hosted model, which is the one channel that carried the value off the host and cannot be swept. That is why the record exists at all rather than being a note in a change record.
 
 ## Lessons
 
@@ -118,6 +118,10 @@ What this does not prove is the model-request path, which is the one channel tha
 | Sweep `$HOME` and repository history for surviving copies | Complete |
 | Rotate the Splunk administrator credential | Not performed |
 | Fold the read pattern into the credential-handling guidance | Open, see [TODO.md](../../../TODO.md) |
+
+## Closure
+
+Closed on 2026-08-29. The staged credential file was shredded at 3:05 AM EDT and the sweeps found no surviving copy. The Splunk administrator credential was not rotated.
 
 ## Linked Records
 

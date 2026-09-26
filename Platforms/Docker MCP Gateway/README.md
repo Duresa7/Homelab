@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -9,104 +9,45 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 
 | Item | Value |
 |---|---|
-| Gateway version | 0.43.3, pinned by digest |
+| Gateway version | 0.43.3, pinned by digest; two instances running on 2026-09-24 |
 | OCI image | `docker.io/docker/mcp-gateway:v0.43.3` |
 | Pinned manifest digest | `sha256:e3ee13818cb067a506c5e9acdb2bb4fe0e601caef7d116fc329755782f1a3cfa` |
-| Host | `docker-blue` (`192.168.40.39`) |
-| UniFi gateway container | `docker-mcp-gateway` |
-| UniFi server container | `mcp-unifi-network`, private `http://unifi-network:8080/mcp` |
-| UniFi MCP endpoint | `http://192.168.40.39:8811/mcp`, 5 gateway tools |
-| UniFi health endpoint | `http://192.168.40.39:8811/health` |
-| SSH Manager container | `ssh-manager-mcp-gateway` |
-| SSH Manager MCP endpoint | `http://192.168.40.39:8812/mcp`, 37 tools |
-| SSH Manager health endpoint | `http://192.168.40.39:8812/health` |
-| Live Compose path | `/opt/docker/mcp-gateway/docker-compose.yml` |
-| Live configuration | `/opt/docker/mcp-gateway/config` |
-| Gateway token file | `/opt/docker/mcp-gateway/.env`, two distinct bearer tokens, root-owned mode `0600` |
-| UniFi secret file | `/opt/docker/mcp-gateway/unifi-network.env`, root-owned mode `0600` |
-| SSH Manager secret file | `/opt/docker/mcp-gateway/ssh-manager.env`, root-owned mode `0600` |
-| Servers | UniFi Network MCP 0.29.3 with a full-access overlay and SSH Manager MCP, both persistent services reached over HTTP |
-| Local server images | `homelab/unifi-network-mcp:0.29.3-full-access-proxy` run as the `unifi-network` service, `homelab/mcp-ssh-manager:latest` run as the `mcp-ssh-manager` service |
-| SSH Manager version | 3.8.5, 37 tools, 24 configured servers |
+| Host | `docker-blue` (CT 108, `192.168.40.39`) |
+| UniFi endpoint | `http://192.168.40.39:8811/mcp` (container `docker-mcp-gateway`), 5 gateway tools; health at `/health` |
+| UniFi server | `mcp-unifi-network`, UniFi Network MCP 0.29.3 with a full-access overlay, image `forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable`, private `http://unifi-network:8080/mcp` |
 | UniFi controller | `192.168.1.1:443`, site `default` |
-| Catalogs | `/opt/docker/mcp-gateway/config/catalogs/unifi-network.yaml`, `.../ssh-manager.yaml` |
-| SSH Manager server definitions | Resolved environment in `/opt/docker/mcp-gateway/docker-compose.yml`; Dockhand imported definition at `/opt/docker/dockhand/stacks/imported/docker_blue/docker-mcp-gateway/compose.yaml` on `docker-main`; 24 live entries verified 2026-09-21 |
-| SSH Manager server lifetime | One persistent `mcp-ssh-manager` Compose service shared by every client session |
-| Restart policy | `unless-stopped` |
+| SSH Manager endpoint | `http://192.168.40.39:8812/mcp` (container `ssh-manager-mcp-gateway`), 37 tools; health at `/health` |
+| SSH Manager server | `mcp-ssh-manager`, SSH Manager MCP 3.8.5 with my homelab patch, image `forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable`, private `http://ssh-manager:8080/mcp` |
+| SSH Manager servers | 24, read with `ssh_list_servers` on 2026-09-24 |
+| Live Compose path | `/opt/docker/mcp-gateway/docker-compose.yml`; Dockhand's imported copy at `/opt/docker/dockhand/stacks/imported/docker_blue/docker-mcp-gateway/compose.yaml` on `docker-main` |
+| Secret files | `/opt/docker/mcp-gateway/.env` (two bearer tokens), `unifi-network.env`, `ssh-manager.env`, all root-owned mode `0600` |
+| Restart policy | `unless-stopped`; SSH Manager also restarts nightly at 4 AM Eastern |
 
-Both MCP endpoints use Streamable HTTP and require different bearer tokens. The tokens are held in the approved credential store and the live `.env`; they are not in this repository. Executor reaches each internal HTTP endpoint directly through separate personal connections named `unifiMcpGateway` and `sshManagerMcpGateway`. No DNS record or TLS proxy fronts either gateway endpoint.
+Both endpoints use Streamable HTTP and require different bearer tokens, held in my credential store and the live `.env`. Executor reaches each endpoint directly through its own connection, `unifiMcpGateway` and `sshManagerMcpGateway`. No DNS record or TLS proxy fronts either one.
 
-Since 2026-09-07 I run UniFi as one persistent Compose service behind mcp-proxy 0.12.0. The remote catalog points to `http://unifi-network:8080/mcp` on the project network, with no host port published. Every caller shares one process and its authenticated controller connection. The gateway waits for the service health check and sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1` for that private HTTP endpoint. The bridge uses MCP SDK 1.29.1 in a separate environment, preserving UniFi's application dependencies.
+## How It Works
 
-Lazy registration still exposes five discovery and execution tools. Credentials come from the root-owned `unifi-network.env`, read with Compose's raw env-file format to preserve literal values. Controller settings and permissions live on the Compose service. Create, update, and delete remain enabled; the full-access overlay still makes bypass authoritative when FastMCP supplies `confirm=false`. The [cutover record](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md) contains verification of concurrent calls and process reuse.
+UniFi and SSH Manager each run as one persistent Compose service behind [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) 0.12.0, which spawns the stdio server once and serves it over HTTP on the project network. Every caller shares that one process. The gateway catalogs point at the private `remote` URLs, and each gateway sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1` because the gateway rejects a plain-HTTP remote by default. SSH Manager moved to this layout on 2026-09-03 and UniFi on 2026-09-07.
 
-SSH Manager has no upstream image, so I build `homelab/mcp-ssh-manager:latest` on `docker-blue` from the tracked [Dockerfile](Configuration/Dockerfile.ssh-manager). The build applies a 3.8.5-specific [homelab patch](Configuration/patches/mcp-ssh-manager-3.8.5-homelab.patch) for bounded inline remote-client transfers and actual SSH2 host-key comparison.
+UniFi create, update, and delete stay enabled. The full-access overlay makes bypass authoritative even when FastMCP supplies `confirm=false`, so a mutation runs without a confirmation step. UniFi credentials come from `unifi-network.env`, read in Compose's raw env-file format so literal values survive.
 
-Since 2026-09-03 that image runs as its own Compose service rather than as a container the gateway starts. `mcp-ssh-manager` speaks stdio only, so [mcp-proxy](https://github.com/sparfenyuk/mcp-proxy) 0.12.0 is installed in the image and fronts it: it spawns the server once and serves it over Streamable HTTP on port 8080, multiplexing every HTTP caller onto that one process. The catalog entry is a `remote` server at `http://ssh-manager:8080/mcp`, reached over the project network and published on no host port. Because the gateway rejects a non-HTTPS remote by default, its service sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1`. The reasoning and the alternatives are in the [shared server change record](Documentation/Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md).
+SSH Manager has no upstream image. I build it from the tracked [Dockerfile](Configuration/Dockerfile.ssh-manager) with a 3.8.5-specific [patch](Configuration/patches/mcp-ssh-manager-3.8.5-homelab.patch) for bounded inline transfers and real SSH2 host-key comparison. Its private key is written to a `/keys` tmpfs at mode `0600` at start and is never in an image layer.
 
-The live service now reads resolved environment settings from its root-owned Compose definition. Dockhand's imported definition must receive the same edits. The older `ssh-manager-servers.env` and `ssh-manager.env` files remain references but are not loaded by the current resolved definition. I verified this while adding `win11_dev` on 2026-09-21. [Completion and SSH verification](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md). The key is materialized at mode `0600` on a `/keys` tmpfs at start and is never in an image layer. Game 01 was removed on 2026-09-12. A Windows host needs all three host key types it offers enrolled in `known_hosts`, not only ed25519, because the client may negotiate another type and the verifier compares the presented key against the enrolled ones; see [ObiPC Workstation Join - 2026-09-11](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md). An operating system reinstall regenerates those keys, so the host's lines have to be replaced, not appended to; `ObiPC` needed that on 2026-09-18, recorded in [ObiPC Rebuild and Rejoin - 2026-09-18](../Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md). The five Proxmox nodes and `docker-main` authenticate as root; `ansible-01` and `ubuntu-dev` reach root through passwordless sudo; the other nine use their configured sudo values. Every entry is unrestricted, and Executor has no approval policy for this connection. Egress is deliberately unrestricted, decided 2026-09-03: the server may reach any machine I add to it. The catalog's `allowHosts` never applied here, and it was never enforced for the managed container either because that needs `--block-network`.
+The live SSH Manager service reads its server definitions from resolved environment settings in the root-owned live Compose file, which I verified while adding `win11_dev` on 2026-09-21. The tracked [Compose reference](Configuration/docker-compose.yml) still lists `ssh-manager-servers.env` and `ssh-manager.env` under `env_file`; those files stay on the host as references and the resolved definition does not load them.
 
-The official container deployment requires the host Docker socket. This gives the gateway control of Docker Engine on `docker-blue`, which is necessary for starting managed MCP server containers and is the deployment's main trust boundary. The gateway container otherwise has a read-only root filesystem, no Linux capabilities, `no-new-privileges`, a 256 MiB memory limit, a half-CPU limit, a 256-process limit, and bounded JSON logs. Both persistent MCP services have a one-CPU and 512 MiB limit.
+## Trust Boundary
 
-## Routine Operations
+SSH Manager reaches root on the 17 Linux nodes and guests: direct root login on the five Proxmox nodes and `docker-main`, passwordless sudo on `ansible-01` and `ubuntu-dev`, and password-backed sudo on the other nine. The remaining seven entries are the Windows hosts and two physical laptops. Every entry is unrestricted, Executor holds no approval policy for this connection, and egress is unrestricted by my decision on 2026-09-03.
 
-Run on `docker-blue` with elevation:
+The gateway container needs the host Docker socket, which gives it control of Docker Engine on `docker-blue`. That socket is the main trust boundary. Otherwise the gateway runs with a read-only root filesystem, no Linux capabilities, `no-new-privileges`, 256 MiB, half a CPU, a 256-process limit and bounded JSON logs. Both server services are limited to one CPU and 512 MiB.
 
-```bash
-cd /opt/docker/mcp-gateway
-docker compose config --quiet
-docker compose ps
-docker compose logs --tail 100 gateway
-docker compose logs --tail 100 ssh-manager-gateway
-docker stats docker-mcp-gateway ssh-manager-mcp-gateway --no-stream
-curl -fsS http://192.168.40.39:8811/health
-curl -fsS http://192.168.40.39:8812/health
-```
-
-The gateway stays on the 0.43.3 digest for now. The 2026-09-03 test of `:latest` was rolled back because it started one SSH Manager container per client session, but 0.43.3 does the same: the pool keys kept containers by session in both, so that test did not distinguish them and the pin is not a compatibility requirement. A future update needs `docker compose pull` followed by `docker compose up -d --wait`, both endpoint checks, real UniFi and SSH tool calls, and a count of `Client initialized` against `Running` lines in the log after several parallel calls. Update UniFi MCP by changing the pinned upstream version and digest in `Dockerfile.unifi-network`, confirming the build patch still matches exactly one permission-wrapper block, then rebuilding the local image:
-
-```bash
-cd /opt/docker/mcp-gateway
-docker build --no-cache -f Dockerfile.unifi-network -t homelab/unifi-network-mcp:0.29.3-full-access-proxy .
-docker run --rm --network none --entrypoint python homelab/unifi-network-mcp:0.29.3-full-access-proxy -c 'import importlib.metadata as m; print(m.version("unifi-network-mcp"))'
-docker compose up -d --wait unifi-network gateway
-```
-
-Use a new local tag when the upstream version changes. If upstream makes bypass mode authoritative after FastMCP supplies default arguments, remove the overlay rather than carrying a redundant patch. Verify health, bearer-token enforcement, an authenticated system-information read, an Integration API read, and a no-confirm mutation probe after the recreation.
-
-Update SSH Manager by rebuilding its image, since it tracks `latest` and has no upstream registry:
-
-```bash
-cd /opt/docker/mcp-gateway
-docker build --no-cache -f Dockerfile.ssh-manager -t homelab/mcp-ssh-manager:latest .
-docker run --rm --entrypoint sh homelab/mcp-ssh-manager:latest -c 'npm ls -g --depth=0 | grep mcp-ssh-manager'
-docker compose up -d --force-recreate ssh-manager-gateway
-```
-
-Record the resolved version, then verify with an `ssh_list_servers` call and one `ssh_execute` against a reachable host.
-
-One `mcp-ssh-manager` process serves every caller, which is what keeps its pooled SSH connections, `ssh_session_*` interactive shells, tunnels and history shared across calls the way a local install does. The gateway holds one client session to it per Executor session, but those are HTTP sessions against one process, not containers, so nothing accumulates:
-
-```bash
-docker ps --filter label=docker-mcp-name=ssh-manager   # expected: none
-docker compose ps ssh-manager                          # expected: one, healthy
-curl -fsS http://127.0.0.1:8080/status                  # from inside the container
-```
-
-Before this cutover the gateway kept one managed container per client session and released it only when the client closed that session, which Executor never does. The count reached 22 and 192 of the gateway's 256 processes on 2026-09-03, and 27 containers exhausted it on 2026-09-02. Restarting the gateway was the only remedy. The [troubleshooting record](Documentation/Troubleshooting/Managed%20SSH%20Manager%20Containers%20Accumulated%20Under%20long-lived%20-%202026-09-03.md) holds that diagnosis.
-
-A local install got a fresh process every time Claude Code was reopened. Executor never signals the end of a session, so nothing can trigger that here; instead the systemd timer [mcp-ssh-manager-restart.timer](Configuration/systemd/mcp-ssh-manager-restart.timer) restarts the service every day at 4 AM Eastern, decided 2026-09-03. The restart takes about a second, the gateway is not touched and its forwarded sessions survive it, and any interactive session or tunnel left open by an agent is cleared. The same restart by hand:
-
-```bash
-cd /opt/docker/mcp-gateway
-docker compose restart ssh-manager          # or: systemctl start mcp-ssh-manager-restart.service
-systemctl list-timers mcp-ssh-manager-restart.timer
-```
+Routine checks, image updates and server additions are in the [Runbook](Documentation/Runbook.md).
 
 ## Records
 
-- [UniFi shared server cutover](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md)
+- [Access Paths](../../Architecture/Access-Paths.md): agent access alongside the other paths into the lab
 
+- [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Environment template](Configuration/.env.example)
 - [UniFi service secret template](Configuration/unifi-network.env.example)
@@ -125,8 +66,10 @@ systemctl list-timers mcp-ssh-manager-restart.timer
 - [SSH Manager MCP integration](Documentation/Change%20Records/SSH%20Manager%20MCP%20Integration%20-%202026-08-31.md)
 - [SSH Manager fleet reach completion](Documentation/Change%20Records/SSH%20Manager%20Fleet%20Reach%20Completion%20-%202026-08-31.md)
 - [SSH Manager gateway process exhaustion](Documentation/Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md)
-- [Docker MCP Gateway v2 compatibility rollback](Documentation/Change%20Records/Docker%20MCP%20Gateway%20v2%20Compatibility%20Rollback%20-%202026-09-03.md)
+- [Docker MCP Gateway v2 compatibility rollback](Documentation/Change%20Records/v2%20Compatibility%20Rollback%20-%202026-09-03.md)
 - [SSH Manager shared server cutover](Documentation/Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md)
+- [UniFi shared server cutover](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md)
+- [Dockhand registry and agent cutover](../Dockhand/Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md), which moved both server images to Forgejo
 - [Cutover script](Scripts/ssh-manager-shared-server-cutover.sh)
 - [Nightly restart timer and service](Configuration/systemd/)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)

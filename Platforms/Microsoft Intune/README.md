@@ -1,11 +1,11 @@
 # Microsoft Intune
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-25
 
 Intune is the device management plane for the `alphasecunited.com` tenant. It is the same tenant the [Active Directory](../Active%20Directory/README.md) forest synchronises into through Entra Cloud Sync, so identity comes from `ad.alphasecunited.com` and device management comes from here. The two are separate concerns and this record owns the second.
 
-Apple device management was already in service before this record existed: the Apple MDM push certificate was raised on 2026-07-21 and the iPad was enrolled through Automated Device Enrollment. I wrote this record on 2026-09-11, when I audited the tenant to find out whether I could enroll my MacBook Air M3 without erasing it and then did so.
+Apple device management has run since 2026-07-21, when I raised the Apple MDM push certificate. The iPad came in through Automated Device Enrollment and the MacBook Air M3 through the Company Portal on 2026-09-11.
 
 ## Current State
 
@@ -23,6 +23,7 @@ Apple device management was already in service before this record existed: the A
 | Enrollment device limit | 5 devices per user, one policy covering all users and all devices |
 | Compliance policies | None. The tenant marks devices with no policy assigned as Compliant |
 | Conditional Access policies | None |
+| Administrator accounts | Cloud-only `DK-admin` holds Global Administrator since 2026-09-10; `BG-admin` is the break-glass account. Neither is excluded from any Conditional Access policy, because none exists |
 
 ## Managed devices
 
@@ -31,26 +32,13 @@ Apple device management was already in service before this record existed: the A
 | `dkadi-mb-air3` | macOS 26.6.2 (25G83) | Personal | Company Portal, user-initiated | Microsoft Entra registered | DK-user | 2026-09-11 |
 | `iPad` | iPadOS 17.7.11 | Corporate | Automated Device Enrollment through Apple Business Manager | none shown | DK-user | 2026-09-07 |
 
-The ownership split is the real difference between the two. The iPad came through Apple Business Manager, so it is organisation-owned and supervised. The MacBook came through the Company Portal, so it is personally owned, unsupervised, and I can remove it from the Mac itself. `HQ-WS001` and `ObiPC` appear in Entra as hybrid joined but are not Intune managed and do not appear here.
+The two differ in ownership. The iPad came through Apple Business Manager, so it is organisation-owned and supervised. The MacBook came through the Company Portal, so it is personally owned, unsupervised, and I can remove it from the Mac itself. `HQ-WS001` and `ObiPC` appear in Entra as hybrid joined but are not Intune managed and do not appear here.
 
 Both Apple credentials expire on 7/21/2027 because they were raised on the same day. They renew separately, and the push certificate must be renewed with the Apple ID that created it. Renewing with a different Apple ID replaces the certificate instead, which would mean re-enrolling every Apple device.
 
 ## macOS enrollment
 
-I settled one question on 2026-09-11: can an already configured MacBook Air M3 join this tenant without being wiped. It can, and it did. The path is user-initiated enrollment with the Company Portal, and every prerequisite was already in place before I started:
-
-- The Apple MDM push certificate was Active with 313 days remaining, and one push certificate covers every Apple platform in a tenant rather than just the iPad it was raised for.
-- macOS and personally owned macOS were both allowed by the only platform restriction, with no minimum version floor.
-- The device limit is 5 per user against 1 device enrolled at the time.
-- One Intune licence exists, assigned to DK-user. Microsoft 365 Business Premium carries Intune Plan 1, which is the right that enrollment draws on.
-
-Automated Device Enrollment is the path that would have required an erase, because it runs inside Setup Assistant. It did not apply. A personally bought Mac is not in Apple Business Manager, and the one device the ADE token has synced is the iPad. Adding a Mac to Apple Business Manager after purchase needs Apple Configurator and an erase anyway, and it would make a personal laptop supervised and organisation-owned, which is not what I want for this machine.
-
-The Mac is Microsoft Entra registered rather than hybrid joined. Hybrid join is Windows only, so the forest played no part. The Mac authenticates to Entra directly with the password-hash-synced password. It registered at 11:35 PM and checked in to Intune at 11:36 PM on 2026-09-11.
-
-The approval of the management profile has to happen in the interface on the machine. macOS 11 removed the ability to install an MDM enrollment profile from the command line on an unsupervised Mac, so there is no remote or scripted path to this step and no captured evidence from the device side. Verification is from the two consoles instead.
-
-Two consequences of managing a personal machine, stated plainly. I can retire or wipe `dkadi-mb-air3` from this console, and macOS has no app-protection-only enrollment, so it is full MDM or nothing. Signing into Edge or the Office apps without the Company Portal would have given Entra registration and single sign-on without management, which remains the lighter option for any future personal device.
+I enrolled the MacBook Air M3 on 2026-09-11 through the Company Portal without erasing it. Automated Device Enrollment would have needed an erase, because it runs inside Setup Assistant, and it would have made a personal laptop supervised and organisation-owned. The Mac is Microsoft Entra registered, not hybrid joined, and I can retire or wipe it from this console. The [enrollment record](Documentation/Change%20Records/MacBook%20Air%20M3%20Company%20Portal%20Enrollment%20-%202026-09-11.md) holds the prerequisites and verification.
 
 ## Decisions
 
@@ -60,7 +48,7 @@ Both managed devices report `Compliant`. Neither has been evaluated against anyt
 
 I am leaving it that way on purpose. I am not creating a compliance policy and I am not flipping the tenant default to `Not compliant`. Two devices, both mine, both of which I can inspect by hand faster than I can write a policy to inspect them. A compliance policy would be machinery reporting on a fleet of two that I already have eyes on.
 
-What I am buying with that, and what I am giving up, stated so the next reader does not have to work it out:
+What that costs:
 
 - The `Compliant` column in both consoles carries no information. It is not evidence of anything and must not be cited as evidence in any record.
 - Conditional Access requiring device compliance is off the table while this holds, for the reason in Open Items below.
@@ -70,8 +58,8 @@ The decision to revisit is a fleet-size one. When this tenant manages devices I 
 
 ## Open Items
 
-- **Do not create a Conditional Access policy that requires a compliant device.** This follows directly from the compliance decision above. Every device in this tenant reports Compliant without being evaluated, so such a policy would pass for the wrong reason and would start failing the moment a real compliance policy landed. The tenant has one admin account and no break-glass exclusion, so that failure locks me out of my own tenant. This constraint stands until the compliance decision is revisited.
-- Decide whether FileVault is enforced on the Mac with the recovery key escrowed into Intune. That mirrors the BitLocker baseline open against the physical Windows workstation in the [Active Directory TODO](../Active%20Directory/Documentation/TODO.md), and settling both the same way keeps one disk-encryption posture across the fleet.
+- **Do not create a Conditional Access policy that requires a compliant device.** This follows directly from the compliance decision above. Every device in this tenant reports Compliant without being evaluated, so such a policy would pass for the wrong reason and would start failing the moment a real compliance policy landed. Such a policy would also catch `DK-admin` and `BG-admin`, since neither has an exclusion, so that failure locks me out of my own tenant. This constraint stands until the compliance decision is revisited.
+- Decide whether FileVault is enforced on the Mac with the recovery key escrowed into Intune. That mirrors the TPM+PIN BitLocker baseline open against the physical Windows workstation in the [Active Directory TODO](../Active%20Directory/Documentation/TODO.md), and settling both the same way keeps one disk-encryption posture across the fleet.
 - Decide whether `HQ-WS001` and `ObiPC` should be Intune managed alongside AD Group Policy. I verified ObiPC's hybrid join and absence of MDM enrollment locally on 2026-09-12; [MDM options and proposed scope](Documentation/ObiPC%20MDM%20Options%20-%202026-09-12.md) recommend Intune. This is not Configuration Manager co-management. Enrollment remains undecided.
 - Both Apple credentials expire 7/21/2027. Neither renews itself.
 

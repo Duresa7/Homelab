@@ -48,7 +48,7 @@ Read back on each node immediately after, between 6:36:36 PM and 6:36:40 PM East
 | green-server | masked | inactive | `/dev/null` | empty |
 | blue-server | masked | inactive | `/dev/null` | empty |
 
-`ipmitool` remains installed on all four. `nut-monitor.service` on `red-server` is the unit disabled on purpose at the [PeaNUT deployment](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md), so neither Proxmox host shuts itself down on a UPS event; it is not part of this change.
+`ipmitool` remains installed on all four. `nut-monitor.service` on `red-server` is the unit disabled on purpose at the [PeaNUT deployment](../../Platforms/PeaNUT/Documentation/Change%20Records/UPS%20Dashboard%20Deployment%20-%202026-07-22.md), so neither Proxmox host shuts itself down on a UPS event; it is not part of this change.
 
 ## Left open
 

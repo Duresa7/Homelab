@@ -3,7 +3,7 @@
 **Created:** 2026-07-17  
 **Last updated:** 2026-09-18
 
-I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
+I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, and verification for each issue.
 
 ## Issue Index
 

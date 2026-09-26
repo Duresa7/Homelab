@@ -1,11 +1,11 @@
 # Fleet Updates Intermediate States
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-09-25
 
 **Captured:** 2026-07-29
 
-These nine files are working copies the controller wrote while I changed the `fleet-updates` project during [fleet maintenance](../../../../Platforms/Ansible/Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md). Each one is a file as it stood immediately before the next edit. They lived in the deployed project's `playbooks/` directory and in `/home/ansible/fleet-update-backups/`, neither of which should hold old copies. I archived them here on 2026-07-29 and deleted them from `ansible-01`.
+These nine files are working copies the controller wrote while I changed the `fleet-updates` project during [fleet maintenance](../../../../Platforms/Ansible/Documentation/Change%20Records/Fleet%20Maintenance%20-%202026-07-28.md). Each one is a file as it stood immediately before the next edit. They lived in the deployed project's `playbooks/` directory and in `/home/ansible/fleet-update-backups/`, neither of which should hold old copies. I archived them here on 2026-07-29 and deleted them from `ansible-01`. I keep the nine copies locally and do not publish them, so this README is the only file in the folder on GitHub.
 
 Nothing here is live. The current project is [fleet-updates](../../../../Platforms/Ansible/Source/fleet-updates/README.md) in this repository, and the deployed copy on `ansible-01` matches it.
 

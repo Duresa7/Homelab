@@ -1,0 +1,53 @@
+Started win11-dev-memory-check.service - [systemd-run] /usr/sbin/memtester 8192M 1.
+memtester version 4.7.1 (64-bit)
+Copyright (C) 2001-2024 Charles Cazabon.
+Licensed under the GNU General Public License version 2 (only).
+pagesize is 4096
+pagesizemask is 0xfffffffffffff000
+want 8192MB (8589934592 bytes)
+got  8192MB (8589934592 bytes), trying mlock ...locked.
+Loop 1/1:
+  Stuck Address       :           setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   5FAILURE: possible bad address line at offset 0x00000000aee85f00.
+Skipping to next test...
+  Random Value        : 
+
+
+
+
+
+
+
+FAILURE: 0x6fff36452dbc9383 != 0x6fff36452dbc9381 at offset 0x00000000aee84d00.
+FAILURE: 0xb7734449dff99f28 != 0xb7734449dff99f68 at offset 0x00000000aee8abc8.
+FAILURE: 0x8160d05508d8fc3a != 0x8160d05508d8fc38 at offset 0x00000000aee84a08.
+FAILURE: 0x8160d05508d8fc78 != 0x8160d05508d8fc38 at offset 0x00000000aee8b170.
+FAILURE: 0x8160d05508d8fc78 != 0x8160d05508d8fc38 at offset 0x00000000aee8bec8.
+  Compare XOR         : FAILURE: 0x8141cb7585603304 != 0x8141cb7585603308 at offset 0x00000000aee84e30.
+FAILURE: 0x8141cb7585603304 != 0x8141cb7585603308 at offset 0x00000000aee85f00.
+FAILURE: 0x8141cb7585603288 != 0x8141cb7585603308 at offset 0x00000000aee8abc8.
+FAILURE: 0x8141cb7585603348 != 0x8141cb7585603308 at offset 0x00000000aee8b170.
+FAILURE: 0x8141cb7585603348 != 0x8141cb7585603308 at offset 0x00000000aee8bec8.
+  Compare SUB         : FAILURE: 0xe305ba4e3b9eba8a != 0xa101e8c4be8a3e2e at offset 0x00000000aee85f00.
+FAILURE: 0xa101e8c4be8a3e6e != 0xa101e8c4be8a3e2e at offset 0x00000000aee8bec8.
+  Compare MUL         : FAILURE: 0x0000000000000041 != 0x0000000000000001 at offset 0x00000000aee8bec8.
+  Compare DIV         :   Compare OR          : ok
+FAILURE: 0xbf59d21867ff163f != 0xbf59d21867ff163d at offset 0x00000000aee84a08.
+FAILURE: 0xbf59d21867ff167d != 0xbf59d21867ff163d at offset 0x00000000aee8bec8.
+  Compare AND         :   Sequential Increment: ok
+  Solid Bits          :           setting   testing   0FAILURE: 0xffffffffffffffff != 0xfffffffffffffff7 at offset 0x000000000e0f9a20.
+FAILURE: 0xfffffffffffffffd != 0xffffffffffffffff at offset 0x00000000aee85f00.
+FAILURE: 0x0000000000000040 != 0x0000000000000000 at offset 0x00000000aee8bec8.
+  Block Sequential    :           setting   testing   0FAILURE: 0x0000000000000040 != 0x0000000000000000 at offset 0x00000000aee8bec8.
+  Checkerboard        :           setting   testing   0FAILURE: 0xaaaaaaaaaaaaaaea != 0xaaaaaaaaaaaaaaaa at offset 0x00000000aee8bec8.
+  Bit Spread          :           setting   testing   0FAILURE: 0x0000000000000005 != 0x000000000000000d at offset 0x000000000e0ff6a0.
+  Bit Flip            :           setting   testing   0FAILURE: 0x0000000000000041 != 0x0000000000000001 at offset 0x00000000aee8bec8.
+  Walking Ones        :           setting   testing   setting   testing   setting   testing   2FAILURE: 0xfffffffffffffff9 != 0xfffffffffffffffb at offset 0x00000000aee85f00.
+  Walking Zeroes      :           setting   testing   0FAILURE: 0x0000000000000041 != 0x0000000000000001 at offset 0x00000000aee8bec8.
+  8-bit Writes        : 
+
+Stopping win11-dev-memory-check.service - [systemd-run] /usr/sbin/memtester 8192M 1...
+-
+win11-dev-memory-check.service: Deactivated successfully.
+Stopped win11-dev-memory-check.service - [systemd-run] /usr/sbin/memtester 8192M 1.
+win11-dev-memory-check.service: Consumed 1min 30.324s CPU time, 8G memory peak.
+

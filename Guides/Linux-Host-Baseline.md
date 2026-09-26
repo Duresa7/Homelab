@@ -1,21 +1,21 @@
 # Linux Host Baseline Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-I apply this baseline to a Linux VM or LXC before it carries a workload. The finish line is a patched host with one administrative account, exactly three approved SSH public keys, key-only SSH, root that cannot log in over SSH, a sudo prompt that asks for a password other than the login password, passwordless sudo for automation only, & consistent time and locale.
+I apply this baseline to a Linux VM or LXC before it carries a workload. The finish line is a patched host with one administrative account, three authorized SSH public keys, key-only SSH, root that cannot log in over SSH, a sudo prompt that asks for a password other than the login password, passwordless sudo for automation only, and consistent time and locale.
 
 ## Current Status and Verified Versions
 
-CT 107 `docker-network` is the recorded reference implementation. The same baseline was later applied to CT 842 `media-01`.
+CT 107 `docker-network` is the recorded reference implementation. The same baseline was later applied to CT 842 `media-01`. On 2026-09-07 I verified the sudo and SSH model on all eleven guests then in the fleet: `dkadi` sudo takes root's password on 11 of 11, `ansible` keeps `NOPASSWD` on 11 of 11, and root SSH login is off on 11 of 11 ([verification record](../Operations/Maintenance/Fleet%20Access%20Model%20Verified%20and%20Credential%20Item%20Collapsed%20-%202026-09-07.md)).
 
 ## What You Need
 
 - Hypervisor console access.
-- A hostname, address, gateway, DNS server, & time zone.
-- Three public keys: `<REDACTED_ADMIN_KEY_ONE_PUBLIC_KEY>`, `<REDACTED_ADMIN_KEY_TWO_PUBLIC_KEY>`, & `<REDACTED_ADMIN_KEY_THREE_PUBLIC_KEY>`.
+- A hostname, address, gateway, DNS server, and time zone.
+- Three public keys: `<YOUR_ADMIN_PUBLIC_KEY_1>`, `<YOUR_ADMIN_PUBLIC_KEY_2>`, and `<YOUR_ADMIN_PUBLIC_KEY_3>`.
 - The intended administrative username, shown here as `dkadi`.
 
 ## How the Pieces Fit Together
@@ -44,7 +44,7 @@ Group membership is the whole policy. `%sudo ALL=(ALL:ALL) ALL` already ships in
 
 ### Step 3: Install the Three Public Keys
 
-Create `/home/dkadi/.ssh/authorized_keys` with one complete public key per line. Set the directory to `0700`, the file to `0600`, & both to `dkadi` ownership.
+Create `/home/dkadi/.ssh/authorized_keys` with one complete public key per line. Set the directory to `0700`, the file to `0600`, and both to `dkadi` ownership.
 
 ### Step 4: Disable Password and Root SSH
 
@@ -77,7 +77,7 @@ I used to lock root here. That ended on 2026-08-15, when I moved to this model.
 timedatectl set-timezone America/New_York
 ```
 
-Generate `en_US.UTF-8` & make it active through the distribution's locale tools.
+Generate `en_US.UTF-8` and make it active through the distribution's locale tools.
 
 ## What I Checked After Each Step
 
@@ -92,11 +92,11 @@ timedatectl
 locale
 ```
 
-The expected state is membership in `sudo`, non-interactive sudo exit `1` because a human account is asked for its password, three fingerprints, `permitrootlogin no`, both password methods disabled, root status `P`, & a wrong password refused at the sudo prompt.
+The expected state is membership in `sudo`, non-interactive sudo exit `1` because a human account is asked for its password, three fingerprints, `permitrootlogin no`, both password methods disabled, root status `P`, and a wrong password refused at the sudo prompt.
 
 ## Troubleshooting and Recovery
 
-If `sshd -t` fails, do not restart SSH. Fix the reported file & line from the console. If the second session can't connect, restore the previous drop-in while the first session remains open.
+If `sshd -t` fails, do not restart SSH. Fix the reported file and line from the console. If the second session can't connect, restore the previous drop-in while the first session remains open.
 
 ## Known Limits
 
@@ -104,5 +104,5 @@ Windows hosts follow separate records. This guide covers the human administrativ
 
 ## Source Records
 
-- [docker-network LXC deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
-- [Media Stack deployment](../Platforms/Media%20Stack/Documentation/Change%20Records/Media%20Stack%20Deployment%20-%202026-07-17.md)
+- [docker-network LXC deployment](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md)
+- [Media Stack deployment](../Platforms/Media%20Stack/Documentation/Change%20Records/Deployment%20-%202026-07-17.md)

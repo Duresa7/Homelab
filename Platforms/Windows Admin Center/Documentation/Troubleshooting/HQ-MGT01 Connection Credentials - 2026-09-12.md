@@ -5,7 +5,7 @@
 
 ## Symptom
 
-After successful browser sign-in as DK-user, I selected the personal `hq-mgt01 [Gateway]` connection. The credentials pane had **Use my Windows account for this connection** selected and displayed `Your credentials didn't work—try again`.
+After successful browser sign-in as DK-user, I selected the personal `hq-mgt01 [Gateway]` connection. The credentials pane had **Use my Windows account for this connection** selected and displayed `Your credentials didn't work` followed by `try again`.
 
 ## Checks and findings
 

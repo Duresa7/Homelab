@@ -1,0 +1,89 @@
+# Jedi PC
+
+**Created:** 2026-07-08  
+**Last updated:** 2026-09-25
+
+Jedi PC is my Windows 11 Pro administration workstation. It has a 16-core Ryzen 9 9950X3D, 32 GB of DDR5, an RTX 5070 Ti, two 2 TB NVMe drives, and a 2.5 Gbps Ethernet adapter.
+
+## System Overview
+
+| Property | Value |
+|---|---|
+| Nickname | Jedi PC |
+| Computer Name | `DURESAGAMINGPC` |
+| User | `dkadi` |
+| Manufacturer | ASUS |
+| Model | System Product Name (custom build) |
+| System Type | x64-based PC |
+
+## Operating System
+
+| Property | Value |
+|---|---|
+| OS | Microsoft Windows 11 Pro |
+| Architecture | 64-bit |
+| Installed Date | 2025-07-15 |
+
+## Processor (CPU)
+
+| Property | Value |
+|---|---|
+| Model | AMD Ryzen 9 9950X3D 16-Core Processor |
+| Cores | 16 |
+| Logical Processors | 32 |
+| Max Clock Speed | 4300 MHz |
+
+## Memory (RAM)
+
+**Total Installed:** 32 GB (31.15 GB usable)
+
+| Slot | Manufacturer | Part Number | Capacity | Speed |
+|---|---|---|---|---|
+| DIMM 1 | G.Skill International | F5-6000J3038F16G | 16 GB | 4800 MT/s (configured) |
+| DIMM 1 | G.Skill International | F5-6000J3038F16G | 16 GB | 4800 MT/s (configured) |
+
+The modules are rated for 6000 MT/s (DDR5); they currently run at 4800 MT/s.
+
+## Graphics (GPU)
+
+| Adapter | Model |
+|---|---|
+| Primary | NVIDIA GeForce RTX 5070 Ti |
+| Integrated | AMD Radeon Graphics (Ryzen iGPU) |
+
+## Motherboard and BIOS
+
+| Property | Value |
+|---|---|
+| Motherboard | ASUSTeK TUF GAMING X870-PLUS WIFI |
+| BIOS Vendor | American Megatrends Inc. (AMI) |
+| BIOS Version | 1402 |
+| BIOS Date | 2025-11-11 |
+
+## Storage
+
+### Physical Disks
+
+| Drive | Type | Bus | Capacity | Health |
+|---|---|---|---|---|
+| Samsung SSD 9100 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
+| Samsung SSD 990 PRO 2TB | SSD | NVMe | 1863.02 GB | Healthy |
+
+Both drives passed a SMART short self-test on 2026-07-24. Raw captures, wear, and power-on hours are in the [drive inventory](../Components/Drives/README.md); the 9100 PRO reads 0% endurance used at 211 hours and the 990 PRO 4% at 6,934 hours.
+
+### Logical Volumes
+
+| Letter | Label | Filesystem | Size | Health | Disk |
+|---|---|---|---|---|---|
+| C: | (none) | NTFS | 1862.27 GB | Healthy | 9100 Pro |
+| D: | Storage | NTFS | 1862.27 GB | Healthy | 990 Pro |
+
+## Network
+
+| Adapter | Device Name | Link Speed |
+|---|---|---|
+| Ethernet | Realtek PCIe 2.5GbE Family Controller | 2.5 Gbps |
+
+## Power
+
+Jedi PC is connected to [UPS-01](../Power.md), an APC Back-UPS Pro BR1500MS2 rated for 1500 VA / 900 W. It is the only load on that unit since I moved `red-server` to UPS-02 on 2026-08-28.

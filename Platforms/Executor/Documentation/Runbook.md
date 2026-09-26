@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-25
 
 ## Deployment Layout
 
@@ -75,7 +75,7 @@ For the Docker MCP Gateway integrations, confirm all of the following in Executo
 - `docker ps -a --filter label=docker-mcp-name=ssh-manager` on `docker-blue` returns nothing, and the `mcp-ssh-manager` service is healthy. Since 2026-09-03 the SSH Manager server is a persistent service rather than a container the gateway starts per session, so any managed container here is a sign the old catalog entry came back.
 - Executor can execute `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers`.
 - The SSH Manager connection identity label is `SSH Manager MCP`, and its description is `SSH Manager access.`
-- `ssh_list_servers` returns all 18 catalog entries. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other twelve return UID `0` through `ssh_execute_sudo`.
+- `ssh_list_servers` returns all 24 catalog entries, the count I read on 2026-09-24. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other eleven Linux guests return UID `0` through `ssh_execute_sudo`. The five Windows entries and the two laptops (`surface_pro`, `parrot`) sit outside that sweep.
 - Both integrations have empty static request-header maps. Each bearer token belongs in its connection's encrypted credential.
 - The retired `docker-mcp-gateway` integration and `dockerMcpGateway` connection remain absent.
 
@@ -119,8 +119,10 @@ docker compose up -d
 
 Stopping or recreating the container does not remove `/opt/docker/executor/data`.
 
+## Long Calls
+
+Executor 1.6.10 ends every MCP tool call after 60 seconds of active work, whatever timeout the SSH tool is given. I start longer remote work detached and poll for its result in later calls. The limit is traced in [Active Work Timeout in 1.6.10](Troubleshooting/Active%20Work%20Timeout%20in%201.6.10%20-%202026-09-21.md).
+
 ## Recovery
 
-Executor's durable state is the complete `/opt/docker/executor/data` directory. A usable backup must preserve `data.db`, its SQLite companion files when present, both generated key files, ownership, and modes. Restore the directory while the container is stopped, then start the project and verify both the direct and HTTPS health endpoints.
-
-No separate backup was created during the initial deployment.
+Executor's durable state is the complete `/opt/docker/executor/data` directory: `data.db`, its SQLite companion files when present, and both generated key files. I keep no backup of it. If the directory is lost, I rebuild: redeploy with the initial deployment process above, claim the administrator account, and re-create each integration and connection from its change record.

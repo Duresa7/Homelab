@@ -1,7 +1,7 @@
 # Galaxy Host Backup Artifact Purge
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-07-26  
 **Status:** Complete  
@@ -23,8 +23,8 @@ This purge deliberately voids rollback points that six committed change records 
 |---|---|---|
 | grey | `/root` | 12 `cluster.fw` snapshots dated 2026-05-30 through 2026-07-26, `grey-host.fw.bak.20260530-175359`, `storage.cfg.bak.2025-08-26-0001` |
 | grey | `/root` | `apt-backups/`, `proxmox-gpu-backups/`, `consolidate-70.10-backup-20260526-195529/`, `sith-cleanup-backup-20260526-193347/` |
-| grey | `/root` | Two misnamed SSH Manager files & five `.claude.json.backup.*` snapshots |
-| grey | `/var/lib/vz/dump` | `vzdump-qemu-100-2025_08_26-15_59_13.vma.zst` (2.2 GB) with its `.log` & `.notes`, an orphaned `vzdump-lxc-101` log, & the empty `internal-https-2026-07-22-prechange` directory |
+| grey | `/root` | Two misnamed SSH Manager files and five `.claude.json.backup.*` snapshots |
+| grey | `/var/lib/vz/dump` | `vzdump-qemu-100-2025_08_26-15_59_13.vma.zst` (2.2 GB) with its `.log` and `.notes`, an orphaned `vzdump-lxc-101` log, and the empty `internal-https-2026-07-22-prechange` directory |
 | purple | `/root` | `sources.list.d.bak.20260530-024816/` |
 | blue | `/root` | `sources.list.d.bak.20260530-024817/` |
 | red | `/root` | `apt-sources.bak.matched-grey-20260707-105436/`, `interfaces.bak`, `sshd_config.bak.pre-keyonly-20260707-105303`, two misnamed SSH Manager files |
@@ -53,18 +53,18 @@ I checked for other copies first. `find /var/lib/vz /mnt/pve -name "*qemu-100*"`
 
 ## Two Recovery Files I Removed Anyway
 
-Red held `sshd_config.bak.pre-keyonly-20260707-105303` and `interfaces.bak`. The first is the SSH daemon config from before key-only authentication went in on 2026-07-07; the second is a network config snapshot from the same window. Both are lockout and network-recovery fallbacks on a hypervisor, and I flagged them as worth keeping. I was told to remove them regardless, so they're gone.
+Red held `sshd_config.bak.pre-keyonly-20260707-105303` and `interfaces.bak`. The first is the SSH daemon config from before key-only authentication went in on 2026-07-07; the second is a network config snapshot from the same window. Both are lockout and network-recovery fallbacks on a hypervisor, and I considered keeping them. I removed them anyway, because a rebuild from the baseline is my recovery path, so they're gone.
 
-Recovering either now means rebuilding from the [Linux Host Baseline](../../Guides/Linux-Host-Baseline.md) and the [Red server expansion record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md) rather than restoring a file. Console access through the Proxmox GUI remains the path back in if SSH ever refuses on Red.
+Recovering either now means rebuilding from the [Linux Host Baseline](../../Guides/Linux-Host-Baseline.md) and the [Red server expansion record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Red%20Server%20Expansion%20-%202026-07-07.md) rather than restoring a file. Console access through the Proxmox GUI remains the path back in if SSH ever refuses on Red.
 
 ## Rollback Points This Voids
 
 | Record | Named artifact |
 |---|---|
-| [PeaNUT UPS Dashboard Deployment - 2026-07-22](../../Platforms/PeaNUT/Documentation/Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) | `cluster.fw.bak.peanut-20260722` & both `pre-peanut-nut-config` SSH Manager files |
+| [PeaNUT UPS Dashboard Deployment - 2026-07-22](../../Platforms/PeaNUT/Documentation/Change%20Records/UPS%20Dashboard%20Deployment%20-%202026-07-22.md) | `cluster.fw.bak.peanut-20260722` and both `pre-peanut-nut-config` SSH Manager files |
 | [Kasm Lab Proxmox Teardown - 2026-07-23](../../Archive/Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Kasm%20Lab%20Proxmox%20Teardown%20-%202026-07-23.md) | `cluster.fw.bak-20260723` |
-| [Galaxy Cluster Red Server Expansion - 2026-07-07](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20Red%20Server%20Expansion%20-%202026-07-07.md) | `cluster.fw.bak.pre-red-20260707-105114` |
-| [Security-A Migration - 2026-07-12](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | `cluster.fw.bak.security-a-20260712-213729` & `cluster.fw.bak.security-a-cleanup-20260712-215806` |
+| [Galaxy Cluster Red Server Expansion - 2026-07-07](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Red%20Server%20Expansion%20-%202026-07-07.md) | `cluster.fw.bak.pre-red-20260707-105114` |
+| [Security-A Migration - 2026-07-12](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | `cluster.fw.bak.security-a-20260712-213729` and `cluster.fw.bak.security-a-cleanup-20260712-215806` |
 | [Termix SSH Host Onboarding - 2026-07-14](../../Archive/Platforms/Termix/Documentation/Change%20Records/Termix%20SSH%20Host%20Onboarding%20-%202026-07-14.md) | `cluster.fw.pre-termix-2026-07-14` |
 
 The firewall state itself is not lost. [Galaxy Data Center Firewall](../../Infrastructure/Compute/Galaxy/Configuration/Datacenter-Firewall.md) carries the IPSets, the full `pve_mgmt` rule table, and the ordering constraint, so the live 49-line file is reconstructable from git without any snapshot. What's gone is the ability to restore a specific earlier state in one copy.

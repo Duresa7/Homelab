@@ -1,7 +1,7 @@
 # Online Workstation Sign-In
 
 **Created:** 2026-09-19  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
 
 I applied `C-WKS-OnlineLogon` to `OU=Workstations,DC=ad,DC=alphasecunited,DC=com`. Both `HQ-WS001` and `OBIPC` received it. The policy disables cached domain-password sign-in, requires domain-controller authentication to unlock, waits for network policy processing at startup and sign-in, and excludes PIN, biometric, picture-password, and FIDO sign-in providers. The Windows password provider remains available. Servers and domain controllers are outside this OU.
 
@@ -17,7 +17,7 @@ The enabled local setup account on ObiPC had a password set. I left local recove
 
 ## Applied configuration
 
-I created the GPO with [Set-WorkstationOnlineLogonPolicy.ps1](../../Scripts/Set-WorkstationOnlineLogonPolicy.ps1), disabled its user half, and enabled its link on `Workstations`. I left the older ObiPC policy in place; its two settings agree with the new policy. The replicated [policy readback](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Policy-Verification.json) contains the exact registry paths, types, values, and provider identifiers.
+I created the GPO with [Set-WorkstationOnlineLogonPolicy.ps1](../../Scripts/Set-WorkstationOnlineLogonPolicy.ps1), disabled its user half, and enabled its link on `Workstations`. I left the older ObiPC policy in place; its two settings agree with the new policy. The replicated [policy readback](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Exports/Policy-Verification.json) contains the exact registry paths, types, values, and provider identifiers.
 
 | Setting | Value |
 |---|---|
@@ -33,11 +33,11 @@ This makes an unavailable domain controller a sign-in availability problem by de
 
 ## Verification
 
-I ran computer policy refreshes and the [workstation validation script](../../Scripts/Test-WorkstationOnlineLogonPolicy.ps1) on both clients. Final checks passed at 10:33:28 AM EDT on `HQ-WS001` and 10:34:21 AM EDT on `OBIPC`. The [retained commands and outputs](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Workstation-Verification.json) show the policy in resultant computer policy, every configured sign-in control, the retained password provider, automatic Netlogon, enabled machine-password changes, and a healthy secure channel.
+I ran computer policy refreshes and the [workstation validation script](../../Scripts/Test-WorkstationOnlineLogonPolicy.ps1) on both clients. Final checks passed at 10:33:28 AM EDT on `HQ-WS001` and 10:34:21 AM EDT on `OBIPC`. The [retained commands and outputs](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Exports/Workstation-Verification.json) show the policy in resultant computer policy, every configured sign-in control, the retained password provider, automatic Netlogon, enabled machine-password changes, and a healthy secure channel.
 
-At 10:32:49 AM EDT I completed a [network-disconnect test](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Network-Disconnect-Test.json) on `HQ-WS001` through the QEMU guest agent. I disabled its one active network adapter, read the local state, and enabled the adapter in a `finally` block. With zero active adapters, `PartOfDomain` remained `true`, the domain stayed `ad.alphasecunited.com`, and both sign-in settings stayed configured. After reconnection there was one active adapter and `Test-ComputerSecureChannel` returned `true`. No rejoin or machine-password repair was needed.
+At 10:32:49 AM EDT I completed a [network-disconnect test](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Exports/Network-Disconnect-Test.json) on `HQ-WS001` through the QEMU guest agent. I disabled its one active network adapter, read the local state, and enabled the adapter in a `finally` block. With zero active adapters, `PartOfDomain` remained `true`, the domain stayed `ad.alphasecunited.com`, and both sign-in settings stayed configured. After reconnection there was one active adapter and `Test-ComputerSecureChannel` returned `true`. No rejoin or machine-password repair was needed.
 
-On ObiPC, [AppLocker readback at 10:28:21 AM EDT](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/ObiPC-AppLocker-Verification.json) showed `AppIDSvc` running with automatic startup. Exe, Msi, and Appx collections were enforced with 48, 4, and 7 rules; Script remained audit-only with 12 rules. I did not change those rules or disconnect the physical workstation. This is configuration evidence, not a new functional test of the restricted user's offline session.
+On ObiPC, [AppLocker readback at 10:28:21 AM EDT](../../Evidence/Online%20Workstation%20Sign-In%20-%202026-09-19/Exports/ObiPC-AppLocker-Verification.json) showed `AppIDSvc` running with automatic startup. Exe, Msi, and Appx collections were enforced with 48, 4, and 7 rules; Script remained audit-only with 12 rules. I did not change those rules or disconnect the physical workstation. This is configuration evidence, not a new functional test of the restricted user's offline session.
 
 I read the final GPO from `HQ-DC02` at 10:34:51 AM EDT and verified all seven registry values, `UserSettingsDisabled`, and the enabled OU link by GPO ID. This confirms that the change replicated to the second controller.
 
@@ -55,4 +55,4 @@ I have not attempted an interactive offline domain-password login or unlock, che
 
 This change does not block a person who already holds a local administrator password, prevent offline disk modification, or force an already-open session to lock on cable removal. It does not claim to prevent every future trust failure from unrelated causes.
 
-Microsoft documents the [cached-logon setting](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/interactive-logon-number-of-previous-logons-to-cache-in-case-domain-controller-is-not-available), the paired [online-unlock setting](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/interactive-logon-require-domain-controller-authentication-to-unlock-workstation), and [credential-provider exclusion](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-credentialproviders#excludedcredentialproviders). I used those controls for the requested online-only domain sign-in behavior; this is not a claim that disabling Hello is a general Windows security baseline.
+Microsoft documents the [cached-logon setting](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/interactive-logon-number-of-previous-logons-to-cache-in-case-domain-controller-is-not-available), the paired [online-unlock setting](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/security-policy-settings/interactive-logon-require-domain-controller-authentication-to-unlock-workstation), and [credential-provider exclusion](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-admx-credentialproviders#excludedcredentialproviders). I used those controls for the online-only domain sign-in behavior I wanted; this is not a claim that disabling Hello is a general Windows security baseline.

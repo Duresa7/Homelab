@@ -1,13 +1,13 @@
 # Preview Server
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-09-25
 
-A small Node static file server so I can view repository HTML and SVG in the agent browser pane. It exists for one reason: the pane can't drive `file://` URLs. It loads such a page once and then ignores every later navigation, so an agent editing a local HTML file keeps inspecting the version it first loaded. Served over `http://127.0.0.1:8123` the same page navigates, reloads, and picks up edits normally.
+A small Node static file server so I can view repository HTML and SVG in my editor's preview browser pane. It exists for one reason: the pane can't drive `file://` URLs. It loads such a page once and then ignores every later navigation, so while I edit a local HTML file the pane keeps showing the version it first loaded. Served over `http://127.0.0.1:8123` the same page navigates, reloads, and picks up edits normally.
 
 ## Running it
 
-Start it through the browser pane, not by hand:
+Start it from the editor's preview launcher:
 
 ```
 preview_start {"name": "preview"}
@@ -15,17 +15,17 @@ preview_start {"name": "preview"}
 
 That reads the local-only `.claude/launch.json` launch configuration, which points at `serve.js` in this folder. `http://localhost:8123/` prints the serving rule and the current number of visible tracked files; every other path is repo-relative, so `http://localhost:8123/Assets/Diagrams/galaxy-cluster.svg` renders that diagram.
 
-To run it outside an agent session:
+To run it by hand from the repository root:
 
 ```bash
-node "D:\Documents\Homelab\Engineering\Preview Server\serve.js"
+node "Engineering/Preview Server/serve.js"
 ```
 
 ## The two limits, and why they're there
 
 **It binds `127.0.0.1` only.** The version I ran before 2026-07-25 called `.listen(8123)` with no host, so Node bound `0.0.0.0` and `[::]`. `netstat` confirmed both. While that server was up, `curl http://192.168.50.241:8123/Sensitive/Hardware/drive-serials.md` from anywhere on the LAN returned HTTP 200 and 2,082 bytes of full drive serial numbers. Nothing suggests anyone fetched it, but the path was open every time a preview ran.
 
-That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md). It scopes what was reachable, which was all 573 files in `Sensitive/` including the pre-scrub git history bundle, and which zones could reach it, which was Internal & Vpn but not the internet.
+That exposure has its own report: [Preview Server LAN-Exposed Repository Root - 2026-07-25](../../Security/Incidents/Preview%20Server/LAN-Exposed%20Repository%20Root%20-%202026-07-25.md). It scopes what was reachable, which was all 573 files in `Sensitive/` including the pre-scrub git history bundle, and which zones could reach it, which was Internal and Vpn but not the internet.
 
 On 2026-07-27 I also moved all three history bundles and the private redaction value map out of the Homelab tree to `D:\Documents\Redaction Map`. The preview server still keeps both protections because other private material remains in the working tree.
 

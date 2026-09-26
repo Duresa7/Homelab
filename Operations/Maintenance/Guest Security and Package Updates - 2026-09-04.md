@@ -1,7 +1,7 @@
 # Guest Security and Package Updates
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-25
 
 **Implementation date:** 2026-09-04  
 **Status:** Complete  
@@ -11,7 +11,7 @@
 
 I updated the eleven guests named by the security-update alert through the deployed [fleet update workflow](../../Platforms/Ansible/Source/fleet-updates/README.md). The opening alert reported 105 security updates across the eleven guests. The playbook applied every eligible safe APT upgrade on the ten Debian-family guests and every eligible DNF upgrade on `splunk-siem`.
 
-The ten-host run and the isolated `docker-blue` run both exited 0. No host was unreachable and no Ansible task failed. I left the guests online during the package run, then rebooted `splunk-siem` in a separate approved maintenance step later that day.
+The ten-host run and the isolated `docker-blue` run both exited 0. No host was unreachable and no Ansible task failed. I left the guests online during the package run, then rebooted `splunk-siem` in a separate maintenance step later that day.
 
 | Guest | Security updates reported before the run | Reboot required after the run |
 |---|---:|---|
@@ -49,7 +49,7 @@ Updating `docker-blue` restarted its Docker workloads and temporarily removed `s
 - Semaphore was active on `ansible-01`; Caddy and Cloudflared were active on `edge-01`; and Docker, Wings, and the Minecraft Playit relay were active on `game-01`.
 - The seven pre-existing `openipmi.service` failures remained the only failed units on those guests. No new failed unit appeared. The failed Prometheus node exporter unit seen on `docker-main` before the run was clear afterward.
 - Ten SSH Manager health checks returned healthy. `docker-main` returned warning only because `/data` was 83 percent full; its CPU, memory, root filesystem, Docker service, and containers were healthy.
-- After the approved `splunk-siem` reboot, the running kernel matched the newest installed kernel, systemd returned `running` with zero failed units, and `Splunkd`, `sc4s`, and `node_exporter` were active. Splunk Web returned HTTPS 303, HEC health returned HTTPS 200, management port 8089 listened, and the SC4S container reported healthy.
+- After the planned `splunk-siem` reboot, the running kernel matched the newest installed kernel, systemd returned `running` with zero failed units, and `Splunkd`, `sc4s`, and `node_exporter` were active. Splunk Web returned HTTPS 303, HEC health returned HTTPS 200, management port 8089 listened, and the SC4S container reported healthy.
 - SC4S's first Podman health check ran before its control socket was ready and briefly left one failed transient unit. The scheduled 120-second retry returned healthy and cleared the unit, matching the known [SC4S startup behavior](../../Platforms/Ansible/Documentation/Troubleshooting/SC4S%20startup%20health%20check%20briefly%20degraded%20systemd%20-%202026-07-29.md).
 
 I retained no snapshot, backup, transcript, or standalone evidence folder. The results above came from the live Ansible recaps, package-manager checks, update metrics, service checks, container state, and SSH Manager health checks during the maintenance window.

@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-09-25
 
-NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS host, automated renewal path, and bounded logging are verified. This record preserves the completed publication and readiness work. Completed deployment details are recorded in [Deployment.md](Deployment.md).
+One item is open: the manual upgrade to 2.16.0 under Manual Upgrades. Everything else below is completed work, kept as a log. Deployment details are in [Deployment.md](Deployment.md).
 
 ## Complete NetBird Publication
 
@@ -17,7 +17,7 @@ NPM 2.15.1 is healthy, its administrator is initialized, and the NetBird HTTPS h
 ## Operational Readiness
 
 - [x] Perform NPM and NetBird Compose restart validation.
-- [x] Configure and verify bounded `json-file` logging (`10m` × `3`) for `nginx-proxy-manager`. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+- [x] Configure and verify bounded `json-file` logging (`10m`, 3 files) for `nginx-proxy-manager`. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 Operational status is complete. I intentionally descoped further hardening on 2026-07-12; NPM stays internal-only with no WAN ingress and tracked `latest` until 2026-09-25, when a scheduled Dockhand update left it stopped. It is now pinned to 2.15.1 and excluded from Dockhand updates. [Incident](../../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
 
@@ -28,28 +28,26 @@ Operational status is complete. I intentionally descoped further hardening on 20
 ## Internal HTTPS Service Onboarding
 
 - [x] 2026-07-22: Added 19 UniFi local A records for internal application names, all pointing to `192.168.85.2`.
-- [x] 2026-07-22: Added five narrow NPM-to-backend firewall policies covering only the approved web listeners.
-- [x] 2026-07-22: Added all 19 NPM proxy hosts with the wildcard certificate, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
-- [x] 2026-07-22: Applied the required Jellyfin, qBittorrent, Semaphore, Forgejo, Grafana, Prometheus, Immich, & Syncthing compatibility settings.
-- [x] 2026-07-22: Verified Internal-zone DNS, public NXDOMAIN, zero UniFi port forwards, HTTP redirects, certificate presentation, application responses, `nginx -t`, zero 502/504 responses, & controlled restart recovery. See the [change record](Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
-- [x] 2026-07-25: Verified DNS, HTTPS, & certificate presentation from an actual VPN client.
-- [x] 2026-07-25: Ran the authenticated Jellyfin playback, Immich upload, Termix session, Semaphore live-output, Grafana Live, Syncthing synchronization, & Splunk Enterprise Security search acceptance checks. I kept no capture from this pass, so the closure evidence is my own confirmation that each workflow worked.
+- [x] 2026-07-22: Added five narrow NPM-to-backend firewall policies covering only the listed web listeners.
+- [x] 2026-07-22: Added all 19 NPM proxy hosts with the wildcard certificate, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support.
+- [x] 2026-07-22: Applied the required Jellyfin, qBittorrent, Semaphore, Forgejo, Grafana, Prometheus, Immich, and Syncthing compatibility settings.
+- [x] 2026-07-22: Verified Internal-zone DNS, public NXDOMAIN, zero UniFi port forwards, HTTP redirects, certificate presentation, application responses, `nginx -t`, zero 502/504 responses, and controlled restart recovery. See the [change record](Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+- [x] 2026-07-25: Verified DNS, HTTPS, and certificate presentation from a VPN client. I did not record whether the client used NetBird or the UniFi `Management Access` WireGuard server.
+- [x] 2026-07-25: Ran the authenticated Jellyfin playback, Immich upload, Termix session, Semaphore live-output, Grafana Live, Syncthing synchronization, and Splunk Enterprise Security search acceptance checks. I kept no capture from this pass, so the closure evidence is my own confirmation that each workflow worked.
 
-Internal HTTPS onboarding is closed. NPM now has no open items.
+Internal HTTPS onboarding is closed.
 
 ## TS3 Manager Internal HTTPS
 
 - [x] 2026-07-28: Added one TTL-300 UniFi A record for `ts3-manager.alphasecunited.com` pointing to `192.168.85.2`.
 - [x] 2026-07-28: Added one logged policy permitting only NPM at `192.168.85.2` to reach `alpha-prod-01` at `192.168.80.118:9000`.
-- [x] 2026-07-28: Added NPM proxy host ID 22 with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, & WebSocket support.
-- [x] 2026-07-28: Completed restart recovery, 46-target blackbox monitoring, documentation, final route validation, & deletion of every backup and temporary deployment file created by the change.
+- [x] 2026-07-28: Added NPM proxy host ID 22 with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support.
+- [x] 2026-07-28: Completed restart recovery, 46-target blackbox monitoring, documentation, final route validation, and deletion of every backup and temporary deployment file created by the change.
 
 ## Open WebUI Internal HTTPS
 
 - [x] 2026-09-04: Added the TTL-300 UniFi A record for `openwebui.alphasecunited.com` pointing to `192.168.85.2`.
 - [x] 2026-09-04: Verified that Cloudflare's public resolver returns NXDOMAIN for the internal name.
-- [x] 2026-09-04: Added TCP/3002 to the narrow policy permitting only NPM to the approved `docker-main` web interfaces and verified the backend health path from `docker-network`.
-- [x] 2026-09-04: Repaired the stored NPM administrator credential. The stored value did not authenticate, so I wrote a new bcrypt secret for `<REDACTED_PERSONAL_EMAIL>` directly to `auth.secret` and confirmed `POST /api/tokens` returns 200 with it and 400 without. The credential is now the shared `Account dkadi` password. [Service Login Password Standardization](../../../Operations/Maintenance/Service%20Login%20Password%20Standardization%20-%202026-09-04.md).
+- [x] 2026-09-04: Added TCP/3002 to the narrow policy permitting only NPM to the listed `docker-main` web interfaces and verified the backend health path from `docker-network`.
+- [x] 2026-09-04: Repaired the stored NPM administrator credential. The stored value did not authenticate, so I wrote a new bcrypt secret for `<REDACTED_PERSONAL_EMAIL>` directly to `auth.secret` and confirmed `POST /api/tokens` returns 200 with it and 400 without. The credential is now the standard application account password. [Service Login Password Standardization](../../../Operations/Maintenance/Service%20Login%20Password%20Standardization%20-%202026-09-04.md).
 - [x] 2026-09-05: Added proxy host 28 forwarding HTTP to `192.168.40.35:3002` with certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. HTTP redirects with `301`, HTTPS returns `200`, the wildcard certificate is presented, and the root path is a blackbox target. [Open WebUI Internal HTTPS - 2026-09-05](Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md).
-
-NPM again has no open items.

@@ -1,9 +1,9 @@
 # Registry and Stack Preparation
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-15
+**Last updated:** 2026-09-25
 
-**Status:** Preparation verified; container cutover awaits approval.  
+**Status:** Preparation verified; I applied the container cutover later the same day in [Registry and Agent Cutover](Registry%20and%20Agent%20Cutover%20-%202026-09-15.md).  
 **Verification completed:** 2026-09-15, 10:30 PM Eastern.
 
 I want Dockhand's existing update, image, and stack controls to work across the seven connected hosts. I kept this work within those controls. I did not add a fleet-wide update job or apply the nine upstream application updates found in the earlier audit.
@@ -55,6 +55,6 @@ Check for updates compares published images. It cannot fetch custom application 
 
 I corrected two test-harness assumptions during validation: the images API uses `repoTags` and `id`, and a successful push returns `status: complete`. The final image checks use those fields. I removed the disposable containers, test stacks, and `busybox:stable` test tags from all seven hosts. I also removed temporary transfer keys, encrypted bundles, and the host-side publishing credential directories after native push verification. Registry credentials remain in the vault and Dockhand's configured registry store.
 
-All 69 pre-existing containers retained their IDs, start timestamps, and running states throughout this preparation. [Final verification](../../Evidence/Registry%20and%20Stack%20Preparation%20-%202026-09-15/Exports/Unchanged-Container-Verification.json) records the per-host totals. This baseline is after the earlier approved TeamSpeak monitor-only repair.
+All 69 pre-existing containers retained their IDs, start timestamps, and running states throughout this preparation. [Final verification](../../Evidence/Registry%20and%20Stack%20Preparation%20-%202026-09-15/Exports/Unchanged-Container-Verification.json) records the per-host totals. This baseline is after the earlier repair limited to the TeamSpeak monitor.
 
-I created no snapshot or backup. I retained structured verification results rather than complete shell transcripts for this work; the commands and intermediate authentication or harness failures were observed in the working session. Publication uses Forgejo's documented [container registry](https://forgejo.org/docs/latest/user/packages/container/) interface.
+I created no snapshot or backup. The evidence for this work is the structured verification results. Publication uses Forgejo's documented [container registry](https://forgejo.org/docs/latest/user/packages/container/) interface.

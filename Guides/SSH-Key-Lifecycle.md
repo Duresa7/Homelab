@@ -1,19 +1,21 @@
 # SSH Key Lifecycle Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-This guide follows one SSH identity from inventory through onboarding, rotation, verification, & retirement. It also covers the fleet cleanup that normalized 15 reachable targets to the same three-key baseline.
+This guide follows one SSH identity from inventory through onboarding, rotation, verification, and retirement. It also covers the 2026-07-14 fleet cleanup, which normalized the 15 targets then reachable to the same three-key baseline.
 
 ## Current Status and Verified Versions
 
-The fleet baseline contains three approved ED25519 public keys. The 2026-07-14 cleanup removed two retired keys, found zero remaining matches across 15 readable targets, & correctly recorded two unreachable Windows targets as Unknown. I retired those Windows targets from the automation inventory on 2026-07-27; Unknown remains the historical audit result, not a current fleet gap.
+The fleet baseline contains three authorized ED25519 public keys. The [Ansible platform](../Platforms/Ansible/README.md) manages SSH identities across 16 supported hosts, including all five Proxmox nodes. On 2026-09-24 the Semaphore `Server-SSH` project held 13 templates: one onboarding template plus Audit, Stage Replacement, Verify Staged Key, and Retire Old Key for each of the Mac, Ansible Control, and Jedi PC identities.
+
+On 2026-07-14 the cleanup removed two retired keys, found zero remaining matches across 15 readable targets, and recorded two unreachable Windows targets as Unknown. I retired those Windows targets from the automation inventory on 2026-07-27, so Unknown is the historical audit result and no longer describes the fleet.
 
 ## What You Need
 
-- The public key, fingerprint, label, allowed host list, account, & authorized-key path for one identity.
+- The public key, fingerprint, label, allowed host list, account, and authorized-key path for one identity.
 - A second working administrative path before removing a key.
 - The Ansible project at `/home/ansible/ssh-key-automation`, or equivalent manual SSH access.
 
@@ -33,7 +35,7 @@ ssh-keygen -lf <YOUR_PUBLIC_KEY_FILE>
 
 ### Step 2: Audit the Targets
 
-From the Ansible project, run the identity audit with its target allowlist. The audit must report the exact present, missing, duplicate, & unexpected states before any mutation.
+From the Ansible project, run the identity audit with its target allowlist. The audit must report the exact present, missing, duplicate, and unexpected states before any mutation.
 
 ```sh
 cd /home/ansible/ssh-key-automation
@@ -55,7 +57,7 @@ ansible-playbook playbooks/ssh-key-stage.yml \
 
 ### Step 4: Verify from the New Key
 
-Connect through every allowed target with the replacement identity. Check the exact fingerprint on each file & confirm the old management path still works during this phase.
+Connect through every allowed target with the replacement identity. Check the exact fingerprint on each file and confirm the old management path still works during this phase.
 
 ### Step 5: Retire the Old Key
 
@@ -71,18 +73,18 @@ ansible-playbook playbooks/ssh-key-retire.yml \
 
 ### Step 6: Run the Final Audit
 
-The final result must show one replacement key, zero old-key matches, zero duplicates, & no target outside the allowlist.
+The final result must show one replacement key, zero old-key matches, zero duplicates, and no target outside the allowlist.
 
 ## What I Checked After Each Step
 
 - All 15 reachable hosts retained SSH access after the 2026-07-14 cleanup.
 - `ssh-keygen` parsed every changed Linux file.
-- `/etc/pve/priv/authorized_keys` was changed once, then checked from all four Proxmox nodes.
+- `/etc/pve/priv/authorized_keys` was changed once, then checked from all four Proxmox nodes the cluster had on 2026-07-14.
 - The live Ansible playbook passed `ansible-playbook --syntax-check`.
 
 ## Troubleshooting and Recovery
 
-If a staged key can't authenticate, leave the old key installed. Restore a retired key through the second administrative path, rerun the audit, & identify whether the failure is the username, path, file mode, allowlist, or key blob.
+If a staged key can't authenticate, leave the old key installed. Restore a retired key through the second administrative path, rerun the audit, and identify whether the failure is the username, path, file mode, allowlist, or key blob.
 
 ## Known Limits
 

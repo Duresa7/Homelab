@@ -1,7 +1,7 @@
 # HQ-WS001 SSH Enablement - 2026-09-19
 
 **Created:** 2026-09-19  
-**Last updated:** 2026-09-19  
+**Last updated:** 2026-09-25  
 **Implementation and verification:** 2026-09-19
 
 I enabled SSH on `HQ-WS001` and opened one path to it from Secure VLAN 50, so I can work on that test workstation from a terminal instead of an RDP session. This covers host configuration and the gateway path. I installed no key, changed no Group Policy, and did not enrol the host in SSH Manager.
@@ -59,5 +59,5 @@ The lesson worth carrying: on a Windows host, `Enabled` is not the whole answer 
 ## Open
 
 - **Untested from Secure.** Everything above is verified from the host side and from a negative control. The positive test is one `ssh` from `Jedi PC`, and until it happens this rule is unproven. Only `Jedi PC` sits on that network, so SSH from the MacBook Air or any other Trusted machine needs Trusted added to both the gateway rule and the host rule; RDP to this host already admits Trusted, so that would follow an existing decision rather than make a new one.
-- **Not in SSH Manager.** The gateway runs on Personal-A, which this rule deliberately does not admit, so `HQ-WS001` is still absent from the server list and agent work on it continues through the guest agent. Enrolling it would need a second rule from the automation hosts, which I have not written because nothing needs it yet.
-- **Password authentication.** A domain credential over SSH is what this enables today. A key in `administrators_authorized_keys` would be better and costs one file; I left it out rather than handle a key I was not asked to place.
+- **Not in SSH Manager.** The gateway runs on Personal-A, which this rule deliberately does not admit, so `HQ-WS001` is still absent from the server list and automated work on it continues through the guest agent. Enrolling it would need a second rule from the automation hosts, which I have not written because nothing needs it yet.
+- **Password authentication.** A domain credential over SSH is what this enables today. A key in `administrators_authorized_keys` would be better and costs one file; I left it out because I had not decided which key belongs there.

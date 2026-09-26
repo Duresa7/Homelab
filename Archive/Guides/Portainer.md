@@ -22,7 +22,7 @@ Portainer server 2.45.0 ran on `docker-main` at `192.168.40.35` with HTTPS on 94
 
 ## How the Pieces Fit Together
 
-![Portainer server and Edge Agent across a VLAN boundary](../../Assets/Diagrams/portainer.svg)
+![Portainer server and Edge Agent across a VLAN boundary](../Assets/Diagrams/portainer.svg)
 
 ## Walkthrough
 

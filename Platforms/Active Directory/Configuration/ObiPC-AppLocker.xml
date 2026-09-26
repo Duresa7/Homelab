@@ -169,6 +169,27 @@
     <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000082" Name="Restricted: block InstallUtil (publisher)" Description="" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Deny">
       <Conditions><FilePublisherCondition PublisherName="O=MICROSOFT CORPORATION, L=REDMOND, S=WASHINGTON, C=US" ProductName="MICROSOFT® .NET FRAMEWORK" BinaryName="INSTALLUTIL.EXE"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
     </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000140" Name="Restricted: allow Spotify (publisher)" Description="App Portal installs Spotify into his profile; the signature is what lets it run there" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=SPOTIFY AB, L=STOCKHOLM, C=SE" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000141" Name="Restricted: allow Discord (publisher)" Description="App Portal installs Discord into his profile; the signature is what lets it run there" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=DISCORD INC., L=SAN FRANCISCO, S=CALIFORNIA, C=US" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000142" Name="Restricted: allow Roblox (publisher)" Description="App Portal installs the Roblox player into his profile; the signature is what lets it run there" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=ROBLOX CORPORATION, L=SAN MATEO, S=CALIFORNIA, C=US" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000143" Name="Restricted: allow Riot Games (publisher)" Description="VALORANT and Riot Vanguard, once an administrator has installed them" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=RIOT GAMES, INC., L=LOS ANGELES, S=CALIFORNIA, C=US" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000144" Name="Restricted: allow Ubisoft (publisher)" Description="Ubisoft Connect installs its games into his profile; Rainbow Six Siege was denied there on 2026-09-20" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=UBISOFT ENTERTAINMENT INC., L=SAN FRANCISCO, S=CALIFORNIA, C=US" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000145" Name="Restricted: allow NVIDIA (publisher)" Description="The NVIDIA App keeps its backend under the user profile and was denied there on 2026-09-20" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=NVIDIA CORPORATION, L=SANTA CLARA, S=CALIFORNIA, C=US" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
+    <FilePublisherRule Id="b1c2d3e4-0000-4000-8000-000000000146" Name="Restricted: allow BattlEye (publisher)" Description="Anti-cheat for Rainbow Six Siege. Its own files sit in Common Files and were never denied; this covers titles that ship BattlEye inside the game folder" UserOrGroupSid="S-1-5-21-1718690521-3638660427-3825801455-1119" Action="Allow">
+      <Conditions><FilePublisherCondition PublisherName="O=BATTLEYE INNOVATIONS E.K., L=REUTLINGEN, S=BADEN-WÜRTTEMBERG, C=DE" ProductName="*" BinaryName="*"><BinaryVersionRange LowSection="0.0.0.0" HighSection="*" /></FilePublisherCondition></Conditions>
+    </FilePublisherRule>
   </RuleCollection>
   <RuleCollection Type="Msi" EnforcementMode="Enabled">
     <FilePathRule Id="b1c2d3e4-0000-4000-8000-000000000100" Name="Everyone: system installer cache" Description="Default rule" UserOrGroupSid="S-1-1-0" Action="Allow">

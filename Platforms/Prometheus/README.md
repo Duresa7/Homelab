@@ -1,17 +1,13 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-25
 
-On 2026-09-16 I removed the retired Portainer HTTPS probe and regenerated the three affected Grafana dashboards. The target API reports 57 healthy targets; Uptime covers 28 checks and Services & Uptime covers 23 probes. [Retirement record](../../Archive/Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md).
+I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-09-24 Prometheus 3.14.0 reported 57 targets, all up, across seven jobs: `node` 17, `cadvisor` 8, `wud` 6, `blackbox` 23, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.2 holds the 24 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
 
-On 2026-09-15 I added the private [Uptime dashboard](https://grafana.alphasecunited.com/d/uptime), covering 29 service checks with status bars, a 99.99% sampled-uptime target, and monitoring coverage. I added four missing HTTP probes and a local Cloudflare/Caddy/Coolify collector. All 58 scrape targets are healthy. The [change record](Documentation/Change%20Records/Uptime%20Dashboard%20-%202026-09-15.md) records the measurement limits and verification.
+The 57 targets are `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 22 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and Prometheus itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
-On 2026-09-12 I removed Game 01’s node, cAdvisor and panel targets and its Grafana node dashboard. Prometheus reports 54 targets, all UP; Grafana has no firing or pending Game 01 alert; two resolved cache entries remain. The 24 shared alert rules continue to cover the remaining fleet.
-
-I run Prometheus & Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. Prometheus 3.14.0 scrapes 57 targets: `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 22 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
-
-The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation. I use `AG-Proxmox-Nodes` as the destination Network List for `Allow Monitor to Proxmox monitoring`; that dated record explains the membership expansion under its former name.
+The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation. I use `AG-Proxmox-Nodes` as the destination Network List for `Allow Monitor to Proxmox monitoring`; that dated record explains the membership expansion under its former name.
 
 **Owner:** Homelab infrastructure monitoring
 
@@ -36,7 +32,8 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 | A host's own dashboard | `https://grafana.alphasecunited.com/d/node-<host>`, e.g. `/d/node-grey-server` |
 | Live host configuration | `/home/dkadi/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions | Prometheus 3.14.0, Grafana 13.2.1, PeaNUT 6.0.0, blackbox_exporter 0.28.0, cAdvisor 0.60.5, node_exporter 1.9.0 on 15 of the 17 hosts, with `ubuntu-dev` on 1.10.2 and `docker-main` on 1.5.0; all registry-backed monitoring images except the local alert bot follow `:latest` |
+| Versions (2026-09-24 on `monitor-01`) | Prometheus 3.14.0, Grafana 13.2.2, PeaNUT 6.0.0, blackbox_exporter 0.28.0, pve-exporter 3.10.0, cAdvisor 0.60.6, What's Up Docker 9.1.0, node_exporter 1.9.0; all registry-backed monitoring images except the local alert bot follow `:latest` |
+| Fleet exporter versions | node_exporter 1.9.0 on 15 of the 17 hosts, with `ubuntu-dev` on 1.10.2 and `docker-main` on 1.5.0 (2026-09-14); cAdvisor 0.60.5 on `app-01` and `alpha-prod-01` and What's Up Docker 9.0.2 on `alpha-prod-01` (2026-09-24) |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
@@ -59,15 +56,14 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
 | `blackbox` | the 22 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
-| `wud` | What's Up Docker `:latest`, verified as 9.0.2 on 2026-09-13, on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
+| `wud` | What's Up Docker `:latest` (9.1.0 on five hosts and 9.0.2 on `alpha-prod-01`, 2026-09-24), on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
-its administrative API disabled and all 57 targets up, verified on 2026-09-16. Retired Game 01 samples
-remain in historical storage until the 15-day retention expires.
+its administrative API disabled. All 57 targets were up on 2026-09-24.
 
-cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+cAdvisor follows `ghcr.io/google/cadvisor:latest`: v0.60.6 on `monitor-01` and v0.60.5 on `app-01` and `alpha-prod-01` on 2026-09-24. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Grafana Configuration Is Versioned
 
@@ -167,3 +163,9 @@ On 2026-07-22 I published Prometheus and Grafana through internal NPM and closed
 The 2026-07-25 expansion took the target set from 7 to 36 and built the overview dashboard. Two follow-ups on 2026-07-26 brought it to 44: enabling UPS collection, then upgrading cAdvisor so the six `overlayfs` hosts report containers. All three are recorded in [Fleet Metrics Expansion and Grafana Overview - 2026-07-25](Documentation/Change%20Records/Fleet%20Metrics%20Expansion%20and%20Grafana%20Overview%20-%202026-07-25.md). Exporter rollout runs from `ansible-01`; the playbooks live in [monitoring-exporters](../Ansible/Source/monitoring-exporters/README.md).
 
 On 2026-07-26 I moved the stack from `security-01` on `grey-server` to CT 104 `monitor-01` on `blue-server`, added the new host's two exporters, and retired the old monitoring files and volumes. The final target set is 46 of 46 `up`: [Monitoring Relocation to monitor-01 - 2026-07-26](Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+
+On 2026-09-12 I removed Game 01's node, cAdvisor and panel targets and its Grafana node dashboard. Prometheus then reported 54 targets, all up, and Grafana had no firing or pending Game 01 alert.
+
+On 2026-09-15 I added the private [Uptime dashboard](https://grafana.alphasecunited.com/d/uptime), covering 29 service checks with status bars, a 99.99% sampled-uptime target, and monitoring coverage. I added four missing HTTP probes and a local Cloudflare/Caddy/Coolify collector, which took the target set to 58. The [change record](Documentation/Change%20Records/Uptime%20Dashboard%20-%202026-09-15.md) records the measurement limits and verification.
+
+On 2026-09-16 I removed the retired Portainer HTTPS probe and regenerated the three affected Grafana dashboards. The target API then reported 57 healthy targets; Uptime covered 28 checks and Services & Uptime 23 probes. [Retirement record](../../Archive/Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md).

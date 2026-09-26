@@ -1,9 +1,9 @@
 # Cloudflare Account MCP Integration
 
 **Created:** 2026-09-06  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-25
 
-**Status:** Complete; connected with a full-access account token by decision, `execute` runs without approval, and the account read-back is recorded
+**Status:** Complete; connected with a full-access account token by my decision, `execute` runs without approval, and the account read-back is recorded
 
 I added a second Cloudflare integration to Executor so an agent can read the Cloudflare account rather than only the Workers development surface.
 
@@ -57,7 +57,7 @@ Editing a token's permissions in the Cloudflare dashboard keeps its secret value
 
 When I double-checked, I read the token's own definition back through the API, which it can do because it holds Account API Tokens Read. The token, named `executor-mcp`, had a single allow policy scoped to the account carrying 273 permission groups, essentially every account permission Cloudflare offers, read and write alike: Access: Apps and Policies Write, Cloudflare Tunnel Write, Workers Scripts Write, D1 Write, Account Settings Write, Billing Write, and Account API Tokens Write among them. It had no zone-level policy, which was the real reason DNS reads failed: DNS Read is a zone permission, and the token had no zone scope. Zone listing worked only because the account resource covers the zone index.
 
-I raised that this was not the read-only credential I had planned, and I decided to keep the token at full access on purpose. The point of this connection is that an agent can do whatever I ask of the Cloudflare account without a permission gap or an approval prompt in the way, the same footing the UniFi and SSH Manager connections already have. To close the zone gap I added a second policy through the token's own API-token-write permission: all zones under the account, with all 92 zone-scoped permission groups. The update returned 200, the token read back with both policies, and DNS record reads on all four zones began succeeding about forty seconds later, which is Cloudflare's propagation delay for a token edit. The token's value did not change, so the password manager item and the Executor connection stayed as they were.
+This was not the read-only credential I had planned. I decided to keep the token at full access on purpose. The point of this connection is that an agent can do whatever I ask of the Cloudflare account without a permission gap or an approval prompt in the way, the same footing the UniFi and SSH Manager connections already have. To close the zone gap I added a second policy through the token's own API-token-write permission: all zones under the account, with all 92 zone-scoped permission groups. The update returned 200, the token read back with both policies, and DNS record reads on all four zones began succeeding about forty seconds later, which is Cloudflare's propagation delay for a token edit. The token's value did not change, so the password manager item and the Executor connection stayed as they were.
 
 What this means is written down once, here: every agent that reaches Executor can read and change anything in the Cloudflare account, including DNS, the tunnel, Access policies, Workers, and the account's other API tokens, and nothing between the agent and Cloudflare asks first. The credential lives in the password manager item and in Executor's encrypted store and nowhere else.
 

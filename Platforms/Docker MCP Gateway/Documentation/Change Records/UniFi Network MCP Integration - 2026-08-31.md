@@ -1,7 +1,7 @@
 # UniFi Network MCP Integration
 
 **Created:** 2026-08-31  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-25
 
 ## Outcome
 
@@ -15,7 +15,7 @@ The upstream project listed `network/v0.29.3` as its newest UniFi Network releas
 
 1. I added a homelab catalog entry for `unifi-network`, restricted its allowed destination to `192.168.1.1:443`, and configured UniFi OS proxy mode for site `default`.
 2. I enabled lazy tool registration, adaptive response content, sensitive-field redaction, and confirmation mode. I disabled create, update, and delete through the server's policy switches.
-3. I loaded the existing local administrator credentials and Integration API key from the approved credential store. The live values are in `/opt/docker/mcp-gateway/mcp-secrets.env`, owned by root with mode `0600`, and enter the gateway through a Compose secret.
+3. I loaded the existing local administrator credentials and Integration API key from my credential store. The live values are in `/opt/docker/mcp-gateway/mcp-secrets.env`, owned by root with mode `0600`, and enter the gateway through a Compose secret.
 4. I configured the gateway to load only the versioned UniFi catalog entry. Managed MCP containers are limited to one CPU and 512 MiB.
 5. I installed the catalog and Compose changes under `/opt/docker/mcp-gateway`, pulled the pinned image, and recreated the gateway.
 
@@ -23,7 +23,7 @@ I retired the combined `mcp-secrets.env` later on 2026-08-31 when I split UniFi 
 
 I first tested Docker MCP Gateway profiles as the organizational boundary. Gateway 0.43.3 profiles accept only Docker Desktop's secret store, which is unavailable on this headless Docker Engine host. The unresolved secret references reached the UniFi server as literal values and authentication returned HTTP 403. I confirmed the stored credentials against the pinned image, removed the abandoned profile state, and used the gateway's supported headless catalog plus secret-file mode.
 
-A verbose diagnostic startup logged a short password prefix while masking the rest of the value. I disabled verbose output and force-recreated the gateway, which removed that container log. The current log contains no password or API-key prefix. Credential rotation remains the owner's decision after the partial prefix exposure.
+A verbose diagnostic startup logged a short password prefix while masking the rest of the value. I disabled verbose output and force-recreated the gateway, which removed that container log. The current log contains no password or API-key prefix. I have not decided whether to rotate the credential after the partial prefix exposure.
 
 ## Verification
 
@@ -42,4 +42,4 @@ No snapshot or backup was created. The deployment is reproducible from the versi
 
 The UniFi MCP is read-only by policy. The gateway still uses its internal HTTP listener with bearer authentication; DNS, TLS proxying for `mcp.alphasecunited.com`, and Executor integration remain separate future changes.
 
-The gateway's Docker socket remains the primary trust boundary. The owner may rotate the UniFi local administrator password because a short prefix appeared during the diagnostic startup before I recreated the container.
+The gateway's Docker socket remains the primary trust boundary. A short prefix of the UniFi local administrator password appeared during the diagnostic startup before I recreated the container. Whether I rotate that password is still open.

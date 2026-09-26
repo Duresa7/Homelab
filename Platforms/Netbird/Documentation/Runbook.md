@@ -1,11 +1,11 @@
 # NetBird Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-06
+**Last updated:** 2026-09-25
 
 ## Scope
 
-I operate the NetBird management server 0.78.1 and dashboard 2.92.0 on `docker-network` through SSH Manager target `docker_network`. The management server moved from 0.78.0 to 0.78.1 on 2026-09-04, as the platform README records; on 2026-09-06 the container's own `netbird version` returned 0.78.1 and the dashboard image's OCI label still read v2.92.0. The live Compose project is `/opt/docker/netbird`.
+I operate the NetBird management server and dashboard on `docker-network` through SSH Manager target `docker_network`. On 2026-09-24 the startup log of the combined `netbird-server` container reported management server 0.79.0 and the dashboard image label read v2.93.0. Both images track `latest`. The live Compose project is `/opt/docker/netbird`.
 
 The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://netbird.alphasecunited.com`; direct local checks stay useful for isolating a container or proxy failure.
 
@@ -48,7 +48,7 @@ docker compose logs --no-color --tail=200 dashboard
 docker compose logs --no-color --tail=200 netbird-server
 ```
 
-I increase the tail or add `--since` when I need a bounded time window. I retain the exact command, complete output, timestamp, target, & exit code in the applicable job log.
+I increase the tail or add `--since` when I need a bounded time window. I retain the exact command, complete output, timestamp, target, and exit code in the applicable job log.
 
 Both NetBird containers use bounded Docker `json-file` logging with `max-size=10m` and `max-file=3`, verified on 2026-07-12.
 
@@ -97,7 +97,7 @@ The corresponding Nginx Proxy Manager settings and advanced routes live in its [
 
 ## Peers, Networks, and the VPN Path
 
-CT 107 is both the control plane and a NetBird peer acting as the **routing peer** for the Access-A zone. The routed network is defined in the dashboard (Network Routing → Networks) and documented in [Access-Network.md](../Configuration/Access-Network.md); the first-peer/VPN-path validation is recorded in [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+CT 107 is both the control plane and a NetBird peer acting as the **routing peer** for the Access-A zone. The routed network is defined in the dashboard (Network Routing → Networks) and documented in [Access-Network.md](../Configuration/Access-Network.md); the first-peer/VPN-path validation is recorded in [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
 
 I confirm the routing peer on `docker_network`:
 
@@ -165,4 +165,4 @@ To restore, I recover the files with their original ownership and permissions, r
 
 ## Recording a Failure
 
-I use the [troubleshooting index](Troubleshooting/README.md) for known deployment issues. For a new problem I create one dated file, capture the exact symptom and error first, then document failed attempts, hypotheses, tests, corrective action, & verification. I create a separate security incident record if availability or security impact becomes material.
+I use the [troubleshooting index](Troubleshooting/README.md) for known deployment issues. For a new problem I create one dated file, capture the exact symptom and error first, then document failed attempts, hypotheses, tests, corrective action, and verification. I create a separate security incident record if availability or security impact becomes material.

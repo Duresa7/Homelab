@@ -1,7 +1,7 @@
 # ai-agent Account Provisioning
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-19
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-15  
 **Status:** Complete. Re-verified 2026-08-19 against the eleven guests that remain after the Kasm retirement  
@@ -41,7 +41,7 @@ The reload had a side effect. `ssh.service` went to `failed` because the running
 
 The first `--check` run failed on `media-01` with a message claiming it was a key-only host. That was a real bug rather than a check-mode artefact: the "account is missing on a key-only host" assertion had no `when`, so it fired on every host, and under `--check` the account is never actually created.
 
-I scoped the assertion to the key-only group and gated the key tasks on a recorded fact for whether the account is present. Under `--check` those tasks now skip with an explicit message saying check mode cannot validate what depends on an account it did not create. That is honest rather than a false pass.
+I scoped the assertion to the key-only group and gated the key tasks on a recorded fact for whether the account is present. Under `--check` those tasks now skip with an explicit message saying check mode cannot validate what depends on an account it did not create. A skip there is not a pass.
 
 ## The credential and the key
 

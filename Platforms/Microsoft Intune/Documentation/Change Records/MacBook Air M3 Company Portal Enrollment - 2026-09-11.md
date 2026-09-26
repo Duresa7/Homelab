@@ -1,7 +1,7 @@
 # MacBook Air M3 Company Portal Enrollment
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-25
 
 **Event date:** 2026-09-11
 
@@ -74,7 +74,7 @@ Enrollment on its own therefore buys visibility and the ability to push configur
 ## Open
 
 - Settled the same day: I decided against a macOS compliance policy and accepted the false Compliant status knowingly. The reasoning is in the [platform README](../../README.md). The `Compliant` column carries no information and is not evidence of anything.
-- Standing constraint from that decision: no Conditional Access policy may require a compliant device. Such a policy would pass for the wrong reason today and would begin failing the moment a real compliance policy landed, which with one admin account and no break-glass exclusion locks me out of my own tenant.
+- Standing constraint from that decision: no Conditional Access policy may require a compliant device. Such a policy would pass for the wrong reason today and would begin failing the moment a real compliance policy landed, which would catch both `DK-admin` and the break-glass `BG-admin`, since neither is excluded, and lock me out of my own tenant.
 - Decide whether FileVault is enforced with the recovery key escrowed into Intune, alongside the BitLocker baseline still open for the physical Windows workstation.
 
 Steps and completion checks are in the [platform TODO](../TODO.md).

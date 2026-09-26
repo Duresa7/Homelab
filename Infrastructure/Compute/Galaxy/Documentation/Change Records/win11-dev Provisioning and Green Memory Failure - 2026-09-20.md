@@ -20,7 +20,7 @@ I created VM 103 `win11-dev` on `green-server` for a standalone Windows 11 Pro d
 
 At preflight Green had no guests, 13,538 MiB available RAM, and an empty 141.23 GiB thin pool. Galaxy held five votes and quorum. I copied the existing Windows 11 25H2 and VirtIO 0.1.285 media from Grey and built an answer disc using declarative `DiskConfiguration`, a local account, and first-logon guest-agent installation. The XML parsed before boot. VM creation and startup succeeded at about 7:49 PM Eastern.
 
-Setup paused for a product key. I selected the no-key installation option. It proceeded, then crashed with `PFN_LIST_CORRUPT (0x4E)` before the QEMU guest agent became available. Windows activation, first logon, local-account creation, SSH and domain-state checks were never reached. I retained the [crash screen](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Windows-Setup-PFN-LIST-CORRUPT.png).
+Setup paused for a product key. I selected the no-key installation option. It proceeded, then crashed with `PFN_LIST_CORRUPT (0x4E)` before the QEMU guest agent became available. Windows activation, first logon, local-account creation, SSH and domain-state checks were never reached. I retained the [crash screen](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Screenshots/Windows-Setup-PFN-LIST-CORRUPT.png).
 
 ## Diagnosis
 
@@ -34,7 +34,7 @@ I stopped the new VM, disabled automatic startup, detached all three installatio
 
 I stopped the memory test after failures were conclusive. It did not finish a full pass. Its final systemd result was `success` after the explicit stop, which does not mean memory passed. No host reboot, RAM replacement, snapshot, backup, directory change, network-policy change or SSH Manager registration occurred.
 
-At 7:56 PM Eastern, VM 103 was stopped with `onboot=0`, Galaxy was quorate with five votes, and `pvestatd`, `pve-cluster`, Corosync and `pve-firewall` were active. Green had 13,544 MiB available memory and no swap in use. Its thin pool held 547,921 KiB of allocated data (0.37%), with 147,538,862 KiB available. The failed 298.09 GiB SATA HDD remains unused. [Final verification](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Final-Verification.json) retains the exact final query, output and exit code. Earlier setup and containment calls have no separately retained terminal transcript.
+At 7:56 PM Eastern, VM 103 was stopped with `onboot=0`, Galaxy was quorate with five votes, and `pvestatd`, `pve-cluster`, Corosync and `pve-firewall` were active. Green had 13,544 MiB available memory and no swap in use. Its thin pool held 547,921 KiB of allocated data (0.37%), with 147,538,862 KiB available. The failed 298.09 GiB SATA HDD remains unused. [Final verification](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Exports/Final-Verification.json) retains the exact final query, output and exit code. Earlier setup and containment calls have no separately retained terminal transcript.
 
 ## Resumed installation
 

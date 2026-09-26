@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-09-21 03:26 AM Eastern",
+  "action": "unifi_list_clients followed by unifi_get_client_details for win11-dev; returned fields limited before capture",
+  "result": {
+    "hostname": "win11-dev",
+    "ip": "192.168.40.117",
+    "use_fixedip": true,
+    "fixed_ip": "192.168.40.117",
+    "network": "Personal-A",
+    "vlan": 40,
+    "status": "online"
+  }
+}

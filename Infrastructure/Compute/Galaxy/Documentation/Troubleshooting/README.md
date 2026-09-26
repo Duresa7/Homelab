@@ -1,13 +1,11 @@
 # Galaxy Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](../TODO.md).
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
-
-One 2026-07-15 record covering a duplicate APT source on `debian-dev` stays local and out of git, so the index skips it.
 
 ## Issue Index
 
@@ -23,4 +21,6 @@ One 2026-07-15 record covering a duplicate APT source on `debian-dev` stays loca
 | <a id="8-duplicate-pve-volume-group-on-blue-server"></a>[8](Duplicate%20pve%20Volume%20Group%20on%20blue-server%20-%202026-07-30.md) | 2026-07-30 | `local-lvm` stayed inactive and CTs 104, 107, & 108 couldn't start after Blue booted | A newly connected WDC SATA disk retained an older Proxmox VG also named `pve`, which made the NVMe `pve/data` activation ambiguous | Resolved 2026-07-31; WDC layout wiped, NVMe storage and guests verified |
 | <a id="9-status-unknown-and-cross-process-faults-on-green-server"></a>[9](Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md) | 2026-08-09 | Proxmox reported `green-server` as `unknown`; `pvestatd` and `pve-firewall` were failed after 37 cross-process faults | Restarting `pvestatd` restored status; the cross-process pattern points to Green's physical memory path, but the bounded online test passed and the exact hardware cause remains open | Mitigated; offline full-memory test remains |
 | <a id="10-broken-node-shell-and-standalone-authorized-keys-on-grey-server"></a>[10](Broken%20Node%20Shell%20and%20Standalone%20authorized_keys%20on%20grey-server%20-%202026-08-15.md) | 2026-08-15 | The web interface **Shell** on every node other than `grey-server` returned `Permission denied (publickey)` when served from Grey | Grey's own node key had been removed from the cluster key file as a stale `root@Kadi` entry, and Grey's `/root/.ssh/authorized_keys` was a standalone file rather than the symlink the other four carry | Resolved 2026-08-15; key reinstated as `root@grey-server` and the file symlinked |
-| [11](Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md) | 2026-09-20 | Windows Setup crashed on new VM 103 | Host memtester found 25 failure lines in a locked 8 GiB allocation; guest provisioning subsequently completed by choice on 2026-09-21 | Open host fault; VM 103 now running with automatic startup enabled |
+| [11](Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md) | 2026-09-20 | Windows Setup crashed on new VM 103 | Host memtester found 25 failure lines in a locked 8 GiB allocation; guest provisioning subsequently completed by choice on 2026-09-21 | Open host fault; VM 103 moved to Grey on 2026-09-23 |
+| [12](Pending%20Installer%20Removal%20Blocked%20win11-dev%20Migration%20-%202026-09-23.md) | 2026-09-23 | VM 103 migration aborted on an old answer ISO reference | Optical-drive removals were pending; applying them while stopped cleared migration disk discovery | Resolved |
+| [13](Corrupted%20SSH%20Packet%20During%20win11-dev%20Migration%20-%202026-09-23.md) | 2026-09-23 | VM 103 transfer lost its SSH connection after about 48 GiB | Grey rejected a corrupted SSH message; Green's memory fault is a possible cause | Migration completed after checksum repair; underlying cause unconfirmed |

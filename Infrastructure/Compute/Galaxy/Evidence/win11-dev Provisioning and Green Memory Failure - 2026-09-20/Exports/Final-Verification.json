@@ -1,0 +1,8 @@
+{
+  "server": "green_server",
+  "command": "python3 - <<'PY'\nimport subprocess,json,datetime\nconf=json.loads(subprocess.check_output(['pvesh','get','/nodes/green-server/qemu/103/config','--output-format','json']))\nallowed=['name','cores','memory','balloon','cpu','ostype','machine','bios','onboot','agent','boot','scsi0','efidisk0','tpmstate0']\nprint(json.dumps({'captured':datetime.datetime.now().astimezone().isoformat(),'config':{k:conf.get(k) for k in allowed},'network':'virtio on vmbr0, VLAN 40','status':subprocess.check_output(['qm','status','103'],text=True).strip(),'memory_failure_lines':sum('FAILURE' in x for x in open('/root/win11-dev-build/memory-test.log'))},indent=2))\nPY\nsystemctl is-active pvestatd pve-cluster corosync pve-firewall",
+  "stdout": "{\n  \"captured\": \"2026-09-20T19:56:54.731430-04:00\",\n  \"config\": {\n    \"name\": \"win11-dev\",\n    \"cores\": 4,\n    \"memory\": \"8192\",\n    \"balloon\": 0,\n    \"cpu\": \"host\",\n    \"ostype\": \"win11\",\n    \"machine\": \"pc-q35-11.0+pve2\",\n    \"bios\": \"ovmf\",\n    \"onboot\": 0,\n    \"agent\": \"enabled=1\",\n    \"boot\": \"order=scsi0\",\n    \"scsi0\": \"local-lvm:vm-103-disk-1,discard=on,iothread=1,size=120G,ssd=1\",\n    \"efidisk0\": \"local-lvm:vm-103-disk-0,efitype=4m,ms-cert=2023k,pre-enrolled-keys=1,size=4M\",\n    \"tpmstate0\": \"local-lvm:vm-103-disk-2,size=4M,version=v2.0\"\n  },\n  \"network\": \"virtio on vmbr0, VLAN 40\",\n  \"status\": \"status: stopped\",\n  \"memory_failure_lines\": 25\n}\nactive\nactive\nactive\nactive\n",
+  "stderr": "",
+  "code": 0,
+  "success": true
+}

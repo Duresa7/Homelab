@@ -1,13 +1,13 @@
 # Game 01 Retirement
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-25
 
 **Status:** Complete. CT 123 and all of its game data are deleted.
 
 I retired Game 01 from the homelab on 2026-09-12. CT 123 was already stopped on `green-server` when I checked it. I disabled automatic startup and removed the service's monitoring, Wazuh enrollment, DNS publication, proxy routes, dedicated firewall policies, and automation targets. I moved its platform records, deployment record, dedicated sudo maintenance record, and node dashboard into `Archive/` and repaired their links.
 
-I retained `local-lvm:vm-123-disk-0`, the 80 GiB root volume holding Pelican and the Minecraft worlds. The request to archive did not settle whether to destroy the game data, so I kept the offline container. After confirming permanent deletion, I destroyed CT 123 and that root volume. Its 6 vCPUs, 12 GiB memory and 2 GiB swap are no longer configured. I created no snapshot or backup. The [archived guest record](../../../../Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) preserves its former inventory.
+I retained `local-lvm:vm-123-disk-0`, the 80 GiB root volume holding Pelican and the Minecraft worlds. I had not yet decided whether to destroy the game data, so I kept the offline container. After confirming permanent deletion, I destroyed CT 123 and that root volume. Its 6 vCPUs, 12 GiB memory and 2 GiB swap are no longer configured. I created no snapshot or backup. The [archived guest record](../../../../Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md) preserves its former inventory.
 
 ## Changes and verification
 
@@ -15,7 +15,7 @@ I retained `local-lvm:vm-123-disk-0`, the 80 GiB root volume holding Pelican and
 |---|---|---|
 | Proxmox | `pct set 123 --onboot 0` on Green | `pct status 123` returned `stopped`; configuration returned `onboot: 0`; `pvesm list local-lvm --vmid 123` retained the 85,899,345,920-byte root volume |
 | Prometheus | Removed `192.168.80.30:9100`, `192.168.80.30:9101`, and the `https://games.alphasecunited.com/` blackbox probe; added a Proxmox metric drop for `id="lxc/123"` | `promtool check config` passed before each HUP reload. The repository target assertion passed against the live API: 54 expected targets UP, comprising 34 exporters and 20 probes. Instant queries for the retired host, panel and CT returned no series; no remaining probe failed |
-| Grafana | Removed `node-game-01.json` from the live provider directory and the dashboard generator inventory | Authenticated `/api/search?type=dash-db` returned 26 dashboards and no `node-game-01`. All 24 shared rules reported health `ok`. No Game 01 alert was firing or pending |
+| Grafana | Removed `node-game-01.json` from the live provider directory (the [archived copy](../../../Prometheus/Configuration/grafana/dashboards/nodes/node-game-01.json) keeps it) and the dashboard generator inventory | Authenticated `/api/search?type=dash-db` returned 26 dashboards and no `node-game-01`. All 24 shared rules reported health `ok`. No Game 01 alert was firing or pending |
 | Wazuh | Removed disconnected agent `018` with `manage_agents -r 018` | `agent_control -l` subsequently returned the manager and 15 remote agents, all active, with no Game 01 enrollment |
 | Public DNS | Deleted the Minecraft CNAME and `_minecraft._tcp.minecraft.alphasecunited.com` SRV in Cloudflare | Both deletes returned HTTP 200; exact-name readbacks returned zero records |
 | Local DNS | Deleted the `games.alphasecunited.com` and `wings.alphasecunited.com` A records | UniFi returned 28 records with neither retired name |

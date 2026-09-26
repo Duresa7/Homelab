@@ -1,14 +1,14 @@
 # Managed SSH Manager Containers Accumulated Under long-lived
 
 **Created:** 2026-09-03  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-25
 
 **Observed:** 2026-09-03 1:51 PM to 2:27 PM Eastern  
 **Status:** Resolved 2026-09-03 by the [shared server cutover](../Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md)
 
 ## Symptom
 
-Thirty-six minutes after the SSH Manager gateway was restarted at the end of the [v2 compatibility rollback](../Change%20Records/Docker%20MCP%20Gateway%20v2%20Compatibility%20Rollback%20-%202026-09-03.md), `docker-blue` was running 22 `homelab/mcp-ssh-manager:latest` containers with generated names, all started by `ssh-manager-mcp-gateway`, which still runs the exact 0.43.3 image with `--long-lived`. The platform record said exactly one is the expected state and a second one is a fault. Another agent noticed the count during a routine host check while working on the Wazuh integration and handed it to me rather than repairing it mid-task.
+Thirty-six minutes after the SSH Manager gateway was restarted at the end of the [v2 compatibility rollback](../Change%20Records/v2%20Compatibility%20Rollback%20-%202026-09-03.md), `docker-blue` was running 22 `homelab/mcp-ssh-manager:latest` containers with generated names, all started by `ssh-manager-mcp-gateway`, which still runs the exact 0.43.3 image with `--long-lived`. The platform record said exactly one is the expected state and a second one is a fault. Another agent noticed the count during a routine host check while working on the Wazuh integration and handed it to me rather than repairing it mid-task.
 
 The gateway's cgroup read `pids.current 192` against `pids.max 256`, each managed container holding about nine processes through its `docker run` bridge. The containers together used about 600 MiB. Every call still answered; at the observed rate the gateway had roughly eight sessions of headroom before it would stop forking, which is the failure recorded on 2026-09-02.
 
@@ -33,7 +33,7 @@ type clientKey struct {
 
 Executor never closes a session it opens. It reuses idle ones, opens more when calls run in parallel, and abandons one after a transport failure. Each abandoned or extra session leaves a managed container that only a gateway restart removes.
 
-**What this means for the earlier records.** The 2026-09-02 [process-exhaustion record](../Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md) concluded that `--long-lived` shares one container across sessions because eight sequential calls produced one container. Those calls reused one Executor session, so the test measured Executor's reuse, not the gateway's pooling. The flag did change one thing: without it, the catalog's `longLived: true` alone behaves identically, so the flag was neither the cause nor the cure. Today's [v2 rollback](../Change%20Records/Docker%20MCP%20Gateway%20v2%20Compatibility%20Rollback%20-%202026-09-03.md) blamed the `latest` image for one container per session, but 0.43.3 does the same under parallel load. The rollback itself is harmless; the reason given for it does not hold, and the pin is no longer justified by that test.
+**What this means for the earlier records.** The 2026-09-02 [process-exhaustion record](../Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md) concluded that `--long-lived` shares one container across sessions because eight sequential calls produced one container. Those calls reused one Executor session, so the test measured Executor's reuse, not the gateway's pooling. The flag did change one thing: without it, the catalog's `longLived: true` alone behaves identically, so the flag was neither the cause nor the cure. Today's [v2 rollback](../Change%20Records/v2%20Compatibility%20Rollback%20-%202026-09-03.md) blamed the `latest` image for one container per session, but 0.43.3 does the same under parallel load. The rollback itself is harmless; the reason given for it does not hold, and the pin is no longer justified by that test.
 
 **A second finding from the same read.** The catalog's `allowHosts` list is only enforced when the gateway runs with `--block-network`; without it `runToolContainer` skips the proxy path and attaches the managed container to `docker-mcp-gateway_default`, which is what the logged `docker run` arguments show. Neither gateway service passes that flag, so the egress limits the platform record described for both managed servers are declared but not applied. That is a separate item in the root TODO.
 
@@ -41,7 +41,7 @@ Executor never closes a session it opens. It reuses idle ones, opens more when c
 
 At 2:27 PM I ran `docker compose restart ssh-manager-gateway` in `/opt/docker/mcp-gateway`, scheduled three seconds ahead from a detached shell so the SSH Manager call that issued it could return. Restarting stops every stdio bridge, and Docker removes the managed containers through `--rm`. The `ssh-manager-state` volume is untouched. I changed no Compose file, catalog, secret, or Executor connection, and took no snapshot.
 
-The restart invalidates every session Executor still holds. The first call on each of those fails once with a transport error, after which Executor opens a new session. The other agent's next SSH Manager call was expected to take that one failure.
+The restart invalidates every session Executor still holds. The first call on each of those fails once with a transport error, after which Executor opens a new session. The next SSH Manager call from any other connected client takes that one failure.
 
 ## Verification
 

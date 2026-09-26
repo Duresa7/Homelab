@@ -1,7 +1,7 @@
-# Preview Server LAN-Exposed Repository Root Incident
+# LAN-Exposed Repository Root
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-08-04
+**Last updated:** 2026-09-25
 
 ## Incident Metadata
 
@@ -35,6 +35,16 @@ Two items there outrank the drive serials by a wide margin:
 Also reachable: `Sensitive/Scrub Operation/Originals Before Redaction/` at 129 unredacted files, two more history bundles, and the local agent instruction files under `/.claude/`.
 
 The runtime configs that would have been worst are not in the tree on this machine. `Platforms/Nginx Proxy Manager/Configuration/data`, its `letsencrypt` directory, `Platforms/Netbird/Configuration/config.yaml`, and `dashboard.env` are all absent locally, so no live service credential or private key was served.
+
+## Affected Assets
+
+- The first `serve.js` preview server on `jedi-pc` (`192.168.50.241`), TCP 8123.
+- The whole `D:\Documents\Homelab` working tree it served, including `Sensitive/` and the files named in Impact.
+
+## Symptoms
+
+- `netstat` showed the server bound to `0.0.0.0` and `[::]` on TCP 8123.
+- `curl http://192.168.50.241:8123/Sensitive/Hardware/drive-serials.md` from elsewhere on the LAN returned HTTP 200 and 2,082 bytes.
 
 ## Who Could Reach It
 
@@ -125,6 +135,10 @@ A public `.gitignore` is a directory of the private paths. It's the right way to
 | Move the pre-scrub history bundles and the redaction value map outside the working tree | Complete |
 
 I completed the durable fix on 2026-07-27. I moved the three history bundles and the private redaction value map to `D:\Documents\Redaction Map`, outside the Homelab working tree. The four files total 13,536,299 bytes. I compared SHA256 values before and after the move: all four matched, no source copy remained, and there were zero mismatches. I chose a normal local folder without encryption.
+
+## Closure
+
+Closed. The exposure was mitigated on 2026-07-25 at 15:11:28 EDT, validated on 2026-07-26, and the durable fix was complete on 2026-07-27.
 
 ## Linked Records
 

@@ -3,9 +3,19 @@
 **Created:** 2026-09-15  
 **Last updated:** 2026-09-25
 
-I run Dockhand 1.0.48 on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com). After retiring Portainer on 2026-09-16, I verified seven connected Docker hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers. Dockhand and six Hawser 0.2.48 agents manage the remaining applications.
+I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
 
-| Host | Address | Connection | Projects before Dockhand deployment | Containers before Dockhand deployment |
+| Item | Value |
+|---|---|
+| Dockhand | 1.0.48 (`fnsys/dockhand:v1.0.48`, pinned by digest in the hub Compose file), read live on 2026-09-24 |
+| Hub | `docker-main` (CT 110, `192.168.40.35:3003`), local Docker socket |
+| Agents | Hawser Edge on six hosts: 0.2.48 on five, 0.2.49 on `alpha-prod-01`, read live on 2026-09-24 |
+| Environments | Seven; `app-01` and Coolify are excluded |
+| Compose projects | 42 imported definitions, counted on 2026-09-16 |
+| Private registry | `forgejo.alphasecunited.com/homelab-images/<image>:stable` |
+| Update schedule | Daily 3:00 AM Eastern auto-update on six environments; Mondays on `alpha-prod-01` with a vulnerability gate. Hawser and NPM carry `dockhand.update: "false"` |
+
+| Host | Address | Connection | Projects at import, 2026-09-15 | Containers at import |
 |---|---|---|---:|---:|
 | docker-main | 192.168.40.35 | Local Docker socket | 10 | 15 |
 | docker-blue | 192.168.40.39 | Hawser Edge | 7 | 11 |
@@ -15,21 +25,19 @@ I run Dockhand 1.0.48 on `docker-main` at [dockhand.alphasecunited.com](https://
 | alpha-prod-01 | 192.168.80.118 | Hawser Edge | 8 | 8 |
 | security-01 | 192.168.72.2 | Hawser Edge | 2 | 2 |
 
-I excluded `app-01` and Coolify. The initial Dockge replacement preserved application container IDs and start timestamps. The later approved monitor-only repair recreated `teamspeak-monitor`.
+The initial Dockge replacement preserved application container IDs and start timestamps. A later repair, limited to the TeamSpeak monitor, recreated `teamspeak-monitor`. After retiring Portainer on 2026-09-16 I verified seven connected hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers.
 
 ## Access and configuration
 
-On 2026-09-15 I changed the administrator username and password to match my approved shared login credential. The current values are also saved in my credential vault; the item is not named here. I verified a fresh HTTPS login, administrator access, and all seven environments. Authentication remains enabled. NPM proxy host 31 forwards to `http://192.168.40.35:3003` with certificate 1, Force SSL, HTTP/2, and WebSocket upgrades. Internal DNS points the service name to NPM at `192.168.85.2`.
+On 2026-09-15 I changed the administrator username and password to my shared application login. I verified a fresh HTTPS login, administrator access, and all seven environments. Authentication remains enabled. NPM proxy host 31 forwards to `http://192.168.40.35:3003` with certificate 1, Force SSL, HTTP/2, and WebSocket upgrades. Internal DNS points the service name to NPM at `192.168.85.2`.
 
-The hub runs `/opt/docker/dockhand/compose.yaml`, stores state at `/opt/docker/dockhand/data`, and uses `/opt/docker/dockhand/stacks` for new stack definitions. It mounts the local Docker socket and `/opt/docker` at the same path. The six remote hosts run `/opt/docker/hawser/compose.yaml`. Each agent initiates an authenticated connection to `wss://dockhand.alphasecunited.com/api/hawser/connect` with a host-specific token. The `.env` beside that file still holds the token, but since the cutover the deployed `compose.yaml` carries the resolved value itself; both files are root-owned at mode 0600 on all six hosts. The agents map the service name directly to `192.168.85.2` and publish no listener port. The hub reference remains pinned by digest. Hawser uses `latest` with the companion updater; the deployed agent contents remain 0.2.48. I retain the [configuration references](Configuration).
+The hub runs `/opt/docker/dockhand/compose.yaml`, stores state at `/opt/docker/dockhand/data`, and uses `/opt/docker/dockhand/stacks` for new stack definitions. It mounts the local Docker socket and `/opt/docker` at the same path. The six remote hosts run `/opt/docker/hawser/compose.yaml`. Each agent initiates an authenticated connection to `wss://dockhand.alphasecunited.com/api/hawser/connect` with a host-specific token. The `.env` beside that file still holds the token, but since the cutover the deployed `compose.yaml` carries the resolved value itself; both files are root-owned at mode 0600 on all six hosts. The agents map the service name directly to `192.168.85.2` and publish no listener port. The hub reference remains pinned by digest. Hawser uses `latest` with the companion updater. I retain the [configuration references](Configuration).
 
 ## Existing stack files
 
 I imported all 47 Compose projects on 2026-09-15; 42 remain after removing the five Portainer projects. Dockhand now reads their editable definitions from `/opt/docker/dockhand/stacks/imported/<host>/<project>/compose.yaml` on `docker-main`. I resolved environment files into protected mode-0600 definitions, merged BookLore's override, retained absolute bind and build paths, and enabled the already-running media VPN services in the imported definition. The host directory names use underscores, such as `docker_blue`.
 
 I validated each normalized definition against its source with Docker Compose before adoption. Import did not deploy or restart any application. I then created, deployed, read, saved, and removed a disposable stack through Dockhand on every host. All seven tests passed. The 69 existing container IDs, start times, and running states remained unchanged during this preparation.
-
-On 2026-09-21 I added Weebarr to both the live media-stack Compose project and its imported definition. Both validate; the imported definition remains mode 0600. Weebarr keeps its backend credential in its persistent application settings, so the stack definition needs no environment secret file.
 
 The imported files are the source for future Dockhand stack edits. Deploying a project through Dockhand also writes its normalized definition over the project's own Compose file. The [registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md) did that to eleven of the 42 on 2026-09-15: five application projects and the six Hawser projects. Those eleven are now JSON with their environment files resolved inline, at mode 0600. The other 31 still hold their original YAML at their original modes, and a UI edit does not reach them, so I must reconcile one of those before using it for a later command-line deployment. The copies tracked in this repository stay in the authored YAML form, referencing secrets rather than resolving them, so they are the readable reference and never a byte match for a rewritten host file.
 
@@ -39,7 +47,7 @@ I retired Portainer and its four Edge Agents on 2026-09-16. I removed their data
 
 ## Updates
 
-I verified Dockhand's authenticated image-pull and container-replacement path on all seven hosts on 2026-09-15 using disposable `busybox:stable` containers with no host mounts, published ports, or network access. Every replacement started; I removed the test containers and newly introduced image tags. Existing application container IDs and states remained unchanged. This verifies the management path, not compatibility of a future application release.
+I verified Dockhand's authenticated image-pull and container-replacement path on all seven hosts on 2026-09-15 using disposable `busybox:stable` containers with no host mounts, published ports, or network access. Every replacement started; I removed the test containers and newly introduced image tags. Existing application container IDs and states remained unchanged.
 
 Registry-backed containers can use Dockhand's container update controls. This does not require adopting every existing Compose file. A pinned version or digest still controls which release can be selected. The check found nine available updates; I did not apply them.
 
@@ -57,17 +65,20 @@ On 2026-09-16 I ran all six updater helpers through Dockhand. Each exited with c
 
 On 2026-09-18 I verified the live schedules. Six environments check and automatically apply image updates daily at 3:00 AM Eastern without a vulnerability scanner. alpha-prod-01 checks and automatically updates on Mondays at 3:00 AM, uses both scanners, and blocks updates with critical or high vulnerabilities. All seven environments prune dangling images on Mondays at 4:00 AM. Each uses `America/New_York`. I did not change these settings or test a scheduled update during this verification.
 
-On 2026-09-25 the first scheduled run to find an NPM release stopped NPM and then lost the Hawser connection that runs through it, so the replacement was never created and every agent stayed disconnected until I started NPM by hand at 6:12 AM. Anything Dockhand's own connection depends on must be excluded from these updates: that is the Hawser containers and NPM today. I gave NPM the label `dockhand.update: "false"` in its live Compose file and in the imported definition under `stacks/imported/docker_network/`. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
+On 2026-09-25 the first scheduled run to find an NPM release stopped NPM and then lost the Hawser connection that runs through it, so the replacement was never created and every agent stayed disconnected until I started NPM by hand at 6:12 AM. Anything Dockhand's own connection depends on must be excluded from these updates: that is the Hawser containers and NPM today. I gave NPM the label in its live Compose file and in the imported definition under `stacks/imported/docker_network/`. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
 
 I also removed 57 reviewed untagged, unused images and measured a 23.97 GB increase in available filesystem space. All 70 containers, 30 volume definitions, and tagged image references were preserved; all 64 running containers stayed running. I excluded images with tags or container references even when Docker listed them as dangling. [Cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md).
 
 ## Records
 
 - [Dockge replacement and verification](Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md)
-- [Fleet verification](Evidence/Dockge%20Replacement%20-%202026-09-15/Verification.json)
+- [Fleet verification](Evidence/Dockge%20Replacement%20-%202026-09-15/Exports/Verification.json)
 - [Local TeamSpeak monitor registry-check error](Documentation/Troubleshooting/Local%20TeamSpeak%20Monitor%20Registry%20Check%20-%202026-09-15.md)
 - [Login alignment and update-path verification](Documentation/Change%20Records/Login%20Alignment%20and%20Update%20Verification%20-%202026-09-15.md)
 - [Private registry and editable stack preparation](Documentation/Change%20Records/Registry%20and%20Stack%20Preparation%20-%202026-09-15.md)
 - [Registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md)
+- [Hawser update verification](Documentation/Change%20Records/Hawser%20Update%20Verification%20-%202026-09-16.md)
 - [Image cleanup and schedule verification](Documentation/Change%20Records/Image%20Cleanup%20and%20Schedules%20-%202026-09-18.md)
 - [NPM scheduled update outage](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md)
+- [Cutover validation failures](Documentation/Troubleshooting/Cutover%20Validation%20Failures%20-%202026-09-15.md)
+- [Troubleshooting index](Documentation/Troubleshooting/README.md)

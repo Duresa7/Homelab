@@ -1,52 +1,39 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
-On 2026-09-12 I retired `game-01` from active service. I subsequently deleted CT 123 and its 80 GiB `local-lvm:vm-123-disk-0` volume, including the game data. The guest and disk are absent. Green’s pool was empty after that deletion; VM 103 now occupies it as described below.
+This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
 
-This index points to the living records that hold Galaxy's current state. The dated records in the snapshot sequence below preserve earlier states and are not the current answer.
+## Recent changes
 
-I refreshed the living VM record on 2026-08-20 after confirming VM 117 `supabase-01` had been deleted and cleaning its remaining references. I did not create another dated inventory snapshot because the living files are the current-state view.
-
-On 2026-09-06 I audited all four living records against the cluster: `pvesh get /cluster/resources`, every guest configuration file, the storage status on each node, and the running services on all 13 workload guests. The VM record had missed the 2026-08-26 `kali-pen` rebuild as VM 102, the LXC record had missed `docker-blue` growing to two vCPUs and 2 GiB on 2026-09-01, and the service record carried several superseded versions. Each is corrected in its living file; the findings and verification are in [Documentation Staleness Audit - 2026-09-06](../../Maintenance/Documentation%20Staleness%20Audit%20-%202026-09-06.md).
-
-On 2026-09-08 I updated the VM and node records for `ubuntu-dev`'s move to M.2 NVMe storage and removal of its two unused SSD source volumes. The [change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08.md) includes live verification and recovered space.
-
-On 2026-09-10 I set VM 105 `ubuntu-dev` on Grey to 12 GiB pending, leaving its running allocation at 16 GiB. I did not restart anything, so the 4 GiB reduction has not yet released host capacity. The [memory assessment and change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Memory%20Assessment%20-%202026-09-10.md) holds the verification.
-
-On 2026-09-11 I completed app-01's 64 GiB boot disk replacement on Grey and removed its old 200 GiB volume. The [change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md) holds verification and the pre-existing Wazuh connection issue. I then completed both guests' move to Purple's NVMe-backed `local-lvm`, verified services and monitoring, and confirmed their source volumes absent on Grey. Wazuh connectivity is restored for all 16 remote agents. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md) holds final verification.
-
-On 2026-09-12 I moved CT 100 `ansible-01` to Blue and updated its LXC, service, and node records. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) holds the completed Proxmox task and service verification. No QEMU placement changed.
-
-I moved VM 401 `alpha-prod-01` to Purple on 2026-09-12, placing both disks on its NVMe-backed `local-lvm` and removing the source volumes from Grey. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds verification.
-
-I completed VM 103 `win11-dev` on Green on 2026-09-21: Windows 11 Pro 25H2, 4 vCPUs, 8 GiB RAM, a 120 GiB NVMe-backed disk and reserved address `192.168.40.117` on VLAN 40. It runs standalone in `WORKGROUP`, with local `dkadi` and key-authenticated SSH Manager entry `win11_dev`. Automatic startup is enabled. I verified SSH after a restart; activation and Green's host memory repair remain open. [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
+- 2026-09-24: I read the cluster back and recorded four changes the inventories had missed: [CT 107 and CT 108 HA removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md), [monitor-01 rootfs at 20 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/monitor-01%20Rootfs%20at%2020%20GiB%20-%202026-09-24.md), [HQ-WS001 memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md) and [ubuntu-dev 12 GiB applied](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%2012%20GiB%20Applied%20-%202026-09-24.md).
+- 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
+- 2026-09-12: I retired `game-01` and deleted CT 123 with its game data. [Archived guest record](../../../Archive/Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md).
 
 ## Current state
 
 | File | Contents |
 | --- | --- |
-| [Nodes](../../../Infrastructure/Hardware/Nodes.md) | Current Galaxy node hardware, physical storage, and cluster-storage state |
-| [VMs](VMs.md) | Current QEMU virtual machines and templates |
-| [LXCs](LXCs.md) | Current Linux containers |
-| [Services](Services.md) | Current workloads, monitoring targets, and service versions |
+| [Cluster architecture](../../../Infrastructure/Compute/Galaxy/Documentation/Architecture/Cluster%20Architecture.md) | How the five nodes, two Corosync links, storage and firewall fit together |
+| [Nodes](../../../Infrastructure/Hardware/Nodes.md) | Node hardware, physical storage, and cluster-storage state |
+| [VMs](VMs.md) | QEMU virtual machines and templates |
+| [LXCs](LXCs.md) | Linux containers |
+| [Services](Services.md) | Workloads, monitoring targets, and service versions |
 
 ## Snapshot sequence
 
-Two complete sets carry the date 2026-07-28 because I changed the fleet twice that day. Two also carry 2026-08-03 because the audit superseded the earlier service record without rewriting it. Read the sequence in order; the post-staleness audit set is the most recent capture. For current state, use the living records above rather than the last snapshot in this list.
+The ten dated inventory sets moved to `Archive/Operations/Inventory/Galaxy/Snapshots/` on 2026-09-25; the links below point there, and nothing is added to them.
 
 | Set | Captures | Index |
 | --- | --- | --- |
-| `- 2026-07-27` | The fleet before the 850 EVO became `ssd-lvm2` | [Galaxy Inventory - 2026-07-27.md](Galaxy%20Inventory%20-%202026-07-27.md) |
-| `- 2026-07-28` | After moving Kasm VM 122 onto `ssd-lvm2` and expanding `scsi0` to 150G | [Galaxy Inventory - 2026-07-28.md](Galaxy%20Inventory%20-%202026-07-28.md) |
-| `Post-Kasm Build-Out - 2026-07-28` | After the workspace build-out: 200G disk, VLAN 75, four session lanes | [Galaxy Inventory Post-Kasm Build-Out - 2026-07-28.md](Galaxy%20Inventory%20Post-Kasm%20Build-Out%20-%202026-07-28.md) |
-| `Post-Parrot - 2026-07-30` | After the controlled Parrot install, image-update control, and replacement snapshot | [Galaxy Inventory Post-Parrot - 2026-07-30.md](Galaxy%20Inventory%20Post-Parrot%20-%202026-07-30.md) |
-| `Post-PXE - 2026-07-30` | After deploying the Galaxy PXE and TFTP workloads on `ansible-01` | [Galaxy Inventory Post-PXE - 2026-07-30.md](Galaxy%20Inventory%20Post-PXE%20-%202026-07-30.md) |
-| `Post-Blue SATA Wipe - 2026-07-31` | After adding Blue's WDC disk, resolving its duplicate `pve` VG, & leaving the disk blank | [Galaxy Inventory Post-Blue SATA Wipe - 2026-07-31.md](Galaxy%20Inventory%20Post-Blue%20SATA%20Wipe%20-%202026-07-31.md) |
-| `Post-Green Expansion - 2026-07-31` | After Green joined as the fifth node, the Blue and Green memory change, and the two extended HDD tests | [Galaxy Inventory Post-Green Expansion - 2026-07-31.md](Galaxy%20Inventory%20Post-Green%20Expansion%20-%202026-07-31.md) |
-| `- 2026-08-02` | After adding the internal documentation workload on Docker Main | [Galaxy Inventory - 2026-08-02.md](Galaxy%20Inventory%20-%202026-08-02.md) |
-| `- 2026-08-03` | After deploying Wazuh agents across twelve new endpoints and all five Galaxy nodes | [Galaxy Inventory - 2026-08-03.md](Galaxy%20Inventory%20-%202026-08-03.md) |
-| `Post-Staleness Audit - 2026-08-03` | After checking current cluster, workload, monitoring, network, media, Portainer, and Wazuh state | [Galaxy Inventory Post-Staleness Audit - 2026-08-03.md](Galaxy%20Inventory%20Post-Staleness%20Audit%20-%202026-08-03.md) |
-
-I keep both same-day sets rather than folding the later one into the earlier filenames. Each records a state the fleet actually held, and collapsing them would delete the only record of the intermediate one to satisfy a filename.
+| `- 2026-07-27` | The fleet before the 850 EVO became `ssd-lvm2` | [Galaxy Inventory - 2026-07-27.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20-%202026-07-27.md) |
+| `- 2026-07-28` | After moving Kasm VM 122 onto `ssd-lvm2` and expanding `scsi0` to 150G | [Galaxy Inventory - 2026-07-28.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20-%202026-07-28.md) |
+| `Post-Kasm Build-Out - 2026-07-28` | After the workspace build-out: 200G disk, VLAN 75, four session lanes | [Galaxy Inventory Post-Kasm Build-Out - 2026-07-28.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-Kasm%20Build-Out%20-%202026-07-28.md) |
+| `Post-Parrot - 2026-07-30` | After the controlled Parrot install, image-update control, and replacement snapshot | [Galaxy Inventory Post-Parrot - 2026-07-30.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-Parrot%20-%202026-07-30.md) |
+| `Post-PXE - 2026-07-30` | After deploying the Galaxy PXE and TFTP workloads on `ansible-01` | [Galaxy Inventory Post-PXE - 2026-07-30.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-PXE%20-%202026-07-30.md) |
+| `Post-Blue SATA Wipe - 2026-07-31` | After adding Blue's WDC disk, resolving its duplicate `pve` VG, and leaving the disk blank | [Galaxy Inventory Post-Blue SATA Wipe - 2026-07-31.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-Blue%20SATA%20Wipe%20-%202026-07-31.md) |
+| `Post-Green Expansion - 2026-07-31` | After Green joined as the fifth node, the Blue and Green memory change, and the two extended HDD tests | [Galaxy Inventory Post-Green Expansion - 2026-07-31.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-Green%20Expansion%20-%202026-07-31.md) |
+| `- 2026-08-02` | After adding the internal documentation workload on Docker Main | [Galaxy Inventory - 2026-08-02.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20-%202026-08-02.md) |
+| `- 2026-08-03` | After deploying Wazuh agents across twelve new endpoints and all five Galaxy nodes | [Galaxy Inventory - 2026-08-03.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20-%202026-08-03.md) |
+| `Post-Staleness Audit - 2026-08-03` | After checking current cluster, workload, monitoring, network, media, Portainer, and Wazuh state | [Galaxy Inventory Post-Staleness Audit - 2026-08-03.md](../../../Archive/Operations/Inventory/Galaxy/Snapshots/Galaxy%20Inventory%20Post-Staleness%20Audit%20-%202026-08-03.md) |

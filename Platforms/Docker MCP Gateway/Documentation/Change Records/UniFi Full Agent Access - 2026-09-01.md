@@ -1,7 +1,7 @@
 # UniFi Full Agent Access
 
 **Created:** 2026-09-01  
-**Last updated:** 2026-09-02
+**Last updated:** 2026-09-25
 
 ## Outcome
 
@@ -40,6 +40,6 @@ I retained no standalone command transcript. These observed results are the veri
 
 ## Open State
 
-Full UniFi access is deliberate. Any agent that can use the personal Executor connection can change or delete controller configuration without a human confirmation step. The gateway still redacts sensitive response fields, limits the managed container to `192.168.1.1:443`, and keeps the controller credentials outside the repository.
+Full UniFi access is deliberate. Any agent that can use the personal Executor connection can change or delete controller configuration without a confirmation step from me. The gateway still redacts sensitive response fields, limits the managed container to `192.168.1.1:443`, and keeps the controller credentials outside the repository.
 
 The local bypass overlay remains tied to upstream 0.29.3. A future UniFi MCP update must verify whether upstream has made bypass authoritative after FastMCP supplies default arguments. If it has, I will retire the overlay instead of carrying it forward.

@@ -29,8 +29,8 @@ The helper's privileged-copy path required `sudo`; Red didn't provide it.
 
 ## Corrective Action
 
-I uploaded each file to an explicit `/root/peanut-*.new` path, then ran `install -o root -g root -m 0644` for `nut.conf` and `install -o root -g nut -m 0640` for `ups.conf` and `upsd.conf`. I removed only the three staging paths after `readlink -f` matched each expected `/root/peanut-*.new` path. The [configuration correction transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S03-NUT-Configuration-Corrections.txt) retains the structured error, exact correction command, output, and exit status.
+I uploaded each file to an explicit `/root/peanut-*.new` path, then ran `install -o root -g root -m 0644` for `nut.conf` and `install -o root -g nut -m 0640` for `ups.conf` and `upsd.conf`. I removed only the three staging paths after `readlink -f` matched each expected `/root/peanut-*.new` path. The [configuration correction transcript](../../Evidence/UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S03-NUT-Configuration-Corrections.txt) retains the structured error, exact correction command, output, and exit status.
 
 ## Verification
 
-`/etc/nut/nut.conf` was `root:root 0644`; `ups.conf` and `upsd.conf` were `root:nut 0640`. The `ups01` driver and NUT server later reached `active`, and `upsc ups01@localhost` returned live data in the [Red verification transcript](../../Evidence/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-NUT-Verification-red-server.txt).
+`/etc/nut/nut.conf` was `root:root 0644`; `ups.conf` and `upsd.conf` were `root:nut 0640`. The `ups01` driver and NUT server later reached `active`, and `upsc ups01@localhost` returned live data in the [Red verification transcript](../../Evidence/UPS%20Dashboard%20Deployment%20-%202026-07-22/Logs/S06-NUT-Verification-red-server.txt).

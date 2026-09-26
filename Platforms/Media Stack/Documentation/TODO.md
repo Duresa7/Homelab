@@ -1,16 +1,16 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-08-27
+**Last updated:** 2026-09-25
 
 ## HDD Data Migration
 
-- [x] 2026-07-22: Moved 9.9 GiB from CT 842's 100 GiB NVMe root volume to the 1 TB Seagate HDD on `red-server`; the [change record](Change%20Records/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22.md) holds the copy & mount details.
-- [x] 2026-07-22: Verified ext4 persistence, fail-closed startup, eight containers, VPN isolation, hard links, an existing-media read, & Quick Sync output before deleting the 10,615,586,954-byte NVMe source.
+- [x] 2026-07-22: Moved 9.9 GiB from CT 842's 100 GiB NVMe root volume to the 1 TB Seagate HDD on `red-server`; the [change record](Change%20Records/HDD%20Data%20Migration%20-%202026-07-22.md) holds the copy and mount details.
+- [x] 2026-07-22: Verified ext4 persistence, fail-closed startup, eight containers, VPN isolation, hard links, an existing-media read, and Quick Sync output before deleting the 10,615,586,954-byte NVMe source.
 
 ## Acquisition Test
 
-Completed items are recorded with evidence in the [application onboarding change record](Change%20Records/Media%20Stack%20Application%20Onboarding%20-%202026-07-17.md).
+Completed items are recorded with evidence in the [application onboarding change record](Change%20Records/Application%20Onboarding%20-%202026-07-17.md).
 
 - [x] 2026-07-17: Completed Jellyfin's guided setup and added the Movies and TV Shows libraries.
 - [x] 2026-07-17: Applied the Intel Quick Sync transcoding selections per my media settings research; I verify the tone-mapping fields below the captured viewport during the end-to-end test.
@@ -29,8 +29,8 @@ Completed items are recorded with evidence in the [application onboarding change
 - [ ] Decide whether Radarr gets anime handling. It keeps `HD-1080p` and Seerr has no Radarr anime route, so an anime film needs its profile set per movie or a second Radarr instance.
 - [ ] Consider Recyclarr against the `sonarr/templates/anime-remux-1080p.yml` template so the tier lists track SeaDex instead of staying a 2026-08-27 point-in-time copy. Drop the template's `quality_definition: type: anime` block for the single-instance reason above.
 
-## Backups, Capacity & Updates
+## Backups, Capacity and Updates
 
-- [x] 2026-07-25: Dropped the three open items I'd carried here: the `/opt/media-stack/config` backup-and-restore test, separate capacity alerts for the 100 GiB NVMe root & the 916 GiB HDD `/data` filesystem, & a defined refresh cadence for the floating `latest` tags. I decided they aren't worth tracking. The stack holds replaceable media and I refresh images when I'm already in the box, so nothing is open against Media Stack now.
-- [x] 2026-07-22: Published Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, & qBittorrent through internal HTTPS on NPM. Direct IP access remains available. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
-- [x] 2026-07-22: Corrected qBittorrent Host-header validation after the HTTPS hostname excluded Sonarr and Radarr's `gluetun:8080` path. Both saved-client tests, both health APIs, direct access, NPM HTTPS, & Proton port matching passed. See [qBittorrent Host Validation Blocked Arr Clients](Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) and incident [ASU-QBIT-20260722-001](../../../Security/Incidents/qBittorrent/Arr%20Client%20Outage%20-%202026-07-22.md).
+- [x] 2026-07-25: Dropped the three open items I'd carried here: the `/opt/media-stack/config` backup-and-restore test, separate capacity alerts for the 100 GiB NVMe root and the 916 GiB HDD `/data` filesystem, and a defined refresh cadence for the floating `latest` tags. I decided they aren't worth tracking: the stack holds replaceable media and I refresh images when I'm already in the box. The anime items above were opened later, on 2026-08-27.
+- [x] 2026-07-22: Published Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, and qBittorrent through internal HTTPS on NPM. Direct IP access remains available. See [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+- [x] 2026-07-22: Corrected qBittorrent Host-header validation after the HTTPS hostname excluded Sonarr and Radarr's `gluetun:8080` path. Both saved-client tests, both health APIs, direct access, NPM HTTPS, and Proton port matching passed. See [qBittorrent Host Validation Blocked Arr Clients](Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) and incident [ASU-QBIT-20260722-001](../../../Security/Incidents/qBittorrent/Arr%20Client%20Outage%20-%202026-07-22.md).

@@ -24,12 +24,12 @@ I did not publish TeamSpeak voice, ServerQuery, file-transfer, Playit, SSH, expo
 
 - I used `ts3-manager.alphasecunited.com` because certificate ID 1 covers one label beneath the base domain.
 - I kept the upstream on HTTP. TS3 Manager already listens on HTTP 9000, while NPM terminates the client TLS session.
-- I gave the route the same baseline as the other internal interfaces: Force SSL, HTTP/2, Block Common Exploits, WebSocket support, no HSTS, & no NPM access list.
-- I created a separate firewall policy instead of adding TCP 9000 to another host's policy. The saved rule names one source, one destination, & one port.
+- I gave the route the same baseline as the other internal interfaces: Force SSL, HTTP/2, Block Common Exploits, WebSocket support, no HSTS, and no NPM access list.
+- I created a separate firewall policy instead of adding TCP 9000 to another host's policy. The saved rule names one source, one destination, and one port.
 
 ## Step 1: Capture the Starting State
 
-I queried the NPM SQLite database read-only, listed UniFi DNS and NPM policies, checked the live listeners on `alpha-prod-01`, & tested the blocked backend path from `docker-network`.
+I queried the NPM SQLite database read-only, listed UniFi DNS and NPM policies, checked the live listeners on `alpha-prod-01`, and tested the blocked backend path from `docker-network`.
 
 I created a mode-0600 SQLite copy during the change, then deliberately deleted the file and its empty directory. No NPM backup from this work remains.
 
@@ -37,7 +37,7 @@ Evidence: [preflight and backup removal](../../Evidence/TS3%20Manager%20Internal
 
 ## Step 2: Add UniFi DNS and Firewall State
 
-I previewed both additions before applying them. The firewall preview named source `192.168.85.2`, destination `192.168.80.118`, protocol TCP, destination port `9000`, & logging enabled. The DNS preview named one TTL-300 A record pointing to NPM.
+I previewed both additions before applying them. The firewall preview named source `192.168.85.2`, destination `192.168.80.118`, protocol TCP, destination port `9000`, and logging enabled. The DNS preview named one TTL-300 A record pointing to NPM.
 
 | Item | Result |
 |---|---|
@@ -46,7 +46,7 @@ I previewed both additions before applying them. The firewall preview named sour
 | DNS record ID | `6a68b26f052792cd2140bfdc` |
 | Local A result | `ts3-manager.alphasecunited.com` to `192.168.85.2` |
 
-The saved policy readback returned one exact IPv4 source, one exact IPv4 destination, TCP 9000, `enabled: true`, & `logging: true`. After the rule landed, `docker-network` opened TCP 9000 and the backend returned HTTP `200`.
+The saved policy readback returned one exact IPv4 source, one exact IPv4 destination, TCP 9000, `enabled: true`, and `logging: true`. After the rule landed, `docker-network` opened TCP 9000 and the backend returned HTTP `200`.
 
 Evidence: [UniFi preview, application, and readback](../../Evidence/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28/Logs/S02-UniFi-DNS-and-Firewall-2026-07-28.md).
 
@@ -68,7 +68,7 @@ I created proxy host ID `22` with:
 | HSTS | Disabled |
 | Access list | None |
 
-NPM generated `data/nginx/proxy_host/22.conf`, and `nginx -t` passed. HTTP returned `301` to HTTPS, HTTPS returned `200`, & the presented wildcard certificate expires `2026-10-08 23:49:46 UTC`.
+NPM generated `data/nginx/proxy_host/22.conf`, and `nginx -t` passed. HTTP returned `301` to HTTPS, HTTPS returned `200`, and the presented wildcard certificate expires `2026-10-08 23:49:46 UTC`.
 
 Evidence: [NPM creation and route verification](../../Evidence/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28/Logs/S03-NPM-Proxy-Host-2026-07-28.md).
 
@@ -76,13 +76,13 @@ Evidence: [NPM creation and route verification](../../Evidence/TS3%20Manager%20I
 
 I added `https://ts3-manager.alphasecunited.com/` to the 60-second blackbox job. The candidate differed from the live Prometheus file by that one target line and passed `promtool check config`.
 
-The intended pre-change copy failed because `/home/dkadi/monitoring/backups/` did not exist. I preserved the live file's inode when deploying the candidate, sent Prometheus `SIGHUP`, & confirmed readiness. I later deliberately deleted the deployment candidate, temporary validator, reconstructed rollback file, & empty backup directory. No Prometheus backup from this work remains.
+The intended pre-change copy failed because `/home/dkadi/monitoring/backups/` did not exist. I preserved the live file's inode when deploying the candidate, sent Prometheus `SIGHUP`, and confirmed readiness. I later deliberately deleted the deployment candidate, temporary validator, reconstructed rollback file, and empty backup directory. No Prometheus backup from this work remains.
 
 The target validator returned 46 expected targets present and all `up`: 27 exporter targets and 19 blackbox services. The TS3 Manager blackbox target reported `up` with no last error.
 
-I restarted the NPM container. It returned to `running` and `healthy` with restart policy `unless-stopped`; the administrator UI returned `200`, `nginx -t` passed, & TS3 Manager still returned `301` over HTTP and `200` over HTTPS. All 20 saved proxy hosts returned an expected application status after the restart, with zero failed routes.
+I restarted the NPM container. It returned to `running` and `healthy` with restart policy `unless-stopped`; the administrator UI returned `200`, `nginx -t` passed, and TS3 Manager still returned `301` over HTTP and `200` over HTTPS. All 20 saved proxy hosts returned an expected application status after the restart, with zero failed routes.
 
-UniFi DNS returned `192.168.85.2`, Cloudflare's public resolver returned no A answer, & UniFi reported zero port-forward rules.
+UniFi DNS returned `192.168.85.2`, Cloudflare's public resolver returned no A answer, and UniFi reported zero port-forward rules.
 
 Evidence: [monitoring and final verification](../../Evidence/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28/Logs/S04-Monitoring-and-Final-Verification-2026-07-28.md).
 
@@ -97,10 +97,10 @@ Evidence: [monitoring and final verification](../../Evidence/TS3%20Manager%20Int
 
 ## Rollback Points
 
-For the route, I can delete NPM proxy host ID `22`, DNS record ID `6a68b26f052792cd2140bfdc`, & firewall policy ID `6a68b26e052792cd2140bfd9`. Direct access at `http://192.168.80.118:9000` remains available.
+For the route, I can delete NPM proxy host ID `22`, DNS record ID `6a68b26f052792cd2140bfdc`, and firewall policy ID `6a68b26e052792cd2140bfd9`. Direct access at `http://192.168.80.118:9000` remains available.
 
-Monitoring rollback means removing the TS3 Manager target from the versioned and live Prometheus files, validating with `promtool`, & sending Prometheus `SIGHUP`. There is no backup file to restore.
+Monitoring rollback means removing the TS3 Manager target from the versioned and live Prometheus files, validating with `promtool`, and sending Prometheus `SIGHUP`. There is no backup file to restore.
 
 ## Remaining Work
 
-None. I kept Kasm, Coolify, Proxmox, NPM administration, exporters, & every other direct interface outside this change.
+None. I kept Kasm, Coolify, Proxmox, NPM administration, exporters, and every other direct interface outside this change.

@@ -85,4 +85,4 @@ Read back from `HQ-DC01` on 2026-09-09 and again on 2026-09-10 after the time ch
 
 ## Evidence
 
-Screenshot slots for this job are described in the [evidence index](../../Evidence/Forest%20Build%20-%202026-09-09/Evidence-Index.md). The build ran through a shell rather than a console, so the captures that exist are command output rather than images, and the index says which images would be worth adding.
+The build ran through a shell on each server. The verification output is in the Verification section above; the [evidence folder](../../Evidence/Forest%20Build%20-%202026-09-09/Evidence-Index.md) holds no screenshots.

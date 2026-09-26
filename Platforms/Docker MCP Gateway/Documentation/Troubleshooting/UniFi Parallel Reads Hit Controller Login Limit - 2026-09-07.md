@@ -1,7 +1,7 @@
 # UniFi Parallel Reads Hit Controller Login Limit
 
 **Created:** 2026-09-07  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 ## Symptom
 
@@ -13,7 +13,7 @@ I checked the gateway host through SSH Manager MCP. Executor and both gateway co
 
 After waiting, I read each of the three previously failing groups sequentially through UniFi MCP. All three succeeded. At 10:21 AM Eastern I repeated the six parallel detail reads while collecting filtered logs from the managed UniFi MCP containers on `docker-blue`. Four calls succeeded and two failed. A failing container logged HTTP 429 with `You've reached the login attempt limit`, then blocked reconnects for 60 seconds. The firewall tool reduced that authentication error to `Not connected to controller`.
 
-The gateway started separate short-lived UniFi MCP containers for the requests. Each initialized its own controller connection and logged in, so parallel reads became a burst of logins. The controller rejected that burst. I captured the diagnostic output in the working session; I did not retain a separate complete terminal transcript.
+The gateway started separate short-lived UniFi MCP containers for the requests. Each initialized its own controller connection and logged in, so parallel reads became a burst of logins. The controller rejected that burst.
 
 The installed source confirms the error path: `firewall_manager.py` calls `ensure_connected()` at lines 1405–1406 and replaces a false result with the generic error. `connection_manager.py` logs terminal authentication failures, blocks reconnects, and returns false from initialization. These paths are inside `/app/packages/unifi-core/src/unifi_core/network/managers/` in `homelab/unifi-network-mcp:0.29.3-full-access`.
 

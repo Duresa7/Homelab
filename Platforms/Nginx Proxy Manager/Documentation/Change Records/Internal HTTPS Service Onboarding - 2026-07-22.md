@@ -8,9 +8,9 @@
 
 ## Scope
 
-I added 19 internal service names behind Nginx Proxy Manager. UniFi resolves each name to `192.168.85.2`; NPM forwards it to the existing web listener and presents the existing Let's Encrypt wildcard certificate. I kept NPM administration at `http://192.168.85.2:81`, left direct IP-and-port access available, made no public DNS records, & added no WAN ingress.
+I added 19 internal service names behind Nginx Proxy Manager. UniFi resolves each name to `192.168.85.2`; NPM forwards it to the existing web listener and presents the existing Let's Encrypt wildcard certificate. I kept NPM administration at `http://192.168.85.2:81`, left direct IP-and-port access available, made no public DNS records, and added no WAN ingress.
 
-Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent ports, Splunk HEC/syslog/management, Forgejo SSH, & Syncthing transfer ports remain outside NPM.
+Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent ports, Splunk HEC/syslog/management, Forgejo SSH, and Syncthing transfer ports remain outside NPM.
 
 ## Starting State
 
@@ -26,12 +26,12 @@ Backend-only databases, Redis, `guacd`, FlareSolverr, exporters, Wazuh agent por
 - I used direct names such as `jellyfin.alphasecunited.com` because the existing wildcard certificate covers one label beneath the base domain.
 - I assigned WebSocket support to every host. That keeps the shared baseline simple and preserves the applications that need upgraded connections.
 - I kept HSTS disabled. Force SSL provides the required redirect without making rollback dependent on a cached HSTS policy.
-- I used HTTPS upstreams only for Portainer 9443, Wazuh 443, & Splunk 8000. All other NPM-to-application connections use HTTP on the internal network.
-- I left each application's own authentication in place. I added no NPM access list to Prometheus or the dashboard because the approved scope didn't call for one.
+- I used HTTPS upstreams only for Portainer 9443, Wazuh 443, and Splunk 8000. All other NPM-to-application connections use HTTP on the internal network.
+- I left each application's own authentication in place. I added no NPM access list to Prometheus or the dashboard because my scope for the change didn't call for one.
 
 ## Step 1: Capture Recovery Points
 
-I captured the mutable NPM, Docker Main, Media Stack, Ansible, & security-monitoring configuration before changing it.
+I captured the mutable NPM, Docker Main, Media Stack, Ansible, and security-monitoring configuration before changing it.
 
 | Target | Recovery point | SHA-256 or note |
 |---|---|---|
@@ -41,7 +41,7 @@ I captured the mutable NPM, Docker Main, Media Stack, Ansible, & security-monito
 | Ansible | `/var/lib/vz/dump/internal-https-2026-07-22-prechange/ansible-01-configs.tar.gz` | `85cd68768ed57f47c0d60fd0177e3a82d1590ccb66493baf24778c35d53dfb26` |
 | Security monitoring | `/home/dkadi/backups/internal-https-2026-07-22-prechange/security-monitoring-compose-sanitized.tar.gz` | Sanitized Compose backup; no password retained |
 
-I didn't change Splunk configuration, so I kept its current service state as the rollback baseline instead of bypassing permissions to archive unrelated files. The NPM recovery point included the SQLite database, generated hosts, ACME state, & certificate files needed to restore the proxy layer.
+I didn't change Splunk configuration, so I kept its current service state as the rollback baseline instead of bypassing permissions to archive unrelated files. The NPM recovery point included the SQLite database, generated hosts, ACME state, and certificate files needed to restore the proxy layer.
 
 Evidence: [Step 1 recovery-point verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S01-Recovery-Points-2026-07-22.md). The exact creation commands weren't retained outside the task transcript; the log records the verified artifacts and the permission failures without reconstructing commands.
 
@@ -52,19 +52,19 @@ I deleted all six project-created archives after implementation, deliberately. T
 I made only the application changes needed for the new names:
 
 - Jellyfin now advertises `https://jellyfin.alphasecunited.com` and trusts NPM address `192.168.85.2` as a proxy.
-- qBittorrent accepts `qbittorrent.alphasecunited.com`, internal Docker hostname `gluetun`, & direct address `192.168.40.42` as WebUI server domains.
+- qBittorrent accepts `qbittorrent.alphasecunited.com`, internal Docker hostname `gluetun`, and direct address `192.168.40.42` as WebUI server domains.
 - Semaphore's `web_host` uses `https://semaphore.alphasecunited.com`.
 - Forgejo's `DOMAIN` and `ROOT_URL` use the new HTTPS host. `SSH_DOMAIN` remains `192.168.40.35`.
 - Grafana's domain and root URL use `https://grafana.alphasecunited.com` while its container listener stays HTTP.
 - Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`.
 - Syncthing's server GUI now binds on `0.0.0.0:8384` so NPM can reach it. Its synchronization listeners and peer paths are unchanged.
-- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, & verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Plaintext%20Administrator%20Credential%20-%202026-07-22.md) records the exposure boundary and corrective actions without retaining the credential.
+- I removed Grafana's bootstrap administrator password from Compose, rotated the administrator password, and verified an authenticated request. The linked [Grafana incident report](../../../../Security/Incidents/Grafana/Plaintext%20Administrator%20Credential%20-%202026-07-22.md) records the exposure boundary and corrective actions without retaining the credential.
 
 Recreating the Media Stack pulled the current floating Gluetun and qBittorrent images because that Compose project intentionally uses `pull_policy: always`. Both containers returned running, Jellyfin returned `Healthy`, and qBittorrent's WebUI answered afterward.
 
 That image replacement was an unplanned consequence of applying the Compose change, not a requested application upgrade. The former floating image digests weren't recorded by Compose, and I later deleted the project-created pre-change archive deliberately. I accepted the running replacements only after the media containers and proxy paths passed health checks.
 
-The first qBittorrent domain value contained only the NPM hostname. That made the proxy route pass while qBittorrent rejected Sonarr and Radarr requests carrying `Host: gluetun:8080` with HTTP `401`. At 20:49 EDT I added `gluetun` and `192.168.40.42` without disabling Host-header validation. Both Arr saved-client tests then returned HTTP `200`; the [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) holds the reproduction, root cause, correction, & verification.
+The first qBittorrent domain value contained only the NPM hostname. That made the proxy route pass while qBittorrent rejected Sonarr and Radarr requests carrying `Host: gluetun:8080` with HTTP `401`. At 20:49 EDT I added `gluetun` and `192.168.40.42` without disabling Host-header validation. Both Arr saved-client tests then returned HTTP `200`; the [troubleshooting record](../../../Media%20Stack/Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) holds the reproduction, root cause, correction, and verification.
 
 Evidence: [Step 2 backend compatibility verification](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S02-Backend-Compatibility-Verification-2026-07-22.md). The fresh readback records exact verification commands and outputs; the original edit commands remain only in the task transcript.
 
@@ -88,7 +88,7 @@ Evidence: [Step 3 UniFi readback](../../Evidence/Internal%20HTTPS%20Service%20On
 
 ## Step 4: Create the NPM Proxy Hosts
 
-I created the 19 hosts listed in the [proxy-host inventory](../../Configuration/internal-proxy-hosts.md). All use certificate ID 1 with Force SSL, HTTP/2, Block Common Exploits, WebSocket support, & no HSTS. The existing NetBird host is still ID 1 and wasn't edited.
+I created the 19 hosts listed in the [proxy-host inventory](../../Configuration/internal-proxy-hosts.md). All use certificate ID 1 with Force SSL, HTTP/2, Block Common Exploits, WebSocket support, and no HSTS. The existing NetBird host is still ID 1 and wasn't edited.
 
 Immich uses this extra Nginx configuration:
 
@@ -101,7 +101,7 @@ proxy_send_timeout 600s;
 send_timeout 600s;
 ```
 
-The final NPM table shows every new host Online. The retained inventory is split into three viewport captures so every row stays readable: [top](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04A-NPM-Proxy-Hosts-2026-07-22.png), [middle](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04B-NPM-Proxy-Hosts-2026-07-22.png), & [bottom](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04C-NPM-Proxy-Hosts-2026-07-22.png). Browser screenshots don't render the mouse pointer, so no cursor appears. The [Step 4 NPM state readback](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S04-NPM-State-Readback-2026-07-22.md) records the textual before state, database query, final controls, & Immich snippet. No pre-change browser screenshot was retained.
+The final NPM table shows every new host Online. The retained inventory is split into three viewport captures so every row stays readable: [top](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04A-NPM-Proxy-Hosts-2026-07-22.png), [middle](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04B-NPM-Proxy-Hosts-2026-07-22.png), and [bottom](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Screenshots/S04C-NPM-Proxy-Hosts-2026-07-22.png). Browser screenshots don't render the mouse pointer, so no cursor appears. The [Step 4 NPM state readback](../../Evidence/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22/Logs/S04-NPM-State-Readback-2026-07-22.md) records the textual before state, database query, final controls, and Immich snippet. No pre-change browser screenshot was retained.
 
 ## Step 5: Verify the Result
 
@@ -113,8 +113,8 @@ I verified the complete route set from an Internal-zone Windows client:
 - Every host presented the same `CN=*.alphasecunited.com` certificate, with the same thumbprint prefix and 2026-10-08 expiry. Normal certificate validation succeeded.
 - Cloudflare DNS-over-HTTPS returned NXDOMAIN (`Rcode 3`) for all 19 public A queries.
 - UniFi reported zero port-forward rules, so TCP 80 and 443 on `192.168.85.2` have no WAN NAT path.
-- Jellyfin `/health`, Immich `/api/server/ping`, Portainer `/api/status`, Syncthing `/rest/noauth/health`, Grafana `/api/health`, & Prometheus `/-/healthy` returned HTTP 200.
-- Semaphore, Termix, & Splunk login pages returned HTTP 200 through their new names. Forgejo's public API rejected an unauthenticated version request with 403, while its web root returned HTTP 200.
+- Jellyfin `/health`, Immich `/api/server/ping`, Portainer `/api/status`, Syncthing `/rest/noauth/health`, Grafana `/api/health`, and Prometheus `/-/healthy` returned HTTP 200.
+- Semaphore, Termix, and Splunk login pages returned HTTP 200 through their new names. Forgejo's public API rejected an unauthenticated version request with 403, while its web root returned HTTP 200.
 - NPM passed `nginx -t`. A controlled container restart reached `running healthy`; all 19 HTTPS routes still answered afterward.
 - NPM's recent proxy access logs contained zero 502 or 504 responses.
 
@@ -145,7 +145,7 @@ For the whole change, I disable the five new firewall policies and remove the 19
 
 The infrastructure work finished on 2026-07-22. I ran the remaining acceptance checks from my own authenticated sessions and a connected VPN client, and closed them on 2026-07-25:
 
-- from an actual VPN client, resolve one name in each backend zone, open HTTPS, & verify the wildcard certificate;
+- from an actual VPN client, resolve one name in each backend zone, open HTTPS, and verify the wildcard certificate;
 - play media in Jellyfin;
 - upload a test item through Immich;
 - open a Termix terminal session;

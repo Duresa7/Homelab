@@ -299,7 +299,7 @@ def main() -> int:
         if marker not in rootpw_text:
             errors.append(message)
         elif rootpw_text.index(marker) > rootpw_text.index("Point sudo at the root password"):
-            errors.append(f"{message} — the check runs after the file is written")
+            errors.append(f"{message}: the check runs after the file is written")
     if "root_password | length > 0" not in rootpw_text:
         errors.append("the rootpw play must refuse to run without both credentials")
     if "$6$" in rootpw_text:

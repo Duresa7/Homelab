@@ -1,7 +1,7 @@
 # Single-File Bind Mount Retained the Old Inode
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-08-06
+**Last updated:** 2026-09-25
 
 > Cause removed on 2026-08-06. I replaced the single-file bind mount with a directory mount, so the failure described below can no longer happen. The third recurrence is what finally justified the change; see the bottom of this record.
 
@@ -19,7 +19,7 @@ I copied the validated host file through the existing writable mount without rep
 docker exec -i -u 0 prometheus sh -c 'cat > /etc/prometheus/prometheus.yml' < /home/dkadi/monitoring/prometheus.yml
 ```
 
-The host and container SHA-256 digests then matched at `6c552c06b9109f146b5d02b6bd68db35d8fcc19b8ed815f8356d907fe97a5924`. `promtool` passed, Prometheus reloaded on `SIGHUP`, & a check against the 20 active target labels found 20 `probe_success=1` results and no failure. I did not restart the container.
+The host and container SHA-256 digests then matched at `6c552c06b9109f146b5d02b6bd68db35d8fcc19b8ed815f8356d907fe97a5924`. `promtool` passed, Prometheus reloaded on `SIGHUP`, and a check against the 20 active target labels found 20 `probe_success=1` results and no failure. I did not restart the container.
 
 For later single-file changes, I write through the existing inode or recreate the container. I don't use `sed -i`, `mv`, or another path-replacement operation on a file bind-mounted into a running container.
 
@@ -27,7 +27,7 @@ For later single-file changes, I write through the existing inode or recreate th
 
 It happened again while I removed the Syncthing blackbox probe. I edited the host file with `sed -i`, and the reload reported success twice while Prometheus kept serving the old target list. `POST /-/reload` returned HTTP 403 with `Lifecycle API is not enabled`, and `SIGHUP` changed nothing. Only a container recreate applied the edit.
 
-Three occurrences of one failure is a design problem, not an operator problem. The rule at the end of the section above had been written down since 2026-07-28 and did not prevent the third one, because the trap is silent and the workaround depends on remembering it at the moment of the edit.
+Three occurrences of one failure is a design problem, not a matter of care at the keyboard. The rule at the end of the section above had been written down since 2026-07-28 and did not prevent the third one, because the trap is silent and the workaround depends on remembering it at the moment of the edit.
 
 So I removed the cause. `prometheus.yml` moved to `/home/dkadi/monitoring/prometheus-config/`, and the Compose volume became a directory mount:
 

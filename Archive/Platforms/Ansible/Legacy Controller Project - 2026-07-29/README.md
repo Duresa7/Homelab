@@ -1,7 +1,7 @@
 # Legacy Controller Project
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-09-25
 
 **Captured:** 2026-07-29
 
@@ -25,7 +25,7 @@ Ansible doesn't search parent directories for `ansible.cfg`, so this copy only e
 
 ## The two inventory files
 
-`hosts.ini.bak.security-a-20260712-215740` is a backup taken during the [Security-A migration](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) on 2026-07-12. It differs from `hosts.ini` in two lines and nothing else: `security-01` was at `192.168.70.20` before the migration and `192.168.72.2` after, and `splunk-siem` at `192.168.72.3` didn't exist yet. That's the migration, visible in one diff.
+`hosts.ini.bak.security-a-20260712-215740` is a backup taken during the [Security-A migration](../../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) on 2026-07-12. It differs from `hosts.ini` in two lines and nothing else: `security-01` was at `192.168.70.20` before the migration and `192.168.72.2` after, and `splunk-siem` at `192.168.72.3` didn't exist yet. That's the migration, visible in one diff. I keep that backup locally and do not publish it; the other four files here are published.
 
 ## The 2026-07-14 controller backups
 

@@ -1,0 +1,36 @@
+{
+  "VerifiedAt": "2026-09-23T19:29:07.0892169-04:00",
+  "Hostname": "WIN11-DEV",
+  "OS": "Microsoft Windows 11 Pro",
+  "Version": "10.0.26200",
+  "LastBoot": "/Date(1790206092500)/",
+  "MemoryGiB": 7.93,
+  "CPU": "AMD Ryzen 7 3700X 8-Core Processor             ",
+  "PartOfDomain": false,
+  "Workgroup": "WORKGROUP",
+  "SecureBoot": true,
+  "TpmPresent": true,
+  "TpmReady": true,
+  "DeviceErrors": 0,
+  "BitLocker": {
+    "MountPoint": "C:",
+    "VolumeStatus": 1,
+    "ProtectionStatus": 0
+  },
+  "Services": [
+    {
+      "Name": "QEMU-GA",
+      "State": "Running",
+      "StartMode": "Auto"
+    },
+    {
+      "Name": "sshd",
+      "State": "Running",
+      "StartMode": "Auto"
+    }
+  ],
+  "IPv4": {
+    "IPAddress": "192.168.40.117",
+    "PrefixLength": 24
+  }
+}

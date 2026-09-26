@@ -1,7 +1,7 @@
 # Windows Admin Center
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-25
 
 I run Windows Admin Center on `HQ-MGT01`, VM 303 at `192.168.65.12` in IDENTITY-A, VLAN 65. I installed it on 2026-09-11 and verified the deployment on 2026-09-12.
 
@@ -18,10 +18,10 @@ I run Windows Admin Center on `HQ-MGT01`, VM 303 at `192.168.65.12` in IDENTITY-
 
 I verified DK-user's domain and gateway administration on 2026-09-12. All five WAC operating-system queries return HTTP 200 using the same gateway session, with no separate target credentials. Fresh Kerberos over HTTPS sessions on all five targets also report elevated administrator tokens. The gateway now uses WinRM HTTPS on TCP 5986; each target admits it only from HQ-MGT01, and HQ-MGT01 trusts the five target certificates. This resolved ObiPC's HTTP WinRM connection failures during intrusion prevention.
 
-I sign in with my regular domain account, recorded as DK-user, using `ALPHASEC\<YOUR_DOMAIN_USERNAME>` and its usual password. After the administrative group changes I must sign out of WAC and sign back in, then use **Use my Windows account** for target connections. The original setup used HQ-MGT01's LAPS-managed local Administrator; that is no longer required for this everyday workflow.
+I sign in with my regular domain account, recorded as DK-user, using `ALPHASEC\DK-user` and its usual password. After the administrative group changes I must sign out of WAC and sign back in, then use **Use my Windows account** for target connections. The original setup used HQ-MGT01's LAPS-managed local Administrator; that is no longer required for this everyday workflow.
 
 The [original deployment](Documentation/Change%20Records/Deployment%20-%202026-09-12.md) records installation. [Owner Domain Administration](../Active%20Directory/Documentation/Change%20Records/Owner%20Domain%20Administration%20-%202026-09-12.md) records the role changes, delegation, HTTPS transport, all-five verification, and credential cleanup. The [credentials troubleshooting record](Documentation/Troubleshooting/HQ-MGT01%20Connection%20Credentials%20-%202026-09-12.md) records the original failure and resolution.
 
 The browser certificate expires 2026-11-10. The five WinRM certificates expire 2027-09-12 and require renewal and trust updates on HQ-MGT01. The [Active Directory TODO](../Active%20Directory/Documentation/TODO.md) tracks certificates, future-target onboarding, optional browser management exercises, and RSAT.
 
-On 2026-09-12, I checked Azure Arc agent presence over SSH on `HQ-DC01`, `HQ-DC02`, and `HQ-MGT01`. All three returned `False` for `C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe` and no services named `himds`, `GCArcService`, or `ExtensionService`. The commands returned exit code 1 with empty stderr after the missing-service queries. I found no Azure Arc deployment record in the repository. This check covers those three Windows servers; I did not inspect Azure resource inventory or the Linux fleet. I made no host changes and retained no separate transcript.
+In an earlier check on 2026-09-12, I looked for the Azure Arc agent over SSH on `HQ-DC01`, `HQ-DC02`, and `HQ-MGT01`. All three returned `False` for `C:\Program Files\AzureConnectedMachineAgent\azcmagent.exe` and no services named `himds`, `GCArcService`, or `ExtensionService`. The commands returned exit code 1 with empty stderr after the missing-service queries. This check covers those three Windows servers; I did not inspect Azure resource inventory or the Linux fleet. I made no host changes and retained no separate transcript. Later that day HQ-MGT01 was connected to Azure Arc; see [Azure Arc](../Azure%20Arc/README.md). On 2026-09-25 `himds` was Running and `azcmagent show` reported Connected, agent 1.67.03504.3207. The same readback found Windows Admin Center 2.7.21.5 with the `WindowsAdminCenter` and `WindowsAdminCenterAccountManagement` services running.

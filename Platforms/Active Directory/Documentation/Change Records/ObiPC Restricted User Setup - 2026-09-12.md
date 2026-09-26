@@ -1,7 +1,7 @@
 # ObiPC Restricted User Setup
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-25
 
 `IK-user` is a software developer using `ObiPC`, and I wanted that account allowlisted rather than trusted: an approved set of applications, a Settings app that stays out of his way but does not let him change the machine, no installing software without my approval, and a limit on how long the machine is used each day. This record is the whole job, from the design through to enforcement, all on 2026-09-12. **It is in force.** By the end of the day `IK-user` was running under the allowlist on his own live session.
 
@@ -75,7 +75,7 @@ Correction, 2026-09-18: `hideonly:` is not a documented prefix. Microsoft docume
 
 **Bug 2: the missing `Everyone` baseline.** My first design allowed `%WINDIR%` and `%PROGRAMFILES%` only to the restricted and unrestricted groups, not to `Everyone`. Because `IK-user` had signed in at 9:58 AM, before I created `ROL-ObiPC-Restricted` at about 10:40 AM, his logon token did not carry the group SID, so he matched no allow rule and the machine began blocking core binaries. The event log showed 70 blocks in two minutes, Chrome among them 39 times, plus `dllhost.exe`, `pickerhost.exe`, and `taskhostw.exe`. I rewrote the policy with an `Everyone` baseline for the Windows and Program Files trees, re-imported, and refreshed policy. Blocks stopped at once: since the fix, the only denials were per-user installs in his profile, which is the intended behaviour.
 
-To bind the group into his token, and with your go-ahead to interrupt him, I warned his session and signed it out. He signed back in immediately as session 2 at 11:03 AM, now carrying `ROL-ObiPC-Restricted`.
+To bind the group into his token, having decided to interrupt him, I warned his session and signed it out. He signed back in immediately as session 2 at 11:03 AM, now carrying `ROL-ObiPC-Restricted`.
 
 ## Verification, from the live machine
 
@@ -94,7 +94,7 @@ I did not get a clean result from `Test-AppLockerPolicy` for the `C:\Dev`-allow 
 
 ## Open
 
-- **OneDrive.** Its self-updater runs from `%LOCALAPPDATA%\Microsoft\OneDrive`, which the allowlist blocks. If `IK-user` needs OneDrive, it wants a machine-wide install and a path rule, or a publisher rule for Microsoft OneDrive. Left as your decision rather than punching a per-user hole silently.
+- **OneDrive.** Its self-updater runs from `%LOCALAPPDATA%\Microsoft\OneDrive`, which the allowlist blocks. If `IK-user` needs OneDrive, it wants a machine-wide install and a path rule, or a publisher rule for Microsoft OneDrive. Left as an open decision rather than punching a per-user hole silently.
 - **Deploy Git, Node.js, Python** from Action1. Until then his toolchain is Chrome and VS Code.
 - **Review the Script audit log** after he has worked for a while, then decide whether to enforce that collection.
 - **`userWorkstations` and Kerberos.** With the account pinned to `OBIPC`, it cannot sign in to another domain machine; if that is ever needed, the value has to be widened.

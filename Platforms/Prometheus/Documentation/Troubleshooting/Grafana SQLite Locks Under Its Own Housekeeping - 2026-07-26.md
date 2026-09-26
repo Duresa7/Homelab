@@ -72,10 +72,10 @@ Grafana still reads the variable. It logs `Config overridden from Environment va
 logger=sqlstore level=info msg="Using SQLite driver" driver=modernc.org/sqlite
 ```
 
-12.4.1 produced `-wal` & `-shm` files; 13.1.1 doesn't. Three checks on the running container:
+12.4.1 produced `-wal` and `-shm` files; 13.1.1 doesn't. Three checks on the running container:
 
 - `/var/lib/grafana/` holds `grafana.db` alone. No `-wal`, no `-shm`. SQLite creates both the moment a WAL database is opened, and Grafana holds four descriptors on the file.
-- Bytes 18 and 19 of the file header read `1 1`. That's the rollback journal. A WAL database reads `2 2`, & the value is written into the file, so it isn't a timing artifact.
+- Bytes 18 and 19 of the file header read `1 1`. That's the rollback journal. A WAL database reads `2 2`, and the value is written into the file, so it isn't a timing artifact.
 - `SQLITE_BUSY` came back at `19:29:06Z`, sixteen minutes after start: `Database locked, sleeping then retrying ... retry=0 sleep=9.963223ms`.
 
 I did not establish why Grafana reads the variable without changing the database journal mode. The environment value, file header, and sidecar files establish the resulting state without relying on a theory about Grafana's internals.

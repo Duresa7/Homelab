@@ -88,7 +88,7 @@ The `wazuh` supplementary group is what lets it read `alerts.json`, which is `-r
 
 **Every agent is represented.** All 16 agents, including the manager's own agent 000, have written alerts into the index. `agent_control -l` shows the same 16 as Active.
 
-Captures are in [Evidence](../../Evidence/Wazuh%20Alert%20Forwarding%20to%20Splunk%20-%202026-08-29/).
+Captures are in [Evidence](../../Evidence/Alert%20Forwarding%20to%20Splunk%20-%202026-08-29).
 
 ## What this turned up
 

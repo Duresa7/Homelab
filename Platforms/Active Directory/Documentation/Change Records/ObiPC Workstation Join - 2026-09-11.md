@@ -3,7 +3,7 @@
 **Created:** 2026-09-11  
 **Last updated:** 2026-09-11
 
-`ObiPC` is the first physical machine on the domain and the first workstation meant for people rather than for proving a policy. Its hardware is in [ObiPC specifications](../../../../Infrastructure/Hardware/ObiPC_Specs.md). Physical machines take the names I give them, one at a time; the `HQ-` scheme stays with the virtual servers and the test workstation.
+`ObiPC` is the first physical machine on the domain and the first workstation meant for people rather than for proving a policy. Its hardware is in [ObiPC specifications](../../../../Infrastructure/Hardware/Workstations/ObiPC.md). Physical machines take the names I give them, one at a time; the `HQ-` scheme stays with the virtual servers and the test workstation.
 
 ## Placement
 

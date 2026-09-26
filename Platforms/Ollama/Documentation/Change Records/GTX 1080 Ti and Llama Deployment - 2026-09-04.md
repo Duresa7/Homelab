@@ -1,7 +1,7 @@
 # GTX 1080 Ti and Llama Deployment
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-25
 
 ## Date
 
@@ -11,11 +11,11 @@ I completed this deployment on 2026-09-04.
 
 I attached the GTX 1080 Ti in `grey-server` to LXC 110 `docker-main`, repaired the existing patched NVIDIA driver for the running and next Proxmox kernels, installed the current NVIDIA container runtime, and deployed the current Ollama release with Llama 3.1 8B. I kept the existing Docker workloads in place and took no snapshot or backup.
 
-The [research record](../../../../Infrastructure/Compute/Galaxy/Documentation/Ollama%20GPU%20Docker%20Deployment%20Research%20-%202026-09-04.md) found Ollama 0.33.3 and NVIDIA Container Toolkit 1.20.0-1 current on the deployment date. It also established that Pascal support ends with NVIDIA's proprietary R580 branch. I therefore did not replace the known-working 580.159.03 driver with an unrelated driver upgrade during this deployment.
+The [research record](../GPU%20Docker%20Deployment%20Research%20-%202026-09-04.md) found Ollama 0.33.3 and NVIDIA Container Toolkit 1.20.0-1 current on the deployment date. It also established that Pascal support ends with NVIDIA's proprietary R580 branch. I therefore did not replace the known-working 580.159.03 driver with an unrelated driver upgrade during this deployment.
 
 ## Starting State
 
-`docker-main` already had the requested 16 GiB memory allocation, 13 running containers, 13 GiB memory available, and 66 GiB free on its root filesystem. Docker 29.8.0 and Compose 5.5.1 were running. All defined container health checks passed and every restart count was zero. Nothing listened on TCP 11434.
+`docker-main` already had the planned 16 GiB memory allocation, 13 running containers, 13 GiB memory available, and 66 GiB free on its root filesystem. Docker 29.8.0 and Compose 5.5.1 were running. All defined container health checks passed and every restart count was zero. Nothing listened on TCP 11434.
 
 The host saw the GTX 1080 Ti on PCI address `0000:2b:00.0`, but `nvidia-smi` failed because no NVIDIA module was loaded. The patched 580.159.03 DKMS source remained at `/usr/src/nvidia-580.159.03`; it was installed only for kernel `7.0.14-6-pve`. Grey was running `7.0.14-8-pve`, already had `7.0.14-15-pve` installed for its next reboot, and lacked headers and driver builds for both. The existing `nvidia-lxc-devices.service` had failed at boot for the same reason.
 
@@ -63,4 +63,4 @@ I added Ollama to the fleet-update inventory as the eighth managed Compose proje
 
 ## Remaining Work
 
-No work remains for the requested deployment. The host still runs `7.0.14-8-pve` until the separately planned Galaxy rolling reboot; 580.159.03 is already built for installed kernel `7.0.14-15-pve`.
+No work remains for this deployment. The host still runs `7.0.14-8-pve` until the separately planned Galaxy rolling reboot; 580.159.03 is already built for installed kernel `7.0.14-15-pve`.
