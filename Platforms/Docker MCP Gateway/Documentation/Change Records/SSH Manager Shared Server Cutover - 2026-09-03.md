@@ -1,7 +1,7 @@
 # SSH Manager Shared Server Cutover
 
 **Created:** 2026-09-03  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-25
 
 **Implementation date:** 2026-09-03  
 **Status:** Complete; nightly restart timer added the same day  
@@ -23,7 +23,7 @@ Four options were on the table. Dropping `longLived` gives a container per call 
 
 The catalog entry changed from `type: server` with an image to `type: remote` at `http://ssh-manager:8080/mcp` over the project network, published on no host port. The gateway rejects a non-HTTPS remote, so its service sets `DOCKER_MCP_ALLOW_INSECURE_REMOTE_URLS=1`, and `--long-lived`, `--cpus`, `--memory` and `--secrets` came off its command because none applies to a remote server.
 
-The eighteen server definitions moved out of the catalog into `ssh-manager-servers.env`, which is tracked, and the private key and ten sudo passwords moved from the gateway secret store into the root-owned `ssh-manager.env` at mode `0600`. Both are read by the new service through `env_file`. The key is written to a `/keys` tmpfs at mode `0600` at start rather than into the container filesystem. The `ssh-manager-state` volume is now declared `external` because the gateway created it unprefixed; it carries the enrolled host keys and the server's persisted local configuration unchanged. The service runs with `init`, all capabilities dropped, `no-new-privileges`, a 256-process limit, 512 MiB and one CPU.
+The eighteen server definitions moved out of the catalog into `ssh-manager-servers.env`. I first wrote here that the file is tracked; that was wrong, because `.gitignore` excludes `*.env`, so it exists only on the host and as a local copy under `Configuration/` (corrected 2026-09-25). The private key and ten sudo passwords moved from the gateway secret store into the root-owned `ssh-manager.env` at mode `0600`. Both are read by the new service through `env_file`. The key is written to a `/keys` tmpfs at mode `0600` at start rather than into the container filesystem. The `ssh-manager-state` volume is now declared `external` because the gateway created it unprefixed; it carries the enrolled host keys and the server's persisted local configuration unchanged. The service runs with `init`, all capabilities dropped, `no-new-privileges`, a 256-process limit, 512 MiB and one CPU.
 
 I ran the [cutover script](../../Scripts/ssh-manager-shared-server-cutover.sh), which backs up the live Compose file and catalog, installs the staged files, derives the new env file from the old secret file, builds, waits on both health checks, confirms the gateway lists 37 tools, and restores everything on any failure. Its first run exited silently without rolling back: `[ $i -gt 30 ] && { ...; }` returns non-zero when the condition is false, and under `set -e` that ends the script. The waits use `if` now. The UniFi gateway was not touched and stayed up throughout.
 
@@ -60,6 +60,6 @@ Two upstream behaviours are worth watching. A gateway release that shares one ma
 
 - [Managed SSH Manager containers accumulated under long-lived](../Troubleshooting/Managed%20SSH%20Manager%20Containers%20Accumulated%20Under%20long-lived%20-%202026-09-03.md)
 - [SSH Manager gateway process exhaustion](SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md)
-- [Docker MCP Gateway v2 compatibility rollback](Docker%20MCP%20Gateway%20v2%20Compatibility%20Rollback%20-%202026-09-03.md)
+- [Docker MCP Gateway v2 compatibility rollback](v2%20Compatibility%20Rollback%20-%202026-09-03.md)
 - [SSH Manager MCP integration](SSH%20Manager%20MCP%20Integration%20-%202026-08-31.md)
 - [Executor integration separation](../../../Executor/Documentation/Change%20Records/MCP%20Integration%20Separation%20-%202026-08-31.md)

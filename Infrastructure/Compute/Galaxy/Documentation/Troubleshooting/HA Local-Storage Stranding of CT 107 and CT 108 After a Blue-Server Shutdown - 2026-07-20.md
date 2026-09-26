@@ -33,5 +33,5 @@ The data was safe on blue, so this was a config-and-disk reunion, not a restore.
 ## Related records
 
 - Full write-up, screenshots, & log transcripts in the [Galaxy HA Local-Storage Stranding Incident report](../../../../../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md).
-- The [Docker-Network LXC deployment record](../Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) documented the no-failover caveat this incident exercised.
+- The [Docker-Network LXC deployment record](../Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) documented the no-failover caveat this incident exercised.
 - blue's back-to-back reboot & shutdown may relate to the [recurring pvestatd failure on blue-server](Recurring%20pvestatd%20Failure%20on%20blue-server%20-%202026-07-13.md).

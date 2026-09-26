@@ -1,11 +1,11 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-09-25
 
-I removed disconnected `game-01` agent 018 on 2026-09-12. The manager now lists 15 remote agents, all active, and no Game 01 enrollment. Earlier counts below remain dated observations.
+On 2026-09-24 `agent_control -l` listed 15 remote agents plus the manager, all active: IDs `004` to `011`, `013` to `017`, `020` and `021`. I removed disconnected `game-01` agent 018 on 2026-09-12. Earlier counts below remain dated observations.
 
-I record endpoints, paths, package versions, & current agent state here. The [version-figure rule](../../../README.md#version-figures) applies to the dated observations below.
+I record endpoints, paths, package versions and agent state here. Every version figure below carries the date I observed it.
 
 ## Manager
 
@@ -60,6 +60,7 @@ The local image applies two patches to the pinned upstream image. The Indexer cl
 | `red-server` | 4.14.6-1, held | ID `016`, `red-server` | `192.168.70.13` | Enabled/active; TCP 1514 established |
 | `green-server` | 4.14.6-1, held | ID `017`, `green-server` | `192.168.70.14` | Enabled/active; TCP 1514 established |
 | `ubuntu-dev` | 4.14.6-1 | ID `020`, `ubuntu-dev` | `192.168.40.179` | Enabled/active, verified locally 2026-08-14: `wazuh-modulesd`, `wazuh-logcollector`, `wazuh-syscheckd`, `wazuh-agentd`, and `wazuh-execd` all running |
+| `docker-main` | 4.14.6-1, held | ID `021`, `docker-main` | `192.168.40.35` | Enabled/active; re-enrolled and verified 2026-09-06 ([record](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md)) |
 
 The manager and dashboard verified IDs `004` through `017` active and synchronized on 2026-08-03. Both interfaces reported zero disconnected, pending, or never-connected agents.
 
@@ -73,7 +74,7 @@ All four groups carry a versioned fragment as of 2026-08-30. The two that were e
 
 | Group | Versioned fragment | Membership and purpose |
 |---|---|---|
-| `default` | [default-agent.conf](Agent%20Groups/default-agent.conf) | All 16 agents. Real-time `/etc/ssh` and `/etc/cron.d`. Since 2026-08-30 it also turns off rootcheck's trojan check fleet-wide, which produced over 22,000 alerts on `/bin/chfn`, `/bin/chsh` and `/bin/passwd` and no true positives, and ignores `/dev/.lxc` |
+| `default` | [default-agent.conf](Agent%20Groups/default-agent.conf) | All 15 agents (16 before the 2026-09-12 `game-01` removal). Real-time `/etc/ssh` and `/etc/cron.d`. Since 2026-08-30 it also turns off rootcheck's trojan check fleet-wide, which produced over 22,000 alerts on `/bin/chfn`, `/bin/chsh` and `/bin/passwd` and no true positives, and ignores `/dev/.lxc` |
 | `edge` | [edge-agent.conf](Agent%20Groups/edge-agent.conf) | ID `005` only. `/etc/cloudflared`, `/etc/caddy`, `/tmp`, `/var/tmp`, `/usr/local/bin`, `/home/dkadi/.ssh` and `/etc/systemd/system` |
 | `proxmox` | [proxmox-agent.conf](Agent%20Groups/proxmox-agent.conf) | IDs `013` through `017`: Grey, Purple, Blue, Red and Green; membership is `default,proxmox`. Added 2026-08-30 and adds no watches, only ignores: `/etc/pve` is pmxcfs, and its status files were reporting 533 changes each. Configuration under `/etc/pve` stays watched |
 | `workstation` | [workstation-agent.conf](Agent%20Groups/workstation-agent.conf) | ID `020`, `ubuntu-dev`; membership is `default,workstation`. Created 2026-08-08 for `debian-dev` (ID `019`, enrolled as `db-13-dev`) so the one machine I sit at is separable from the servers in a dashboard filter; `ubuntu-dev` took over the role and the group membership on 2026-08-13. `debian-dev` was decommissioned on 2026-08-14, and its agent `019` was removed from the manager the same day via `manage_agents`; `agent_control -l` no longer lists it. Given real file-integrity coverage on 2026-08-30: Downloads, `/usr/local/bin`, `/opt`, `~/.ssh` and both systemd unit directories in realtime, with `/tmp` and `/var/tmp` restricted by filename to payload-shaped files |
@@ -95,9 +96,9 @@ The VirusTotal integration lives in the manager's `ossec.conf` and is not versio
 
 The internal indexer user `dkadi` has backend role `admin`, which the live `all_access` mapping grants full indexer access. Dashboard `run_as` is enabled. Wazuh server mapping rule ID 100, `wui_dkadi_admin`, matches `user_name: dkadi` and links to role ID 1, `administrator`.
 
-I verified the complete path on 2026-08-03 with a fresh `dkadi` authorization context. The security configuration endpoint returned HTTP `200`, the effective role was `administrator`, & that role exposed all 23 administrator policies. I checked the live state again on 2026-09-03: the running Indexer Security API returned backend role `admin` for `dkadi`, its live `all_access` mapping still matched that backend role, dashboard `run_as` remained enabled, & Wazuh's RBAC database still linked rule 100 to the 23-policy `administrator` role. The manager, indexer, & dashboard were all enabled and running, and the Indexer cluster was green with no unassigned shards. Neither check revealed or changed the user's password.
+I verified the complete path on 2026-08-03 with a fresh `dkadi` authorization context. The security configuration endpoint returned HTTP `200`, the effective role was `administrator`, and that role exposed all 23 administrator policies. I checked the live state again on 2026-09-03: the running Indexer Security API returned backend role `admin` for `dkadi`, its live `all_access` mapping still matched that backend role, dashboard `run_as` remained enabled, and Wazuh's RBAC database still linked rule 100 to the 23-policy `administrator` role. The manager, indexer, and dashboard were all enabled and running, and the Indexer cluster was green with no unassigned shards. Neither check revealed or changed the user's password.
 
-The manager-side `proxmox` group contains exactly five active members: Grey, Purple, Blue, Red, & Green. Its generated `agent.conf` passed `verify-agent-conf`. The dashboard returned `default, proxmox` on all five rows, so the nodes keep the common Linux policy and share one Proxmox identity.
+The manager-side `proxmox` group contains exactly five active members: Grey, Purple, Blue, Red, and Green. Its generated `agent.conf` passed `verify-agent-conf`. The dashboard returned `default, proxmox` on all five rows, so the nodes keep the common Linux policy and share one Proxmox identity.
 
 ## Agent package state across the fleet
 

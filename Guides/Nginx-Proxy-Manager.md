@@ -1,19 +1,19 @@
 # Nginx Proxy Manager Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-I deployed Nginx Proxy Manager on the NetBird host, gave it a fixed Docker address, issued a wildcard certificate through Cloudflare DNS-01, & published the NetBird dashboard and service routes over HTTPS.
+I deployed Nginx Proxy Manager on the NetBird host, gave it a fixed Docker address, issued a wildcard certificate through Cloudflare DNS-01, and published the NetBird dashboard and service routes over HTTPS.
 
 ## Current Status and Verified Versions
 
-Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107 `docker-network`. It owns guest TCP ports 80, 81, & 443 and address `172.31.85.10` on the external `proxy` network. It serves 21 enabled internal names, including `netbird.alphasecunited.com`. The recorded wildcard/apex certificate expires `2026-10-08 23:49:46 UTC`.
+Verified on 2026-09-24 from the container and a read-only query of its database. Nginx Proxy Manager 2.15.1 runs from `/opt/docker/nginx-proxy-manager` on CT 107 `docker-network`. It owns guest TCP ports 80, 81, and 443 and address `172.31.85.10` on the external `proxy` network. It serves 24 live proxy hosts under `alphasecunited.com`, `netbird.alphasecunited.com` among them; 9 more are soft-deleted. Every live host uses the one certificate, `*.alphasecunited.com` plus the apex, which expires `2026-12-08 03:03:22 GMT`.
 
 ## What You Need
 
-- A Docker host with TCP ports 80, 81, & 443 available.
+- A Docker host with TCP ports 80, 81, and 443 available.
 - A domain managed in Cloudflare and a zone-scoped DNS Write token.
 - A DNS name such as `netbird.alphasecunited.com` for the upstream service.
 - The upstream container attached to the same external Docker network.
@@ -30,7 +30,7 @@ I created the external `proxy` network with subnet `172.31.85.0/24`. Sharing one
 
 ### Step 2: Create and Start the Compose Project
 
-I placed the project at `/opt/docker/nginx-proxy-manager`, mounted `data/` and `letsencrypt/`, assigned `172.31.85.10`, & published ports 80, 81, & 443.
+I placed the project at `/opt/docker/nginx-proxy-manager`, mounted `data/` and `letsencrypt/`, assigned `172.31.85.10`, and published ports 80, 81, and 443.
 
 ```sh
 docker compose config
@@ -42,13 +42,13 @@ I waited for the built-in health check and HTTP 200 responses on ports 80 and 81
 
 ### Step 3: Complete First-Run Setup
 
-I opened the management interface on port 81, completed the administrator setup, & confirmed the dashboard reported Nginx Proxy Manager 2.15.1.
+I opened the management interface on port 81, completed the administrator setup, and confirmed the dashboard reported Nginx Proxy Manager 2.15.1.
 
 ![Nginx Proxy Manager initialized](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
 
 ### Step 4: Add the NetBird Proxy Host
 
-I created `netbird.alphasecunited.com` with upstream `http://netbird-dashboard:80`, WebSocket Support, & Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, & gRPC requests go to `netbird-server:80`.
+I created `netbird.alphasecunited.com` with upstream `http://netbird-dashboard:80`, WebSocket Support, and Block Common Exploits. I added the checked-in advanced routes so API, OAuth2, WebSocket, signal, management, and gRPC requests go to `netbird-server:80`.
 
 I ran `nginx -t` inside the container and sent a Host-header request through Nginx Proxy Manager. Both checks passed before I added TLS.
 
@@ -56,13 +56,13 @@ I ran `nginx -t` inside the container and sent a Host-header request through Ngi
 
 ### Step 5: Issue and Assign the Certificate
 
-I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, & supplied `<REDACTED_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
+I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, and supplied `<REDACTED_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
 
 ![Wildcard certificate issued](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 
 ### Step 6: Test Restart and Renewal Paths
 
-I restarted the Nginx Proxy Manager and NetBird Compose projects, reran `nginx -t`, & loaded the authenticated HTTPS dashboard. I also ran a Let's Encrypt staging dry run for lineage `npm-1` and confirmed Nginx Proxy Manager's hourly renewal check.
+I restarted the Nginx Proxy Manager and NetBird Compose projects, reran `nginx -t`, and loaded the authenticated HTTPS dashboard. I also ran a Let's Encrypt staging dry run for lineage `npm-1` and confirmed Nginx Proxy Manager's hourly renewal check.
 
 ## What I Checked After Each Step
 
@@ -71,7 +71,7 @@ I restarted the Nginx Proxy Manager and NetBird Compose projects, reran `nginx -
 - Docker inspection returned `172.31.85.10` and restart policy `unless-stopped`.
 - Nginx Proxy Manager resolved both NetBird containers over `proxy`.
 - The proxy host reported Online and `nginx -t` passed.
-- Force SSL, HTTP/2, certificate assignment, renewal dry run, & restart recovery worked.
+- Force SSL, HTTP/2, certificate assignment, renewal dry run, and restart recovery worked.
 
 ## Troubleshooting and Recovery
 
@@ -79,7 +79,7 @@ If a proxy host returns 502, test the upstream from inside the Nginx Proxy Manag
 
 ## Known Limits
 
-HSTS was left disabled during the initial deployment. The recorded certificate expiry is a point-in-time value from 2026-07-11, so check the live certificate before relying on it.
+HSTS was left disabled during the initial deployment. The certificate issued on 2026-07-11 ran to 2026-10-08. It has since renewed under the same `npm-1` lineage, and the current one runs to 2026-12-08.
 
 ## Source Records
 
@@ -87,4 +87,4 @@ HSTS was left disabled during the initial deployment. The recorded certificate e
 - [NetBird advanced configuration](../Platforms/Nginx%20Proxy%20Manager/Configuration/netbird-advanced-config.conf)
 - [Runbook](../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md)
 - [Internal proxy-host inventory](../Platforms/Nginx%20Proxy%20Manager/Configuration/internal-proxy-hosts.md)
-- [NetBird and NPM follow-ups](../Platforms/Netbird/Documentation/Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
+- [NetBird and NPM follow-ups](../Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

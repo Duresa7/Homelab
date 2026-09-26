@@ -5,7 +5,7 @@
 
 I replaced the initial App Portal administrator login with the username and password from my newly saved vault login. The saved username differed from `portal-admin`, so I created the replacement administrator through the application's CLI, verified browser sign-in, then disabled `portal-admin` through the CLI. Disabling the old account revoked its existing sessions. One administrator remains enabled.
 
-I transferred the replacement credentials encrypted to a temporary key on `docker-main`. The temporary credential file was mode 600 inside a mode-700 directory. I removed the credential file and private key after applying the change and removed the local reference file. Neither saved vault item was edited or deleted; the original *<REDACTED_CREDENTIAL_ITEM_NAME>* item now holds an inactive login.
+I transferred the replacement credentials encrypted to a temporary key on `docker-main`. The temporary credential file was mode 600 inside a mode-700 directory. I removed the credential file and private key after applying the change and removed the local reference file. Neither saved vault item was edited or deleted; the original portal-administrator item now holds an inactive login.
 
 | Verification | Result |
 |---|---|

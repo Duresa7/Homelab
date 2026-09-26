@@ -108,10 +108,10 @@ I did not log in to the PeaNUT web interface to confirm the tile is gone. The cr
 
 Nothing alerted. Prometheus loads zero rule groups and knows no Alertmanager, so a target sat down for three and a half days and the Grafana panel was the only signal. Whether Grafana holds its own rules created through the web interface I did not establish, because that needs the admin credential. Either way it is a separate gap from this record's subject and is not addressed here; it is in the root [TODO](../../../../TODO.md).
 
-`openipmi.service` is failed on `red-server`, unrelated to NUT and untouched. `nut-monitor.service` is also failed on both `red-server` and `grey-server`, which predates this work: it has been disabled since the [deployment](../Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md) on purpose, so neither node shuts itself down on a UPS event.
+`openipmi.service` is failed on `red-server`, unrelated to NUT and untouched. `nut-monitor.service` is also failed on both `red-server` and `grey-server`, which predates this work: it has been disabled since the [deployment](../Change%20Records/UPS%20Dashboard%20Deployment%20-%202026-07-22.md) on purpose, so neither node shuts itself down on a UPS event.
 
 ## Related
 
 - [Power equipment inventory](../../../../Infrastructure/Hardware/Power.md)
-- [PeaNUT deployment record](../Change%20Records/PeaNUT%20UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
-- [PeaNUT relocation to monitor-01](../Change%20Records/PeaNUT%20Relocation%20to%20monitor-01%20-%202026-07-26.md)
+- [PeaNUT deployment record](../Change%20Records/UPS%20Dashboard%20Deployment%20-%202026-07-22.md)
+- [PeaNUT relocation to monitor-01](../Change%20Records/Relocation%20to%20monitor-01%20-%202026-07-26.md)

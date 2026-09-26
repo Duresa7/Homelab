@@ -7,7 +7,7 @@ I enrolled `ObiPC` in MeshCentral on 2026-09-18, the same evening as its [rebuil
 
 ## Installation type
 
-The console offers three installation types when it builds the agent. I chose **Background & Interactive**, which installs the agent as a Windows service running as SYSTEM with desktop interaction, so the machine is reachable at the sign-in screen, through Ctrl+Alt+Delete and UAC prompts, and after a reboot with nobody signed in. *Background only* gives the same service without remote desktop. *Interactive only* runs as a process inside the signed-in user's session with that user's rights and nothing at the sign-in screen, which on this machine would also mean running from a profile path the AppLocker allowlist blocks. For a machine I manage for someone else, the first is the only one that fits.
+The console offers three installation types when it builds the agent. I chose **Background and Interactive**, which installs the agent as a Windows service running as SYSTEM with desktop interaction, so the machine is reachable at the sign-in screen, through Ctrl+Alt+Delete and UAC prompts, and after a reboot with nobody signed in. *Background only* gives the same service without remote desktop. *Interactive only* runs as a process inside the signed-in user's session with that user's rights and nothing at the sign-in screen, which on this machine would also mean running from a profile path the AppLocker allowlist blocks. For a machine I manage for someone else, the first is the only one that fits.
 
 I installed it at the machine as `local-obipc` and let it restart. The install itself was not captured over SSH, so the record below is the readback.
 

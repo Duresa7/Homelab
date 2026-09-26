@@ -1,11 +1,11 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-14
+**Last updated:** 2026-09-25
 
 ## Health Check
 
-On `monitor-01`, the stack is healthy when the Compose project's six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is not one of those six: it is an extra container belonging to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion. Nine containers run on the host altogether, the monitoring six plus cAdvisor, `wud` and `peanut`.
+On `monitor-01`, the stack is healthy when the Compose project's six containers run, readiness succeeds, the configuration passes `promtool`, and both assertions exit zero. cAdvisor is not one of those six: it is an extra container belonging to the Ansible project at `/opt/docker/cadvisor`, so `docker compose ps` here won't list it. Check it with `docker ps` or through its target in the assertion. Ten containers run on the host altogether, the monitoring six plus cAdvisor, `wud`, `peanut` and `hawser`; `docker ps` listed all ten on 2026-09-24.
 
 ```bash
 sudo docker compose -f ~/monitoring/docker-compose.yml ps
@@ -16,7 +16,7 @@ curl -fsS http://127.0.0.1:9090/api/v1/targets | python3 assert_targets.py
 python3 assert_dashboard_queries.py ~/monitoring/grafana/dashboards
 ```
 
-[assert_targets.py](../Tests/assert_targets.py) checks that all 54 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query (1,346 across the 26), failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`. `assert_dashboard_queries.py` reads `allow-empty.json` from beside itself and falls back to one stale title without it, turning any of them that is empty at the time into a failure. Send `Tests/allow-empty.json` up with the scripts and remove it with them, or run that assertion from the repository.
+[assert_targets.py](../Tests/assert_targets.py) checks that all 57 expected targets are present and `up`, keyed on scrape URL with the `job` and `host` labels verified. [assert_dashboard_queries.py](../Tests/assert_dashboard_queries.py) walks a whole directory of dashboards and runs every query (1,466 across the 27 on 2026-09-15), failing on any that errors or comes back empty. Panels that are correct when empty are listed in `Tests/allow-empty.json`, which the builder generates, so a panel designed to be empty when healthy registers itself. Upload the scripts temporarily and remove the remote copies afterward, or run them from a workstation against `http://192.168.73.2:9090`. `assert_dashboard_queries.py` reads `allow-empty.json` from beside itself and falls back to one stale title without it, turning any of them that is empty at the time into a failure. Send `Tests/allow-empty.json` up with the scripts and remove it with them, or run that assertion from the repository.
 
 Do not treat a successful file copy or a HUP signal as proof of reload. Verify the target API.
 
@@ -31,7 +31,7 @@ Do not treat a successful file copy or a HUP signal as proof of reload. Verify t
 
 The inode dance this runbook used to prescribe is gone. `/home/dkadi/monitoring/prometheus-config/` is bind-mounted as a **directory**, so a replaced file is visible to the container and `mv`, `sed -i`, and redirection all work. The single-file mount it replaced pinned the inode at container start and swallowed three reloads: 2026-07-13, again on 2026-07-28, and again on 2026-08-06, each time reporting success while serving the old configuration. A restart is no longer required for a configuration change, but still verify through the target API rather than trusting the HUP.
 
-Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Monitor` to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
+Adding a target on another VLAN needs a UniFi policy from `AlphaSec-Observability` (MONITOR-A, VLAN 73) to that zone, and may need a rule in the Proxmox cluster firewall as well. Both layers enforce independently: on 2026-07-25 the UniFi policy for NUT was in place and the path stayed blocked until `/etc/pve/firewall/cluster.fw` was addressed on 2026-07-26. Build a `cluster.fw` candidate outside `/etc/pve`, check it before installing, then `pve-firewall compile`; new accepts must sit above the trailing `IN DROP` rules. Check the `pve_svc_clients` IPSet too when the Proxmox exporter moves. Test reachability from `monitor-01` with `curl` before adding the target, so a failure is a firewall problem rather than a mystery.
 
 ## Change a Dashboard
 
@@ -44,7 +44,7 @@ the next build overwrites it.
 3. `python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards` (offline); catches overlapping
    panels and anything past column 24, which Grafana accepts and then silently reflows.
 4. `python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090`;
-   runs all 1,346 queries and fails on any that error or come back empty unexpectedly.
+   runs every query and fails on any that error or come back empty unexpectedly.
 5. Upload `dashboards/` to `~/monitoring/grafana/` on `monitor-01` and `chmod 0644` the files.
 6. Wait 30 seconds. Grafana re-reads both provider directories on its own interval, so no restart is needed.
 
@@ -71,7 +71,7 @@ panel-edit and Explore reachable so a query can be read; provisioning still refu
 
 ## Change Alert Rules
 
-The alert rules live in `Configuration/grafana/provisioning/alerting/alphasec-united-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and reload alert provisioning with an authenticated `POST /api/admin/provisioning/alerting/reload`. A successful HTTP response is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 24 rule UIDs remain present, and that no rule instance holds an evaluation error.
+The alert rules live in `Configuration/grafana/provisioning/alerting/alphasec-united-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and restart Grafana with `docker restart grafana`. Alerting provisioning is not re-read on an interval, and the authenticated `POST /api/admin/provisioning/alerting/reload` needs the Grafana administrator credential, which the host does not hold; I restarted Grafana for the 2026-09-03, 2026-09-14 and 2026-09-18 rule changes. A clean restart is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 24 rule UIDs remain present, and that no rule instance holds an evaluation error.
 
 Delivery is `contact-points.yaml` in the same directory: one webhook contact point into the `alert-bot` container and the root policy that routes to it. Its bearer secret is `$ALERT_BOT_SECRET`, which Grafana reads from its environment, which Compose reads from the untracked mode-0600 `.env` beside `docker-compose.yml`. Changing that secret means recreating both `grafana` and `alert-bot`. Do not call a delivery change complete until one throwaway rule has fired and its message has appeared in `#bots`.
 
@@ -101,18 +101,18 @@ ansible-playbook playbooks/cadvisor.yml
 
 Both playbooks are idempotent and verify what they installed rather than trusting the package manager: `node-exporter.yml` asserts the version the running exporter reports, and `cadvisor.yml` compares the containers cAdvisor registered against the containers Docker reports running, failing on a mismatch. Pass `-e target=<host>` for a single host and `-e cadvisor_state=absent` to remove cAdvisor.
 
-cAdvisor follows `ghcr.io/google/cadvisor:latest`, currently v0.60.5. Do not move it back to `gcr.io/cadvisor/cadvisor`: that registry stops at v0.55.1, and anything before v0.60.5 registers zero containers on the hosts using Docker's `overlayfs` driver. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
+cAdvisor follows `ghcr.io/google/cadvisor:latest`, v0.60.6 on `monitor-01` on 2026-09-24. Do not move it back to `gcr.io/cadvisor/cadvisor`: that registry stops at v0.55.1, and anything before v0.60.5 registers zero containers on the hosts using Docker's `overlayfs` driver. Full detail is in the [project README](../../Ansible/Source/monitoring-exporters/README.md).
 
 ## User Endpoints
 
 - Homelab Overview: `https://grafana.alphasecunited.com/d/homelab-overview`
 - A host's own dashboard: `https://grafana.alphasecunited.com/d/node-<host>`, for example `/d/node-red-server`
-- The other eight topic dashboards are in the `Homelab` folder and in the header dropdown on every board
+- The other nine topic dashboards are in the `Homelab` folder and in the header dropdown on every board
 - Prometheus: `https://prometheus.alphasecunited.com/`; direct fallback `http://192.168.73.2:9090/`
 - Grafana: `https://grafana.alphasecunited.com/`; direct fallback `http://192.168.73.2:3000/`
 
 Exporter endpoints on 9100, 9101, 9102, 9115, 9221, and 9995 are backend services. Query them through Prometheus except during diagnostics.
 
-Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, & HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
+Prometheus starts with `--web.external-url=https://prometheus.alphasecunited.com`. Grafana uses `GF_SERVER_DOMAIN`, `GF_SERVER_ROOT_URL`, and HTTP behind NPM. NPM at 192.168.85.2 is the routine cross-zone source to TCP 3000 and 9090 on `monitor-01`; Jedi PC has the separate break-glass path. Port 443 to `security-01` remains for Wazuh.
 
-The Grafana administrator credential is held outside this repository. Retrieve it through the credential-retrieval skill; Prometheus itself has no authentication.
+The Grafana administrator credential is held outside this repository. Retrieve it from the password manager's CLI; Prometheus itself has no authentication.

@@ -1,21 +1,21 @@
 # Ansible SSH Identity Automation Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-I use Ansible to audit, add, rotate, & retire SSH public keys across Linux, Proxmox, & Windows targets. This walkthrough follows the same project from its inventory and identity files through direct playbook runs and Semaphore.
+I use Ansible to audit, add, rotate, and retire SSH public keys across Linux guests and the Proxmox nodes. This walkthrough follows the same project from its inventory and identity files through direct playbook runs and Semaphore.
 
 ## Current Status and Verified Versions
 
-The controller is CT 100 `ansible-01` at `192.168.40.36`. The recorded stack runs Ansible 14.2.0, ansible-core 2.21.2, & Semaphore 2.18.27 on TCP 3000. Semaphore exposes three projects, 23 templates, & 11 views. The SSH identity project contributes 13 of those templates.
+The controller is CT 100 `ansible-01` at `192.168.40.36`. On 2026-09-24 it ran Ansible community 14.2.0, ansible-core 2.21.2, and Semaphore 2.18.27 on TCP 3000. Semaphore's database held three projects and 23 templates. The SSH identity project, `Server-SSH`, holds 13 of them.
 
 ## What You Need
 
-- A Linux controller with Python 3, Ansible, Git, & SSH access to each managed target.
+- A Linux controller with Python 3, Ansible, Git, and SSH access to each managed target.
 - One execution account; I use `ansible`.
-- A public key, SHA-256 fingerprint, & approved target list for each identity.
+- A public key, SHA-256 fingerprint, and allowed target list for each identity.
 - Console access to a target in case an SSH change needs recovery.
 
 ## How the Pieces Fit Together
@@ -33,17 +33,17 @@ ansible-galaxy collection install -r requirements.yml
 python3 tests/validate_project.py
 ```
 
-The validator checks the inventory, identity schema, target references, template manifest, & playbook structure. The public copy can pass without live identity files because it includes only the schema example.
+The validator checks the inventory, identity schema, target references, template manifest, and playbook structure. The public copy can pass without live identity files because it includes only the schema example.
 
 ### Step 2: Build the Inventory
 
 I assign each host to the groups used by its connection method and key policy. The five Proxmox nodes share a cluster-backed authorization file, so `grey-server` is the only writer while the other nodes verify the result.
 
-I leave a host in `ssh_key_unknown` until I know its account, path, & connection method. Those hosts can't be selected by the key playbooks.
+I leave a host in `ssh_key_unknown` until I know its account, path, and connection method. Those hosts can't be selected by the key playbooks.
 
 ### Step 3: Define One Identity
 
-I copy `identities/_new-device-template.yml.example` to `identities/<YOUR_DEVICE_ID>.yml`, then replace the sample ID, owner label, public key, fingerprint, & target allowlist. The example is invalid until edited, so it can't deploy its sample value.
+I copy `identities/_new-device-template.yml.example` to `identities/<YOUR_DEVICE_ID>.yml`, then replace the sample ID, owner label, public key, fingerprint, and target allowlist. The example is invalid until edited, so it can't deploy its sample value.
 
 ### Step 4: Audit Before Writing
 
@@ -72,7 +72,7 @@ I run `ssh-key-verify.yml`, then connect from the device that owns the private k
 
 ### Step 7: Retire the Old Key
 
-Retirement requires a staged replacement, successful prechecks, the verified flag, & an exact confirmation phrase.
+Retirement requires a staged replacement, successful prechecks, the verified flag, and an exact confirmation phrase.
 
 ```sh
 ansible-playbook playbooks/ssh-key-retire.yml \
@@ -80,24 +80,24 @@ ansible-playbook playbooks/ssh-key-retire.yml \
   -e 'ssh_retire_confirmation=RETIRE <YOUR_DEVICE_ID>'
 ```
 
-Afterward, I promote the replacement to `current_public_key`, update the fingerprint, clear the replacement field, & reset the verified flag.
+Afterward, I promote the replacement to `current_public_key`, update the fingerprint, clear the replacement field, and reset the verified flag.
 
 ### Step 8: Add Semaphore
 
-I use `semaphore/task-templates.yml` to create the same audit, onboard, stage, verify, & retire jobs in Semaphore. Every template points to the same repository, inventory, identity files, & playbooks used by the direct commands.
+I use `semaphore/task-templates.yml` to create the same audit, onboard, stage, verify, and retire jobs in Semaphore. Every template points to the same repository, inventory, identity files, and playbooks used by the direct commands.
 
 ## What I Checked After Each Step
 
 - The project validator completed without an error.
-- The inventory resolved only approved target groups.
+- The inventory resolved only the allowed target groups.
 - Audit jobs reported state without writing it.
 - Onboarding and staging preserved existing keys.
 - Retirement stopped unless all four gates passed.
-- Semaphore exposed three projects, 23 templates, & 11 views after the 2026-07-30 parity pass.
+- Semaphore exposed three projects, 23 templates, and 11 views after the 2026-07-30 parity pass.
 
 ## Troubleshooting and Recovery
 
-If a playbook loses access, stop the run and recover the affected account from its console. Re-add the last working public key, rerun the audit for that identity, & don't start retirement until the owner-device test succeeds on every target.
+If a playbook loses access, stop the run and recover the affected account from its console. Re-add the last working public key, rerun the audit for that identity, and don't start retirement until the test from the key's own device succeeds on every target.
 
 ## Known Limits
 
@@ -108,6 +108,6 @@ The public project omits live identity files. I removed the retired domain contr
 - [Project instructions](../Platforms/Ansible/Source/ssh-key-automation/README.md)
 - [Architecture](../Platforms/Ansible/Documentation/Architecture.md)
 - [SSH identity automation change record](../Platforms/Ansible/Documentation/Change%20Records/SSH%20Identity%20Automation%20-%202026-07-14.md)
-- [Ansible and Semaphore upgrade](../Platforms/Ansible/Documentation/Change%20Records/Ansible%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
+- [Ansible and Semaphore upgrade](../Platforms/Ansible/Documentation/Change%20Records/Core%20and%20Semaphore%20Upgrade%20-%202026-07-14.md)
 - [Semaphore and Ansible project parity](../Platforms/Ansible/Documentation/Change%20Records/Semaphore%20and%20Ansible%20Project%20Parity%20-%202026-07-30.md)
-- [Controller key distribution report](../Platforms/Ansible/Documentation/ansible-01-key-distribution-report.md)
+- [Controller key distribution report](../Archive/Platforms/Ansible/Documentation/ansible-01-key-distribution-report.md)

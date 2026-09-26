@@ -1,21 +1,7 @@
-# TeamSpeak UDP Relay Outage - 2026-04-24
+# TeamSpeak UDP Relay Outage
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-26
-
-## Incident Summary
-
-On 2026-04-24, users reported repeated TeamSpeak connection failures against the
-public Playit endpoints and Cloudflare DNS names for `AlphaSec` United TeamSpeak
-services. I began triage with basic health checks, which showed TeamSpeak,
-Docker, DNS, and Playit all nominal. My deeper testing showed that UDP packets
-were reaching the TeamSpeak path, but the TeamSpeak client handshake was not
-completing.
-
-I mitigated the issue by removing Docker's UDP port proxy from the voice path:
-I moved both TeamSpeak containers to host networking with unique native ports.
-After the change, TeamSpeak logs recorded successful client connections through
-the Playit path.
+**Last updated:** 2026-09-25
 
 ## Incident Metadata
 
@@ -33,14 +19,32 @@ the Playit path.
 | Affected Services | ts-valorant-01, ts-valorant-02 |
 | Unaffected Services | TS3 Manager web UI, ServerQuery control plane, Docker host |
 
-## Affected Endpoints
+## Summary
+
+On 2026-04-24, users reported repeated TeamSpeak connection failures against the
+public Playit endpoints and Cloudflare DNS names for `AlphaSec` United TeamSpeak
+services. I began triage with basic health checks, which showed TeamSpeak,
+Docker, DNS, and Playit all nominal. My deeper testing showed that UDP packets
+were reaching the TeamSpeak path, but the TeamSpeak client handshake was not
+completing.
+
+I mitigated the issue by removing Docker's UDP port proxy from the voice path:
+I moved both TeamSpeak containers to host networking with unique native ports.
+After the change, TeamSpeak logs recorded successful client connections through
+the Playit path.
+
+## Impact
+
+External users could not join either TeamSpeak server through the public Playit endpoints or the Cloudflare names. The outage ran from before the 22:49 EDT user report, start not retained, to the 23:04 EDT mitigation. TS3 Manager, the ServerQuery control plane and the Docker host stayed up. No data was lost.
+
+## Affected Assets
 
 | Service | Public DNS | Playit Endpoint | Host Port |
 |---------|------------|-----------------|-----------|
 | TeamSpeak 1 | `ts01.alphasecunited.com` | `<REDACTED_TEAMSPEAK_RELAY_ONE_HOST>`:6255 | 9987/udp |
 | TeamSpeak 2 | `ts02.alphasecunited.com` | `<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>`:53810 | 9988/udp |
 
-## User-Visible Symptoms
+## Symptoms
 
 Users observed repeated TeamSpeak client failures similar to:
 
@@ -56,6 +60,15 @@ My direct Playit IPv4 testing also failed before mitigation:
 Trying to connect to server on <REDACTED_RELAY_IP>:6255
 Failed to connect to server
 ```
+
+## Timeline
+
+| Time (EDT) | Event |
+|---|---|
+| 2026-04-24, start not retained | External TeamSpeak connections begin failing |
+| 2026-04-24 22:49 | Users report repeated connection failures |
+| 2026-04-24, between 22:49 and 23:04 | Health checks show TeamSpeak, Docker, DNS and Playit nominal; deeper testing shows UDP reaching the server path without a completed handshake |
+| 2026-04-24 23:04 | Both containers run on host networking; TeamSpeak logs record client connections through Playit |
 
 ## Technical Findings
 
@@ -109,7 +122,7 @@ connections through the Playit path.
 10. I updated ServerQuery allowlists for TS3 Manager source traffic.
 11. I updated the deployment document to reflect the host-network architecture.
 
-## Current State
+## State on 2026-04-24
 
 | Service | State | Notes |
 |---------|-------|-------|
@@ -117,6 +130,10 @@ connections through the Playit path.
 | ts-valorant-02 | Online | Host networking, voice on `9988/udp` |
 | playit-agent | Online | Shared standalone agent, two tunnels registered |
 | ts3-manager | Online | Web UI available on LAN port `9000` |
+
+## Validation
+
+After the move to host networking, TeamSpeak logs recorded successful client connections through the Playit path. Step 9 above confirmed the six listeners. The two external-user confirmations in Follow-Up Actions were never recorded.
 
 ## Security Assessment
 
@@ -141,9 +158,13 @@ confirmed security breach.
 | Consider direct UDP firewall/NAT exposure as a long-term alternative to Playit | `AlphaSec` United | Medium | Open |
 | Keep TeamSpeak containers on host networking for future voice servers | `AlphaSec` United | Medium | In Progress |
 
+## Closure
+
+Mitigated on 2026-04-24 at 23:04 EDT. On 2026-09-25 `alpha-prod-01` runs `ts-valorant-02` (9988/udp) and `ts-valorant-03` (9989/udp), both TeamSpeak 3 Server 3.13.8 on host networking; `ts-valorant-01` no longer exists. The Follow-Up Actions table is the state on 2026-04-24, and the report stays at Mitigated until I record a closure.
+
 ## Linked Records
 
-- [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md)
+- [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Deployment.md)
 - Host: `alpha-prod-01`
 - TS3 Manager: `http://192.168.80.118:9000`
 

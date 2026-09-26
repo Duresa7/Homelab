@@ -1,7 +1,7 @@
 # Green PXE Install Stalls Before Reboot
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-09-25
 
 **Investigation date:** 2026-07-31  
 **Status:** Resolved  
@@ -19,7 +19,7 @@ The server log showed the initial boot request at `03:38:18 UTC`. It then served
 
 No later request came from the installed system. The cluster stayed at four quorate nodes and Green did not answer on MGMT-A.
 
-The retained server trace is summarized in [S01](../../Evidence/Galaxy%20PXE%20Repair%20-%202026-07-31/Logs/S01%20Green%20First-Run%20Failure%20Trace%20-%202026-07-31.md). I did not retain an exact console error or complete target-side installer log.
+The retained server trace is summarized in [S01](../../Evidence/Repair%20-%202026-07-31/Logs/S01%20Green%20First-Run%20Failure%20Trace%20-%202026-07-31.md). I did not retain an exact console error or complete target-side installer log.
 
 ## Failed Attempts
 
@@ -53,7 +53,7 @@ The physical rerun exposed two secondary first-boot defects. Callback fetches di
 - Added `failed` reporting with the last phase and detail.
 - Delayed `complete` until network, cluster, service, SSH, and storage checks pass.
 - Replaced the old join path with a dedicated SSH key and `pvecm add --use_ssh`.
-- Installed approved Galaxy root public keys through the answer and enforced key-only root SSH during first boot.
+- Installed the allowlisted Galaxy root public keys through the answer and enforced key-only root SSH during first boot.
 - Required `/dev/nvme0n1p3` as the LVM physical volume and rejected `/dev/sda`.
 - Added `nomodeset` to the generated automated installer kernel line.
 - Added eight regression tests, taking the suite from 13 to 21.

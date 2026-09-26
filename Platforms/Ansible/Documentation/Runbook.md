@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-09-25
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -140,7 +140,7 @@ Do not retire while a selected target is offline. The precheck deliberately bloc
 
 ## Semaphore
 
-Semaphore is a convenience layer over three ordinary Ansible projects. The repository, inventory, environment, views, & task templates for each project are defined in that project's `semaphore/task-templates.yml`.
+Semaphore is a convenience layer over three ordinary Ansible projects. The repository, inventory, environment, views, and task templates for each project are defined in that project's `semaphore/task-templates.yml`.
 
 | Project | Templates | Views |
 |---|---:|---:|
@@ -148,7 +148,7 @@ Semaphore is a convenience layer over three ordinary Ansible projects. The repos
 | `Fleet-Updates` | 6 | 3 |
 | `Monitoring-Exporters` | 4 | 3 |
 
-`All` is Semaphore's aggregate view. `Server-SSH` keeps focused views for onboarding & the three current identities. `Fleet-Updates` separates package work from Compose work. `Monitoring-Exporters` separates node_exporter from cAdvisor.
+`All` is Semaphore's aggregate view. `Server-SSH` keeps focused views for onboarding and the three current identities. `Fleet-Updates` separates package work from Compose work. `Monitoring-Exporters` separates node_exporter from cAdvisor.
 
 I check manifest drift with a short-lived API token. The default command is read-only:
 
@@ -164,9 +164,9 @@ sudo python3 /opt/homelab/ansible-tools/reconcile_semaphore.py \
   /home/ansible/monitoring-exporters/semaphore/task-templates.yml
 ```
 
-The final line should report 3 projects & 0 actions. To apply reviewed drift, add `--apply --expire-token --private-key-file /home/ansible/.ssh/id_ed25519`. The private-key option is used only when a project credential is missing or when I explicitly add `--refresh-credential`. Absent templates & views are retained unless I add `--prune`; I review that deletion list before applying it. I remove `/root/semaphore-api-token.tmp` after the command. The token never belongs in this repository or an evidence transcript.
+With the live database as it stood on 2026-09-24, the final line does not report 0 actions: the `Server-SSH` and `Monitoring-Exporters` manifests define eight templates Semaphore does not have, and the `Host-Access-Baseline` manifest is not in this command at all. 0 actions across 3 projects is the target once I reconcile or trim those manifests. To apply reviewed drift, add `--apply --expire-token --private-key-file /home/ansible/.ssh/id_ed25519`. The private-key option is used only when a project credential is missing or when I explicitly add `--refresh-credential`. Absent templates and views are retained unless I add `--prune`; I review that deletion list before applying it. I remove `/root/semaphore-api-token.tmp` after the command. The token never belongs in this repository or an evidence transcript.
 
-The monitoring playbooks don't have Semaphore dry-run templates. Ansible check mode doesn't create the node_exporter staging archive & skips the verification modules, so the command-line preview exits with errors even when the installed exporters answer. The exact limitation is in [Monitoring exporter check mode cannot complete](Troubleshooting/Monitoring%20exporter%20check%20mode%20cannot%20complete%20-%202026-07-30.md).
+The monitoring playbooks don't have Semaphore dry-run templates. Ansible check mode doesn't create the node_exporter staging archive and skips the verification modules, so the command-line preview exits with errors even when the installed exporters answer. The exact limitation is in [Monitoring exporter check mode cannot complete](Troubleshooting/Monitoring%20exporter%20check%20mode%20cannot%20complete%20-%202026-07-30.md).
 
 If Semaphore is unavailable, I run the same playbooks directly; no automation depends on the UI.
 
@@ -177,7 +177,7 @@ If Semaphore is unavailable, I run the same playbooks directly; no automation de
 - Semaphore project export before UI changes: `/root/semaphore-backups/server-ssh-before-identity-automation-2026-07-14.json`
 - Runtime-upgrade backup set: `/root/semaphore-backups/upgrade-2026-07-14`
 
-The runtime backup set contains the pre-upgrade Semaphore 2.17.33 binary, SQLite database, configuration, package inventory, installed Ansible Python packages, verified 2.18.27 installer, & `SHA256SUMS`.
+The runtime backup set contains the pre-upgrade Semaphore 2.17.33 binary, SQLite database, configuration, package inventory, installed Ansible Python packages, verified 2.18.27 installer, and `SHA256SUMS`.
 
 To roll back Ansible, repoint `/opt/ansible-current` and the `/usr/local/bin/ansible*` command links to a retained versioned runtime. If no upstream runtime is usable, remove only those shadowing command links to expose the still-installed Debian packages in `/usr/bin`, then validate the project before running a playbook.
 

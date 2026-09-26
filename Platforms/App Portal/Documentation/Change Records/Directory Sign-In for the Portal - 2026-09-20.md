@@ -1,9 +1,9 @@
 # Directory Sign-In for the Portal
 
 **Created:** 2026-09-20  
-**Last updated:** 2026-09-20
+**Last updated:** 2026-09-25
 
-The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account and then with both of my own directory accounts, and stopped at the pull request, because a human merges and a human tags in that repository.
+The portal recorded my directory account against every install while the only way in to administer it was a local password that existed nowhere else. I built directory sign-in so the admin pages accept a domain account, verified it against the live forest with a test account and then with both of my own directory accounts, and stopped at the pull request; I merge and tag that repository by hand.
 
 Work package [M1-11](https://github.com/Duresa7/app-portal/blob/plan/M1-11/docs/plans/M1-11-directory-sign-in.md), pull request [#19](https://github.com/Duresa7/app-portal/pull/19).
 
@@ -89,7 +89,7 @@ Then check `/healthz`, sign in at `/admin/login` with a directory account, and c
 
 ## Open
 
-- The pull request is not merged and no release is cut. Production picks this up when 0.3.1 exists; the repository's rule is that a human merges and a human tags.
+- The pull request is not merged and no release is cut. Production picks this up when 0.3.1 exists; I merge and tag that repository by hand.
 - The upgrade itself has not happened. Production runs 0.3.0, which cannot use any of the settings now sitting beside it.
 - **Tier 0 cannot use this, and should not.** My Tier 0 account is in `Protected Users`, and the controller refused its bind outright: the portal logged no group refusal, which is the path a wrong password takes, and that group exists to stop exactly this kind of password-based authentication. A domain administrator account has no business signing in to a web application anyway. Tier 2 is the right account and is what I verified.
 - My daily account is in the group alongside the Tier 2 one and signs in. If the tiering model should hold here, the daily account comes out and only the administrator account administers the portal; I left the choice open rather than removing my own access.

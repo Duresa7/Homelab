@@ -1,41 +1,69 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
 
-I track UniFi-owned VLANs, zones, firewall rules, DNS records, networks, Network Lists, VPNs, and port profiles here. Host firewall and Proxmox Datacenter configuration stays with the Galaxy compute records.
+My network runs on UniFi Network 10.6.106: one gateway, three switches and one access point, with 16 routed VLANs in 12 firewall zones. This folder owns the VLANs, zones, firewall policies, local DNS, VPNs, policy objects and port profiles. Proxmox host firewalls stay with the [Galaxy records](../../Compute/Galaxy/README.md).
 
-On 2026-09-07 I verified the identity preparation and completed its trunk and Splunk path. That readback returned 23 networks (16 routed corporate LANs), 12 zones, 22 Network Lists, and 77 user-defined policies (69 allows and eight blocks), with 351 total policies including generated rules. On 2026-09-16 the controller returns 12 zones, 22 Network Lists, 29 static DNS records, and 86 user-defined policies split 78 allows to eight blocks, with 85 enabled. On 2026-09-19 I added `Allow Identity to App Portal`, taking the user-defined total to 87, split 79 allows to eight blocks; it admits `HQ-WS001` alone to the portal's listener on `docker-main`. A second rule the same day, `Allow Secure to HQ-WS001 SSH`, took the total to 88, split 80 allows to eight blocks; it admits Secure (VLAN 50) to that workstation on TCP 22. Later that evening I put App Portal behind Nginx Proxy Manager at `appportal.alphasecunited.com`, replaced `Allow Identity to App Portal` with `Allow HQ-WS001 to NPM HTTPS`, and added TCP 3004 to the NPM-to-docker-main policy: the user-defined total is 88 again, split 80 allows to eight blocks, and static DNS records rose to 30. On 2026-09-20 I added `Allow App Portal to Identity LDAPS`, taking the total to 89, split 81 allows to eight blocks; it admits `docker-main` to both domain controllers on TCP 636 so the portal can check an administrator's directory sign-in. Proxmox-Trunk now carries VLANs 65 and 60 to grey-server on Bane Switch POE port 14. I retained the [identity readback](Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Final%20Identity%20Policy%20Readback.json) and updated the four configuration views below.
+![UniFi network: gateway, switches, access point, VLANs and zones](../../../Assets/Diagrams/unifi-network.svg)
 
-A full controller readback on 2026-09-06 returned 22 networks: 15 routed corporate LANs, two WANs, one ProtonVPN client network, and four remote-user VPN networks. It also returned 11 firewall zones, 68 user-defined policies split 61 allows to seven blocks, 16 reusable Network Lists, 17 client groups (16 after I deleted the empty `IOT` duplicate later that day), four OON policies, one traffic route, five switch port profiles, five WLANs with three enabled, 29 enabled local DNS records, no port forwards, and no user-defined static routes. Five adopted devices were online: the gateway, three switches, and one access point, on Network application 10.6.101. Against the 2026-08-19 count, the Network Lists gained `PG-Printing`, the client groups gained an `IOT` and an `IoT` entry, and local DNS gained `mcp` and `openwebui`. The configuration records below carry the detail.
+## Devices (2026-09-24)
 
-The remaining traffic route is `VPN - Proton`. It is enabled with its kill switch on and targets `Proton-WiFi`/VLAN 45 through the retained ProtonVPN client.
+| Device | Model | Firmware | Uplink |
+| --- | --- | --- | --- |
+| Ahsoka Gateway | Cloud Gateway Fiber (`UCG-Fiber`, controller code UDMA6A8) | 5.1.33.34087 | `Internet 1` WAN |
+| Bane Switch POE | Switch Pro Max 16 PoE (`USW-Pro-Max-16-PoE`, code USPM16P) | 7.5.15.17146 | 10 GbE to Ahsoka port 6 |
+| Mace Switch | code USWED35 | 2.1.8.971 | 2.5 GbE to Bane port 15 |
+| Jango Switch | code USWED35 | 2.1.8.971 | 2.5 GbE to Mace port 4 |
+| Anakin AP | code UAPA6A9, 2.4, 5 and 6 GHz | 8.7.11.19419 | Mace port 3 |
 
-On 2026-09-09 I verified Identity external egress in Web, NTP, Block order and DHCP DNS on Secure and Secure Client as 192.168.65.10, then 192.168.65.11. The [change record and screenshots](Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) retain the saved states.
+All five were online with no upgrade pending. Their management addresses are on Management, `192.168.1.0/24`. `Internet 2` is configured as a DHCP failover WAN but had no link or address.
 
-## Configuration Records
+## Counts
+
+| Object | Count | Verified |
+| --- | ---: | --- |
+| Networks | 23 (16 corporate LANs, 2 WANs, 1 VPN client, 4 remote-user VPN servers) | 2026-09-24 |
+| Firewall zones | 12 (7 built-in, 5 custom) | 2026-09-24 |
+| Static DNS records | 30 | 2026-09-24 |
+| User-defined firewall policies | 89 (81 allow, 8 block) | 2026-09-20 |
+| Network Lists | 22 | 2026-09-16 |
+| Client groups | 16 | 2026-09-06 |
+| Traffic routes | 1 (`VPN - Proton`) | 2026-09-06 |
+| Port profiles | 5 | 2026-09-06 |
+| WLANs | 5, 3 enabled | 2026-09-06 |
+| Port forwards | 0 | 2026-09-06 |
+
+## Configuration
 
 - [Networks and VLANs](Configuration/network-vlan.md)
-- [Galaxy PXE provisioning service (2026-07-30)](../../../Platforms/Galaxy%20PXE/Documentation/Change%20Records/Galaxy%20PXE%20Provisioning%20Service%20-%202026-07-30.md)
 - [Firewall zones](Configuration/zone.md)
 - [Firewall policies](Configuration/firewall.md)
 - [Local DNS](Configuration/local-dns.md)
-- [Policy features and Network Lists](Configuration/objects.md)
-- [VPNs, Network Lists, and port profiles](Configuration/vpn-networks-port-profiles.md)
-- [Proton-WiFi VLAN 45 (2026-08-10)](Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md)
-- [edge-01 move to DMZ VLAN 30 (2026-08-07)](Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md)
-- [Zone and object consolidation (2026-07-27)](Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)
-- [Firewall audit (2026-07-27)](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md)
-- [MGMT-A final lockdown (2026-07-27)](Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md)
-- [Troubleshooting index](Documentation/Troubleshooting/README.md)
+- [Policy objects: Network Lists, OON policies, traffic routes and client groups](Configuration/objects.md)
+- [VPNs and port profiles](Configuration/vpn-networks-port-profiles.md)
 
-## Retired Kasm Records
+## Records
 
-- [Kasm Workspaces decommission (2026-08-19)](../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md)
-- [Kasm lab network simplification (2026-07-23)](../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md)
-- [Kasm network build evidence (2026-07-22, superseded)](../../../Archive/Infrastructure/Network/UniFi/Evidence/Kasm%20Security%20Lab%20Network%20-%202026-07-22/Evidence-Index.md)
-- [Kasm firewall audit (2026-07-22, superseded)](../../../Archive/Security/Assessments/UniFi%20Kasm%20Firewall%20Audit%20-%202026-07-22.md)
+| Date | Record |
+| --- | --- |
+| 2026-09-16 | [Policy and DNS Readback](Documentation/Change%20Records/Policy%20and%20DNS%20Readback%20-%202026-09-16.md) |
+| 2026-09-09 | [Identity NTP and Client DNS](Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) |
+| 2026-09-07 | [Identity Plane Network Preparation](Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md) |
+| 2026-09-06 | [Empty IOT Client Group Removal](Documentation/Change%20Records/Empty%20IOT%20Client%20Group%20Removal%20-%202026-09-06.md) |
+| 2026-09-02 | [Monitoring Ports for What's Up Docker and the Alert Bot](Documentation/Change%20Records/Monitoring%20Ports%20for%20What's%20Up%20Docker%20and%20the%20Alert%20Bot%20-%202026-09-02.md) |
+| 2026-08-31 | [Detection Mode to Notify and Block](Documentation/Change%20Records/Detection%20Mode%20to%20Notify%20and%20Block%20-%202026-08-31.md) |
+| 2026-08-30 | [DMZ Added to Threat Management](Documentation/Change%20Records/DMZ%20Added%20to%20Threat%20Management%20-%202026-08-30.md) |
+| 2026-08-29 | [DMZ-A VLAN 90 Removal](Documentation/Change%20Records/DMZ-A%20VLAN%2090%20Removal%20-%202026-08-29.md) |
+| 2026-08-13 | [ubuntu-dev Workstation Access](Documentation/Change%20Records/ubuntu-dev%20Workstation%20Access%20-%202026-08-13.md) |
+| 2026-08-10 | [Proton-WiFi VLAN 45](Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md) |
+| 2026-08-08 | [VPN Management Access to DMZ](Documentation/Change%20Records/VPN%20Management%20Access%20to%20DMZ%20-%202026-08-08.md) |
+| 2026-08-07 | [edge-01 Move to DMZ VLAN 30](Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md) |
+| 2026-07-27 | [Zone and Object Consolidation](Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md) |
+| 2026-07-27 | [MGMT-A Final Lockdown](Documentation/Change%20Records/MGMT-A%20Final%20Lockdown%20-%202026-07-27.md) |
+| 2026-07-27 | [UniFi Firewall Audit](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md) |
+| 2026-07-12 | [Security-A Migration](Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) |
 
-## Physical Power
+Policy changes made for a platform are recorded with that platform and listed in the [firewall view's records table](Configuration/firewall.md#records). The [troubleshooting index](Documentation/Troubleshooting/README.md) holds three dated issues. The retired Kasm lab network is in the [archive](../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md).
 
-I record Ahsoka Gateway (`UCG-Fiber`), Bane Switch POE (`USW-Pro-Max-16-PoE`), & the Verizon ONT on `UPS-02` in the [power equipment inventory](../../Hardware/Power.md). `UPS-02` is an APC Back-UPS RS 1500MS2 rated for 1500 VA / 900 W.
+The gateway, Bane Switch POE and the Verizon ONT run on `UPS-02`, an APC Back-UPS RS 1500MS2. [Power equipment](../../Hardware/Power.md).

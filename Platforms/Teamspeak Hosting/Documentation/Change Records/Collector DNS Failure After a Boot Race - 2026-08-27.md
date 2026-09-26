@@ -30,9 +30,9 @@ The records themselves were fine. From my workstation and from `alpha-prod-01` i
 
 ```
 $ dig +short SRV _ts3._udp.ts02.alphasecunited.com
-0 0 53810 needs-charter.gl.at.ply.gg.
+0 0 53810 <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>.
 $ dig +short SRV _ts3._udp.ts03.alphasecunited.com
-0 0 49125 gets-wrestling.gl.at.ply.gg.
+0 0 49125 <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>.
 ```
 
 Inside the container:
@@ -107,21 +107,21 @@ $ docker exec teamspeak-monitor cat /etc/resolv.conf
 nameserver 192.168.80.1
 # Overrides: [nameservers]
 $ docker exec teamspeak-monitor dig +short SRV _ts3._udp.ts02.alphasecunited.com _ts3._udp.ts03.alphasecunited.com
-0 0 53810 needs-charter.gl.at.ply.gg.
-0 0 49125 gets-wrestling.gl.at.ply.gg.
+0 0 53810 <REDACTED_TEAMSPEAK_RELAY_TWO_HOST>.
+0 0 49125 <REDACTED_TEAMSPEAK_RELAY_THREE_HOST>.
 ```
 
 The textfile 20 seconds later:
 
 ```
 teamspeak_dns_srv_up{server="ts02"} 1
-teamspeak_public_up{server="ts02",relay="needs-charter.gl.at.ply.gg:53810"} 1
+teamspeak_public_up{server="ts02",relay="<REDACTED_TEAMSPEAK_RELAY_TWO_HOST>:53810"} 1
 teamspeak_public_rtt_seconds{...} 0.039814
 teamspeak_tunnel_fault{server="ts02"} 0
 teamspeak_server_fault{server="ts02"} 0
 ```
 
-Same shape for `ts03` at `gets-wrestling.gl.at.ply.gg:49125`, 0.041051 s. Confirmed through Prometheus after the next node_exporter scrape: all ten reachability series green.
+Same shape for `ts03` at `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>:49125`, 0.041051 s. Confirmed through Prometheus after the next node_exporter scrape: all ten reachability series green.
 
 The 40 ms round trip matches the 44–46 ms measured when the collector was built, so the public path was never actually broken.
 
@@ -129,7 +129,7 @@ The 40 ms round trip matches the 44–46 ms measured when the collector was buil
 
 The metrics were right and the dashboard framing was wrong. `teamspeak_dns_srv_up` had been 0 the whole time and no panel led with it, so a monitoring fault presented as a service outage.
 
-The rebuilt dashboard puts **Name resolution** in the top row beside **Public address** and **Local voice**, adds a **Relay endpoints** table that renders `unresolved:0` as `unresolved — DNS failed` in red, and says in the `Verdict` panel's own description that `PUBLIC PATH DOWN` has three possible causes and name resolution is the one to check first. Detail in the Prometheus change record [Dashboard Rebuild and Per-Node Boards - 2026-08-27](../../../Prometheus/Documentation/Change%20Records/Dashboard%20Rebuild%20and%20Per-Node%20Boards%20-%202026-08-27.md).
+The rebuilt dashboard puts **Name resolution** in the top row beside **Public address** and **Local voice**, adds a **Relay endpoints** table that renders `unresolved:0` as `unresolved (DNS failed)` in red, and says in the `Verdict` panel's own description that `PUBLIC PATH DOWN` has three possible causes and name resolution is the one to check first. Detail in the Prometheus change record [Dashboard Rebuild and Per-Node Boards - 2026-08-27](../../../Prometheus/Documentation/Change%20Records/Dashboard%20Rebuild%20and%20Per-Node%20Boards%20-%202026-08-27.md).
 
 ## Fleet sweep
 

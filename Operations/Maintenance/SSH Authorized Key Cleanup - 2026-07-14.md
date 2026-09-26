@@ -1,11 +1,11 @@
 # SSH Authorized Key Cleanup
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-20
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-07-14  
 **Status:** Complete with two unreachable Windows targets  
-**Scope:** SSH authorized-key cleanup, three-key fleet baseline, fingerprint verification for `K05` and `K07` through `K10`, & reachability retest
+**Scope:** SSH authorized-key cleanup, three-key fleet baseline, fingerprint verification for `K05` and `K07` through `K10`, and reachability retest
 
 ## Outcome
 
@@ -13,7 +13,7 @@ I removed two identified ED25519 keys from every readable authorized-key scope w
 
 ## Three-Key Fleet Baseline
 
-I normalized all 15 inspectable SSH Manager targets to contain exactly one copy of each approved ED25519 identity: `mac-air3-dkadi`, `ansible-control`, & `jedi-pc`. The `jedi-pc` key blob and fingerprint didn't change; only its comment changed. `supabase_01` was the only target missing `mac-air3-dkadi`, so I added that line.
+I normalized all 15 inspectable SSH Manager targets to contain exactly one copy of each authorized ED25519 identity: `mac-air3-dkadi`, `ansible-control`, and `jedi-pc`. The `jedi-pc` key blob and fingerprint didn't change; only its comment changed. `supabase_01` was the only target missing `mac-air3-dkadi`, so I added that line.
 
 I updated the four Proxmox nodes once through `/etc/pve/priv/authorized_keys`, then checked the result independently on every node. Linux files passed `ssh-keygen` validation with mode `0600`; the Windows administrator key file retained its ACL. Follow-up SSH commands reached every changed target. The two unreachable Windows systems remain Unknown and unchanged.
 
@@ -26,7 +26,7 @@ The live Ansible distribution playbook in LXC 100, the Linux host baseline, and 
 | `<REDACTED_RETIRED_ROOT_KEY_LABEL>` | `<REDACTED_RETIRED_ROOT_KEY_FINGERPRINT>` | `docker_main` / `root` | `/root/.ssh/authorized_keys` | One exact match removed; zero remained |
 | `<REDACTED_RETIRED_USER_KEY_LABEL>` | `<REDACTED_RETIRED_USER_KEY_FINGERPRINT>` | `alpha_prod_01` / `dkadi` | `/home/dkadi/.ssh/authorized_keys` | One exact match removed; zero remained |
 
-I replaced each file atomically, confirmed it still parsed as SSH public-key syntax, & rescanned it. Follow-up SSH commands reached both changed hosts.
+I replaced each file atomically, confirmed it still parsed as SSH public-key syntax, and rescanned it. Follow-up SSH commands reached both changed hosts.
 
 ## Verification Coverage
 

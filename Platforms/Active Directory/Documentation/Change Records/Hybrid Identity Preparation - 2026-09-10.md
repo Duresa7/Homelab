@@ -7,7 +7,7 @@ I prepared the directory side of the link between `ad.alphasecunited.com` and th
 
 ## The tenant as found
 
-The tenant was already further along than a fresh one. `alphasecunited.com` was verified and set as the default domain. A cloud-only account, `BG-admin`, existed on the tenant's `alphasecunit.onmicrosoft.com` domain and was unlicensed, which is the correct state for a break-glass account. My account, `DK-user@alphasecunited.com`, held Microsoft 365 Business Premium, which includes Entra ID P1, so password writeback, self-service password reset, and Conditional Access are all licensed. One further cloud-only user, `humesmax@alphasecunited.com`, is not part of this work and stays cloud-only.
+The tenant was already further along than a fresh one. `alphasecunited.com` was verified and set as the default domain. A cloud-only account, `BG-admin`, existed on the tenant's `alphasecunit.onmicrosoft.com` domain and was unlicensed, which is the correct state for a break-glass account. My account, `DK-user@alphasecunited.com`, held Microsoft 365 Business Premium, which includes Entra ID P1, so password writeback, self-service password reset, and Conditional Access are all licensed. One further cloud-only user is not part of this work and stays cloud-only.
 
 ## Service connection point
 

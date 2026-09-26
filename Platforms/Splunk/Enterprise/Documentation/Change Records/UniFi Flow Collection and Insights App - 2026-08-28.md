@@ -69,7 +69,7 @@ The dashboards are Dashboard Studio views on a dark theme. Colours come from a p
 | --- | --- |
 | UniFi Flow Insights | Total, blocked, high risk, countries reached and volume; flow rate over time split by disposition; a world map of destinations; the risk mix; busiest clients, top external destinations and services by volume; the blocked-flow table; the zone-to-zone matrix and top destination domains |
 | UniFi Threat Center | Detected, blocked, passed through, unique signatures and firewall blocks; detections over time banded by risk; signatures by frequency and threat categories; a map of where blocked traffic originates; blocking policies; recent detections |
-| UniFi Client & Network Activity | Active clients, connects, disconnects, configuration changes and admin logins; the session timeline; clients and networks by volume; the WiFi split; admin activity and client session tables |
+| UniFi Client and Network Activity | Active clients, connects, disconnects, configuration changes and admin logins; the session timeline; clients and networks by volume; the WiFi split; admin activity and client session tables |
 
 Two build details are worth recording because they are not obvious. `splunk.choropleth.svg` is not registered on this instance and renders `Missing property: svg`, so geography is drawn with `splunk.map` over `iplocation` coordinates instead. And `seriesColors` binds by position, so a series absent from the time window shifts every colour after it; the timecharts and the risk donut therefore emit fixed, named columns rather than splitting by a field whose values come and go.
 
@@ -128,6 +128,6 @@ I have not committed the renders. They contain the WAN address and client MAC ad
 ## Related
 
 - [UniFi Syslog Export Restored and CIM Coverage Completed](UniFi%20Syslog%20Export%20Restored%20and%20CIM%20Coverage%20Completed%20-%202026-08-29.md), which continues this work
-- [UniFi CEF Reference](../UniFi-CEF-Reference.md) for the field mapping and the parsing fault
-- [Build-Log.md](../Build-Log.md) for the original SC4S and HEC setup
+- [UniFi CEF Reference](../UniFi%20CEF%20Reference.md) for the field mapping and the parsing fault
+- [Build Log.md](../Build%20Log.md) for the original SC4S and HEC setup
 - [Enterprise Security TODO](../../../Enterprise%20Security/Documentation/TODO.md) for the remaining ES work

@@ -72,13 +72,13 @@ I queried VM 102 through `grey-server` before archiving it. `qm listsnapshot 102
 
 ## Retirement Verification
 
-I shut the guest down cleanly with `qm shutdown 102 --timeout 60` and confirmed `qm status 102` read `stopped` before destroying it. `qm destroy 102 --purge` removed logical volumes `vm-102-disk-1` and `vm-102-disk-0` and purged the guest from related configurations. Afterward, `pvesh get /cluster/resources` returned no VMID 102, `/etc/pve/qemu-server/102.conf` did not exist, `pvesm list ssd-lvm1` held no `vm-102-*` volume, and `qm list` showed 9 QEMU VMs with VM 102 absent. The [decommission record](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md) holds the complete command sequence, decisions, and documentation cleanup.
+I shut the guest down cleanly with `qm shutdown 102 --timeout 60` and confirmed `qm status 102` read `stopped` before destroying it. `qm destroy 102 --purge` removed logical volumes `vm-102-disk-1` and `vm-102-disk-0` and purged the guest from related configurations. Afterward, `pvesh get /cluster/resources` returned no VMID 102, `/etc/pve/qemu-server/102.conf` did not exist, `pvesm list ssd-lvm1` held no `vm-102-*` volume, and `qm list` showed 9 QEMU VMs with VM 102 absent. The [decommission record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md) holds the complete command sequence, decisions, and documentation cleanup.
 
 The Proxmox Datacenter firewall, the UniFi client MAC entry, the UniFi firewall policy, the UniFi local DNS record, and the Prometheus scrape target had already been repointed to `ubuntu-dev` during the 2026-08-13 CLI Proxy API migration, ahead of this retirement.
 
 ## Preserved Records
 
-- [debian-dev Decommission - 2026-08-14](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md)
+- [debian-dev Decommission - 2026-08-14](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md)
 - [Galaxy Debian Dev GNOME Installation - 2026-07-15](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Debian%20Dev%20GNOME%20Installation%20-%202026-07-15.md)
 - [debian-dev Workstation Baseline and Toolchain Build - 2026-08-08](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Workstation%20Baseline%20and%20Toolchain%20Build%20-%202026-08-08.md)
 - [GNOME Wired Network Indicator Showed a Question Mark on debian-dev - 2026-07-15](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/GNOME%20Wired%20Network%20Indicator%20Showed%20a%20Question%20Mark%20on%20debian-dev%20-%202026-07-15.md)

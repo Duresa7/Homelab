@@ -1,7 +1,7 @@
-# TeamSpeak DNS and ServerQuery Incident - 2026-04-24
+# TeamSpeak DNS and ServerQuery
 
 **Created:** 2026-04-24  
-**Last updated:** 2026-07-26
+**Last updated:** 2026-09-25
 
 ## Incident Metadata
 
@@ -18,7 +18,7 @@
 | Status | Resolved / Monitoring |
 | Severity | SEV-3 - Service Degradation |
 
-## Incident Summary
+## Summary
 
 On 2026-04-24, `AlphaSec` United observed intermittent TeamSpeak client connection
 failures against the community TeamSpeak endpoint `ts01.alphasecunited.com`. I began
@@ -41,7 +41,7 @@ I corrected both: I updated the Cloudflare SRV target to point directly at the
 Playit hostname and added the Docker bridge gateway IP to the TeamSpeak
 ServerQuery allowlist.
 
-## Impact Assessment
+## Impact
 
 | Area | Impact |
 |------|--------|
@@ -64,6 +64,23 @@ ServerQuery allowlist.
 | `alphasecunited.com` | Cloudflare-managed DNS zone | Active |
 | `ts01.alphasecunited.com` | Community connection endpoint | Active |
 | `ts02.alphasecunited.com` | Community connection endpoint | Active |
+
+## Symptoms
+
+- Some users received "failed to connect to server" when joining `ts01.alphasecunited.com`, while the TeamSpeak process, containers and Playit tunnel were online.
+- TS3 Manager triggered TeamSpeak ServerQuery flood protection and had crashed earlier.
+
+## Timeline
+
+Every event happened on 2026-04-24; I retained no times.
+
+| Order | Event |
+|---|---|
+| 1 | Intermittent client connection failures against `ts01.alphasecunited.com` |
+| 2 | Service-layer checks find TeamSpeak, Docker and Playit online |
+| 3 | I find the SRV record targeting a CNAME and the missing Docker gateway in `query_ip_allowlist.txt` |
+| 4 | I point the SRV target at the Playit hostname and add `172.18.0.1` to the allowlist |
+| 5 | I restart TS3 Manager; a ServerQuery burst returns `error id=0 msg=ok` |
 
 ## Technical Findings
 
@@ -180,7 +197,7 @@ I checked the following and ruled each out as the primary cause:
 | Confirmed allowlist reload | Complete | TeamSpeak logged updated allowlist with `172.18.0.1/32`. |
 | Restarted TS3 Manager container only | Complete | Manager was stopped and was started. |
 | Verified ServerQuery burst from manager path | Complete | Returned `error id=0 msg=ok`; no flood error observed. |
-| Updated deployment record | Complete | [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Teamspeak-deployment.md) now matches the running layout. |
+| Updated deployment record | Complete | [TeamSpeak deployment](../../../Platforms/Teamspeak%20Hosting/Documentation/Deployment.md) now matches the running layout. |
 
 ## Current Known-Good Configuration
 
@@ -298,8 +315,8 @@ TTL: 300
 - TS3 Manager should remain LAN-only and should not be exposed through Playit or
   public DNS.
 - ServerQuery TCP ports `10011` and `10012` should remain internal only.
-- File transfer TCP ports `30033` and `30034` should remain internal unless a
-  formal exposure requirement is approved.
+- File transfer TCP ports `30033` and `30034` should remain internal unless I
+  decide to expose them.
 - ServerQuery should use a least-privilege administrative account where possible
   instead of broad-use serveradmin credentials.
 
@@ -319,15 +336,21 @@ TTL: 300
    - Cloudflare SRV target correctness
    - Playit tunnel registration
 6. Consider pinning Docker image versions after stability validation.
-7. Record DNS, Playit tunnel, & ServerQuery changes with the TeamSpeak platform.
+7. Record DNS, Playit tunnel, and ServerQuery changes with the TeamSpeak platform.
 
-## Current Status
+## Closure
 
 As of 2026-04-24, the TeamSpeak production service is operational. I corrected
 the public connection path, mitigated the TS3 Manager ServerQuery flood risk,
 decoupled Playit into a shared standalone compose project, and updated the
 deployment documentation to reflect the known-good state.
 
-I am keeping the incident in monitoring status until external users confirm
+I kept the incident in monitoring status until external users confirmed
 successful connection through `ts01.alphasecunited.com` and
-`ts02.alphasecunited.com`.
+`ts02.alphasecunited.com`. No confirmation was recorded.
+
+On 2026-09-25 `ts-valorant-01` no longer exists. The servers are
+`ts-valorant-02` and `ts-valorant-03` on `alpha-prod-01`, published as `ts02` and
+`ts03`, and each public name's SRV record targets the Playit hostname directly, per the
+[TeamSpeak Hosting](../../../Platforms/Teamspeak%20Hosting/README.md) record.
+The status stays Resolved / Monitoring until I record a closure.

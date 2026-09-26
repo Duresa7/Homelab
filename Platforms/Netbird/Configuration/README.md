@@ -5,7 +5,7 @@
 
 The live deployment sits under `/opt/docker/netbird` on `docker-network`. The checked-in `docker-compose.yml` is a reader-editable reference based on the v0.74.3 installer output.
 
-The live `config.yaml`, `dashboard.env`, datastore, & `netbird_data` volume are generated runtime state and aren't part of this reference. The deployed `reverseProxy.trustedHTTPProxies` value is `172.31.85.10/32`, matching Nginx Proxy Manager's fixed address on the external `proxy` network.
+The live `config.yaml`, `dashboard.env`, datastore, and `netbird_data` volume are generated runtime state and aren't part of this reference. The deployed `reverseProxy.trustedHTTPProxies` value is `172.31.85.10/32`, matching Nginx Proxy Manager's fixed address on the external `proxy` network.
 
 ## Reference Contents
 

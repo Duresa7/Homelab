@@ -36,7 +36,7 @@ I ran `systemctl enable --now pve-ha-lrm pve-ha-crm` on `grey-server`. Systemd c
 
 ## Related records
 
-- [Grey Server HA Daemon Restoration change record](../Change%20Records/Galaxy%20Grey%20Server%20HA%20Daemon%20Restoration%20-%202026-07-22.md)
+- [Grey Server HA Daemon Restoration change record](../Change%20Records/Grey%20Server%20HA%20Daemon%20Restoration%20-%202026-07-22.md)
 - [Pre-change transcript](../../Evidence/Grey%20Server%20HA%20Daemon%20Restoration%20-%202026-07-22/Logs/S01-grey-ha-prechange-2026-07-22.txt)
 - [Service restoration transcript](../../Evidence/Grey%20Server%20HA%20Daemon%20Restoration%20-%202026-07-22/Logs/S02-grey-ha-enable-services-2026-07-22.txt)
 - [After-change verification transcript](../../Evidence/Grey%20Server%20HA%20Daemon%20Restoration%20-%202026-07-22/Logs/S03-grey-ha-verification-2026-07-22.txt)

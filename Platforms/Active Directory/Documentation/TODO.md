@@ -1,7 +1,7 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-19
+**Last updated:** 2026-09-25
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
@@ -20,7 +20,7 @@ I expanded DK-user to domain and server administration and verified gateway-sess
 ## RSAT on ObiPC (decided 2026-09-11, not started)
 
 1. I will install the optional features `Rsat.ActiveDirectory.DS-LDS.Tools`, `Rsat.GroupPolicy.Management.Tools`, `Rsat.Dns.Tools`, and `Rsat.ServerManager.Tools` on ObiPC over SSH. This step is done when each capability shows `Installed` in `Get-WindowsCapability -Online`.
-2. I will open the consoles with my regular DK-user account, which has domain administration rights since 2026-09-12. I need RSAT for Group Policy editing because Windows Admin Center has no policy editor. This work is done when Group Policy Management opens from ObiPC and shows the domain's five policies: `C-CMP-LAPS`, `C-SRV-LocalAdmins`, `C-WKS-LocalAdmins`, `Default Domain Policy`, and `Default Domain Controllers Policy`.
+2. I will open the consoles with my regular DK-user account, which has domain administration rights since 2026-09-12. I need RSAT for Group Policy editing because Windows Admin Center has no policy editor. This work is done when Group Policy Management opens from ObiPC and shows the domain's eleven policies: `C-CMP-LAPS`, `C-SRV-LocalAdmins`, `C-WKS-LocalAdmins`, `C-WKS-OnlineLogon`, `C-WKS-ObiPC-OnlineLogon`, `C-WKS-Action1-Deployer-Network`, `C-WKS-ObiPC-AppControl`, `U-WKS-ObiPC-Restricted`, `C-WKS-ObiPC-Lockdown`, `Default Domain Policy`, and `Default Domain Controllers Policy`, as listed in the [README](../README.md) Group Policy table.
 
 ## Online workstation sign-in (applied 2026-09-19, interactive checks open)
 
@@ -45,6 +45,8 @@ On 2026-09-12 I required IK-user and AH-user to change their passwords at next d
 
 ## ObiPC lockdown follow-ups (applied 2026-09-18, user side unobserved)
 
+I disabled `IK-user` on 2026-09-23 ([record](Change%20Records/IK-user%20Account%20Disabled%20-%202026-09-23.md)). Items 1, 3 and 6 wait on his sign-in and are blocked until I decide whether the account comes back. The other items do not need his session.
+
 The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md) and the [incident](../../../Security/Incidents/Active%20Directory/ObiPC%20Wiped%20from%20the%20Recovery%20Menu%20-%202026-09-18.md) hold the detail.
 
 1. After `IK-user`'s first sign-in since the rebuild, I will read `gpresult /user` for his session and the AppLocker 8004 events from his first day, and confirm the Settings `showonly:` list, the Control Panel allowlist, `NoClose` and the MMC restriction are in effect and that nothing he needs was denied. Done when each is observed on his session and any needed page or path is added.
@@ -68,11 +70,6 @@ The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockd
 1. I will use the next workstation to check scheduled export timing. Both existing workstations needed Provision on demand before their devices appeared in the tenant, but I watched the scheduled cycle for at most 14 minutes. After the next workstation is ready for hybrid join and in the device sync scope, I will record the start time and wait 30 minutes before using Provision on demand.
 2. I will record whether the device appears during that window and how long it takes. If it is still absent after 30 minutes, I will provision it on demand and record that result. This observation is settled when the record states whether scheduled export succeeded or on-demand provisioning was needed, with elapsed times and the resulting tenant device state.
 
-## Identity aliases in published records (policy change 2026-09-11)
-
-1. I now use aliases for people in all published Active Directory and Microsoft 365 records, with the mapping kept in an unpublished file. Every new record uses IK-user, AH-user, DK-user, DK-t0, DK-t2, DK-admin, or BG-admin from the first draft; testuser stays as written. Each record is ready to publish when I have checked it against the mapping and found no real names or account names for people.
-2. I rewrote the unpushed history before the first push. That cleanup is complete; I keep the alias check as part of every new record's publication check.
-
 ## Daily account elevation on ObiPC
 
 1. After I sign out and sign back in as DK-user, I will observe my first elevation prompt on ObiPC following the 2026-09-11 group change. This check is done when I see a consent prompt (Yes/No) rather than a credential prompt.
@@ -87,3 +84,4 @@ The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockd
 6. 2026-09-11: I made DK-user a Tier 2 workstation administrator through `ADM-T2-WorkstationAdmins`.
 7. 2026-09-12: I verified the Windows Admin Center deployment, five shared connections, AD/DNS extensions, network access, browser sign-in, and setup-file cleanup; target connection verification was completed in the access change below.
 8. 2026-09-12: I added DK-user to domain and server administration, configured HQ-MGT01 delegation and WinRM HTTPS on five targets, verified all five WAC connections and elevated sessions, and removed the test credentials.
+9. 2026-09-11: I switched published Active Directory and Microsoft 365 records to identity aliases (IK-user, AH-user, DK-user, DK-t0, DK-t2, DK-admin, BG-admin; `testuser` stays as written), with the mapping kept in an unpublished file, and rewrote the unpushed history before the first push. The alias check stays part of every new record's publication check.

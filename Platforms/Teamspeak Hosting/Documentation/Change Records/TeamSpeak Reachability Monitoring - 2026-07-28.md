@@ -63,7 +63,7 @@ Each instance keeps its own `serveradmin` account, so the three passwords differ
 
 | Check | Observed result |
 |---|---|
-| Public probe, all three servers | Answered `TS3INIT1` in 44.6, 45.2, & 44.7 ms |
+| Public probe, all three servers | Answered `TS3INIT1` in 44.6, 45.2, and 44.7 ms |
 | Local probe, all three servers | Answered in 0.13 to 0.15 ms |
 | SRV resolution | All three returned a host and port |
 | Textfile written | `teamspeak.prom`, 3575 bytes, mode 0644 |

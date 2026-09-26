@@ -1,78 +1,66 @@
-# My Homelab
+# AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-16
+**Last updated:** 2026-09-25
 
-I retired Portainer on 2026-09-16. Its [records are archived](Archive/Platforms/Portainer/README.md) and [Dockhand](Platforms/Dockhand/README.md) took over container management across seven Docker hosts. Prometheus has 57 healthy targets and Wazuh has 15 active remote agents.
-
-I retired Game 01 on 2026-09-12. Its [records are archived](Archive/Platforms/Game%20Servers/README.md). CT 123 and its 80 GiB root disk, including the game data, are deleted.
+This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Coolify, and TeamSpeak.
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-16_routed_LANs,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
-![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_SIEM-000000?logo=splunk&logoColor=white)
+![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_+_ES-000000?logo=splunk&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/Wazuh-15_active_remote_agents-3585BB)
 ![Prometheus](https://img.shields.io/badge/Prometheus-57_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
 
-This repository documents my five-node Proxmox cluster, segmented UniFi network, deployed platforms, automation, monitoring, & security work. The [walkthrough guides](Guides/README.md) are the quickest way to follow a build from its first command to the checks I ran afterward.
+[![Homelab overview: Cloudflare and the internet edge in front of the UniFi gateway and its 12 firewall zones, the five Galaxy Proxmox nodes with their 18 guests, and the security, monitoring, identity, and access flows between them](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
-## Version figures
+## At a glance
 
-A version figure in this repository is a point-in-time observation, not a durable fact. I give it an observation or verification date in the same record. A dated event or snapshot field already supplies that date, so I do not repeat it after every figure in that record.
-
-## Start Here
-
-- [Guides](Guides/README.md): chronological walkthroughs with commands, screenshots, checks, recovery notes, & links to the original records.
-- [Lab architecture](#lab-architecture): the environment in one view.
-- [Repository layout](#repository-layout): where the detailed records and configuration live.
-- [Build and change records](#build-and-change-records): longer records for several completed projects.
-- [Roadmap](#roadmap): the current work queue.
-- [Completed work](COMPLETED.md): the public history separated from the active backlog.
-
-## Lab architecture
-
-[![Homelab architecture: two WAN uplinks and Cloudflare in front of a UniFi zone-based firewall, the five-node Galaxy Proxmox cluster, and workload VLANs for security, access, and applications](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
-
-Traffic enters through two WAN uplinks. Cloudflare Tunnel carries the published HTTP services without an inbound port forward. The UniFi gateway holds 23 networks, including 16 routed LAN networks, and enforces policy across 12 zones. The Galaxy cluster hosts the workloads; UniFi sends CEF events to Splunk on Security-A, Wazuh reports 15 active remote agents, & Prometheus reports 57 targets `UP` across seven jobs. I verified these figures on 2026-09-16. The earlier 2026-09-06 readback came alongside a full audit of the inventory records against the cluster and the controller, and the fixes that audit produced.
-
-## Repository layout
-
-The guides provide the reading path. Detailed records stay with the system that owns the work, and screenshots remain beside the change that produced them.
-
-| Category | What it holds | Example |
+| Area | Current state | Checked |
 |---|---|---|
-| [Guides](Guides/README.md) | Visitor walkthroughs across infrastructure and platforms | [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md) |
-| [Architecture](Architecture/README.md) | Environment-wide designs and research | [External service ingress](Architecture/External-Service-Ingress.md) |
-| [Infrastructure](Infrastructure/README.md) | Network, compute cluster, and physical hardware | [Galaxy cluster](Infrastructure/Compute/Galaxy/README.md) |
-| [Platforms](Platforms/README.md) | Deployed services with their docs, config, and source | [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) |
-| [Engineering](Engineering/README.md) | Shared automation and pre-deployment projects | [Preview server](Engineering/Preview%20Server/README.md) |
-| [Operations](Operations/README.md) | Cross-system inventories and maintenance records | [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md) |
-| [Security](Security/README.md) | Incident reports and assessments | [UniFi firewall audit](Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md) |
-| [Backups](Backups/README.md) | Config files copied off a host before an edit | [How a file gets here](Backups/README.md#how-a-file-gets-here) |
-| [Archive](Archive/README.md) | Superseded records kept for history | [Retired ai-alpha-01 record](Archive/Operations/Inventory/Galaxy/AI%20Alpha%2001%20Retired%20Guest%20-%202026-07-25.md) |
+| Cluster | Five Proxmox VE 9.2.11 nodes (grey, purple, blue, red, green), five of five votes, no shared storage, no HA resources | 2026-09-24 |
+| Guests | 18 (12 VMs, 6 LXCs) plus 3 templates; 16 running | 2026-09-24 |
+| Network | UniFi Network 10.6.106 on the Ahsoka gateway, three switches, one access point; 23 networks, 16 routed LANs in 12 zones | 2026-09-24 |
+| Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |
+| Security | Wazuh 4.14.7 with 15 remote agents; Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF | 2026-09-24 |
+| Monitoring | Prometheus 3.14.0 with 57 targets in 7 jobs, all up; Grafana 13.2.2 with 24 alert rules posting to one Discord channel | 2026-09-24 |
+| Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.79.0 for remote access | 2026-09-24 |
+| Automation | Ansible 14.2.0 and Semaphore 2.18.27 (3 projects, 23 templates); Dockhand 1.0.48 with Hawser agents on six hosts; Executor 1.6.10 in front of the SSH Manager, UniFi, Cloudflare, and Wazuh MCP servers | 2026-09-24 |
+| Workstations | Jedi PC, my admin workstation, on Secure VLAN 50; ObiPC, a domain-joined Windows 11 PC on Secure Client VLAN 60, offline since the afternoon of 2026-09-24 | 2026-09-25 |
 
-## Build and Change Records
+The current guest list is in the [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md).
 
-| Record | What it covers |
+## Where things live
+
+| Folder | What it holds |
 |---|---|
-| [Splunk Enterprise build log](Platforms/Splunk/Enterprise/Documentation/Build-Log.md) | Rocky Linux VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF ingestion, `netops` routing, & 40 screenshots |
-| [Security-A migration](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) | VLAN 72, the Security-A zone, address changes, firewall policy, service moves, & post-migration checks |
-| [Galaxy Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md) | VLAN 71 interfaces, Corosync `link1`, four-node rollout, quorum checks, & link-failure tests |
-| [April 2026 incident response](Security/Incidents/Vercel/Credential%20Rotation%20After%20Vendor%20Bulletin%20-%202026-04-19.md) | Review, containment, corrective actions, service validation, & closure after the Vercel disclosure |
-| [TeamSpeak UDP relay outage](Security/Incidents/Teamspeak/UDP%20Relay%20Outage%20-%202026-04-24.md) | UDP relay symptoms, Docker proxy diagnosis, network-path rebuild, & voice checks |
-| [NetBird routed VPN path](Platforms/Netbird/Documentation/Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md) | First peer enrollment, routed resource, access policy, routing peer, masquerade, & HTTPS tunnel test |
-| [SSH authorized-key cleanup](Operations/Maintenance/SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md) | Nineteen-host inventory, 15 reachable targets, fingerprint comparison, authorized-key cleanup, & final access checks |
+| [Guides](Guides/README.md) | Step-by-step builds for readers |
+| [Architecture](Architecture/README.md) | Designs that span several systems |
+| [Infrastructure](Infrastructure/README.md) | Network, Proxmox cluster, physical hardware |
+| [Platforms](Platforms/README.md) | One folder per deployed service |
+| [Engineering](Engineering/README.md) | Shared tooling not run as a service |
+| [Operations](Operations/README.md) | Inventories and cross-system maintenance |
+| [Security](Security/README.md) | Incident reports and security assessments |
+| [Backups](Backups/README.md) | Redacted config copies taken before edits |
+| [Archive](Archive/README.md) | Retired systems and superseded records |
+| [Assets](Assets/Diagrams/README.md) | The eighteen diagrams and the generator that builds them |
 
-## Roadmap
+## Start here
 
-Current priorities from my [central TODO](TODO.md):
+1. [Galaxy Proxmox Cluster](Guides/Galaxy-Proxmox-Cluster.md): the five nodes and both Corosync links.
+2. [UniFi Network](Guides/UniFi-Network.md): VLANs, zones, and the policy order that holds them apart.
+3. [Linux Host Baseline](Guides/Linux-Host-Baseline.md): what every Linux guest gets before it carries a workload.
+4. [Active Directory](Guides/Active-Directory.md): two domain controllers, tiered OUs, and Windows LAPS.
+5. [Wazuh Alerts in Splunk](Guides/Wazuh-Alerts-in-Splunk.md): endpoint alerts, malware detection, and one Splunk dashboard.
 
-1. Maintain the verified fleet access model and onboard future hosts through the [Linux host baseline](Guides/Linux-Host-Baseline.md).
-2. Move Coolify off root SSH on `app-01` and clear out its leftover keys.
-3. Put `UPS-01` back on a data cable, or accept it as unmonitored and say so once.
-4. Decide how far Threat Management coverage goes across the eight routed LANs still outside inspection.
-5. Close the three account findings the password standardization turned up.
+## Open work
 
-I keep closed work in [Completed Work](COMPLETED.md), separate from the roadmap and system backlogs.
+The full list is in [TODO.md](TODO.md); closed work is in [COMPLETED.md](COMPLETED.md).
+
+- Repair `green-server`'s memory and activate `win11-dev` ([Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md)).
+- Finish the MeshCentral pilot on `docker-blue` ([deployment record](Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md)).
+- Complete the Action1 Deployer on `HQ-MGT01` ([preparation record](Platforms/Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md)).
+- Finish the App Portal rollout for ObiPC ([App Portal](Platforms/App%20Portal/README.md)).
+- Decide how many of the 16 routed LANs UniFi Threat Management inspects ([Notify and Block record](Infrastructure/Network/UniFi/Documentation/Change%20Records/Detection%20Mode%20to%20Notify%20and%20Block%20-%202026-08-31.md)).

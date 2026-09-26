@@ -148,8 +148,8 @@ COPY_PROPS = [
     "channel_flag_permanent",
     "channel_flag_semi_permanent",
     "channel_flag_default",
-    # channel_codec_latency_factor — deprecated in TS3 3.x+, removed.
-    # channel_codec_is_unencrypted — deprecated in TS3 3.x+, removed.
+    # channel_codec_latency_factor: deprecated in TS3 3.x+, removed.
+    # channel_codec_is_unencrypted: deprecated in TS3 3.x+, removed.
     "channel_flag_maxclients_unlimited",
     "channel_flag_maxfamilyclients_unlimited",
     "channel_flag_maxfamilyclients_inherited",
@@ -258,7 +258,7 @@ def main():
                 ):
                     continue
                 # Custom icon IDs (nonzero) reference icons that don't exist
-                # on the target server — skip them to avoid convert errors.
+                # on the target server: skip them to avoid convert errors.
                 if k == "channel_icon_id" and str(v) != "0":
                     continue
                 parts.append(f"{k}={ts3_escape(str(v))}")

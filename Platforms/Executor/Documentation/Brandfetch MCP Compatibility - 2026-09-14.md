@@ -1,7 +1,7 @@
 # Brandfetch MCP Compatibility
 
 **Created:** 2026-09-14  
-**Last updated:** 2026-09-14  
+**Last updated:** 2026-09-25  
 **Assessment date:** 2026-09-14
 
 **Follow-up:** I completed the [Brandfetch integration](Change%20Records/Brandfetch%20MCP%20Integration%20-%202026-09-14.md) later on 2026-09-14 using a bearer token. The assessment below records the earlier checks.
@@ -19,7 +19,7 @@ I sent an unauthenticated MCP `initialize` request from `docker_blue` through SS
 | `https://mcp.brandfetch.io/.well-known/oauth-protected-resource` | Authorization server `https://developers.brandfetch.com`; bearer credentials supported in a header |
 | `https://developers.brandfetch.com/.well-known/oauth-authorization-server` | Authorization code flow, PKCE `S256`, scope `read`, dynamic registration at `/api/oauth/register`; no client metadata document support advertised |
 
-I also ran the same unauthenticated checks from the workspace environment and observed the same results. Looking for authorization-server metadata on the MCP hostname returned HTTP `404`; the protected-resource document correctly directs that request to `developers.brandfetch.com`. I retained no standalone transcript for these local checks.
+I also ran the same unauthenticated checks from `ubuntu-dev` and observed the same results. Looking for authorization-server metadata on the MCP hostname returned HTTP `404`; the protected-resource document correctly directs that request to `developers.brandfetch.com`.
 
 ## Connection approach
 

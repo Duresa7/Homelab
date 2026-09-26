@@ -115,7 +115,7 @@ The bigger cost is data egress. I can now copy text out of a `REMnux - Malware` 
 
 Proxmox ran `qmshutdown` on VM 122 at 11:04:32 and `qmstart` at 11:05:35 local, both as `root@pam`, recorded in `/var/log/pve/tasks/index` on `purple-server`. The guest journal shows a clean `systemd-poweroff`. All eight Kasm services came back healthy on their own and I carried on reading the database.
 
-That was the fleet kernel upgrade, not a fault. [Galaxy Cluster PVE 9.2.6 Upgrade and SSH Host Key Seeding](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Cluster%20PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md) records `purple-server` as the second node rebooted onto `7.0.14-8-pve`, with `kasm-01` down 80 seconds. The 63 seconds between the two Proxmox tasks sits inside that window.
+That was the fleet kernel upgrade, not a fault. [Galaxy Cluster PVE 9.2.6 Upgrade and SSH Host Key Seeding](../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/PVE%209.2.6%20Upgrade%20and%20SSH%20Host%20Key%20Seeding%20-%202026-08-01.md) records `purple-server` as the second node rebooted onto `7.0.14-8-pve`, with `kasm-01` down 80 seconds. The 63 seconds between the two Proxmox tasks sits inside that window.
 
 Worth keeping in mind for the settings this change makes: a node reboot destroys every running session regardless of a seven-day keepalive window, so "unlimited" means unlimited until the next kernel update.
 

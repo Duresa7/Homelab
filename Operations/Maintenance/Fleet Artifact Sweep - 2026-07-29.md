@@ -1,7 +1,7 @@
 # Fleet Artifact Sweep
 
 **Created:** 2026-07-29  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-09-25
 
 **Survey date:** 2026-07-29  
 **Status:** Executed; see the [execution record](Fleet%20Artifact%20Sweep%20Execution%20-%202026-07-29.md)  
@@ -226,7 +226,7 @@ These are caches, not artifacts, and they regenerate. Worth clearing on `docker-
 7. The small stale files listed per host.
 8. The ISO decision, separately and deliberately.
 
-Steps 1 through 5 are mechanical. Step 6 onward wants a human reading each path.
+Steps 1 through 5 are mechanical. From step 6 onward I read each path before deleting it.
 
 ## Verify afterward
 

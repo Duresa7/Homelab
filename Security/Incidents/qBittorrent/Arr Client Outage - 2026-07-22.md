@@ -37,7 +37,7 @@ Gluetun stayed healthy and qBittorrent stayed running in Gluetun's network names
 - qBittorrent 5.2.3 Web API on `gluetun:8080`.
 - The direct qBittorrent path at `192.168.40.42:8080`, which failed the same API Host-header check until mitigation.
 
-Jellyfin, Seerr, Prowlarr, FlareSolverr, the Proton WireGuard tunnel, & qBittorrent's torrent engine remained running.
+Jellyfin, Seerr, Prowlarr, FlareSolverr, the Proton WireGuard tunnel, and qBittorrent's torrent engine remained running.
 
 ## Symptoms
 
@@ -59,7 +59,7 @@ Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms.
 | 13:31:43 EDT | qBittorrent saved the single-domain value containing only its NPM hostname. |
 | Exact minute not retained | I found both Arr download clients unavailable. |
 | 20:49:22 EDT | I saved the three-entry domain list through qBittorrent's Web API. |
-| 20:53:48 EDT | The final audit passed both saved-client tests, both health APIs, direct access, NPM TLS, & VPN port matching. |
+| 20:53:48 EDT | The final audit passed both saved-client tests, both health APIs, direct access, NPM TLS, and VPN port matching. |
 
 ## Findings
 
@@ -67,12 +67,12 @@ Six direct API probes from the two containers returned HTTP `401` in 2 to 21 ms.
 - `Host: gluetun:8080` and `Host: 192.168.40.42:8080` returned HTTP `401` before mitigation.
 - `Host: qbittorrent.alphasecunited.com` returned HTTP `200` from the same source and request path.
 - The Arr addresses were inside qBittorrent's enabled `172.18.0.0/16` authentication-bypass subnet.
-- Gluetun was healthy, qBittorrent shared Gluetun's exact container ID, & provider-forwarded port `51342` matched qBittorrent's listening port.
+- Gluetun was healthy, qBittorrent shared Gluetun's exact container ID, and provider-forwarded port `51342` matched qBittorrent's listening port.
 - The HTTPS route check passed during the original change because NPM sent the one allowed hostname. It didn't test the separate `gluetun` hostname used by both Arr applications.
 
 ## Root Cause
 
-I replaced qBittorrent's effective server-domain allowance with only `qbittorrent.alphasecunited.com` during the HTTPS compatibility change. qBittorrent validates the HTTP Host header before WebUI authentication, so the new value blocked the established Arr client path even though its DNS, TCP connection, subnet bypass, & VPN namespace were unchanged. I didn't edit either saved Arr client during mitigation; both saved-client tests passed after the Host-list repair.
+I replaced qBittorrent's effective server-domain allowance with only `qbittorrent.alphasecunited.com` during the HTTPS compatibility change. qBittorrent validates the HTTP Host header before WebUI authentication, so the new value blocked the established Arr client path even though its DNS, TCP connection, subnet bypass, and VPN namespace were unchanged. I didn't edit either saved Arr client during mitigation; both saved-client tests passed after the Host-list repair.
 
 The original verification tested the NPM route and qBittorrent WebUI response. It didn't include a saved-client test from Sonarr or Radarr after the server-domain change.
 
@@ -81,7 +81,7 @@ The original verification tested the NPM route and qBittorrent WebUI response. I
 1. I changed `web_ui_domain_list` to `qbittorrent.alphasecunited.com;gluetun;192.168.40.42` through qBittorrent's Web API.
 2. I confirmed `web_ui_host_header_validation_enabled=true` after the change.
 3. I ran each Arr application's saved download-client test.
-4. I verified direct qBittorrent access, NPM HTTPS with certificate validation, the Gluetun namespace, & Proton port matching.
+4. I verified direct qBittorrent access, NPM HTTPS with certificate validation, the Gluetun namespace, and Proton port matching.
 5. I added the Arr-to-qBittorrent API probe to the documented compatibility verification boundary.
 
 I created no backup or temporary configuration file.
@@ -90,7 +90,7 @@ I created no backup or temporary configuration file.
 
 Radarr and Sonarr each returned HTTP `200` from `downloadclient/testall`, and both health endpoints returned `[]`. Three API calls from each container through `gluetun:8080` returned HTTP `200` in 2.3 ms or less.
 
-Direct qBittorrent access and the NPM HTTPS root returned HTTP `200`; TLS verification returned `0`. Gluetun remained healthy, qBittorrent remained in Gluetun's exact namespace, & both port values were `51342`. Neither Arr log contained another qBittorrent connection error after mitigation.
+Direct qBittorrent access and the NPM HTTPS root returned HTTP `200`; TLS verification returned `0`. Gluetun remained healthy, qBittorrent remained in Gluetun's exact namespace, and both port values were `51342`. Neither Arr log contained another qBittorrent connection error after mitigation.
 
 ## Lessons
 
@@ -102,7 +102,7 @@ The regression test is two seconds long. Calling `/api/v2/app/version` from both
 
 | Action | Status |
 |---|---|
-| Preserve the NPM hostname, `gluetun`, & direct media-host address in `WebUI\ServerDomains` | Complete |
+| Preserve the NPM hostname, `gluetun`, and direct media-host address in `WebUI\ServerDomains` | Complete |
 | Run saved-client tests after future qBittorrent Host-header changes | Complete; added to the troubleshooting and configuration records |
 | Verify Host-header validation remains enabled after correction | Complete |
 | Confirm no post-mitigation connection errors | Complete |

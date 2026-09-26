@@ -1,7 +1,7 @@
 # SSH Manager Sudo Password on Ten Guests
 
 **Created:** 2026-08-20  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-20  
 **Status:** Complete. `ssh_execute_sudo` reaches root on all eleven guests and `ssh_execute` still works on all eleven. This work put the credential in one file and no other. A wider scan on 2026-08-20 then found a second, older copy that this work did not create. See [Where the first scan was too narrow](#where-the-first-scan-was-too-narrow)  
@@ -14,14 +14,14 @@ The SSH Manager can now answer a sudo prompt on the guests where `dkadi` has to 
 | Hosts | SSH Manager connects as | `sudo` before | `sudo` now | What answers the prompt |
 | --- | --- | --- | --- | --- |
 | `alpha-prod-01`, `app-01`, `edge-01`, `security-01`, `splunk-siem`, `docker-blue` | `dkadi` | fails, password required | reaches root | the configured entry |
-| `docker-network`, `monitor-01`, `media-01`, `game-01` | `dkadi` | reaches root | reaches root | the `NOPASSWD` drop-in today, the configured entry once ticket 17 removes it |
+| `docker-network`, `monitor-01`, `media-01`, `game-01` | `dkadi` | reaches root | reaches root | the `NOPASSWD` drop-in today, the configured entry once I remove the drop-in |
 | `ansible-01` | `ansible` | reaches root | reaches root | `NOPASSWD`, which that account keeps permanently |
 
 This is the step that had to land before the four remaining `dkadi` drop-ins come off. Removing them first would have left privileged tooling with no path on any host at once.
 
 ## The env file the server actually reads
 
-The plan for this work named `~/.ssh-manager/.env`, which is where the SSH Manager CLI writes and the second candidate in the server's own fallback chain. That is not the file the running server reads. The MCP registration sets `SSH_ENV_PATH`, which is the first candidate and overrides the rest, and it points at `~/.claude/ssh-manager.env`.
+The plan for this work named `~/.ssh-manager/.env`, which is where the SSH Manager CLI writes and the second candidate in the server's own fallback chain. That is not the file the running server reads. The MCP registration sets `SSH_ENV_PATH`, which is the first candidate and overrides the rest, and it points at an `ssh-manager.env` inside my MCP client's configuration directory.
 
 The two files disagree. The one the server reads holds seventeen servers and was last written on 2026-08-20. The CLI default holds twenty, still lists `kasm-01` and `supabase-01`, both retired, plus a `ubuntu-dev` entry, and was last written on 2026-08-14.
 
@@ -61,13 +61,13 @@ $ printf 'STDIN-PROBE-LINE\n' | sudo -S /bin/cat
 STDIN-PROBE-LINE
 ```
 
-So on a `NOPASSWD` host the password is handed to whatever command runs, and any command that echoes its stdin prints it. The tool masks the command it reports, not the output it returns. `ansible-01` would be in that state permanently. The four `dkadi` hosts that still hold drop-ins are in it too, and ticket 17 ends that when it removes them.
+So on a `NOPASSWD` host the password is handed to whatever command runs, and any command that echoes its stdin prints it. The tool masks the command it reports, not the output it returns. `ansible-01` would be in that state permanently. The four `dkadi` hosts that still hold drop-ins are in it too, until I remove those drop-ins.
 
 ## Verification
 
 Run between 9:14 and 9:22 AM, after the 9:13 AM write.
 
-**`ssh_execute_sudo` running `id -un` returns `root`, exit code 0, on 11 of 11 guests.** Six of those are hosts where `dkadi` holds no `NOPASSWD` drop-in, and five of the six are hosts I watched the same call fail on an hour earlier. That is the proof the ticket asked for: the password path works and does not depend on the drop-ins ticket 17 removes. The sixth is `alpha-prod-01`, where I hold no pre-change capture of my own; it has no drop-in and `dkadi` was proven to authenticate there earlier the same day, so it belongs in the group either way.
+**`ssh_execute_sudo` running `id -un` returns `root`, exit code 0, on 11 of 11 guests.** Six of those are hosts where `dkadi` holds no `NOPASSWD` drop-in, and five of the six are hosts I watched the same call fail on an hour earlier. That is the proof I set out to get: the password path works and does not depend on the drop-ins I am about to remove. The sixth is `alpha-prod-01`, where I hold no pre-change capture of my own; it has no drop-in and `dkadi` was proven to authenticate there earlier the same day, so it belongs in the group either way.
 
 ```text
 alpha-prod-01 root   app-01 root      edge-01 root        security-01 root
@@ -77,7 +77,7 @@ media-01      root   game-01 root     ansible-01 root
 
 **`ssh_execute` without sudo still works on 11 of 11.** Each returned its own hostname and the expected login account, `dkadi` on ten and `ansible` on `ansible-01`.
 
-**The returned output masks the password.** The tool reports `Command: sudo id -un` where it actually ran `echo "..." | sudo -S id -un`. Worth knowing exactly how far that goes: the mask is a regular expression over the reported command line only, so it hides the credential in the command echo and does nothing to stdout or stderr. It is not a general guarantee that the value cannot appear in a result.
+**The returned output masks the password.** The tool reports `Command: sudo id -un` where it actually ran `echo "..." | sudo -S id -un`. The mask is a regular expression over the reported command line only, so it hides the credential in the command echo and does nothing to stdout or stderr. It is not a general guarantee that the value cannot appear in a result.
 
 **The value in the file is the value in the credential item.** I parsed the file with the same `dotenv` release the server loads and compared a SHA-256 of each parsed entry against a SHA-256 of the field read straight out of the item: ten keys parsed, ten matching, and seventeen servers still parsing. Neither value was printed.
 
@@ -85,7 +85,7 @@ media-01      root   game-01 root     ansible-01 root
 
 **Mode is still `0600`**, owned by `ai-agent`, 6270 bytes, 153 lines.
 
-**This work put the credential in one file and no other.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 session transcripts for this project, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which the source confirms at `index.js:695`: the only two `logCommand` call sites sit in the non-sudo handler.
+**This work put the credential in one file and no other.** I scanned for the literal value across the SSH Manager's own log and command history, the CLI default env file, the shell history, this repository's two log files, both staging files, all 80 MCP transport logs for this server and all 11 of my MCP client's session transcripts for this repository, 101 files in total. One hit, which is the env file itself. The SSH Manager's log and history came back clean because `logger.logCommand` is wired into `ssh_execute` only; `ssh_execute_sudo` writes neither, which the source confirms at `index.js:695`: the only two `logCommand` call sites sit in the non-sudo handler.
 
 **The mask is one regex over the reported command line.** `index.js:2323` is `fullCommand.replace(/echo "[^"]+" \| sudo -S/, 'sudo')`, and the result template interpolates `result.stdout || result.stderr` untouched. So a command that echoes its own stdin still returns the value.
 
@@ -93,13 +93,13 @@ media-01      root   game-01 root     ansible-01 root
 
 ## Where the first scan was too narrow
 
-The scan above concluded the value existed in exactly one file. That conclusion was wrong, and the reason is worth keeping because it will catch the next person.
+The scan above concluded the value existed in exactly one file. That conclusion was wrong.
 
-There are two Claude configuration directories on `ubuntu-dev`. This effort runs under `CLAUDE_CONFIG_DIR=~/.claude_alt`, so "all 11 session transcripts for this project" meant the transcripts under `~/.claude_alt/projects/`. The default directory `~/.claude/projects/` was never looked at, and that is where the second copy was. Scanning from `$HOME` instead of from a list of expected locations finds it immediately.
+My MCP client keeps its session transcripts on `ubuntu-dev` in two configuration directories, one per profile. This work ran under the second profile, so "all 11 session transcripts" meant that profile's transcripts only. The default profile's directory was never looked at, and that is where the second copy was. Scanning from `$HOME` instead of from a list of expected locations finds it immediately.
 
-A re-scan from `$HOME` on 2026-08-20, covering plaintext plus hex, spaced hex, `xxd` column, base64 and percent-encoded forms, returned two files: the env file, and `~/.claude/projects/-home-ai-agent-Documents-Homelab/8a3156c4-b4d6-4a1a-8505-0a6c74d581a8.jsonl`. One occurrence, on one line, timestamped **2026-08-14**, six days before this change. Only the plaintext form matched anywhere; no encoded form appeared in any file.
+A re-scan from `$HOME` on 2026-08-20, covering plaintext plus hex, spaced hex, `xxd` column, base64 and percent-encoded forms, returned two files: the env file, and one session transcript of my MCP client's default profile on `ubuntu-dev`. One occurrence, on one line, timestamped **2026-08-14**, six days before this change. Only the plaintext form matched anywhere; no encoded form appeared in any file.
 
-**This change did not put it there.** The line is a 2026-08-14 session flagging that an `xxd` debug command had just printed the value into its own output. The exposure was recognised as it happened and the value was left in the transcript on disk. What is new is that the value's authority grew afterwards: on 2026-08-14 it was `dkadi`'s sudo password, on 2026-08-15 it became root's password on the guests, and on 2026-08-20 `Defaults rootpw` made it what every sudo prompt on all eleven checks.
+**This change did not put it there.** The line is from 2026-08-14, where I flagged that an `xxd` debug command had just printed the value into its own output. The exposure was recognised as it happened and the value was left in the transcript on disk. What is new is that the value's authority grew afterwards: on 2026-08-14 it was `dkadi`'s sudo password, on 2026-08-15 it became root's password on the guests, and on 2026-08-20 `Defaults rootpw` made it what every sudo prompt on all eleven checks.
 
 I replaced the value in that transcript with a `<REDACTED_PASSWORD>` marker on 2026-08-20, leaving the surrounding text intact so the flag itself still reads. All 1000 lines still parse as JSON, the file mode is unchanged at `0600`, and the modification time was preserved. A re-scan from `$HOME` now returns the env file only.
 
@@ -109,7 +109,7 @@ Rotation is a separate decision and is not made here. Two things bear on it: the
 
 The value never appeared in a command string, an argument, a log, a shell history or this repository. It was read with a secret reference and piped into the process that wrote it, so the only places it existed were the pipe and the destination file. Both staging scripts are gone, along with the pre-change copy of the env file.
 
-Before writing, I checked without printing anything that the field came back non-empty and that it is byte-identical to the duplicate field the last ticket of this effort deletes. That matters here for one reason: reading the durable field rather than the duplicate means this entry does not point at a name that is scheduled to stop existing. Which fields those are stays in the unpublished Linux Host Baseline Standard.
+Before writing, I checked without printing anything that the field came back non-empty and that it is byte-identical to the duplicate field the last step of this effort deletes. That matters here for one reason: reading the durable field rather than the duplicate means this entry does not point at a name that is scheduled to stop existing.
 
 ## What this weakens
 
@@ -117,16 +117,16 @@ Before writing, I checked without printing anything that the field came back non
 
 **The password crosses the wire inside the command.** `echo "<password>" | sudo -S` means the value is part of the command string sent over SSH and part of the remote shell's argument list for as long as the command runs, so it is visible to anything on the target that can read `/proc` for that instant. It is not written to a file on the target and not recorded in the remote shell history, because a non-interactive `ssh` exec keeps none.
 
-**Two of those facts get worse before they get better.** Until ticket 17 removes the four `dkadi` drop-ins, `ssh_execute_sudo` on `docker-network`, `monitor-01`, `media-01` and `game-01` hands root's password to the command's stdin, where any command that reads stdin can see it. That is a consequence of doing this step before 17 rather than after, which was the right order for a different reason.
+**Two of those facts get worse before they get better.** Until I remove the four `dkadi` drop-ins, `ssh_execute_sudo` on `docker-network`, `monitor-01`, `media-01` and `game-01` hands root's password to the command's stdin, where any command that reads stdin can see it. That is a consequence of doing this step before the drop-in removal rather than after, which was the right order for a different reason.
 
 ## Left open
 
 **The stale env file on `ubuntu-dev`.** `~/.ssh-manager/.env` still lists twenty servers, including the retired `kasm-01` and `supabase-01`, and holds no sudo passwords. Nothing loads it while `SSH_ENV_PATH` is set. If that variable is ever dropped from the MCP registration, the server silently falls back to it and privileged access disappears at the same moment two dead hosts reappear in the inventory. Either reconcile it or delete it.
 
-**`ai-agent` still has no sudo grant on ten of the eleven guests**, so the SSH Manager's path to root on those hosts is `dkadi` and nothing else. That gap belongs to the verification ticket, not to this one.
+**`ai-agent` still has no sudo grant on ten of the eleven guests**, so the SSH Manager's path to root on those hosts is `dkadi` and nothing else. That gap belongs to the verification step at the end of this effort.
 
-**Ticket 17 is unblocked.** The password path is proven on six hosts that have no drop-in, so removing the remaining four cannot leave privileged tooling without a route.
+**Removing the last four drop-ins is unblocked.** The password path is proven on six hosts that have no drop-in, so removing the remaining four cannot leave privileged tooling without a route.
 
-**Whether to rotate the fleet sudo password.** The 2026-08-14 transcript copy is redacted, but redacting a file after the fact is not the same as the value never having been written. Rotating it means changing root's password on all eleven guests and the ten entries here together, because `Defaults rootpw` ties them.
+**Whether to rotate the fleet sudo password.** The 2026-08-14 transcript copy is redacted, but redacting a file after the fact is not the same as the value never having been written. Rotating it means changing root's password on all eleven guests and the ten entries here together, because `Defaults rootpw` ties them. On 2026-09-07 I decided not to rotate it, as recorded in [Fleet Access Model Verified and Credential Item Collapsed](Fleet%20Access%20Model%20Verified%20and%20Credential%20Item%20Collapsed%20-%202026-09-07.md).
 
 **Whether the 2026-08-14 exposure needs its own record.** `Security/Incidents/Grafana/Plaintext Administrator Credential - 2026-07-22.md` is the precedent for a plaintext credential getting an incident record, and nothing currently records this one.

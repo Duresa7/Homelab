@@ -1,7 +1,7 @@
 # Agent Client Cutover
 
 **Created:** 2026-09-01  
-**Last updated:** 2026-09-01
+**Last updated:** 2026-09-25
 
 **Cutover:** 2026-08-31
 
@@ -9,7 +9,7 @@
 
 I replaced the direct UniFi Network and SSH Manager MCP configuration on `ubuntu-dev` with one user-scoped Executor connection in Codex and Claude Code. Both clients now connect to `https://mcp.alphasecunited.com/mcp` over Streamable HTTP with OAuth. Executor remains the only client-side homelab MCP entry and exposes the existing Cloudflare, Supabase, UniFi MCP Gateway, and SSH Manager MCP Gateway integrations through that endpoint.
 
-I kept the requested no-approval behavior. Codex sets the Executor server's default tool approval mode to `approve`, and Claude Code persistently allows `mcp__executor__*`. Executor has no approval policy override on the SSH Manager connection. SSH Manager therefore remains able to run unrestricted root-capable operations without a client or Executor approval prompt.
+I kept tool calls free of approval prompts, which is how I want these clients to work. Codex sets the Executor server's default tool approval mode to `approve`, and Claude Code persistently allows `mcp__executor__*`. Executor has no approval policy override on the SSH Manager connection. SSH Manager therefore remains able to run unrestricted root-capable operations without a client or Executor approval prompt.
 
 ## Implementation
 

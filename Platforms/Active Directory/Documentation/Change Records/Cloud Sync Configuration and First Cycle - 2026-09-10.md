@@ -1,7 +1,7 @@
 # Cloud Sync Configuration and First Cycle
 
 **Created:** 2026-09-10  
-**Last updated:** 2026-09-10
+**Last updated:** 2026-09-25
 
 I created the AD to Microsoft Entra ID configuration in Entra Cloud Sync on 2026-09-10 and its first cycle created the three staff accounts and their scope group in the tenant. The portal work was done under `DK-user@alphasecunited.com` from my own workstation. Verification came from the tenant's provisioning and audit log exports, cross-checked against object identifiers read from `HQ-DC01`.
 
@@ -40,7 +40,7 @@ On the directory side nothing changed. `msDS-ExternalDirectoryObjectId` is empty
 
 ## Password hash sync and the shared password
 
-Password hash sync is on, so the tenant now holds a derived hash for each of the three accounts. `testuser` currently carries the domain `Administrator` password, set at my request for the testing window and recorded in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). That record's restore list now has more weight behind it: a derivative of the break-glass domain password is in the cloud for as long as `testuser` keeps it, and any cloud sign-in as `testuser` types that password into a browser. Giving `testuser` its own password before real use is the first restore item, not the last.
+Password hash sync is on, so the tenant now holds a derived hash for each of the three accounts. `testuser` currently carries the domain `Administrator` password, which I set for the testing window and recorded in [Shared Test Password and Admin Policy Relaxation](Shared%20Test%20Password%20and%20Admin%20Policy%20Relaxation%20-%202026-09-10.md). That record's restore list now has more weight behind it: a derivative of the break-glass domain password is in the cloud for as long as `testuser` keeps it, and any cloud sign-in as `testuser` types that password into a browser. Giving `testuser` its own password before real use is the first restore item, not the last.
 
 The first sign-in test, `testuser` at a Microsoft 365 sign-in page with its directory password, is the proof that the hash reached the tenant. It passed later the same afternoon: `testuser` signed in at `office.com` with the directory password and registered the Authenticator app under security defaults. Business Basic was then assigned to `testuser`, `AH-user` and `IK-user` in the Microsoft 365 admin center. The Devices page lists `HQ-WS001` as *Microsoft Entra hybrid joined*, Windows `10.0.26200.6584`, registered 3:02 PM.
 

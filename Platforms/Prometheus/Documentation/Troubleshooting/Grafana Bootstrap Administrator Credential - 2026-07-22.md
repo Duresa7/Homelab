@@ -13,7 +13,7 @@ Grafana emitted no application error. The defect was the continued presence of a
 
 ## Failed Attempts
 
-I didn't have a failed remediation attempt. I removed the variable, recreated Grafana, rotated the administrator credential, & validated the resulting state once.
+I didn't have a failed remediation attempt. I removed the variable, recreated Grafana, rotated the administrator credential, and validated the resulting state once.
 
 ## Hypotheses and Tests
 
@@ -31,10 +31,10 @@ I left the bootstrap administrator value in Compose after the first Grafana data
 
 ## Corrective Action
 
-I removed the variable from Compose, recreated Grafana, rotated the administrator credential, & verified authenticated access. I didn't retain the credential or its storage location in repository documentation or evidence.
+I removed the variable from Compose, recreated Grafana, rotated the administrator credential, and verified authenticated access. I didn't retain the credential or its storage location in repository documentation or evidence.
 
 ## Verification
 
-The live Compose file and recreated container environment contain no `GF_SECURITY_ADMIN_PASSWORD` entry. Grafana reports database `ok`, & current-container logs contained zero failed-authentication matches in the inspected 12-hour window. Those logs begin after recreation, so they don't establish the pre-remediation access history.
+The live Compose file and recreated container environment contain no `GF_SECURITY_ADMIN_PASSWORD` entry. Grafana reports database `ok`, and current-container logs contained zero failed-authentication matches in the inspected 12-hour window. Those logs begin after recreation, so they don't establish the pre-remediation access history.
 
 The full security assessment and timeline are in [Grafana Plaintext Administrator Credential Incident](../../../../Security/Incidents/Grafana/Plaintext%20Administrator%20Credential%20-%202026-07-22.md).

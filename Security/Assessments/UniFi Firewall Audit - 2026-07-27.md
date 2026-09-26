@@ -1,7 +1,7 @@
 # UniFi Firewall Audit
 
 **Created:** 2026-07-27  
-**Last updated:** 2026-07-27
+**Last updated:** 2026-09-25
 
 ## Scope and Result
 
@@ -36,7 +36,7 @@ The deterministic UniFi firewall auditor scored the current controller 62/100 an
 | Topology | 22/25 | 3 |
 | Overall | 62/100 | 38 |
 
-The [scoring output](../Evidence/UniFi%20Firewall%20Audit%20-%202026-07-27/Logs/Firewall-Audit-Score.json) records rubric version 1 and the exact category deductions.
+The [scoring output](Evidence/UniFi%20Firewall%20Audit%20-%202026-07-27/Logs/Firewall-Audit-Score.json) records rubric version 1 and the exact category deductions.
 
 ## Material Findings
 
@@ -71,7 +71,7 @@ I retained the deterministic score output. The controller and switch reads were 
 
 ## Remaining Work
 
-I did not change live firewall or switch configuration during this review. A separate approved hardening change should:
+I did not change live firewall or switch configuration during this review. A separate hardening change should:
 
 1. limit the base Management network to named administrative sources;
 2. place the Temp VPN block before any broader VPN allow, or narrow the broader allow;

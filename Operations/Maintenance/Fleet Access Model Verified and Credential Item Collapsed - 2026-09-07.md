@@ -1,7 +1,7 @@
 # Fleet Access Model Verified and Credential Item Collapsed
 
 **Created:** 2026-09-07  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-09-07  
 **Status:** Complete. This closes the fleet access priority that opened on 2026-08-14  
@@ -47,7 +47,7 @@ The unpublished Linux Host Baseline Standard was rewritten from the verified sta
 
 - **Root is not locked.** The old step 7, `passwd -l root`, is gone. Root carries a known password because `Defaults rootpw` makes it the sudo password, and a locked root plus that file locks every account out of sudo. The "no root on a VM" rule is now "no root **login**".
 - **`ai-agent` has no sudo** on a three-account host. The 2026-08-15 wording said both human-facing accounts answer a prompt; the fleet never gave `ai-agent` a grant, agent work goes through the SSH Manager as `dkadi`, and I have written the standard to what is true. Granting it later is one group membership per host, because `rootpw` already governs the prompt.
-- **A "What I accept" section** names the three things this model trades away: root's fleet password in plaintext in the SSH Manager's root-owned secret file on `docker-blue`, the 2026-08-14 transcript exposure of that value, redacted on 2026-08-20 and not rotated by decision on 2026-09-07, and my keys reaching root fleet-wide through the cluster key file and `ansible-01`.
+- **A "What I accept" section** names the three things this model trades away: root's fleet password in plaintext in the SSH Manager's root-owned secret file on `docker-blue`, the 2026-08-14 transcript exposure of that value, redacted on 2026-08-20 and, by my decision on 2026-09-07, not rotated, and my keys reaching root fleet-wide through the cluster key file and `ansible-01`.
 - **The credential fields are named** with what each holds and which play or tool reads it, which the standard is the one file permitted to do.
 - **The fleet table** above is in it, with the nodes, `docker-main` and `ubuntu-dev` listed as outside the model and why.
 - The historical notes about the 2026-08-05 preflight and the 2026-08-14 check are gone; their outcomes are in the maintenance records and the root `TODO.md`.

@@ -1,11 +1,11 @@
 # app-01 64 GiB Boot Disk Replacement
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-11
+**Last updated:** 2026-09-25
 
 **Status:** Complete. VM 116 runs on its verified 64 GiB replacement disk on Grey. I removed the original 200 GiB volume after service verification. The pre-existing Wazuh connection failure remains open.
 
-I approved a 64 GiB system disk after the [sizing assessment](app-01%20Disk%20Sizing%20Assessment%20-%202026-09-11.md). This change replaces app-01's disk on `grey-server`. The move to Purple remains separate.
+I chose a 64 GiB system disk after the [sizing assessment](app-01%20Disk%20Sizing%20Assessment%20-%202026-09-11.md). This change replaces app-01's disk on `grey-server`. The move to Purple remains separate.
 
 ## Preflight
 

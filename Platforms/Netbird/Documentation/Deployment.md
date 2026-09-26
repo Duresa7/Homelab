@@ -4,13 +4,13 @@
 **Last updated:** 2026-07-20
 
 **Implementation started:** 2026-07-10  
-**Status:** Operational; HTTPS publication, authenticated administrator access, controlled Compose restart, & the first-peer plus routed VPN path into Access-A all verified
+**Status:** Operational; HTTPS publication, authenticated administrator access, controlled Compose restart, and the first-peer plus routed VPN path into Access-A all verified
 
 ## Scope
 
-I deployed NetBird and Nginx Proxy Manager on Debian 13 LXC 107 `docker-network`. The service runs on VLAN 85 in `/opt/docker/<service>` projects and resolves through an internal UniFi DNS record. Nginx Proxy Manager routes the dashboard, HTTP API, WebSocket, & gRPC paths and terminates a Let's Encrypt certificate issued through Cloudflare DNS-01.
+I deployed NetBird and Nginx Proxy Manager on Debian 13 LXC 107 `docker-network`. The service runs on VLAN 85 in `/opt/docker/<service>` projects and resolves through an internal UniFi DNS record. Nginx Proxy Manager routes the dashboard, HTTP API, WebSocket, and gRPC paths and terminates a Let's Encrypt certificate issued through Cloudflare DNS-01.
 
-The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) holds the 11-step sequence for the guest, SSH, Docker, UniFi, DNS, TLS, proxy, & restart evidence. This record follows the same deployment from the NetBird platform boundary.
+The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) holds the 11-step sequence for the guest, SSH, Docker, UniFi, DNS, TLS, proxy, and restart evidence. This record follows the same deployment from the NetBird platform boundary.
 
 ## Starting State
 
@@ -23,7 +23,7 @@ The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infras
 
 ### Compute and access foundation
 
-NetBird depends on CT 107 `docker-network` on `blue-server`, VLAN 85 address `192.168.85.2/24`, key-only administrative SSH, and HA desired state `started`. I keep the resource choices, hardening steps, troubleshooting, and S01 through S03 evidence in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) instead of duplicating them here.
+NetBird depends on CT 107 `docker-network` on `blue-server`, VLAN 85 address `192.168.85.2/24`, key-only administrative SSH, and HA desired state `started`. I keep the resource choices, hardening steps, troubleshooting, and S01 through S03 evidence in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) instead of duplicating them here.
 
 ### Docker runtime
 
@@ -33,11 +33,11 @@ The platform depends on Docker Engine 29.6.1, Docker Compose 5.3.1, and:
 - `/opt/docker/nginx-proxy-manager`
 - external Docker network `proxy`, subnet `172.31.85.0/24`
 
-The installation and S04 terminal evidence remain in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Galaxy%20Docker-Network%20LXC%20Deployment%20-%202026-07-10.md#step-4-install-and-verify-docker).
+The installation and S04 terminal evidence remain in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md#step-4-install-and-verify-docker).
 
 ### Nginx Proxy Manager dependency
 
-I deployed Nginx Proxy Manager 2.15.1; Docker reported status `healthy`. It binds the guest's TCP ports 80, 81, & 443 and holds fixed address `172.31.85.10` on `proxy`. The first-run administrator setup is complete. The NetBird proxy host is saved and Online with its routes, Let's Encrypt certificate, Force SSL, & HTTP/2 applied.
+I deployed Nginx Proxy Manager 2.15.1; Docker reported status `healthy`. It binds the guest's TCP ports 80, 81, and 443 and holds fixed address `172.31.85.10` on `proxy`. The first-run administrator setup is complete. The NetBird proxy host is saved and Online with its routes, Let's Encrypt certificate, Force SSL, and HTTP/2 applied.
 
 ### NetBird control plane
 
@@ -82,7 +82,7 @@ Nginx configuration validation succeeded, and a request through NPM with Host he
 
 ### Controlled restart validation
 
-I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Nginx Proxy Manager returned to `healthy`, both NetBird containers returned to the running state, `nginx -t` passed, & `https://netbird.alphasecunited.com` returned HTTP `200`. The restart reused the saved proxy host, certificate, and NetBird datastore; I didn't recreate configuration.
+I restarted the Nginx Proxy Manager and NetBird Compose projects in sequence. Nginx Proxy Manager returned to `healthy`, both NetBird containers returned to the running state, `nginx -t` passed, and `https://netbird.alphasecunited.com` returned HTTP `200`. The restart reused the saved proxy host, certificate, and NetBird datastore; I didn't recreate configuration.
 
 ## Resulting Configuration
 
@@ -105,21 +105,21 @@ I restarted the Nginx Proxy Manager & NetBird Compose projects in sequence. Ngin
 
 ## Verification Performed
 
-- Docker Engine returned 29.6.1 & Docker Compose returned 5.3.1.
+- Docker Engine returned 29.6.1 and Docker Compose returned 5.3.1.
 - Both NetBird containers remained up after the trusted-proxy correction.
 - Direct dashboard and embedded identity-provider probes returned HTTP `200`.
 - Nginx Proxy Manager resolved both container names and received HTTP `200` from the dashboard and embedded identity provider over `proxy`.
 - The saved proxy host reports Online, `nginx -t` succeeds, and a Host-header request through NPM returns the NetBird dashboard with HTTP `200`.
 - The Let's Encrypt certificate covers the wildcard and apex names and is assigned to the NetBird proxy host.
 - I inspected the non-interactive Cloudflare DNS-01 renewal configuration and NPM's hourly renewal timer; a Let's Encrypt staging dry-run succeeded for lineage `npm-1` on 2026-07-12.
-- Force SSL & HTTP/2 are enabled, & `https://netbird.alphasecunited.com` returns HTTP `200` through internal UniFi DNS.
+- Force SSL and HTTP/2 are enabled, and `https://netbird.alphasecunited.com` returns HTTP `200` through internal UniFi DNS.
 - I observed an authenticated administrator dashboard at `https://netbird.alphasecunited.com`.
 - Controlled restarts returned Nginx Proxy Manager to `healthy`, both NetBird containers to the running state, and the HTTPS endpoint to `200`.
 - Docker inspection confirmed bounded `json-file` logging with `max-size=10m` and `max-file=3` on `netbird-server` and `netbird-dashboard`.
 - Gateway DNS returned `192.168.85.2` for `netbird.alphasecunited.com`.
 - Approved web and NTP egress succeeded; a non-approved external TCP DNS test was blocked.
 
-These checks prove the direct control plane, its network dependencies, HTTPS publication, administrator authentication, Compose-level restart persistence, automated certificate-renewal path, and bounded container logging. I validated first-peer enrollment and the routed VPN client path into Access-A on 2026-07-12; see [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/NetBird%20First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md). Renewal and logging follow-ups are recorded in [NetBird/NPM Operational Follow-ups and Hardening Descope - 2026-07-12](Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+These checks prove the direct control plane, its network dependencies, HTTPS publication, administrator authentication, Compose-level restart persistence, automated certificate-renewal path, and bounded container logging. I validated first-peer enrollment and the routed VPN client path into Access-A on 2026-07-12; see [NetBird First Peer and Routed VPN Path - 2026-07-12](Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md). Renewal and logging follow-ups are recorded in [NetBird/NPM Operational Follow-ups and Hardening Descope - 2026-07-12](Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 ## Recovery and Rollback
 
@@ -132,4 +132,4 @@ These checks prove the direct control plane, its network dependencies, HTTPS pub
 
 ## Closed NetBird Work
 
-No further platform hardening is tracked. I intentionally descoped the remaining manual or declined items on 2026-07-12; see [NetBird/NPM Operational Follow-ups and Hardening Descope - 2026-07-12](Change%20Records/NetBird-NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery and rollback guidance above remains reference material rather than backlog.
+No further platform hardening is tracked. I intentionally descoped the remaining manual or declined items on 2026-07-12; see [NetBird/NPM Operational Follow-ups and Hardening Descope - 2026-07-12](Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery and rollback guidance above remains reference material rather than backlog.

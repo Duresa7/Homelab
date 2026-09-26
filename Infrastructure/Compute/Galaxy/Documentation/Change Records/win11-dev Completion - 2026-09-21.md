@@ -1,7 +1,7 @@
 # win11-dev Completion
 
 **Created:** 2026-09-21  
-**Last updated:** 2026-09-21
+**Last updated:** 2026-09-25
 
 I completed VM 103 `win11-dev` on `green-server` as a standalone Windows 11 Pro workstation with Windows and SSH only. I resumed the [failed 2026-09-20 build](win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20.md) by choice despite Green's unresolved host memory errors. The guest is running, boots from its system disk, and has automatic startup enabled.
 
@@ -41,11 +41,11 @@ I detached all three installation discs and removed the answer ISO, password and
 
 At 3:25:56 AM Eastern Green reported VM 103 running with `onboot=1`, system-disk-only boot order and no installation discs. Its thin pool used 34,193,238 KiB (23.09%), leaving 113,893,545 KiB available. Galaxy remained quorate with five votes.
 
-I retained [Windows verification after restart](../../Evidence/win11-dev%20Completion%20-%202026-09-21/Windows-After-Restart.json), [host and cleanup verification](../../Evidence/win11-dev%20Completion%20-%202026-09-21/Host-And-Cleanup.json), and the filtered [DHCP readback](../../Evidence/win11-dev%20Completion%20-%202026-09-21/DHCP-Reservation-Readback.json). Earlier installation, driver, SSH configuration and Compose changes have no separately retained terminal capture.
+I retained [Windows verification after restart](../../Evidence/win11-dev%20Completion%20-%202026-09-21/Exports/Windows-After-Restart.json), [host and cleanup verification](../../Evidence/win11-dev%20Completion%20-%202026-09-21/Exports/Host-And-Cleanup.json), and the filtered [DHCP readback](../../Evidence/win11-dev%20Completion%20-%202026-09-21/Exports/DHCP-Reservation-Readback.json). Earlier installation, driver, SSH configuration and Compose changes have no separately retained terminal capture.
 
 ## Local password update
 
-At 2:17 PM Eastern on 2026-09-21 I changed the local `dkadi` password to match the saved App Portal credential at my request. Windows `LogonUser` with interactive logon type returned success for `WIN11-DEV\dkadi` using the new password. I updated the saved workstation credential and verified its readback matched the password used for that successful login. The source App Portal credential was unchanged.
+At 2:17 PM Eastern on 2026-09-21 I changed the local `dkadi` password to match the saved App Portal credential. Windows `LogonUser` with interactive logon type returned success for `WIN11-DEV\dkadi` using the new password. I updated the saved workstation credential and verified its readback matched the password used for that successful login. The source App Portal credential was unchanged.
 
 I removed the restricted password staging file from Windows and the local and SSH Manager transfer copies. A subsequent SSH Manager command confirmed `StagingAbsent=true` and `SshRunning=true`. SSH remains key authenticated. No secret value was displayed or retained in this record. These checks have no separately retained terminal capture.
 

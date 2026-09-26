@@ -7,7 +7,7 @@
 
 I installed Windows Admin Center on `HQ-MGT01` at `192.168.65.12` so I can manage my Windows machines from https://hq-mgt01.ad.alphasecunited.com. I expanded the original ObiPC-only browser scope to all of VLAN 50 and VLAN 60, plus my MacBook Air M3 and Pixel on their observed VLAN 10 connections.
 
-The installation and initial configuration happened before the session was interrupted. I recovered that work from the session history, then read the live state again. I did not retain the earlier installation commands as a published transcript. The [final verification capture](../../Evidence/Deployment%20-%202026-09-12/Final-Verification.json) retains the resumed SSH commands, their complete returned output and exit codes, the filtered UniFi readbacks, and the cleanup verification. The UniFi capture covers this deployment's rules and DNS record, not the whole controller.
+The installation and initial configuration happened before the session was interrupted. I recovered that work from the session history, then read the live state again. I did not retain the earlier installation commands as a published transcript. The [final verification capture](../../Evidence/Deployment%20-%202026-09-12/Exports/Final-Verification.json) retains the resumed SSH commands, their complete returned output and exit codes, the filtered UniFi readbacks, and the cleanup verification. The UniFi capture covers this deployment's rules and DNS record, not the whole controller.
 
 ## Gateway and connections
 
@@ -33,7 +33,7 @@ HQ-MGT01's WinRM `TrustedHosts` contains the five exact connection FQDNs. I did 
 
 ObiPC retrieved the Windows Admin Center sign-in page with HTTP 403 before authentication, matching the page title. I also confirmed that the page appeared from a personal device; the confirmation did not identify whether it was Jedi PC, the MacBook, or the Pixel. The certificate is self-signed for `HQ-MGT01.ad.alphasecunited.com`, expiring 2026-11-10 at 10:54:56 PM EST.
 
-I subsequently confirmed successful browser sign-in on 2026-09-12. I retained the [sign-in confirmation](../../Evidence/Deployment%20-%202026-09-12/Browser-Sign-In.md); no screenshot or browser transcript was captured. This confirmation does not establish that I opened a target machine.
+I subsequently confirmed successful browser sign-in on 2026-09-12. I retained the [sign-in confirmation](../../Evidence/Deployment%20-%202026-09-12/Logs/Browser-Sign-In.md); no screenshot or browser transcript was captured. This confirmation does not establish that I opened a target machine.
 
 Setup used HQ-MGT01's current LAPS-managed local Administrator credential after its older stored credential failed. I overwrote the 15 temporary files in `C:\ProgramData\WAC-Setup-Private`, removed that directory, and verified its absence. I also overwrote and removed `/tmp/wac-setup-credential.json` on the local workstation and verified its absence. These were setup staging files, not configuration backups. The gateway remained running and listening on TCP 443 after server cleanup. I took no snapshot or backup.
 

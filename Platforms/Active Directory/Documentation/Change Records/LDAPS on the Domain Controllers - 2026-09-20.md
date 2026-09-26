@@ -24,7 +24,7 @@ On each controller, running as `SYSTEM` through the Proxmox guest agent because 
 
 Each controller signs its own certificate with its own authority, and neither private key leaves the machine that made it. Two roots rather than one is the price of not carrying a CA key between hosts.
 
-A leaf certificate trusted directly as a root would have satisfied Schannel — I tried that first and the handshake started working — but it fails for a client using GnuTLS, which will not accept a trust anchor without `CA=true`. OpenLDAP on Debian and Ubuntu is built against GnuTLS, so the portal could not have verified it. Issuing from a real authority satisfies both.
+A leaf certificate trusted directly as a root would have satisfied Schannel (I tried that first and the handshake started working), but it fails for a client using GnuTLS, which will not accept a trust anchor without `CA=true`. OpenLDAP on Debian and Ubuntu is built against GnuTLS, so the portal could not have verified it. Issuing from a real authority satisfies both.
 
 ## Verification
 

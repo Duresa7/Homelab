@@ -1,7 +1,7 @@
 # CLI Proxy API
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-09-13
+**Last updated:** 2026-09-25
 
 I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there from `ubuntu-dev` on 2026-08-19 after its earlier move from `debian-dev` on 2026-08-13. It is available to internal clients at `https://aiproxy.alphasecunited.com`; UniFi resolves that name to Nginx Proxy Manager, and NPM forwards the request to the service's main HTTP listener.
 
@@ -13,7 +13,7 @@ I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there
 | Compute | Galaxy LXC 110 `docker-main`; `192.168.40.35` on Personal-A |
 | Live Compose path | `/opt/docker/cli-proxy-api` |
 | Container | `cli-proxy-api` |
-| Image | `eceasy/cli-proxy-api:latest`; runtime version `7.3.0` on 2026-09-13 |
+| Image | `eceasy/cli-proxy-api:latest`; v7.3.16 (commit `c404af9`, built 2026-09-24), read live on 2026-09-24 |
 | Restart policy | `unless-stopped` |
 | Main listener | HTTP on TCP 8317 |
 | Internal URL | `https://aiproxy.alphasecunited.com` |
@@ -25,7 +25,7 @@ I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there
 
 Internal DNS maps `aiproxy.alphasecunited.com` to NPM at `192.168.85.2`. NPM proxy host ID 26 terminates the wildcard certificate and forwards plain HTTP to `192.168.40.35:8317`. UniFi policy `Allow NPM to docker-main CLI Proxy API` admits that TCP path and logs matches.
 
-The name has no public A record and I added no WAN ingress. HTTP redirects to HTTPS, the HTTPS endpoint returns `200`, and the presented wildcard certificate expires `2026-10-08 23:49:46 UTC`.
+The name has no public A record and I added no WAN ingress. HTTP redirects to HTTPS and the HTTPS endpoint returns `200`. NPM's wildcard certificate renews itself; on 2026-09-24 it read `notAfter` 2026-12-08 03:03:22 GMT.
 
 ## Runtime Files
 
@@ -33,7 +33,7 @@ The live project bind-mounts these paths:
 
 - `config.yaml` supplies the server configuration and contains secret-bearing fields, so I keep it out of this repository and at mode `0600`.
 - `management.html` supplies the deployed management interface and is mounted read-only over the image copy.
-- `auths/` holds live credential state. The directory contains six files, while startup reports five loaded provider auth files and five clients. The files stay out of this repository and I do not publish their contents.
+- `auths/` holds live credential state. The directory contains six files, while startup reports five loaded provider auth files and five clients.
 - `logs/` holds application logs.
 - `plugins/` holds optional plugins.
 

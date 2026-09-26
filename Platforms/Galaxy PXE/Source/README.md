@@ -1,7 +1,7 @@
 # Galaxy Proxmox PXE Provisioning
 
 **Created:** 2026-07-30  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-09-25
 
 I use this project to install a registered Galaxy node from UEFI PXE, apply the normal Proxmox network baseline, and join the node to the Galaxy cluster. The physical machine registry names only the intended install disk. Green names `nvme0n1`, so its generated Proxmox answer does not list the SATA disk.
 
@@ -73,7 +73,7 @@ The playbook installs:
 | Path | Purpose |
 |---|---|
 | `/usr/local/lib/galaxy-pxe/` | HTTP service and state command |
-| `/etc/galaxy-pxe/` | Machine registry, root hash, approved root public keys, and dedicated join key |
+| `/etc/galaxy-pxe/` | Machine registry, root hash, allowlisted root public keys, and dedicated join key |
 | `/var/lib/galaxy-pxe/state.json` | Runtime attempt state |
 | `/srv/tftp/galaxy-ipxe.efi` | UEFI iPXE loader |
 | `/srv/galaxy-pxe/` | Kernel, initrd, PXE ISO, and generated iPXE menu |

@@ -14,7 +14,7 @@ I listed Docker's dangling images, inspected each image, and checked references 
 
 I used `docker image rm --no-prune <image-id>` for each reviewed image, without force, rather than passing the entire dangling list to a blanket prune. Immediately before each removal I checked the tags, container references, and protection label again. The command disables removal of untagged parent images beyond the selected ID. Every removal returned exit code 0, and every selected image was absent afterward.
 
-I retained the executed [cleanup script](../../Evidence/Image%20Cleanup%20and%20Schedules%20-%202026-09-18/cleanup.py), preflight image inventories, and per-host structured [results](../../Evidence/Image%20Cleanup%20and%20Schedules%20-%202026-09-18/Exports/). The script received each host's reviewed image IDs and preflight hashes as its JSON argument and ran through SSH Manager with Python's standard library. The exports retain command exit codes, output hashes, comparison results, and storage readings. I did not retain complete terminal or image-removal transcripts.
+I retained the executed [cleanup script](../../Evidence/Image%20Cleanup%20and%20Schedules%20-%202026-09-18/Logs/cleanup.py), preflight image inventories, and per-host structured [results](../../Evidence/Image%20Cleanup%20and%20Schedules%20-%202026-09-18/Exports/). The script received each host's reviewed image IDs and preflight hashes as its JSON argument and ran through SSH Manager with Python's standard library. The exports retain command exit codes, output hashes, comparison results, and storage readings. I did not retain complete terminal or image-removal transcripts.
 
 | Host | Images removed | Increase in available space |
 |---|---:|---:|

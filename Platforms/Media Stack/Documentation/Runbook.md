@@ -1,11 +1,11 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-07-31
+**Last updated:** 2026-09-25
 
 ## Scope and Access
 
-I operate the LXC through the SSH Manager target `red_server`. The live Compose project is `/opt/media-stack` inside CT 842, & Compose loads deployment-specific values from `/opt/media-stack/.env`.
+I operate the LXC through the SSH Manager target `red_server` with `pct`, or directly through the target `media_01` (in use since 2026-08-03). The live Compose project is `/opt/media-stack` inside CT 842, and Compose loads deployment-specific values from `/opt/media-stack/.env`.
 
 Enter a guest shell when interactive work is necessary:
 
@@ -14,6 +14,12 @@ pct enter 842
 ```
 
 I prefer bounded commands through `pct exec 842 -- ...` for repeatable checks.
+
+## Seerr API Credential
+
+On 2026-09-24 I saved the existing Seerr API key in my credential store as the Seerr API token item for `media-01`, in its concealed `credential` field. The item links to `https://seerr.alphasecunited.com/`.
+
+I retrieved the current key through the SSH Manager target `media_01` and verified an authenticated read of `http://127.0.0.1:5055/api/v1/auth/me` returned HTTP 200. After saving, I compared digests of the source and stored values in memory; they matched. I removed the temporary transfer material. The service key and configuration did not change. I retained no command transcript for this transfer. Nothing remains open.
 
 ## Routine Health Check
 
@@ -85,7 +91,7 @@ If the port is stale after a reconnect, recreate Gluetun and qBittorrent togethe
 All images intentionally track `latest`. I treat every pull as a bounded change:
 
 1. Record current image IDs and application versions.
-2. Confirm a current backup exists for `/opt/media-stack/config`; `/data` is replaceable media & isn't backed up.
+2. If the change edits a file, copy that file first. After the change verifies, redact the copy, commit it to the repository's `Backups/` folder and delete it from the host. I keep no backup of `/opt/media-stack/config` or `/data`.
 3. Pull and recreate the stack.
 4. Verify container health, Jellyfin hardware acceleration, Proton exit, forwarded-port synchronization, management UIs, and Arr download-client tests.
 
@@ -108,24 +114,20 @@ pct exec 842 -- sh -lc 'docker exec gluetun wget -qO- http://127.0.0.1:8080/api/
 
 Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and `autorun_enabled=false`. The filter applies to newly added torrents; changing it does not retroactively rewrite file priorities for an existing queue. I do not add archive or disc-image patterns without first deciding to reject those release formats.
 
-## Backup and Restore
+## Rebuild
 
-Back up these paths before changing the stack:
+I keep no backups or snapshots. Recovery is a rebuild: a fresh CT 842 from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md), the [Compose reference](../Configuration/compose.example.yml) and [environment template](../Configuration/media-stack.env.example), then the application settings from the [configuration reference](../Configuration/README.md) and the change records.
 
-- `/opt/media-stack/compose.yml`
-- `/opt/media-stack/.env`
-- `/opt/media-stack/config`
+`/data` is a host bind mount with `backup=0`, so Proxmox `vzdump` does not include movies, television, downloads or transcodes. After a disk loss I rebuild that filesystem on replacement storage and acquire the media again.
 
-`/data` is a host bind mount with `backup=0`, so Proxmox `vzdump` doesn't include movies, television, downloads, or transcodes. I rebuild that filesystem on replacement storage & acquire the media again after a disk loss.
-
-Restore the files with their original ownership and modes, validate with `docker compose --profile vpn config --quiet`, and start the complete profile. Verify the kill switch and provider-side port before enabling acquisition.
+Validate a rebuilt project with `docker compose --profile vpn config --quiet`, then start the complete profile. Verify the kill switch and the provider-side port before enabling acquisition.
 
 ## HDD Mount Failure
 
-CT 842 refuses startup when `/mnt/bindmounts/media-01-hdd/data` is absent. Check the disk, UUID, ext4 state, mount units, & bind source before retrying:
+CT 842 refuses startup when `/mnt/bindmounts/media-01-hdd/data` is absent. Check the disk, UUID, ext4 state, mount units and bind source before retrying:
 
 ```sh
-MEDIA_DATA_DISK=/dev/disk/by-id/ata-ST1000LM035-1RK172_WCB0SRHK
+MEDIA_DATA_DISK="$(ls -d /dev/disk/by-id/ata-ST1000LM035-1RK172_* | grep -v -- -part)"
 MEDIA_DATA_MOUNT=/mnt/bindmounts/media-01-hdd
 MEDIA_DATA_MOUNT_UNIT="$(systemd-escape --path --suffix=mount "$MEDIA_DATA_MOUNT")"
 MEDIA_DATA_AUTOMOUNT_UNIT="$(systemd-escape --path --suffix=automount "$MEDIA_DATA_MOUNT")"
@@ -136,13 +138,13 @@ findmnt -T "$MEDIA_DATA_MOUNT/data"
 systemctl status "$MEDIA_DATA_MOUNT_UNIT" "$MEDIA_DATA_AUTOMOUNT_UNIT"
 ```
 
-`MEDIA_DATA_DISK` carries the drive's full serial deliberately. The `by-id` link addresses that specific disk without trusting `/dev/sda` enumeration order, and a `<REDACTED_DRIVE_SERIAL>` placeholder resolves to nothing, so `lsblk -f` and `smartctl -H -A` would both fail here. This is the accepted exception to the last-4 serial convention in the [drive inventory](../../../Infrastructure/Hardware/Components/Drives/README.md); don't scrub it.
+The glob resolves the drive's `by-id` link on `red-server`, so the check addresses that specific disk without trusting `/dev/sda` enumeration order and without writing the serial here. `red-server` has one ST1000LM035; if the variable holds more than one path, stop and identify the disk before running the checks.
 
 Do not create `/mnt/bindmounts/media-01-hdd/data` on the NVMe-backed host directory. That child belongs on the mounted HDD; creating it underneath the absent mount defeats the startup guard.
 
 ## qBittorrent Login
 
-Use `<REDACTED_QBITTORRENT_USERNAME>` & `<REDACTED_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
+Use `<YOUR_QBITTORRENT_USERNAME>` and `<YOUR_QBITTORRENT_PASSWORD>` when rebuilding the Web UI login, then rerun the Sonarr and Radarr download-client tests.
 
 ## Recording a Failure
 

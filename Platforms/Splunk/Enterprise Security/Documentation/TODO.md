@@ -1,9 +1,9 @@
-# To-Do
+# Splunk Enterprise Security TODO
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-09-25
 
-I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build-Log.md](Build-Log.md).
+I track unfinished Splunk Enterprise Security work here. Completed setup is in [Build Log.md](Build%20Log.md).
 
 ## Completed Foundation
 
@@ -25,7 +25,7 @@ I track unfinished Splunk Enterprise Security work here. Completed setup is in [
 - [x] 2026-08-28: Enabled eight correlation searches over the UniFi data, each verified to run clean and to match real history. Three are tuned against this network's own behaviour: P2P is excluded because 10,849 of 11,477 detections are this network's BitTorrent traffic, the controller's own service accounts are excluded from the configuration rule, and `ansible-01` is excluded from the scanning rule.
 - [x] 2026-08-29: Confirmed the rules reach Incident Review rather than only running. 150 scheduled executions over 24 hours, all `success`, and seven notables in `index=notable` from three rules at the severities they declare.
 - [x] 2026-09-03: **Alerting on the Wazuh feed is done, and on the UniFi feed too.** Four Wazuh searches and five UniFi searches post to Discord through the alert bot: malware or level 12 and above, an account or group change, a login from outside private networks, a machine silent for 24 hours, IPS detections blocked and not blocked, reputation matches, an internal host denied 20 times in ten minutes, and the syslog export going quiet. Each was tuned against 30 days of history first; the three candidates below that made it are those, and the watched-path change did not, because file-integrity monitoring still only has real watches on two groups. See [Discord Delivery for UniFi and Wazuh Alerts - 2026-09-03](../../Enterprise/Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md).
-- [ ] Alert on a change under `~/.ssh`, `/usr/local/bin`, `/opt` or a systemd unit directory once phase two of file-integrity monitoring gives the other 14 agents real watches.
+- [ ] Alert on a change under `~/.ssh`, `/usr/local/bin`, `/opt` or a systemd unit directory once phase two of file-integrity monitoring gives the other 13 agents real watches.
 
   The original plan, kept for the reasoning: this was the deliberate gap in the 2026-08-30 dashboard work, not an oversight. I built the pipeline and the page first and left notification for its own change.
 

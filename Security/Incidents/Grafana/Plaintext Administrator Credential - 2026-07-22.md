@@ -1,7 +1,7 @@
 # Grafana Plaintext Administrator Credential Incident
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-07-22
+**Last updated:** 2026-09-25
 
 ## Incident Metadata
 
@@ -20,7 +20,7 @@
 
 I found a Grafana bootstrap administrator password value in `/home/dkadi/monitoring/docker-compose.yml` while adding the internal HTTPS name on 2026-07-22. Grafana only needs that bootstrap value when it initializes its database, but the Compose definition continued to inject the plaintext value into each recreated container.
 
-I removed the variable, recreated Grafana, rotated the administrator credential, & verified an authenticated Grafana request. Neither the credential nor its storage location is retained in this repository, evidence, or incident record.
+I removed the variable, recreated Grafana, rotated the administrator credential, and verified an authenticated Grafana request. Neither the credential nor its storage location is retained in this repository, evidence, or incident record.
 
 ## Impact
 
@@ -34,7 +34,7 @@ I found no copy in tracked repository content. Grafana also had no public DNS re
 - `/home/dkadi/monitoring/docker-compose.yml` before the 2026-07-22 recreation.
 - The Grafana administrator account.
 
-Prometheus configuration, Grafana dashboards, data sources, & the SQLite database showed no availability or integrity impact during remediation.
+Prometheus configuration, Grafana dashboards, data sources, and the SQLite database showed no availability or integrity impact during remediation.
 
 ## Symptoms
 
@@ -75,13 +75,13 @@ I left a one-time bootstrap secret in the long-lived Compose definition after Gr
 
 ## Validation
 
-The current container is running Grafana 12.4.1. `/api/health` returned database `ok`, the Compose and container checks both returned `compose_admin_password_variable=absent` and `container_admin_password_variable=absent`, & Grafana logged the authenticated `/api/live/ws` request at 13:46:50 EDT.
+The current container is running Grafana 12.4.1. `/api/health` returned database `ok`, the Compose and container checks both returned `compose_admin_password_variable=absent` and `container_admin_password_variable=absent`, and Grafana logged the authenticated `/api/live/ws` request at 13:46:50 EDT.
 
 I found no evidence of unauthorized administrative use in the retained current-container logs. Because Docker recreation replaced the prior container log boundary, I classify this as potential disclosure with no confirmed compromise, not proof that the old credential was never used.
 
 ## Lessons
 
-A bootstrap password doesn't belong in Compose after the application database exists. Removing it from the file isn't enough; I also need to recreate the container, rotate the credential, & inspect the resulting environment.
+A bootstrap password doesn't belong in Compose after the application database exists. Removing it from the file isn't enough; I also need to recreate the container, rotate the credential, and inspect the resulting environment.
 
 File mode `0664` wasn't the primary boundary because the administrator's `0750` home directory blocked other-user traversal. The safer rule is still to keep reusable credentials out of Compose rather than rely on parent-directory permissions.
 
@@ -93,6 +93,10 @@ File mode `0664` wasn't the primary boundary because the administrator's `0750` 
 | Rotate the administrator credential | Complete |
 | Verify Grafana health and authenticated access | Complete |
 | Confirm tracked documentation and evidence retain no credential value | Complete |
+
+## Closure
+
+Closed on 2026-07-22. The secret-free container started at 13:31:45 EDT, the credential was rotated, and authenticated validation completed by 13:46:50 EDT.
 
 ## Linked Records
 

@@ -1,21 +1,21 @@
 # Immich Storage Migration Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-08-03
+**Last updated:** 2026-09-25
 
 ## What This Guide Covers
 
-I moved Immich library storage from a WD-backed pool to a Toshiba-backed pool. This walkthrough covers the capacity check, cleanup, database backup, pool work, stopped copy, verification, & old-drive retirement.
+I moved Immich library storage from a WD-backed pool to a Toshiba-backed pool. The move ran on 2026-05-28. This walkthrough covers the capacity check, cleanup, database dump, pool work, stopped copy, verification, and old-drive retirement.
 
 ## Current Status and Verified Versions
 
-Immich currently runs v3.0.3 in LXC 110 on `grey-server`. The migration itself completed on 2026-05-28 under v2.7.5. It reduced the dataset from about 1.9 TB to 825 GB, transferred about 886 GB across 32,000 files, & left Immich running on ZFS pool `hddpool-1`.
+On 2026-09-24 Immich server and machine learning ran v3.2.2 on CT 110 `docker-main` on `grey-server`, with the library still on ZFS pool `hddpool-1`. The migration ran under v2.7.5. It cut the dataset from about 1.9 TB to 825 GB and moved about 886 GB across 32,000 files.
 
 ## What You Need
 
 - Console and shell access to the Proxmox node and Immich LXC.
 - A destination disk with enough usable capacity for the reduced dataset and expected growth.
-- A current Immich database backup.
+- A fresh Immich database dump, taken as the rollback point for this move.
 - Enough downtime to stop the Immich Compose project and LXC during the volume move.
 - The LXC mount-point name and source pool from your own deployment.
 
@@ -31,23 +31,23 @@ I checked every guest configuration and Docker bind mount that referenced `hddpo
 
 ### Step 2: Move the Unrelated Workload
 
-I stopped Forgejo, moved its 2.6 MB data directory from `/data/forgejo` to the LXC's local NVMe storage at `/opt/docker/forgejo/data`, changed its bind mount, & confirmed both repositories and HTTP 200 after restart. I also removed the empty Calibre, Nextcloud, & placeholder-dataset leftovers.
+I stopped Forgejo, moved its 2.6 MB data directory from `/data/forgejo` to the LXC's local NVMe storage at `/opt/docker/forgejo/data`, changed its bind mount, and confirmed both repositories and HTTP 200 after restart. I also removed the empty Calibre, Nextcloud, and placeholder-dataset leftovers.
 
-### Step 3: Back Up the Database
+### Step 3: Dump the Database
 
-I triggered a fresh backup from Immich's Administration > Job Queues page. I checked gzip integrity, the PostgreSQL dump header and footer, the 40 MB compressed size, & the roughly 103 MB uncompressed size.
+I triggered a fresh database dump from Immich's Administration > Job Queues page. I checked gzip integrity, the PostgreSQL dump header and footer, the 40 MB compressed size, and the roughly 103 MB uncompressed size.
 
 ### Step 4: Prepare the New Pool
 
-I wiped the Toshiba disk, initialized GPT, & created ZFS pool `hddpool-1` through the Proxmox UI. I used the persistent disk path, left Add Storage enabled, & confirmed the pool was ONLINE on the expected device.
+I wiped the Toshiba disk, initialized GPT, and created ZFS pool `hddpool-1` through the Proxmox UI. I used the persistent disk path, left Add Storage enabled, and confirmed the pool was ONLINE on the expected device.
 
 ### Step 5: Shrink Regenerable Data
 
-The 2 TB Toshiba was smaller than the 4 TB WD. I stopped Immich with `docker compose down`, deleted only the contents of `/data/immich/library/encoded-video/`, & remeasured the dataset at about 825 GB. I kept the original media, uploads, profiles, thumbnails, & PostgreSQL data.
+The 2 TB Toshiba was smaller than the 4 TB WD. I stopped Immich with `docker compose down`, deleted only the contents of `/data/immich/library/encoded-video/`, and remeasured the dataset at about 825 GB. I kept the original media, uploads, profiles, thumbnails, and PostgreSQL data.
 
 ### Step 6: Move the LXC Volume
 
-I stopped LXC 110 and used Proxmox's volume move without the delete flag. Proxmox copied the volume, updated `mp0` to the new pool, & kept the WD-backed subvolume available during verification.
+I stopped LXC 110 and used Proxmox's volume move without the delete flag. Proxmox copied the volume, updated `mp0` to the new pool, and kept the WD-backed subvolume available during verification.
 
 ```sh
 pct move-volume 110 mp0 hddpool-1
@@ -57,11 +57,11 @@ The task moved roughly 886 GB across 32,000 files at about 132 MB/s and complete
 
 ### Step 7: Start and Verify Immich
 
-I started LXC 110, confirmed `/data` came from `hddpool-1`, started Immich, & watched the server, PostgreSQL, machine-learning, & Redis containers become healthy. Port 2283 returned HTTP 200. In the UI, the timeline, album covers, named faces, full-resolution photos, & videos all worked.
+I started LXC 110, confirmed `/data` came from `hddpool-1`, started Immich, and watched the server, PostgreSQL, machine-learning, and Redis containers become healthy. Port 2283 returned HTTP 200. In the UI, the timeline, album covers, named faces, full-resolution photos, and videos all worked.
 
 ### Step 8: Retire the Old Drive
 
-Only after the application checks passed did I destroy the old subvolume, destroy `hddpool`, remove its Proxmox storage entry, rebuild the video transcode cache, & remove the WD drive.
+Only after the application checks passed did I destroy the old subvolume, destroy `hddpool`, remove its Proxmox storage entry, rebuild the video transcode cache, and remove the WD drive.
 
 ```sh
 zfs destroy hddpool/subvol-110-disk-0
@@ -76,7 +76,7 @@ pvesm remove hddpool
 - `hddpool-1` was ONLINE on the persistent Toshiba device path.
 - Proxmox updated LXC 110 `mp0` to `hddpool-1` and retained the old subvolume.
 - All four Immich containers became healthy and port 2283 returned HTTP 200.
-- Albums, faces, photos, & videos remained intact before the WD pool was removed.
+- Albums, faces, photos, and videos remained intact before the WD pool was removed.
 
 ## Troubleshooting and Recovery
 
@@ -84,8 +84,8 @@ If the Proxmox task fails, leave LXC 110 stopped and inspect both ZFS pools befo
 
 ## Known Limits
 
-The source record doesn't retain a terminal transcript or screenshots for the migration. The Toshiba already had high power-on hours and load-cycle count, so the record treats it as serviceable rather than a permanent single point of failure.
+The source record doesn't retain a terminal transcript or screenshots for the migration. `hddpool-1` is a single-disk pool with no redundancy, and the Toshiba already had high power-on hours and a high load-cycle count on 2026-05-28. A drive failure takes the library with it.
 
 ## Source Records
 
-- [Immich storage migration record](../Platforms/Immich/Documentation/Immich-Storage-Migration-WD-to-Toshiba-2026-05-28.md)
+- [Immich storage migration record](../Platforms/Immich/Documentation/Change%20Records/Storage%20Migration%20from%20WD%20Red%20Plus%20to%20Toshiba%20-%202026-05-28.md)

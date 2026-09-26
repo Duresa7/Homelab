@@ -5,7 +5,7 @@
 
 ## Symptom
 
-The first deployment batch installed `wazuh-agent` 4.14.6-1 on `monitor-01`, `docker-network`, & `kasm-01`. Each host had a non-empty client key and an established TCP 1514 session, but the final assertion failed:
+The first deployment batch installed `wazuh-agent` 4.14.6-1 on `monitor-01`, `docker-network`, and `kasm-01`. Each host had a non-empty client key and an established TCP 1514 session, but the final assertion failed:
 
 ```text
 ansible_facts.services['wazuh-agent.service'].state == 'running'
@@ -19,9 +19,9 @@ The play originally read `service_facts` once, immediately after the TCP 1514 se
 
 ## Hypotheses and Tests
 
-I checked `wazuh-agent` through SSH Manager less than one minute after the failure. All three units were enabled & running. The enrollment keys and TCP sessions remained present, so no agent repair was required.
+I checked `wazuh-agent` through SSH Manager less than one minute after the failure. All three units were enabled and running. The enrollment keys and TCP sessions remained present, so no agent repair was required.
 
-The later Proxmox deployment reproduced the timing boundary after I added a direct service poll. Grey, Purple, Blue, Red, & Green each failed one or two `systemctl is-active` attempts before returning `active`. Their eventual state matched the first three hosts.
+The later Proxmox deployment reproduced the timing boundary after I added a direct service poll. Grey, Purple, Blue, Red, and Green each failed one or two `systemctl is-active` attempts before returning `active`. Their eventual state matched the first three hosts.
 
 ## Root Cause
 
@@ -48,10 +48,10 @@ I added a bounded readiness task before `service_facts`:
   delay: 5
 ```
 
-The final assertion now checks the registered return code & exact `active` output. I kept `service_facts` for the separate enabled-state check.
+The final assertion now checks the registered return code and exact `active` output. I kept `service_facts` for the separate enabled-state check.
 
 ## Verification
 
-The corrected file had matching local & remote SHA-256 `8459a74cc11342bc975455c0b4e485b77311a8675d4386c270057cf910d5dc56` and passed `ansible-playbook --syntax-check`.
+The corrected file had matching local and remote SHA-256 `8459a74cc11342bc975455c0b4e485b77311a8675d4386c270057cf910d5dc56` and passed `ansible-playbook --syntax-check`.
 
-The rerun against `monitor-01`, `docker-network`, & `kasm-01` changed zero hosts and passed every assertion. Grey, Purple, Blue, Red, & Green then installed with zero failures. A final seven-host run and the later Green-only run returned `changed=0`, `failed=0`, & `unreachable=0` for every target.
+The rerun against `monitor-01`, `docker-network`, and `kasm-01` changed zero hosts and passed every assertion. Grey, Purple, Blue, Red, and Green then installed with zero failures. A final seven-host run and the later Green-only run returned `changed=0`, `failed=0`, and `unreachable=0` for every target.

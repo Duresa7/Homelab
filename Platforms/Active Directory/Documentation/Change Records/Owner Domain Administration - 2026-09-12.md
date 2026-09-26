@@ -12,7 +12,7 @@ I added DK-user to `ADM-T0-DomainAdmins` and `ADM-T1-ServerAdmins`, retaining it
 
 I configured resource-based constrained delegation on HQ-DC01, HQ-DC02, HQ-MGT01, OBIPC, and HQ-WS001, with HQ-MGT01 as the sole allowed principal on each. The earlier implementation verified DK-user against three fields in the private identity map before changing membership. In the resumed verification, I selected the same account as the unique intersection of `ROL-Staff` and `ADM-T2-WorkstationAdmins` and returned its alias and role booleans only.
 
-Both controllers now report DK-user in all three tier groups and `Domain Admins`. The account is enabled, unlocked, and has `AccountNotDelegated=False`. Its resultant password policy is now `PSO-Admins`; I did not change the policy or reset its password. Both controllers return one delegation principal for each of the five targets, matching HQ-MGT01. The [directory verification](../../Evidence/Owner%20Domain%20Administration%20-%202026-09-12/Directory-Verification.json) retains the readback.
+Both controllers now report DK-user in all three tier groups and `Domain Admins`. The account is enabled, unlocked, and has `AccountNotDelegated=False`. Its resultant password policy is now `PSO-Admins`; I did not change the policy or reset its password. Both controllers return one delegation principal for each of the five targets, matching HQ-MGT01. The [directory verification](../../Evidence/Owner%20Domain%20Administration%20-%202026-09-12/Exports/Directory-Verification.json) retains the readback.
 
 ## WinRM HTTPS
 
@@ -24,7 +24,7 @@ All five WinRM certificates expire on 2027-09-12 between 1:00:58 AM and 1:01:36 
 
 ## End-to-end verification
 
-I repeated WAC's web-form sign-in with DK-user after the HTTPS switch. It returned HTTP 200 and listed all five shared connections. The accepted username form is `ALPHASEC\<YOUR_DOMAIN_USERNAME>`; the earlier UPN attempt failed authorization. The old test's `/api/settings` probe returned 404 because that route does not exist. The actual `/api/access/admins` request returned HTTP 200, and `/api/access/check` returned HTTP 200 with `true`, confirming gateway administration access.
+I repeated WAC's web-form sign-in with DK-user after the HTTPS switch. It returned HTTP 200 and listed all five shared connections. The accepted username form is `ALPHASEC\DK-user`; the earlier UPN attempt failed authorization. The old test's `/api/settings` probe returned 404 because that route does not exist. The actual `/api/access/admins` request returned HTTP 200, and `/api/access/check` returned HTTP 200 with `true`, confirming gateway administration access.
 
 | Target | WAC operating-system query using the gateway session only | Fresh Kerberos over HTTPS |
 |---|---|---|
@@ -34,7 +34,7 @@ I repeated WAC's web-form sign-in with DK-user after the HTTPS switch. It return
 | HQ-WS001 | HTTP 200, one instance, no error | Elevated administrator token |
 | ObiPC | HTTP 200, one instance, no error | Elevated administrator token |
 
-The WAC requests read `Win32_OperatingSystem` through each target's `/api/nodes/.../features/cim/` endpoint. They used only DK-user's authenticated gateway cookies and the matching CSRF header, with no separate target credentials. The direct PowerShell sessions independently checked `WindowsPrincipal.IsInRole(Administrator)`. The [management verification](../../Evidence/Owner%20Domain%20Administration%20-%202026-09-12/Management-Verification.json) retains those commands and results. I did not make a production user, DNS, or service change merely to demonstrate write access.
+The WAC requests read `Win32_OperatingSystem` through each target's `/api/nodes/.../features/cim/` endpoint. They used only DK-user's authenticated gateway cookies and the matching CSRF header, with no separate target credentials. The direct PowerShell sessions independently checked `WindowsPrincipal.IsInRole(Administrator)`. The [management verification](../../Evidence/Owner%20Domain%20Administration%20-%202026-09-12/Exports/Management-Verification.json) retains those commands and results. I did not make a production user, DNS, or service change merely to demonstrate write access.
 
 ## Cleanup and remaining work
 

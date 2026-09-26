@@ -23,7 +23,7 @@ FAILURE: 0xb7734449dff99f28 != 0xb7734449dff99f68 at offset 0x00000000aee8abc8.
 FAILURE: 0x8160d05508d8fc3a != 0x8160d05508d8fc38 at offset 0x00000000aee84a08.
 ```
 
-The failures span Stuck Address and data comparisons, including XOR and SUB. The offsets are within the test allocation, not physical DIMM addresses. I stopped the test after the failures, before the full requested pass completed. `ExecMainStatus=0` and `Result=success` following that stop are service-lifecycle results, not a passing test. [Memory-Test.log](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Memory-Test.log) is a journal export with terminal backspace sequences normalized, not an unedited terminal transcript.
+The failures span Stuck Address and data comparisons, including XOR and SUB. The offsets are within the test allocation, not physical DIMM addresses. I stopped the test after the failures, before the full requested pass completed. `ExecMainStatus=0` and `Result=success` following that stop are service-lifecycle results, not a passing test. [Memory-Test.log](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Logs/Memory-Test.log) is a journal export with terminal backspace sequences normalized, not an unedited terminal transcript.
 
 The current kernel boot held 41 segmentation/general-protection/hardware-error matches; the last shown faults were Python processes on August 17. The preceding 30 minutes showed no new kernel memory, disk-I/O or OOM event. Non-ECC memory can fail without a machine-check report, so the observed data mismatches determine the result.
 
@@ -49,7 +49,7 @@ FAILURE: possible bad address line at offset 0x00000001602afea8.
 FAILURE: 0xffffffffffffffff != 0xfffffffffffffff7 at offset 0x00000000602aaa20.
 ```
 
-The second example differs by one bit. This reproduces corruption in a fresh allocation directly on the Proxmox host, without a running Windows guest. It still does not isolate the physical component. [Memory-Recheck.log](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Memory-Recheck.log) retains the journal export with terminal backspaces normalized. Neither test completed a full pass. After stopping the repeat, Green had 13,598 MiB available RAM and zero swap use; VM 103 remained stopped.
+The second example differs by one bit. This reproduces corruption in a fresh allocation directly on the Proxmox host, without a running Windows guest. It still does not isolate the physical component. [Memory-Recheck.log](../../Evidence/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20/Logs/Memory-Recheck.log) retains the journal export with terminal backspaces normalized. Neither test completed a full pass. After stopping the repeat, Green had 13,598 MiB available RAM and zero swap use; VM 103 remained stopped.
 
 ## Containment and next step
 

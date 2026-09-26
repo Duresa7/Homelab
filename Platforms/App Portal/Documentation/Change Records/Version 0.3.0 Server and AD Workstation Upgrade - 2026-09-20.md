@@ -1,7 +1,7 @@
 # Version 0.3.0 Server and AD Workstation Upgrade
 
 **Created:** 2026-09-20  
-**Last updated:** 2026-09-20
+**Last updated:** 2026-09-25
 
 I upgraded the App Portal server on `docker-main` and the client on the AD test workstation `HQ-WS001` to [v0.3.0](https://github.com/Duresa7/app-portal/releases/tag/v0.3.0). Verification finished shortly before 1:00 AM Eastern on September 20. The server now uses SQLite and exposes the catalog, device, install-history, software-request and enrollment-key admin pages.
 
@@ -21,11 +21,11 @@ The live Compose file, `.env` settings and database catalog export are captured 
 
 I started the existing `App Portal Updater` task on `HQ-WS001` through the Proxmox guest agent on `grey_server`, VM 310. No App Portal client was running there. Its log recorded the v0.3.0 download and SHA-256 verification at 12:43:31 AM Eastern, then installation over 0.2.1 at 12:43:33 AM. The executable changed from `0.2.1.0` to `0.3.0.0`; the task returned 0. A second run reported `UpToDate` at 12:46:29 AM, installed and latest versions both `0.3.0`, no staged version and task state `Ready`. I confirmed `.previous`, `.update` and `.staged` were absent inside the installation directory afterward.
 
-I created `portal-admin` and saved its login in the vault item *<REDACTED_CREDENTIAL_ITEM_NAME>*, with the URL `https://appportal.alphasecunited.com/admin/login`. I verified the saved password by readback before creating the server account. The transfer used a temporary RSA public key and encrypted output; the private key and temporary password files were removed afterward. The first vault-create call succeeded, but parsing its human-readable response as JSON failed. I checked the item list, confirmed exactly one matching item and verified its password instead of creating another.
+I created `portal-admin` and saved its login in a new password-manager item for the portal administrator, with the URL `https://appportal.alphasecunited.com/admin/login`. I verified the saved password by readback before creating the server account. The transfer used a temporary RSA public key and encrypted output; the private key and temporary password files were removed afterward. The first vault-create call succeeded, but parsing its human-readable response as JSON failed. I checked the item list, confirmed exactly one matching item and verified its password instead of creating another.
 
 I signed in through the HTTPS login form, opened all six admin pages, tested API session creation and revocation, and signed out of the browser session. The checks used the saved credential without printing it.
 
-## What "hooked up to Active Directory" actually means here
+## What the Active Directory integration covers
 
 The install path now records who asked for the software. From `HQ-WS001`, whose console session is my `DK-user` account, I posted one install of 7-Zip to the HTTPS API with the same `X-AppPortal-User` header the client fills in from the Windows session. The server accepted it, started the Action1 automation against that endpoint, and the record came back `Queued` at 1:43:08 AM Eastern and `Succeeded` at 100 percent at 1:43:30, twenty-one seconds later, stored against `ALPHASEC\DK-user`. 7-Zip was already on the machine, so nothing changed on it. That is the first install in the database carrying a requester; the five migrated ones have `requested_by` empty, which is why they cannot tell me who ran them.
 

@@ -1,11 +1,12 @@
 # Integration Tool Calls Time Out at 60 Seconds
 
 **Created:** 2026-09-07  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
 **Observed:** 2026-09-07, 2:05 to 2:09 AM Eastern, during the Coolify non-root change on `app-01`  
 **Affects:** Every integration tool called from `execute`, on Executor 1.6.8. Seen through the SSH Manager gateway, but the cause is not in the gateway  
-**Status:** Root cause found in Executor's bundle. Not configurable. Workaround in place, upstream change needed
+**Status:** Root cause found in Executor's bundle. Not configurable. Workaround in place, upstream change needed  
+**Superseded by:** [Active Work Timeout in 1.6.10 - 2026-09-21](Active%20Work%20Timeout%20in%201.6.10%20-%202026-09-21.md), which finds the 1.6.10 limit in Executor's own active-work timer rather than the SDK default
 
 ## Symptom
 

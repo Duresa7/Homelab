@@ -1,7 +1,7 @@
 # Sudo Pointed at the Root Password on Eleven Guests
 
 **Created:** 2026-08-20  
-**Last updated:** 2026-08-20
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-20  
 **Status:** Complete and verified on all eleven guests  
@@ -37,7 +37,7 @@ Who could reach root through sudo, and how:
 | `media-01`, `docker-network`, `monitor-01` | `NOPASSWD` | **not permitted** | `NOPASSWD` |
 | `game-01` | `NOPASSWD` | `NOPASSWD` | `NOPASSWD` |
 
-Two things in that table are worth stating plainly.
+Two things in that table matter.
 
 **`ai-agent` cannot use sudo at all on ten of the eleven.** The account exists everywhere and is in no administrative group anywhere, and only `game-01` carries a drop-in for it. So the row of the 2026-08-15 model that says `ai-agent` answers a sudo prompt with root's password describes an account that has nothing to answer a prompt about on ten hosts. Nothing here changed that, and nothing here should have. It is a real gap between the written model and the fleet, and it belongs to the verification step rather than to this one.
 
@@ -49,7 +49,7 @@ One play, run from `ansible-01`, one host at a time, aborting the whole run on t
 
 The proof before the write is the point of the whole design. A status letter from `passwd -S` only says a hash is present; it does not say the hash is the value I hold. Writing `Defaults rootpw` to a host where those differ removes sudo from every account on it at once, and the way back is the Proxmox console. So the play authenticates as root through `su` from the unprivileged `ansible` account before it writes anything, and a host that cannot prove it stops the run.
 
-The file carries a four-line comment above the policy line. A bare `Defaults rootpw` on its own is one unexplained line, and deleting it silently returns every sudo prompt on the host to the login password with nothing left to show that anything ever changed. The ticket specified the policy line only; the comment is mine, and it changes no behaviour.
+The file carries a four-line comment above the policy line. A bare `Defaults rootpw` on its own is one unexplained line, and deleting it silently returns every sudo prompt on the host to the login password with nothing left to show that anything ever changed. My plan specified the policy line only. The comment changes no behaviour.
 
 Before touching a host I confirmed the out-of-band route to root on it, because that is the recovery path if this goes wrong:
 
@@ -108,7 +108,7 @@ ansible-01:     root=P root_auth=ok visudo=ok rootpw_in_force=ok rootpw_accepted
 splunk-siem:    root=P root_auth=ok visudo=ok rootpw_in_force=ok rootpw_accepted=ok loginpw_refused=ok
 ```
 
-**`untestable` is honest rather than passing.** On the four hosts where `dkadi` still holds a `NOPASSWD` drop-in, sudo authenticates nothing, so the login password would be "accepted" there only in the sense that it was never read. The play detects the grant by testing it and reports the negative proof as untestable rather than recording a pass it did not earn. Those four become testable when ticket 17 removes the drop-ins.
+**`untestable` is not a pass.** On the four hosts where `dkadi` still holds a `NOPASSWD` drop-in, sudo authenticates nothing, so the login password would be "accepted" there only in the sense that it was never read. The play detects the grant by testing it and reports the negative proof as untestable rather than recording a pass it did not earn. Those four become testable when I remove the drop-ins.
 
 **Both directions proved on the seven gated hosts.** Root's password gets `dkadi` to root through sudo; the login password does not. The password reaches sudo on stdin through `sudo -S`, so it never enters a command string, an argument list or a shell history, and pipelining means no file carrying it is written to the host either.
 
@@ -125,7 +125,7 @@ splunk-siem:    root=P root_auth=ok visudo=ok rootpw_in_force=ok rootpw_accepted
 
 **A second run reports no changes.** `docker-blue` was run again in full: `ok=19 changed=0`, every assertion passing. A `--check --diff` pass across all eleven afterwards reports `changed=0` on every host, so the file on disk already matches what the play would write.
 
-**Privileged tooling behaves exactly as ticket 16 predicted.** `ssh_execute_sudo` through the SSH Manager still reaches root on `media-01`, where `dkadi` is `NOPASSWD`, and on `docker-blue` returns:
+**Privileged tooling behaves as I predicted when I planned the SSH Manager step.** `ssh_execute_sudo` through the SSH Manager still reaches root on `media-01`, where `dkadi` is `NOPASSWD`, and on `docker-blue` returns:
 
 ```text
 sudo: a terminal is required to read the password; either use the -S option
@@ -133,7 +133,7 @@ sudo: a terminal is required to read the password; either use the -S option
 sudo: a password is required
 ```
 
-That is the same failure `app-01` gave on 2026-08-15, before this change existed. This work did not create that gap and did not widen it: the SSH Manager has never had a password configured for any server, so it has always failed wherever `dkadi` had to authenticate. Ticket 16 closes it, and it has to close before ticket 17 removes the four remaining drop-ins, or privileged tooling loses every path at once.
+That is the same failure `app-01` gave on 2026-08-15, before this change existed. This work did not create that gap and did not widen it: the SSH Manager has never had a password configured for any server, so it has always failed wherever `dkadi` had to authenticate. Giving the SSH Manager a sudo password closes it, and that has to happen before I remove the four remaining drop-ins, or privileged tooling loses every path at once.
 
 ## How the credentials were handled
 
@@ -145,14 +145,14 @@ Both copies of the staging file are gone, removed with `shred -u -z`, and both s
 
 ## What this unblocks, and the warning that goes with it
 
-Ticket 16 is next and is now the blocking step: the SSH Manager needs root's password in its `.env` so privileged tooling works on the seven gated hosts. Ticket 17 removes the four remaining `dkadi` drop-ins and the `ai-agent` one on `game-01`, and must not run until 16 is proven.
+The next step, and now the blocking one, is [SSH Manager Sudo Password on Ten Guests](SSH%20Manager%20Sudo%20Password%20on%20Ten%20Guests%20-%202026-08-20.md): the SSH Manager needs root's password in its `.env` so privileged tooling works on the seven gated hosts. Removing the four remaining `dkadi` drop-ins and the `ai-agent` one on `game-01` comes after that, and must not run until the password path is proven. I removed them on 2026-09-07: [NOPASSWD Drop-ins Removed on docker-network, monitor-01 and media-01](NOPASSWD%20Drop-ins%20Removed%20on%20docker-network%2C%20monitor-01%20and%20media-01%20-%202026-09-07.md).
 
-**Any guest that joins the model later arrives with root locked.** Anything cloned from `debian13-template` or `ubuntu-cloud-template` is in exactly the state that makes this file dangerous. The order is not optional: run `account-passwords.yml` against the new host first, confirm it reports `root=P` and `root_auth=ok`, and only then run `sudo-rootpw`. The play enforces this itself and will refuse the host, but the sequence is worth knowing before it refuses.
+**Any guest that joins the model later arrives with root locked.** Anything cloned from `debian13-template` or `ubuntu-cloud-template` is in exactly the state that makes this file dangerous. The order is not optional: run `account-passwords.yml` against the new host first, confirm it reports `root=P` and `root_auth=ok`, and only then run `sudo-rootpw`. The play enforces this order and refuses a host that breaks it.
 
 ## Left open
 
-**`ai-agent` still has no sudo grant on ten of the eleven hosts.** The account is in no administrative group and carries a drop-in only on `game-01`. Under the written model it should answer a sudo prompt with root's password like `dkadi` does; today it has nothing to answer. Deciding whether the model or the fleet is wrong belongs to ticket 07.
+**`ai-agent` still has no sudo grant on ten of the eleven hosts.** The account is in no administrative group and carries a drop-in only on `game-01`. Under the written model it should answer a sudo prompt with root's password like `dkadi` does; today it has nothing to answer. Deciding whether the model or the fleet is wrong belongs to the verification step at the end of this effort.
 
-**The four `NOPASSWD` drop-ins are still in place** on `media-01`, `docker-network`, `monitor-01` and `game-01`, plus the `ai-agent` one on `game-01`. They are the deliberate safety net until ticket 16 proves privileged access still works, and they are the reason the negative proof reports `untestable` on those hosts.
+**The four `NOPASSWD` drop-ins are still in place** on `media-01`, `docker-network`, `monitor-01` and `game-01`, plus the `ai-agent` one on `game-01`. They are the deliberate safety net until the SSH Manager password step proves privileged access still works, and they are the reason the negative proof reports `untestable` on those hosts.
 
 **`splunk-siem` has no agent-based recovery route.** `guest-exec` is disabled on VM 109, so the Proxmox console is the only way in if sudo ever breaks there. That is not a consequence of this change, but it came up while planning it and is worth fixing or accepting deliberately.

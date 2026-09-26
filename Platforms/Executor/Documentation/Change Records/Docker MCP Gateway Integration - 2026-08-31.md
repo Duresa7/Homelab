@@ -1,7 +1,7 @@
 # Docker MCP Gateway Integration
 
 **Created:** 2026-08-31  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-25
 
 ## Outcome
 
@@ -14,7 +14,7 @@ The integration is `docker-mcp-gateway`. Its personal connection is `dockerMcpGa
 1. I enabled `EXECUTOR_ALLOW_LOCAL_NETWORK` in the live and versioned Compose definitions. The exception is required because the gateway endpoint is the host's internal address, `192.168.40.39:8811`. Local STDIO MCP servers remain disabled.
 2. I verified the saved Executor login through the application endpoint and used the claimed account for the integration.
 3. I registered Docker MCP Gateway as a remote MCP server over Streamable HTTP with an `Authorization: Bearer` credential template. I left the static header map empty.
-4. I created personal connection `dockerMcpGateway` and imported the existing gateway bearer token from the approved credential store into Executor's encrypted credential provider.
+4. I created personal connection `dockerMcpGateway` and imported the existing gateway bearer token from my credential store into Executor's encrypted credential provider.
 5. I refreshed the connection so Executor discovered the complete gateway tool surface.
 
 I did not create a snapshot or backup. Executor's persistent state already lives under `/opt/docker/executor/data`, and this change did not alter the gateway credential or either managed server. I retained no standalone command or API capture; the verification bullets below record the live results I observed.

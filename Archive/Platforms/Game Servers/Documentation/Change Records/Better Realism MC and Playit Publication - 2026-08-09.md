@@ -1,7 +1,7 @@
 # Better Realism MC and Playit Publication
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-08-09
+**Last updated:** 2026-09-25
 
 **Implemented:** 2026-08-09  
 **Owner:** Platforms / Game Servers  
@@ -10,7 +10,7 @@
 
 ## Outcome
 
-I permanently deleted the existing Best Vanilla World 2 Pelican server and its world without a backup, as requested, then created a clean Fabric server for Better Realism 7.2.0. I reused the existing `192.168.80.30:25565` allocation and retained the panel's 10240 MiB memory, 500 percent CPU, and 30720 MiB disk limits.
+I permanently deleted the existing Best Vanilla World 2 Pelican server and its world without a backup, then created a clean Fabric server for Better Realism 7.2.0. I reused the existing `192.168.80.30:25565` allocation and retained the panel's 10240 MiB memory, 500 percent CPU, and 30720 MiB disk limits.
 
 Players enter only:
 
@@ -31,11 +31,9 @@ Minecraft client
   -> Pelican-managed Minecraft container
 ```
 
-The relay hostname is withheld from this public repository. The friendly domain and port are not credentials.
-
 ## Release selection
 
-The requested CurseForge file is [file 8570131](https://www.curseforge.com/minecraft/modpacks/better-realism-mc/files/8570131), published on 2026-08-03 as `Better Realism (Server Pack) - MC 1.21.1 - 7.2.0`.
+The CurseForge file I chose is [file 8570131](https://www.curseforge.com/minecraft/modpacks/better-realism-mc/files/8570131), published on 2026-08-03 as `Better Realism (Server Pack) - MC 1.21.1 - 7.2.0`.
 
 The CurseForge view was filtered/tagged as game version 26.1.2, but the server archive's own `variables.txt` declares the runtime that actually installs:
 
@@ -77,7 +75,7 @@ I extracted only `mods/` and `config/`, accepted the Mojang EULA, restored Pelic
 
 I installed Playit agent 1.0.9 from its Debian package repository directly on `game-01`, claimed it to the existing account, assigned the existing Minecraft tunnel to this agent, and restarted the service after the assignment. Its persistent secret remains only at `/etc/playit/playit.toml`, owned `playit:playit` at mode 0600.
 
-The Playit origin remains exactly the requested configuration:
+The Playit origin remains exactly the configuration I set:
 
 | Setting | Value |
 | --- | --- |
@@ -94,7 +92,7 @@ I added these records to the `alphasecunited.com` Cloudflare zone:
 | CNAME | `minecraft.alphasecunited.com` | `<REDACTED_MINECRAFT_RELAY_HOST>` | 300 | DNS-only |
 | SRV | `_minecraft._tcp.minecraft.alphasecunited.com` | priority 1, weight 1, port 26328, target `<REDACTED_MINECRAFT_RELAY_HOST>` | 300 | n/a |
 
-Playit's own native custom-domain feature offered a $30/year Premium add-on. I did not purchase it. Minecraft's standard SRV discovery provides the requested one-name connection without that subscription.
+Playit's own native custom-domain feature offered a $30/year Premium add-on. I did not purchase it. Minecraft's standard SRV discovery provides the one-name connection I wanted without that subscription.
 
 The Playit tunnel carries only Minecraft. `games.alphasecunited.com`, `wings.alphasecunited.com`, SFTP, and the Pelican administrative interfaces were not added to Playit, and I created no WAN port forward.
 
@@ -105,7 +103,7 @@ The Playit tunnel carries only Minecraft. `games.alphasecunited.com`, `wings.alp
 | Fabric boot | `Loading Minecraft 1.21.1 with Fabric Loader 0.19.3`; 163 mods; `Done (11.261s)!` |
 | Local status through loopback relay | Minecraft 1.21.1, protocol 767, 0 of 20 players |
 | DNS CNAME | resolves to `<REDACTED_MINECRAFT_RELAY_HOST>` |
-| DNS SRV | priority 1, weight 1, port 26328, withheld relay target |
+| DNS SRV | priority 1, weight 1, port 26328, target `<REDACTED_MINECRAFT_RELAY_HOST>` |
 | Public SRV status | `minecraft.alphasecunited.com` returned Minecraft 1.21.1, protocol 767, 0 of 20 players in 114.5 ms |
 | Playit | agent claimed; `playit.service` enabled and active with live control connections |
 | Relay | `minecraft-playit-relay.service` enabled and active; loopback listener and backend connection both passed |

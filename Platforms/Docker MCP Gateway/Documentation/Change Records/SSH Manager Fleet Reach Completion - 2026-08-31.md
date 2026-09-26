@@ -1,7 +1,7 @@
 # SSH Manager Fleet Reach Completion
 
 **Created:** 2026-08-31  
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-25
 
 ## Outcome
 
@@ -22,7 +22,7 @@ I did not create a snapshot or backup. The UniFi controller snapshots are state 
 
 ## Verification
 
-- The UniFi snapshot comparison added exactly `Allow docker-blue SSH Manager to Proxmox`: one policy added, zero removed, and zero changed. Live readback returned the same source, five destinations, TCP 22, IPv4, logging, enabled state, and `ALLOW` action shown in the approved preview.
+- The UniFi snapshot comparison added exactly `Allow docker-blue SSH Manager to Proxmox`: one policy added, zero removed, and zero changed. Live readback returned the same source, five destinations, TCP 22, IPv4, logging, enabled state, and `ALLOW` action shown in the preview I reviewed.
 - All five nodes read `192.168.40.39` back from the shared `pve_admins` IPSet with the same digest. `pve-firewall status` returned `enabled/running` on Grey, Purple, Blue, Red, and Green.
 - A managed SSH Manager container using the injected private key and `StrictHostKeyChecking yes` authenticated to all five node addresses and to `ai-agent@ubuntu-dev`.
 - Executor initialized over HTTPS with MCP protocol `2025-06-18`. Its UniFi path resolved `unifi-mcp-gateway.user.unifiMcpGateway.unifi_tool_index` and returned 20 firewall matches across the server's 24 categories.

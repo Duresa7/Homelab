@@ -1,47 +1,40 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-25
 
-This directory is the shortest route through my homelab. Each guide turns the current build records, runbooks, screenshots, & verified command results into one sequence a reader can follow without opening every infrastructure folder first.
+![Lab map: the guides placed on the layer of the lab each one builds](../Assets/Diagrams/lab-map.svg)
 
-The original records still own the facts. A guide explains the path; its Source Records section points back to the dated change, current configuration, rollback notes, & troubleshooting history.
+Each guide is one build in the order I ran it, with the commands and the output I checked. The dated records it links under Source Records hold the full detail.
 
-## Lab Map
+`Verified` means the guide's Current Status section was checked against the running system on the date given. `Partial` would name the check still open; no guide is Partial today.
 
-![Homelab lab map: edge and compute layers feeding the platform groups](../Assets/Diagrams/lab-map.svg)
+## Guides
 
-## Infrastructure and Shared Procedures
+| Guide | What it builds | Status |
+|---|---|---|
+| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Joining nodes, Corosync link1 on VLAN 71, Datacenter firewall objects, the first Docker LXC | Verified 2026-09-24 |
+| [UniFi Network](UniFi-Network.md) | VLANs and zones, the Security-A migration, Access-A egress order, local DNS, identity-zone NTP and client DNS | Verified 2026-09-24 |
+| [Linux Host Baseline](Linux-Host-Baseline.md) | Package updates, one admin account, three SSH keys, key-only SSH, root password behind `Defaults rootpw`, locale | Verified 2026-09-07 |
+| [SSH Key Lifecycle](SSH-Key-Lifecycle.md) | Key inventory, fleet cleanup, onboarding, staged rotation, retirement | Verified 2026-09-24 |
+| [Ansible SSH Identity Automation](Ansible-SSH-Identity-Automation.md) | The controller, identity files, audit, onboarding, rotation, Semaphore templates | Verified 2026-09-24 |
+| [Active Directory](Active-Directory.md) | Two domain controllers, site and subnets, DNS, tiered OUs, password policy, Windows LAPS, a member server, an offline workstation join | Verified 2026-09-09 |
+| [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, the shared `proxy` network, the DNS-01 wildcard certificate, renewal | Verified 2026-09-24 |
+| [NetBird](NetBird.md) | Self-hosted control plane behind NPM, first peer, routed path into VLAN 85 | Verified 2026-09-24 |
+| [Prometheus](Prometheus.md) | Node exporters, config validation, the bind-mount reload trap, exact target assertions | Verified 2026-09-24 |
+| [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF into `netops`, Enterprise Security | Verified 2026-09-24 |
+| [Wazuh](Wazuh.md) | Manager health, agent enrollment, network checks, endpoint retirement | Verified 2026-09-24 |
+| [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, file-integrity groups, malware detection two ways, CIM mapping, one dashboard | Verified 2026-09-24 |
+| [Media Stack](Media-Stack.md) | Jellyfin, Seerr, Sonarr, Radarr, Prowlarr, qBittorrent behind Gluetun, one request-to-play test | Verified 2026-09-24 |
+| [Immich Storage Migration](Immich-Storage-Migration.md) | Moving the Immich library from a 4 TB WD pool to a 2 TB Toshiba pool | Verified 2026-09-24 |
+| [Security Incident Response](Security-Incident-Response.md) | Scope, containment, credential rotation, service checks, residual risk, closure | Verified 2026-09-25 |
 
-| Guide | What it covers |
+## Archived guides
+
+| Guide | Retired |
 |---|---|
-| [Galaxy Proxmox Cluster](Galaxy-Proxmox-Cluster.md) | Five-node cluster, original setup, node expansion, Corosync link1, firewall objects, Docker LXC foundation, & the original Debian development VM (retired 2026-08-14; `ubuntu-dev` took over) |
-| [UniFi Network](UniFi-Network.md) | VLANs, zones, Security-A migration, DNS, egress policy order, & verification |
-| [Linux Host Baseline](Linux-Host-Baseline.md) | Package updates, administrative account, three SSH keys, key-only SSH, locked root, locale, & checks |
-| [SSH Key Lifecycle](SSH-Key-Lifecycle.md) | Key inventory, fleet cleanup, onboarding, staged rotation, verification, & retirement |
-| [Security Incident Response](Security-Incident-Response.md) | Scope, containment, credential rotation, service checks, residual risk, & closure |
-
-## Platform Guides
-
-| Guide | What it covers |
-|---|---|
-| [Active Directory](Active-Directory.md) | Forest promotion, second controller, site and subnets, AD-integrated DNS, tiered organisational units, password policy, local-admin policy, Windows LAPS, the member-server join, and joining a Windows 11 workstation with no domain administrator password |
-| [Ansible SSH Identity Automation](Ansible-SSH-Identity-Automation.md) | Controller setup, identity files, audit, onboarding, rotation, Semaphore, & recovery |
-| [Immich Storage Migration](Immich-Storage-Migration.md) | Database backup, replacement pool, file copy, verification, & old-disk retirement |
-| [Media Stack](Media-Stack.md) | LXC, Docker services, VPN-isolated qBittorrent, Jellyfin, Arr applications, Seerr, & completed request-to-play acquisition test |
-| [NetBird](NetBird.md) | Control plane, NPM publication, peer enrollment, routed subnet, access policy, & tunnel verification |
-| [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, first-run setup, NetBird routes, DNS-01 certificate, health checks, & renewal |
-| [Prometheus](Prometheus.md) | Prometheus 3.14.0, 57 targets across seven jobs verified 2026-09-06, config validation, reload behavior, & exact target checks |
-| [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise, HEC, SC4S, UniFi CEF routing, field checks, & Enterprise Security |
-| [Wazuh](Wazuh.md) | Wazuh 4.14.7, 15 active remote agents verified 2026-09-18, manager checks, dashboard state, & recovery |
-| [Wazuh Alerts in Splunk](Wazuh-Alerts-in-Splunk.md) | Universal Forwarder on 9997, agent group file monitoring, malware detection built twice, CIM mapping, & the one-page dashboard |
-
-## Archived & Retired Guides
-
-I preserved the Discord assistant configuration formerly hosted on deleted CT 104 `ai-alpha-01` in the [archived OpenClaw walkthrough](../Archive/Guides/OpenClaw.md). I preserved the lore-retrieval & Discord-bot workflow from deleted CT 105 `ai-bravo-02` in the [archived TNIO walkthrough](../Archive/Guides/TNIO-AI-Bot.md). The [archived TeamSpeak walkthrough](../Archive/Guides/TeamSpeak.md) preserves the three-server layout retired on 2026-08-09. The [archived Portainer walkthrough](../Archive/Guides/Portainer.md) preserves the server and four Edge Agent hosts I retired on 2026-09-16, when [Dockhand](../Platforms/Dockhand/README.md) took over container management.
-
-## Status Language
-
-`Verified` means the linked record contains the observed command result, UI state, or screenshot. `Partial` names the exact unfinished check. I don't turn a plan into a completed result because the command appears plausible.
-
-Cloudflare doesn't have a standalone guide yet. Its current public records contain inventories or supporting steps, not a complete deployment sequence. The retired Windows Servers platform moved to the archive on 2026-09-06. The Active Directory guide above covers the `ad.alphasecunited.com` forest I built on 2026-09-09, which shares no state with those archived records.
+| [TeamSpeak, three-server layout](../Archive/Guides/TeamSpeak.md) | 2026-08-09 |
+| [Portainer](../Archive/Guides/Portainer.md) | 2026-09-16, replaced by [Dockhand](../Platforms/Dockhand/README.md) |
+| [Termix](../Archive/Guides/Termix.md) | 2026-07-28 |
+| [OpenClaw](../Archive/Guides/OpenClaw.md) | 2026-07-25, CT 104 `ai-alpha-01` deleted |
+| [TNIO AI Bot](../Archive/Guides/TNIO-AI-Bot.md) | 2026-07-25, CT 105 `ai-bravo-02` deleted 2026-08-09 |

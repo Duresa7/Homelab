@@ -9,7 +9,7 @@
 
 I clicked Check for updates in Dockhand and received `Could not query registry` for `teamspeak-monitor` on `alpha-prod-01`. I reproduced it twice through authenticated `POST /api/containers/check-updates?env=6`, with `Accept: application/json`. The other eight containers returned no registry errors. This check does not pull images or restart containers.
 
-The monitor row returned image `teamspeak-monitor:local`, `hasUpdate: false`, `updateDisabled: false`, and the exact error above. I retained a local reproduction script at `.scratch/dockhand/check-teamspeak-update.py`; it exits 1 while that error remains and will exit 0 when the container is explicitly excluded and returns no error.
+The monitor row returned image `teamspeak-monitor:local`, `hasUpdate: false`, `updateDisabled: false`, and the exact error above. I kept a local reproduction script; it exits 1 while that error remains and will exit 0 when the container is explicitly excluded and returns no error.
 
 ## Cause
 

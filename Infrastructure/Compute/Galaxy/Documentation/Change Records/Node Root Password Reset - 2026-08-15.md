@@ -1,7 +1,7 @@
 # Node Root Password Reset - 2026-08-15
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-09-25
 
 **Implementation date:** 2026-08-15  
 **Status:** Complete  
@@ -40,7 +40,7 @@ The password never appeared in a command string, an argument, an inventory, or a
 4. I tested the result against the node's own PAM stack through the same API endpoint the web interface logs in with, passing the value from the file rather than from the command line: `curl -sk -d 'username=root@pam' --data-urlencode "password@/root/.pw.stage" https://127.0.0.1:8006/api2/json/access/ticket`.
 5. I ran `shred -u` on the staged file on each node in the same command, and on the local copy afterwards.
 
-Step 4 is what makes this record more than a claim that a command was issued. A `200` from `/access/ticket` means PAM accepted `root@pam` with the value now stored in the credential entry, which is the web interface login the ticket asked me to prove.
+Step 4 is what makes this record more than a claim that a command was issued. A `200` from `/access/ticket` means PAM accepted `root@pam` with the value now stored in the credential entry, which is the web interface login I set out to prove.
 
 ## Verification
 

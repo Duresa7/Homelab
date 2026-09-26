@@ -1,7 +1,7 @@
 # Root and dkadi Passwords Set on Twelve Guests
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-15  
 **Status:** Complete and verified on all twelve guests  
@@ -57,7 +57,7 @@ fatal: [media-01]: FAILED! => {"cmd": ["sudo", "-n", "True"], "rc": 1,
 
 `argv: [sudo, -n, true]` is not what it looks like. YAML reads the bare `true` as a boolean, Ansible renders it as the string `True`, and sudo goes looking for a command by that name. The check that was supposed to prove automation still worked was incapable of passing.
 
-`playbooks/sudoers-nopasswd.yml` in the same project carried the identical mistake in its own `sudo -n true` check. That play has never been run, so nobody had hit it. I fixed both, quoted the argument, and added a validator rule so the bare boolean cannot come back. Fixing the second file is outside this ticket, and I did it anyway rather than leave a known broken check waiting for whoever runs that play next.
+`playbooks/sudoers-nopasswd.yml` in the same project carried the identical mistake in its own `sudo -n true` check. That play has never been run, so nobody had hit it. I fixed both, quoted the argument, and added a validator rule so the bare boolean cannot come back. The second file was outside this change. I fixed it anyway so the next run of that play does not hit a known broken check.
 
 This is the argument for a single-host trial before a fleet run. The bug was in the verification rather than the change, so a twelve-host run would have set every password correctly and then failed at the last step on the first host.
 
@@ -118,4 +118,4 @@ It is only safe while that stays true. Any guest that joins the model later, inc
 
 **`ansible-01`'s `dkadi` account has no key.** It is password-only until a key is placed, which belongs to `ssh-key-automation` rather than to this project. Nothing depends on it today: the SSH Manager reaches that host as `ansible`.
 
-**The ticket's own arithmetic was wrong.** It says seven hosts need root unlocked, and its table lists eight. The table matched the live state, and eight is the number I acted on.
+**My plan's arithmetic was wrong.** It said seven hosts needed root unlocked, and its table listed eight. The table matched the live state, and eight is the number I acted on.

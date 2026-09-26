@@ -115,7 +115,7 @@ only `airflow_temperature_cel`; the three spinners report `temperature_celsius`.
 
 **Nothing led with DNS.** `teamspeak_dns_srv_up` had been 0 since 2026-08-10 with no panel showing it. It is
 now a top-row tile called `Name resolution` beside `Public address` and `Local voice`, and a `Relay
-endpoints` table renders the collector's `unresolved:0` as `unresolved — DNS failed` in red.
+endpoints` table renders the collector's `unresolved:0` as `unresolved: DNS failed` in red.
 
 ## The panel worth having
 
@@ -124,7 +124,7 @@ arm a filtered comparison that returns nothing when it passes. Scrape targets do
 certificates inside 21 days, ZFS not online, NVMe critical warnings or spare under 10%, filesystems over 90%
 or read-only, a UPS on battery, a failed SMART self-assessment, and either TeamSpeak fault.
 
-A healthy fleet returns zero rows and the panel says *All clear — nothing is failing a health check.* Those
+A healthy fleet returns zero rows and the panel says *All clear: nothing is failing a health check.* Those
 are also exactly the conditions the still-open alerting item would fire on, so when Alertmanager arrives the
 rules are already written down here.
 

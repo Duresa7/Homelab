@@ -1,0 +1,34 @@
+Started win11-dev-memory-recheck.service - [systemd-run] /usr/sbin/memtester 8192M 1.
+memtester version 4.7.1 (64-bit)
+Copyright (C) 2001-2024 Charles Cazabon.
+Licensed under the GNU General Public License version 2 (only).
+pagesize is 4096
+pagesizemask is 0xfffffffffffff000
+want 8192MB (8589934592 bytes)
+got  8192MB (8589934592 bytes), trying mlock ...locked.
+Loop 1/1:
+  Stuck Address       :           setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   8FAILURE: possible bad address line at offset 0x00000001602afea8.
+Skipping to next test...
+  Random Value        : 
+
+
+
+
+
+
+
+FAILURE: 0xfbfed869df7ec263 != 0xfbfed861df7ec263 at offset 0x0000000035103fe8.
+FAILURE: 0xfd7fd5b4f4f74e19 != 0xfd7fd5b4f4f74e11 at offset 0x00000000602a9f18.
+  Compare XOR         : ok
+  Compare SUB         : ok
+  Compare MUL         : ok
+  Compare DIV         : ok
+  Compare OR          : ok
+  Compare AND         : ok
+  Sequential Increment: ok
+  Solid Bits          :           setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   8FAILURE: 0xffffffffffffffff != 0xfffffffffffffff7 at offset 0x00000000602aaa20.
+Stopping win11-dev-memory-recheck.service - [systemd-run] /usr/sbin/memtester 8192M 1...
+  Block Sequential    :           setting   testing   setting   testing   setting   testing   setting   testing   setting   testing   setting   5
+win11-dev-memory-recheck.service: Deactivated successfully.
+Stopped win11-dev-memory-recheck.service - [systemd-run] /usr/sbin/memtester 8192M 1.
+win11-dev-memory-recheck.service: Consumed 1min 32.383s CPU time, 8G memory peak.

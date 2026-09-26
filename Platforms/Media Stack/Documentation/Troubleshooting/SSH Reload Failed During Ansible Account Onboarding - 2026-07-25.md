@@ -19,7 +19,7 @@ The following `systemctl reload ssh` sent SIGHUP to the socket-activated daemon.
 
 ## Correction
 
-I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, restarted `ssh.socket`, cleared the failed service state, & started `ssh.service`. I kept `AllowUsers dkadi ansible` because both accounts require key-only access.
+I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, restarted `ssh.socket`, cleared the failed service state, and started `ssh.service`. I kept `AllowUsers dkadi ansible` because both accounts require key-only access.
 
 ## Verification
 
@@ -27,7 +27,7 @@ I recreated `/run/sshd` as root with mode `0755`, stopped the failed service, re
 - `ssh.socket` and `ssh.service` both returned `active`.
 - TCP 22 listened on all configured addresses.
 - The controller logged in as `ansible` with its restricted key.
-- `sudo -n id -u` returned `0`, Docker access passed, & password-only SSH was rejected.
+- `sudo -n id -u` returned `0`, Docker access passed, and password-only SSH was rejected.
 - I removed the controller key from `/home/dkadi/.ssh/authorized_keys` only after the new login passed.
 
 ## Future Handling

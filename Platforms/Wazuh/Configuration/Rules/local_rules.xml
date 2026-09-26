@@ -25,7 +25,7 @@
 
   This is the half of malware detection that keeps working when VirusTotal
   stops. The free VirusTotal tier answers 500 lookups a day and 4 a minute, and
-  past either ceiling it simply stops answering — a lookup that never
+  past either ceiling it simply stops answering: a lookup that never
   completes is indistinguishable from a clean verdict, which is the failure
   mode worth designing against. A CDB list is a local hash table with no quota
   and no network call, consulted on every file-integrity event.

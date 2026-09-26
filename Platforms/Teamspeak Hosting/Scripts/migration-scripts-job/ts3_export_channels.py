@@ -92,7 +92,7 @@ class TS3Conn:
         except (socket.timeout, OSError):
             pass
         self.s.settimeout(10.0)
-        # Re-create the file wrapper — a timed-out readline leaves it in a
+        # Re-create the file wrapper: a timed-out readline leaves it in a
         # broken state on Python 3.12+, causing all subsequent reads to fail.
         self.f = self.s.makefile("rwb", buffering=0)
 
@@ -116,7 +116,7 @@ class TS3Conn:
                         f"TS3 error on `{line}`: id={err.get('id')} msg={err.get('msg')}"
                     )
                 break
-            # Data line — may contain multiple |-separated records
+            # Data line: may contain multiple |-separated records
             for piece in text.split("|"):
                 records.append(self._parse_record(piece))
         return records
@@ -177,7 +177,7 @@ def main():
         )
 
         chans = cq.cmd("channellist -topic -flags -voice -limits -icon -secondsempty")
-        print(f"Found {len(chans)} channels — collecting full info…", file=sys.stderr)
+        print(f"Found {len(chans)} channels: collecting full info…", file=sys.stderr)
 
         # ClientQuery doesn't expose `channelinfo`, but it does expose
         # `channelvariable cid=X <var> <var> …` for reading individual properties.
@@ -198,7 +198,7 @@ def main():
         out = []
         for i, c in enumerate(chans, 1):
             cid = c["cid"]
-            # Start with channellist record — that's already most of what we need.
+            # Start with channellist record: that's already most of what we need.
             merged = dict(c)
             try:
                 results = cq.cmd(f"channelvariable cid={cid} " + " ".join(EXTRA_VARS))

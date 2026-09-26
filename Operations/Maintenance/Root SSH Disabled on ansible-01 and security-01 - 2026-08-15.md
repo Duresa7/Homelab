@@ -1,11 +1,11 @@
 # Root SSH Disabled on ansible-01 and security-01
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-15  
 **Status:** Complete. Two deviations found on the way through are recorded below and left open  
-**Scope:** `PermitRootLogin no` on `ansible-01` (LXC 100) and `security-01` (VM 200). `app-01` is excluded by decision and was verified untouched
+**Scope:** `PermitRootLogin no` on `ansible-01` (LXC 100) and `security-01` (VM 200). I left `app-01` out on purpose and verified it untouched
 
 ## Outcome
 
@@ -53,7 +53,7 @@ I held a second session open on each host for the whole window and confirmed bot
 
 ## The reload that broke sshd on ansible-01
 
-The ticket warned me to expect `Missing privilege separation directory: /run/sshd`, which is what an sshd reload did to `media-01` earlier the same day. I saw that string, assumed it was the same fault, and it was not.
+I expected `Missing privilege separation directory: /run/sshd`, because that is what an sshd reload did to `media-01` earlier the same day. I saw that string, assumed it was the same fault, and it was not.
 
 ```text
 Aug 15 15:46:39 ansible-01 systemd[1]: Reloading ssh.service - OpenBSD Secure Shell server...

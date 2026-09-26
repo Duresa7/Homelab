@@ -83,7 +83,7 @@ The three anime-type series moved from profile 4 to profile 7 through the `serie
 | Mushoku Tensei: Jobless Reincarnation | 26 | anime | 7 |
 | Third anime series added since 2026-08-23 | 27 | anime | 7 |
 
-The eleven standard series on profile 4 and Superman & Lois on profile 1 were not touched.
+The eleven standard series on profile 4 and Superman and Lois on profile 1 were not touched.
 
 ## Naming
 
@@ -146,7 +146,7 @@ EZTV needed no tag. It advertises no movie categories, so Prowlarr never sent it
 - Sonarr reported version 4.0.19.2979 on branch `main`, and `/api/v3/health` returned zero messages after the work.
 - All 40 custom formats imported with no failures. The six pre-existing quality profiles each held 41 format entries, `Block AV1` at −10000 in `HD-1080p` as the only non-zero score across all six, and unchanged enabled qualities and cutoffs.
 - Profile 7 read back with `upgradeAllowed` true, cutoff 1004, `minFormatScore` 100, `cutoffFormatScore` 10000, `minUpgradeFormatScore` 1, the eight enabled rungs in the order above, and every score matching the table above.
-- The three anime series read back on profile 7. The eleven standard series stayed on profile 4 and Superman & Lois on profile 1.
+- The three anime series read back on profile 7. The eleven standard series stayed on profile 4 and Superman and Lois on profile 1.
 - A rename preview against standard series 5, 6, and 17 returned zero pending renames, so no television file moved.
 - 27 anime files renamed. The set of inodes under `/data/media/anime` was identical before and after, 27 in each case, proving a rename rather than a copy with no data rewritten. Link counts were 1 on every file beforehand, so no download-tree hard link existed to break. A follow-up rename preview on series 19, 26, and 27 returned zero pending.
 - Neither Jellyfin user held played state or a playback position on any anime episode before the rename, so none could be lost. Jellyfin created new item GUIDs for all 27, which is expected when paths change.

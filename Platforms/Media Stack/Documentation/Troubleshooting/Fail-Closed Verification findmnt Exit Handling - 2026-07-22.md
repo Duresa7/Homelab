@@ -5,7 +5,7 @@
 
 ## Symptom
 
-The first missing-disk verification wrapper exited `1` after it stopped CT 842 & unmounted `/mnt/bindmounts/media-01-hdd`. It stopped before the planned `pct start 842` assertion.
+The first missing-disk verification wrapper exited `1` after it stopped CT 842 and unmounted `/mnt/bindmounts/media-01-hdd`. It stopped before the planned `pct start 842` assertion.
 
 ## Exact Error
 
@@ -13,7 +13,7 @@ SSH Manager returned exit `1` with only the capture timestamp on standard output
 
 ## Hypothesis and Test
 
-I inspected `pct status 842`, both systemd unit states, `findmnt`, the bind-source path, & `pct config 842`. CT 842 was stopped, the mount and automount units were inactive, `/mnt/bindmounts/media-01-hdd/data` was absent, & `mp0` still named that path.
+I inspected `pct status 842`, both systemd unit states, `findmnt`, the bind-source path, and `pct config 842`. CT 842 was stopped, the mount and automount units were inactive, `/mnt/bindmounts/media-01-hdd/data` was absent, and `mp0` still named that path.
 
 ## Root Cause
 
@@ -27,8 +27,8 @@ test -z "$(findmnt -rn -T "$MEDIA_MOUNT" -o SOURCE)"
 
 ## Correction
 
-I resumed from the inspected stopped state and checked the missing `data` child directly with `test ! -e`. I captured `pct start 842` exit `255`, started the systemd automount, triggered the ext4 mount, & restarted CT 842.
+I resumed from the inspected stopped state and checked the missing `data` child directly with `test ! -e`. I captured `pct start 842` exit `255`, started the systemd automount, triggered the ext4 mount, and restarted CT 842.
 
 ## Verification
 
-The LXC pre-start hook refused the missing bind source. After remount, `/data` resolved to `/dev/sda1`, eight containers ran, & Jellyfin and Gluetun reported healthy. The [S05 evidence transcript](../../Evidence/Media%20Stack%20HDD%20Data%20Migration%20-%202026-07-22/Logs/S05-Fail-Closed-Cleanup-and-Final-Audit-2026-07-22.md) records both the failed wrapper & corrected test.
+The LXC pre-start hook refused the missing bind source. After remount, `/data` resolved to `/dev/sda1`, eight containers ran, and Jellyfin and Gluetun reported healthy. The [S05 evidence transcript](../../Evidence/HDD%20Data%20Migration%20-%202026-07-22/Logs/S05-Fail-Closed-Cleanup-and-Final-Audit-2026-07-22.md) records both the failed wrapper and corrected test.

@@ -1,7 +1,7 @@
 # Ollama Operations Runbook
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-04
+**Last updated:** 2026-09-25
 
 ## Routine Check
 
@@ -18,11 +18,11 @@ docker exec open-webui curl -fsS http://ollama:11434/api/tags
 nvidia-smi --query-gpu=name,driver_version,memory.used,memory.total --format=csv,noheader
 ```
 
-The expected baseline is two healthy containers, Ollama 0.33.3, Open WebUI's rolling `main` tag currently reporting 0.11.3, `qwen3.5:2b` as the only installed model in both model-list responses, and the GTX 1080 Ti on driver 580.159.03. `ollama ps` lists a model only while it is loaded. When Qwen 3.5 2B is loaded with a 4,096-token context, its processor column should say `100% GPU` and NVIDIA reports about 3.1 GiB used.
+The expected baseline is two healthy containers, Ollama 0.33.3, Open WebUI's rolling `main` tag (0.11.4 on 2026-09-24), `qwen3.5:2b` as the only installed model in both model-list responses, and the GTX 1080 Ti on driver 580.159.03. `ollama ps` lists a model only while it is loaded. When Qwen 3.5 2B is loaded with a 4,096-token context, its processor column should say `100% GPU` and NVIDIA reports about 3.1 GiB used.
 
 ## Generation Test
 
-The API is unauthenticated, so I run the test only from an approved internal client:
+The API is unauthenticated, so I run the test only from a trusted internal client:
 
 ```sh
 curl -fsS http://192.168.40.35:11434/api/generate \
@@ -52,7 +52,7 @@ Transcript:
 ${output}
 ```
 
-The base URL stops at `/v1`; Handy appends `/chat/completions`. I use this only from an approved internal client or through the existing private remote-access path because the Ollama listener has no authentication.
+The base URL stops at `/v1`; Handy appends `/chat/completions`. I use this only from a trusted internal client or through the existing private remote-access path because the Ollama listener has no authentication.
 
 ## Models
 

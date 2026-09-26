@@ -4,6 +4,12 @@
     restricted group on ObiPC.
 
 .DESCRIPTION
+    RETIRED 2026-09-18. I unregistered the ObiPC Session Limit task on
+    2026-09-18 after the rebuild, and nothing runs this script now. The logon
+    hours on the account are the only sign-in window control left. The file
+    stays as the versioned reference, with the idle-machine fix, in case the
+    control comes back.
+
     Active Directory logon hours block a new sign-in but never end a session that
     is already running, and Windows has no native daily-usage budget for a domain
     account. This script is both of those controls.

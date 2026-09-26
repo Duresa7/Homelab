@@ -1,7 +1,7 @@
 # Docker MCP Gateway Initial Deployment
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-08-30
+**Last updated:** 2026-09-25
 
 ## Outcome
 
@@ -15,7 +15,7 @@ GitHub listed 0.43.3 as the newest published release, and the official container
 
 1. Confirmed Docker Engine 29.6.2 and Compose 5.3.1 were healthy on `docker-blue`, port 8811 was unused, and `/opt/docker/mcp-gateway` did not exist.
 2. Validated that the pinned image remains running with an empty default profile. The empty state starts no managed MCP server container.
-3. Created a 64-hex-character bearer token, stored it in the approved credential store, and installed it only in the root-owned mode-`0600` live `.env`.
+3. Created a 64-hex-character bearer token, stored it in my credential store, and installed it only in the root-owned mode-`0600` live `.env`.
 4. Installed the Compose project under `/opt/docker/mcp-gateway` and its persistent configuration directory under `/opt/docker/mcp-gateway/config`.
 5. Configured Streamable HTTP on `192.168.40.39:8811`, the official Docker socket mount, bearer authentication, health checking, restart behavior, resource limits, a read-only root filesystem, dropped capabilities, `no-new-privileges`, and bounded logs.
 6. Validated the expanded Compose configuration, pulled the pinned image, and started the project.

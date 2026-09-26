@@ -41,11 +41,38 @@
 /Security/Incidents/UniFi/Evidence/*
 !/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/
 /Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/*
-!/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/Readback.json
+!/Security/Incidents/UniFi/Evidence/Action1 RPC Alert - 2026-09-12/Exports/Readback.json
 
 # Evidence images (exact filenames are allowlisted per directory)
 !/Infrastructure/Compute/Galaxy/Evidence/
 /Infrastructure/Compute/Galaxy/Evidence/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/Windows-After-Restart.json
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/Host-And-Cleanup.json
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/DHCP-Reservation-Readback.json
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Exports/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Exports/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Exports/Final-Verification.json
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Screenshots/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Screenshots/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Screenshots/Windows-Setup-PFN-LIST-CORRUPT.png
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Exports/
+/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Exports/*
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Logs/Source-Direct-Read-SHA256.txt
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Logs/Destination-Before-Repair-SHA256.txt
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Logs/Destination-After-Repair-SHA256.txt
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Grey Migration - 2026-09-23/Exports/Windows-After-Migration.json
 !/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/
 /Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/*
 !/Infrastructure/Compute/Galaxy/Evidence/Cluster-Net Corosync Link Addition - 2026-07-10/Screenshots/
@@ -55,9 +82,9 @@
 !/Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/
 /Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/*
 !/Platforms/Netbird/Evidence/Docker-Network Access Stack Deployment - 2026-07-10/Screenshots/
-!/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/
-/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/*
-!/Platforms/Netbird/Evidence/NetBird First Peer and Routed VPN Path - 2026-07-12/Screenshots/
+!/Platforms/Netbird/Evidence/First Peer and Routed VPN Path - 2026-07-12/
+/Platforms/Netbird/Evidence/First Peer and Routed VPN Path - 2026-07-12/*
+!/Platforms/Netbird/Evidence/First Peer and Routed VPN Path - 2026-07-12/Screenshots/
 !/Platforms/Splunk/Enterprise/Evidence/
 /Platforms/Splunk/Enterprise/Evidence/*
 !/Platforms/Splunk/Enterprise/Evidence/Initial Build - 2026-06-28/
@@ -65,9 +92,9 @@
 !/Platforms/Splunk/Enterprise/Evidence/Initial Build - 2026-06-28/Screenshots/
 !/Platforms/Wazuh/Evidence/
 /Platforms/Wazuh/Evidence/*
-!/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/
-/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/*
-!/Platforms/Wazuh/Evidence/Wazuh Endpoint Re-enrollment - 2026-07-13/Screenshots/
+!/Platforms/Wazuh/Evidence/Endpoint Re-enrollment - 2026-07-13/
+/Platforms/Wazuh/Evidence/Endpoint Re-enrollment - 2026-07-13/*
+!/Platforms/Wazuh/Evidence/Endpoint Re-enrollment - 2026-07-13/Screenshots/
 
 # Syncthing deployment evidence records. The platform moved to Archive on
 # 2026-08-06, so these paths follow it; the old /Platforms/Syncthing/ rules
@@ -96,12 +123,12 @@
 # Galaxy PXE repair evidence records
 !/Platforms/Galaxy PXE/Evidence/
 /Platforms/Galaxy PXE/Evidence/*
-!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/
-/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/*
-!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Evidence-Index.md
-!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/
-/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*
-!/Platforms/Galaxy PXE/Evidence/Galaxy PXE Repair - 2026-07-31/Logs/*.md
+!/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/
+/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/*
+!/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/Evidence-Index.md
+!/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/Logs/
+/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/Logs/*
+!/Platforms/Galaxy PXE/Evidence/Repair - 2026-07-31/Logs/*.md
 
 # Galaxy Green and Blue hardware change evidence records
 !/Infrastructure/Hardware/Evidence/
@@ -114,12 +141,12 @@
 !/Infrastructure/Hardware/Evidence/Galaxy Green and Blue Hardware Changes - 2026-07-31/Logs/*.md
 
 # Galaxy Green baseline and monitoring evidence records
-!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/
-/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/*
-!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Evidence-Index.md
-!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/
-/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/*
-!/Infrastructure/Compute/Galaxy/Evidence/Galaxy Green Baseline and Monitoring - 2026-07-31/Logs/*.md
+!/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/
+/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/*
+!/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/Evidence-Index.md
+!/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/Green Baseline and Monitoring - 2026-07-31/Logs/*.md
 
 # Galaxy Green node rolling replacement evidence records
 !/Archive/Infrastructure/Compute/Galaxy/Evidence/
@@ -190,23 +217,23 @@
 # Media Stack evidence records (exact screenshot filenames are allowlisted per directory)
 !/Platforms/Media Stack/Evidence/
 /Platforms/Media Stack/Evidence/*
-!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/
-/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/*
-!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Evidence-Index.md
-!/Platforms/Media Stack/Evidence/Media Stack Application Onboarding - 2026-07-17/Screenshots/
-!/Platforms/Media Stack/Evidence/Media Stack Refresh and Payload Filtering - 2026-07-17/
+!/Platforms/Media Stack/Evidence/Application Onboarding - 2026-07-17/
+/Platforms/Media Stack/Evidence/Application Onboarding - 2026-07-17/*
+!/Platforms/Media Stack/Evidence/Application Onboarding - 2026-07-17/Evidence-Index.md
+!/Platforms/Media Stack/Evidence/Application Onboarding - 2026-07-17/Screenshots/
+!/Platforms/Media Stack/Evidence/Refresh and Payload Filtering - 2026-07-17/
 
 # PeaNUT UPS dashboard deployment evidence records
 !/Platforms/PeaNUT/Evidence/
 /Platforms/PeaNUT/Evidence/*
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/
-/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/*
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Evidence-Index.md
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/
-/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/*
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Logs/*.txt
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/
-!/Platforms/PeaNUT/Evidence/PeaNUT UPS Dashboard Deployment - 2026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/
+/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/*
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Evidence-Index.md
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Logs/
+/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Logs/*
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Logs/*.txt
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Screenshots/
+!/Platforms/PeaNUT/Evidence/UPS Dashboard Deployment - 2026-07-22/Screenshots/S06-PeaNUT-Dashboard-After.png
 
 # Coolify Traefik update evidence records
 !/Platforms/Coolify/Evidence/
@@ -216,18 +243,18 @@
 !/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/
 /Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/*
 !/Platforms/Coolify/Evidence/Update to 4.3.23 - 2026-09-18/Logs/Follow-up-Verification.txt
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/
-/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/*
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Evidence-Index.md
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/
-/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/
-/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/*
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Evidence-Index.md
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/
-/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/*
-!/Platforms/Coolify/Evidence/Coolify Traefik 3.7 Minor Update - 2026-08-09/Logs/*.txt
+!/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/
+/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/*
+!/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/Evidence-Index.md
+!/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/Logs/
+/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/Logs/*
+!/Platforms/Coolify/Evidence/Traefik 3.6 Patch Update - 2026-08-02/Logs/*.txt
+!/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/
+/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/*
+!/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/Evidence-Index.md
+!/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/Logs/
+/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/Logs/*
+!/Platforms/Coolify/Evidence/Traefik 3.7 Minor Update - 2026-08-09/Logs/*.txt
 
 # Reviewed evidence for the public-link repair
 !/Infrastructure/Compute/Galaxy/Evidence/Grey Server HA Daemon Restoration - 2026-07-22/
@@ -269,15 +296,15 @@
 !/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/
 /Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/*
 !/Platforms/Media Stack/Evidence/Jellyfin Orphaned Library Record Cleanup - 2026-07-22/Logs/S01-Diagnosis-and-Repair-2026-07-22.md
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/
-/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/*
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/
-/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/*
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S01-Preflight-2026-07-22.md
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S02-Ext4-Provisioning-2026-07-22.md
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S03-Copy-and-Cutover-2026-07-22.md
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S04-Functional-Validation-2026-07-22.md
-!/Platforms/Media Stack/Evidence/Media Stack HDD Data Migration - 2026-07-22/Logs/S05-Fail-Closed-Cleanup-and-Final-Audit-2026-07-22.md
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/
+/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/*
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/
+/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/*
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/S01-Preflight-2026-07-22.md
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/S02-Ext4-Provisioning-2026-07-22.md
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/S03-Copy-and-Cutover-2026-07-22.md
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/S04-Functional-Validation-2026-07-22.md
+!/Platforms/Media Stack/Evidence/HDD Data Migration - 2026-07-22/Logs/S05-Fail-Closed-Cleanup-and-Final-Audit-2026-07-22.md
 
 !/Platforms/Nginx Proxy Manager/Evidence/
 /Platforms/Nginx Proxy Manager/Evidence/*
@@ -317,11 +344,11 @@
 
 !/Security/Evidence/
 /Security/Evidence/*
-!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/
-/Security/Evidence/UniFi Firewall Audit - 2026-07-27/*
-!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/
-/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/*
-!/Security/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/Firewall-Audit-Score.json
+!/Security/Assessments/Evidence/UniFi Firewall Audit - 2026-07-27/
+/Security/Assessments/Evidence/UniFi Firewall Audit - 2026-07-27/*
+!/Security/Assessments/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/
+/Security/Assessments/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/*
+!/Security/Assessments/Evidence/UniFi Firewall Audit - 2026-07-27/Logs/Firewall-Audit-Score.json
 
 !/Security/Incidents/qBittorrent/Evidence/
 /Security/Incidents/qBittorrent/Evidence/*
@@ -371,10 +398,10 @@
 /Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/*
 !/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/Evidence-Index.md
 !/Platforms/Splunk/Enterprise/Evidence/Wazuh Insights App - 2026-08-29/Screenshots/
-!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/
-/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/*
-!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/Evidence-Index.md
-!/Platforms/Wazuh/Evidence/Wazuh Alert Forwarding to Splunk - 2026-08-29/Screenshots/
+!/Platforms/Wazuh/Evidence/Alert Forwarding to Splunk - 2026-08-29/
+/Platforms/Wazuh/Evidence/Alert Forwarding to Splunk - 2026-08-29/*
+!/Platforms/Wazuh/Evidence/Alert Forwarding to Splunk - 2026-08-29/Evidence-Index.md
+!/Platforms/Wazuh/Evidence/Alert Forwarding to Splunk - 2026-08-29/Screenshots/
 !/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/
 /Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/*
 !/Platforms/Wazuh/Evidence/File Integrity Monitoring Widening - 2026-08-29/Evidence-Index.md
@@ -542,7 +569,9 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 # Verified VM 105 storage migration transcript
 !/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/
 /Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/*
-!/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/Verification.log
+!/Infrastructure/Compute/Galaxy/Evidence/ubuntu-dev NVMe Storage Move - 2026-09-08/Logs/Verification.log
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Logs/Memory-Test.log
+!/Infrastructure/Compute/Galaxy/Evidence/win11-dev Provisioning and Green Memory Failure - 2026-09-20/Logs/Memory-Recheck.log
 
 # Active Directory forest build evidence. The index is published because it
 # holds no captured values; it is the map of which screenshot goes where and
@@ -561,19 +590,21 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 # Online sign-in verification contains policy settings and machine state only.
 !/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/
 /Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/*
-!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Workstation-Verification.json
-!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Network-Disconnect-Test.json
-!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Policy-Verification.json
-!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/ObiPC-AppLocker-Verification.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Exports/Workstation-Verification.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Exports/Network-Disconnect-Test.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Exports/Policy-Verification.json
+!/Platforms/Active Directory/Evidence/Online Workstation Sign-In - 2026-09-19/Exports/ObiPC-AppLocker-Verification.json
 
-# Identity NTP and client DNS evidence. The three controller screenshots stay
-# unpublished until they are redacted; the guide and the change record already
-# carry the image lines for them, commented out beside the step they belong to.
-# !/Infrastructure/Network/UniFi/Evidence/
-# /Infrastructure/Network/UniFi/Evidence/*
-# !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/
-# /Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/*
-# !/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/
+# Identity NTP and client DNS evidence. I checked the three controller
+# screenshots on 2026-09-25: a policy table, and two DHCP and DNS panels with
+# internal addresses only. They carry no withheld value and are published.
+!/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/
+/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/*
+!/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/
+/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/*
+!/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/01-Firewall-Order.png
+!/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/02-Secure-DNS.png
+!/Infrastructure/Network/UniFi/Evidence/Identity NTP and Client DNS - 2026-09-09/Screenshots/03-Secure-Client-DNS.png
 
 # Microsoft Intune evidence. The Logs carry no withheld value and are published.
 # The Screenshots line is deliberately left commented, on the same rule as the
@@ -601,14 +632,14 @@ Security/Assessments/GitHub Credential and Sensitive Data Review - 2026-07-21.md
 /Platforms/Windows Admin Center/Evidence/*
 !/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/
 /Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/*
-!/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Final-Verification.json
-!/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Browser-Sign-In.md
+!/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Exports/Final-Verification.json
+!/Platforms/Windows Admin Center/Evidence/Deployment - 2026-09-12/Logs/Browser-Sign-In.md
 
 # Reviewed owner domain-administration verification, with identities aliased.
 !/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/
 /Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/*
-!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Directory-Verification.json
-!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Management-Verification.json
+!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Exports/Directory-Verification.json
+!/Platforms/Active Directory/Evidence/Owner Domain Administration - 2026-09-12/Exports/Management-Verification.json
 
 # WUD administrator environments and Prometheus scrape credentials.
 admin.env
@@ -632,7 +663,7 @@ admin.env
 /Platforms/Dockhand/Evidence/*
 !/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/
 /Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/*
-!/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/Verification.json
+!/Platforms/Dockhand/Evidence/Dockge Replacement - 2026-09-15/Exports/Verification.json
 !/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/
 /Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/*
 !/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/
@@ -641,7 +672,7 @@ admin.env
 !/Platforms/Dockhand/Evidence/Hawser Update Verification - 2026-09-16/Exports/Host-Verification.json
 !/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/
 /Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/*
-!/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/Update Paths.json
+!/Platforms/Dockhand/Evidence/Login Alignment and Update Verification - 2026-09-15/Exports/Update Paths.json
 !/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/
 /Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/*
 !/Platforms/Dockhand/Evidence/Registry and Agent Cutover - 2026-09-15/Exports/
@@ -662,7 +693,7 @@ admin.env
 # Reviewed image-cleanup evidence and execution script
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/
 /Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/*
-!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/cleanup.py
+!/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Logs/cleanup.py
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/
 /Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/*
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/docker_main-preflight.json
@@ -681,3 +712,9 @@ admin.env
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/security_01-cleanup.json
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/Schedule-Settings.json
 !/Platforms/Dockhand/Evidence/Image Cleanup and Schedules - 2026-09-18/Exports/security_01-mount-order-verification.json
+
+# Wazuh MCP Server CA bundle: two public certificates, no private key (checked 2026-09-25).
+!/Platforms/Wazuh/Configuration/MCP Server/wazuh-ca-bundle.pem
+
+# Ansible's local collections and roles cache at the repository root
+/.ansible/

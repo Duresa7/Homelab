@@ -7,6 +7,7 @@
       "description": "Web browser. Installs the current stable release from the Software Repository.",
       "category": "Browsers",
       "featured": true,
+      "requires": [],
       "action1": {
         "packageId": "Google_Google_Chrome_1570243626751_builtin",
         "version": "latest"
@@ -22,6 +23,7 @@
       "description": "Web browser, English (US) build.",
       "category": "Browsers",
       "featured": false,
+      "requires": [],
       "action1": {
         "packageId": "Mozilla_Mozilla_Firefox_1570490818160_builtin",
         "version": "latest"
@@ -37,6 +39,7 @@
       "description": "File archiver for zip, 7z, tar and other formats.",
       "category": "Utilities",
       "featured": false,
+      "requires": [],
       "action1": {
         "packageId": "Igor_Pavlov_7_Zip_1570578162075_builtin",
         "version": "latest"
@@ -52,6 +55,7 @@
       "description": "Plays most audio and video formats without extra codecs.",
       "category": "Media",
       "featured": false,
+      "requires": [],
       "action1": {
         "packageId": "VideoLAN_VLC_Media_Player_1606575317968_builtin",
         "version": "latest"
@@ -67,12 +71,152 @@
       "description": "Source code editor. System-wide (all users) install.",
       "category": "Developer tools",
       "featured": true,
+      "requires": [],
       "action1": {
         "packageId": "Microsoft_Microsoft_Visual_Studio_Code_1685726188601_builtin",
         "version": "latest"
       },
       "match": {
         "nameContains": "Visual Studio Code"
+      }
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "publisher": "Valve Corporation",
+      "description": "Game library and store client. Installs for everyone on the PC; games are downloaded inside Steam afterwards.",
+      "category": "Games",
+      "featured": false,
+      "requires": [],
+      "userRemovable": true,
+      "action1": {
+        "packageId": "",
+        "version": "latest"
+      },
+      "agent": {
+        "kind": "direct",
+        "url": "https://cdn.akamai.steamstatic.com/client/installer/SteamSetup.exe",
+        "sha256": "7D3654531C32D941B8CAE81C4137FC542172BFA9635F169CB392F245A0A12BCB",
+        "installerType": "exe",
+        "silentArgs": "/S",
+        "sizeBytes": 2380800,
+        "uninstallKey": "Steam",
+        "scope": "machine",
+        "requiresReboot": false
+      },
+      "match": {
+        "nameContains": "Steam"
+      }
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "publisher": "Discord Inc.",
+      "description": "Voice, video and text chat. Installs for the person who asks for it.",
+      "category": "Communication",
+      "featured": false,
+      "requires": [],
+      "userRemovable": true,
+      "action1": {
+        "packageId": "",
+        "version": "latest"
+      },
+      "agent": {
+        "kind": "direct",
+        "url": "https://stable.dl2.discordapp.net/distro/app/stable/win/x64/1.0.9258/DiscordSetup.exe",
+        "sha256": "A6C2A0CC74CE2D70C5B6E37BE94B25EDF07758AD30CC7376FF466358DE676498",
+        "installerType": "exe",
+        "silentArgs": "--silent",
+        "sizeBytes": 145809848,
+        "uninstallKey": "Discord",
+        "scope": "user",
+        "requiresReboot": false
+      },
+      "match": {
+        "nameContains": "Discord"
+      }
+    },
+    {
+      "id": "spotify",
+      "name": "Spotify",
+      "publisher": "Spotify AB",
+      "description": "Music streaming. Installs for the person who asks for it.",
+      "category": "Media",
+      "featured": false,
+      "requires": [],
+      "userRemovable": true,
+      "action1": {
+        "packageId": "",
+        "version": "latest"
+      },
+      "agent": {
+        "kind": "direct",
+        "url": "https://download.scdn.co/SpotifyFullSetupX64.exe",
+        "sha256": "6C25D92DD38DDBFC1E4970765E865766D8AE2EF1758C6AF8E9122C5050EE66DC",
+        "installerType": "exe",
+        "silentArgs": "/silent /skip-app-launch",
+        "sizeBytes": 148153000,
+        "uninstallKey": "Spotify",
+        "scope": "user",
+        "requiresReboot": false
+      },
+      "match": {
+        "nameContains": "Spotify"
+      }
+    },
+    {
+      "id": "roblox",
+      "name": "Roblox",
+      "publisher": "Roblox Corporation",
+      "description": "Roblox player. Installs for the person who asks for it; games load through the player.",
+      "category": "Games",
+      "featured": false,
+      "requires": [],
+      "userRemovable": true,
+      "action1": {
+        "packageId": "",
+        "version": "latest"
+      },
+      "agent": {
+        "kind": "direct",
+        "url": "https://setup.rbxcdn.com/version-8884371d30284041-RobloxPlayerInstaller.exe",
+        "sha256": "22858FA38591E6F06B10ADFF0A994B624C8C45B1FF8CC9F349ADCDAAF2CBEF7B",
+        "installerType": "exe",
+        "silentArgs": "-install -silent",
+        "sizeBytes": 10280400,
+        "uninstallKey": "roblox-player",
+        "scope": "user",
+        "requiresReboot": false
+      },
+      "match": {
+        "nameContains": "Roblox"
+      },
+      "requirements": "Roblox publishes no silent uninstaller, so this one cannot be removed from the portal. Take it off from Settings, Apps on the PC instead."
+    },
+    {
+      "id": "valorant",
+      "name": "VALORANT",
+      "publisher": "Riot Games",
+      "description": "Riot's tactical shooter, North America client. The installer fetches the game itself, which is several gigabytes.",
+      "category": "Games",
+      "featured": false,
+      "requirements": "Ask an administrator to install this one. It installs Riot Vanguard, an anti-cheat driver that loads at boot, and putting a driver on the PC needs rights the portal cannot give you, so pressing Install here will fail. This PC already has the Secure Boot and TPM 2.0 that Vanguard needs, and it has to restart once after it goes on.",
+      "requires": [],
+      "userRemovable": true,
+      "action1": {
+        "packageId": "",
+        "version": "latest"
+      },
+      "agent": {
+        "kind": "winget",
+        "id": "RiotGames.Valorant.NA",
+        "scope": "user",
+        "version": null,
+        "extraArgs": null,
+        "requiresReboot": true
+      },
+      "match": {
+        "nameContains": "Riot"
       }
     }
   ]

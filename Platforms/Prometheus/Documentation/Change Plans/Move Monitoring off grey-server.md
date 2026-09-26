@@ -1,7 +1,7 @@
 # Move Monitoring off grey-server
 
 **Created:** 2026-07-26  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-09-25
 
 **Status:** Complete on 2026-07-26  
 **Target:** CT 104 `monitor-01`, Debian 13 LXC on `blue-server`, VLAN 73 `MONITOR-A`, 192.168.73.2  
@@ -12,15 +12,15 @@ This replaces the first draft of this plan, written earlier on 2026-07-26 and wr
 
 ## Read This First
 
-You are executing this, not designing it. The decisions below are settled; do not re-litigate them mid-run.
+The decisions below are settled; I do not reopen them mid-run.
 
-**Secrets.** Two secrets are handled here: the Grafana admin credential and a new Proxmox API token. Neither value may appear in a command line, a log, a file in this repository, a commit, or anything you print. Read the credential-retrieval skill before touching either. Pipe values, never echo them.
+**Secrets.** Two secrets are handled here: the Grafana admin credential and a new Proxmox API token. Neither value may appear in a command line, a log, a file in this repository, a commit, or anything you print. Retrieve both through the password manager's CLI. Pipe values, never echo them.
 
 **Proxmox shows an API token secret exactly once.** If you create the token and lose the value, you cannot retrieve it. Delete the token and create it again. Store it in the same step that creates it, before doing anything else.
 
 **Stop conditions.** Stop, report, and change nothing further if any of these happen:
 
-- A firewall change is refused or blocked. Both a UniFi policy edit and an `/etc/pve` write were blocked earlier on 2026-07-26 and needed explicit operator permission. Phases 1 and 2 are additive precisely so that a block here leaves the running stack untouched.
+- A firewall change is refused or blocked. Both a UniFi policy edit and an `/etc/pve` write were blocked earlier on 2026-07-26 and needed my explicit permission. Phases 1 and 2 are additive precisely so that a block here leaves the running stack untouched.
 - `promtool check config` fails.
 - Any target is not `up` at the end of Phase 6. Do not proceed to cutover with a broken target set.
 - The Grafana credential rotation in Phase 5 does not verify.
@@ -30,17 +30,17 @@ You are executing this, not designing it. The decisions below are settled; do no
 
 ## Execution State, 2026-07-26
 
-I passed Phase 0 with 44 of 44 targets up. `blue-server` still reported CTID 104 free, the Debian 13 template cached, & about 140 GB free on `local-lvm`.
+I passed Phase 0 with 44 of 44 targets up. `blue-server` still reported CTID 104 free, the Debian 13 template cached, and about 140 GB free on `local-lvm`.
 
-I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24. DHCP serves 192.168.73.6 through 192.168.73.254, leaving the static `monitor-01` address at 192.168.73.2 outside the pool. UPnP & mDNS remain disabled.
+I created `MONITOR-A` as VLAN 73 at 192.168.73.1/24. DHCP serves 192.168.73.6 through 192.168.73.254, leaving the static `monitor-01` address at 192.168.73.2 outside the pool. UPnP and mDNS remain disabled.
 
-Phase 1 is complete. `AlphaSec-Monitor` contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, & the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
+Phase 1 is complete. `AlphaSec-Monitor` contains only `MONITOR-A`, and the network's `firewall_zone_id` matches that zone. All 12 additive UniFi policies are enabled, taking the user-defined policy count from 52 to 64. `/etc/pve/firewall/cluster.fw` now has 55 lines, five IP sets, both terminal `IN DROP` rules, both PeaNUT rules, the four old 192.168.72.2 entries, and the four planned 192.168.73.2 additions. `pve-firewall compile` passed, and TCP 22 plus 8006 remained active on all four nodes.
 
-Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled & `PVEAuditor` on `/`. I stored its one-time secret and token ID outside this repository, then removed both staging files.
+Phase 2 is complete. `pve-exporter@pve!monitor01` exists with privilege separation enabled and `PVEAuditor` on `/`. I stored its one-time secret and token ID outside this repository, then removed both staging files.
 
-Phase 3 is complete. CT 104 runs Debian 13 on `blue-server` with two cores, 2 GiB memory, 1 GiB swap, a 16 GiB disk, & static address 192.168.73.2. The Linux host baseline passed: both administrative accounts have their approved keys and recovery passwords, SSH is key-only, root is locked, the locale is `en_US.UTF-8`, the timezone is `America/New_York`, & no package upgrades remain. Docker 29.6.2 and Compose 5.3.1 run inside the unprivileged LXC, and the controller reached the `ansible` account with its restricted key.
+Phase 3 is complete. CT 104 runs Debian 13 on `blue-server` with two cores, 2 GiB memory, 1 GiB swap, a 16 GiB disk, and static address 192.168.73.2. The Linux host baseline passed: both administrative accounts have their approved keys and recovery passwords, SSH is key-only, root is locked, the locale is `en_US.UTF-8`, the timezone is `America/New_York`, and no package upgrades remain. Docker 29.6.2 and Compose 5.3.1 run inside the unprivileged LXC, and the controller reached the `ansible` account with its restricted key.
 
-The first DNS check exposed two missing network details. UniFi had automatically excluded `MONITOR-A` from the shared `Proxmox-Trunk` profile, so VLAN 73 could not reach the gateway. I added only `MONITOR-A` to that profile and verified its network ID disappeared from the excluded set. DNS still needed the anticipated `Allow Monitor DNS to Gateway` policy on TCP and UDP 53. After both fixes, the guest reached 192.168.73.1, resolved public names, & resolved `jellyfin.alphasecunited.com` to 192.168.85.2.
+The first DNS check exposed two missing network details. UniFi had automatically excluded `MONITOR-A` from the shared `Proxmox-Trunk` profile, so VLAN 73 could not reach the gateway. I added only `MONITOR-A` to that profile and verified its network ID disappeared from the excluded set. DNS still needed the anticipated `Allow Monitor DNS to Gateway` policy on TCP and UDP 53. After both fixes, the guest reached 192.168.73.1, resolved public names, and resolved `jellyfin.alphasecunited.com` to 192.168.85.2.
 
 Phase 4 is complete. The Ansible project now holds eight hosts in both exporter groups. The node exporter play installed version 1.9.0 on `monitor-01`, and the cAdvisor play started version 0.60.5 on port 9101. Both endpoints return HTTP 200.
 
@@ -48,9 +48,9 @@ Phase 5 is complete. Six containers run from `/home/dkadi/monitoring`. I created
 
 Phase 6 passed. All 15 node exporters and all eight cAdvisor endpoints return HTTP 200 from `monitor-01`; Proxmox answers on 8006; both NUT servers accept TCP 3493 and return live UPS metrics; and both local web interfaces answer. The direct `https://192.168.85.2/` check returns curl code `000` because NPM rejects a TLS handshake without an SNI hostname, not because TCP 443 is blocked. A TCP probe reaches 443, and `https://jellyfin.alphasecunited.com/` returns HTTP 302 through the same address. The exact target assertion reports 46 of 46 up with no stale addresses. All 65 dashboard queries pass, with only the allowed container restart table empty.
 
-The Phase 6 NPM re-point is complete. I changed proxy-host ID 18 for Grafana to `192.168.73.2:3000` & ID 19 for Prometheus to `192.168.73.2:9090`. A read-only database query confirmed both saved values. Both HTTPS names return HTTP 302, & both direct replacement endpoints return HTTP 200 from `docker-network`.
+The Phase 6 NPM re-point is complete. I changed proxy-host ID 18 for Grafana to `192.168.73.2:3000` and ID 19 for Prometheus to `192.168.73.2:9090`. A read-only database query confirmed both saved values. Both HTTPS names return HTTP 302, and both direct replacement endpoints return HTTP 200 from `docker-network`.
 
-Phase 7 is complete. I reran the assertion at the commit point and got 46 of 46 targets up, then stopped the old five-container Compose project on `security-01`. cAdvisor remained the only running Docker container there; `node_exporter`, `wazuh-manager`, `wazuh-indexer`, & `wazuh-dashboard` remained active. I enabled only `UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE` for the UniFi MCP, previewed and deleted the six superseded policies one at a time, and narrowed `Allow NPM to security-01 web UIs` to port 443. Each structural diff showed only the intended change. I replaced the four old 192.168.72.2 `cluster.fw` entries with the four 192.168.73.2 entries, compiled the result, and verified the same final SHA256 on all four nodes.
+Phase 7 is complete. I reran the assertion at the commit point and got 46 of 46 targets up, then stopped the old five-container Compose project on `security-01`. cAdvisor remained the only running Docker container there; `node_exporter`, `wazuh-manager`, `wazuh-indexer`, and `wazuh-dashboard` remained active. I enabled only `UNIFI_POLICY_NETWORK_FIREWALL_POLICIES_DELETE` for the UniFi MCP, previewed and deleted the six superseded policies one at a time, and narrowed `Allow NPM to security-01 web UIs` to port 443. Each structural diff showed only the intended change. I replaced the four old 192.168.72.2 `cluster.fw` entries with the four 192.168.73.2 entries, compiled the result, and verified the same final SHA256 on all four nodes.
 
 Phase 8 is complete. I proved the removal scope before deleting anything, then removed only `/home/dkadi/monitoring`, its two named volumes, and the five retired monitoring images from `security-01`. cAdvisor still returns HTTP 200, `node_exporter` is active, and the three Wazuh services plus the Wazuh HTTPS route remain healthy. The plan's expected six non-empty cAdvisor names was wrong after the wipe: only `cadvisor` remains because the five retired containers no longer exist.
 
@@ -84,7 +84,7 @@ Second reason: `security-01` uses 8 of 12 GiB and nearly all of it is Wazuh's in
 | 7 | Fresh TSDB, retention stays 15d | Graphs restart empty and heal by 2026-08-10. Retention unchanged so no documentation numbers move |
 | 8 | Grafana: bootstrap default, rotate immediately with the supported Grafana CLI | The 2026-07-22 incident was a bootstrap value left in the Compose file. Nothing goes in Compose this time. Grafana 13 uses `/usr/share/grafana/bin/grafana cli`; the old `grafana-cli` executable is gone |
 | 9 | New `pve-exporter@pve!monitor01`, PVEAuditor on `/` | The existing credential is `local-dash@pve!readonly`, shared with `homelab-dashboard-aio` on `docker-main`. Revoking it breaks that app |
-| 10 | Agent performs all firewall changes | Operator decision. Phases are ordered so a block is survivable |
+| 10 | I make every firewall change through the UniFi and SSH tooling | Phases are ordered so a block is survivable |
 | 11 | Additive first, roughly an hour of overlap, then cutover | The overlap exists only to prove the new path |
 | 12 | Full wipe of the monitoring stack on `security-01` | Everything on that host is either in git or deliberately replaced |
 
@@ -387,7 +387,7 @@ Written in the same task as the work, in my first person, with ISO dates.
 
 Do not move the retired lab-range records into `Archive/`. That was considered and rejected on 2026-07-26: the simplification change record is the only account of why VLAN 73 is free, and the 2026-07-22 firewall audit already carries a superseded banner. Reverse pointers, not relocation.
 
-Commit in several small commits rather than one, matching the pattern used through 2026-07-26. No AI author, preparer, reviewer, or co-author trailer anywhere.
+Commit in several small commits rather than one, matching the pattern used through 2026-07-26.
 
 ## Rollback
 

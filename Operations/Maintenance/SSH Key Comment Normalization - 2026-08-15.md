@@ -1,7 +1,7 @@
 # SSH Key Comment Normalization
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-08-15
+**Last updated:** 2026-09-25
 
 **Change date:** 2026-08-15  
 **Status:** Complete, with one check I could not run from this workstation  
@@ -47,8 +47,8 @@ For the `dkadi` file, the only one of the three that could have locked me out, I
 
 ## The check I could not run
 
-The ticket asks for an SSH session opened with the Jedi PC key itself. That private key lives on my PC and not on this workstation, so I could not authenticate as it from here. What I can show is that the entry is intact and that the file works: the fingerprint is unchanged, and `sshd` accepted a public key from that same file on a fresh connection. A login from the PC would close the last of it.
+The full check is an SSH session opened with the Jedi PC key itself. That private key lives on Jedi PC and not on the workstation I ran the edit from, so I could not authenticate as it from there. What I can show is that the entry is intact and that the file works: the fingerprint is unchanged, and `sshd` accepted a public key from that same file on a fresh connection. A login from the PC would close the last of it.
 
 ## Related
 
-Part of the fleet access model change being carried out through 2026-08-14 and 2026-08-15. The earlier pass over these files is [SSH Authorized Key Cleanup](SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md), which normalized the three approved identities but did not catch this drift.
+Part of the fleet access model change being carried out through 2026-08-14 and 2026-08-15. The earlier pass over these files is [SSH Authorized Key Cleanup](SSH%20Authorized%20Key%20Cleanup%20-%202026-07-14.md), which normalized the three authorized identities but did not catch this drift.

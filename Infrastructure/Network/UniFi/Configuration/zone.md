@@ -1,13 +1,11 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-25
 
-I track 12 firewall zones and their assigned networks here.
+The controller has 12 firewall zones: seven built-in and five custom (`AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, `AlphaSec-Identity`).
 
-I verified the then-current 15 LAN rows from the network records after deleting the empty DMZ-A/VLAN 90 on 2026-08-29, and the 2026-09-06 readback returned the same 11 zones by name. `unifi_list_firewall_zones` still reports `"networks": []` for every zone and can't prove membership; see [UniFi zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/UniFi%20Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
-
-I verified AlphaSec-Identity on 2026-09-07 and resolved IDENTITY-A membership from its `firewall_zone_id`. Secure and Secure Client both remain in Internal. The [controller readback](../Evidence/Identity%20Plane%20Network%20Preparation%20-%202026-09-07/Initial%20Controller%20Readback.json) records the zone IDs and network assignments.
+**Last verified against the controller:** 2026-09-24 for the zone names and count (`unifi_list_firewall_zones`). That call returns `"networks": []` for every zone, so membership comes from each network's `firewall_zone_id`, last read on 2026-09-07 ([Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md)). See [zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
 ## Zone Membership
 
@@ -26,16 +24,10 @@ I verified AlphaSec-Identity on 2026-09-07 and resolved IDENTITY-A membership fr
 | `AlphaSec-Access` | Custom | Access-A (VLAN 85) |
 | `AlphaSec-Identity` | Custom | IDENTITY-A (VLAN 65) |
 
-The controller has seven built-in and five custom zones. The custom set is `AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, and `AlphaSec-Identity`.
+`Proton-WiFi`/VLAN 45 sits in `Internal`. Its containment is the network isolation toggle, not a zone, so it needs no policy of its own. [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 
-`Proton-WiFi`/VLAN 45 joined `Internal` on 2026-08-10 and added no zone. Its containment is the network isolation toggle rather than a zone relationship, so it needs no policy of its own and nothing else in `Internal` changed. See [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
+## History
 
-## Consolidation Result
+The 2026-07-27 consolidation moved Cluster-Net into `AlphaSec-Mgmt`, merged Security-A into the former monitor zone as `AlphaSec-Observability`, and left 14 zones ([Zone and Object Consolidation](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md)). Two Kasm zones raised that to 16 on 2026-07-28, and deleting the five Kasm zones on 2026-08-19 left 11 ([Kasm Workspaces Decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md)). `AlphaSec-Identity` made 12 on 2026-09-07.
 
-I moved Cluster-Net into `AlphaSec-Mgmt` and deleted the empty cluster zone. I moved Security-A into the former monitor zone, deleted the empty security zone, and renamed the survivor `AlphaSec-Observability`. The two shortened organisation prefixes were corrected before either merge.
-
-The 2026-07-27 consolidation reduced the live result to 14. Two Kasm zones were added on 2026-07-28, bringing that historical platform state to 16. I deleted all five Kasm zones on 2026-08-19 after removing their policies and networks. That left 11 zones; AlphaSec-Identity brought the count to 12 on 2026-09-07.
-
-`Allow Monitor to Security monitoring` explicitly limits the collector to `AG-Security-Stack` on `PG-Node-Exporter` inside the shared zone. The rest of the policy migration and service verification is in [Zone and Object Consolidation - 2026-07-27](../Documentation/Change%20Records/Zone%20and%20Object%20Consolidation%20-%202026-07-27.md).
-
-The retired zone design and its tests remain in [Kasm Session Isolation](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Session%20Isolation%20-%202026-07-28.md) and [Kasm Workspace Build-Out](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspace%20Build-Out%20-%202026-07-28.md). The deletion result is in [Kasm Workspaces Decommission](../../../../Archive/Platforms/Kasm%20Workspaces/Documentation/Change%20Records/Kasm%20Workspaces%20Decommission%20-%202026-08-19.md).
+`Allow Monitor to Security monitoring` limits the collector to `AG-Security-Stack` on `PG-Node-Exporter` inside the shared observability zone.

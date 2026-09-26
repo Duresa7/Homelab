@@ -1,25 +1,34 @@
 # MeshCentral
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-25
 
-I run MeshCentral on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLAN 40. I deployed it on 2026-09-12 as a pilot, so RustDesk `hbbs` and `hbbr` keep running on the same host until I decide between them. I picked it over the alternatives because it is free and self-hosted, it serves the browser console and the endpoint agents from one port, and it supports LDAP and OIDC console login without a subscription. RustDesk's OSS backend has no central permissions or directory login, and those sit behind a paid plan.
+MeshCentral is my remote-control pilot. It runs on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLAN 40, beside the RustDesk `hbbs` and `hbbr` containers it may replace. I deployed it on 2026-09-12. I picked it because it is free and self-hosted, it serves the browser console and the endpoint agents from one port, and it supports LDAP and OIDC console login without a subscription. The [RustDesk](../RustDesk/README.md) OSS server has no central permissions or directory login; those sit behind a paid plan.
 
-| Item | Verified state on 2026-09-12 |
+## Current state
+
+The container rows were read back on 2026-09-24. The device rows are from 2026-09-18.
+
+| Item | Current state |
 |---|---|
+| Container | `meshcentral`, running, created 3:00 AM EDT on 2026-09-24 |
+| Version | MeshCentral 1.2.6 (image label `1.2.6-mongodb`); 1.2.5 at deployment |
+| Image | `ghcr.io/ylianst/meshcentral:latest` |
 | Browser address | `https://mesh.alphasecunited.com` through Nginx Proxy Manager; `https://192.168.40.39` still answers directly |
-| Version | MeshCentral 1.2.5, Hybrid (LAN + WAN) mode, Production mode |
-| Image | `ghcr.io/ylianst/meshcentral:latest`, digest `sha256:45873f56b1221cf4c33a65c6a9a8c2ae8b503bd4f605a19f8b1527fbb80a7b6c` |
 | Compose project | `/opt/docker/meshcentral` on `docker-blue` |
 | Published port | `192.168.40.39:443` only. Container port 80 is not published |
-| Proxy | Nginx Proxy Manager host 29 on `docker-network`, WebSocket upgrade on, forwarding over HTTPS |
+| Proxy | NPM proxy host 29 on `docker-network`, WebSocket upgrade on, forwarding over HTTPS |
 | Certificate | Let's Encrypt wildcard on the proxy; MeshCentral's own is self-signed `CN=mesh.alphasecunited.com` |
 | Database | NeDB, the built-in default |
 | Volumes | `meshcentral_meshcentral-data`, `-files`, `-web`, and `-backups` |
-| Accounts | Site administrator claimed 2026-09-13; `NewAccounts` is `false`, so the browser no longer offers registration |
-| Enrolled devices | `HQ-MGT01`, `DuresaGamingPC`, and `ubuntu-dev`, all connected on 2026-09-13 |
-| Memory cost | `docker-blue` went from 595 MiB used to 716 MiB with MeshCentral running, leaving 1,331 MiB available of its 2 GiB |
-| Disk cost | The image took the container's root filesystem from 5.7 GiB used to 6.7 GiB, leaving 7.3 GiB free of 15 GiB |
+| Accounts | Site administrator claimed 2026-09-13; `NewAccounts` is `false`, so the browser offers no registration |
+| WebRTC | On since 2026-09-13 |
+| Enrolled devices | Six on 2026-09-18: `HQ-MGT01`, `DuresaGamingPC` (Jedi PC), `ubuntu-dev`, `ObiPC`, `dkadi-mb-air3`, `dkadi-surface-pro` |
+| Device reachability | On 2026-09-24 `HQ-WS001` (not enrolled) was stopped, and `ObiPC` had been off the network since 2026-09-20 |
+| Memory cost at deployment | `docker-blue` went from 595 MiB used to 716 MiB, leaving 1,331 MiB available of its 2 GiB |
+| Disk cost at deployment | The root filesystem went from 5.7 GiB used to 6.7 GiB, leaving 7.3 GiB free of 15 GiB |
+
+The image tracks `latest`, and the container was created at 3:00 AM on 2026-09-24, the time Dockhand's daily update runs. The 1.2.5 to 1.2.6 move has no change record.
 
 I chose a container on an existing Docker host rather than a new LXC because `blue-server` has 5,811 MiB of physical memory with 7,168 MiB already allocated across CTs 100, 104, 107, and 108. A new guest would have added a second Debian userspace, a Wazuh agent, and a node exporter before MeshCentral started. The [deployment record](Documentation/Change%20Records/Deployment%20-%202026-09-12.md) holds the sizing readback and the verification.
 
@@ -27,7 +36,7 @@ I chose a container on an existing Docker host rather than a new LXC because `bl
 
 [`Configuration/docker-compose.yml`](Configuration/docker-compose.yml) is the file the host reads, copied from `/opt/docker/meshcentral/docker-compose.yml`. It follows the upstream container documentation with three local additions: the published port binds the container's 443 to the LXC address instead of every interface, `no-new-privileges` is set, and the JSON log driver is capped at three 10 MiB files.
 
-[`Configuration/config.json`](Configuration/config.json) is the live file, MD5 `44960c07b2bc865a9f0483b69aeeeebe`. Keys prefixed with an underscore are inactive upstream template defaults, including the `_sessionKey` placeholder, which this server does not use.
+[`Configuration/config.json`](Configuration/config.json) is the live file. After the WebRTC change on 2026-09-13 it matched the container at MD5 `0ee1daf9faba9dd25fe87e5dcded4633`. Keys prefixed with an underscore are inactive upstream template defaults, including the `_sessionKey` placeholder, which this server does not use.
 
 MeshCentral writes its own `config.json` into the `meshcentral-data` volume on first start. I changed one value from the generated default: `cert`, from the placeholder `myserver.mydomain.com` to `192.168.40.39`. That name is what the server issues to agents and what it puts in its certificate, so an agent installed while the placeholder was live would have tried to reach a domain that does not exist. The generated defaults I kept are `tlsOffload: false`, `SelfUpdate: false`, `port: 443`, and `redirPort: 80`. I enabled `WebRTC` on 2026-09-13, so sessions try a direct peer-to-peer channel before relaying through the server; only the `ubuntu-dev` and `DuresaGamingPC` pair can currently take that path, because the identity boundary does not pass ephemeral UDP. The [WebRTC record](Documentation/Change%20Records/WebRTC%20Enabled%20-%202026-09-13.md) holds the reasoning.
 
@@ -52,7 +61,7 @@ I installed the agent by hand on two machines on 2026-09-13 and read the result 
 | `HQ-MGT01` | `192.168.65.12` | IDENTITY-A 65 | The `Allow Identity to MeshCentral` policy |
 | `DuresaGamingPC` | `192.168.50.241` | Secure 50 | No policy needed; Secure and Personal-A are both in the `Internal` zone |
 | `ubuntu-dev` | `192.168.40.179` | Personal-A 40 | Through Nginx Proxy Manager since its 2026-09-13 reinstall |
-| `ObiPC` | `192.168.60.102` | Secure Client 60 | No policy needed, same `Internal` zone; enrolled 2026-09-18 as Background & Interactive, see [ObiPC Agent Enrolment - 2026-09-18](Documentation/Change%20Records/ObiPC%20Agent%20Enrolment%20-%202026-09-18.md) |
+| `ObiPC` | `192.168.60.102` | Secure Client 60 | No policy needed, same `Internal` zone; enrolled 2026-09-18 as Background and Interactive, see [ObiPC Agent Enrolment - 2026-09-18](Documentation/Change%20Records/ObiPC%20Agent%20Enrolment%20-%202026-09-18.md) |
 | `dkadi-mb-air3`, `dkadi-surface-pro` | | | Present in the database on 2026-09-18, enrolled without a record |
 
 `DuresaGamingPC` is the Windows hostname of the machine UniFi lists as `Jedi PC`. Both devices held four established TCP 443 sessions to the container at that reading, and the server's database holds a record for each.

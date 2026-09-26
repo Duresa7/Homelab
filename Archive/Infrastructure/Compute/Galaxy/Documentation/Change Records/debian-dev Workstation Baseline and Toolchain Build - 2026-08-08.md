@@ -132,4 +132,4 @@ Everything else came back clean: no failed units, no dangling symlinks outside b
 - [Galaxy VM inventory](../../../../../../Operations/Inventory/Galaxy/VMs.md) and [service inventory](../../../../../../Operations/Inventory/Galaxy/Services.md).
 - [Wazuh configuration reference](../../../../../../Platforms/Wazuh/Configuration/README.md) for the group and agent `019` this build created.
 - [UniFi firewall policies](../../../../../../Infrastructure/Network/UniFi/Configuration/firewall.md) for the monitoring destination change.
-- [debian-dev Decommission - 2026-08-14](../../../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/debian-dev%20Decommission%20-%202026-08-14.md) for the host's retirement and this record's archival.
+- [debian-dev Decommission - 2026-08-14](debian-dev%20Decommission%20-%202026-08-14.md) for the host's retirement and this record's archival.

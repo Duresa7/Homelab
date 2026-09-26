@@ -25,7 +25,7 @@ I ran `qm disk unlink 105 --idlist unused0,unused1`. Proxmox reported both logic
 
 `ssd-lvm1` usage fell from 296,613,421 KiB (15.45%) to 231,147,287 KiB (12.04%), a net reduction of about 62.4 GiB. The deleted volumes had 150 GiB plus 4 MiB of virtual capacity; thin provisioning accounts for the smaller amount of allocated space recovered.
 
-I retained the exact commands, stdout, stderr, and exit codes in [Verification.log](../../Evidence/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08/Verification.log). Both remote command batches exited 0. The initial SSH Manager lookup using `grey-server` failed before execution; its configured connection name is `grey_server`.
+I retained the exact commands, stdout, stderr, and exit codes in [Verification.log](../../Evidence/ubuntu-dev%20NVMe%20Storage%20Move%20-%202026-09-08/Logs/Verification.log). Both remote command batches exited 0. The initial SSH Manager lookup using `grey-server` failed before execution; its configured connection name is `grey_server`.
 
 I verified the running VM, disk placement, source removal, and guest-agent response. Opening desktop files and applications and checking the T3 connection were part of the supplied post-move checklist, but I did not separately capture those checks.
 

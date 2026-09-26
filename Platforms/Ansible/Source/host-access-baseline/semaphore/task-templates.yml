@@ -115,15 +115,15 @@ templates:
   # refuses to run without an explicit acknowledgement variable, so these
   # templates fail on their first task rather than doing anything. They are
   # kept, and kept named, so nobody re-creates them from the old plan.
-  - name: "Sudo Policy: SUPERSEDED — Write NOPASSWD Drop-ins (dry run)"
+  - name: "Sudo Policy (SUPERSEDED): Write NOPASSWD Drop-ins (dry run)"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: ["--check"]
-  - name: "Sudo Policy: SUPERSEDED — Write NOPASSWD Drop-ins"
+  - name: "Sudo Policy (SUPERSEDED): Write NOPASSWD Drop-ins"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: []
-  - name: "Sudo Policy: SUPERSEDED — Single Host"
+  - name: "Sudo Policy (SUPERSEDED): Single Host"
     view: Sudo Policy
     playbook: playbooks/sudoers-nopasswd.yml
     arguments: []

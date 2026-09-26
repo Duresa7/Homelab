@@ -204,7 +204,7 @@ def overview():
           [("unit", "percent"), ("decimals", 1), ("thresholds", PCT_USED)] + cell_gauge()),
          ("I", "max by (host) (%s)" % (PKG_TEMP_F % 'role="hypervisor"'), "CPU temp",
           [("unit", "fahrenheit"), ("decimals", 0), ("thresholds", TEMP_F), CELL_COLOR_TEXT,
-           ("custom.width", 100), ("noValue", "—")])],
+           ("custom.width", 100), ("noValue", "-")])],
         h=12, sort=("CPU", True),
         extra_overrides=[by_name("host", [HOST_LINK, ("custom.width", 150),
                                           ("displayName", "Host")]),
@@ -593,7 +593,7 @@ def services():
          ("G", SVC_NAME % "round((probe_ssl_earliest_cert_expiry - time()) / 86400)", "Cert days",
           [("unit", "d"), ("decimals", 0), ("thresholds", CERT_DAYS), CELL_COLOR_TEXT, ("custom.width", 110)]),
          ("H", SVC_NAME % "probe_http_content_length", "Body",
-          [("unit", "bytes"), ("decimals", 0), ("noValue", "—")])],
+          [("unit", "bytes"), ("decimals", 0), ("noValue", "-")])],
         h=13, join_on="service", keep=r"^(service|Value #.*)$", sort=("Total", True),
         extra_overrides=[by_name("service", [("displayName", "Service"), ("custom.width", 180)])]))
 
@@ -825,7 +825,7 @@ def network():
           [("unit", "pps"), ("decimals", 2), CELL_COLOR_TEXT,
            ("thresholds", thresholds(("green", None), ("yellow", 1), ("orange", 20)))]),
          ("G", "max by (host) (node_nf_conntrack_entries / node_nf_conntrack_entries_limit * 100)", "Conntrack",
-          [("unit", "percent"), ("decimals", 2), ("thresholds", PCT_USED), ("noValue", "—")] + cell_gauge())],
+          [("unit", "percent"), ("decimals", 2), ("thresholds", PCT_USED), ("noValue", "-")] + cell_gauge())],
         h=12, sort=("In", True),
         extra_overrides=[by_name("host", [("displayName", "Host"), ("custom.width", 160), HOST_LINK]),
                          by_name("role", [("displayName", "Role"), ("custom.width", 120)])]))
@@ -1058,7 +1058,7 @@ def monitoring():
          ("F", "count by (host) (node_systemd_unit_state{state=\"failed\"} == 1)", "Failed units",
           [("decimals", 0), CELL_COLOR_TEXT, ("noValue", "0"), ("thresholds", thresholds(("green", None), ("orange", 1)))]),
          ("G", "sum by (host) (apt_upgrades_pending)", "Updates",
-          [("decimals", 0), ("noValue", "—"), CELL_COLOR_TEXT,
+          [("decimals", 0), ("noValue", "-"), CELL_COLOR_TEXT,
            ("thresholds", thresholds(("green", None), ("yellow", 1), ("orange", 20)))])],
         h=14, sort=("Collectors inactive", True),
         keep=r"^(host|role|version|Value #.*)$", exclude=["Value #B"], index={"version": 2},

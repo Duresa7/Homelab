@@ -18,7 +18,7 @@ I inspected the running configuration read-only on 2026-07-17 before changing an
 - The qBittorrent queue contained zero torrents, so enabling the setting now avoided a mixed old/new queue.
 - Sonarr `4.0.19.2979` and Radarr `6.3.0.10514` add downloads through qBittorrent's API without supplying explicit per-file priorities.
 
-I then enabled the setting with the 100 executable, script, and macro patterns below while the queue was still empty, and I confirmed the change with a follow-up API read: `excluded_file_names_enabled=true`, 100 returned patterns, and zero torrents. The retained result is in [S03-S05 Verification - 2026-07-17](../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md); I re-read the live API before relying on it for a later change.
+I then enabled the setting with the 100 executable, script, and macro patterns below while the queue was still empty, and I confirmed the change with a follow-up API read: `excluded_file_names_enabled=true`, 100 returned patterns, and zero torrents. The retained result is in [S03-S05 Verification - 2026-07-17](../Evidence/Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S03-S05-Verification-2026-07-17.md); I re-read the live API before relying on it for a later change.
 
 ## Exact qBittorrent 5.2.3 Semantics
 
@@ -221,7 +221,7 @@ I completed a local-only functional check without joining a public swarm or usin
 3. `/api/v2/torrents/files` returned priority `0`/Do not download for `.exe` and `.ps1`, while `.mkv` and the intentionally allowed `.zip` retained normal priority `1`.
 4. I deleted the test torrent and temporary source files, and a follow-up query confirmed the torrent was absent.
 
-The exact commands and results are in the [functional filter-test transcript](../Evidence/Media%20Stack%20Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S05A-Functional-Filter-Test-2026-07-17.md).
+The exact commands and results are in the [functional filter-test transcript](../Evidence/Refresh%20and%20Payload%20Filtering%20-%202026-07-17/Logs/S05A-Functional-Filter-Test-2026-07-17.md).
 
 I did not give Sonarr or Radarr a real acquisition during this change because no indexers were configured. During the first real acquisition I will inspect qBittorrent's Content list before completion and verify only the intended media hard-links into the library. Because the queue was empty before the change, no retroactive audit was required.
 
