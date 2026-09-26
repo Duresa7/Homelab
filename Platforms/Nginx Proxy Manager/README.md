@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 Nginx Proxy Manager (NPM) is my internal HTTPS front door. It runs on the `docker-network` LXC and serves every internal `*.alphasecunited.com` name with one Let's Encrypt DNS-01 wildcard certificate. It has no public DNS and no WAN ingress. Public traffic goes through Caddy on `edge-01` instead; see [Access Paths](../../Architecture/Access-Paths.md).
 
@@ -18,15 +18,16 @@ Read back on 2026-09-24 unless a row says otherwise.
 | Guest bindings | TCP 80, 81 and 443 |
 | Docker network | External `proxy`, `172.31.85.0/24`; NPM fixed at `172.31.85.10` |
 | Persistent data | `data/` and `letsencrypt/` bind mounts |
-| Proxy hosts | 24 live (NetBird plus 23 applications), 9 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
+| Proxy hosts | 23 live (NetBird plus 22 applications), 10 soft-deleted on 2026-09-26; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
 | Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`, expires 2026-12-08 at 3:03 AM UTC; renews automatically through Cloudflare DNS-01 |
 | Shared TLS policy | Every live host uses certificate 1 with Force SSL and HTTP/2; HSTS off |
-| Local DNS | 24 UniFi A records point at `192.168.85.2`, one per live host |
+| Local DNS | 23 UniFi A records point at `192.168.85.2`, one per live host |
 | Administrator UI | `http://192.168.85.2:81`, no domain name |
 
-Proxy host 12, `dashboard.alphasecunited.com`, forwards to `192.168.40.35:3001`. On 2026-09-24 nothing listened there: the Homelab Dashboard container on `docker-main` has been stopped since 3:39 AM on 2026-09-22. The host and its UniFi record still exist.
 
 ## Changes
+
+- 2026-09-26: I removed dashboard proxy host 12, its DNS record, and TCP 3001 from the backend policy. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
 - 2026-09-25: a scheduled Dockhand update stopped NPM and could not restart it. Everything behind `192.168.85.2` was down from 3:00 AM to 6:12 AM. I pinned the image to 2.15.1 and set `dockhand.update: "false"`. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
 - 2026-09-21 to 2026-09-24: Weebarr proxy host 33 was added on 2026-09-21 and was soft-deleted by 2026-09-24. [Archived Weebarr record](../../Archive/Platforms/Weebarr/README.md).

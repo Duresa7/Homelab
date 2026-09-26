@@ -1,11 +1,11 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
-I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-09-24 Prometheus 3.14.0 reported 57 targets, all up, across seven jobs: `node` 17, `cadvisor` 8, `wud` 6, `blackbox` 23, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.2 holds the 24 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
+I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-09-26 Prometheus 3.14.0 reported 56 targets, all up, across seven jobs: `node` 17, `cadvisor` 8, `wud` 6, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.2 holds the 24 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
 
-The 57 targets are `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 22 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and Prometheus itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
+The 56 targets are `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, What's Up Docker on the 6 Compose hosts, the Proxmox API exporter, `blackbox_exporter` probes of 21 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and Prometheus itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
 The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Green%20Baseline%20and%20Monitoring%20-%202026-07-31.md) contains the 2026-07-31 rollout, rollback checks, and live 49-target validation. I use `AG-Proxmox-Nodes` as the destination Network List for `Allow Monitor to Proxmox monitoring`; that dated record explains the membership expansion under its former name.
 
@@ -54,14 +54,14 @@ Jobs are named after the exporter type, with the hostname in a `host` label and 
 | `node` | grey-server, purple-server, blue-server, red-server, green-server, security-01, splunk-siem, edge-01, docker-main, ansible-01, docker-blue, media-01, app-01, alpha-prod-01, docker-network, monitor-01, ubuntu-dev (configured `host` label `ubuntu-dev`) |
 | `cadvisor` | all 8 Docker hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, app-01, security-01, monitor-01 |
 | `proxmox` | PVE API exporter, covering Galaxy nodes, guests, and storages dynamically |
-| `blackbox` | the 22 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
+| `blackbox` | the 21 service names published through NPM, plus `http://alert-bot:8080/health` over the Compose network |
 | `nut` | APC Back-UPS RS 1500MS2 UPS-02 on grey-server; UPS-01 left the target set on 2026-08-31 while its data cable remains disconnected |
 | `wud` | What's Up Docker `:latest` (9.1.0 on five hosts and 9.0.2 on `alpha-prod-01`, 2026-09-24), on port 9102 on the 6 Compose hosts: docker-main, docker-network, docker-blue, media-01, alpha-prod-01, monitor-01, scraped every 5 minutes |
 | `prometheus` | self-scrape |
 
 The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
-its administrative API disabled. All 57 targets were up on 2026-09-24.
+its administrative API disabled. All 56 targets were up on 2026-09-26. I removed the retired dashboard probe and uptime panels; its unreachable alert cleared. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
 cAdvisor follows `ghcr.io/google/cadvisor:latest`: v0.60.6 on `monitor-01` and v0.60.5 on `app-01` and `alpha-prod-01` on 2026-09-24. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 

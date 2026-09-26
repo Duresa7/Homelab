@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
 
@@ -40,6 +40,10 @@ I imported all 47 Compose projects on 2026-09-15; 42 remain after removing the f
 I validated each normalized definition against its source with Docker Compose before adoption. Import did not deploy or restart any application. I then created, deployed, read, saved, and removed a disposable stack through Dockhand on every host. All seven tests passed. The 69 existing container IDs, start times, and running states remained unchanged during this preparation.
 
 The imported files are the source for future Dockhand stack edits. Deploying a project through Dockhand also writes its normalized definition over the project's own Compose file. The [registry and agent cutover](Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md) did that to eleven of the 42 on 2026-09-15: five application projects and the six Hawser projects. Those eleven are now JSON with their environment files resolved inline, at mode 0600. The other 31 still hold their original YAML at their original modes, and a UI edit does not reach them, so I must reconcile one of those before using it for a later command-line deployment. The copies tracked in this repository stay in the authored YAML form, referencing secrets rather than resolving them, so they are the readable reference and never a byte match for a rewritten host file.
+
+## Homelab Dashboard retirement
+
+I removed the stopped `homelab-dashboard-aio` stack and its imported definition through the authenticated stack API on 2026-09-26, then removed its deployment directory, data, images and unused network. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
 ## Portainer retirement
 

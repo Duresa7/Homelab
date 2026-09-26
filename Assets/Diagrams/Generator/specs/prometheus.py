@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """prometheus: the monitoring stack on monitor-01, the seven scrape jobs with
 their target counts, the exporters on the hosts, and the alert path to Discord.
-Facts: Platforms/Prometheus/README.md (57 targets verified 2026-09-16),
+Facts: Platforms/Prometheus/README.md (56 targets verified 2026-09-26),
 Platforms/Prometheus/Configuration/prometheus-config/prometheus.yml (job list),
 Guides/Prometheus.md (job counts re-verified 2026-09-24, Grafana 13.2.2),
 Platforms/Discord Alert Bot/README.md, Platforms/PeaNUT/README.md."""
@@ -11,13 +11,13 @@ from diagram import Diagram
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "prometheus.svg")
 d = Diagram("prometheus", "Prometheus and Grafana on monitor-01",
-            "Seven scrape jobs, 57 targets, all UP; Grafana's 24 alert rules reach one Discord channel through the alert bot",
-            source="Platforms/Prometheus/README.md, Platforms/Prometheus/Configuration/prometheus-config/prometheus.yml, Platforms/Discord Alert Bot/README.md, Platforms/PeaNUT/README.md",
+            "Seven scrape jobs, 56 targets, all UP; Grafana's 24 alert rules reach one Discord channel through the alert bot",
+            state="State as of 2026-09-26", source="Platforms/Prometheus/README.md, Platforms/Prometheus/Configuration/prometheus-config/prometheus.yml, Platforms/Discord Alert Bot/README.md, Platforms/PeaNUT/README.md",
             width=1640, card_w=200)
 
 # --- row 0: what gets scraped ------------------------------------------------------
 d.group("names", "Published names", badge="VLAN 85", family="Access")
-d.card("names", "npm", "22 HTTPS names", sub1="NPM on docker-network", sub2="and the bot's /health", logo="nginx-proxy-manager")
+d.card("names", "npm", "21 HTTPS names", sub1="NPM on docker-network", sub2="and the bot's /health", logo="nginx-proxy-manager")
 d.group("nodes", "Galaxy nodes", badge="MGMT-A · VLAN 70", family="Mgmt")
 d.card("nodes", "pveapi", "Proxmox VE API", sub1="grey-server :8006", sub2="nodes, guests, storages", logo="proxmox")
 d.card("nodes", "nutsrv", "NUT :3493", sub1="grey-server, UPS-02", sub2="UPS-01 not monitored", logo="apc")
@@ -29,10 +29,10 @@ d.card("guests", "wud", "WUD :9102", sub1="6 Compose hosts, 9.1.0", sub2="update
 
 # --- row 1: monitor-01 ------------------------------------------------------------------
 d.group("mon", "monitor-01 · 192.168.73.2 · LXC 104 on blue-server", badge="MONITOR-A · VLAN 73", family="Observability")
-d.card("mon", "bb", "blackbox_exporter", sub1=":9115 · 23 probes, 60 s", sub2="http_2xx per site root", logo="prometheus")
+d.card("mon", "bb", "blackbox_exporter", sub1=":9115 · 22 probes, 60 s", sub2="http_2xx per site root", logo="prometheus")
 d.card("mon", "pve", "pve-exporter :9221", sub1="job proxmox · 1 target", sub2="reads grey's PVE API", logo="proxmox")
 d.card("mon", "nut", "nut-exporter :9995", sub1="job nut · 1 target", sub2="reads NUT on grey, 30 s", logo="nut")
-d.card("mon", "prom", "Prometheus 3.14.0", sub1=":9090 · 57 targets, 7 jobs", sub2="15 s scrape, 15 d kept", logo="prometheus")
+d.card("mon", "prom", "Prometheus 3.14.0", sub1=":9090 · 56 targets, 7 jobs", sub2="15 s scrape, 15 d kept", logo="prometheus")
 d.card("mon", "grafana", "Grafana 13.2.2", sub1=":3000 · 27 dashboards", sub2="24 alert rules, 6 groups", logo="grafana")
 d.card("mon", "bot", "Discord alert bot", sub1="webhook :8080", sub2="/grafana and /splunk", logo="discord")
 d.card("mon", "peanut", "PeaNUT 6.0.0", sub1=":8090 · UPS dashboard", sub2="same NUT endpoint, UPS-02", logo="peanut")
@@ -56,7 +56,7 @@ def align(src, dst):
     return (t.x + t.w / 2) - (s.x + s.w / 2)
 
 # scrapes: the scraper pulls, so the arrow leaves the scraper and lands on what it reads
-d.edge("bb", "npm", "blackbox · 23 targets", color="green", s_off=align("bb", "npm"), label_seg=-1)
+d.edge("bb", "npm", "blackbox · 22 targets", color="green", s_off=align("bb", "npm"), label_seg=-1)
 d.edge("pve", "pveapi", "proxmox · 1 target", color="green", s_off=align("pve", "pveapi"), label_seg=-1)
 d.edge("nut", "nutsrv", "nut · 1 target", color="green", s_off=align("nut", "nutsrv"), label_seg=-1)
 d.edge("prom", "ne_nodes", "node · 5 targets", color="green", s_off=align("prom", "ne_nodes"), label_seg=-1)
