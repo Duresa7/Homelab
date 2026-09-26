@@ -36,7 +36,6 @@ EXPECTED_COMPOSE_PROJECTS = {
         "cli-proxy-api": ("/opt/docker/cli-proxy-api", ()),
         "docusaurus": ("/opt/docker/docusaurus/Configuration", ()),
         "forgejo": ("/opt/docker/forgejo", ()),
-        "homelab-dashboard-aio": ("/opt/docker/homelab-dashboard-aio", ()),
         "immich": ("/opt/docker/immich-app", ()),
         "ollama": ("/opt/docker/ollama", ()),
     },
@@ -201,8 +200,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 20:
-        errors.append(f"expected 20 compose projects, found {project_count}")
+    if project_count != 19:
+        errors.append(f"expected 19 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

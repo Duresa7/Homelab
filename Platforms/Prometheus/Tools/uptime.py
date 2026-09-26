@@ -8,7 +8,7 @@ SLO = thresholds(('red', None), ('yellow', 99.9), ('green', 99.99))
 
 # Every endpoint in the live HTTP probe inventory, plus the four additions.
 HTTP_SERVICES = {
-    'aiproxy': 'CLI Proxy API', 'booklore': 'Booklore', 'dashboard': 'Homepage',
+    'aiproxy': 'CLI Proxy API', 'booklore': 'Booklore',
     'forgejo': 'Forgejo', 'grafana': 'Grafana', 'immich': 'Immich',
     'jellyfin': 'Jellyfin', 'mcp': 'Executor', 'mesh': 'MeshCentral',
     'netbird': 'NetBird', 'openwebui': 'Open WebUI', 'peanut': 'PeaNUT',

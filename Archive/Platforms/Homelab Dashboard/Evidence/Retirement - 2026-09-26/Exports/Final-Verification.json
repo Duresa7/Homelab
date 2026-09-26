@@ -1,0 +1,109 @@
+{
+  "verified_at": "2026-09-26 12:18:24 PM EDT",
+  "grafana_dashboard_alert_instances": [],
+  "grafana_uptime_retired_endpoint_absent": true,
+  "prometheus_targets": 56,
+  "scrape_targets_down": 0,
+  "failed_probes": [],
+  "npm_hosts": 23,
+  "https_checks": [
+    {
+      "host": "aiproxy.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "appportal.alphasecunited.com",
+      "http_status": 404
+    },
+    {
+      "host": "booklore.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "dockhand.alphasecunited.com",
+      "http_status": 307
+    },
+    {
+      "host": "forgejo.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "grafana.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "immich.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "jellyfin.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "mcp.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "mesh.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "netbird.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "openwebui.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "peanut.alphasecunited.com",
+      "http_status": 307
+    },
+    {
+      "host": "prometheus.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "prowlarr.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "qbittorrent.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "radarr.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "seerr.alphasecunited.com",
+      "http_status": 307
+    },
+    {
+      "host": "semaphore.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "sonarr.alphasecunited.com",
+      "http_status": 302
+    },
+    {
+      "host": "splunk.alphasecunited.com",
+      "http_status": 303
+    },
+    {
+      "host": "ts3-manager.alphasecunited.com",
+      "http_status": 200
+    },
+    {
+      "host": "wazuh.alphasecunited.com",
+      "http_status": 302
+    }
+  ],
+  "source_archive": {
+    "repository": "dkadi/Homelab-Dashboard",
+    "repository_id": 3,
+    "is_archived": true,
+    "temporary_access_tokens_remaining": 0
+  }
+}

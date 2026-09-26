@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 I keep retired records under their original category, so the old owner and date stay obvious. Current records stay with their owner; this directory is not a holding area for files that lack a clear location.
 
@@ -9,6 +9,7 @@ I keep retired records under their original category, so the old owner and date 
 
 | System | Retained records |
 |---|---|
+| Homelab Dashboard | [Retirement record](Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md) and [Compose reference](Platforms/Homelab%20Dashboard/Configuration/docker-compose.yml); deployment, data, publication, dashboard account and monitoring removed from `docker-main` on 2026-09-26 |
 | Weebarr | [Retirement record](Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md), [platform README](Platforms/Weebarr/README.md), and [deployment record](Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md). I deployed it on `media-01` on 2026-09-21; on 2026-09-24 it had no container, image, or Compose service there |
 | Portainer and its Edge Agents | [Retirement record](Platforms/Portainer/Documentation/Change%20Records/Retirement%20-%202026-09-16.md), [platform records](Platforms/Portainer/README.md), and [walkthrough](Guides/Portainer.md); the server on `docker-main` and four Edge Agents came out on 2026-09-16 with their data, images, publication, dedicated credentials, and automation and monitoring entries. [Dockhand](../Platforms/Dockhand/README.md) replaced them |
 | Dockge | [Dockge Replacement - 2026-09-15](../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md), which lives with Dockhand. Dockhand replaced Dockge on 2026-09-15; the Dockge platform files were never published, so that record is the only account |

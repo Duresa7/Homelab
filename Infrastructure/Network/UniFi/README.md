@@ -1,7 +1,7 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 My network runs on UniFi Network 10.6.106: one gateway, three switches and one access point, with 16 routed VLANs in 12 firewall zones. This folder owns the VLANs, zones, firewall policies, local DNS, VPNs, policy objects and port profiles. Proxmox host firewalls stay with the [Galaxy records](../../Compute/Galaxy/README.md).
 
@@ -26,7 +26,7 @@ All five were online with no upgrade pending. Their management addresses are on 
 | Networks | 23 (16 corporate LANs, 2 WANs, 1 VPN client, 4 remote-user VPN servers) | 2026-09-24 |
 | Firewall zones | 12 (7 built-in, 5 custom) | 2026-09-24 |
 | Static DNS records | 30 | 2026-09-24 |
-| User-defined firewall policies | 89 (81 allow, 8 block) | 2026-09-20 |
+| User-defined firewall policies | 88 (80 allow, 8 block) | 2026-09-26 |
 | Network Lists | 22 | 2026-09-16 |
 | Client groups | 16 | 2026-09-06 |
 | Traffic routes | 1 (`VPN - Proton`) | 2026-09-06 |

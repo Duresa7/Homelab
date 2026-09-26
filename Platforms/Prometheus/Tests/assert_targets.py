@@ -70,7 +70,7 @@ EXPECTED_TARGETS = {
     "http://nut-exporter:9995/nut?target=192.168.70.10%3A3493": ("nut", "grey-server"),
 }
 
-# The 22 internal service names probed through NPM, plus the alert bot. Host label is absent; the
+# The 21 internal service names probed through NPM, plus the alert bot. Host label is absent; the
 # instance label carries the probed URL.
 #
 # wings.alphasecunited.com is deliberately absent. The Wings API answers 401 on
@@ -86,7 +86,6 @@ EXPECTED_BLACKBOX_SERVICES = {
     "semaphore",
     "immich",
     "booklore",
-    "dashboard",
     "forgejo",
     "peanut",
     "wazuh",

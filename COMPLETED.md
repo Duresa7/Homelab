@@ -1,11 +1,13 @@
 # Completed Work
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 This is my public history of work closed from [TODO.md](TODO.md): one line per item, newest first, with a link to the record that holds the detail. Active priorities, scheduled work, and system backlogs stay in that file.
 
 ## Completed
+
+- [x] 2026-09-26: [Retired Homelab Dashboard](Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md), removed its deployment and access, and cleared its unreachable alert.
 
 - [x] 2026-09-24: [ObiPC sign-in review](Security/Assessments/ObiPC%20Sign-In%20Review%20-%202026-09-24.md). ObiPC was unreachable over SSH, so I checked both domain controllers for its sign-in events instead.
 - [x] 2026-09-24: [CT 107 and CT 108 HA removal](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md). Galaxy has no HA resources; `ha-manager config` is empty.

@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities on 16 hosts, patches 11 Linux guests through apt or dnf, updates 20 Compose projects on 6 hosts, manages exporters and What's Up Docker across the fleet, owns account and sudo policy through the host access baseline, and hosts the [Galaxy PXE](../Galaxy%20PXE/README.md) runtime. Semaphore puts a web interface over the same playbooks; every operation also runs through `ansible-playbook` from the project directory.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities on 16 hosts, patches 11 Linux guests through apt or dnf, updates 19 Compose projects on 6 hosts, manages exporters and What's Up Docker across the fleet, owns account and sudo policy through the host access baseline, and hosts the [Galaxy PXE](../Galaxy%20PXE/README.md) runtime. Semaphore puts a web interface over the same playbooks; every operation also runs through `ansible-playbook` from the project directory.
 
 ## Current State
 

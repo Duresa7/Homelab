@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
@@ -9,7 +9,7 @@ This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I 
 
 - 2026-09-24: Weebarr, deployed on `media-01` on 2026-09-21, was absent: no container, image or Compose entry, and its proxy host and DNS record deleted. [Weebarr Retirement](../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md).
 - 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
-- 2026-09-22: The internal documentation site and Homelab Dashboard containers on `docker-main` stopped at 3:39 and 3:40 AM Eastern and were still stopped on 2026-09-24. No record covers the stop yet.
+- 2026-09-22: The internal documentation site and Homelab Dashboard containers on `docker-main` stopped at 3:39 and 3:40 AM Eastern and were still stopped on 2026-09-24. I retired Homelab Dashboard on 2026-09-26; the internal documentation site remains stopped.
 
 ## Cluster State
 
@@ -35,7 +35,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN, a
 | win11-dev | VM 103 | grey-server | Standalone Windows development workstation (`192.168.40.117`, VLAN 40) | Windows 11 Pro 25H2<br>OpenSSH Server<br>QEMU guest agent; no development tools installed |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6 |
-| docker-main | LXC 110 | grey-server | Docker apps | Immich 3.2.2<br>BookLore 2.4.0<br>Forgejo 16.0.5<br>Dockhand 1.0.48<br>CLI Proxy API 7.3.16<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>What's Up Docker 9.1.0<br>Internal documentation site and Homelab Dashboard, both stopped since 2026-09-22<br>Wazuh agent 4.14.6 |
+| docker-main | LXC 110 | grey-server | Docker apps | Immich 3.2.2<br>BookLore 2.4.0<br>Forgejo 16.0.5<br>Dockhand 1.0.48<br>CLI Proxy API 7.3.16<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>What's Up Docker 9.1.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.14.0<br>Grafana 13.2.2<br>Proxmox exporter 3.10.0<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>What's Up Docker 9.1.0<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.79.0 / dashboard 2.93.0<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
@@ -93,7 +93,6 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 | Workload | Details |
 | --- | --- |
 | Internal documentation site | `docusaurus` container from `forgejo.alphasecunited.com/homelab-images/docusaurus:stable`; exited with code 0 at 3:40 AM Eastern on 2026-09-22 and still stopped on 2026-09-24, with restart policy `unless-stopped`. NPM has no proxy host for it |
-| Homelab Dashboard | `ghcr.io/duresa7/homelab-dashboard-aio:latest`; exited with code 137 at 3:39 AM Eastern on 2026-09-22 and still stopped on 2026-09-24. NPM host 12 and the UniFi `dashboard` record still point at `192.168.40.35:3001`, where nothing listens |
 | Immich | Server and machine learning v3.2.2 (`release-cuda` for machine learning); PostgreSQL `14-vectorchord0.4.3-pgvector0.8.1-pgvectors0.2.0` and Valkey 9; NVENC transcoding and CUDA machine learning on the GTX 1080 Ti since 2026-09-05; TCP 2283 |
 | BookLore | v2.4.0 with MariaDB 11.4.8; TCP 6060 |
 | Forgejo | 16.0.5 from `codeberg.org/forgejo/forgejo:16`, labelled `wud.tag.include=^[0-9]+$` so What's Up Docker offers only plain numeric tags; HTTP 3000 and SSH 222; also the private registry for the `homelab-images` custom images |
@@ -111,7 +110,7 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 | Workload | Details |
 | --- | --- |
-| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 57 of 57 targets up on 2026-09-24 across seven jobs: blackbox 23, cAdvisor 8, node 17, WUD 6, NUT 1, Proxmox 1, self-scrape 1. Prometheus holds no alert rules |
+| Prometheus | 3.14.0 on TCP 9090; `restart: always`; 15-day retention; 56 of 56 targets up on 2026-09-26 across seven jobs: blackbox 22, cAdvisor 8, node 17, WUD 6, NUT 1, Proxmox 1, self-scrape 1. Prometheus holds no alert rules |
 | Grafana | 13.2.2 on TCP 3000; 24 alert rules in `alphasec-united-alerts.yaml` and one contact point, `discord-bot`; 27 dashboards in the [Prometheus platform](../../../Platforms/Prometheus/README.md) configuration |
 | Proxmox exporter | 3.10.0 on TCP 9221, using `pve-exporter@pve!monitor01` with `PVEAuditor` |
 | blackbox exporter | 0.28.0 on TCP 9115; probes the internal NPM names plus the alert bot's health endpoint |
@@ -147,7 +146,7 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 | Workload | Details |
 | --- | --- |
-| Nginx Proxy Manager | 2.15.1, pinned by tag and excluded from Dockhand updates since 2026-09-25; Compose under `/opt/docker/nginx-proxy-manager`; 24 live proxy hosts and nine soft-deleted on 2026-09-24; one Let's Encrypt certificate for `*.alphasecunited.com` and the apex, valid to 2026-12-08, used by every live host. [Platform record](../../../Platforms/Nginx%20Proxy%20Manager/README.md) |
+| Nginx Proxy Manager | 2.15.1, pinned by tag and excluded from Dockhand updates since 2026-09-25; Compose under `/opt/docker/nginx-proxy-manager`; 23 live proxy hosts and ten soft-deleted on 2026-09-26; one Let's Encrypt certificate for `*.alphasecunited.com` and the apex, valid to 2026-12-08, used by every live host. [Platform record](../../../Platforms/Nginx%20Proxy%20Manager/README.md) |
 | NetBird | One combined `netbirdio/netbird-server:latest` container reporting management server 0.79.0, started 3:00 AM Eastern on 2026-09-19, plus `netbirdio/dashboard:latest` labelled v2.93.0; no separate signal or relay container; also the Access-A routing peer advertising `192.168.85.0/24`. [Platform record](../../../Platforms/Netbird/README.md) |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | What's Up Docker, cAdvisor, Hawser | Running; Hawser 0.2.48 |

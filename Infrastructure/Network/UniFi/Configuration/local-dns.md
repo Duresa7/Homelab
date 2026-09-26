@@ -1,11 +1,11 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
-The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 24 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
+The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 23 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
-**Last verified against the controller:** 2026-09-24. `unifi_list_dns_records` returned 30 static records, all enabled. The 24 NPM names match the 24 live NPM proxy hosts one for one.
+**Last verified against the controller:** 2026-09-26. `unifi_list_dns_records` returned 29 static records, all enabled. The 23 NPM names match the 23 live NPM proxy hosts one for one.
 
 ## Recent changes
 
@@ -27,7 +27,6 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | `semaphore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a840` | Semaphore through NPM |
 | `immich.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a841` | Immich through NPM |
 | `booklore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookLore through NPM |
-| `dashboard.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a84f` | Homelab dashboard through NPM host 12; its upstream `192.168.40.35:3001` has had no listener since 2026-09-22 |
 | `forgejo.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
 | `peanut.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a853` | PeaNUT through NPM |
 | `wazuh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a85a` | Wazuh dashboard through NPM |

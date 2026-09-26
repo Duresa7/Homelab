@@ -1,11 +1,11 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-26
 
-On 2026-09-24 I read the NPM database read-only: 33 proxy host rows, 24 live and 9 soft-deleted. The 24 live hosts are the 23 rows below plus NetBird (ID 1). `/data/nginx/proxy_host/` held 24 generated files matching the live IDs, and UniFi held 24 local A records pointing at `192.168.85.2`, one per live host. I don't publish these names in public DNS.
+On 2026-09-26 I removed dashboard host 12 through the NPM API and verified 23 live hosts: the 22 rows below plus NetBird (ID 1). The 33 database rows now include ten soft-deleted hosts. UniFi holds 23 local A records pointing at `192.168.85.2`, one per live host. I don't publish these names in public DNS.
 
-Soft-deleted IDs: 11 termix, 14 portainer, 16 syncthing, 21 kasm, 23 kasm, 24 games, 25 wings, 30 dockge, 33 weebarr.
+Soft-deleted IDs: 11 termix, 12 dashboard, 14 portainer, 16 syncthing, 21 kasm, 23 kasm, 24 games, 25 wings, 30 dockge, 33 weebarr.
 
 Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
@@ -20,7 +20,6 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 | 8 | `semaphore.alphasecunited.com` | `192.168.40.36:3000` | HTTP | Semaphore advertises this HTTPS web host. |
 | 9 | `immich.alphasecunited.com` | `192.168.40.35:2283` | HTTP | Request buffering is off; body limit is 50,000 MiB; proxy read, proxy send, and response-send timeouts are 600 seconds. |
 | 10 | `booklore.alphasecunited.com` | `192.168.40.35:6060` | HTTP | Direct IP access remains available. |
-| 12 | `dashboard.alphasecunited.com` | `192.168.40.35:3001` | HTTP | No added NPM authentication. On 2026-09-24 nothing listened on 3001: the Homelab Dashboard container on `docker-main` has been stopped since 2026-09-22. |
 | 13 | `forgejo.alphasecunited.com` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | 31 | `dockhand.alphasecunited.com` | `192.168.40.35:3003` | HTTP | Dockhand, proxy host 31. HTTPS login and Hawser WebSockets verified; buffering off, read/send timeouts 3,600 seconds. |
 | 15 | `peanut.alphasecunited.com` | `192.168.73.2:8090` | HTTP | Existing application authentication remains in place. |

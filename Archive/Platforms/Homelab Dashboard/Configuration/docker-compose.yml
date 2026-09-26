@@ -1,0 +1,25 @@
+# Homelab Dashboard — pulls the published image from GHCR.
+#   docker compose up -d   then open http://<host-ip>:3001
+# :latest tracks the newest RELEASE. Pin :X.Y.Z to freeze, or :sha-<short> for a
+# specific main build (e.g. to run unreleased changes).
+services:
+  dashboard:
+    image: ghcr.io/duresa7/homelab-dashboard-aio:latest
+    container_name: homelab-dashboard
+    restart: unless-stopped
+    # Host networking: real syslog source IPs + direct LAN reach. Binds host :3001.
+    network_mode: host
+    # .env is optional; integrations can also be configured from the UI wizard.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./data:/app/data
+      # Optional: SSH key for GPU/sensor stats over SSH. Uncomment + set GPU_SSH_KEY_PATH in .env.
+      # - ${HOME}/.ssh/id_homelab:/home/node/.ssh/id_homelab:ro
+    ulimits:
+      nofile: 65536
+
+
