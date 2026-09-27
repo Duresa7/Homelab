@@ -1,9 +1,11 @@
 # Ansible TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-07
+**Last updated:** 2026-09-27
 
 ## Open Items
+
+- Make `ensure-key-present-posix.yml` succeed on `/etc/pve/priv/authorized_keys`. On 2026-09-27 it wrote the `parrot-os-mac` key to `grey-server` and then failed with `[Errno 1] Operation not permitted`, because the Proxmox cluster filesystem refuses a file operation that follows the write. The playbook exited 2, and the other four nodes skipped their verification. The follow-up audit found the key present everywhere. Any new identity will hit this again on the cluster file. [Record](../../../Infrastructure/Network/UniFi/Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 
 - Make `ensure-key-present-posix.yml` create a missing `.ssh` directory as `0700` owned by the key's account. On 2026-09-07 it created `/home/dkadi/.ssh` on `ansible-01` as `755 root:root`, because the play escalates to root to write into another account's home, and I corrected the ownership by hand. Every earlier host already had the directory from its baseline build, which is why this never showed. [Record](Change%20Records/SSH%20Identity%20Registration%20for%20green-server,%20monitor-01,%20game-01%20and%20ansible-01%20-%202026-09-07.md).
 

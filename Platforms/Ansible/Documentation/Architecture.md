@@ -1,11 +1,11 @@
 # Ansible Architecture
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 ## Request Path
 
-Each device that can initiate SSH (Mac, Ansible Control, Jedi PC or Ubuntu Dev) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces another identity's key.
+Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, Ubuntu Dev or Parrot OS-Mac) has one identity file. That file names its current public key and the machines where it is allowed. The playbooks operate on one selected identity at a time, so rotating Jedi PC never replaces another identity's key.
 
 ![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](../../../Assets/Diagrams/automation-flow.svg)
 
@@ -28,6 +28,7 @@ Each project has its own repository, inventory, `C.utf8` environment, views, tem
 | Ansible Control | `identities/ansible-control.yml` | Only the exact Ansible Control key |
 | Jedi PC | `identities/jedi-pc.yml` | Only the exact Jedi PC key |
 | Ubuntu Dev | `identities/ubuntu-dev.yml` | Only the exact Ubuntu Dev key |
+| Parrot OS-Mac | `identities/parrot-os-mac.yml` | Only the exact Parrot OS-Mac key |
 
 Comments such as `jedi-pc` are labels. Exact comparison and removal use the key algorithm plus encoded public-key material, so renaming a comment does not create a different cryptographic key.
 
