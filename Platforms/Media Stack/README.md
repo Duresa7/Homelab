@@ -37,7 +37,7 @@ qBittorrent runs with `network_mode: service:gluetun`, so its only path out is t
 
 ## Records
 
-- [Jellyfin Enhanced, Intro Skipper, and Media Bar installation](Documentation/Change%20Records/Jellyfin%20Plugins%20-%202026-09-27.md), 2026-09-27; activation pending restart approval
+- [Jellyfin Enhanced, Intro Skipper, and Media Bar installation](Documentation/Change%20Records/Jellyfin%20Plugins%20-%202026-09-27.md), 2026-09-27; active, with initial segment analysis running
 - [Architecture](Documentation/Architecture.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Configuration reference](Configuration/README.md)
