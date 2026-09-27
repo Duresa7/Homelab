@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -12,6 +12,7 @@ This file is my central backlog and index. It holds active priorities plus links
 - [ ] **Repair Green memory and activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete; the guest now runs on Grey after the verified 2026-09-23 migration. Host memory repair and Windows activation remain open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
 
 - [ ] **Observe offline sign-in and unlock on the domain workstations.** I applied the online-sign-in policy on 2026-09-19, verified both clients, and confirmed `HQ-WS001` retained domain membership through a disconnect and recovered its secure channel. Interactive checks remain in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#online-workstation-sign-in-applied-2026-09-19-interactive-checks-open).
+- [ ] **Complete the physical-access exercise follow-ups.** The 2026-09-27 ObiPC review found no successful human sign-in in the selected 72 hours. Audit coverage, centralized detection and controlled retest criteria are in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#physical-access-exercise-follow-ups-2026-09-27).
 
 - [ ] **Finish the MeshCentral pilot on `docker-blue`.** Deployed 2026-09-12 at https://192.168.40.39, running beside RustDesk. Site administrator claimed and registration closed on 2026-09-13, and `HQ-WS001` is verified reachable on TCP 443 from the guest agent. Agents are installed and connected on `HQ-MGT01`, `DuresaGamingPC`, and `ubuntu-dev` as of 2026-09-13 and on `ObiPC` as of 2026-09-18; `HQ-WS001` is reachable but unenrolled. Moved behind Nginx Proxy Manager at `https://mesh.alphasecunited.com` on 2026-09-13, so agent installs no longer need a patched script. `DuresaGamingPC` was connected after that change and then dropped off; check whether the machine is simply off. `HQ-MGT01` and `DuresaGamingPC` are still installed against `192.168.40.39` and keep working; reinstall them against the name when convenient. Next is testing console access while logged out, Ctrl+Alt+Delete, UAC elevation, and reconnect after reboot. Decide on `localSessionRecording`, which is on and is the only part that grows without bound against 7.3 GiB free. `ObiPC` was enrolled on 2026-09-18 as `Background & Interactive` and connected within eight seconds, which demonstrates the VLAN 60 path that had only been reasoned from zone membership; run the four tests against it. Retire RustDesk only after the tests pass. [Deployment](Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md), [registration and path verification](Platforms/MeshCentral/Documentation/Change%20Records/Registration%20Closed%20and%20Test%20Machine%20Path%20Verified%20-%202026-09-13.md).
 

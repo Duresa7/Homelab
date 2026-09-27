@@ -1,7 +1,7 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
@@ -29,6 +29,16 @@ I applied `C-WKS-OnlineLogon` to the Workstations OU and verified both clients a
 1. With work saved, I will sign in using a domain password while connected, disconnect the network, lock, and confirm that offline unlock is rejected. I will then reconnect and confirm that the same password unlocks the session. Done when both outcomes are observed on each workstation.
 2. I will confirm a fresh offline domain sign-in is rejected and the PIN, face, fingerprint, picture-password, and FIDO sign-in tiles are unavailable. I will verify the next foreground startup/sign-in policy cycle. Done when the sign-in screen agrees with the applied registry settings and reconnecting restores domain sign-in.
 3. During the ObiPC restricted-account walkthrough, I will disconnect the network and verify the existing application and Settings restrictions still hold. Done when the offline behavior and relevant AppLocker events are recorded. The Script collection is still audit-only; the sign-in policy does not change that.
+
+## Physical access exercise follow-ups (2026-09-27)
+
+I closed the [ObiPC physical access simulation](../../../Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md) as my authorized test. The reviewed 72 hours contained 22 failed interactive events and no successful human sign-in. These follow-ups are planned work; I changed no live policy during the review.
+
+1. I will decide whether to enable `Other Logon/Logoff Events` auditing through the workstation policy. ObiPC reported `No Auditing` on 2026-09-27. Done when I record the decision and, if enabled, verify the effective setting and observe the expected lock, unlock and reconnect events during an authorized test.
+2. I will verify whether ObiPC's sign-in failures reach centralized monitoring and produce a useful alert. The exercise reviewed local logs and did not test forwarding or alert delivery. Done when I record the actual collection path, correlate a controlled failed sign-in to its central event, and verify its expected alert or document a decision not to alert.
+3. I will repeat the remaining sign-in checks with a bounded test plan: recorded start and end, entered identity alias, network state, expected outcome and matching event record IDs. Done when the existing offline sign-in and unlock checks have observed outcomes on each workstation. The four no-logon-server failures in this exercise do not by themselves close those checks.
+
+The existing BitLocker and recovery-menu follow-ups below remain open. This sign-in exercise did not validate them.
 
 ## Restore the temporary testing state
 

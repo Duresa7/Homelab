@@ -1,0 +1,362 @@
+{
+  "artifactType": "Sanitized selected-field live query export; not a raw EVTX image or complete terminal transcript",
+  "target": "OBIPC (192.168.60.102)",
+  "transport": "SSH Manager MCP, configured server obipc",
+  "command": "$ErrorActionPreference='Stop';$start=[datetime]'2026-09-24T12:11:43Z';$end=[datetime]'2026-09-27T12:11:43Z';$ev=@(Get-WinEvent -FilterHashtable @{LogName='Security';Id=4624,4625,4778,4801,1102,4719;StartTime=$start;EndTime=$end});$rows=@(foreach($e in $ev){$x=[xml]$e.ToXml();$d=@{};foreach($n in $x.Event.EventData.Data){$d[$n.Name]=[string]$n.'#text'};[pscustomobject]@{TimeUtc=$e.TimeCreated.ToUniversalTime().ToString('o');RecordId=$e.RecordId;EventId=$e.Id;Account=$d.TargetUserName;Domain=$d.TargetDomainName;LogonType=$d.LogonType;Status=$d.Status;SubStatus=$d.SubStatus;Process=$d.ProcessName;SourceAddress=$d.IpAddress}});$s=@($rows|Where-Object EventId -eq 4624);$g=@($s|Group-Object Account,LogonType|ForEach-Object{$r=@($_.Group|Sort-Object TimeUtc);[pscustomobject]@{Account=$r[0].Account;LogonType=$r[0].LogonType;Count=$r.Count;FirstUtc=$r[0].TimeUtc;LastUtc=$r[-1].TimeUtc}});[pscustomobject]@{HostName=$env:COMPUTERNAME;CollectedUtc=[datetime]::UtcNow.ToString('o');StartUtc=$start.ToUniversalTime().ToString('o');EndUtc=$end.ToUniversalTime().ToString('o');Total4624=$s.Count;SuccessSummary=$g;HumanInteractiveSuccesses=@($s|Where-Object{$_.LogonType -in @('2','7','10','11','12','13') -and $_.Account -notmatch '^(DWM-|UMFD-|SYSTEM$|LOCAL SERVICE$|NETWORK SERVICE$)'});Failures=@($rows|Where-Object EventId -eq 4625|Sort-Object TimeUtc);OtherSecurityEvents=@($rows|Where-Object{$_.EventId -notin @(4624,4625)})}|ConvertTo-Json -Depth 6 -Compress",
+  "exitCode": 0,
+  "stderr": "",
+  "projection": {
+    "HostName": "OBIPC",
+    "CollectedUtc": "2026-09-27T12:21:07.1168286Z",
+    "StartUtc": "2026-09-24T12:11:43.0000000Z",
+    "EndUtc": "2026-09-27T12:11:43.0000000Z",
+    "Total4624": 1416,
+    "SuccessSummary": [
+      {
+        "Account": "local-obipc",
+        "LogonType": "3",
+        "Count": 2,
+        "FirstUtc": "2026-09-27T12:11:42.5924867Z",
+        "LastUtc": "2026-09-27T12:11:42.7049792Z"
+      },
+      {
+        "Account": "sshd service account",
+        "LogonType": "5",
+        "Count": 1,
+        "FirstUtc": "2026-09-27T12:11:42.4561420Z",
+        "LastUtc": "2026-09-27T12:11:42.4561420Z"
+      },
+      {
+        "Account": "SYSTEM",
+        "LogonType": "5",
+        "Count": 1253,
+        "FirstUtc": "2026-09-24T12:12:08.6774539Z",
+        "LastUtc": "2026-09-27T12:09:02.9377911Z"
+      },
+      {
+        "Account": "OBIPC$",
+        "LogonType": "3",
+        "Count": 50,
+        "FirstUtc": "2026-09-24T12:54:23.6523121Z",
+        "LastUtc": "2026-09-27T11:57:26.1831241Z"
+      },
+      {
+        "Account": "svc-action1-deploy",
+        "LogonType": "3",
+        "Count": 68,
+        "FirstUtc": "2026-09-24T12:34:50.2654428Z",
+        "LastUtc": "2026-09-27T11:51:19.2617468Z"
+      },
+      {
+        "Account": "DWM-1",
+        "LogonType": "2",
+        "Count": 12,
+        "FirstUtc": "2026-09-25T02:23:24.3604012Z",
+        "LastUtc": "2026-09-27T03:42:19.4096804Z"
+      },
+      {
+        "Account": "NETWORK SERVICE",
+        "LogonType": "5",
+        "Count": 6,
+        "FirstUtc": "2026-09-25T02:23:24.2526783Z",
+        "LastUtc": "2026-09-27T03:42:19.3110415Z"
+      },
+      {
+        "Account": "UMFD-1",
+        "LogonType": "2",
+        "Count": 6,
+        "FirstUtc": "2026-09-25T02:23:24.2114745Z",
+        "LastUtc": "2026-09-27T03:42:19.2717523Z"
+      },
+      {
+        "Account": "UMFD-0",
+        "LogonType": "2",
+        "Count": 6,
+        "FirstUtc": "2026-09-25T02:23:24.2096080Z",
+        "LastUtc": "2026-09-27T03:42:19.2711165Z"
+      },
+      {
+        "Account": "LOCAL SERVICE",
+        "LogonType": "5",
+        "Count": 6,
+        "FirstUtc": "2026-09-25T02:23:24.1974865Z",
+        "LastUtc": "2026-09-27T03:42:19.2608471Z"
+      },
+      {
+        "Account": "SYSTEM",
+        "LogonType": "0",
+        "Count": 6,
+        "FirstUtc": "2026-09-25T02:23:24.0376246Z",
+        "LastUtc": "2026-09-27T03:42:19.1104845Z"
+      }
+    ],
+    "HumanInteractiveSuccesses": [],
+    "Failures": [
+      {
+        "TimeUtc": "2026-09-24T19:09:18.2975678Z",
+        "RecordId": 22608,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-25T01:59:59.5379380Z",
+        "RecordId": 22998,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000005e",
+        "SubStatus": "0x0",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-25T02:00:30.8876663Z",
+        "RecordId": 23034,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000005e",
+        "SubStatus": "0x0",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-25T02:10:24.6155788Z",
+        "RecordId": 23052,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000005e",
+        "SubStatus": "0x0",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-25T02:11:53.5482235Z",
+        "RecordId": 23053,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000005e",
+        "SubStatus": "0x0",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T04:30:06.9097467Z",
+        "RecordId": 23485,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T04:30:08.7346606Z",
+        "RecordId": 23486,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T04:30:09.4461531Z",
+        "RecordId": 23487,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T04:30:09.9998543Z",
+        "RecordId": 23488,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T23:51:55.3191256Z",
+        "RecordId": 25168,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-26T23:52:08.5612824Z",
+        "RecordId": 25169,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:42:56.8272295Z",
+        "RecordId": 25321,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:42:58.2173000Z",
+        "RecordId": 25322,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:43:07.6619852Z",
+        "RecordId": 25325,
+        "EventId": 4625,
+        "Account": "DK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006d",
+        "SubStatus": "0xc0000064",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:43:13.4721770Z",
+        "RecordId": 25326,
+        "EventId": 4625,
+        "Account": "DK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006d",
+        "SubStatus": "0xc0000064",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:43:21.0888004Z",
+        "RecordId": 25329,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006d",
+        "SubStatus": "0xc0000064",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T03:52:17.7288711Z",
+        "RecordId": 25357,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T04:48:22.7184512Z",
+        "RecordId": 25424,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T04:48:23.2778514Z",
+        "RecordId": 25425,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T04:48:23.6532528Z",
+        "RecordId": 25426,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T05:11:08.1195211Z",
+        "RecordId": 25465,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      },
+      {
+        "TimeUtc": "2026-09-27T10:19:38.7879230Z",
+        "RecordId": 25811,
+        "EventId": 4625,
+        "Account": "IK-user",
+        "Domain": "ALPHASEC",
+        "LogonType": "2",
+        "Status": "0xc000006e",
+        "SubStatus": "0xc0000072",
+        "Process": "C:\\Windows\\System32\\svchost.exe",
+        "SourceAddress": "127.0.0.1"
+      }
+    ],
+    "OtherSecurityEvents": []
+  }
+}
