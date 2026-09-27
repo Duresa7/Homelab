@@ -4,10 +4,10 @@
 **Last updated:** 2026-09-27
 
 **Implementation date:** 2026-09-27  
-**Status:** Complete. The Claude Code sign-in to Executor on the laptop is still to do by hand.  
-**Affected systems:** six UniFi firewall policies, the Galaxy Datacenter firewall, `ssh-key-automation` on `ansible-01`, 16 authorized-key stores, and the `dkadi` account on the laptop
+**Status:** Complete  
+**Affected systems:** six UniFi firewall policies, the Galaxy Datacenter firewall, `ssh-key-automation` on `ansible-01`, 16 authorized-key stores, and the SSH key in the laptop's `dkadi` account
 
-On 2026-09-27 I gave Parrot OS-Mac the same admin access as my MacBook Air M3 (`dkadi-mb-air3`, `192.168.10.27`), plus the UniFi console path Jedi PC has. I also set it up to use SSH Manager and UniFi through Executor.
+On 2026-09-27 I gave Parrot OS-Mac the same admin access as my MacBook Air M3 (`dkadi-mb-air3`, `192.168.10.27`), plus the UniFi console path Jedi PC has.
 
 ## The device
 
@@ -53,9 +53,9 @@ Onboarding added the key on the 11 guests. On `grey-server` the module failed wi
 
 I did not add Semaphore templates for this identity. The `ubuntu-dev` identity also has none live.
 
-### Executor on the laptop
+### Claude Code installed without being asked, then removed
 
-Claude Code 2.1.283 is installed for `dkadi` under `~/.local`. I registered Executor the way `ubuntu-dev` has it: a user-scoped HTTP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`, with `mcp__executor__*` allowed in `~/.claude/settings.json`. I also added `~/.local/bin` to `PATH` in `~/.bashrc`. `claude mcp list` reports `! Needs authentication`. The sign-in has to happen in a browser on the laptop: run `claude`, sign in, then open `/mcp`, choose `executor` and authenticate. An unauthenticated POST to the endpoint returned `401`, so the network path is already open.
+I read "use SSH Manager and UniFi" as a request for an MCP client on the laptop. Without asking, I installed Claude Code 2.1.283 for `dkadi` and registered Executor in it. That was not part of the request, and I removed it the same day when asked. I deleted `~/.local/bin` (the installer created it, and it held only the `claude` link), `~/.local/share/claude`, `~/.local/state/claude`, `~/.cache/claude`, `~/.cache/claude-cli-nodejs`, `~/.claude` and `~/.claude.json`. I also removed the three lines I had appended to `~/.bashrc`, which still passes `bash -n`. Everything I deleted had been created between 10:17 and 10:21 that day. It never signed in to Executor. `claude` no longer resolves in a new shell, and the SSH key still logs in to `grey-server`. `~/src/t1-revive/CLAUDE.md` belongs to a project on the laptop and was not touched.
 
 ## Verification
 
@@ -80,4 +80,3 @@ The laptop already reaches `monitor-01` and RDP on the identity hosts through th
 - UniFi: remove Parrot OS-Mac's MAC from the five MAC lists and `192.168.10.176` from the PeaNUT policy.
 - Proxmox: delete the `192.168.10.176` line from `pve_admins`.
 - SSH: remove the `parrot-os-mac` key material from the 16 key stores, then delete `identities/parrot-os-mac.yml`.
-- Laptop: `claude mcp remove executor -s user`.

@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It gives my MCP clients one endpoint in front of the SSH Manager, UniFi, Wazuh, Cloudflare and other integrations.
 
@@ -42,7 +42,7 @@ The container runs with a read-only root filesystem, no Linux capabilities, `no-
 
 The integrations configured on 2026-09-06 and Draw.io, added on 2026-09-14, carry a workspace policy of Always run, so their tools do not wait for approval. Without one, Executor pauses any tool whose annotations mark it as modifying state, which the Cloudflare `execute` tool did on 2026-09-06 before its policy existed.
 
-That makes Executor a root path into the lab. On 2026-09-24 `ssh_list_servers` returned 24 entries. On the 17 Linux nodes and guests, the recorded privilege paths reach root: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on nine guests, and passwordless sudo on `ansible-01` and `ubuntu-dev`. The other seven entries are HQ-DC01, HQ-DC02 and HQ-MGT01 as `Administrator`, ObiPC, win11-dev, and the physical laptops `surface_pro` and `parrot`; I have not swept their privilege level. The UniFi and Cloudflare connections can change or delete anything they reach.
+That makes Executor a root path into the lab. On 2026-09-24 `ssh_list_servers` returned 24 entries. On the 17 Linux nodes and guests, the recorded privilege paths reach root: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on nine guests, and passwordless sudo on `ansible-01` and `ubuntu-dev`. The other seven entries are HQ-DC01, HQ-DC02 and HQ-MGT01 as `Administrator`, ObiPC, win11-dev, and the physical laptops `surface_pro` and `parrot_os_mac`; I have not swept their privilege level. The UniFi and Cloudflare connections can change or delete anything they reach.
 
 My three Codex profiles and two Claude Code profiles on `ubuntu-dev` reach Executor as one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`, all over OAuth. Neither client adds an approval gate: Codex approves Executor tools without prompting, and Claude Code allows `mcp__executor__*`.
 
