@@ -48,3 +48,13 @@ The initial direct SSH check on `media_01` could not run Docker through password
 - [Media Bar installation and dependency](https://github.com/IAmParadox27/jellyfin-plugin-media-bar)
 - [File Transformation installation](https://github.com/IAmParadox27/jellyfin-plugin-file-transformation)
 - [Intro Skipper installation and initial analysis](https://github.com/intro-skipper/intro-skipper/wiki/Installation)
+
+## Plugin Pages and Custom Tabs follow-up
+
+I installed Plugin Pages 3.0.1.0 from the existing IAmParadox27 repository. Its manifest targets Jellyfin 12.1.0. After restarting Jellyfin, its status was Active and Docker reported healthy. `/PluginPages/inject.js` returned HTTP 200 with JavaScript content.
+
+Custom Tabs was absent from the compatible server catalog. I checked its latest upstream release, 0.2.10.0: its assets target 10.10.7 and 10.11.7 through 10.11.11, with no Jellyfin 12 build. I did not install an incompatible build. [Custom Tabs releases](https://github.com/IAmParadox27/jellyfin-plugin-custom-tabs/releases/latest) and [Plugin Pages installation](https://github.com/IAmParadox27/jellyfin-plugin-pages) were the upstream references.
+
+The live Enhanced configuration had Bookmarks and Requests enabled as native Jellyfin 12 tabs. I preserved those settings and enabled `BookmarksUsePluginPages` and `DownloadsUsePluginPages`. Hidden Content and Calendar were disabled, and I left them disabled. Immediately after saving, the Plugin Pages user endpoint returned no pages. A second restart registered the two links: `/PluginPages/User` returned Requests at `/JellyfinEnhanced/downloadsPage` and Bookmarks at `/JellyfinEnhanced/bookmarksPage`, with a total count of 2. On Jellyfin 12 these links appear through the profile menu rather than a legacy sidebar.
+
+I used the restart approval from this installation session. No playback was active before activation, and Intro Skipper's analysis task was idle. These checks came from live API and SSH Manager responses; I retained no separate terminal capture. I did not perform a rendered browser test. Custom Tabs remains uninstalled pending a compatible release; the existing native tabs remain enabled.
