@@ -1,13 +1,15 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-27
 
 Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-defined policies, 80 allows and eight blocks, after removing the dashboard policy on 2026-09-26. The table below lists all 88. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
 ## Recent changes
+
+- 2026-09-27: I added Parrot OS-Mac (MAC withheld, `192.168.10.176`) to the six policies that name the MacBook Air M3 or give Jedi PC the UniFi console. I also corrected the row for `Allow Trusted SSH replies to Admin Hosts` to match the controller. [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 
 - 2026-09-26: I removed `Docker-main Allowed -> Server` and TCP 3001 from `Allow NPM to docker-main web UIs` when I retired Homelab Dashboard. [Retirement](../../../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
@@ -22,7 +24,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | Policy | Enabled | Action | Index | Protocol | Source | Destination |
 |---|---|---|---:|---|---|---|
 | `Block DMZ to Internal` | Yes | BLOCK | 40000 | All | Dmz / Any | Internal / Any |
-| `DMZ Allow List` | Yes | ALLOW | 10001 | All | Internal / 3 MACs | Dmz / Any |
+| `DMZ Allow List` | Yes | ALLOW | 10001 | All | Internal / 4 MACs | Dmz / Any |
 | `Block DMZ to LAN` | Yes | BLOCK | 40001 | All | Dmz / Any | Internal / Any |
 | `Allow VPN to AlphSec-Mgmt` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Mgmt` / Any |
 | `Allow VPN to AlphSec-Servers` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Servers` / Any |
@@ -32,12 +34,12 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Internal to AlphSec-Mgmt` | No | ALLOW | 10000 | All | Internal / Any | `AlphaSec-Mgmt` / Any |
 | `Allow Internal to AlphSec-Servers` | Yes | ALLOW | 10000 | All | Internal / Any | `AlphaSec-Servers` / Any |
 | `Allow edge-01 to app-01 Web` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `AlphaSec-Servers` / 192.168.80.10 / `App Access` |
-| `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 9 MACs | Internal / Personal-A |
+| `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 10 MACs | Internal / Personal-A |
 | `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
-| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 5 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
-| `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / 1 MAC | Internal / Management |
+| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 6 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
+| `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / Jedi PC and Parrot OS-Mac MACs | Internal / Management |
 | `Allow Secure and Secure Client to WAC HTTPS` | Yes | ALLOW | 10003 | TCP | Internal / Secure and Secure Client networks | `AlphaSec-Identity` / 192.168.65.12 / 443 |
-| `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3 and Pixel device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
+| `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3, Pixel and Parrot OS-Mac device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow WAC to Secure Client WinRM` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 5985,5986 |
 | `Allow Action1 Deployer to Secure Client` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 135,139,445,49152-65535 |
 | `Allow Admin Networks to Identity RDP` | Yes | ALLOW | 10005 | TCP+UDP (IPv4) | Internal / Trusted and Secure networks | `AlphaSec-Identity` / 192.168.65.10, .11, .12, .20 / 3389 |
@@ -78,7 +80,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
-| `Allow Surface SSH replies to Automation` | Yes | ALLOW | 10000 | TCP (IPv4) | Internal / 192.168.10.211 / source port 22 | Internal / 192.168.40.179, 192.168.40.39 |
+| `Allow Trusted SSH replies to Admin Hosts` | Yes | ALLOW | 10000 | TCP (IPv4), established and related only | Internal / 192.168.10.211, 192.168.10.176 / source port 22 | Internal / 192.168.40.179, 192.168.40.39, 192.168.40.36 |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
 | `Allow NPM to security-01 Wazuh` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.2 / 443 |
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
@@ -95,7 +97,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Automation to monitor-01 SSH` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.40.36 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 22 |
 | `Allow Monitor DNS to Gateway` | Yes | ALLOW | 10000 | All | `AlphaSec-Observability` / `AG-Monitor-Collector` | Gateway / 53 |
 | `Allow VPN Management Access to PeaNUT` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | `AlphaSec-Observability` / `AG-Monitor-Collector` / 8090 |
-| `Allow dkadi MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 8090 |
+| `Allow dkadi MacBook Air M3 to PeaNUT` | Yes | ALLOW | 10002 | TCP | Internal / 192.168.10.27, 192.168.10.176 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 8090 |
 | `Allow Monitor to Security monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Observability` / `AG-Security-Stack` / `PG-Node-Exporter` |
 | `Allow splunk-siem to alert bot` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Observability` / 192.168.72.3 | `AlphaSec-Observability` / 192.168.73.2 / 8080 |
 | `Allow Workstations to AD` | Yes | ALLOW | 10000 | TCP+UDP | Internal / Secure, Secure Client | `AlphaSec-Identity` / `AG-Domain-Controllers` / `PG-AD-Client` |
@@ -142,6 +144,7 @@ Every policy change has a dated record with its before-and-after tests:
 
 | Date | Change | Record |
 | --- | --- | --- |
+| 2026-09-27 | Parrot OS-Mac added to six admin policies; `Allow Trusted SSH replies to Admin Hosts` row corrected | [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md) |
 | 2026-09-21 | TCP 18080 added to `Allow NPM to media-01 web UIs` for Weebarr; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md), [Weebarr Retirement](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md) |
 | 2026-09-20 | `Allow App Portal to Identity LDAPS` | [Directory Sign-In for the Portal](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Directory%20Sign-In%20for%20the%20Portal%20-%202026-09-20.md) |
 | 2026-09-19 | `Allow HQ-WS001 to NPM HTTPS` replaced `Allow Identity to App Portal`; TCP 3004 added to `Allow NPM to docker-main web UIs` | [Internal HTTPS record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md), [App Portal test path](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Credential%2C%20Catalog%20Verification%20and%20Self-Update%20-%202026-09-19.md) |
