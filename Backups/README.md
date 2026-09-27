@@ -1,7 +1,7 @@
 # Backups
 
 **Created:** 2026-08-05  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 This folder holds config files I copied off a host before editing them. It exists so a host does not have to keep the copy.
 
@@ -20,6 +20,7 @@ This folder holds config files I copied off a host before editing them. It exist
 | [`grey-server-lxc-110.conf-2026-09-06`](grey-server-lxc-110.conf-2026-09-06) | grey-server | 2026-09-06 | [CT 110 phantom volume removal](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20110%20Phantom%20Unused%20Volume%20Removed%20-%202026-09-06.md) |
 | [`grey-server-pve-authorized_keys-2026-08-15`](grey-server-pve-authorized_keys-2026-08-15) | grey-server (`/etc/pve/priv/authorized_keys`) | 2026-08-15 | No record names this copy. Its header says it was taken before the 2026-08-15 fleet access key cleanup |
 | [`grey-server-pve-cluster.fw-2026-09-06`](grey-server-pve-cluster.fw-2026-09-06) | grey-server | 2026-09-06 | [docker-blue firewall grant narrowed](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/docker-blue%20Firewall%20Grant%20Narrowed%20to%20pve_ssh_manager%20-%202026-09-06.md) |
+| [`grey-server-pve-cluster.fw-2026-09-27`](grey-server-pve-cluster.fw-2026-09-27) | grey-server | 2026-09-27 | [Parrot OS-Mac admin access](../Infrastructure/Network/UniFi/Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md) |
 | [`grey-server-root-authorized_keys-2026-08-15`](grey-server-root-authorized_keys-2026-08-15) | grey-server | 2026-08-15 | [Broken node shell troubleshooting](../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Broken%20Node%20Shell%20and%20Standalone%20authorized_keys%20on%20grey-server%20-%202026-08-15.md) |
 | [`media-01-docker-compose-2026-09-18.yml`](media-01-docker-compose-2026-09-18.yml) | media-01 | 2026-09-18 | [Lost proxy trust troubleshooting](../Platforms/Media%20Stack/Documentation/Troubleshooting/Lost%20Proxy%20Trust%20Broke%20Arr%20HTTPS%20Redirects%20-%202026-09-18.md) |
 | [`media-01-sshd-60-hardening-2026-08-15.conf`](media-01-sshd-60-hardening-2026-08-15.conf) | media-01 | 2026-08-15 | [ai-agent account provisioning](../Operations/Maintenance/ai-agent%20Account%20Provisioning%20-%202026-08-15.md) |
