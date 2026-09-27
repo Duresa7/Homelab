@@ -1,7 +1,7 @@
 # Physical Hardware
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 Specifications and power for my physical equipment: five Galaxy nodes, two workstations, two UPS units and the drives. Guest and service inventories are under [Operations/Inventory](../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md).
 
@@ -23,4 +23,4 @@ Specifications and power for my physical equipment: five Galaxy nodes, two works
 | 2026-07-22 | [UPS installation and load assignment](Documentation/Change%20Records/APC%20Back-UPS%20Pro%20Installation%20and%20Load%20Assignment%20-%202026-07-22.md) |
 | 2026-07-22 | [UPS monitoring options research](Documentation/UPS%20Monitoring%20Options%20Research%20-%202026-07-22.md): NUT, apcupsd, USB ownership, multi-node shutdown |
 
-Two laptops on Trusted, VLAN 10, are enrolled in SSH Manager but have no hardware record yet: `surface_pro` (Surface Pro Model 1796, Ubuntu, 192.168.10.211) and `parrot` (Parrot OS, 192.168.10.176).
+Two laptops on Trusted, VLAN 10, are enrolled in SSH Manager but have no hardware record yet: `surface_pro` (Surface Pro Model 1796, Ubuntu, 192.168.10.211) and `parrot_os_mac` (Parrot OS-Mac, a MacBook Pro `MacBookPro14,3` running Parrot Security 7.3, 192.168.10.176). Parrot OS-Mac has admin access at the level of the MacBook Air M3 as of 2026-09-27: [Parrot OS-Mac Admin Access](../Network/UniFi/Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
