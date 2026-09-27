@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 I run media requests, playback, release automation and VPN-isolated downloading from one Debian LXC, CT 842 `media-01` on `red-server`.
 
@@ -37,6 +37,7 @@ qBittorrent runs with `network_mode: service:gluetun`, so its only path out is t
 
 ## Records
 
+- [Jellyfin Enhanced, Intro Skipper, and Media Bar installation](Documentation/Change%20Records/Jellyfin%20Plugins%20-%202026-09-27.md), 2026-09-27; activation pending restart approval
 - [Architecture](Documentation/Architecture.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Configuration reference](Configuration/README.md)
