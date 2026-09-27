@@ -36,6 +36,19 @@
 /Infrastructure/Hardware/Images/
 **/Screenshots/
 
+# Sanitized ObiPC physical-access exercise evidence
+!/Security/Incidents/Active Directory/Evidence/
+/Security/Incidents/Active Directory/Evidence/*
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/
+/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/*
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Evidence-Index.md
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/SHA256SUMS.txt
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Exports/
+/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Exports/*
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Exports/Event-Review.json
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Exports/State-Readback.json
+!/Security/Incidents/Active Directory/Evidence/ObiPC Physical Access Simulation - 2026-09-27/Exports/Collection-Failures.json
+
 # Sanitized Action1 RPC alert investigation readback
 !/Security/Incidents/UniFi/Evidence/
 /Security/Incidents/UniFi/Evidence/*

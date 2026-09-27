@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
 
@@ -20,7 +20,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Windows Admin Center | [Gateway on HQ-MGT01](../Windows%20Admin%20Center/README.md), file version `2.7.21.5`, HTTPS 443, five shared connections, service running on 2026-09-25 |
 | Azure Arc | [HQ-MGT01 only](../Azure%20Arc/README.md), agent `1.67.03504.3207`, `Connected` with a heartbeat at 1:32 AM on 2026-09-25 |
 | HQ-WS001 | `192.168.65.20`, VM 310 on grey (8 GiB, 4 vCPU), Windows 11 Pro 25H2, Microsoft Entra hybrid joined 2026-09-10, in `OU=Standard,OU=Workstations`. **Stopped** on 2026-09-24 |
-| ObiPC | Physical, Secure Client VLAN 60 by DHCP (`192.168.60.102`), Windows 11 Pro 25H2, joined and hybrid joined 2026-09-11, reinstalled and rejoined to the same objects 2026-09-18, in `OU=Standard,OU=Workstations`. Unreachable on 2026-09-24: UniFi last saw its wired interface at 4:08:53 PM that day |
+| ObiPC | Physical, Secure Client VLAN 60 by DHCP (`192.168.60.102`), Windows 11 Pro 25H2, joined and hybrid joined 2026-09-11, reinstalled and rejoined to the same objects 2026-09-18, in `OU=Standard,OU=Workstations`. Unreachable on 2026-09-24, when UniFi last saw its wired interface at 4:08:53 PM; reachable over SSH again at 8:11:42 AM EDT on 2026-09-27 |
 | `IK-user` | **Disabled** 2026-09-23 at 8:24:48 PM, `Enabled=false` on both controllers. Group memberships, `userWorkstations=OBIPC` and `logonHours` of 7 AM to 11 PM are unchanged. ObiPC rejected two interactive sign-ins with it at 9:26 PM that night |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
@@ -102,6 +102,7 @@ The steps and completion checks are in the [Active Directory TODO](Documentation
 
 ## Records
 
+- [ObiPC Physical Access Simulation - 2026-09-27](../../Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md): my authorized test; 22 failed interactive events and no successful human sign-in in the reviewed 72 hours, with retained evidence and audit follow-ups.
 - [ObiPC Shutdown Attempt - 2026-09-24](Documentation/Change%20Records/ObiPC%20Shutdown%20Attempt%20-%202026-09-24.md): ObiPC unreachable; no shutdown delivered.
 - [ObiPC Sign-In Review - 2026-09-24](../../Security/Assessments/ObiPC%20Sign-In%20Review%20-%202026-09-24.md): only computer-account authentication on the controllers.
 - [IK-user Account Disabled - 2026-09-23](Documentation/Change%20Records/IK-user%20Account%20Disabled%20-%202026-09-23.md): account disabled; two rejected sign-ins afterwards.

@@ -1,0 +1,21 @@
+{
+  "artifactType": "Sanitized selected-field live query export; not a raw EVTX image or complete terminal transcript",
+  "target": "OBIPC (192.168.60.102)",
+  "transport": "SSH Manager MCP, configured server obipc",
+  "command": "$ErrorActionPreference='Stop';$s=[datetime]'2026-09-24T12:11:43Z';$e=[datetime]'2026-09-27T12:11:43Z';try{$ts=@(Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-TerminalServices-LocalSessionManager/Operational';Id=21,25;StartTime=$s;EndTime=$e} -ErrorAction Stop)}catch{if($_.FullyQualifiedErrorId -like 'NoMatchingEventsFound*'){$ts=@()}else{throw}};$old=Get-WinEvent -LogName Security -Oldest -MaxEvents 1;$new=Get-WinEvent -LogName Security -MaxEvents 1;$a=auditpol /get /subcategory:'Logon'|Out-String;if($LASTEXITCODE -ne 0){throw 'audit query failed'};$b=auditpol /get /subcategory:'Other Logon/Logoff Events'|Out-String;if($LASTEXITCODE -ne 0){throw 'audit query failed'};[pscustomobject]@{HostName=$env:COMPUTERNAME;CollectedUtc=[datetime]::UtcNow.ToString('o');OldestSecurityEventUtc=$old.TimeCreated.ToUniversalTime().ToString('o');NewestSecurityEventUtc=$new.TimeCreated.ToUniversalTime().ToString('o');OldestRecordId=$old.RecordId;NewestRecordId=$new.RecordId;TerminalSessionEventCount=$ts.Count;ConsoleUser=(Get-CimInstance Win32_ComputerSystem).UserName;LastBootUtc=(Get-CimInstance Win32_OperatingSystem).LastBootUpTime.ToUniversalTime().ToString('o');AuditLogon=$a;AuditOtherLogon=$b}|ConvertTo-Json -Compress",
+  "exitCode": 0,
+  "stderr": "",
+  "projection": {
+    "HostName": "OBIPC",
+    "CollectedUtc": "2026-09-27T12:21:29.2535862Z",
+    "OldestSecurityEventUtc": "2026-09-18T21:37:25.8326895Z",
+    "NewestSecurityEventUtc": "2026-09-27T12:19:03.9243179Z",
+    "OldestRecordId": 1177,
+    "NewestRecordId": 25947,
+    "TerminalSessionEventCount": 0,
+    "ConsoleUser": null,
+    "LastBootUtc": "2026-09-27T03:42:07.5004640Z",
+    "AuditLogon": "System audit policy\r\n\r\nCategory/Subcategory                      Setting\r\nLogon/Logoff\r\n  Logon                                   Success and Failure\r\n\r\n",
+    "AuditOtherLogon": "System audit policy\r\n\r\nCategory/Subcategory                      Setting\r\nLogon/Logoff\r\n  Other Logon/Logoff Events               No Auditing\r\n\r\n"
+  }
+}
