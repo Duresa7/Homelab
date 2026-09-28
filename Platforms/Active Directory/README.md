@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-28
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
 
@@ -21,7 +21,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Azure Arc | [HQ-MGT01 only](../Azure%20Arc/README.md), agent `1.67.03504.3207`, `Connected` with a heartbeat at 1:32 AM on 2026-09-25 |
 | HQ-WS001 | `192.168.65.20`, VM 310 on grey (8 GiB, 4 vCPU), Windows 11 Pro 25H2, Microsoft Entra hybrid joined 2026-09-10, in `OU=Standard,OU=Workstations`. **Stopped** on 2026-09-24 |
 | ObiPC | Physical, Secure Client VLAN 60 by DHCP (`192.168.60.102`), Windows 11 Pro 25H2, joined and hybrid joined 2026-09-11, reinstalled and rejoined to the same objects 2026-09-18, in `OU=Standard,OU=Workstations`. Unreachable on 2026-09-24, when UniFi last saw its wired interface at 4:08:53 PM; reachable over SSH again at 8:11:42 AM EDT on 2026-09-27 |
-| `IK-user` | **Disabled** 2026-09-23 at 8:24:48 PM, `Enabled=false` on both controllers. Group memberships, `userWorkstations=OBIPC` and `logonHours` of 7 AM to 11 PM are unchanged. ObiPC rejected two interactive sign-ins with it at 9:26 PM that night |
+| `IK-user` | **Disabled** again 2026-09-28 at 5:16:06 PM, `Enabled=false` on both controllers. It had been disabled since 2026-09-23 and was enabled from 4:19 PM that day. Group memberships, `userWorkstations=OBIPC` and `logonHours` of 7 AM to 11 PM are unchanged |
 | UPN suffix | `alphasecunited.com` added alongside the default |
 | AD Recycle Bin | Enabled |
 | DNS zones | `ad.alphasecunited.com` (domain scope), `_msdcs.ad.alphasecunited.com` (forest scope), `65.168.192.in-addr.arpa` (forest scope). All primary, AD-integrated, secure dynamic update only |
@@ -91,6 +91,7 @@ The steps and completion checks are in the [Active Directory TODO](Documentation
 
 - Online sign-in: interactive offline sign-in and unlock checks are still open on both workstations.
 - ObiPC lockdown: the user-side checks waited on `IK-user`'s session and are blocked while the account is disabled.
+- Zoom and Logi Options+ are installed on ObiPC and launched for `IK-user` on 2026-09-28; the rest of their behaviour and their Action1 patching are unchecked.
 - `testuser` is still in `ROL-ObiPC-Restricted` as a test fixture since 2026-09-19.
 - The ObiPC AppLocker Script collection is audit-only, and the OneDrive per-user path is undecided.
 - The four shared test passwords and `PSO-Admins` at 14 characters are still in their 2026-09-10 testing state.
@@ -102,6 +103,7 @@ The steps and completion checks are in the [Active Directory TODO](Documentation
 
 ## Records
 
+- [IK-user Re-enabled with Zoom and a 90-Minute Pass - 2026-09-28](Documentation/Change%20Records/IK-user%20Re-enabled%20with%20Zoom%20and%20a%2090-Minute%20Pass%20-%202026-09-28.md): Zoom and Logi Options+ installed for all users; the account enabled for about an hour under a 90-minute pass, then disabled again and the pass removed.
 - [ObiPC Physical Access Simulation - 2026-09-27](../../Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md): my authorized test; 22 failed interactive events and no successful human sign-in in the reviewed 72 hours, with retained evidence and audit follow-ups.
 - [ObiPC Shutdown Attempt - 2026-09-24](Documentation/Change%20Records/ObiPC%20Shutdown%20Attempt%20-%202026-09-24.md): ObiPC unreachable; no shutdown delivered.
 - [ObiPC Sign-In Review - 2026-09-24](../../Security/Assessments/ObiPC%20Sign-In%20Review%20-%202026-09-24.md): only computer-account authentication on the controllers.
