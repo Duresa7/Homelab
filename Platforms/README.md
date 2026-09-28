@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-28
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -14,7 +14,8 @@ This directory holds my deployed applications and services, one folder per platf
 | [Ansible](Ansible/README.md) | ansible-01 | ansible-core 2.21.2 and Semaphore 2.18.27: SSH key identities, OS and Compose updates, exporters, host access baseline |
 | [App Portal](App%20Portal/README.md) | docker-main | My self-service software catalog for Windows PCs, server 0.6.0 |
 | [Azure Arc](Azure%20Arc/README.md) | HQ-MGT01 | Arc agent 1.67.03504.3207, Connected; represents `HQ-MGT01` in Azure |
-| [BookLore](BookLore/README.md) | docker-main | Book library, v2.4.0 with MariaDB 11.4.8 |
+| [BookLore](BookLore/README.md) | Retired 2026-09-28 | Replaced by BookOrbit; original settings data retained |
+| [BookOrbit](BookOrbit/README.md) | docker-main | v3.1.0 with PostgreSQL 18.6; 42 books imported, TCP 6060 at the existing BookLore HTTPS address (2026-09-28) |
 | [Caddy](Caddy/README.md) | edge-01 | Caddy 2.6.2, the public origin behind the Cloudflare Tunnel (cloudflared 2026.8.3), forwarding to Coolify |
 | [CLI Proxy API](CLI%20Proxy%20API/README.md) | docker-main | v7.3.16 at `https://aiproxy.alphasecunited.com` |
 | [Coolify](Coolify/README.md) | app-01 | Coolify 4.3.23 with Traefik 3.7.12: builds and publishes the public services |
