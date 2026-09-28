@@ -13,6 +13,10 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-de
 
 - 2026-09-27: I added Parrot OS-Mac (MAC withheld, `192.168.10.176`) to the six policies that name the MacBook Air M3 or give Jedi PC the UniFi console. I also corrected the row for `Allow Trusted SSH replies to Admin Hosts` to match the controller. [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 
+- 2026-09-27: I allowed Homarr `192.168.40.35` to Grey `192.168.70.10` on TCP 8006 and added TCP 9102 to the existing NPM-to-docker-main policy for authenticated WUD HTTPS. [Integration record](../../../../Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+
+- 2026-09-27: I added TCP 7575 to `Allow NPM to docker-main web UIs` for Homarr and verified the preserved source, destination and existing ports. [Homarr deployment](../../../../Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+
 - 2026-09-26: I removed `Docker-main Allowed -> Server` and TCP 3001 from `Allow NPM to docker-main web UIs` when I retired Homelab Dashboard. [Retirement](../../../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
 - 2026-09-24: TCP 18080 was no longer in `Allow NPM to media-01 web UIs`; I added it for Weebarr on 2026-09-21 and have no record of its removal. [Weebarr Retirement](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md).
@@ -81,6 +85,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
+| `Allow Homarr to Grey Proxmox API` | Yes | ALLOW | 10005 | TCP | Internal / 192.168.40.35 | `AlphaSec-Mgmt` / 192.168.70.10 / 8006 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow Trusted SSH replies to Admin Hosts` | Yes | ALLOW | 10000 | TCP (IPv4), established and related only | Internal / 192.168.10.211, 192.168.10.176 / source port 22 | Internal / 192.168.40.179, 192.168.40.39, 192.168.40.36 |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |
