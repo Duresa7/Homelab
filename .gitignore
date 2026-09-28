@@ -765,3 +765,10 @@ admin.env
 !/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/
 /Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/*
 !/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/App-Status-Verification.json
+
+# Reviewed BookOrbit migration summary
+!/Platforms/BookOrbit/Evidence/
+/Platforms/BookOrbit/Evidence/*
+!/Platforms/BookOrbit/Evidence/Migration - 2026-09-28/
+/Platforms/BookOrbit/Evidence/Migration - 2026-09-28/*
+!/Platforms/BookOrbit/Evidence/Migration - 2026-09-28/migration-summary.json

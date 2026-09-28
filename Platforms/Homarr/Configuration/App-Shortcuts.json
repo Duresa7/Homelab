@@ -49,10 +49,10 @@
     "description": "Media"
   },
   {
-    "name": "BookLore",
+    "name": "BookOrbit",
     "href": "https://booklore.alphasecunited.com",
     "pingUrl": null,
-    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/booklore.svg",
+    "iconUrl": "https://booklore.alphasecunited.com/favicon.ico",
     "description": "Media"
   },
   {

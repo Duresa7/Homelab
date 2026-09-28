@@ -1,7 +1,7 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-28
 
 On 2026-09-27 I added Homarr as host 34, then retired WUD host 35. Readback returned 24 live hosts: the 23 rows below plus NetBird (ID 1). The 35 database rows include eleven soft-deleted hosts. UniFi holds 24 local A records pointing at `192.168.85.2`, one per live host. [WUD retirement](../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
@@ -19,7 +19,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 | 7 | `qbittorrent.alphasecunited.com` | `192.168.40.42:8080` | HTTP | qBittorrent allows the NPM hostname, Arr hostname `gluetun`, and direct address `192.168.40.42` without disabling Host-header validation. |
 | 8 | `semaphore.alphasecunited.com` | `192.168.40.36:3000` | HTTP | Semaphore advertises this HTTPS web host. |
 | 9 | `immich.alphasecunited.com` | `192.168.40.35:2283` | HTTP | Request buffering is off; body limit is 50,000 MiB; proxy read, proxy send, and response-send timeouts are 600 seconds. |
-| 10 | `booklore.alphasecunited.com` | `192.168.40.35:6060` | HTTP | Direct IP access remains available. |
+| 10 | `booklore.alphasecunited.com` | `192.168.40.35:6060` | HTTP | BookOrbit v3.1.0 replaced BookLore on 2026-09-28; address and upstream unchanged. |
 | 34 | `dashboard.alphasecunited.com` | `192.168.40.35:7575` | HTTP | Homarr 1.77.2; replaces the retired application at this name. |
 | 13 | `forgejo.alphasecunited.com` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | 31 | `dockhand.alphasecunited.com` | `192.168.40.35:3003` | HTTP | Dockhand, proxy host 31. HTTPS login and Hawser WebSockets verified; buffering off, read/send timeouts 3,600 seconds. |

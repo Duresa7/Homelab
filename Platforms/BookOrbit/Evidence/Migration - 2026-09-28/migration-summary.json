@@ -1,0 +1,141 @@
+{
+  "state": "completed",
+  "runId": 2,
+  "totals": {
+    "processed": 269,
+    "imported": 269,
+    "skipped": 91,
+    "unresolved": 1,
+    "failed": 0
+  },
+  "metrics": [
+    {
+      "stage": "book_covers",
+      "entityType": "book_covers",
+      "processed": 42,
+      "imported": 41,
+      "skipped": 0,
+      "unresolved": 1,
+      "failed": 0
+    },
+    {
+      "stage": "shared_overlays",
+      "entityType": "book_authors",
+      "processed": 42,
+      "imported": 42,
+      "skipped": 1,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "shared_overlays",
+      "entityType": "book_genres",
+      "processed": 42,
+      "imported": 131,
+      "skipped": 2,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "shared_overlays",
+      "entityType": "book_metadata",
+      "processed": 42,
+      "imported": 42,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "shared_overlays",
+      "entityType": "book_narrators",
+      "processed": 42,
+      "imported": 0,
+      "skipped": 42,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "shared_overlays",
+      "entityType": "book_tags",
+      "processed": 42,
+      "imported": 0,
+      "skipped": 42,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "annotations",
+      "processed": 1,
+      "imported": 1,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "audiobook_progress",
+      "processed": 0,
+      "imported": 0,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "bookmarks",
+      "processed": 0,
+      "imported": 0,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "collections",
+      "processed": 0,
+      "imported": 0,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "reading_progress",
+      "processed": 4,
+      "imported": 4,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "reading_sessions",
+      "processed": 4,
+      "imported": 4,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "user_book_rating",
+      "processed": 4,
+      "imported": 0,
+      "skipped": 4,
+      "unresolved": 0,
+      "failed": 0
+    },
+    {
+      "stage": "user_state",
+      "entityType": "user_book_status",
+      "processed": 4,
+      "imported": 4,
+      "skipped": 0,
+      "unresolved": 0,
+      "failed": 0
+    }
+  ],
+  "matchedBooks": 42,
+  "unresolvedBooks": 0
+}
