@@ -1,0 +1,43 @@
+{
+  "target": "green-server",
+  "captured_date": "2026-09-27",
+  "timezone": "America/New_York",
+  "test_verdict": "FAIL: Stuck Address mismatch; stopped before a full pass completed.",
+  "notes": [
+    "The journal query filters progress output and retains lifecycle, allocation-lock and failure messages.",
+    "The stopped service reporting success is not a passing memory test.",
+    "The first timestamp extraction encountered a null journal MESSAGE; the corrected query below handles binary and null messages."
+  ],
+  "launch": {
+    "server": "green_server",
+    "command": "test -z \"$(qm list | tail -n +2)\" && test -z \"$(pct list | tail -n +2)\" && awk '/MemAvailable:/ {exit !($2 > 12582912)}' /proc/meminfo && systemd-run --unit=green-memory-diagnosis-20260927 --property=MemoryMax=9G --property=MemorySwapMax=0 --property=RuntimeMaxSec=180 --property=Nice=10 /usr/sbin/memtester 8192M 1",
+    "stdout": "",
+    "stderr": "Running as unit: green-memory-diagnosis-20260927.service; invocation ID: bd8eee2eca1a42698d2e5682839a7821\n",
+    "code": 0,
+    "success": true
+  },
+  "stop_and_host_verification": {
+    "server": "green_server",
+    "command": "systemctl stop green-memory-diagnosis-20260927.service\npython3 - <<'PY'\nimport subprocess,re,json\ns=subprocess.check_output(['journalctl','-u','green-memory-diagnosis-20260927.service','--no-pager','-o','cat'],text=True)\nprint(json.dumps({'failures':re.findall(r'FAILURE:[^\\n\\r]*',s),'locked':'trying mlock ...locked.' in s},indent=2))\nPY\nsystemctl show green-memory-diagnosis-20260927.service -p ActiveState -p Result -p ExecMainStatus -p MemoryPeak -p ExecMainStartTimestamp -p ExecMainExitTimestamp\nfree -m\npvecm status | grep -E 'Nodes:|Quorate:|Total votes:'\ncat /sys/class/hwmon/hwmon2/temp1_input",
+    "stdout": "{\n  \"failures\": [\n    \"FAILURE: possible bad address line at offset 0x0000000061135e30.\"\n  ],\n  \"locked\": true\n}\nResult=success\nExecMainStartTimestamp=\nExecMainExitTimestamp=\nExecMainStatus=0\nMemoryPeak=[not set]\nActiveState=inactive\n               total        used        free      shared  buff/cache   available\nMem:           15830        1819       12418          50        1989       14010\nSwap:           8191         559        7632\nNodes:            5\nQuorate:          Yes\nTotal votes:      5\n47000\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  },
+  "service_and_boot_menu_verification": {
+    "server": "green_server",
+    "command": "python3 - <<'PY'\nimport subprocess,json,datetime\nrows=[json.loads(x) for x in subprocess.check_output(['journalctl','-u','green-memory-diagnosis-20260927.service','--no-pager','-o','json'],text=True).splitlines()]\nfor x in rows:\n m=x.get('MESSAGE','')\n if any(k in m for k in ['Started ','FAILURE:','Stopping ','Stopped ','Consumed ','locked.','Deactivated']):\n  print(datetime.datetime.fromtimestamp(int(x['__REALTIME_TIMESTAMP'])/1e6).strftime('%Y-%m-%d %I:%M:%S %p Eastern'),m[:600])\nPY\nsystemctl is-active pve-cluster corosync pvestatd pve-firewall pvedaemon pveproxy\npgrep -x memtester || true\ngrep -E '^menuentry .*Memtest|^[[:space:]]*(linux|linux16|chainloader).*memtest' /boot/grub/grub.cfg",
+    "stdout": "2026-09-27 08:18:51 AM Eastern Started green-memory-diagnosis-20260927.service - [systemd-run] /usr/sbin/memtester 8192M 1.\n2026-09-27 08:18:53 AM Eastern got  8192MB (8589934592 bytes), trying mlock ...locked.\nactive\nactive\nactive\nactive\nactive\nactive\n\t\tlinux /boot/memtest86+x64.efi \n\t\tlinux /boot/memtest86+x64.efi console=ttyS0,115200\n\t\tlinux /boot/memtest86+ia32.efi \n\t\tlinux /boot/memtest86+ia32.efi console=ttyS0,115200\n\t\tlinux /boot/memtest86+x64.bin \n\t\tlinux /boot/memtest86+x64.bin console=ttyS0,115200\n\t\tlinux /boot/memtest86+ia32.bin \n\t\tlinux /boot/memtest86+ia32.bin console=ttyS0,115200\n",
+    "stderr": "Traceback (most recent call last):\n  File \"<stdin>\", line 5, in <module>\n  File \"<stdin>\", line 5, in <genexpr>\nTypeError: argument of type 'NoneType' is not iterable\n",
+    "code": 0,
+    "success": true
+  },
+  "filtered_journal": {
+    "server": "green_server",
+    "command": "python3 - <<'PY'\nimport subprocess,json,datetime,re\nrows=[json.loads(x) for x in subprocess.check_output(['journalctl','-u','green-memory-diagnosis-20260927.service','--no-pager','--all','-o','json'],text=True).splitlines()]\nfor x in rows:\n m=x.get('MESSAGE') or ''\n if isinstance(m,list): m=bytes(m).decode('utf-8','replace')\n matches=re.findall(r'FAILURE:[^\\n\\r]*',m)\n if matches: m='; '.join(matches)\n elif not any(k in m for k in ['Started ','Stopping ','Stopped ','Consumed ','locked.','Deactivated']): continue\n print(datetime.datetime.fromtimestamp(int(x['__REALTIME_TIMESTAMP'])/1e6).strftime('%Y-%m-%d %I:%M:%S %p Eastern'),m)\nPY",
+    "stdout": "2026-09-27 08:18:51 AM Eastern Started green-memory-diagnosis-20260927.service - [systemd-run] /usr/sbin/memtester 8192M 1.\n2026-09-27 08:18:53 AM Eastern got  8192MB (8589934592 bytes), trying mlock ...locked.\n2026-09-27 08:18:57 AM Eastern FAILURE: possible bad address line at offset 0x0000000061135e30.\n2026-09-27 08:19:19 AM Eastern Stopping green-memory-diagnosis-20260927.service - [systemd-run] /usr/sbin/memtester 8192M 1...\n2026-09-27 08:19:20 AM Eastern green-memory-diagnosis-20260927.service: Deactivated successfully.\n2026-09-27 08:19:20 AM Eastern Stopped green-memory-diagnosis-20260927.service - [systemd-run] /usr/sbin/memtester 8192M 1.\n2026-09-27 08:19:20 AM Eastern green-memory-diagnosis-20260927.service: Consumed 28.209s CPU time, 8G memory peak.\n",
+    "stderr": "",
+    "code": 0,
+    "success": true
+  }
+}
