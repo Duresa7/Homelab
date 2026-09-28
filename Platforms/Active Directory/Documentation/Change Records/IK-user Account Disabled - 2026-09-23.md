@@ -1,7 +1,7 @@
 # IK-user Account Disabled
 
 **Created:** 2026-09-23  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-28
 
 I disabled the `IK-user` domain account used on `ObiPC` at 8:24:48 PM EDT on 2026-09-23. I matched the identity to the private alias map and the live member of `ROL-ObiPC-Restricted`. Before the change, `HQ-DC01` returned `Enabled=true` and `userWorkstations=OBIPC`.
 
@@ -14,6 +14,8 @@ On `ObiPC`, I verified domain membership and a healthy secure channel at 8:24:27
 An interactive desktop user was present during the check. I did not terminate any session, delete the profile, change passwords, or change group memberships. Account disablement does not terminate an existing session or revoke already issued tickets. Cloud synchronization and tenant session revocation were not verified. No separate terminal capture was retained for these steps. No snapshots or backups were created.
 
 The account disablement is complete and verified on both domain controllers. Existing-session termination was outside this change.
+
+I enabled the account for about an hour on 2026-09-28 and disabled it again the same day; see [IK-user Re-enabled with Zoom and a 90-Minute Pass](IK-user%20Re-enabled%20with%20Zoom%20and%20a%2090-Minute%20Pass%20-%202026-09-28.md).
 
 ## Same-day sign-in check
 

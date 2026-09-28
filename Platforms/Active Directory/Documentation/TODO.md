@@ -1,7 +1,7 @@
 # Active Directory TODO
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-28
 
 I keep the detailed list for my Active Directory and hybrid identity platform here. The root TODO.md links here for the steps and completion checks.
 
@@ -53,9 +53,18 @@ On 2026-09-12 I required IK-user and AH-user to change their passwords at next d
 1. I will set the `Credential Validation` audit subcategory to `Success and Failure` on HQ-DC01 and HQ-DC02. Both currently audit Success only, so lockouts leave no 4776 failure trail.
 2. I will run `auditpol /get /subcategory:"Credential Validation"` on each controller and record the results. This work is done when both read back `Success and Failure` and the change record includes both checks.
 
+## Zoom and Logi Options+ on ObiPC (installed 2026-09-28)
+
+The [change record](Change%20Records/IK-user%20Re-enabled%20with%20Zoom%20and%20a%2090-Minute%20Pass%20-%202026-09-28.md) holds the installs. The 90-minute pass it describes was removed the same day, and `IK-user` is disabled again, so items 1 and 3 wait on his next sign-in.
+
+1. I will confirm Zoom works in his session beyond launch, which I observed: audio, camera, screen sharing and a join link from Chrome, with no AppLocker 8004 for anything under `C:\Program Files\Zoom`. Done when a call has run and the AppLocker log is clean for Zoom.
+2. I will check that Action1 lists Zoom Workplace and Logi Options+ on ObiPC and will patch them, since I installed both over SSH. Done when the console shows each installed version and its patch state.
+3. I will confirm Logi Options+ detects his receiver's devices and the MX Brio, and that its next self-update completes with no AppLocker 8004 for `C:\ProgramData\LogiOptionsPlus` or `C:\ProgramData\Logishrd`. Done when the app shows the devices and a newer version installs.
+4. I will decide whether Steam stays in the App Portal catalog. I removed Steam from ObiPC on 2026-09-28 along with the games, Ubisoft and a GTA V Enhanced remnant ([review](../../../Security/Assessments/ObiPC%20Installed%20Games%20Review%20-%202026-09-28.md)), which also removed the user-writable `C:\Program Files (x86)\Steam` folder inside the `Everyone: Program Files` allow. The catalog installs without my approval, so a reinstall brings the gap back. If Steam stays, I will add an exception for that folder on the `Everyone` rule plus publisher allows for Valve and the game publishers. Done when Steam is out of the catalog, or when a copied unsigned probe in its folder tests `DeniedByDefault` for the restricted group.
+
 ## ObiPC lockdown follow-ups (applied 2026-09-18, user side unobserved)
 
-I disabled `IK-user` on 2026-09-23 ([record](Change%20Records/IK-user%20Account%20Disabled%20-%202026-09-23.md)). Items 1, 3 and 6 wait on his sign-in and are blocked until I decide whether the account comes back. The other items do not need his session.
+I disabled `IK-user` on 2026-09-23 ([record](Change%20Records/IK-user%20Account%20Disabled%20-%202026-09-23.md)) enabled him for about an hour on 2026-09-28 before disabling him again ([record](Change%20Records/IK-user%20Re-enabled%20with%20Zoom%20and%20a%2090-Minute%20Pass%20-%202026-09-28.md)). Items 1, 3 and 6 wait on his sign-in and stay blocked while the account is disabled. The other items do not need his session.
 
 The [lockdown record](Change%20Records/ObiPC%20Recovery%20and%20Settings%20Lockdown%20-%202026-09-18.md) and the [incident](../../../Security/Incidents/Active%20Directory/ObiPC%20Wiped%20from%20the%20Recovery%20Menu%20-%202026-09-18.md) hold the detail.
 
