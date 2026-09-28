@@ -1,11 +1,13 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-28
 
 Galaxy has 12 QEMU VMs and three templates. I read every figure below back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24. Ten VMs were running; `kali-pen` and `HQ-WS001` were stopped. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-09-28: I expanded `ubuntu-dev` from 150 GiB to 230 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md).
 
 - 2026-09-24: I found `HQ-WS001` at 8 GiB and stopped, and `ubuntu-dev` running on its 12 GiB setting. [HQ-WS001 Memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md), [ubuntu-dev 12 GiB Applied](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%2012%20GiB%20Applied%20-%202026-09-24.md).
 - 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey's `local-lvm`. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
@@ -16,7 +18,7 @@ Galaxy has 12 QEMU VMs and three templates. I read every figure below back from 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | kali-pen | grey-server | stopped | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured | 192.168.40.1 | 40 | disabled |
 | 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.40.117/24 | 192.168.40.1 | 40 | disabled |
-| 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 150G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
+| 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 230G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
@@ -123,7 +125,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | local-lvm | vm-105-disk-0 | 150G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | local-lvm | vm-105-disk-0 | 230G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | local-lvm | vm-105-disk-1 | 4M | disk | efitype 4m |
 
 #### Network

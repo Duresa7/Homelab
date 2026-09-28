@@ -1,7 +1,7 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-28
 
 Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 12 VMs, six LXCs and three templates on node-local storage, with no shared storage and no HA resources. This folder owns the bridges, the two-link Corosync setup, the storage references, the Datacenter firewall, and the cluster's change and troubleshooting records.
 
@@ -34,6 +34,7 @@ UniFi owns the VLAN, zone, switch-port and gateway policy records under [Infrast
 
 | Date | Record |
 | --- | --- |
+| 2026-09-28 | [ubuntu-dev Storage Expansion](Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md) |
 | 2026-09-24 | [CT 107 and CT 108 HA Removal](Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md) |
 | 2026-09-24 | [HQ-WS001 Memory at 8 GiB](Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md) |
 | 2026-09-24 | [monitor-01 Rootfs at 20 GiB](Documentation/Change%20Records/monitor-01%20Rootfs%20at%2020%20GiB%20-%202026-09-24.md) |

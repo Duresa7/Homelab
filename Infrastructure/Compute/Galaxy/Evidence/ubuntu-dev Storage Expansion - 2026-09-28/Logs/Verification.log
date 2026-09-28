@@ -1,0 +1,144 @@
+Step: preflight
+Target: ubuntu_dev
+Command: date '+%F %r %Z'; hostname; cat /proc/uptime; lsblk -b -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS; findmnt -no SOURCE,FSTYPE,OPTIONS /; df -B1 /; sudo -n sfdisk --list /dev/sda; command -v growpart resize2fs; sudo -n true
+stdout:
+2026-09-28 02:13:29 PM EDT
+ubuntu-dev
+519847.19 2893062.58
+NAME           SIZE TYPE FSTYPE   MOUNTPOINTS
+loop0      13316096 loop squashfs /snap/firmware-updater/258
+loop1          4096 loop squashfs /snap/bare/5
+loop3      66879488 loop squashfs /snap/core20/2866
+loop4      66883584 loop squashfs /snap/core20/2922
+loop5      70049792 loop squashfs /snap/core24/1643
+loop6      70033408 loop squashfs /snap/core24/2124
+loop7      20930560 loop squashfs /snap/desktop-security-center/151
+loop8      14901248 loop squashfs /snap/desktop-security-center/188
+loop9     273973248 loop squashfs /snap/firefox/8929
+loop10    274079744 loop squashfs /snap/firefox/8969
+loop11     17301504 loop squashfs /snap/firmware-updater/226
+loop12    534999040 loop squashfs /snap/code/265
+loop13      1744896 loop squashfs /snap/gnome-system-monitor/193
+loop14    644382720 loop squashfs /snap/gnome-46-2404/164
+loop15    421507072 loop squashfs /snap/mesa-2404/1839
+loop16     96141312 loop squashfs /snap/gtk-common-themes/1535
+loop17    414167040 loop squashfs /snap/mesa-2404/1165
+loop18     19746816 loop squashfs /snap/prompting-client/222
+loop19    535003136 loop squashfs /snap/code/266
+loop20     19296256 loop squashfs /snap/prompting-client/228
+loop21     12382208 loop squashfs /snap/snap-store/1390
+loop22     52535296 loop squashfs /snap/snapd/27710
+loop23     52711424 loop squashfs /snap/snapd/27738
+loop24       593920 loop squashfs /snap/snapd-desktop-integration/361
+loop25       847872 loop squashfs /snap/snapd-desktop-integration/391
+loop26    645148672 loop squashfs /snap/gnome-46-2404/168
+loop27     12406784 loop squashfs /snap/snap-store/1427
+sda    161061273600 disk          
+├─sda1   1127219200 part vfat     /boot/efi
+└─sda2 159931957248 part ext4     /
+/dev/sda2 ext4 rw,relatime
+Filesystem        1B-blocks         Used   Available Use% Mounted on
+/dev/sda2      156284502016 132849033216 15422095360  90% /
+Disk /dev/sda: 150 GiB, 161061273600 bytes, 314572800 sectors
+Disk model: QEMU HARDDISK   
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: B2EE6F89-F908-4273-99FD-508529F80DBD
+
+Device       Start       End   Sectors   Size Type
+/dev/sda1     2048   2203647   2201600     1G EFI System
+/dev/sda2  2203648 314570751 312367104 148.9G Linux filesystem
+/usr/bin/growpart
+
+stderr:
+
+Exit code: 0
+
+Step: resize
+Target: grey_server
+Command: set -e; date '+%F %r %Z'; qm disk resize 105 scsi0 230G; qm config 105 | grep '^scsi0:'; qm status 105
+stdout:
+2026-09-28 02:13:39 PM EDT
+  Size of logical volume pve/vm-105-disk-0 changed from 150.00 GiB (38400 extents) to 230.00 GiB (58880 extents).
+  Logical volume pve/vm-105-disk-0 successfully resized.
+scsi0: local-lvm:vm-105-disk-0,discard=on,iothread=1,size=230G,ssd=1
+status: running
+
+stderr:
+
+Exit code: 0
+
+Step: dryrun
+Target: ubuntu_dev
+Command: set -e; date '+%F %r %Z'; sudo -n blockdev --getsize64 /dev/sda; sudo -n growpart -N /dev/sda 2
+stdout:
+2026-09-28 02:13:50 PM EDT
+246960619520
+CHANGE: partition=2 start=2203648 old: size=312367104 end=314570751 new: size=480141279 end=482344926
+
+stderr:
+# === old sfdisk -d ===
+label: gpt
+label-id: B2EE6F89-F908-4273-99FD-508529F80DBD
+device: /dev/sda
+unit: sectors
+first-lba: 2048
+sector-size: 512
+
+/dev/sda1 : start=        2048, size=     2201600, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, uuid=D0BDB49B-E453-43B7-AF70-65992444BEB5
+/dev/sda2 : start=     2203648, size=   312367104, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=F9B651CA-473E-4057-BC21-682EAA32C22A
+# === new sfdisk -d ===
+label: gpt
+label-id: B2EE6F89-F908-4273-99FD-508529F80DBD
+device: /dev/sda
+unit: sectors
+first-lba: 2048
+sector-size: 512
+
+/dev/sda1 : start=        2048, size=     2201600, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, uuid=D0BDB49B-E453-43B7-AF70-65992444BEB5
+/dev/sda2 : start=     2203648, size=   480141279, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, uuid=F9B651CA-473E-4057-BC21-682EAA32C22A
+
+Exit code: 0
+
+Step: grow
+Target: ubuntu_dev
+Command: set -e; date '+%F %r %Z'; sudo -n growpart --update on /dev/sda 2; sudo -n blockdev --getsize64 /dev/sda2; sudo -n /usr/sbin/resize2fs /dev/sda2; lsblk -b -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS /dev/sda; findmnt -no SOURCE,FSTYPE,OPTIONS /; df -h /; df -B1 /; cat /proc/uptime
+stdout:
+2026-09-28 02:14:00 PM EDT
+CHANGED: partition=2 start=2203648 old: size=312367104 end=314570751 new: size=480141279 end=482344926
+245832334848
+Filesystem at /dev/sda2 is mounted on /; on-line resizing required
+old_desc_blocks = 19, new_desc_blocks = 29
+The filesystem on /dev/sda2 is now 60017659 (4k) blocks long.
+
+NAME           SIZE TYPE FSTYPE MOUNTPOINTS
+sda    246960619520 disk        
+├─sda1   1127219200 part vfat   /boot/efi
+└─sda2 245832334848 part ext4   /
+/dev/sda2 ext4 rw,relatime
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/sda2       225G  124G   90G  58% /
+Filesystem        1B-blocks         Used   Available Use% Mounted on
+/dev/sda2      240837455872 132852477952 96537899008  58% /
+519878.69 2893235.30
+
+stderr:
+resize2fs 1.47.2 (1-Jan-2025)
+
+Exit code: 0
+
+Step: verify
+Target: grey_server
+Command: set -e; date '+%F %r %Z'; qm status 105; qm config 105 | grep '^scsi0:'; qm agent 105 ping; pvesm status --storage local-lvm
+stdout:
+2026-09-28 02:14:11 PM EDT
+status: running
+scsi0: local-lvm:vm-105-disk-0,discard=on,iothread=1,size=230G,ssd=1
+Name             Type     Status     Total (KiB)      Used (KiB) Available (KiB)        %
+local-lvm     lvmthin     active       832356352       267352860       565003491   32.12%
+
+stderr:
+
+Exit code: 0
