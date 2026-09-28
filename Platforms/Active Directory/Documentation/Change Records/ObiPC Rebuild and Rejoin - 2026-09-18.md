@@ -1,7 +1,7 @@
 # ObiPC Rebuild and Rejoin
 
 **Created:** 2026-09-18  
-**Last updated:** 2026-09-18
+**Last updated:** 2026-09-28
 
 I reinstalled Windows 11 Pro on `ObiPC` on 2026-09-18 after the previous installation was wiped, and brought the machine back to the state the [2026-09-11 join](ObiPC%20Workstation%20Join%20-%202026-09-11.md) and the [2026-09-12 restriction work](ObiPC%20Restricted%20User%20Setup%20-%202026-09-12.md) had left it in. The domain side survived untouched: the computer object, its organisational unit, the two role groups, the five policies that target the machine, and the directory controls on `IK-user` all still held, so this record is about the half that lives on the disk. The hardware record is [ObiPC specifications](../../../../Infrastructure/Hardware/Workstations/ObiPC.md).
 
@@ -77,6 +77,8 @@ One trap: `ssh-keyscan` on `docker-blue` writes its `# host:port banner` comment
 The task and its state folder are local, so both were gone. I copied [`Scripts/Limit-ObiPCUserSession.ps1`](../../Scripts/Limit-ObiPCUserSession.ps1) to `C:\Program Files\ObiPC-SessionLimit\`, recreated `C:\ProgramData\ObiPC-SessionLimit` with inheritance off and only SYSTEM and Administrators granted, and registered `ObiPC Session Limit` as SYSTEM with a one-minute repetition, a five-minute execution limit, and *ignore new instance*.
 
 The first run returned exit code 1 and wrote no log. Nobody was signed in, and in that case `query.exe user` prints *No User exists for \** to standard error. The script sets `$ErrorActionPreference = 'Stop'`, which turns that stderr line into a terminating `NativeCommandError` before the script reaches its own guard, so every tick on an idle machine died. On 2026-09-12 `IK-user` was signed in for the entire rollout, which is why the task always read result 0 then. I changed the script to relax the preference around that one call and to treat a non-zero exit from `query.exe` as no sessions, redeployed it with a matching SHA-256, and the next scheduled tick at 6:04:30 PM returned 0. The repo copy carries the fix.
+
+Correction, 2026-09-28: the second half of that fix was wrong. Run as `SYSTEM`, `query.exe user` exits 1 even when it lists a signed-in session, so treating a non-zero exit as no sessions meant the script never saw anyone. I only tested it on an idle machine. It surfaced when `IK-user` signed in on 2026-09-28 and was fixed that day; see [IK-user Re-enabled with Zoom and a 90-Minute Pass](IK-user%20Re-enabled%20with%20Zoom%20and%20a%2090-Minute%20Pass%20-%202026-09-28.md).
 
 ### Removed the same evening
 
