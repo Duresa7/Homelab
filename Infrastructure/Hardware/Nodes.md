@@ -1,11 +1,13 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-28
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green also has unresolved host memory errors from 2026-09-20 and holds no guests. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`.
 
 ## Recent changes
+
+- 2026-09-28: I expanded VM 105 `ubuntu-dev` on Grey's NVMe-backed `local-lvm` from 150 GiB to 230 GiB. Afterward, the pool was 32.12% used with 565,003,491 KiB available. [Storage expansion](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md).
 
 - 2026-09-24: I read memory and storage back from all five nodes. `hddpool-1` stood at 70.7% against 82.46% on 2026-09-06, and no record explains the roughly 200 GiB it gave back.
 - 2026-09-23: I moved VM 103 `win11-dev` and its volumes from Green to Grey's `local-lvm`, leaving Green's pool empty. [Migration record](../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).

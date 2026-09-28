@@ -1,11 +1,13 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-28
 
 This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-09-28: I expanded `ubuntu-dev` from 150 GiB to 230 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md).
 
 - 2026-09-24: I read the cluster back and recorded four changes the inventories had missed: [CT 107 and CT 108 HA removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md), [monitor-01 rootfs at 20 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/monitor-01%20Rootfs%20at%2020%20GiB%20-%202026-09-24.md), [HQ-WS001 memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md) and [ubuntu-dev 12 GiB applied](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%2012%20GiB%20Applied%20-%202026-09-24.md).
 - 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
