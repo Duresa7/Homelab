@@ -1,0 +1,122 @@
+{
+  "captured_at": "2026-09-27 01:19:36 PM Eastern",
+  "target": "https://dashboard.alphasecunited.com",
+  "checks": [
+    {
+      "check": "Calendar",
+      "passed": true,
+      "response_count": 2,
+      "services_returned": [
+        "Sonarr",
+        "Radarr"
+      ]
+    },
+    {
+      "check": "Download status",
+      "passed": true,
+      "response_count": 1
+    },
+    {
+      "check": "Seerr requests",
+      "passed": true,
+      "response_count": 20
+    },
+    {
+      "check": "Jellyfin activity",
+      "passed": true,
+      "response_count": 1,
+      "active_sessions": 0
+    },
+    {
+      "check": "Jellyfin recently added",
+      "passed": true,
+      "response_count": 10
+    },
+    {
+      "check": "Indexer status",
+      "passed": true,
+      "response_count": 1,
+      "indexer_count": 3
+    },
+    {
+      "check": "UPS",
+      "passed": true,
+      "response_count": 1,
+      "ups_count": 1
+    },
+    {
+      "check": "WUD updates",
+      "passed": true,
+      "response_count": 2
+    },
+    {
+      "check": "Gluetun VPN",
+      "passed": true,
+      "response_count": 1
+    },
+    {
+      "check": "Proxmox cluster",
+      "passed": true,
+      "response_count": 4,
+      "resource_counts": {
+        "nodes": 5,
+        "lxcs": 6,
+        "vms": 15,
+        "storages": 13
+      }
+    }
+  ],
+  "integrations": [
+    {
+      "name": "qBittorrent",
+      "kind": "qBittorrent",
+      "url": "https://qbittorrent.alphasecunited.com"
+    },
+    {
+      "name": "Sonarr",
+      "kind": "sonarr",
+      "url": "https://sonarr.alphasecunited.com"
+    },
+    {
+      "name": "Radarr",
+      "kind": "radarr",
+      "url": "https://radarr.alphasecunited.com"
+    },
+    {
+      "name": "Prowlarr",
+      "kind": "prowlarr",
+      "url": "https://prowlarr.alphasecunited.com"
+    },
+    {
+      "name": "Jellyfin",
+      "kind": "jellyfin",
+      "url": "https://jellyfin.alphasecunited.com"
+    },
+    {
+      "name": "Seerr",
+      "kind": "seerr",
+      "url": "https://seerr.alphasecunited.com"
+    },
+    {
+      "name": "Proxmox Galaxy",
+      "kind": "proxmox",
+      "url": "https://grey.alphasecunited.com:8006"
+    },
+    {
+      "name": "PeaNUT",
+      "kind": "peaNut",
+      "url": "https://peanut.alphasecunited.com"
+    },
+    {
+      "name": "Gluetun",
+      "kind": "gluetun",
+      "url": "http://192.168.40.42:8000"
+    },
+    {
+      "name": "WUD docker-main",
+      "kind": "wud",
+      "url": "https://wud.alphasecunited.com"
+    }
+  ],
+  "withheld": "Credentials, cookies, API response bodies, media titles, usernames, UPS serials and addresses were not captured."
+}

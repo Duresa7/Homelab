@@ -1,0 +1,25 @@
+{
+  "domain_names": [
+    "dashboard.alphasecunited.com"
+  ],
+  "forward_scheme": "http",
+  "forward_host": "192.168.40.35",
+  "forward_port": 7575,
+  "access_list_id": 0,
+  "certificate_id": 1,
+  "ssl_forced": true,
+  "caching_enabled": false,
+  "block_exploits": true,
+  "advanced_config": "",
+  "meta": {
+    "nginx_online": null,
+    "nginx_err": null
+  },
+  "allow_websocket_upgrade": true,
+  "http2_support": true,
+  "hsts_enabled": false,
+  "hsts_subdomains": false,
+  "locations": [],
+  "id": 34,
+  "enabled": true
+}

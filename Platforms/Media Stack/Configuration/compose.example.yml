@@ -113,12 +113,13 @@ services:
         /bin/sh -c 'wget -O- -nv --retry-connrefused --post-data
         "json={\"listen_port\":{{PORT}},\"random_port\":false,\"upnp\":false}"
         http://127.0.0.1:8080/api/v2/app/setPreferences'
-      FIREWALL_INPUT_PORTS: "8080"
+      FIREWALL_INPUT_PORTS: "8080,8000"
       FIREWALL_OUTBOUND_SUBNETS: ${MEDIA_LAN_SUBNET:?supply outside repository}
     volumes:
       - /opt/media-stack/config/gluetun:/gluetun
     ports:
       - "8080:8080"
+      - "192.168.40.42:8000:8000/tcp"
     restart: unless-stopped
     networks: [media]
 

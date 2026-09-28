@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -23,6 +23,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [Dockhand](Dockhand/README.md) | docker-main | Dockhand 1.0.48; manages the Docker hosts through six Hawser agents |
 | [Executor](Executor/README.md) | docker-blue | Executor 1.6.10, one MCP endpoint in front of SSH Manager, UniFi, Wazuh, Cloudflare and other integrations |
 | [Galaxy PXE](Galaxy%20PXE/README.md) | ansible-01 | Bare-metal provisioning for Galaxy Proxmox nodes |
+| [Homarr](Homarr/README.md) | docker-main | Homarr 1.77.2, internal dashboard at `dashboard.alphasecunited.com`, deployed 2026-09-27 |
 | [Immich](Immich/README.md) | docker-main | Immich 3.2.2, photo library with NVENC transcoding on the GTX 1080 Ti |
 | [Media Stack](Media%20Stack/README.md) | media-01 | Jellyfin 12.1.0, Seerr 3.4.1, Sonarr, Radarr, Prowlarr, FlareSolverr and qBittorrent behind Gluetun |
 | [MeshCentral](MeshCentral/README.md) | docker-blue | Remote support pilot, running beside RustDesk |

@@ -1,0 +1,13 @@
+{
+  "captured_date": "2026-09-27",
+  "results": [
+    {
+      "server": "docker_main",
+      "command": "set -eu\ntest ! -e /opt/docker/homarr\ninstall -d -m 0755 /opt/docker/homarr\ncd /opt/docker/homarr\ncat > docker-compose.yml <<'HOMARR_COMPOSE'\nservices:\n  homarr:\n    container_name: homarr\n    image: ghcr.io/homarr-labs/homarr:v1.77.2\n    restart: unless-stopped\n    ports:\n      - \"192.168.40.35:7575:7575\"\n    volumes:\n      - ./appdata:/appdata\n    environment:\n      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY:?Set SECRET_ENCRYPTION_KEY in .env}\n    logging:\n      driver: json-file\n      options:\n        max-size: \"10m\"\n        max-file: \"3\"\nHOMARR_COMPOSE\numask 077\npython3 - <<'PY'\nimport secrets\nwith open('.env','x') as f:\n    f.write('SECRET_ENCRYPTION_KEY='+secrets.token_hex(32)+'\\n')\nprint('Encryption key generated in mode-0600 .env')\nPY\ndocker compose config --quiet\ndocker compose pull --quiet\ndocker compose up -d\ndocker compose ps\n",
+      "stdout": "Encryption key generated in mode-0600 .env\nNAME      IMAGE                                COMMAND                  SERVICE   CREATED        STATUS                  PORTS\nhomarr    ghcr.io/homarr-labs/homarr:v1.77.2   \"/app/entrypoint.sh …\"   homarr    1 second ago   Up Less than a second   192.168.40.35:7575->7575/tcp\n",
+      "stderr": " Image ghcr.io/homarr-labs/homarr:v1.77.2 Pulling \n Image ghcr.io/homarr-labs/homarr:v1.77.2 Pulled \n Network homarr_default Creating \n Network homarr_default Creating \n Network homarr_default Created \n Network homarr_default Created \n Container homarr Creating \n Container homarr Created \n Container homarr Starting \n Container homarr Started \n",
+      "code": 0,
+      "success": true
+    }
+  ]
+}

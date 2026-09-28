@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, and automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -52,3 +52,5 @@ Jellyfin advertises `JELLYFIN_PUBLISHED_SERVER_URL` as its internal HTTPS URL an
 Sonarr, Radarr, and Prowlarr each carry `<APP>__SERVER__TRUSTEDNETWORKS` set to `192.168.85.2` in Compose, which is the Servarr `TrustedNetworks` setting. Without it, `ForwardedHeadersMiddleware` treats NPM as an unknown proxy, discards its `X-Forwarded-Proto: https`, and the apps answer an HTTPS request with an `http://` login redirect. The value is comma separated and a bare address means a single host. The [lost proxy trust issue](../Documentation/Troubleshooting/Lost%20Proxy%20Trust%20Broke%20Arr%20HTTPS%20Redirects%20-%202026-09-18.md) records the failure that exposed it and the verification.
 
 The names, upstreams, verification, and rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). The [qBittorrent Host Validation issue](../Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) records why all three entries are required.
+
+On 2026-09-27 I enabled Gluetun's authenticated control API on `192.168.40.42:8000` for Homarr. `compose.example.yml` includes the new binding and firewall input port. `gluetun-homarr-auth.toml.example` contains the four GET routes; the live auth file is mode 0600 at `/opt/media-stack/config/gluetun/auth/config.toml` with a dedicated API token. [Implementation and verification](../../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md#gluetun-control-api).

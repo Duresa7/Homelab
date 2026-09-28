@@ -1,0 +1,16 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:v1.77.2
+    restart: unless-stopped
+    ports:
+      - "192.168.40.35:7575:7575"
+    volumes:
+      - ./appdata:/appdata
+    environment:
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY:?Set SECRET_ENCRYPTION_KEY in .env}
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

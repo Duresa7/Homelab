@@ -1,0 +1,132 @@
+{
+  "verified_at": "2026-09-27T08:25:32.716224-04:00",
+  "dns": "192.168.85.2",
+  "http": {
+    "status": 301,
+    "location": "https://dashboard.alphasecunited.com/"
+  },
+  "https": {
+    "status": 200,
+    "final_url": "https://dashboard.alphasecunited.com/",
+    "homarr_in_page": true
+  },
+  "readiness_status": 200,
+  "https_login_status": 200,
+  "https_authenticated_session": true,
+  "authenticated_manage": {
+    "status": 200,
+    "final_url": "https://dashboard.alphasecunited.com/manage"
+  },
+  "npm_host_count": 24,
+  "npm_homarr": {
+    "id": 34,
+    "enabled": true,
+    "forward_host": "192.168.40.35",
+    "forward_port": 7575,
+    "certificate_id": 1,
+    "meta": {
+      "letsencrypt_agree": false,
+      "dns_challenge": false,
+      "nginx_online": true,
+      "nginx_err": null
+    }
+  },
+  "all_https_hosts": [
+    {
+      "host": "aiproxy.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "appportal.alphasecunited.com",
+      "status": 404
+    },
+    {
+      "host": "booklore.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "dashboard.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "dockhand.alphasecunited.com",
+      "status": 307
+    },
+    {
+      "host": "forgejo.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "grafana.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "immich.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "jellyfin.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "mcp.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "mesh.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "netbird.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "openwebui.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "peanut.alphasecunited.com",
+      "status": 307
+    },
+    {
+      "host": "prometheus.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "prowlarr.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "qbittorrent.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "radarr.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "seerr.alphasecunited.com",
+      "status": 307
+    },
+    {
+      "host": "semaphore.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "sonarr.alphasecunited.com",
+      "status": 302
+    },
+    {
+      "host": "splunk.alphasecunited.com",
+      "status": 303
+    },
+    {
+      "host": "ts3-manager.alphasecunited.com",
+      "status": 200
+    },
+    {
+      "host": "wazuh.alphasecunited.com",
+      "status": 302
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+[
+  {
+    "name": "Jellyfin",
+    "href": "https://jellyfin.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/jellyfin.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Seerr",
+    "href": "https://seerr.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/jellyseerr.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Sonarr",
+    "href": "https://sonarr.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/sonarr.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Radarr",
+    "href": "https://radarr.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/radarr.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Prowlarr",
+    "href": "https://prowlarr.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/prowlarr.svg",
+    "description": "Media"
+  },
+  {
+    "name": "qBittorrent",
+    "href": "https://qbittorrent.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/qbittorrent.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Immich",
+    "href": "https://immich.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/immich.svg",
+    "description": "Media"
+  },
+  {
+    "name": "BookLore",
+    "href": "https://booklore.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/booklore.svg",
+    "description": "Media"
+  },
+  {
+    "name": "Forgejo",
+    "href": "https://forgejo.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/forgejo.svg",
+    "description": "Development"
+  },
+  {
+    "name": "Open WebUI",
+    "href": "https://openwebui.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/open-webui.svg",
+    "description": "AI"
+  },
+  {
+    "name": "CLI Proxy API",
+    "href": "https://aiproxy.alphasecunited.com/management.html",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/terminal.svg",
+    "description": "AI"
+  },
+  {
+    "name": "Executor",
+    "href": "https://mcp.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/terminal.svg",
+    "description": "Development"
+  },
+  {
+    "name": "App Portal",
+    "href": "https://appportal.alphasecunited.com/admin/login",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/microsoft-windows.svg",
+    "description": "Administration"
+  },
+  {
+    "name": "Semaphore",
+    "href": "https://semaphore.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/ansible.svg",
+    "description": "Automation"
+  },
+  {
+    "name": "Dockhand",
+    "href": "https://dockhand.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/docker.svg",
+    "description": "Containers"
+  },
+  {
+    "name": "MeshCentral",
+    "href": "https://mesh.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/terminal.svg",
+    "description": "Remote access"
+  },
+  {
+    "name": "NetBird",
+    "href": "https://netbird.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/netbird.svg",
+    "description": "Network"
+  },
+  {
+    "name": "TS3 Manager",
+    "href": "https://ts3-manager.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/teamspeak.svg",
+    "description": "Voice"
+  },
+  {
+    "name": "Grafana",
+    "href": "https://grafana.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/grafana.svg",
+    "description": "Monitoring"
+  },
+  {
+    "name": "Prometheus",
+    "href": "https://prometheus.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/prometheus.svg",
+    "description": "Monitoring"
+  },
+  {
+    "name": "PeaNUT",
+    "href": "https://peanut.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/peanut.svg",
+    "description": "Monitoring"
+  },
+  {
+    "name": "Wazuh",
+    "href": "https://wazuh.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/wazuh.svg",
+    "description": "Security"
+  },
+  {
+    "name": "Splunk",
+    "href": "https://splunk.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/splunk.svg",
+    "description": "Security"
+  },
+  {
+    "name": "Nginx Proxy Manager",
+    "href": "http://192.168.85.2:81",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/nginx-proxy-manager.svg",
+    "description": "Network"
+  },
+  {
+    "name": "UniFi Network",
+    "href": "https://192.168.1.1",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/unifi.svg",
+    "description": "Network"
+  },
+  {
+    "name": "Coolify",
+    "href": "https://coolify-a1.alphsec.com",
+    "pingUrl": "http://192.168.80.10:8000/api/health",
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/coolify.svg",
+    "description": "Deployment"
+  },
+  {
+    "name": "Windows Admin Center",
+    "href": "https://hq-mgt01.ad.alphasecunited.com",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/microsoft-windows.svg",
+    "description": "Administration"
+  },
+  {
+    "name": "Proxmox Galaxy",
+    "href": "https://grey.alphasecunited.com:8006",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/proxmox.svg",
+    "description": "Proxmox nodes"
+  },
+  {
+    "name": "Proxmox Purple",
+    "href": "https://purple.alphasecunited.com:8006",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/proxmox.svg",
+    "description": "Proxmox nodes"
+  },
+  {
+    "name": "Proxmox Blue",
+    "href": "https://blue.alphasecunited.com:8006",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/proxmox.svg",
+    "description": "Proxmox nodes"
+  },
+  {
+    "name": "Proxmox Red",
+    "href": "https://red.alphasecunited.com:8006",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/proxmox.svg",
+    "description": "Proxmox nodes"
+  },
+  {
+    "name": "Proxmox Green",
+    "href": "https://green.alphasecunited.com:8006",
+    "pingUrl": null,
+    "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/proxmox.svg",
+    "description": "Proxmox nodes"
+  }
+]
