@@ -1,0 +1,8 @@
+# Deployed role shape, verified 2026-09-27; API token omitted.
+# Install as /opt/media-stack/config/gluetun/auth/config.toml, mode 0600.
+# Replace the placeholder with a dedicated API token held in the credential vault.
+[[roles]]
+name = "homarr-read-only"
+routes = ["GET /v1/vpn/status", "GET /v1/dns/status", "GET /v1/publicip/ip", "GET /v1/vpn/settings"]
+auth = "apikey"
+apikey = "<YOUR_HOMARR_GLUETUN_API_KEY>"

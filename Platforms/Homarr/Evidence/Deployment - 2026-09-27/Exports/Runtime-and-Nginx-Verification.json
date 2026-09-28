@@ -1,0 +1,21 @@
+{
+  "captured_date": "2026-09-27",
+  "results": [
+    {
+      "server": "docker_network",
+      "command": "docker exec nginx-proxy-manager nginx -t; docker inspect -f '{{.State.Health.Status}}' nginx-proxy-manager; curl -sS -o /dev/null -w 'backend_ready=%{http_code}\\n' http://192.168.40.35:7575/api/health/ready",
+      "stdout": "healthy\nbackend_ready=200\n",
+      "stderr": "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful\n",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "docker_main",
+      "command": "docker inspect -f 'status={{.State.Status}} restarts={{.RestartCount}} image={{.Config.Image}} restart={{.HostConfig.RestartPolicy.Name}} mounts={{range .Mounts}}{{.Source}}:{{.Destination}} {{end}}' homarr; docker image inspect ghcr.io/homarr-labs/homarr:v1.77.2 --format '{{json .RepoDigests}}'; stat -c '%a %n' /opt/docker/homarr/.env; docker stats --no-stream --format '{{.Name}} {{.MemUsage}} {{.CPUPerc}}' homarr",
+      "stdout": "status=running restarts=0 image=ghcr.io/homarr-labs/homarr:v1.77.2 restart=unless-stopped mounts=/opt/docker/homarr/appdata:/appdata \n[\"ghcr.io/homarr-labs/homarr@sha256:f0fb462299af9749a72f11040fd3f604d1c4976b3d9a137ae5021b7f44d980f5\"]\n600 /opt/docker/homarr/.env\nhomarr 255.2MiB / 16GiB 6.31%\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    }
+  ]
+}

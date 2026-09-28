@@ -1,0 +1,9 @@
+{
+  "recorded_at": "9/27/2026, 8:32:20 AM Eastern",
+  "server": "docker_main",
+  "command": "docker inspect homarr --format 'image={{.Config.Image}} running={{.State.Running}} status={{.State.Status}} restart_count={{.RestartCount}} started={{.State.StartedAt}}'\ndocker compose -f /opt/docker/homarr/docker-compose.yml config --quiet\ncurl --fail --silent --show-error --max-time 15 -o /dev/null -w 'backend_readiness=%{http_code}\\n' http://192.168.40.35:7575/api/health/ready\ncurl --fail --silent --show-error --max-time 15 -o /dev/null -w 'https_readiness=%{http_code} tls_verify=%{ssl_verify_result}\\n' https://dashboard.alphasecunited.com/api/health/ready",
+  "stdout": "image=ghcr.io/homarr-labs/homarr:v1.77.2 running=true status=running restart_count=0 started=2026-09-27T12:25:44.302615285Z\nbackend_readiness=200\nhttps_readiness=200 tls_verify=0\n",
+  "stderr": "",
+  "code": 0,
+  "success": true
+}

@@ -1,0 +1,511 @@
+{
+  "captured_at": "2026-09-27 01:22:57 PM Eastern",
+  "board_count": 1,
+  "integration_count": 10,
+  "desktop_home": true,
+  "mobile_home": true,
+  "board": {
+    "id": "wpv87q9k465b59opvcsm46nb",
+    "name": "dashboard",
+    "isPublic": false,
+    "layouts": [
+      {
+        "id": "g3q3r51i681o344c5sp5ygbo",
+        "name": "Base",
+        "columnCount": 12,
+        "breakpoint": 0
+      }
+    ],
+    "sections": [
+      {
+        "id": "mggpmnystnm3sg8lhwk33uor",
+        "kind": "empty",
+        "yOffset": 0,
+        "xOffset": 0
+      }
+    ],
+    "items": [
+      {
+        "kind": "app",
+        "options": {
+          "appId": "ro7n8flv1yhwhdbu29k1mb89",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "zc8c4rmtci5h068jj4eullqz",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 0,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "jn01fo84pitf0ctdmkb8946u",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "fidkcilrk6scp2pma1g1i8xw",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 2,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "jeayzodsdzk94njy4jwbwh1f",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "l07t5zkqbins4o5cfaoj2ey7",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 4,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "aj8f6c6cq62n4sufuobrr4m1",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "snhy42xtusyt2q3x238o1c04",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 6,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "j8otyoejh0hxqnp9avdfas65",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "mi47fq1sfe5td2ywsgpfkfwq",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 8,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "zguskc4vu1s3ptuspkybg5xx",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "cgcjgbxkitxgvqai72kixl0c",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 0,
+            "xOffset": 10,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "calendar",
+        "options": {},
+        "id": "v483vu0yj4xlrfuy3i90n48u",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 1,
+            "xOffset": 0,
+            "width": 7,
+            "height": 5,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "g79t5ueop7tiy8ds5kteo4p6",
+          "mligthlsga9v54qz36ojk6ny"
+        ],
+        "advancedOptions": {
+          "title": "Release calendar",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "mediaServer",
+        "options": {
+          "showOnlyPlaying": true,
+          "showLocation": false
+        },
+        "id": "wasf2nn0mncx8gs61ciad8d9",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 1,
+            "xOffset": 7,
+            "width": 5,
+            "height": 3,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "qqeuquazsnfsmesyseg9d7in"
+        ],
+        "advancedOptions": {
+          "title": "Now playing",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "indexerManager",
+        "options": {},
+        "id": "rqkdbejmzksl2fznk39qnc3r",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 4,
+            "xOffset": 7,
+            "width": 5,
+            "height": 2,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "ztcf43wrj0850226w0bi4qmh"
+        ],
+        "advancedOptions": {
+          "title": "Indexer health",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "downloads",
+        "options": {
+          "columnWidths": "{\"progress\":80,\"downSpeed\":90,\"time\":100,\"state\":90}"
+        },
+        "id": "aqx1csl2tnd72f4fou1qo9bz",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 6,
+            "xOffset": 0,
+            "width": 7,
+            "height": 4,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "d5d8zj5zd7ul0zzxgqdudrtf"
+        ],
+        "advancedOptions": {
+          "title": "Downloads",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "mediaRequests-requestList",
+        "options": {},
+        "id": "wekh87pow0ohrqp4bwoz8fxp",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 6,
+            "xOffset": 7,
+            "width": 5,
+            "height": 4,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "goiligw4npfedk76g6lgngwe"
+        ],
+        "advancedOptions": {
+          "title": "Media requests",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "mediaReleases",
+        "options": {},
+        "id": "f9c6wzpcg2myl4954rfh1ufe",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 10,
+            "xOffset": 0,
+            "width": 12,
+            "height": 3,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "qqeuquazsnfsmesyseg9d7in"
+        ],
+        "advancedOptions": {
+          "title": "Recently added",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "tb734hlxcib7j16c2tp880sz",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "yin03gh1zmj9d43er07lc4sw",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 13,
+            "xOffset": 2,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "bn466erjsye9x62do07iur8e",
+          "layout": "row",
+          "showTitle": true,
+          "openInNewTab": true,
+          "pingEnabled": false
+        },
+        "id": "nn98bawt3p9wjng6nj23q2k3",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 13,
+            "xOffset": 4,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "ups",
+        "options": {},
+        "id": "crw7s9zhepjxidh23pbprm69",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 14,
+            "xOffset": 8,
+            "width": 4,
+            "height": 3,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "by542v5tjrg4771agq6p1r28"
+        ],
+        "advancedOptions": {
+          "title": "UPS-02",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "wud",
+        "options": {
+          "showUpdateList": true
+        },
+        "id": "v9ad0mo9s9siecsyguqyurxi",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 17,
+            "xOffset": 8,
+            "width": 4,
+            "height": 4,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "h39dwryjtqmf7nl2m35ztuvb"
+        ],
+        "advancedOptions": {
+          "title": "Container updates",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "app",
+        "options": {
+          "appId": "wade3i7vbrvnm9ssff91egah",
+          "layout": "row",
+          "pingEnabled": false
+        },
+        "id": "c8umm6cah1r09k5ys1trxdps",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 13,
+            "xOffset": 0,
+            "width": 2,
+            "height": 1,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [],
+        "advancedOptions": {
+          "title": null,
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "healthMonitoring",
+        "options": {
+          "defaultTab": "cluster"
+        },
+        "id": "l7rfxpad8nnb85bzwu293d5a",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 14,
+            "xOffset": 0,
+            "width": 8,
+            "height": 6,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "at9ckpwkwqa6otthn3nmexvb"
+        ],
+        "advancedOptions": {
+          "title": "Galaxy cluster",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      },
+      {
+        "kind": "vpn",
+        "options": {},
+        "id": "zkkmndqcknoev130ajfmpd4c",
+        "layouts": [
+          {
+            "layoutId": "g3q3r51i681o344c5sp5ygbo",
+            "yOffset": 20,
+            "xOffset": 0,
+            "width": 8,
+            "height": 3,
+            "sectionId": "mggpmnystnm3sg8lhwk33uor"
+          }
+        ],
+        "integrationIds": [
+          "jhvihg75kbkn4hz9h40indmx"
+        ],
+        "advancedOptions": {
+          "title": "Gluetun VPN",
+          "customCssClasses": [],
+          "borderColor": ""
+        }
+      }
+    ]
+  }
+}

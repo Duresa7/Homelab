@@ -1,0 +1,17 @@
+{
+  "id": 35,
+  "domain_names": [
+    "wud.alphasecunited.com"
+  ],
+  "forward_scheme": "http",
+  "forward_host": "192.168.40.35",
+  "forward_port": 9102,
+  "certificate_id": 1,
+  "ssl_forced": true,
+  "enabled": true,
+  "meta": {
+    "nginx_online": true,
+    "nginx_err": null
+  },
+  "live_proxy_count": 25
+}

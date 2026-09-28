@@ -1,0 +1,396 @@
+{
+  "capturedAt": "2026-09-27T17:32:51.680450+00:00",
+  "target": "https://dashboard.alphasecunited.com",
+  "method": "Authenticated Homarr widget.app.ping requests, configuration readback and browser verification",
+  "boardCount": 1,
+  "board": "dashboard",
+  "appWidgets": 47,
+  "integrationWidgets": 10,
+  "allAppStatusChecksEnabled": true,
+  "enableStatusByDefault": true,
+  "layoutOverlaps": 0,
+  "browser": {
+    "gridItems": 57,
+    "pageErrors": [],
+    "testedErrorIndicators": [],
+    "brokenImages": 0
+  },
+  "checks": [
+    {
+      "name": "Jellyfin",
+      "href": "https://jellyfin.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 201.79992400109768,
+      "unreachable": false
+    },
+    {
+      "name": "Seerr",
+      "href": "https://seerr.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 213.99553199857473,
+      "unreachable": false
+    },
+    {
+      "name": "Sonarr",
+      "href": "https://sonarr.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 180.20630599930882,
+      "unreachable": false
+    },
+    {
+      "name": "Radarr",
+      "href": "https://radarr.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 176.8756590001285,
+      "unreachable": false
+    },
+    {
+      "name": "Prowlarr",
+      "href": "https://prowlarr.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 195.03820199891925,
+      "unreachable": false
+    },
+    {
+      "name": "qBittorrent",
+      "href": "https://qbittorrent.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 40.98359099775553,
+      "unreachable": false
+    },
+    {
+      "name": "Immich",
+      "href": "https://immich.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 70.50609399750829,
+      "unreachable": false
+    },
+    {
+      "name": "BookLore",
+      "href": "https://booklore.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 144.65224999934435,
+      "unreachable": false
+    },
+    {
+      "name": "Forgejo",
+      "href": "https://forgejo.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 99.3708459995687,
+      "unreachable": false
+    },
+    {
+      "name": "Open WebUI",
+      "href": "https://openwebui.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 57.22657399997115,
+      "unreachable": false
+    },
+    {
+      "name": "CLI Proxy API",
+      "href": "https://aiproxy.alphasecunited.com/management.html",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 51.118260998278856,
+      "unreachable": false
+    },
+    {
+      "name": "Executor",
+      "href": "https://mcp.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 59.566017001867294,
+      "unreachable": false
+    },
+    {
+      "name": "App Portal",
+      "href": "https://appportal.alphasecunited.com/admin/login",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 181.81917100027204,
+      "unreachable": false
+    },
+    {
+      "name": "Semaphore",
+      "href": "https://semaphore.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 43.852024998515844,
+      "unreachable": false
+    },
+    {
+      "name": "Dockhand",
+      "href": "https://dockhand.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 102.73573299869895,
+      "unreachable": false
+    },
+    {
+      "name": "MeshCentral",
+      "href": "https://mesh.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 75.3925359994173,
+      "unreachable": false
+    },
+    {
+      "name": "NetBird",
+      "href": "https://netbird.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 45.08120699971914,
+      "unreachable": false
+    },
+    {
+      "name": "TS3 Manager",
+      "href": "https://ts3-manager.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 64.43582000210881,
+      "unreachable": false
+    },
+    {
+      "name": "Grafana",
+      "href": "https://grafana.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 95.49560799822211,
+      "unreachable": false
+    },
+    {
+      "name": "Prometheus",
+      "href": "https://prometheus.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 72.78639800101519,
+      "unreachable": false
+    },
+    {
+      "name": "PeaNUT",
+      "href": "https://peanut.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 66.71281299740076,
+      "unreachable": false
+    },
+    {
+      "name": "Wazuh",
+      "href": "https://wazuh.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 143.54002700001,
+      "unreachable": false
+    },
+    {
+      "name": "Splunk",
+      "href": "https://splunk.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 116.66422300040722,
+      "unreachable": false
+    },
+    {
+      "name": "Homarr",
+      "href": "https://dashboard.alphasecunited.com/manage",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 135.3689770027995,
+      "unreachable": false
+    },
+    {
+      "name": "WUD docker-main",
+      "href": "https://wud.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 40.755913998931646,
+      "unreachable": false
+    },
+    {
+      "name": "Nginx Proxy Manager",
+      "href": "http://192.168.85.2:81",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 19.84707599878311,
+      "unreachable": false
+    },
+    {
+      "name": "UniFi Network",
+      "href": "https://192.168.1.1",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 46.90597699955106,
+      "unreachable": false
+    },
+    {
+      "name": "Coolify",
+      "href": "https://coolify-a1.alphsec.com",
+      "pingUrl": "http://192.168.80.10:8000/api/health",
+      "statusCode": 200,
+      "durationMs": 46.504893001168966,
+      "unreachable": false
+    },
+    {
+      "name": "Windows Admin Center",
+      "href": "https://hq-mgt01.ad.alphasecunited.com",
+      "pingUrl": null,
+      "statusCode": null,
+      "durationMs": null,
+      "unreachable": true
+    },
+    {
+      "name": "Proxmox Galaxy",
+      "href": "https://grey.alphasecunited.com:8006",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 89.90198699757457,
+      "unreachable": false
+    },
+    {
+      "name": "Proxmox Purple",
+      "href": "https://purple.alphasecunited.com:8006",
+      "pingUrl": null,
+      "statusCode": null,
+      "durationMs": null,
+      "unreachable": true
+    },
+    {
+      "name": "Proxmox Blue",
+      "href": "https://blue.alphasecunited.com:8006",
+      "pingUrl": null,
+      "statusCode": null,
+      "durationMs": null,
+      "unreachable": true
+    },
+    {
+      "name": "Proxmox Red",
+      "href": "https://red.alphasecunited.com:8006",
+      "pingUrl": null,
+      "statusCode": null,
+      "durationMs": null,
+      "unreachable": true
+    },
+    {
+      "name": "Proxmox Green",
+      "href": "https://green.alphasecunited.com:8006",
+      "pingUrl": null,
+      "statusCode": null,
+      "durationMs": null,
+      "unreachable": true
+    },
+    {
+      "name": "WUD docker-blue",
+      "href": "http://192.168.40.39:9102",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 23.427498999983072,
+      "unreachable": false
+    },
+    {
+      "name": "WUD docker-network",
+      "href": "http://192.168.85.2:9102",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 84.07776900008321,
+      "unreachable": false
+    },
+    {
+      "name": "WUD media-01",
+      "href": "http://192.168.40.42:9102",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 31.347503997385502,
+      "unreachable": false
+    },
+    {
+      "name": "WUD monitor-01",
+      "href": "http://192.168.73.2:9102",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 77.32849600166082,
+      "unreachable": false
+    },
+    {
+      "name": "WUD alpha-prod-01",
+      "href": "http://192.168.80.118:9102",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 21.58661800250411,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor docker-main",
+      "href": "http://192.168.40.35:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 6.490297000855207,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor docker-blue",
+      "href": "http://192.168.40.39:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 6.183291997760534,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor docker-network",
+      "href": "http://192.168.85.2:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 16.092114999890327,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor media-01",
+      "href": "http://192.168.40.42:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 6.875831000506878,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor monitor-01",
+      "href": "http://192.168.73.2:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 17.084789000451565,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor alpha-prod-01",
+      "href": "http://192.168.80.118:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 6.093554001301527,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor app-01",
+      "href": "http://192.168.80.10:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 5.528962001204491,
+      "unreachable": false
+    },
+    {
+      "name": "cAdvisor security-01",
+      "href": "http://192.168.72.2:9101/containers/",
+      "pingUrl": null,
+      "statusCode": 200,
+      "durationMs": 13.335029002279043,
+      "unreachable": false
+    }
+  ]
+}

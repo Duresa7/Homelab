@@ -1,0 +1,9 @@
+{
+  "verified_at": "2026-09-27T08:26:12.259664-04:00",
+  "readiness_status": 200,
+  "onboarding": {
+    "current": "finish",
+    "previous": "integrations"
+  },
+  "authenticated_session_after_restart": true
+}

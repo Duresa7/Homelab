@@ -1,0 +1,13 @@
+{
+  "captured_date": "2026-09-27",
+  "results": [
+    {
+      "server": "docker_main",
+      "command": "cd /opt/docker/homarr && docker compose restart homarr",
+      "stdout": "",
+      "stderr": " Container homarr Restarting \n Container homarr Started \n",
+      "code": 0,
+      "success": true
+    }
+  ]
+}
