@@ -1,7 +1,7 @@
 # Access Paths
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-27
 
 This is how anything reaches the lab: the public, the LAN, me from outside, me at a console, and my MCP clients. Five paths, each with one owner. Figures are from the live readback on 2026-09-24 and 2026-09-25 unless a line says otherwise.
 
@@ -33,8 +33,8 @@ The full chain, the firewall hop and the Access gap are in [External Service Ing
 
 `LAN client -> UniFi local DNS -> NPM 192.168.85.2:443 -> backend web port`
 
-- Nginx Proxy Manager 2.15.1 runs on CT 107 `docker-network`, VLAN 85. It holds 23 live proxy hosts: NetBird and 22 applications (2026-09-26).
-- UniFi holds 23 local A records pointing at `192.168.85.2`, one per live host. None of these names exists in public DNS.
+- Nginx Proxy Manager 2.15.1 runs on CT 107 `docker-network`, VLAN 85. It holds 24 live proxy hosts: NetBird and 23 applications (2026-09-27), including Homarr at `dashboard.alphasecunited.com`.
+- UniFi holds 24 local A records pointing at `192.168.85.2`, one per live host. None of these names exists in public DNS.
 - One Let's Encrypt certificate covers `*.alphasecunited.com` and `alphasecunited.com`. It renews through Cloudflare DNS-01, so no inbound port is needed; on 2026-09-24 it expired 2026-12-08.
 - 13 UniFi policies name NPM. Ten let `192.168.85.2` reach one backend each on its listed web ports. Three admit clients to NPM on 443: the Hawser agents on alpha-prod-01 and security-01, and HQ-WS001.
 

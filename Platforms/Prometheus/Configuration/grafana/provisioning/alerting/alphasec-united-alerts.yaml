@@ -1267,53 +1267,7 @@ groups:
                   operator: {type: and}
                   evaluator: {type: gt, params: [0.5]}
 
-      # A newer image exists for a running container. WUD's gauge carries the
-      # answer as labels: result_tag is the newest tag it found, or the same
-      # tag with a new digest when the tag is mutable. The Ansible
-      # docker-compose-update playbook is how these get applied, on purpose,
-      # by hand.
-      - uid: homelab-image-update
-        title: Container image has an update
-        condition: B
-        for: 30m
-        labels:
-          severity: info
-          category: updates
-          class: updates
-        annotations:
-          summary: '{{ $labels.name }} on {{ $labels.host }}: {{ $labels.image_name }} {{ $labels.image_tag_value }}{{ if eq $labels.update_kind_kind "digest" }} has a newer build{{ else }} can move to {{ $labels.result_tag }}{{ end }}.'
-          description: >-
-            WUD compared the running image with its registry and found
-            something newer. Read the release notes before pulling; several
-            projects here float on :latest on purpose, and a digest change on
-            those is a new build of the same tag, not a new version.
-        noDataState: OK
-        execErrState: Error
-        isPaused: false
-        data:
-          - refId: A
-            relativeTimeRange: {from: 600, to: 0}
-            datasourceUid: bfgnkdi47u5tsa
-            model:
-              refId: A
-              editorMode: code
-              instant: true
-              range: false
-              intervalMs: 1000
-              maxDataPoints: 43200
-              expr: 'wud_containers{update_available="true"}'
-          - refId: B
-            relativeTimeRange: {from: 600, to: 0}
-            datasourceUid: __expr__
-            model:
-              refId: B
-              type: threshold
-              expression: A
-              intervalMs: 1000
-              maxDataPoints: 43200
-              conditions:
-                - type: query
-                  query: {params: [A]}
-                  reducer: {type: last, params: []}
-                  operator: {type: and}
-                  evaluator: {type: gt, params: [0.5]}
+# Retired with WUD on 2026-09-27; remove the provisioned database rule too.
+deleteRules:
+  - orgId: 1
+    uid: homelab-image-update

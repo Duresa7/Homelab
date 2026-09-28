@@ -1,7 +1,7 @@
 # MeshCentral
 
 **Created:** 2026-09-12  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 MeshCentral is my remote-control pilot. It runs on `docker-blue`, CT 108 at `192.168.40.39` in Personal-A, VLAN 40, beside the RustDesk `hbbs` and `hbbr` containers it may replace. I deployed it on 2026-09-12. I picked it because it is free and self-hosted, it serves the browser console and the endpoint agents from one port, and it supports LDAP and OIDC console login without a subscription. The [RustDesk](../RustDesk/README.md) OSS server has no central permissions or directory login; those sit behind a paid plan.
 
@@ -40,7 +40,7 @@ I chose a container on an existing Docker host rather than a new LXC because `bl
 
 MeshCentral writes its own `config.json` into the `meshcentral-data` volume on first start. I changed one value from the generated default: `cert`, from the placeholder `myserver.mydomain.com` to `192.168.40.39`. That name is what the server issues to agents and what it puts in its certificate, so an agent installed while the placeholder was live would have tried to reach a domain that does not exist. The generated defaults I kept are `tlsOffload: false`, `SelfUpdate: false`, `port: 443`, and `redirPort: 80`. I enabled `WebRTC` on 2026-09-13, so sessions try a direct peer-to-peer channel before relaying through the server; only the `ubuntu-dev` and `DuresaGamingPC` pair can currently take that path, because the identity boundary does not pass ephemeral UDP. The [WebRTC record](Documentation/Change%20Records/WebRTC%20Enabled%20-%202026-09-13.md) holds the reasoning.
 
-`SelfUpdate` stays false because the upstream container documentation says not to use the built-in updater in a container. Upgrades are a `docker compose pull` and `docker compose up -d`, which is also how What's Up Docker on this host reports the image.
+`SelfUpdate` stays false because the upstream container documentation says not to use the built-in updater in a container. Upgrades are a `docker compose pull` and `docker compose up -d`. Dockhand handles the host's image checks and scheduled updates.
 
 Nginx Proxy Manager fronts it at `mesh.alphasecunited.com` as of 2026-09-13, so the browser and new agents get the shared Let's Encrypt wildcard certificate. `cert`, `certUrl`, and `trustedProxy` are set for that; `tlsOffload` stays `false`, so MeshCentral still terminates TLS on its own 443 and the direct address keeps working for agents installed against it. The [change record](Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md) holds the reasoning and the verification.
 

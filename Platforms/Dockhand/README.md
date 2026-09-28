@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-27
 
 I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
 
@@ -26,6 +26,8 @@ I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhan
 | security-01 | 192.168.72.2 | Hawser Edge | 2 | 2 |
 
 The initial Dockge replacement preserved application container IDs and start timestamps. A later repair, limited to the TeamSpeak monitor, recreated `teamspeak-monitor`. After retiring Portainer on 2026-09-16 I verified seven connected hosts, 42 Compose projects, 64 running containers, and six stopped Hawser updater containers.
+
+I retired the six WUD stacks on 2026-09-27 because Dockhand already handles image checks and updates. [Retirement and verification](../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Access and configuration
 

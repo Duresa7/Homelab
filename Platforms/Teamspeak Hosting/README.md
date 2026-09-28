@@ -1,7 +1,7 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
@@ -16,7 +16,7 @@ Read back on 2026-09-25 unless a row says otherwise.
 | Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:latest`, image label 1.0) |
 | Collector | `teamspeak-monitor` (`forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable`) |
 | Administration | `ts3-manager` (`joni1802/ts3-manager`) at `https://ts3-manager.alphasecunited.com` through internal NPM (proxy host 22); direct fallback `http://192.168.80.118:9000` |
-| Other containers | `hawser` 0.2.49, `wud` 9.0.2, `cadvisor` 0.60.5 |
+| Other containers | `hawser` 0.2.49 and `cadvisor` 0.60.5 |
 | Networking | Host networking, so each voice container needs a unique port set |
 
 ## Port and Name Map

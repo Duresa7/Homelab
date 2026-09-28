@@ -9,7 +9,7 @@ Each device that can initiate SSH (Mac, Ansible Control, Jedi PC, Ubuntu Dev or 
 
 ![How one Ansible run reaches authorized keys: I run the playbooks directly or through the optional Semaphore UI, and they act on one selected identity file, that identity's target allowlist, and finally the authorized keys on the approved hosts](../../../Assets/Diagrams/automation-flow.svg)
 
-Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation. Each project directory carries a manifest that describes its Semaphore project. Live Semaphore held three projects and 23 templates on 2026-09-24; the four manifests in the repository describe 41 templates, and the difference is listed in the [README](../README.md).
+Semaphore launches the same playbooks through a web interface. It doesn't contain a second automation implementation. Each project directory carries a manifest that describes its Semaphore project. Live Semaphore held three projects and 23 templates on 2026-09-24; the four manifests in the repository describe 39 templates, and the difference is listed in the [README](../README.md).
 
 | Semaphore project | Controller directory | Managed scope |
 |---|---|---|

@@ -1,9 +1,9 @@
 # Ansible
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-26
+**Last updated:** 2026-09-27
 
-I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities on 16 hosts, patches 11 Linux guests through apt or dnf, updates 19 Compose projects on 6 hosts, manages exporters and What's Up Docker across the fleet, owns account and sudo policy through the host access baseline, and hosts the [Galaxy PXE](../Galaxy%20PXE/README.md) runtime. Semaphore puts a web interface over the same playbooks; every operation also runs through `ansible-playbook` from the project directory.
+I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-key identities on 16 hosts, patches 11 Linux guests through apt or dnf, updates 19 Compose projects on 6 hosts, manages exporters across the fleet, owns account and sudo policy through the host access baseline, and hosts the [Galaxy PXE](../Galaxy%20PXE/README.md) runtime. Semaphore puts a web interface over the same playbooks; every operation also runs through `ansible-playbook` from the project directory.
 
 ## Current State
 
@@ -13,11 +13,11 @@ I run the reusable Ansible control plane on `ansible-01`. It manages SSH public-
 | Ansible | Community package 14.2.0 with ansible-core 2.21.2 on `PATH`, read 2026-09-24. Debian's `ansible` 12.0.0 and `ansible-core` 2.19.4 packages stay installed underneath as a fallback |
 | Semaphore | 2.18.27, systemd unit `semaphore`, SQLite, at `https://semaphore.alphasecunited.com` through Nginx Proxy Manager; direct fallback `http://192.168.40.36:3000` |
 | Semaphore content (live, 2026-09-24) | 3 projects, 23 templates: `Server-SSH` 13, `Fleet-Updates` 6, `Monitoring-Exporters` 4; 0 schedules |
-| Manifests in `Source/` | 4 projects, 41 templates: `Server-SSH` 17, `Fleet-Updates` 6, `Monitoring-Exporters` 8, `Host-Access-Baseline` 10 |
+| Manifests in `Source/` | 4 projects, 39 templates: `Server-SSH` 17, `Fleet-Updates` 6, `Monitoring-Exporters` 6, `Host-Access-Baseline` 10 |
 | Execution account | `ansible`; I reach the controller with `ssh ansible-01` from my workstations |
 | Boot | Proxmox starts LXC 100 automatically; systemd starts Semaphore, `galaxy-pxe` and `tftpd-hpa` |
 
-The manifests under `Source/` are meant to be the source of truth, and they are ahead of the live Semaphore database by 18 templates and one project. The four `Ubuntu Dev` identity templates, the textfile-collector and What's Up Docker templates, and the whole `Host-Access-Baseline` project exist only in the manifests. Until I reconcile them, the read-only drift check in the [Runbook](Documentation/Runbook.md) reports those as actions.
+The manifests under `Source/` are meant to be the source of truth, and they are ahead of the live Semaphore database by 16 templates and one project. The four `Ubuntu Dev` identity templates, the textfile-collector templates, and the whole `Host-Access-Baseline` project exist only in the manifests. Until I reconcile them, the read-only drift check in the [Runbook](Documentation/Runbook.md) reports those as actions.
 
 Fleet package updates include `ansible-01` itself through Ansible's local connection. No fleet-update playbook targets a Proxmox node.
 
@@ -27,7 +27,7 @@ Fleet package updates include `ansible-01` itself through Ansible's local connec
 |---|---|
 | `Source/ssh-key-automation/` | SSH identity inventory, identity definitions, playbooks, validator and Semaphore manifest |
 | `Source/fleet-updates/` | OS-update and Compose-update playbooks, scoped inventory, validator and Semaphore manifest |
-| `Source/monitoring-exporters/` | node_exporter, cAdvisor, textfile-collector and What's Up Docker playbooks, scoped inventory, validator and Semaphore manifest |
+| `Source/monitoring-exporters/` | node_exporter, cAdvisor, textfile-collector playbooks, scoped inventory, validator and Semaphore manifest |
 | `Source/host-access-baseline/` | `ai-agent` account, account passwords and sudo policy playbooks, validator and Semaphore manifest |
 | `Configuration/semaphore.service` | Deployed systemd unit for Semaphore |
 | `Scripts/` | Semaphore backup, state-verification and manifest-reconciliation utilities |

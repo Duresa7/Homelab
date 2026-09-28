@@ -1,0 +1,35 @@
+{
+  "dns": {
+    "success": true,
+    "message": "DNS record '6ab91af825574794b932b0d5' deleted successfully."
+  },
+  "firewall": [
+    {
+      "name": "Allow NPM to docker-main web UIs",
+      "before": "2283,3000,3002,3003,3004,6060,7575,9102",
+      "after": "2283,3000,3002,3003,3004,6060,7575",
+      "success": true
+    },
+    {
+      "name": "Allow Monitor to A-Access monitoring",
+      "before": "9100,9101,9102,443",
+      "after": "9100,9101,443",
+      "success": true
+    }
+  ],
+  "port_group": {
+    "name": "PG-Node-Exporter",
+    "before": [
+      "9100",
+      "9101",
+      "9102"
+    ],
+    "after": [
+      "9100",
+      "9101"
+    ],
+    "verified": true
+  },
+  "dns_records_after": 30,
+  "verified_at": "2026-09-27 01:50:44 PM EDT"
+}

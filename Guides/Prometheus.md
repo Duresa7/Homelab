@@ -1,7 +1,7 @@
 # Prometheus Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 ## What This Guide Covers
 
@@ -9,19 +9,18 @@ I installed the missing node exporters, removed stale scrape jobs, validated the
 
 ## Current Status and Verified Versions
 
-Verified on 2026-09-24 from the target and rules APIs. Prometheus 3.14.0 runs in Docker on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. It scrapes 57 targets, all `UP`, in seven jobs:
+I rechecked the target and rules APIs on 2026-09-27 after retiring WUD, superseding the 2026-09-24 target count. Prometheus 3.14.0 runs in Docker on CT 104 `monitor-01` at `192.168.73.2:9090` with a 15-second default scrape interval. It scrapes 50 targets, all `UP`, in six jobs:
 
 | Job | Targets |
 |---|---|
 | `node` | 17 |
 | `cadvisor` | 8 |
-| `wud` (What's Up Docker) | 6 |
-| `blackbox` | 23 |
+| `blackbox` | 22 |
 | `proxmox` | 1 |
 | `nut` | 1 |
 | `prometheus` (self) | 1 |
 
-Prometheus itself holds no alert rules and there is no Alertmanager. Alerting lives in Grafana 13.2.2 on the same host: 24 file-provisioned rules in `alphasec-united-alerts.yaml` route to one contact point, the [Discord Alert Bot](../Platforms/Discord%20Alert%20Bot/README.md), which posts to one Discord channel.
+Prometheus itself holds no alert rules and there is no Alertmanager. Alerting lives in Grafana 13.2.2 on the same host: 23 file-provisioned rules in `alphasec-united-alerts.yaml` route to one contact point, the [Discord Alert Bot](../Platforms/Discord%20Alert%20Bot/README.md), which posts to one Discord channel.
 
 `ubuntu-dev` (`192.168.40.179`) is in the `node` job as `role=workstation` and stays out of the `cadvisor` job, because its containers are throwaway builds. The NUT job has one target since `UPS-01` lost its data cable on 2026-08-28.
 
@@ -34,7 +33,7 @@ Prometheus itself holds no alert rules and there is no Alertmanager. Alerting li
 
 ## How the Pieces Fit Together
 
-![Prometheus on monitor-01 scraping seven jobs: node, cAdvisor, What's Up Docker, blackbox, Proxmox, NUT, and itself](../Assets/Diagrams/prometheus.svg)
+![Prometheus on monitor-01 scraping six jobs: node, cAdvisor, blackbox, Proxmox, NUT, and itself](../Assets/Diagrams/prometheus.svg)
 
 ## Walkthrough
 

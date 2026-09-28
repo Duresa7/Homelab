@@ -3,7 +3,8 @@
 
 Every fact is taken from .scratch/reorg/BRIEF.md (2026-09-24): the node,
 guest and VLAN tables, the network paragraph and the "Flows worth knowing"
-paragraph. Nothing retired is drawn.
+paragraph. Monitoring counts reflect WUD retirement on 2026-09-27.
+Nothing retired is drawn.
 """
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "lib"))
@@ -13,6 +14,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "home
 
 d = Diagram("homelab-overview", "AlphaSec United homelab",
             "One live WAN uplink, a zone-based UniFi firewall, and the five-node Galaxy Proxmox VE cluster that carries every guest",
+            state="State as of 2026-09-27",
             source="Operations/Inventory/Galaxy/ (VMs.md, LXCs.md, Services.md), Infrastructure/Network/UniFi/README.md, Infrastructure/Hardware/Nodes.md",
             width=1640, row_gaps={3: 48, 4: 24})
 
@@ -109,6 +111,6 @@ d.legend_family("Identity", "AlphaSec-Identity"); d.legend_family("Mgmt", "Alpha
 d.legend_edge("traffic or telemetry", "solid", "grey"); d.legend_edge("tunnel, VPN or mesh", "dashed", "teal")
 d.legend_icon("wazuh", "Wazuh agent: the five nodes and ten Linux guests report to security-01")
 for n in ("grey", "purple", "blue", "red", "green"): d.legend_badge(f"{n}-server", n)
-d.footnote("Prometheus on monitor-01 scrapes 57 targets across seven jobs. Dockhand manages containers through Hawser Edge agents. Ansible and Semaphore on ansible-01 run fleet updates.")
+d.footnote("Prometheus on monitor-01 scrapes 50 targets across six jobs. Dockhand manages containers through Hawser Edge agents. Ansible and Semaphore on ansible-01 run fleet updates.")
 
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

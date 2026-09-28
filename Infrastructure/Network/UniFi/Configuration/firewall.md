@@ -7,6 +7,8 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-de
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
+- 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
+
 ## Recent changes
 
 - 2026-09-27: I added Parrot OS-Mac (MAC withheld, `192.168.10.176`) to the six policies that name the MacBook Air M3 or give Jedi PC the UniFi console. I also corrected the row for `Allow Trusted SSH replies to Admin Hosts` to match the controller. [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
@@ -73,7 +75,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
-| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 6060 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 6060, 7575 |
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
@@ -86,7 +88,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow NPM to splunk-siem web UI` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / 192.168.72.3 / 8000 |
 | `Allow Monitor to Personal-A monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | Internal / .35, .36, .39, .42, .179 / `PG-Node-Exporter` |
 | `Allow Monitor to A-Servers monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Servers` / .10, .118 / `PG-Node-Exporter` |
-| `Allow Monitor to A-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Access` / `AG-Reverse-Proxy` / 9100, 9101, 9102, 443 |
+| `Allow Monitor to A-Access monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Access` / `AG-Reverse-Proxy` / 9100, 9101, 443 |
 | `Allow Monitor to DMZ monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | Dmz / 192.168.30.10 / 9100 |
 | `Allow Monitor to Proxmox monitoring` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Mgmt` / `AG-Proxmox-Nodes` / 9100, 8006 |
 | `Allow Monitor to Proxmox NUT` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Observability` / `AG-Monitor-Collector` | `AlphaSec-Mgmt` / .10, .13 / 3493 |

@@ -19,7 +19,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "ansi
 d = Diagram("ansible-automation", "Ansible automation on ansible-01: controller, projects, managed hosts",
             "Four project directories run by ansible-playbook; Semaphore fronts three of them with 23 templates; a run reaches a guest as the ansible account and a node as root",
             source="Platforms/Ansible/README.md and Documentation/Architecture.md, Platforms/Ansible/Source/*/ (semaphore/task-templates.yml, inventory/hosts.yml, README.md), Operations/Maintenance/Fleet Access Model Verified and Credential Item Collapsed - 2026-09-07.md",
-            width=1640, card_w=200)
+            state="State as of 2026-09-27", width=1640, card_w=200)
 
 # --- row 0: the controller -----------------------------------------------------------
 d.group("ctl", "ansible-01 · LXC 100 on blue-server · 192.168.40.36", badge="Personal-A VLAN 40 · execution account ansible", family="Internal", notes=[
@@ -44,13 +44,12 @@ d.group("fleet", "Fleet-Updates · /home/ansible/fleet-updates", badge="6 templa
 d.card("fleet", "osu", "OS Update", sub1="os-update.yml · apt or dnf", sub2="fleet, dry run, one host", logo="glyph:apt")
 d.card("fleet", "dcu", "Docker Compose", sub1="docker-compose-update.yml", sub2="20 projects on 6 hosts", logo="docker")
 
-d.group("mon", "Monitoring-Exporters · /home/ansible/monitoring-exporters", badge="4 templates live, 8 in the manifest", family="Access", notes=[
-    (None, "textfile collectors and WUD run by ansible-playbook until the manifest is reconciled"),
+d.group("mon", "Monitoring-Exporters · /home/ansible/monitoring-exporters", badge="4 templates live, 6 in the manifest", family="Access", notes=[
+    (None, "textfile collectors run by ansible-playbook until the manifest is reconciled"),
 ])
 d.card("mon", "nex", "Node Exporter", sub1="node-exporter.yml", sub2="reconcile all, single host", logo="node-exporter")
 d.card("mon", "cad", "cAdvisor", sub1="cadvisor.yml, 8 hosts", sub2="reconcile all, single host", logo="cadvisor")
 d.card("mon", "txt", "Textfile Collectors", sub1="textfile-collectors.yml", sub2="6 hosts · CLI only", logo="node-exporter")
-d.card("mon", "wud", "WUD", sub1="wud.yml · WUD", sub2="6 Compose hosts · CLI only", logo="glyph:WUD")
 
 d.group("hab", "Host-Access-Baseline · /home/ansible/host-access-baseline", badge="manifest only: ansible-playbook", family="Identity", notes=[
     (None, "one host at a time, stop on first failure; visudo -cf before any sudoers file lands"),
@@ -72,12 +71,12 @@ d.group("guests", "Linux guests", badge="as ansible, key-only · all 11 in Serve
 ])
 def guest(id, name, logo, node, s1, s2):
     d.card("guests", id, name, sub1=s1, sub2=s2, logo=logo, node=node)
-guest("dmain", "docker-main", "docker", "grey", "Compose 7 · WUD · cAdvisor", "node_exporter · textfile")
-guest("dnet", "docker-network", "nginx-proxy-manager", "blue", "Compose 2 · WUD · cAdvisor", "node_exporter · accounts")
-guest("dblue", "docker-blue", "docker", "blue", "Compose 3 · WUD · cAdvisor", "node_exporter · accounts")
-guest("media", "media-01", "jellyfin", "red", "Compose 1 · WUD · cAdvisor", "node_exporter · accounts")
-guest("alpha", "alpha-prod-01", "teamspeak", "purple", "Compose 5 · WUD · cAdvisor", "node_exporter · accounts")
-guest("mon01", "monitor-01", "grafana", "blue", "Compose 2 · WUD · cAdvisor", "node_exporter · accounts")
+guest("dmain", "docker-main", "docker", "grey", "Compose 7 · cAdvisor", "node_exporter · textfile")
+guest("dnet", "docker-network", "nginx-proxy-manager", "blue", "Compose 2 · cAdvisor", "node_exporter · accounts")
+guest("dblue", "docker-blue", "docker", "blue", "Compose 3 · cAdvisor", "node_exporter · accounts")
+guest("media", "media-01", "jellyfin", "red", "Compose 1 · cAdvisor", "node_exporter · accounts")
+guest("alpha", "alpha-prod-01", "teamspeak", "purple", "Compose 5 · cAdvisor", "node_exporter · accounts")
+guest("mon01", "monitor-01", "grafana", "blue", "Compose 2 · cAdvisor", "node_exporter · accounts")
 guest("app01", "app-01", "coolify", "purple", "cAdvisor · textfile · accounts", "Coolify owns its images")
 guest("edge01", "edge-01", "caddy", "purple", "textfile · accounts", "exports on 9100 already")
 guest("sec01", "security-01", "wazuh", "grey", "cAdvisor · textfile · accounts", "exports on 9100 already")
@@ -98,6 +97,6 @@ d.legend_family("Internal", "controller"); d.legend_family("Access", "project wi
 d.legend_family("Mgmt", "Proxmox nodes"); d.legend_family("Servers", "Linux guests")
 d.legend_edge("SSH from ansible-01", "solid", "grey")
 d.legend_badge("guest's node", "grey")
-d.footnote("Guest tags name the inventory groups that vary by host: Compose n is docker_compose_targets with n projects, WUD wud_targets, cAdvisor cadvisor_targets, node_exporter node_exporter_targets, textfile textfile_collector_targets, accounts ai_agent_targets plus the sudo and password plays.")
-d.footnote("Live Semaphore (2026-09-24): Server-SSH 13, Fleet-Updates 6, Monitoring-Exporters 4. The manifests under Source/ define 41 templates in four projects; the 18 not yet reconciled run by ansible-playbook. The monitoring-exporters inventory still lists db-13-dev, retired 2026-08-14, which is not drawn.")
+d.footnote("Guest tags name the inventory groups that vary by host: Compose n is docker_compose_targets with n projects, cAdvisor cadvisor_targets, node_exporter node_exporter_targets, textfile textfile_collector_targets, accounts ai_agent_targets plus the sudo and password plays.")
+d.footnote("Live Semaphore (2026-09-24): Server-SSH 13, Fleet-Updates 6, Monitoring-Exporters 4. The manifests under Source/ define 39 templates in four projects; the 16 not yet reconciled run by ansible-playbook. The monitoring-exporters inventory still lists db-13-dev, retired 2026-08-14, which is not drawn.")
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

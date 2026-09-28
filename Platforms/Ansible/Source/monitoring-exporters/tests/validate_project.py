@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate the monitoring-exporters project structure without contacting a host.
 
-Checks that the inventory parses, all four target groups exist and hold exactly
+Checks that the inventory parses, all three target groups exist and hold exactly
 the approved host sets, every host connects as the ansible account unless it is
 listed in NON_STANDARD_USERS with a reason, the referenced
 playbooks exist, the Semaphore manifest references only valid playbooks and
@@ -22,13 +22,11 @@ REQUIRED_GROUPS = (
     "cadvisor_targets",
     # Added 2026-09-02 with the update and drive-health alerts.
     "textfile_collector_targets",
-    "wud_targets",
 )
 PLAYBOOKS = (
     "playbooks/node-exporter.yml",
     "playbooks/cadvisor.yml",
     "playbooks/textfile-collectors.yml",
-    "playbooks/wud.yml",
 )
 
 EXPECTED_NODE_EXPORTER_HOSTS = {
@@ -71,17 +69,6 @@ EXPECTED_TEXTFILE_COLLECTOR_HOSTS = {
     "edge-01",
     "security-01",
     "splunk-siem",
-}
-
-# What's Up Docker: the same six Compose hosts fleet-updates manages. app-01
-# (Coolify) stays out because Coolify owns its image updates.
-EXPECTED_WUD_HOSTS = {
-    "docker-main",
-    "docker-network",
-    "docker-blue",
-    "media-01",
-    "alpha-prod-01",
-    "monitor-01",
 }
 
 # Hosts that must never appear under node_exporter_targets, with the reason.
@@ -160,7 +147,6 @@ def main() -> int:
     node_hosts = collect_hosts(children.get("node_exporter_targets", {}))
     cadvisor_hosts = collect_hosts(children.get("cadvisor_targets", {}))
     textfile_hosts = collect_hosts(children.get("textfile_collector_targets", {}))
-    wud_hosts = collect_hosts(children.get("wud_targets", {}))
 
     if set(node_hosts) != EXPECTED_NODE_EXPORTER_HOSTS:
         errors.append(
@@ -177,14 +163,6 @@ def main() -> int:
             "textfile collector host set differs from the six binary-installed hosts: "
             f"{sorted(textfile_hosts)}"
         )
-    if set(wud_hosts) != EXPECTED_WUD_HOSTS:
-        errors.append(
-            "WUD host set differs from the six Compose hosts: "
-            f"{sorted(wud_hosts)}"
-        )
-    for host in wud_hosts:
-        if not (wud_hosts[host] or {}).get("wud_cron"):
-            errors.append(f"wud_targets/{host}: wud_cron is required so the daily checks stay staggered")
     if "cadvisor_incompatible" in children:
         errors.append(
             "cadvisor_incompatible is back in the inventory. It was removed on "
@@ -203,7 +181,6 @@ def main() -> int:
         ("node_exporter_targets", node_hosts),
         ("cadvisor_targets", cadvisor_hosts),
         ("textfile_collector_targets", textfile_hosts),
-        ("wud_targets", wud_hosts),
     ):
         for host, host_vars in hosts.items():
             host_vars = host_vars or {}
