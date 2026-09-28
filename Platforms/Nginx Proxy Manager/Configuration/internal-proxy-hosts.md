@@ -44,3 +44,5 @@ I added App Portal as proxy host 32 on 2026-09-19: [Internal HTTPS, ObiPC Enroll
 I added Open WebUI as proxy host 28 on 2026-09-05: [Open WebUI Internal HTTPS - 2026-09-05](../Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md).
 
 I repointed Grafana and Prometheus to `monitor-01` on 2026-07-26 and left Wazuh on `security-01`: [Monitoring Relocation to monitor-01 - 2026-07-26](../../Prometheus/Documentation/Change%20Records/Monitoring%20Relocation%20to%20monitor-01%20-%202026-07-26.md).
+
+I added WUD HTTPS for the [Homarr integrations](../../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).

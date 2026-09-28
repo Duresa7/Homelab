@@ -55,3 +55,5 @@ qBittorrent runs with `network_mode: service:gluetun`, so its only path out is t
 - [Jellyfin 12 upgrade](Documentation/Change%20Records/Jellyfin%2012%20Upgrade%20-%202026-09-09.md), 2026-09-09
 - [Container image updates](../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md), 2026-09-13
 - [Media Stack guide](../../Guides/Media-Stack.md)
+
+I connected all six media applications and Gluetun to Homarr on 2026-09-27. Gluetun now publishes its authenticated control API on `192.168.40.42:8000`, with a dedicated GET-only role; qBittorrent still uses its VPN network namespace. [Integration and restart verification](../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).

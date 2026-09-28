@@ -11,6 +11,10 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 
 ## Recent changes
 
+- 2026-09-27: I added `wud.alphasecunited.com` for Homarr's authenticated WUD connection, record `6ab91af825574794b932b0d5`. [Integration record](../../../../Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+
+- 2026-09-27: I recreated `dashboard.alphasecunited.com` for Homarr through NPM, record `6ab90b1425574794b9328224`. [Homarr deployment](../../../../Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+
 - 2026-09-24: no `weebarr.alphasecunited.com` record. I added it on 2026-09-21 and have no record of its removal. [Weebarr Retirement](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md).
 - 2026-09-19: I added `appportal.alphasecunited.com`. [Internal HTTPS record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 - 2026-09-16: I removed `portainer.alphasecunited.com` and added the missing `hq-mgt01.ad.alphasecunited.com` row. [Policy and DNS Readback](../Documentation/Change%20Records/Policy%20and%20DNS%20Readback%20-%202026-09-16.md).

@@ -29,6 +29,10 @@ Read back on 2026-09-24 unless a row says otherwise.
 
 ## Changes
 
+- 2026-09-27: I added WUD HTTPS as proxy host 35 for the [Homarr integration](../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+
+- 2026-09-27: I added Homarr as proxy host 34 at `dashboard.alphasecunited.com`, HTTP backend `192.168.40.35:7575`, and verified all 24 HTTPS hosts. [Deployment](../Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+
 - 2026-09-26: I removed dashboard proxy host 12, its DNS record, and TCP 3001 from the backend policy. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
 - 2026-09-25: a scheduled Dockhand update stopped NPM and could not restart it. Everything behind `192.168.85.2` was down from 3:00 AM to 6:12 AM. I pinned the image to 2.15.1 and set `dockhand.update: "false"`. [Incident](../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
