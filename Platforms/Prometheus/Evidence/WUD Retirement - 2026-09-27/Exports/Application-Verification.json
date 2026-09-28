@@ -1,0 +1,57 @@
+{
+  "captured_at": "2026-09-27 01:49:37 PM EDT",
+  "dockhand": [
+    {
+      "host": "alpha-prod-01",
+      "stacks": 7,
+      "containers": 8,
+      "running": 7,
+      "wud_absent": true
+    },
+    {
+      "host": "docker-blue",
+      "stacks": 6,
+      "containers": 11,
+      "running": 10,
+      "wud_absent": true
+    },
+    {
+      "host": "docker-main",
+      "stacks": 10,
+      "containers": 15,
+      "running": 14,
+      "wud_absent": true
+    },
+    {
+      "host": "docker-network",
+      "stacks": 4,
+      "containers": 6,
+      "running": 5,
+      "wud_absent": true
+    },
+    {
+      "host": "media-01",
+      "stacks": 3,
+      "containers": 11,
+      "running": 10,
+      "wud_absent": true
+    },
+    {
+      "host": "monitor-01",
+      "stacks": 4,
+      "containers": 10,
+      "running": 9,
+      "wud_absent": true
+    },
+    {
+      "host": "security-01",
+      "stacks": 3,
+      "containers": 4,
+      "running": 3,
+      "wud_absent": true
+    }
+  ],
+  "grafana_rule_count": 23,
+  "grafana_errors": [],
+  "verified_at": "2026-09-27 01:50:44 PM EDT"
+}

@@ -50,14 +50,6 @@ EXPECTED_TARGETS = {
     "http://192.168.80.10:9101/metrics": ("cadvisor", "app-01"),
     "http://192.168.72.2:9101/metrics": ("cadvisor", "security-01"),
     "http://192.168.73.2:9101/metrics": ("cadvisor", "monitor-01"),
-    # What's Up Docker, the six Compose hosts, added 2026-09-02 for the image
-    # update alert.
-    "http://192.168.40.35:9102/metrics": ("wud", "docker-main"),
-    "http://192.168.85.2:9102/metrics": ("wud", "docker-network"),
-    "http://192.168.40.39:9102/metrics": ("wud", "docker-blue"),
-    "http://192.168.40.42:9102/metrics": ("wud", "media-01"),
-    "http://192.168.80.118:9102/metrics": ("wud", "alpha-prod-01"),
-    "http://192.168.73.2:9102/metrics": ("wud", "monitor-01"),
     # Proxmox API exporter
     "http://pve-exporter:9221/pve?module=default&target=192.168.70.10": (
         "proxmox",

@@ -19,7 +19,6 @@ views:
   - Node Exporter
   - cAdvisor
   - Textfile Collectors
-  - What's Up Docker
 
 templates:
   - name: "Node Exporter: Reconcile All Hosts"
@@ -66,22 +65,6 @@ templates:
       - name: target
         title: Target host
         description: Inventory host name from the Textfile Collectors view.
-        type: ""
-        required: true
-        values: []
-
-  - name: "WUD: Reconcile All Compose Hosts"
-    view: What's Up Docker
-    playbook: playbooks/wud.yml
-    arguments: []
-  - name: "WUD: Single Host"
-    view: What's Up Docker
-    playbook: playbooks/wud.yml
-    arguments: []
-    survey:
-      - name: target
-        title: Target host
-        description: Inventory host name from the What's Up Docker view.
         type: ""
         required: true
         values: []

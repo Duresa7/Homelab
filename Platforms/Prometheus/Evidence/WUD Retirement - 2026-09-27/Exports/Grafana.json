@@ -1,0 +1,10 @@
+{
+  "before_count": 24,
+  "after_count": 23,
+  "removed": [
+    "homelab-image-update"
+  ],
+  "other_rules_preserved": true,
+  "reload_http": 200,
+  "verified_at": "2026-09-27 01:50:44 PM EDT"
+}

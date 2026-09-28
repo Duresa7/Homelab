@@ -16,7 +16,7 @@ Verified on the host on 2026-09-24.
 | Storage | 100 GiB NVMe root; 1 TB Seagate HDD at `/data` (916 GiB ext4) |
 | Guest OS | Debian GNU/Linux 13 (trixie) |
 | Compose project | `/opt/media-stack/compose.yml`, 8 containers |
-| Beside it | cAdvisor, What's Up Docker and Hawser, each under `/opt/docker/<name>/` |
+| Beside it | cAdvisor and Hawser, each under `/opt/docker/<name>/` |
 | Image policy | Application images track `latest`; I update them through the [runbook](Documentation/Runbook.md) |
 | Internal HTTPS | Six names under `alphasecunited.com` through Nginx Proxy Manager |
 

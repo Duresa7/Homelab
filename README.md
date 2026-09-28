@@ -9,7 +9,7 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 ![UniFi](https://img.shields.io/badge/UniFi-16_routed_LANs,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_+_ES-000000?logo=splunk&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/Wazuh-15_active_remote_agents-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-56_targets,_7_jobs-E6522C?logo=prometheus&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-50_targets,_6_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
 ![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
@@ -25,8 +25,8 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 | Network | UniFi Network 10.6.106 on the Ahsoka gateway, three switches, one access point; 23 networks, 16 routed LANs in 12 zones | 2026-09-24 |
 | Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |
 | Security | Wazuh 4.14.7 with 15 remote agents; Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF | 2026-09-24 |
-| Monitoring | Prometheus 3.14.0 with 56 targets in 7 jobs, all up; Grafana 13.2.2 with 24 alert rules posting to one Discord channel | 2026-09-26 |
-| Access | Public services through a Cloudflare Tunnel to `edge-01`; 23 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.79.0 for remote access | 2026-09-26 |
+| Monitoring | Prometheus 3.14.0 with 50 targets in 6 jobs, all up; Grafana 13.2.2 with 23 alert rules posting to one Discord channel | 2026-09-27 |
+| Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.79.0 for remote access | 2026-09-27 |
 | Automation | Ansible 14.2.0 and Semaphore 2.18.27 (3 projects, 23 templates); Dockhand 1.0.48 with Hawser agents on six hosts; Executor 1.6.10 in front of the SSH Manager, UniFi, Cloudflare, and Wazuh MCP servers | 2026-09-24 |
 | Workstations | Jedi PC, my admin workstation, on Secure VLAN 50; ObiPC, a domain-joined Windows 11 PC on Secure Client VLAN 60, reachable over SSH again on 2026-09-27 after being unreachable on 2026-09-24; [physical-access exercise reviewed](Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md) | 2026-09-27 |
 

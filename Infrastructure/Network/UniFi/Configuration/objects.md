@@ -1,7 +1,7 @@
 # UniFi Policy Features and Network Lists
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 This file holds the reusable policy objects: 22 Network Lists (ten IPv4 address groups and 12 port groups), four OON policies, one traffic route and 16 client groups.
 
@@ -56,7 +56,7 @@ The table covers all 22 Network Lists the controller returned on 2026-09-16. The
 | App Access | Port | 80, 8000 |
 | Proxmox-Admin-Ports | Port | 22, 8006, 3128 |
 | Allow Identity Sync Service Connection-9543 | Port | 9543 |
-| PG-Node-Exporter | Port | 9100, 9101, 9102 |
+| PG-Node-Exporter | Port | 9100, 9101 |
 | PG-Egress-Web | Port | 80, 443 |
 | PG-NTP | Port | 123 |
 | PG-Galaxy-PXE-Callback | Port | 8080 |
@@ -71,7 +71,7 @@ The table covers all 22 Network Lists the controller returned on 2026-09-16. The
 
 `Wazuh Ports` holds exactly 1514 and 1515. Port groups hold port numbers only; `Allow Workstations to AD` applies `PG-AD-Client` over TCP and UDP. `Allow Identity Web Egress` names TCP 80 and 443 inline, because the controller rejected a port group with an any-in-zone destination.
 
-`PG-Node-Exporter` carries 9102 for What's Up Docker since 2026-09-02, so the monitoring policies that reference it needed no edit of their own.
+I removed TCP 9102 from `PG-Node-Exporter` on 2026-09-27 after retiring WUD. The 9100 and 9101 members remain.
 
 `PG-Printing` carries IPP on 631 and raw printing on 9100 for `Allow Internal to Printer`.
 

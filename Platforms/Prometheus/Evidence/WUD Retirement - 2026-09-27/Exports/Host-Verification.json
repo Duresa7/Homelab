@@ -1,0 +1,439 @@
+{
+  "captured_at": "2026-09-27",
+  "hosts": [
+    {
+      "host": "docker-main",
+      "containers": [
+        {
+          "name": "homarr",
+          "id": "f4af6a9e4e963a7f7f936edf9f8ee4c38257db9180223d7d2667ea97db60e35d",
+          "started": "2026-09-27T12:25:44.302615285Z",
+          "status": "running"
+        },
+        {
+          "name": "cli-proxy-api",
+          "id": "6a2151e5e6108bd23c643b181de8f1f3f1a5518b60f434fa681a3eb019d07c2e",
+          "started": "2026-09-27T07:00:14.641482065Z",
+          "status": "running"
+        },
+        {
+          "name": "open-webui",
+          "id": "09cd430d9d0b04ae568162ad50edfdf97e4d7030d6b0d5e72ec9031122cc3463",
+          "started": "2026-09-22T07:01:14.389046508Z",
+          "status": "running"
+        },
+        {
+          "name": "app-portal",
+          "id": "c48e630ccab0c24239a385c34704732448ea84c5771da2b8521f57d8a0147417",
+          "started": "2026-09-20T22:32:20.920162527Z",
+          "status": "running"
+        },
+        {
+          "name": "booklore",
+          "id": "29babcbe50a7a2bb2847a2d60717f211b893006e7c22cc2525afea82aa77f85f",
+          "started": "2026-09-20T07:00:40.880493144Z",
+          "status": "running"
+        },
+        {
+          "name": "cadvisor",
+          "id": "8c38ae2e226515480ac5c752894c2fd414b08a0dd6546a00a6c8d3679d31979f",
+          "started": "2026-09-19T07:00:12.374413668Z",
+          "status": "running"
+        },
+        {
+          "name": "immich_machine_learning",
+          "id": "33cfafec107a0ba32ced64cdd7747b3fd42ab2b3274a9f8bb5422874fbdff9f2",
+          "started": "2026-09-18T16:20:04.904936352Z",
+          "status": "running"
+        },
+        {
+          "name": "forgejo",
+          "id": "091265ff11fd2b1dff91686410d9c2b59ae112665a797ae25e5e1966abc0c023",
+          "started": "2026-09-18T16:19:48.535786484Z",
+          "status": "running"
+        },
+        {
+          "name": "immich_server",
+          "id": "f71ea185ced8bccd4c4e33b29652c1466ecc41ef4b7cb7e2f9f66e758f762f1c",
+          "started": "2026-09-18T16:19:40.35609325Z",
+          "status": "running"
+        },
+        {
+          "name": "docusaurus",
+          "id": "e3520e153e0883db75913dc56b3eb7f523a35debd63f6452afcfe6570e74aa58",
+          "started": "2026-09-16T03:22:37.079733917Z",
+          "status": "exited"
+        },
+        {
+          "name": "dockhand",
+          "id": "4534b2249982b9b3e5ae92099e178f44728c1ed1d24864ba5122e9bb01688cd3",
+          "started": "2026-09-16T00:09:21.134293857Z",
+          "status": "running"
+        },
+        {
+          "name": "mariadb",
+          "id": "07e9825019ae0f750774314efda0a9f97bed12174237d2469c03f5f7ecbc9eae",
+          "started": "2026-09-13T16:35:00.799653911Z",
+          "status": "running"
+        },
+        {
+          "name": "ollama",
+          "id": "90628ded73539540d94c8327a0e268e3b9537d61fae90f066cd36fa8809e177b",
+          "started": "2026-09-04T16:50:25.372177838Z",
+          "status": "running"
+        },
+        {
+          "name": "immich_postgres",
+          "id": "d7f75727b5804d2c31b589b7d0921b0acf727f6668effdc36176bf8e932d4ba4",
+          "started": "2026-09-04T16:47:05.429492556Z",
+          "status": "running"
+        },
+        {
+          "name": "immich_redis",
+          "id": "51a4c6239f1537bd2130c7fd3b6d38dc12de5ed13144fcb16d672c644a760ffb",
+          "started": "2026-09-04T16:47:05.497186795Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    },
+    {
+      "host": "docker-blue",
+      "containers": [
+        {
+          "name": "mcp-ssh-manager",
+          "id": "847bf9969049dbd0622bf25d2cb7521970ea9e405fc785fb42547a4605e817ca",
+          "started": "2026-09-27T13:43:36.355770198Z",
+          "status": "running"
+        },
+        {
+          "name": "meshcentral",
+          "id": "0902a6afca581156cc01a4007784fc70370f4e1fc40020f8eaaffc1aa5626a75",
+          "started": "2026-09-24T07:00:25.693024739Z",
+          "status": "running"
+        },
+        {
+          "name": "cadvisor",
+          "id": "d51877d4c7541c5bd69ef0858e1b41770c4814f5d64620496e7819518b2a1124",
+          "started": "2026-09-19T07:00:15.646348014Z",
+          "status": "running"
+        },
+        {
+          "name": "executor",
+          "id": "1f02a766c08b78d4346ebb1468b3504835154ad24aec181e5b49a76025a10ced",
+          "started": "2026-09-19T07:00:13.029429945Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser-updater",
+          "id": "6509809f933ae40684518b71b2d68aaace1de4f6f0df8602f01cbefdff8ef457",
+          "started": "0001-01-01T00:00:00Z",
+          "status": "created"
+        },
+        {
+          "name": "mcp-unifi-network",
+          "id": "03a9af0c6f877faaea7d82e8bcbf273ef36a233b93b7ffe8c2457c050475467d",
+          "started": "2026-09-16T03:25:17.366957395Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser",
+          "id": "7c7af5314085daa1b62cd91ba31971dabfa8d0d1542573f7a9ce7dccf5ff9405",
+          "started": "2026-09-16T03:25:02.892344883Z",
+          "status": "running"
+        },
+        {
+          "name": "docker-mcp-gateway",
+          "id": "cf4706dd17cf760b90cd69a1bea3848eb77c26b6cad6fdf42ddbd272807ff1b1",
+          "started": "2026-09-09T20:31:17.549580703Z",
+          "status": "running"
+        },
+        {
+          "name": "ssh-manager-mcp-gateway",
+          "id": "525b2afda52054786a491035b09d5b53f9561a7fee320fc36383d34cc91c1090",
+          "started": "2026-09-09T13:44:42.486315232Z",
+          "status": "running"
+        },
+        {
+          "name": "hbbs",
+          "id": "2bf3962a94b2ef7e21bc2288ebea56c1c6d74ccc8dbe9de05cafa0a31bdc0490",
+          "started": "2026-09-09T07:06:43.803991837Z",
+          "status": "running"
+        },
+        {
+          "name": "hbbr",
+          "id": "c19ca14c878d843b7f6e79f07b41b6a1a0e83be3f5d6618c1701ed86e4a28fc3",
+          "started": "2026-09-09T07:06:43.803479983Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    },
+    {
+      "host": "docker-network",
+      "containers": [
+        {
+          "name": "nginx-proxy-manager",
+          "id": "bf32b4b79fb0f58721798d229b2e930d12d058c8e3279c666e81ae1cec8a8b56",
+          "started": "2026-09-25T10:15:17.360228446Z",
+          "status": "running"
+        },
+        {
+          "name": "netbird-dashboard",
+          "id": "8341a9bb16184b56b142bab18fbdc293a4b7ba5fa895767636fce2b8355911a4",
+          "started": "2026-09-24T07:00:09.572988572Z",
+          "status": "running"
+        },
+        {
+          "name": "cadvisor",
+          "id": "ed471b434d8683af38a90b7647dcceabe98e1980721ef3d7858c74a2db32ea6c",
+          "started": "2026-09-19T07:00:11.63511586Z",
+          "status": "running"
+        },
+        {
+          "name": "netbird-server",
+          "id": "8c5fd379236708a43b9090509057efac9ddfc241802b03f28402e85cc174ec4e",
+          "started": "2026-09-19T07:00:08.103758608Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser-updater",
+          "id": "7f2d30feec2b3e04a4296cae8ec8acdfb82474139b7e407c07c27a3c877601d4",
+          "started": "0001-01-01T00:00:00Z",
+          "status": "created"
+        },
+        {
+          "name": "hawser",
+          "id": "39d93c2284c91a53a0c036033d35d300d1fbc17a60233e10409439b8c139487d",
+          "started": "2026-09-16T03:23:28.670610967Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    },
+    {
+      "host": "media-01",
+      "containers": [
+        {
+          "name": "qbittorrent",
+          "id": "42b5009aee4eba96402a3206ac7420c9e3c122eae72bd0e76ebb1c708ecf0d6c",
+          "started": "2026-09-27T17:17:53.417601853Z",
+          "status": "running"
+        },
+        {
+          "name": "gluetun",
+          "id": "1a072b8fb6ae9d555cf3310499410654d15c2b6118a67f46177da7dfb3b6ccb0",
+          "started": "2026-09-27T17:17:43.200663065Z",
+          "status": "running"
+        },
+        {
+          "name": "sonarr",
+          "id": "61d2403b4f35a58c00b4dc940bea9cf8b8c30084b49fcc8944b9f5b6a1545f65",
+          "started": "2026-09-27T07:01:20.289010652Z",
+          "status": "running"
+        },
+        {
+          "name": "prowlarr",
+          "id": "44f6a75971251f95eb19641b4d1722805f5cd37939183eb9c15e0f0cc5a552f3",
+          "started": "2026-09-26T07:01:04.029360082Z",
+          "status": "running"
+        },
+        {
+          "name": "radarr",
+          "id": "97c30f97020cc7954cab2dd6256bfac7148c89e6ac0fa1f698b75d9ddc5e9885",
+          "started": "2026-09-22T07:36:13.327494991Z",
+          "status": "running"
+        },
+        {
+          "name": "cadvisor",
+          "id": "8c1c5aa69aa5188fd36ea97098fc0844ed33376e808de72da7635eba609112ed",
+          "started": "2026-09-19T07:00:12.130505336Z",
+          "status": "running"
+        },
+        {
+          "name": "jellyfin",
+          "id": "3f1bd92e23514f99fd0a26d6fb44bb6c92a2716f130190aae02a3f1ef5b23b6b",
+          "started": "2026-09-27T17:33:03.656769708Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser-updater",
+          "id": "edf23233c172331671ecbcf391cd14f88c063c68af297ff1fe37c2d3a62b58fb",
+          "started": "0001-01-01T00:00:00Z",
+          "status": "created"
+        },
+        {
+          "name": "hawser",
+          "id": "b5152883967abaa061235db5bfb3ff411e20a9ce28cc4fcd355d608498044c06",
+          "started": "2026-09-16T03:24:13.557367239Z",
+          "status": "running"
+        },
+        {
+          "name": "flaresolverr",
+          "id": "ab755c9ac1fe7e74e1df138d1b835ca030a753b40287a246c8a709947e3c94a9",
+          "started": "2026-09-13T16:29:13.240759086Z",
+          "status": "running"
+        },
+        {
+          "name": "jellyseerr",
+          "id": "e0885e71d9b1c04ca80e1b3f70827d81b6d6276a49a417b2be8e6728026a2234",
+          "started": "2026-09-04T16:01:14.684327789Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    },
+    {
+      "host": "alpha-prod-01",
+      "containers": [
+        {
+          "name": "cadvisor",
+          "id": "a40f3e017a620844af52c627c619f2486b0a41c725b52b756e8dad0ddc225204",
+          "started": "2026-09-27T13:18:43.466513465Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser-updater",
+          "id": "35d1e53a4b78a87a4e40ab24ae6bca44d6fdce887260a5cbcd4f4a624fa880c8",
+          "started": "0001-01-01T00:00:00Z",
+          "status": "created"
+        },
+        {
+          "name": "ts-valorant-02",
+          "id": "a4f8c5823ed0aeca7499e2a5be063b144f163cb7977c011a0fdf9e6b28c4d44d",
+          "started": "2026-09-18T16:17:23.74238912Z",
+          "status": "running"
+        },
+        {
+          "name": "ts-valorant-03",
+          "id": "6ef96b576127506349c8854abe2085d2aabee2a1a88cd6f9452f76ae2a0ec8a6",
+          "started": "2026-09-18T16:17:22.413618321Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser",
+          "id": "25b8daa468de60ae8d26f0d80d31dad0d3256cff44c729d0cba097f864d263e5",
+          "started": "2026-09-18T16:16:03.195679488Z",
+          "status": "running"
+        },
+        {
+          "name": "teamspeak-monitor",
+          "id": "ffd3d56c7c956592f5339eaa5b9efb255d37a1d26ffd4f3e189fa6f3e678f5a3",
+          "started": "2026-09-16T03:24:31.696549988Z",
+          "status": "running"
+        },
+        {
+          "name": "playit-agent",
+          "id": "7e87989be121b60d31818e8d50eb1c1b09c9cd10deab052cc3a1f919492fa950",
+          "started": "2026-09-13T00:21:57.984526679Z",
+          "status": "running"
+        },
+        {
+          "name": "ts3-manager",
+          "id": "ffa8b5ff964e86efe8d62c4cb5ce4afebc7e7983e221b1438e45c6d3232f76e9",
+          "started": "2026-09-13T00:20:06.921107928Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    },
+    {
+      "host": "monitor-01",
+      "containers": [
+        {
+          "name": "prometheus",
+          "id": "9491d3032946f5d16386895cd1caf72409c2111140c158b371b3b84327627de3",
+          "started": "2026-09-26T07:00:29.42667647Z",
+          "status": "running"
+        },
+        {
+          "name": "cadvisor",
+          "id": "f1e231d3cd44c6c4de2b67aa346b5cbb45ec84c03a076ab37441dced95347e82",
+          "started": "2026-09-19T07:00:07.844207212Z",
+          "status": "running"
+        },
+        {
+          "name": "grafana",
+          "id": "a1fa1cfb779fa89c02125cf4472215af440c26a152cbe0f818e1a40bb59fcc7c",
+          "started": "2026-09-19T02:47:01.779058989Z",
+          "status": "running"
+        },
+        {
+          "name": "hawser-updater",
+          "id": "2c06f084bdb310c4c72e3ced91cb5f23049cc69b97ea1232b79fc1071dddcbff",
+          "started": "0001-01-01T00:00:00Z",
+          "status": "created"
+        },
+        {
+          "name": "hawser",
+          "id": "f5402bcf2d9a99200e18de3bd234bfecaddf61ed64a8dd417c4ca56b7d39d3ca",
+          "started": "2026-09-16T03:23:57.712109871Z",
+          "status": "running"
+        },
+        {
+          "name": "alert-bot",
+          "id": "2837ca6445840a2446cfd35415e49a98ac3183f8d3a6adab6b08e749d1c1989d",
+          "started": "2026-09-16T03:23:51.045141694Z",
+          "status": "running"
+        },
+        {
+          "name": "peanut",
+          "id": "53de635ca4b2fb0802566d11388b082ef8d4679bb31eb9d928c09799cf008353",
+          "started": "2026-09-09T07:06:44.255271784Z",
+          "status": "running"
+        },
+        {
+          "name": "blackbox-exporter",
+          "id": "efb0f881d3263faff68f0a5878778469724249f1ce861c57c3b2fdcd67153272",
+          "started": "2026-09-09T07:06:44.238934762Z",
+          "status": "running"
+        },
+        {
+          "name": "nut-exporter",
+          "id": "910cfaa1ee4a4292d818cc96069dc1c02c0de02ea34a8d5eb577da914e1954c0",
+          "started": "2026-09-09T07:06:44.241152614Z",
+          "status": "running"
+        },
+        {
+          "name": "pve-exporter",
+          "id": "94b03c331cc940367fdc33324cc3235f01d93d2fc205674c106a4c4befc17f9e",
+          "started": "2026-09-09T07:06:44.201655928Z",
+          "status": "running"
+        }
+      ],
+      "port_9102_open": false,
+      "wud_images": [],
+      "wud_volumes": [],
+      "wud_networks": [],
+      "project_path_absent": true,
+      "other_containers_unchanged": true
+    }
+  ],
+  "note": "Filtered state exports. Container IDs and start timestamps retained for comparison; credentials and full inspect output excluded.",
+  "verified_at": "2026-09-27 01:50:44 PM EDT"
+}

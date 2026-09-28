@@ -15,7 +15,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "medi
 d = Diagram("media-stack", "Media stack on media-01",
             "LXC 842 on red-server, 192.168.40.42 on VLAN 40, 2 vCPU and 4 GiB. Seerr takes the request, Sonarr and Radarr grab it, qBittorrent downloads only through Gluetun and Proton VPN, Jellyfin plays the hard-linked file",
             source="Platforms/Media Stack/README.md, Platforms/Media Stack/Documentation/Architecture.md, Platforms/Media Stack/Documentation/Runbook.md, Guides/Media-Stack.md",
-            width=1640, card_w=200, row_gap=64)
+            state="State as of 2026-09-27", width=1640, card_w=200, row_gap=64)
 
 # --- row 0: who uses it, and the proxy that publishes it -------------------------
 d.group("viewers", "Viewers", badge="LAN", family="External")
@@ -33,7 +33,6 @@ d.card("req", "seerr", "Seerr 3.4.1", sub1=":5055 · container still named jelly
 d.group("side", "Beside the stack", badge="media-01 · own Compose projects", family="Internal")
 d.card("side", "wazuh", "Wazuh agent 4.14.6-1", sub1="ID 008 · group default", sub2="TCP 1514 to security-01", logo="wazuh", node="red")
 d.card("side", "cadv", "cAdvisor 0.60.6", sub1=":9101 · job cadvisor", sub2="scraped by monitor-01", logo="cadvisor", node="red")
-d.card("side", "wud", "What's Up Docker 9.1.0", sub1=":9102 · job wud", sub2="flags image updates", logo="wud", node="red")
 d.card("side", "hawser", "Hawser 0.2.48", sub1="Dockhand edge agent", sub2="managed from docker-main", logo="dockhand", node="red")
 
 # --- row 2: acquisition, and the namespace that is the only way out ------------------

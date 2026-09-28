@@ -1,0 +1,86 @@
+[
+  {
+    "host": "alpha-prod-01",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/alpha_prod_01/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  },
+  {
+    "host": "docker-blue",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/docker_blue/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  },
+  {
+    "host": "docker-main",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/docker_main/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  },
+  {
+    "host": "docker-network",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/docker_network/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  },
+  {
+    "host": "media-01",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/media_01/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  },
+  {
+    "host": "monitor-01",
+    "removed": true,
+    "preview": {
+      "stackName": "wud",
+      "sourceType": "internal",
+      "stackDir": "/opt/docker/dockhand/stacks/imported/monitor_01/wud",
+      "gitDir": null,
+      "namedVolumes": [
+        "wud_wud_store"
+      ],
+      "canDeleteFiles": true
+    }
+  }
+]

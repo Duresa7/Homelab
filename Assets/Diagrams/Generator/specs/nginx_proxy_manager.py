@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """nginx-proxy-manager: the internal HTTPS front door, its certificate path, the
-UniFi DNS and firewall that make it work, and the 23 live proxy hosts by
+UniFi DNS and firewall that make it work, and the 24 live proxy hosts by
 destination (restyle of the 2026-07-20 diagram, content kept and widened from
-the NetBird host to all 23). Facts: Platforms/Nginx Proxy Manager/README.md
-(2.15.1, pinned, certificate 1, 23 live hosts, 13 policies), Configuration/
-internal-proxy-hosts.md (every host and upstream, read 2026-09-26),
+the NetBird host to all 24). Facts: Platforms/Nginx Proxy Manager/README.md
+(2.15.1, pinned, certificate 1, 24 live hosts, 13 policies), Configuration/
+internal-proxy-hosts.md (every host and upstream, read 2026-09-27),
 Guides/Nginx-Proxy-Manager.md, Infrastructure/Network/UniFi/Configuration/
 firewall.md (the Allow NPM to <host> policies) and local-dns.md."""
 import os, sys
@@ -12,16 +12,16 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from diagram import Diagram
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "nginx-proxy-manager.svg")
-d = Diagram("nginx-proxy-manager", "Nginx Proxy Manager: internal HTTPS for 23 names",
+d = Diagram("nginx-proxy-manager", "Nginx Proxy Manager: internal HTTPS for 24 names",
             "One Let's Encrypt wildcard over a Cloudflare DNS-01 challenge; UniFi local DNS answers every name with 192.168.85.2 and the zone firewall admits NPM to each backend's ports",
-            state="State as of 2026-09-26", source="Platforms/Nginx Proxy Manager/README.md, Platforms/Nginx Proxy Manager/Configuration/internal-proxy-hosts.md, Guides/Nginx-Proxy-Manager.md, Infrastructure/Network/UniFi/Configuration/firewall.md and local-dns.md",
+            state="State as of 2026-09-27", source="Platforms/Nginx Proxy Manager/README.md, Platforms/Nginx Proxy Manager/Configuration/internal-proxy-hosts.md, Guides/Nginx-Proxy-Manager.md, Infrastructure/Network/UniFi/Configuration/firewall.md and local-dns.md",
             width=1640, row_gap=64)
 
 # --- row 0: the client, UniFi, and the certificate path -------------------------------------
 d.group("lan", "Clients on the LAN", family="External")
 d.card("lan", "client", "Browser or app", sub1="UniFi answers the name, TLS to 192.168.85.2:443", sub2="port 80 redirects to HTTPS; SNI picks the proxy host", logo="glyph:WEB")
 d.group("unifi", "UniFi", badge="Ahsoka Gateway", family="Internal")
-d.card("unifi", "dns", "Local DNS", sub1="23 A records, one per live host", sub2="all 192.168.85.2; none in public DNS", logo="unifi")
+d.card("unifi", "dns", "Local DNS", sub1="24 A records, one per live host", sub2="all 192.168.85.2; none in public DNS", logo="unifi")
 d.card("unifi", "fw", "Zone firewall", sub1="ten Allow NPM to <host> policies", sub2="three more admit hosts to NPM 443", logo="unifi")
 d.group("certpath", "Certificate path", family="External")
 d.card("certpath", "cf", "Cloudflare", sub1="DNS-01 with a zone-scoped token", sub2="a TXT record, removed after", logo="cloudflare")
@@ -29,7 +29,7 @@ d.card("certpath", "le", "Let's Encrypt", sub1="*.alphasecunited.com and apex", 
 
 # --- row 1: the host ---------------------------------------------------------------------------------
 d.group("host", "docker-network · LXC 107", badge="192.168.85.2 · Access-A VLAN 85 · blue-server · Debian 13", family="Access")
-d.card("host", "admin", "Admin UI on :81", sub1="http://192.168.85.2:81, no domain name", sub2="33 proxy_host rows: 23 live, 10 soft-deleted", logo="nginx-proxy-manager", node="blue")
+d.card("host", "admin", "Admin UI on :81", sub1="http://192.168.85.2:81, no domain name", sub2="35 proxy_host rows: 24 live, 11 soft-deleted", logo="nginx-proxy-manager", node="blue")
 d.card("host", "npm", "Nginx Proxy Manager 2.15.1", sub1="TCP 80, 81, 443 on the guest · 172.31.85.10 on proxy", sub2="pinned by tag, out of Dockhand's updates since 2026-09-25", logo="nginx-proxy-manager", node="blue")
 d.card("host", "cert1", "Certificate 1, shared by every host", sub1="Force SSL, HTTP/2, Block Common Exploits, WebSockets", sub2="HSTS off; /etc/letsencrypt/live/npm-1/fullchain.pem", logo="letsencrypt", node="blue")
 d.card("host", "nb", "netbird.alphasecunited.com", sub1="proxy host 1: netbird-dashboard:80 by container name", sub2="advanced routes send API, OAuth2, signal, gRPC on", logo="netbird", node="blue")
@@ -37,10 +37,10 @@ d.card("host", "nb", "netbird.alphasecunited.com", sub1="proxy host 1: netbird-d
 # --- row 2: the backends, grouped by destination zone, with the policy that admits NPM -----------
 d.group("p40", "Personal-A backends", badge="VLAN 40 · zone Internal", family="Internal", cols=2, notes=[
     (None, "Allow NPM to media-01 web UIs · 5055, 7878, 8080, 8096, 8989, 9696"),
-    (None, "Allow NPM to docker-main web UIs · 2283, 3000, 3002, 3003, 3004, 6060 · and CLI Proxy API · 8317"),
+    (None, "Allow NPM to docker-main web UIs · 2283, 3000, 3002, 3003, 3004, 6060, 7575 · CLI Proxy API · 8317"),
     (None, "Allow NPM to docker-blue Executor · 4788 · MeshCentral · 443 · Allow NPM to ansible-01 Semaphore · 3000")])
 d.card("p40", "media", "media-01 · 192.168.40.42", badge="6 names", span=2, sub1="jellyfin 8096, seerr 5055, sonarr 8989, radarr 7878,", sub2="prowlarr 9696, qbittorrent 8080", logo="jellyfin", icons=["seerr", "sonarr", "radarr", "prowlarr", "qbittorrent"], node="red")
-d.card("p40", "dmain", "docker-main · 192.168.40.35", badge="7 names", span=2, sub1="immich 2283, forgejo 3000, openwebui 3002,", sub2="dockhand 3003, appportal 3004, booklore 6060, aiproxy 8317", logo="docker", icons=["immich", "forgejo", "open-webui", "dockhand", "booklore"], node="grey")
+d.card("p40", "dmain", "docker-main · 192.168.40.35", badge="8 names", span=2, sub1="immich 2283, forgejo 3000, openwebui 3002, Homarr 7575", sub2="dockhand 3003, appportal 3004, booklore 6060, aiproxy 8317", logo="docker", icons=["immich", "forgejo", "open-webui", "dockhand", "booklore"], node="grey")
 d.card("p40", "dblue", "docker-blue · 192.168.40.39", badge="2", sub1="mcp 4788 (Executor)", sub2="mesh 443 (MeshCentral, HTTPS backend)", logo="docker", icons=["meshcentral"], node="blue")
 d.card("p40", "ans", "ansible-01 · 192.168.40.36", badge="1", sub1="semaphore 3000", sub2="Semaphore advertises the HTTPS name", logo="ansible", icons=["semaphore"], node="blue")
 d.group("p72", "Observability backends", badge="VLANs 72 and 73", family="Observability", cols=1, notes=[
@@ -74,6 +74,6 @@ d.legend_family("External", "clients, or outside the lab"); d.legend_family("Int
 d.legend_family("Observability", "AlphaSec-Observability"); d.legend_family("Servers", "AlphaSec-Servers")
 d.legend_edge("HTTPS in, HTTP or HTTPS out", "solid", "blue"); d.legend_edge("certificate issuance", "solid", "grey")
 for n in ("grey", "purple", "blue", "red"): d.legend_badge(f"runs on {n}-server", n)
-d.footnote("Read on 2026-09-26: 33 proxy_host rows, 23 live and 10 soft-deleted; 23 generated files under /data/nginx/proxy_host; 23 UniFi records, one per live host. Every live host uses certificate 1 with Force SSL and HTTP/2; NPM's Public access-list label means no list is assigned, not public exposure.")
+d.footnote("Read on 2026-09-27: 35 proxy_host rows, 24 live and 11 soft-deleted; 24 generated files under /data/nginx/proxy_host; 24 UniFi records, one per live host. Every live host uses certificate 1 with Force SSL and HTTP/2; NPM's Public access-list label means no list is assigned, not public exposure.")
 d.footnote("Immich carries a 50,000 MiB body limit; aiproxy, mcp, mesh and dockhand run with buffering off and 3,600 s timeouts.")
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)
