@@ -1,14 +1,14 @@
 # Security
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-09-28
 
 My incident reports and security assessments for the AlphaSec United homelab. Each incident lives under `Incidents/<Service>/` even when the service keeps its records under `Platforms/` or `Infrastructure/`.
 
 | Item | Count, 2026-09-27 |
 | --- | --- |
 | Incident-format reports | 14 across 11 service folders, including one authorized exercise |
-| Assessments | 3 |
+| Assessments | 4 |
 | Archived incidents | 1 ([Kasm Workspaces](../Archive/Security/Incidents/Kasm%20Workspaces/Thin%20Pool%20Exhaustion%20-%202026-07-29.md)) |
 
 ## Incidents
@@ -34,6 +34,7 @@ My incident reports and security assessments for the AlphaSec United homelab. Ea
 
 | Date | Assessment | Result |
 | --- | --- | --- |
+| 2026-09-28 | [ObiPC installed games review](Assessments/ObiPC%20Installed%20Games%20Review%20-%202026-09-28.md) | Four Steam games he installed himself; the games, Steam, Ubisoft Connect and the GTA V Enhanced remnant removed the same day |
 | 2026-09-24 | [ObiPC sign-in review](Assessments/ObiPC%20Sign-In%20Review%20-%202026-09-24.md) | ObiPC unreachable over SSH; domain controllers logged only its computer account |
 | 2026-09-23 | [ObiPC event review](Assessments/ObiPC%20Event%20Review%20-%202026-09-23.md) | Read-only review of ObiPC's Windows event logs for 2026-09-23 |
 | 2026-07-27 | [UniFi firewall audit](Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md) | 62/100, `needs_attention` |
