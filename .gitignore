@@ -59,6 +59,11 @@
 # Evidence images (exact filenames are allowlisted per directory)
 !/Infrastructure/Compute/Galaxy/Evidence/
 /Infrastructure/Compute/Galaxy/Evidence/*
+!/Infrastructure/Compute/Galaxy/Evidence/Green Memory Diagnosis - 2026-09-27/
+/Infrastructure/Compute/Galaxy/Evidence/Green Memory Diagnosis - 2026-09-27/*
+!/Infrastructure/Compute/Galaxy/Evidence/Green Memory Diagnosis - 2026-09-27/Logs/
+/Infrastructure/Compute/Galaxy/Evidence/Green Memory Diagnosis - 2026-09-27/Logs/*
+!/Infrastructure/Compute/Galaxy/Evidence/Green Memory Diagnosis - 2026-09-27/Logs/Test-Readback.json
 !/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/
 /Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/*
 !/Infrastructure/Compute/Galaxy/Evidence/win11-dev Completion - 2026-09-21/Exports/

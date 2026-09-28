@@ -1,15 +1,16 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-09-27
 
 Open Galaxy work only. Closed sections are listed in the root [COMPLETED](../../../../COMPLETED.md) file with links to their change records, and the root [TODO](../../../../TODO.md) links here.
 
 ## <a id="green-memory-repair-and-win11-dev-provisioning"></a>Green Memory Repair
 
-**Status:** Open since 2026-09-20. Green holds no guests.  
+**Status:** Open since 2026-09-20. Green holds no guests. The bounded 2026-09-27 test reproduced a Stuck Address failure six seconds after launch; module and slot isolation require physical access.  
 **Troubleshooting record:** [Memory Test Failures on green-server](Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md)
 
+- [x] Reproduce the fault on the empty host and check temperatures, NVMe health, firmware and module layout. The [2026-09-27 diagnosis](Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md#component-diagnosis-on-2026-09-27) records the failure and isolation plan.
 - [ ] Isolate the faulty module or slot and run an offline memory test. The 2026-08-09 [cross-process fault record](Troubleshooting/Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md) left the hardware cause unproven; the 2026-09-20 online test then produced 25 failure lines.
 - [ ] Place no guest on Green until a full test passes.
 
