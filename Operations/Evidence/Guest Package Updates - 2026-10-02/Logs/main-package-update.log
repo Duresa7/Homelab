@@ -1,0 +1,440 @@
+Target: ansible-01
+Started: 2026-10-02 12:50:35 AM EDT
+Exit code: 0
+Executed script:
+#!/bin/bash
+set -uo pipefail
+cd /home/ansible/fleet-updates
+export LANG=C.utf8 LC_ALL=C.utf8 ANSIBLE_NOCOLOR=1
+TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'
+/usr/local/bin/ansible-playbook playbooks/os-update.yml -e 'target=os_update_targets:!docker-blue:!docker-network' -e reboot=report -e '{"apt_autoremove":false,"apt_autoclean":false}'
+maintenance_rc=$?
+TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'
+printf '%s\n' "$maintenance_rc" > /home/ansible/fleet-maintenance-2026-10-02/main.rc
+exit "$maintenance_rc"
+
+Combined stdout and stderr (text capture; line endings normalized):
+2026-10-02 12:50:35 AM EDT
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [media-01]
+ok: [docker-main]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-main]
+ok: [media-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [docker-main]
+changed: [media-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [docker-main]
+ok: [media-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-main]
+ok: [media-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-main]
+skipping: [media-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-main] => {
+    "msg": "docker-main: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [media-01] => {
+    "msg": "media-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [alpha-prod-01]
+ok: [app-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [alpha-prod-01]
+ok: [app-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [alpha-prod-01]
+changed: [app-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [alpha-prod-01]
+ok: [app-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [alpha-prod-01]
+ok: [app-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [alpha-prod-01]
+skipping: [app-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [alpha-prod-01] => {
+    "msg": "alpha-prod-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [app-01] => {
+    "msg": "app-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [edge-01]
+ok: [security-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [edge-01]
+ok: [security-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [edge-01]
+changed: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [security-01]
+ok: [edge-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [edge-01]
+ok: [security-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [edge-01]
+skipping: [security-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [edge-01] => {
+    "msg": "edge-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+ok: [security-01] => {
+    "msg": "security-01: pkg_mgr=apt changed=True reboot_required=True reboot_policy=report"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [ansible-01]
+ok: [splunk-siem]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [splunk-siem]
+ok: [ansible-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [splunk-siem]
+ok: [ansible-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+skipping: [splunk-siem]
+changed: [ansible-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [ansible-01]
+changed: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+skipping: [splunk-siem]
+ok: [ansible-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [ansible-01]
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [splunk-siem]
+ok: [ansible-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [splunk-siem]
+skipping: [ansible-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=True reboot_required=True reboot_policy=report"
+}
+ok: [ansible-01] => {
+    "msg": "ansible-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [monitor-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [monitor-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [monitor-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [monitor-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [monitor-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [monitor-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [monitor-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [monitor-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [monitor-01]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [monitor-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [monitor-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [monitor-01]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [monitor-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [monitor-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [monitor-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [monitor-01]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [monitor-01]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [monitor-01]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [monitor-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [monitor-01] => {
+    "msg": "monitor-01: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+ansible-01                 : ok=7    changed=1    unreachable=0    failed=0    skipped=13   rescued=0    ignored=0   
+app-01                     : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+docker-main                : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+edge-01                    : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+media-01                   : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+monitor-01                 : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+security-01                : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+splunk-siem                : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+
+2026-10-02 01:19:34 AM EDT
+
+Follow-up verification: ../Exports/post-update.json and final-verification.json; package audits and dependency checks passed. No host rebooted.

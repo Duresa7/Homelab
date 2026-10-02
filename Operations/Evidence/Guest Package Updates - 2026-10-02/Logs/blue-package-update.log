@@ -1,0 +1,88 @@
+Target: ansible-01
+Started: 2026-10-02 01:35:20 AM EDT
+Exit code: 0
+Executed script:
+#!/bin/bash
+set -uo pipefail
+cd /home/ansible/fleet-updates
+export LANG=C.utf8 LC_ALL=C.utf8 ANSIBLE_NOCOLOR=1
+TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'
+/usr/local/bin/ansible-playbook playbooks/os-update.yml -e target=docker-blue -e reboot=report -e '{"apt_autoremove":false,"apt_autoclean":false}'
+maintenance_rc=$?
+TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'
+printf '%s\n' "$maintenance_rc" > /home/ansible/fleet-maintenance-2026-10-02/blue.rc
+exit "$maintenance_rc"
+
+Combined stdout and stderr (text capture; line endings normalized):
+2026-10-02 01:35:20 AM EDT
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [docker-blue]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [docker-blue]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-blue]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [docker-blue]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-blue]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [docker-blue]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-blue]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-blue]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [docker-blue]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [docker-blue]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [docker-blue]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [docker-blue]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [docker-blue]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [docker-blue]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [docker-blue]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [docker-blue]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [docker-blue]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [docker-blue]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-blue]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-blue] => {
+    "msg": "docker-blue: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+docker-blue                : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+
+2026-10-02 01:36:16 AM EDT
+
+Follow-up verification: ../Exports/post-update.json and final-verification.json; package audits and dependency checks passed. No host rebooted.

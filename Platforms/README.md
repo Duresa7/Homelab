@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-02
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -39,7 +39,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [Samba](Samba/README.md) | ubuntu-dev | File server for my own machines |
 | [Splunk](Splunk/README.md) | splunk-siem | Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S |
 | [TeamSpeak Hosting](Teamspeak%20Hosting/README.md) | alpha-prod-01 | Two TeamSpeak 3 Server 3.13.8 instances published through Playit, with TS3 Manager |
-| [Wazuh](Wazuh/README.md) | security-01 | Wazuh 4.14.7 manager with 15 active remote agents |
+| [Wazuh](Wazuh/README.md) | security-01 | Wazuh 4.14.8 manager with 15 active remote agents (2026-10-02) |
 | [Windows Admin Center](Windows%20Admin%20Center/README.md) | HQ-MGT01 | Windows Admin Center 2.7.21.5 |
 
 ## Platform layout

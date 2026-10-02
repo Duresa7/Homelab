@@ -1,17 +1,17 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-02
 
-I run Wazuh 4.14.7 as an all-in-one install (manager, indexer and dashboard) on VM 200 `security-01` at `192.168.72.2` on Security-A, VLAN 72. On 2026-09-24 `wazuh-control info` reported v4.14.7 and `agent_control -l` listed 15 agents plus the manager, all active. Every Proxmox node and every running Linux guest carries an agent except `splunk-siem`, which has none. `kali-pen` is stopped and not enrolled, and there are no Windows agents. Alerts forward to Splunk, and Wazuh MCP Server 4.3.0 gives Executor a read-only path to the manager and indexer.
+I run Wazuh 4.14.8 as an all-in-one install (manager, indexer and dashboard) on VM 200 `security-01` at `192.168.72.2` on Security-A, VLAN 72. On 2026-10-02 `wazuh-control info` reported v4.14.8 and `agent_control -l` listed 15 agents plus the manager, all active. Every Proxmox node and every running Linux guest carries an agent except `splunk-siem`, which has none. `kali-pen` is stopped and not enrolled, and there are no Windows agents. Alerts forward to Splunk, and Wazuh MCP Server 4.3.0 gives Executor a read-only path to the manager and indexer.
 
 **Owner:** Homelab security monitoring
 
 | Item | Value |
 |---|---|
 | Host | VM 200 `security-01` on `grey-server`, Ubuntu 24.04.4 LTS, 4 vCPU, 10 GiB memory with an 8 GiB balloon floor, 100 GiB on `ssd-lvm1` (`qm config 200`, 2026-09-24) |
-| Packages | `wazuh-manager`, `wazuh-indexer`, `wazuh-dashboard` 4.14.7-1 since the [2026-08-04 central upgrade](Documentation/Change%20Records/4.14.7%20Central%20Upgrade%20-%202026-08-04.md) |
-| Agents | 15 active on 2026-09-24: IDs `004` to `011`, `013` to `017`, `020` (`ubuntu-dev`) and `021` (`docker-main`). 14 run 4.14.6-1 and `edge-01` runs 4.14.5-1, as last recorded on 2026-09-06; the per-host table is in the [configuration reference](Configuration/README.md#endpoint-installation-state) |
+| Packages | `wazuh-manager`, `wazuh-indexer`, `wazuh-dashboard` 4.14.8-1 since the [2026-10-02 guest package updates](../../Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md) |
+| Agents | 15 active on 2026-10-02: IDs `004` to `011`, `013` to `017`, `020` (`ubuntu-dev`) and `021` (`docker-main`). 14 run 4.14.6-1 and `edge-01` runs 4.14.5-1, as last recorded on 2026-09-06; the per-host table is in the [configuration reference](Configuration/README.md#endpoint-installation-state) |
 | Agent groups | `default` on every agent; `edge` on `edge-01`, `proxmox` on the five nodes, `workstation` on `ubuntu-dev` |
 | Detection | File integrity monitoring per group ([widened 2026-08-29](Documentation/Change%20Records/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md)), local rule 100200 against a weekly MalwareBazaar hash list, and the VirusTotal integration ([Malware Detection - 2026-08-29](Documentation/Change%20Records/Malware%20Detection%20-%202026-08-29.md)) |
 | Splunk forwarding | A Universal Forwarder on `security-01` ships `/var/ossec/logs/alerts/alerts.json` to `splunk-siem` `192.168.72.3:9997`, index `wazuh`, 30-day retention ([Alert Forwarding to Splunk - 2026-08-29](Documentation/Change%20Records/Alert%20Forwarding%20to%20Splunk%20-%202026-08-29.md)); four Wazuh saved searches in Splunk post to Discord |
