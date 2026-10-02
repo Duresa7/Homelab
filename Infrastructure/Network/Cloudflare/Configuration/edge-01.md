@@ -1,7 +1,7 @@
 # Cloudflare Tunnel: edge-01
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-09-15
+**Last updated:** 2026-10-02
 
 I run one Cloudflare Tunnel, `edge-01`, and manage its configuration from the Cloudflare Zero Trust dashboard rather than a local file. The connector runs as cloudflared on the edge-01 host. This tunnel is the only inbound path from the Internet to my services; the router forwards no ports.
 
@@ -14,7 +14,7 @@ I run one Cloudflare Tunnel, `edge-01`, and manage its configuration from the Cl
 | Created | 2026-02-14 |
 | Configuration source | Remote (dashboard-managed) |
 | Connector host | edge-01, `192.168.30.10`, VLAN 30, Debian 13 |
-| cloudflared version | 2026.8.3, running since I restarted the service on 2026-09-06 at 14:21 EDT; the binary had been on disk since 2026-09-04 while the process from the 2026-08-10 boot kept running 2026.7.3, and Cloudflare now reports 2026.8.3 on all four connections |
+| cloudflared version | 2026.9.3 binary installed during the [2026-10-02 guest package updates](../../../../Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md); local metrics still report the running process on 2026.8.3 with four connections. Restart is deferred to the Edge 01 reboot. I last restarted the connector on 2026-09-06 at 2:21 PM EDT, moving the running process from 2026.7.3 to 2026.8.3 |
 | Connections | 4, healthy, read through the Cloudflare API on 2026-09-06 after the restart: four QUIC connections to Ashburn edge locations, all reporting 2026.8.3, opened at 14:21 EDT |
 | Public DNS zone | alphsec.com |
 

@@ -1,11 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-02
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Schedule the six VM reboots left after the 2026-10-02 package updates.** Installed kernels, hosts, remaining holds and phased packages are in the [maintenance record](Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md#open-state).
 
 - [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 
@@ -55,4 +57,4 @@ None.
 | [Nginx Proxy Manager](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md) | No open items; Open WebUI became the 24th proxy host on 2026-09-05 |
 | [CLI Proxy API](Platforms/CLI%20Proxy%20API/Documentation/TODO.md) | No open items; provider state and the authenticated model list are verified, and the deployment moved to `docker-main` on 2026-08-19 |
 | [Prometheus](Platforms/Prometheus/Documentation/TODO.md) | Twenty-three Grafana alert rules deliver to `#bots` through the Discord alert bot; 50 targets across six jobs remain after [WUD retirement](Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md) on 2026-09-27. The inert Grafana WAL setting is gone from the host. UniFi gateway metrics. Prometheus uses `restart: always` after Docker's manual-stop flag caused `unless-stopped` to skip the 2026-08-10 boot |
-| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Alerts forwarded to Splunk, file-integrity monitoring widened, and malware detection added 2026-08-30. Phase two of FIM covers the other 14 agents. Four Wazuh searches alert through Splunk to Discord as of 2026-09-03; no active response, by decision. Central stack upgraded to 4.14.7 on 2026-08-04. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5. `docker-main`'s 4.14.0 agent turned out on 2026-09-06 to be pointed at the pre-migration manager address and had never connected; I re-enrolled it as `021` on 4.14.6 the same day, so the fleet is 15 active remote agents plus the manager (`agent_control -l`, 2026-09-24). The clock deviation is fixed. |
+| [Wazuh](Platforms/Wazuh/Documentation/TODO.md) | Alerts forwarded to Splunk, file-integrity monitoring widened, and malware detection added 2026-08-30. Phase two of FIM covers the other 14 agents. Four Wazuh searches alert through Splunk to Discord as of 2026-09-03; no active response, by decision. Central stack upgraded to 4.14.8 on 2026-10-02; all 15 remote agents active afterward. Agent `019` (`db-13-dev`/`debian-dev`) deregistered 2026-08-14 via `manage_agents`; release the twelve agent holds one host at a time, then move `edge-01` off 4.14.5. `docker-main`'s 4.14.0 agent turned out on 2026-09-06 to be pointed at the pre-migration manager address and had never connected; I re-enrolled it as `021` on 4.14.6 the same day, so the fleet is 15 active remote agents plus the manager (`agent_control -l`, 2026-09-24). The clock deviation is fixed. |

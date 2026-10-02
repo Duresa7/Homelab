@@ -1,11 +1,13 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-02
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 ## Recent changes
+
+- 2026-10-02: I updated host packages on all twelve running Linux guests. Docker Engine is 29.8.2 on all nine Docker hosts; Wazuh central packages are 4.14.8-1. Six VM reboots remain pending. [Maintenance and verification](../../Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md).
 
 - 2026-09-28: I replaced BookLore with BookOrbit v3.1.0 and PostgreSQL 18.6 on `docker-main`, preserving TCP 6060 and the BookLore HTTPS address. All 42 books imported, and the old application and MariaDB containers were removed. [Migration](../../../Platforms/BookOrbit/Documentation/Change%20Records/Migration%20from%20BookLore%20-%202026-09-28.md).
 
@@ -44,7 +46,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN, a
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
 | app-01 | VM 116 | purple-server | App platform | Coolify 4.3.23<br>Traefik 3.7.12<br>Postgres / Redis / Realtime / Sentinel<br>cAdvisor 0.60.5<br>Wazuh agent 4.14.6 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.8.3<br>Wazuh agent 4.14.5 |
-| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.7<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.48 |
+| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.48 |
 | alpha-prod-01 | VM 401 | purple-server | Voice services | Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.49<br>Wazuh agent 4.14.6 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunk Enterprise 10.4.0<br>Enterprise Security 8.5.1<br>SC4S<br>No Wazuh agent |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin 12.1.0<br>Seerr 3.4.1<br>Sonarr / Radarr / Prowlarr<br>FlareSolverr 3.5.2<br>qBittorrent 5.2.3 through Gluetun and Proton VPN<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
@@ -140,7 +142,7 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 | RustDesk | `hbbs` and `hbbr` 1.1.16 from `rustdesk/rustdesk-server:latest`; [platform record](../../../Platforms/RustDesk/README.md) |
 | MeshCentral | 1.2.6 (image label `1.2.6-mongodb`) from `ghcr.io/ylianst/meshcentral:latest`; HTTPS on `192.168.40.39:443`, published as `mesh.alphasecunited.com` through NPM host 29. [Platform record](../../../Platforms/MeshCentral/README.md) |
 | cAdvisor, Hawser | `ghcr.io/google/cadvisor:latest`, Hawser 0.2.48 |
-| Docker runtime | Docker Engine 29.8.0, containerd 2.3.4 and runc 1.5.1 on 2026-09-06 |
+| Docker runtime | Docker Engine 29.8.2 and containerd 2.3.6 after the 2026-10-02 package updates; runc 1.5.1 was last recorded on 2026-09-06 |
 | Wazuh agent | 4.14.6-1, held; manager ID `007` as `docker-blue` |
 
 ## docker-network
@@ -169,7 +171,7 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 | Workload | Details |
 | --- | --- |
 | Caddy | 2.6.2, unit active on 2026-09-25 |
-| cloudflared | 2026.8.3, unit active on 2026-09-25; the Cloudflare Tunnel connector. [Tunnel record](../../../Infrastructure/Network/Cloudflare/Configuration/edge-01.md) |
+| cloudflared | 2026.9.3 binary installed on 2026-10-02; the active process still reports 2026.8.3 with four connections, pending the Edge 01 reboot. [Tunnel record](../../../Infrastructure/Network/Cloudflare/Configuration/edge-01.md) |
 | Wazuh agent | 4.14.5-1; manager ID `005` as `edge-01` |
 | Containers | Docker is not installed |
 
@@ -177,7 +179,7 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 | Workload | Details |
 | --- | --- |
-| Wazuh | Manager, indexer and dashboard; `wazuh-control info` reports v4.14.7 on 2026-09-24 |
+| Wazuh | Manager, indexer and dashboard; `wazuh-control info` reports v4.14.8 on 2026-10-02; all three services active |
 | Wazuh MCP Server | `forgejo.alphasecunited.com/homelab-images/wazuh-mcp-server:stable`, healthy on 2026-09-24; host-networked at `192.168.72.2:3000`; read-only Manager and Indexer identities; upstream 4.3.0 is the last version I recorded |
 | node_exporter | 1.9.0 on 9100 |
 | cAdvisor | `ghcr.io/google/cadvisor:latest` on 9101 from `/opt/docker/cadvisor` |

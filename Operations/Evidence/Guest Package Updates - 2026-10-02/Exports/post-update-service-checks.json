@@ -1,0 +1,55 @@
+{
+  "commands": [
+    {
+      "server": "security_01",
+      "command": "python3 -c 'import subprocess,json\ns=subprocess.run([\"/var/ossec/bin/agent_control\",\"-l\"],capture_output=True,text=True).stdout\nls=[l for l in s.splitlines() if \"ID:\" in l and \"ID: 000,\" not in l]\nprint(json.dumps({\"remote_agents\":len(ls),\"active\":sum(\"Active\" in l for l in ls),\"disconnected\":sum(\"Disconnected\" in l for l in ls)}))'",
+      "timeout": 10000
+    },
+    {
+      "server": "monitor_01",
+      "command": "python3 -c 'import urllib.request,json\nx=json.load(urllib.request.urlopen(\"http://127.0.0.1:9090/api/v1/targets\",timeout=10))[\"data\"][\"activeTargets\"]\nprint(json.dumps({\"total\":len(x),\"up\":sum(t[\"health\"]==\"up\" for t in x),\"down\":[{\"job\":t[\"labels\"].get(\"job\"),\"instance\":t[\"labels\"].get(\"instance\"),\"error\":t[\"lastError\"]} for t in x if t[\"health\"]!=\"up\"]}))'",
+      "timeout": 15000
+    },
+    {
+      "server": "ubuntu_dev",
+      "command": "cat /run/fleet-packages-20261002/result.rc; docker compose version --short; gh --version",
+      "timeout": 10000
+    },
+    {
+      "server": "docker_network",
+      "command": "curl -sS --max-time 10 -o /dev/null -w \"%{http_code}\" https://mcp.alphasecunited.com",
+      "timeout": 15000
+    }
+  ],
+  "results": [
+    {
+      "server": "security_01",
+      "result": "Exit code: 0\n\nOutput:\n{\"remote_agents\": 15, \"active\": 15, \"disconnected\": 0}\n"
+    },
+    {
+      "server": "monitor_01",
+      "result": "Exit code: 0\n\nOutput:\n{\"total\": 50, \"up\": 50, \"down\": []}\n"
+    },
+    {
+      "server": "ubuntu_dev",
+      "result": "Exit code: 0\n\nOutput:\n0\n5.5.1\ngh version 2.102.0 (2026-09-30)\nhttps://github.com/cli/cli/releases/tag/v2.102.0\n"
+    },
+    {
+      "server": "docker_network",
+      "result": "Exit code: 0\n\nOutput:\n200"
+    }
+  ],
+  "wazuhHealth": "Exit code: 0\n\nOutput:\n{\"wazuh_info\": \"WAZUH_VERSION=\\\"v4.14.8\\\"\\nWAZUH_REVISION=\\\"rc2\\\"\\nWAZUH_TYPE=\\\"server\\\"\\n\", \"agents\": {\"active\": 16, \"disconnected\": 0, \"never_connected\": 0}, \"dashboard\": {\"rc\": 0, \"http\": \"302\"}, \"api\": {\"rc\": 0, \"http\": \"401\"}, \"indexer\": {\"rc\": 0, \"http\": \"401\"}}\n",
+  "wazuhCluster": {
+    "code": "mcp_tool_error",
+    "message": "Tool execution failed: Wazuh API request failed: /cluster/healthcheck returned HTTP 400",
+    "details": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Tool execution failed: Wazuh API request failed: /cluster/healthcheck returned HTTP 400"
+        }
+      ]
+    }
+  }
+}

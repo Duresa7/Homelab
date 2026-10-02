@@ -772,3 +772,22 @@ admin.env
 !/Platforms/BookOrbit/Evidence/Migration - 2026-09-28/
 /Platforms/BookOrbit/Evidence/Migration - 2026-09-28/*
 !/Platforms/BookOrbit/Evidence/Migration - 2026-09-28/migration-summary.json
+
+# Sanitized guest package-update logs and verification, 2026-10-02
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/
+/Operations/Evidence/Guest Package Updates - 2026-10-02/*
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/
+/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/*
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/baseline.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/cleanup-ansible-01.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/cleanup-ubuntu-dev.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/final-verification.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/post-update-service-checks.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/post-update.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Exports/service-checks.json
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/
+/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/*
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/blue-package-update.log
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/main-package-update.log
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/network-package-update.log
+!/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/ubuntu-dev-package-update.log

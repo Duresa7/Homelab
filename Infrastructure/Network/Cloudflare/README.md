@@ -1,7 +1,7 @@
 # Cloudflare
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-02
 
 Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector runs on `edge-01` in the DMZ and is the only inbound path from the Internet; the gateway forwards no ports. Its ingress is configured from the Cloudflare Zero Trust dashboard, not a local file. Three Access applications control administrative entry to Coolify.
 
@@ -9,7 +9,7 @@ Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector 
 | --- | --- |
 | Zones | `alphasecunited.com`, `alphsec.com`, `duresakadi.com`, `duresakadi.me` (paused), all on the Free plan |
 | Tunnel | `edge-01`, four connections, ingress configuration version 12 on 2026-09-06 |
-| Connector | `cloudflared` 2026.8.3 on `edge-01`, unit active on 2026-09-25 |
+| Connector | `cloudflared` 2026.9.3 installed on `edge-01` on 2026-10-02; active process still on 2026.8.3 with four connections until restart ([package updates](../../../Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md)) |
 | Public services | `coolify-a1.alphsec.com` straight to Coolify on `app-01`; `*.alphsec.com` through Caddy on `edge-01` to the deployed apps |
 | Access | Three applications for Coolify; two allow policies for the same two email identities and one webhook bypass |
 

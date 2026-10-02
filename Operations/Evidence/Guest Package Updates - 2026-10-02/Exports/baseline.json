@@ -1,0 +1,229 @@
+{
+  "docker_main": {
+    "hostname": "docker-main",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 12 (bookworm)",
+      "VERSION_ID": "12",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-8-pve",
+    "boot_id": "cd2511a5-f5c0-4b21-a3cc-48e65e47c08b",
+    "disk": "Filesystem                       1024-blocks     Used Available Capacity Mounted on\n/dev/mapper/pve-vm--110--disk--0   102888736 57795408  40337432      59% /\n/dev/mapper/pve-vm--110--disk--0   102888736 57795408  40337432      59% /\n/dev/mapper/pve-vm--110--disk--0   102888736 57795408  40337432      59% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:           16384        1926       12677         157        1938       14457\nSwap:           4096        1552        2543",
+    "failed_units": [],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "cli-proxy-api\trunning\tUp 22 hours\nhomarr\trunning\tUp 46 hours\nbookorbit-app\trunning\tUp 3 days (healthy)\nbookorbit-db\trunning\tUp 3 days (healthy)\nopen-webui\trunning\tUp 9 days (healthy)\napp-portal\trunning\tUp 11 days (healthy)\ncadvisor\trunning\tUp 12 days (healthy)\nimmich_machine_learning\trunning\tUp 13 days (healthy)\nforgejo\trunning\tUp 13 days\nimmich_server\trunning\tUp 13 days (healthy)\ndocusaurus\texited\tExited (0) 9 days ago\ndockhand\trunning\tUp 2 weeks (healthy)\nollama\trunning\tUp 3 weeks (healthy)\nimmich_postgres\trunning\tUp 3 weeks (healthy)\nimmich_redis\trunning\tUp 3 weeks (healthy)"
+  },
+  "media_01": {
+    "hostname": "media-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-8-pve",
+    "boot_id": "91158afb-19af-40de-a2a7-963cac029273",
+    "disk": "Filesystem                       1024-blocks     Used Available Capacity Mounted on\n/dev/mapper/pve-vm--842--disk--0   102626232 11628956  85738012      12% /\n/dev/mapper/pve-vm--842--disk--0   102626232 11628956  85738012      12% /\n/dev/mapper/pve-vm--842--disk--0   102626232 11628956  85738012      12% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            4096         983          33         109        3188        3112\nSwap:           1024         759         264",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "hawser-updater\tcreated\tCreated\nqbittorrent\trunning\tUp 46 hours\njellyseerr\trunning\tUp 3 days\ngluetun\trunning\tUp 4 days (healthy)\nsonarr\trunning\tUp 4 days\nprowlarr\trunning\tUp 5 days\nradarr\trunning\tUp 9 days\ncadvisor\trunning\tUp 12 days (healthy)\njellyfin\trunning\tUp 4 days (healthy)\nhawser\trunning\tUp 2 weeks (healthy)\nflaresolverr\trunning\tUp 2 weeks"
+  },
+  "alpha_prod_01": {
+    "hostname": "alpha-prod-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "6.12.107+deb13-amd64",
+    "boot_id": "bde04456-4338-4769-8f79-18c5fb86f39f",
+    "disk": "Filesystem     1024-blocks    Used Available Capacity Mounted on\n/dev/sda2         57424992 5715816  48759700      11% /\n/dev/sda2         57424992 5715816  48759700      11% /\n/dev/sda2         57424992 5715816  48759700      11% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            3853         811        2170           0        1141        3042\nSwap:           3174         100        3074",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "cadvisor\trunning\tUp 4 days (healthy)\nhawser-updater\tcreated\tCreated\nts-valorant-02\trunning\tUp 13 days\nts-valorant-03\trunning\tUp 13 days\nhawser\trunning\tUp 13 days (healthy)\nteamspeak-monitor\trunning\tUp 2 weeks\nplayit-agent\trunning\tUp 2 weeks\nts3-manager\trunning\tUp 2 weeks"
+  },
+  "app_01": {
+    "hostname": "app-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "6.12.107+deb13-amd64",
+    "boot_id": "75e9c88e-f867-4515-be45-3d6070cbfdf3",
+    "disk": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sda2         62690020 14779604  44693472      25% /\n/dev/sda2         62690020 14779604  44693472      25% /\n/dev/sda2         62690020 14779604  44693472      25% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            7879        1403        4451         241        2549        6476\nSwap:           2046           0        2046",
+    "failed_units": [],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "coolify\trunning\tUp 13 days (healthy)\ncoolify-db\trunning\tUp 13 days (healthy)\ncoolify-redis\trunning\tUp 13 days (healthy)\ncoolify-realtime\trunning\tUp 13 days (healthy)\ncoolify-sentinel\trunning\tUp 2 weeks (healthy)\ncadvisor\trunning\tUp 2 weeks (healthy)\ncoolify-proxy\trunning\tUp 2 weeks (healthy)"
+  },
+  "edge_01": {
+    "hostname": "edge-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "6.12.107+deb13-amd64",
+    "boot_id": "0585534d-cc48-464d-b885-95ae0734e4fe",
+    "disk": "Filesystem     1024-blocks    Used Available Capacity Mounted on\n/dev/sda2         28198980 2224160  24517056       9% /\n/dev/sda2         28198980 2224160  24517056       9% /\n/dev/sda2         28198980 2224160  24517056       9% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            3854         425        2830           0         837        3429\nSwap:           1589           0        1589",
+    "failed_units": [],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": ""
+  },
+  "security_01": {
+    "hostname": "security-01",
+    "os": {
+      "PRETTY_NAME": "Ubuntu 24.04.4 LTS",
+      "VERSION_ID": "24.04",
+      "ID": "ubuntu"
+    },
+    "kernel": "6.8.0-138-generic",
+    "boot_id": "70060ebf-64a3-4dc4-acfb-318c5c80fbcd",
+    "disk": "Filesystem     1024-blocks     Used Available Capacity Mounted on\n/dev/sda2        101539832 28786500  67549212      30% /\n/dev/sda2        101539832 28786500  67549212      30% /\n/dev/sda2        101539832 28786500  67549212      30% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            7829        3151         239           0        4752        4678\nSwap:           4095         387        3708",
+    "failed_units": [
+      "prometheus-node-exporter.service"
+    ],
+    "reboot_flag": true,
+    "package_processes": "734",
+    "holds": "",
+    "audit": "",
+    "docker": "hawser-updater\tcreated\tCreated\ncadvisor\trunning\tUp 12 days (healthy)\nhawser\trunning\tUp 2 weeks (healthy)\nwazuh-mcp-server\trunning\tUp 2 weeks (healthy)"
+  },
+  "splunk_siem": {
+    "hostname": "splunk-siem",
+    "os": {
+      "ID": "rocky",
+      "VERSION_ID": "10.2",
+      "PRETTY_NAME": "Rocky Linux 10.2 (Red Quartz)"
+    },
+    "kernel": "6.12.0-211.50.1.el10_2.x86_64",
+    "boot_id": "02213b64-bfdd-42c2-90da-73eb1a82098e",
+    "disk": "Filesystem          1024-blocks     Used Available Capacity Mounted on\n/dev/mapper/rl-root   148353024 59325872  89027152      40% /\n/dev/sda2               2031616   683380   1348236      34% /boot\n/dev/mapper/rl-root   148353024 59325872  89027152      40% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:           11630        4279         801          37        6905        7351\nSwap:           6007         838        5169",
+    "failed_units": [],
+    "reboot_flag": false,
+    "package_processes": ""
+  },
+  "ansible_01": {
+    "hostname": "ansible-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-15-pve",
+    "boot_id": "c42e3e80-6529-4143-8274-ad547923a274",
+    "disk": "Filesystem                       1024-blocks    Used Available Capacity Mounted on\n/dev/mapper/pve-vm--100--disk--0    16337788 6239056   9243488      41% /\n/dev/mapper/pve-vm--100--disk--0    16337788 6239056   9243488      41% /\n/dev/mapper/pve-vm--100--disk--0    16337788 6239056   9243488      41% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            1024          58         688           0         276         965\nSwap:            512          31         480",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": ""
+  },
+  "monitor_01": {
+    "hostname": "monitor-01",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-15-pve",
+    "boot_id": "4460959e-6a55-40be-b913-e4fccd04479d",
+    "disk": "Filesystem                       1024-blocks     Used Available Capacity Mounted on\n/dev/mapper/pve-vm--104--disk--0    20466300 13585144   5858144      70% /\n/dev/mapper/pve-vm--104--disk--0    20466300 13585144   5858144      70% /\n/dev/mapper/pve-vm--104--disk--0    20466300 13585144   5858144      70% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            2048         747         396           0         904        1300\nSwap:           1024         352         671",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "hawser-updater\tcreated\tCreated\ngrafana\trunning\tUp 46 hours\nprometheus\trunning\tUp 5 days\ncadvisor\trunning\tUp 12 days (healthy)\nhawser\trunning\tUp 2 weeks (healthy)\nalert-bot\trunning\tUp 2 weeks (healthy)\npeanut\trunning\tUp 3 weeks (healthy)\nblackbox-exporter\trunning\tUp 3 weeks\nnut-exporter\trunning\tUp 3 weeks\npve-exporter\trunning\tUp 3 weeks"
+  },
+  "ubuntu_dev": {
+    "hostname": "ubuntu-dev",
+    "os": {
+      "PRETTY_NAME": "Ubuntu 26.04.1 LTS",
+      "VERSION_ID": "26.04",
+      "ID": "ubuntu"
+    },
+    "kernel": "7.0.0-31-generic",
+    "boot_id": "f4561c65-02e7-4b3f-8a52-a69643897f02",
+    "disk": "Filesystem     1024-blocks      Used Available Capacity Mounted on\n/dev/sda2        235192828 133150756  90863284      60% /\n/dev/sda2        235192828 133150756  90863284      60% /\n/dev/sda2        235192828 133150756  90863284      60% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:           11376        3182        1056         107        7562        8193\nSwap:           4095        3694         401",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": true,
+    "package_processes": "1682",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "app-portal-docs-review\texited\tExited (0) 9 days ago\napp-portal-upgrade-old\texited\tExited (0) 12 days ago"
+  },
+  "docker_network": {
+    "hostname": "docker-network",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-15-pve",
+    "boot_id": "eafa777f-c21a-4dff-8ac7-5e302153b76d",
+    "disk": "Filesystem                       1024-blocks    Used Available Capacity Mounted on\n/dev/mapper/pve-vm--107--disk--0    32716560 7066824  23955632      23% /\n/dev/mapper/pve-vm--107--disk--0    32716560 7066824  23955632      23% /\n/dev/mapper/pve-vm--107--disk--0    32716560 7066824  23955632      23% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            2048         337        1253           0         458        1710\nSwap:           1024         219         804",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "hawser-updater\tcreated\tCreated\nnetbird-dashboard\trunning\tUp 2 days\nnginx-proxy-manager\trunning\tUp 6 days (healthy)\ncadvisor\trunning\tUp 12 days (healthy)\nnetbird-server\trunning\tUp 12 days\nhawser\trunning\tUp 2 weeks (healthy)"
+  },
+  "docker_blue": {
+    "hostname": "docker-blue",
+    "os": {
+      "PRETTY_NAME": "Debian GNU/Linux 13 (trixie)",
+      "VERSION_ID": "13",
+      "ID": "debian"
+    },
+    "kernel": "7.0.14-15-pve",
+    "boot_id": "6b91184e-3cfc-42b7-8546-8f2fde1d4d26",
+    "disk": "Filesystem                       1024-blocks    Used Available Capacity Mounted on\n/dev/mapper/pve-vm--108--disk--0    15375304 6886868   7685620      48% /\n/dev/mapper/pve-vm--108--disk--0    15375304 6886868   7685620      48% /\n/dev/mapper/pve-vm--108--disk--0    15375304 6886868   7685620      48% /",
+    "memory": "total        used        free      shared  buff/cache   available\nMem:            2048         606         948           4         498        1441\nSwap:           1024         621         402",
+    "failed_units": [
+      "openipmi.service"
+    ],
+    "reboot_flag": false,
+    "package_processes": "",
+    "holds": "wazuh-agent",
+    "audit": "",
+    "docker": "hawser-updater\tcreated\tCreated\nmcp-ssh-manager\trunning\tUp 21 hours (healthy)\nmeshcentral\trunning\tUp 7 days\ncadvisor\trunning\tUp 12 days (healthy)\nexecutor\trunning\tUp 12 days (healthy)\nmcp-unifi-network\trunning\tUp 2 weeks (healthy)\nhawser\trunning\tUp 2 weeks (healthy)\ndocker-mcp-gateway\trunning\tUp 3 weeks (healthy)\nssh-manager-mcp-gateway\trunning\tUp 3 weeks (healthy)\nhbbs\trunning\tUp 3 weeks\nhbbr\trunning\tUp 3 weeks"
+  }
+}
