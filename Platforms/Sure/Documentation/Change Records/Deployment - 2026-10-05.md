@@ -52,7 +52,7 @@ The first resource sample showed `sure-web` at 360 MiB, `sure-worker` at 329 MiB
 
 ## Findings
 
-**Encryption at rest.** Every boot logs `[SECURITY] ActiveRecord Encryption is NOT configured`. I read `config/initializers/active_record_encryption.rb` at the deployed commit. In self-hosted mode it derives the primary key, deterministic key and salt from `SECRET_KEY_BASE` with SHA-256. The warning fires because the keys were not set explicitly. `ActiveRecordEncryptionConfig.ready?` returned `true` at runtime, so the models that encrypt provider tokens are encrypting. The consequence: changing `SECRET_KEY_BASE` makes every encrypted field unreadable.
+**Encryption at rest.** Every boot logs `[SECURITY] ActiveRecord Encryption is NOT configured`. I read `config/initializers/active_record_encryption.rb` at the deployed commit. In self-hosted mode it derives the primary key, deterministic key and salt from `SECRET_KEY_BASE` with SHA-256. The warning fires because the keys were not set explicitly. `ActiveRecordEncryptionConfig.ready?` returned `true` at runtime, and from that I concluded the models were encrypting. That was wrong: the models check `explicitly_configured?`, which was false, so nothing was encrypted. I corrected it later the same day in [Explicit Encryption Keys](Explicit%20Encryption%20Keys%20-%202026-10-05.md).
 
 **Yahoo Finance is rate-limited.** The Yahoo provider loaded, but a USD to EUR rate fetch failed and `healthy?` returned false. From inside `sure-web`, `query1.finance.yahoo.com` returned HTTP 429. Yahoo is refusing my public address, so this is not a problem with the container's DNS or routing. [Log](../../Evidence/Deployment%20-%202026-10-05/Logs/Yahoo-Finance-Check.log)
 
