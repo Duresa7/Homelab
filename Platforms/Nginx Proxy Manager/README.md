@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-05
 
 Nginx Proxy Manager (NPM) is my internal HTTPS front door. It runs on the `docker-network` LXC and serves every internal `*.alphasecunited.com` name with one Let's Encrypt DNS-01 wildcard certificate. It has no public DNS and no WAN ingress. Public traffic goes through Caddy on `edge-01` instead; see [Access Paths](../../Architecture/Access-Paths.md).
 
@@ -20,7 +20,7 @@ Read back on 2026-09-24 unless a row says otherwise.
 | Guest bindings | TCP 80, 81 and 443 |
 | Docker network | External `proxy`, `172.31.85.0/24`; NPM fixed at `172.31.85.10` |
 | Persistent data | `data/` and `letsencrypt/` bind mounts |
-| Proxy hosts | 24 live (NetBird plus 23 applications), 11 soft-deleted on 2026-09-27; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
+| Proxy hosts | 25 live (NetBird plus 24 applications) after adding Sure on 2026-10-05, 11 soft-deleted on 2026-09-27; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
 | Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`, expires 2026-12-08 at 3:03 AM UTC; renews automatically through Cloudflare DNS-01 |
 | Shared TLS policy | Every live host uses certificate 1 with Force SSL and HTTP/2; HSTS off |
 | Local DNS | 24 UniFi A records point at `192.168.85.2`, one per live host |
@@ -28,6 +28,8 @@ Read back on 2026-09-24 unless a row says otherwise.
 
 
 ## Changes
+
+- 2026-10-05: I added Sure as proxy host 36 at `sure.alphasecunited.com`, HTTP backend `192.168.40.35:3005`; readback reported nginx online and 25 live hosts. [Deployment](../Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
 - 2026-09-27: I added WUD HTTPS as proxy host 35 for the [Homarr integration](../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
 

@@ -1,11 +1,13 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-05
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 ## Recent changes
+
+- 2026-10-05: I deployed Sure 0.7.5-hotfix.1 on `docker-main` at `https://sure.alphasecunited.com` through NPM host 36, as four containers on TCP 3005. [Deployment](../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
 - 2026-10-02: I updated host packages on all twelve running Linux guests. Docker Engine is 29.8.2 on all nine Docker hosts; Wazuh central packages are 4.14.8-1. Six VM reboots remain pending. [Maintenance and verification](../../Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md).
 
@@ -43,7 +45,7 @@ All five nodes report `pve-manager/9.2.11` and their lowercase `.galaxy` FQDN, a
 | win11-dev | VM 103 | grey-server | Standalone Windows development workstation (`192.168.40.117`, VLAN 40) | Windows 11 Pro 25H2<br>OpenSSH Server<br>QEMU guest agent; no development tools installed |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.6<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.18.27<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.6 |
-| docker-main | LXC 110 | grey-server | Docker apps | Homarr 1.77.2<br>Immich 3.2.2<br>BookOrbit 3.1.0<br>Forgejo 16.0.5<br>Dockhand 1.0.48<br>CLI Proxy API 7.3.16<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.6 |
+| docker-main | LXC 110 | grey-server | Docker apps | Homarr 1.77.2<br>Sure 0.7.5-hotfix.1<br>Immich 3.2.2<br>BookOrbit 3.1.0<br>Forgejo 16.0.5<br>Dockhand 1.0.48<br>CLI Proxy API 7.3.16<br>Ollama 0.33.3 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.6 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.14.0<br>Grafana 13.2.2<br>Proxmox exporter 3.10.0<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.79.0 / dashboard 2.93.0<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.48<br>Wazuh agent 4.14.6 |
@@ -96,11 +98,12 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 ## docker-main
 
-15 containers were running on 2026-09-27 after adding Homarr. No Hawser agent runs here, because Dockhand itself does.
+19 containers were running on 2026-10-05 after adding Sure's four. No Hawser agent runs here, because Dockhand itself does.
 
 | Workload | Details |
 | --- | --- |
 | Homarr | 1.77.2 from `ghcr.io/homarr-labs/homarr:v1.77.2`; `/opt/docker/homarr`; TCP 7575; `dashboard.alphasecunited.com` through NPM host 34; persistent `/appdata` and initial administrator verified after restart; nine integrations on one private dashboard, consolidated on 2026-09-27. [Platform record](../../../Platforms/Homarr/README.md) |
+| Sure | 0.7.5-hotfix.1 from `ghcr.io/we-promise/sure:0.7.5-hotfix.1`, with PostgreSQL 16 and Redis 8; `/opt/docker/sure`; TCP 3005; `sure.alphasecunited.com` through NPM host 36; administrator login and data verified after a full stack restart; sign-up closed. [Platform record](../../../Platforms/Sure/README.md) |
 | Internal documentation site | `docusaurus` container from `forgejo.alphasecunited.com/homelab-images/docusaurus:stable`; exited with code 0 at 3:40 AM Eastern on 2026-09-22 and still stopped on 2026-09-24, with restart policy `unless-stopped`. NPM has no proxy host for it |
 | Immich | Server and machine learning v3.2.2 (`release-cuda` for machine learning); PostgreSQL `14-vectorchord0.4.3-pgvector0.8.1-pgvectors0.2.0` and Valkey 9; NVENC transcoding and CUDA machine learning on the GTX 1080 Ti since 2026-09-05; TCP 2283 |
 | BookOrbit | v3.1.0 with PostgreSQL 18.6; TCP 6060; replaced BookLore on 2026-09-28 |

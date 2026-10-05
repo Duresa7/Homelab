@@ -1,0 +1,10 @@
+# 2026-10-05 01:55:15 PM EDT source ubuntu-dev, target https://sure.alphasecunited.com
+$ curl -sI http://sure.alphasecunited.com/
+HTTP/1.1 301 Moved Permanently
+Location: https://sure.alphasecunited.com/
+$ curl -s -o /dev/null -w ... https://sure.alphasecunited.com/up
+code=200 ssl_verify=0
+$ curl -s -o /dev/null -w ... https://sure.alphasecunited.com/registration/new
+code=200
+$ dig sure.alphasecunited.com @1.1.1.1 (status)
+status: NXDOMAIN

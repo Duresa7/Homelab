@@ -1,0 +1,8 @@
+{
+  "captured": "2026-10-05 Eastern",
+  "target": "UniFi local DNS",
+  "preflight": {"static_records": 30, "pointing_to_npm": 24, "existing_sure_records": 0},
+  "call": "unifi_create_dns_record",
+  "result": {"success": true, "_id": "6ac3e46b25574794b94ddd9b", "key": "sure.alphasecunited.com", "record_type": "A", "value": "192.168.85.2", "ttl": 300, "enabled": true},
+  "resolution_check": {"resolvectl_on_ubuntu_dev": "192.168.85.2", "public_1.1.1.1": "NXDOMAIN"}
+}

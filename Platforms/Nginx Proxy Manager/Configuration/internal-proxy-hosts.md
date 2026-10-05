@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-05
 
-On 2026-09-27 I added Homarr as host 34, then retired WUD host 35. Readback returned 24 live hosts: the 23 rows below plus NetBird (ID 1). The 35 database rows include eleven soft-deleted hosts. UniFi holds 24 local A records pointing at `192.168.85.2`, one per live host. [WUD retirement](../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
+On 2026-10-05 I added Sure as host 36. Readback returned 25 live hosts: the 24 rows below plus NetBird (ID 1). On 2026-09-27 I added Homarr as host 34, then retired WUD host 35. The 35 database rows include eleven soft-deleted hosts. UniFi holds 25 local A records pointing at `192.168.85.2`, one per live host. [WUD retirement](../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 Soft-deleted IDs: 11 termix, 12 dashboard, 14 portainer, 16 syncthing, 21 kasm, 23 kasm, 24 games, 25 wings, 30 dockge, 33 weebarr, 35 wud.
 
@@ -21,6 +21,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 | 9 | `immich.alphasecunited.com` | `192.168.40.35:2283` | HTTP | Request buffering is off; body limit is 50,000 MiB; proxy read, proxy send, and response-send timeouts are 600 seconds. |
 | 10 | `booklore.alphasecunited.com` | `192.168.40.35:6060` | HTTP | BookOrbit v3.1.0 replaced BookLore on 2026-09-28; address and upstream unchanged. |
 | 34 | `dashboard.alphasecunited.com` | `192.168.40.35:7575` | HTTP | Homarr 1.77.2; replaces the retired application at this name. |
+| 36 | `sure.alphasecunited.com` | `192.168.40.35:3005` | HTTP | Sure 0.7.5-hotfix.1, added 2026-10-05; settings copied from host 34. |
 | 13 | `forgejo.alphasecunited.com` | `192.168.40.35:3000` | HTTP | `ROOT_URL` uses HTTPS; SSH cloning stays on `192.168.40.35`. |
 | 31 | `dockhand.alphasecunited.com` | `192.168.40.35:3003` | HTTP | Dockhand, proxy host 31. HTTPS login and Hawser WebSockets verified; buffering off, read/send timeouts 3,600 seconds. |
 | 15 | `peanut.alphasecunited.com` | `192.168.73.2:8090` | HTTP | Existing application authentication remains in place. |
