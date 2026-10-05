@@ -1,0 +1,21 @@
+# 2026-10-05 01:56:06 PM EDT source ubuntu-dev, target https://sure.alphasecunited.com; credentials read from the standard application account and withheld
+$ python3 login.py pre-restart
+{"label": "pre-restart", "unauthenticated_root": [302, "https://sure.alphasecunited.com/sessions/new"], "login_post": [302, "https://sure.alphasecunited.com/"], "authenticated_root": [302, "https://sure.alphasecunited.com/onboarding"]}
+# 2026-10-05 01:56:06 PM EDT target docker-main
+$ cd /opt/docker/sure && docker compose restart && docker compose ps
+ Container sure-redis Started 
+ Container sure-web Started 
+ Container sure-db Started 
+ Container sure-worker Started 
+exit=0
+# 2026-10-05 01:56:17 PM EDT https /up=200 after restart
+sure-db Up 10 seconds (healthy)
+sure-redis Up 10 seconds (healthy)
+sure-web Up 10 seconds
+sure-worker Up 9 seconds
+/sure-web restarts=0
+/sure-worker restarts=0
+/sure-db restarts=0
+/sure-redis restarts=0
+$ python3 login.py post-restart
+{"label": "post-restart", "unauthenticated_root": [302, "https://sure.alphasecunited.com/sessions/new"], "login_post": [302, "https://sure.alphasecunited.com/"], "authenticated_root": [302, "https://sure.alphasecunited.com/onboarding"]}

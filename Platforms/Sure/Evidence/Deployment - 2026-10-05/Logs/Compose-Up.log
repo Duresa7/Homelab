@@ -1,0 +1,45 @@
+# 2026-10-05 01:52:40 PM EDT target docker-main (192.168.40.35)
+$ cd /opt/docker/sure && docker compose pull && docker compose up -d
+ Image postgres:16 Pulling 
+ Image redis:8 Pulling 
+ Image ghcr.io/we-promise/sure:0.7.5-hotfix.1 Pulling 
+ Image redis:8 Pulled 
+ Image postgres:16 Pulled 
+ Image ghcr.io/we-promise/sure:0.7.5-hotfix.1 Pulled 
+ Network sure_sure_net Creating 
+ Network sure_sure_net Creating 
+ Network sure_sure_net Created 
+ Network sure_sure_net Created 
+ Container sure-db Creating 
+ Container sure-redis Creating 
+ Container sure-redis Created 
+ Container sure-db Created 
+ Container sure-worker Creating 
+ Container sure-web Creating 
+ Container sure-web Created 
+ Container sure-worker Created 
+ Container sure-redis Starting 
+ Container sure-db Starting 
+ Container sure-redis Started 
+ Container sure-db Started 
+ Container sure-redis Waiting 
+ Container sure-db Waiting 
+ Container sure-db Waiting 
+ Container sure-redis Waiting 
+ Container sure-redis Healthy 
+ Container sure-redis Healthy 
+ Container sure-db Healthy 
+ Container sure-db Healthy 
+ Container sure-worker Starting 
+ Container sure-web Starting 
+ Container sure-worker Started 
+ Container sure-web Started 
+exit=0
+CONTAINER           REPOSITORY                TAG                 PLATFORM            IMAGE ID            SIZE                CREATED
+sure-db             postgres                  16                  linux/amd64         1b3c642526f8        451MB               2 weeks ago
+sure-redis          redis                     8                   linux/amd64         a73640c00566        146MB               2 weeks ago
+sure-web            ghcr.io/we-promise/sure   0.7.5-hotfix.1      linux/amd64         12779dd4fe99        900MB               4 days ago
+sure-worker         ghcr.io/we-promise/sure   0.7.5-hotfix.1      linux/amd64         12779dd4fe99        900MB               4 days ago
+ghcr.io/we-promise/sure@sha256:3692b3bcf0eae2c7f3154348c6131060bda8127038fc78b0543f15b5166e6074
+postgres@sha256:1a6ab3f5345eb6dbe04a1349529caabdb0ab09293a09590fad07b2246bfa4b54
+redis@sha256:6f81e8915c60b065a524e6967e0ad1c639ba6efa84d669f823683ea04d9150ee

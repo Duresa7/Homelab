@@ -1,0 +1,105 @@
+name: sure
+
+x-db-env: &db_env
+  POSTGRES_USER: sure_user
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+  POSTGRES_DB: sure_production
+
+x-rails-env: &rails_env
+  <<: *db_env
+  SECRET_KEY_BASE: ${SECRET_KEY_BASE:?Set SECRET_KEY_BASE in .env}
+  SELF_HOSTED: "true"
+  RAILS_FORCE_SSL: "false"
+  RAILS_ASSUME_SSL: "true"
+  APP_DOMAIN: sure.alphasecunited.com
+  EXCHANGE_RATE_PROVIDER: yahoo_finance
+  SECURITIES_PROVIDER: yahoo_finance
+  DB_HOST: db
+  DB_PORT: 5432
+  REDIS_URL: redis://redis:6379/1
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  web:
+    container_name: sure-web
+    image: ghcr.io/we-promise/sure:0.7.5-hotfix.1
+    restart: unless-stopped
+    ports:
+      - "192.168.40.35:3005:3000"
+    volumes:
+      - ./data/storage:/rails/storage
+    environment:
+      <<: *rails_env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - sure_net
+    logging: *logging
+
+  worker:
+    container_name: sure-worker
+    image: ghcr.io/we-promise/sure:0.7.5-hotfix.1
+    command: bundle exec sidekiq
+    restart: unless-stopped
+    volumes:
+      - ./data/storage:/rails/storage
+    environment:
+      <<: *rails_env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    networks:
+      - sure_net
+    logging: *logging
+
+  db:
+    container_name: sure-db
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      <<: *db_env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sure_net
+    logging: *logging
+
+  redis:
+    container_name: sure-redis
+    image: redis:8
+    restart: unless-stopped
+    volumes:
+      - ./data/redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sure_net
+    logging: *logging
+
+networks:
+  sure_net:
+    driver: bridge

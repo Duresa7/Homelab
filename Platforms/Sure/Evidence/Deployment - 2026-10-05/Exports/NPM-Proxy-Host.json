@@ -1,0 +1,20 @@
+{
+  "id": 36,
+  "domain_names": [
+    "sure.alphasecunited.com"
+  ],
+  "forward_scheme": "http",
+  "forward_host": "192.168.40.35",
+  "forward_port": 3005,
+  "certificate_id": 1,
+  "ssl_forced": true,
+  "http2_support": true,
+  "block_exploits": true,
+  "caching_enabled": false,
+  "allow_websocket_upgrade": true,
+  "hsts_enabled": false,
+  "enabled": true,
+  "nginx_online": true,
+  "nginx_err": null,
+  "live_hosts_after": 25
+}

@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-05
 
 Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-defined policies, 80 allows and eight blocks, after removing the dashboard policy on 2026-09-26. The table below lists all 88. Generated zone defaults and response companions are not listed.
 
@@ -10,6 +10,8 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-de
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-10-05: I added TCP 3005 to `Allow NPM to docker-main web UIs` for Sure and verified the preserved source, destination and existing ports. [Sure deployment](../../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
 - 2026-09-27: I added Parrot OS-Mac (MAC withheld, `192.168.10.176`) to the six policies that name the MacBook Air M3 or give Jedi PC the UniFi console. I also corrected the row for `Allow Trusted SSH replies to Admin Hosts` to match the controller. [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 
@@ -79,7 +81,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
-| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 6060, 7575 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 3005, 6060, 7575 |
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |

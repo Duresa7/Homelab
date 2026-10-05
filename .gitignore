@@ -796,3 +796,20 @@ admin.env
 !/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/main-package-update.log
 !/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/network-package-update.log
 !/Operations/Evidence/Guest Package Updates - 2026-10-02/Logs/ubuntu-dev-package-update.log
+
+# Sure deployment verification, reviewed logs and exports
+!/Platforms/Sure/Evidence/
+/Platforms/Sure/Evidence/*
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/
+/Platforms/Sure/Evidence/Deployment - 2026-10-05/*
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/
+/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/*
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Stage-and-Secrets.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Compose-Up.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Readiness.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Signup-Closure.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/HTTPS-Verification.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Login-and-Restart.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Post-Restart-Checks.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Yahoo-Finance-Check.log
+!/Platforms/Sure/Evidence/Deployment - 2026-10-05/Exports/

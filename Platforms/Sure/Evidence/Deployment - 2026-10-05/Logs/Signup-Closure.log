@@ -1,0 +1,18 @@
+# 2026-10-05 01:55:31 PM EDT target docker-main (192.168.40.35)
+$ docker exec sure-web bin/rails runner "<user count/role readback; Setting.onboarding_state = \"closed\"; readback>"
+I, [2026-10-05T17:55:33.375570 #87]  INFO -- : [SKYLIGHT] [6.0.4] Unable to start, see the Skylight logs for more details
+W, [2026-10-05T17:55:33.425489 #87]  WARN -- : [OmniAuth] Skipping OIDC provider 'openid_connect' - missing required configuration
+W, [2026-10-05T17:55:33.425537 #87]  WARN -- : No SSO providers enabled; check auth.yml / ENV configuration or database providers
+W, [2026-10-05T17:55:35.377547 #87]  WARN -- : [SECURITY] ActiveRecord Encryption is NOT configured. Sensitive data
+(API keys, provider/bank tokens, MFA secrets, and PII) are being stored
+UNENCRYPTED at rest. To enable encryption, set the following keys in your Rails credentials or environment variables:
+  ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY
+  ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY
+  ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
+Generate a set with: bin/rails db:encryption:init
+
+users=1 families=1 roles=["super_admin"] onboarded=false
+onboarding_state_before=open
+onboarding_state_after=closed
+exit=0
+registration_new_after_close=302 redirect=https://sure.alphasecunited.com/sessions/new

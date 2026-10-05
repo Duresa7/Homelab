@@ -1,0 +1,7 @@
+# 2026-10-05 01:56 PM EDT target docker-main (192.168.40.35), container sure-web
+$ docker exec sure-web bin/rails runner '<Provider::Registry yahoo_finance; fetch_exchange_rate USD->EUR; healthy?>'
+yahoo_provider=Provider::YahooFinance
+usd_eur_ok=false
+healthy=false
+$ docker exec sure-web sh -c 'curl -s -o /dev/null -w "fc=%{http_code} " -m 8 https://fc.yahoo.com; curl -s -o /dev/null -w "q1=%{http_code}\n" -m 8 "https://query1.finance.yahoo.com/v8/finance/chart/EURUSD=X"'
+fc=404 q1=429

@@ -1,0 +1,19 @@
+# 2026-10-05 01:53:21 PM EDT target docker-main (192.168.40.35)
+$ poll http://192.168.40.35:3005/up, then docker compose ps and recent logs
+attempt=2 /up=200 at 01:53:31 PM
+sure-db Up 20 seconds (healthy)
+sure-redis Up 21 seconds (healthy)
+sure-web Up 14 seconds
+sure-worker Up 15 seconds
+*  Environment: production
+*          PID: 1
+* Listening on http://0.0.0.0:3000
+Use Ctrl-C to stop
+I, [2026-10-05T17:53:31.107738 #1]  INFO -- : {message: "Started GET \"/up\"", event: {http_request_received: {body: nil, content_length: nil, headers_json: "{\"Host\":\"192.168.40.35:3005\",\"User_Agent\":\"curl/8.18.0\",\"Accept\":\"*/*\",\"X_Forwarded_Port\":\"443\",\"X_Forwarded_Proto\":\"https\"}", host: "192.168.40.35", method: "GET", path: "/up", port: 3005, query_string: "", request_id: "4429afee-2c6b-470c-a7d1-2bd5a93931f4", scheme: "https", service_name: nil}}}
+I, [2026-10-05T17:53:31.110956 #1]  INFO -- : Processing by Rails::HealthController#show as */*
+I, [2026-10-05T17:53:31.112393 #1]  INFO -- :   Rendered html template (0.0ms)
+I, [2026-10-05T17:53:31.113166 #1]  INFO -- : {message: "Completed 200 OK in 4.767294ms", event: {http_response_sent: {body: nil, content_length: nil, headers_json: "{\"x-frame-options\":\"SAMEORIGIN\",\"x-xss-protection\":\"0\",\"x-content-type-options\":\"nosniff\",\"x-permitted-cross-domain-policies\":\"none\",\"referrer-policy\":\"strict-origin-when-cross-origin\",\"content-type\":\"text/html; charset=utf-8\",\"vary\":\"Accept\"}", request_id: "4429afee-2c6b-470c-a7d1-2bd5a93931f4", service_name: nil, status: 200, duration_ms: 4.767294}}}
+WARNING: table: "settings" does not exist or not database connection, `Setting.auto_sync_timezone` fallback to returns the default value.
+[1;34mINFO [0m 2026-10-05T17:53:21.963Z pid=1 tid=315: Cron Jobs - added job with name sync_all_accounts in the namespace default
+I, [2026-10-05T17:53:21.963490 #1]  INFO -- : [AutoSyncScheduler] Created cron job with schedule: 22 2 * * * (02:22 UTC)
+I, [2026-10-05T17:53:21.963523 #1]  INFO -- : [AutoSyncScheduler] Initialized sync_all_accounts cron job
