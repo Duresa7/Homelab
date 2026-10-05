@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-05
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It gives my MCP clients one endpoint in front of the SSH Manager, UniFi, Wazuh, Cloudflare and other integrations.
 
@@ -30,6 +30,7 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It give
 | Cloudflare Account MCP (`cloudflare_account`) | `cloudflareAccount`, `https://mcp.cloudflare.com/mcp` | 3 | Full-access account API token, every account and zone permission group |
 | Draw.io MCP (`drawio`) | `drawio`, `https://mcp.draw.io/mcp` | 2 | No authentication |
 | Brandfetch MCP (`brandfetch`) | `brandfetch`, `https://mcp.brandfetch.io/mcp` | 6 | Encrypted bearer credential |
+| Sure MCP (`sure`) | `personalSure`, `https://sure.alphasecunited.com/mcp` | 31 | OAuth through Dynamic Client Registration as my Sure account; read and write tools; org policy `sure.*` set to Always run |
 | Excalidraw, Mermaid Chart, Microsoft Learn, Miro MCP, Supabase MCP | Connected on or before 2026-09-14 | | No change record yet |
 
 I read the connection inventory on 2026-09-14. Each gateway connection keeps its own bearer token in Executor's encrypted credential provider, and the integration header maps are empty.
@@ -47,6 +48,8 @@ That makes Executor a root path into the lab. On 2026-09-24 `ssh_list_servers` r
 My three Codex profiles and two Claude Code profiles on `ubuntu-dev` reach Executor as one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`, all over OAuth. Neither client adds an approval gate: Codex approves Executor tools without prompting, and Claude Code allows `mcp__executor__*`.
 
 ## Records
+
+- 2026-10-05: I registered [Sure](../Sure/README.md)'s MCP server with `executor.mcp.addServer` and an OAuth template, then connected it in the console by signing in to Sure. Executor reached the internal endpoint from `docker-blue`, discovered 31 tools, and a `get_accounts` read returned successfully. Sure has no public name, so this works only because Executor and Sure are both inside the lab.
 
 - [Access Paths](../../Architecture/Access-Paths.md): agent access alongside the other paths into the lab
 
