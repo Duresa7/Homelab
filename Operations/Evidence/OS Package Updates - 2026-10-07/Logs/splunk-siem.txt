@@ -1,0 +1,441 @@
+Target: splunk-siem
+Capture date: 2026-10-07, 7:48 AM to 7:56 AM EDT
+The commands and their returned output are retained below. The SSH sudo helper returns a combined output stream.
+
+BASELINE
+Target: splunk_siem
+Command:
+export LC_ALL=C
+date '+%F %T %Z'
+uname -r
+cat /proc/sys/kernel/random/boot_id
+df -h / /boot
+systemctl --failed --no-legend --no-pager
+sudo -n dnf -q check-update
+rc=$?
+printf 'dnf_check_update_exit=%s\n' "$rc"
+sudo -n dnf -q needs-restarting -r
+printf 'needs_restarting_exit=%s\n' "$?"
+curl -sS -o /dev/null -w 'splunk_web_http=%{http_code}\n' --max-time 10 http://127.0.0.1:8000
+curl -ksS -o /dev/null -w 'splunk_management_http=%{http_code}\n' --max-time 10 https://127.0.0.1:8089
+Exit code: 0
+stdout:
+2026-10-07 07:48:13 EDT
+6.12.0-211.61.1.el10_2.x86_64
+eed39771-5f1c-47a5-8169-0cb8d33ab229
+Filesystem           Size  Used Avail Use% Mounted on
+/dev/mapper/rl-root  142G   57G   85G  41% /
+/dev/sda2            2.0G  668M  1.3G  34% /boot
+dnf_check_update_exit=1
+needs_restarting_exit=1
+splunk_web_http=000
+splunk_management_http=200
+
+stderr:
+sudo: a password is required
+sudo: a password is required
+curl: (56) Recv failure: Connection reset by peer
+
+
+BASELINE SERVICES (ssh_service_status)
+{
+  "server": "splunk_siem",
+  "timestamp": "2026-10-07T11:48:41.904Z",
+  "total": 4,
+  "running": 3,
+  "stopped": 1,
+  "services": [
+    {
+      "name": "Splunkd",
+      "status": "running",
+      "enabled": "yes",
+      "pid": 1189,
+      "details": "active (running) since",
+      "health": "healthy"
+    },
+    {
+      "name": "sc4s",
+      "status": "running",
+      "enabled": "yes",
+      "pid": 6344,
+      "details": "active (running) since",
+      "health": "healthy"
+    },
+    {
+      "name": "unifi-flow-collector",
+      "status": "running",
+      "enabled": "yes",
+      "pid": 1199,
+      "details": "active (running) since",
+      "health": "healthy"
+    },
+    {
+      "name": "wazuh-agent",
+      "status": "stopped",
+      "enabled": "no",
+      "pid": null,
+      "details": "unknown",
+      "health": "critical"
+    }
+  ],
+  "overall_health": "warning"
+}
+PRIVILEGED PREFLIGHT
+🔐 Sudo command executed
+Server: splunk_siem
+Command: sudo -S -k -p '' bash -c 'export LC_ALL=C; TZ=America/New_York date "+%F %I:%M:%S %p %Z"; dnf -q --refresh check-update; printf "dnf_check_update_exit=%s\n" "$?"; dnf -q needs-restarting -r; printf "needs_restarting_exit=%s\n" "$?"; curl -ksS -o /dev/null -w "splunk_web_http=%{http_code}\n" --max-time 10 https://127.0.0.1:8000; systemctl show wazuh-agent -p LoadState -p ActiveState; dnf versionlock list'
+Exit code: 1
+
+Output:
+2026-10-07 07:49:04 AM EDT
+
+bind-libs.x86_64                     32:9.18.33-15.el10_2.12           appstream
+bind-license.noarch                  32:9.18.33-15.el10_2.12           appstream
+bind-utils.x86_64                    32:9.18.33-15.el10_2.12           appstream
+kernel.x86_64                        6.12.0-211.62.1.el10_2            baseos   
+kernel-core.x86_64                   6.12.0-211.62.1.el10_2            baseos   
+kernel-modules.x86_64                6.12.0-211.62.1.el10_2            baseos   
+kernel-modules-core.x86_64           6.12.0-211.62.1.el10_2            baseos   
+kernel-modules-extra.x86_64          6.12.0-211.62.1.el10_2            baseos   
+kernel-tools.x86_64                  6.12.0-211.62.1.el10_2            baseos   
+kernel-tools-libs.x86_64             6.12.0-211.62.1.el10_2            baseos   
+python3-perf.x86_64                  6.12.0-211.62.1.el10_2            appstream
+sudo.x86_64                          1.9.17-10.p2.el10_2.7             baseos   
+sudo-python-plugin.x86_64            1.9.17-10.p2.el10_2.7             appstream
+vim-common.x86_64                    2:9.1.083-9.el10_2.22             appstream
+vim-data.noarch                      2:9.1.083-9.el10_2.22             baseos   
+vim-enhanced.x86_64                  2:9.1.083-9.el10_2.22             appstream
+vim-filesystem.noarch                2:9.1.083-9.el10_2.22             baseos   
+vim-minimal.x86_64                   2:9.1.083-9.el10_2.22             baseos   
+xxd.x86_64                           2:9.1.083-9.el10_2.22             appstream
+dnf_check_update_exit=100
+No core libraries or services have been updated since boot-up.
+Reboot should not be necessary.
+needs_restarting_exit=0
+splunk_web_http=303
+LoadState=not-found
+ActiveState=inactive
+
+TRANSACTION PREVIEW
+🔐 Sudo command executed
+Server: splunk_siem
+Command: sudo -S -k -p '' bash -c 'export LC_ALL=C; dnf upgrade --assumeno'
+Exit code: 1
+
+Output:
+Last metadata expiration check: 0:00:35 ago on Wed Oct  7 07:49:05 2026.
+Dependencies resolved.
+================================================================================
+ Package                Arch     Version                      Repository   Size
+================================================================================
+Installing:
+ kernel                 x86_64   6.12.0-211.62.1.el10_2       baseos      1.7 M
+ kernel-core            x86_64   6.12.0-211.62.1.el10_2       baseos       19 M
+ kernel-modules         x86_64   6.12.0-211.62.1.el10_2       baseos       42 M
+ kernel-modules-core    x86_64   6.12.0-211.62.1.el10_2       baseos       30 M
+ kernel-modules-extra   x86_64   6.12.0-211.62.1.el10_2       baseos      3.1 M
+Upgrading:
+ bind-libs              x86_64   32:9.18.33-15.el10_2.12      appstream   1.3 M
+ bind-license           noarch   32:9.18.33-15.el10_2.12      appstream    14 k
+ bind-utils             x86_64   32:9.18.33-15.el10_2.12      appstream   220 k
+ kernel-tools           x86_64   6.12.0-211.62.1.el10_2       baseos      2.2 M
+ kernel-tools-libs      x86_64   6.12.0-211.62.1.el10_2       baseos      1.7 M
+ python3-perf           x86_64   6.12.0-211.62.1.el10_2       appstream   3.2 M
+ sudo                   x86_64   1.9.17-10.p2.el10_2.7        baseos      1.3 M
+ sudo-python-plugin     x86_64   1.9.17-10.p2.el10_2.7        appstream    56 k
+ vim-common             x86_64   2:9.1.083-9.el10_2.22        appstream   7.3 M
+ vim-data               noarch   2:9.1.083-9.el10_2.22        baseos       19 k
+ vim-enhanced           x86_64   2:9.1.083-9.el10_2.22        appstream   1.9 M
+ vim-filesystem         noarch   2:9.1.083-9.el10_2.22        baseos       14 k
+ vim-minimal            x86_64   2:9.1.083-9.el10_2.22        baseos      801 k
+ xxd                    x86_64   2:9.1.083-9.el10_2.22        appstream    33 k
+Removing:
+ kernel                 x86_64   6.12.0-211.39.1.el10_2       @baseos       0  
+ kernel-core            x86_64   6.12.0-211.39.1.el10_2       @baseos      70 M
+ kernel-modules         x86_64   6.12.0-211.39.1.el10_2       @baseos      39 M
+ kernel-modules-core    x86_64   6.12.0-211.39.1.el10_2       @baseos      28 M
+ kernel-modules-extra   x86_64   6.12.0-211.39.1.el10_2       @baseos     1.4 M
+
+Transaction Summary
+================================================================================
+Install   5 Packages
+Upgrade  14 Packages
+Remove    5 Packages
+
+Total download size: 116 M
+
+LAUNCH
+🔐 Sudo command executed
+Server: splunk_siem
+Command: sudo -S -k -p '' bash -c 'umask 077
+cat > /var/tmp/os-updates-20261007.sh <<'\''UPDATE_SCRIPT'\''
+#!/bin/bash
+export LC_ALL=C TZ=America/New_York
+umask 077
+exec > /var/tmp/os-updates-20261007.log 2>&1
+date '\''+%F %I:%M:%S %p %Z'\''
+dnf -y upgrade
+rc=$?
+printf '\''upgrade_exit=%s\n'\'' "$rc"
+date '\''+%F %I:%M:%S %p %Z'\''
+exit "$rc"
+UPDATE_SCRIPT
+systemd-run --no-block --unit=os-updates-20261007 --property=Type=oneshot /bin/bash /var/tmp/os-updates-20261007.sh'
+Exit code: 0
+
+Output:
+Running as unit: os-updates-20261007.service
+
+COMPLETED UPDATE AND VERIFICATION
+🔐 Sudo command executed
+Server: splunk_siem
+Command: sudo -S -k -p '' bash -c 'export LC_ALL=C TZ=America/New_York
+date '\''+%F %I:%M:%S %p %Z'\''
+cat /var/tmp/os-updates-20261007.log
+dnf -q check-update
+printf '\''dnf_check_update_exit=%s\n'\'' "$?"
+dnf -q check
+printf '\''dnf_check_exit=%s\n'\'' "$?"
+dnf -q needs-restarting -r
+printf '\''needs_restarting_exit=%s\n'\'' "$?"
+rpm -q kernel splunk
+uname -r
+cat /proc/sys/kernel/random/boot_id
+systemctl is-active Splunkd sc4s unifi-flow-collector
+systemctl --failed --no-legend --no-pager
+curl -ksS -o /dev/null -w '\''splunk_web_http=%{http_code}\n'\'' --max-time 10 https://127.0.0.1:8000
+curl -ksS -o /dev/null -w '\''splunk_management_http=%{http_code}\n'\'' --max-time 10 https://127.0.0.1:8089
+ss -lun | awk '\''$5 ~ /:514$/'\''
+systemctl start node-exporter-dnf-updates.service
+cat /var/lib/prometheus/node-exporter/dnf.prom'
+Exit code: 0
+
+Output:
+2026-10-07 07:55:31 AM EDT
+2026-10-07 07:53:56 AM EDT
+Last metadata expiration check: 0:04:51 ago on Wed Oct  7 07:49:05 2026.
+Dependencies resolved.
+================================================================================
+ Package                Arch     Version                      Repository   Size
+================================================================================
+Installing:
+ kernel                 x86_64   6.12.0-211.62.1.el10_2       baseos      1.7 M
+ kernel-core            x86_64   6.12.0-211.62.1.el10_2       baseos       19 M
+ kernel-modules         x86_64   6.12.0-211.62.1.el10_2       baseos       42 M
+ kernel-modules-core    x86_64   6.12.0-211.62.1.el10_2       baseos       30 M
+ kernel-modules-extra   x86_64   6.12.0-211.62.1.el10_2       baseos      3.1 M
+Upgrading:
+ bind-libs              x86_64   32:9.18.33-15.el10_2.12      appstream   1.3 M
+ bind-license           noarch   32:9.18.33-15.el10_2.12      appstream    14 k
+ bind-utils             x86_64   32:9.18.33-15.el10_2.12      appstream   220 k
+ kernel-tools           x86_64   6.12.0-211.62.1.el10_2       baseos      2.2 M
+ kernel-tools-libs      x86_64   6.12.0-211.62.1.el10_2       baseos      1.7 M
+ python3-perf           x86_64   6.12.0-211.62.1.el10_2       appstream   3.2 M
+ sudo                   x86_64   1.9.17-10.p2.el10_2.7        baseos      1.3 M
+ sudo-python-plugin     x86_64   1.9.17-10.p2.el10_2.7        appstream    56 k
+ vim-common             x86_64   2:9.1.083-9.el10_2.22        appstream   7.3 M
+ vim-data               noarch   2:9.1.083-9.el10_2.22        baseos       19 k
+ vim-enhanced           x86_64   2:9.1.083-9.el10_2.22        appstream   1.9 M
+ vim-filesystem         noarch   2:9.1.083-9.el10_2.22        baseos       14 k
+ vim-minimal            x86_64   2:9.1.083-9.el10_2.22        baseos      801 k
+ xxd                    x86_64   2:9.1.083-9.el10_2.22        appstream    33 k
+Removing:
+ kernel                 x86_64   6.12.0-211.39.1.el10_2       @baseos       0  
+ kernel-core            x86_64   6.12.0-211.39.1.el10_2       @baseos      70 M
+ kernel-modules         x86_64   6.12.0-211.39.1.el10_2       @baseos      39 M
+ kernel-modules-core    x86_64   6.12.0-211.39.1.el10_2       @baseos      28 M
+ kernel-modules-extra   x86_64   6.12.0-211.39.1.el10_2       @baseos     1.4 M
+
+Transaction Summary
+================================================================================
+Install   5 Packages
+Upgrade  14 Packages
+Remove    5 Packages
+
+Total download size: 116 M
+Downloading Packages:
+(1/19): kernel-6.12.0-211.62.1.el10_2.x86_64.rp 5.7 MB/s | 1.7 MB     00:00    
+(2/19): kernel-core-6.12.0-211.62.1.el10_2.x86_  30 MB/s |  19 MB     00:00    
+(3/19): kernel-modules-extra-6.12.0-211.62.1.el  23 MB/s | 3.1 MB     00:00    
+(4/19): kernel-modules-core-6.12.0-211.62.1.el1  49 MB/s |  30 MB     00:00    
+(5/19): kernel-tools-6.12.0-211.62.1.el10_2.x86  15 MB/s | 2.2 MB     00:00    
+(6/19): kernel-modules-6.12.0-211.62.1.el10_2.x  40 MB/s |  42 MB     00:01    
+(7/19): sudo-1.9.17-10.p2.el10_2.7.x86_64.rpm   8.8 MB/s | 1.3 MB     00:00    
+(8/19): kernel-tools-libs-6.12.0-211.62.1.el10_  10 MB/s | 1.7 MB     00:00    
+(9/19): vim-data-9.1.083-9.el10_2.22.noarch.rpm 516 kB/s |  19 kB     00:00    
+(10/19): vim-filesystem-9.1.083-9.el10_2.22.noa 321 kB/s |  14 kB     00:00    
+(11/19): vim-minimal-9.1.083-9.el10_2.22.x86_64  14 MB/s | 801 kB     00:00    
+[MIRROR] bind-libs-9.18.33-15.el10_2.12.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west4.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/b/bind-libs-9.18.33-15.el10_2.12.x86_64.rpm (IP: 35.186.229.59)
+[MIRROR] bind-utils-9.18.33-15.el10_2.12.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west4.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/b/bind-utils-9.18.33-15.el10_2.12.x86_64.rpm (IP: 35.186.229.59)
+[MIRROR] bind-license-9.18.33-15.el10_2.12.noarch.rpm: Status code: 404 for https://rocky-linux-us-west4.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/b/bind-license-9.18.33-15.el10_2.12.noarch.rpm (IP: 35.186.229.59)
+[MIRROR] bind-utils-9.18.33-15.el10_2.12.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west1.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/b/bind-utils-9.18.33-15.el10_2.12.x86_64.rpm (IP: 34.49.195.49)
+[MIRROR] bind-license-9.18.33-15.el10_2.12.noarch.rpm: Status code: 404 for https://rocky-linux-us-west1.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/b/bind-license-9.18.33-15.el10_2.12.noarch.rpm (IP: 34.49.195.49)
+(12/19): bind-license-9.18.33-15.el10_2.12.noar  23 kB/s |  14 kB     00:00    
+(13/19): bind-libs-9.18.33-15.el10_2.12.x86_64. 1.8 MB/s | 1.3 MB     00:00    
+(14/19): bind-utils-9.18.33-15.el10_2.12.x86_64 315 kB/s | 220 kB     00:00    
+[MIRROR] vim-common-9.1.083-9.el10_2.22.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west1.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/v/vim-common-9.1.083-9.el10_2.22.x86_64.rpm (IP: 34.49.195.49)
+[MIRROR] sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west1.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/s/sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm (IP: 34.49.195.49)
+(15/19): python3-perf-6.12.0-211.62.1.el10_2.x8 8.0 MB/s | 3.2 MB     00:00    
+[MIRROR] vim-common-9.1.083-9.el10_2.22.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west4.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/v/vim-common-9.1.083-9.el10_2.22.x86_64.rpm (IP: 35.186.229.59)
+[MIRROR] sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west4.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/s/sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm (IP: 35.186.229.59)
+[MIRROR] sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west3.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/s/sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64.rpm (IP: 34.128.144.233)
+[MIRROR] vim-enhanced-9.1.083-9.el10_2.22.x86_64.rpm: Status code: 404 for https://rocky-linux-us-west1.production.gcp.mirrors.ctrliq.cloud/pub/rocky//10.2/AppStream/x86_64/os/Packages/v/vim-enhanced-9.1.083-9.el10_2.22.x86_64.rpm (IP: 34.49.195.49)
+(16/19): sudo-python-plugin-1.9.17-10.p2.el10_2  92 kB/s |  56 kB     00:00    
+(17/19): xxd-9.1.083-9.el10_2.22.x86_64.rpm     1.7 MB/s |  33 kB     00:00    
+(18/19): vim-enhanced-9.1.083-9.el10_2.22.x86_6 4.6 MB/s | 1.9 MB     00:00    
+(19/19): vim-common-9.1.083-9.el10_2.22.x86_64. 8.4 MB/s | 7.3 MB     00:00    
+--------------------------------------------------------------------------------
+Total                                            41 MB/s | 116 MB     00:02     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : kernel-modules-core-6.12.0-211.62.1.el10_2.x86_64     1/38 
+  Installing       : kernel-core-6.12.0-211.62.1.el10_2.x86_64             2/38 
+  Running scriptlet: kernel-core-6.12.0-211.62.1.el10_2.x86_64             2/38 
+  Installing       : kernel-modules-6.12.0-211.62.1.el10_2.x86_64          3/38 
+  Running scriptlet: kernel-modules-6.12.0-211.62.1.el10_2.x86_64          3/38 
+  Upgrading        : vim-data-2:9.1.083-9.el10_2.22.noarch                 4/38 
+  Installing       : kernel-modules-extra-6.12.0-211.62.1.el10_2.x86_64    5/38 
+  Running scriptlet: kernel-modules-extra-6.12.0-211.62.1.el10_2.x86_64    5/38 
+  Upgrading        : sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64       6/38 
+  Upgrading        : sudo-1.9.17-10.p2.el10_2.7.x86_64                     7/38 
+  Upgrading        : xxd-2:9.1.083-9.el10_2.22.x86_64                      8/38 
+  Upgrading        : bind-license-32:9.18.33-15.el10_2.12.noarch           9/38 
+  Upgrading        : bind-libs-32:9.18.33-15.el10_2.12.x86_64             10/38 
+  Upgrading        : vim-filesystem-2:9.1.083-9.el10_2.22.noarch          11/38 
+  Upgrading        : vim-common-2:9.1.083-9.el10_2.22.x86_64              12/38 
+  Upgrading        : kernel-tools-libs-6.12.0-211.62.1.el10_2.x86_64      13/38 
+  Running scriptlet: kernel-tools-libs-6.12.0-211.62.1.el10_2.x86_64      13/38 
+  Upgrading        : kernel-tools-6.12.0-211.62.1.el10_2.x86_64           14/38 
+  Upgrading        : vim-enhanced-2:9.1.083-9.el10_2.22.x86_64            15/38 
+  Upgrading        : bind-utils-32:9.18.33-15.el10_2.12.x86_64            16/38 
+  Installing       : kernel-6.12.0-211.62.1.el10_2.x86_64                 17/38 
+  Upgrading        : vim-minimal-2:9.1.083-9.el10_2.22.x86_64             18/38 
+  Upgrading        : python3-perf-6.12.0-211.62.1.el10_2.x86_64           19/38 
+  Cleanup          : bind-utils-32:9.18.33-15.el10_2.11.x86_64            20/38 
+  Erasing          : kernel-6.12.0-211.39.1.el10_2.x86_64                 21/38 
+  Erasing          : kernel-modules-extra-6.12.0-211.39.1.el10_2.x86_64   22/38 
+  Running scriptlet: kernel-modules-extra-6.12.0-211.39.1.el10_2.x86_64   22/38 
+  Erasing          : kernel-modules-6.12.0-211.39.1.el10_2.x86_64         23/38 
+  Running scriptlet: kernel-modules-6.12.0-211.39.1.el10_2.x86_64         23/38 
+  Cleanup          : kernel-tools-6.12.0-211.61.1.el10_2.x86_64           24/38 
+  Erasing          : kernel-modules-core-6.12.0-211.39.1.el10_2.x86_64    25/38 
+  Running scriptlet: kernel-core-6.12.0-211.39.1.el10_2.x86_64            26/38 
+  Erasing          : kernel-core-6.12.0-211.39.1.el10_2.x86_64            26/38 
+  Running scriptlet: kernel-core-6.12.0-211.39.1.el10_2.x86_64            26/38 
+  Cleanup          : bind-libs-32:9.18.33-15.el10_2.11.x86_64             27/38 
+  Cleanup          : vim-enhanced-2:9.1.083-9.el10_2.20.x86_64            28/38 
+  Cleanup          : vim-common-2:9.1.083-9.el10_2.20.x86_64              29/38 
+  Cleanup          : vim-minimal-2:9.1.083-9.el10_2.20.x86_64             30/38 
+  Cleanup          : sudo-1.9.17-10.p2.el10_2.6.x86_64                    31/38 
+  Cleanup          : sudo-python-plugin-1.9.17-10.p2.el10_2.6.x86_64      32/38 
+  Cleanup          : vim-data-2:9.1.083-9.el10_2.20.noarch                33/38 
+  Cleanup          : vim-filesystem-2:9.1.083-9.el10_2.20.noarch          34/38 
+  Cleanup          : bind-license-32:9.18.33-15.el10_2.11.noarch          35/38 
+  Cleanup          : xxd-2:9.1.083-9.el10_2.20.x86_64                     36/38 
+  Cleanup          : kernel-tools-libs-6.12.0-211.61.1.el10_2.x86_64      37/38 
+  Running scriptlet: kernel-tools-libs-6.12.0-211.61.1.el10_2.x86_64      37/38 
+  Cleanup          : python3-perf-6.12.0-211.61.1.el10_2.x86_64           38/38 
+  Running scriptlet: kernel-modules-core-6.12.0-211.62.1.el10_2.x86_64    38/38 
+  Running scriptlet: kernel-core-6.12.0-211.62.1.el10_2.x86_64            38/38 
+Generating grub configuration file ...
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+  Running scriptlet: kernel-modules-6.12.0-211.62.1.el10_2.x86_64         38/38 
+  Running scriptlet: python3-perf-6.12.0-211.61.1.el10_2.x86_64           38/38 
+
+Upgraded:
+  bind-libs-32:9.18.33-15.el10_2.12.x86_64                                      
+  bind-license-32:9.18.33-15.el10_2.12.noarch                                   
+  bind-utils-32:9.18.33-15.el10_2.12.x86_64                                     
+  kernel-tools-6.12.0-211.62.1.el10_2.x86_64                                    
+  kernel-tools-libs-6.12.0-211.62.1.el10_2.x86_64                               
+  python3-perf-6.12.0-211.62.1.el10_2.x86_64                                    
+  sudo-1.9.17-10.p2.el10_2.7.x86_64                                             
+  sudo-python-plugin-1.9.17-10.p2.el10_2.7.x86_64                               
+  vim-common-2:9.1.083-9.el10_2.22.x86_64                                       
+  vim-data-2:9.1.083-9.el10_2.22.noarch                                         
+  vim-enhanced-2:9.1.083-9.el10_2.22.x86_64                                     
+  vim-filesystem-2:9.1.083-9.el10_2.22.noarch                                   
+  vim-minimal-2:9.1.083-9.el10_2.22.x86_64                                      
+  xxd-2:9.1.083-9.el10_2.22.x86_64                                              
+Installed:
+  kernel-6.12.0-211.62.1.el10_2.x86_64                                          
+  kernel-core-6.12.0-211.62.1.el10_2.x86_64                                     
+  kernel-modules-6.12.0-211.62.1.el10_2.x86_64                                  
+  kernel-modules-core-6.12.0-211.62.1.el10_2.x86_64                             
+  kernel-modules-extra-6.12.0-211.62.1.el10_2.x86_64                            
+Removed:
+  kernel-6.12.0-211.39.1.el10_2.x86_64                                          
+  kernel-core-6.12.0-211.39.1.el10_2.x86_64                                     
+  kernel-modules-6.12.0-211.39.1.el10_2.x86_64                                  
+  kernel-modules-core-6.12.0-211.39.1.el10_2.x86_64                             
+  kernel-modules-extra-6.12.0-211.39.1.el10_2.x86_64                            
+
+Complete!
+upgrade_exit=0
+2026-10-07 07:54:58 AM EDT
+dnf_check_update_exit=0
+dnf_check_exit=0
+Core libraries or services have been updated since boot-up:
+  * kernel
+  * kernel-core
+
+Reboot is required to fully utilize these updates.
+More information: https://access.redhat.com/solutions/27943
+needs_restarting_exit=1
+kernel-6.12.0-211.50.1.el10_2.x86_64
+kernel-6.12.0-211.61.1.el10_2.x86_64
+kernel-6.12.0-211.62.1.el10_2.x86_64
+splunk-10.4.0-f798d4d49089.x86_64
+6.12.0-211.61.1.el10_2.x86_64
+eed39771-5f1c-47a5-8169-0cb8d33ab229
+active
+active
+active
+splunk_web_http=303
+splunk_management_http=200
+# HELP dnf_upgrades_pending Pending package upgrades by repository, from dnf check-update.
+# TYPE dnf_upgrades_pending gauge
+# HELP dnf_security_upgrades_pending Pending package upgrades that carry a security advisory.
+# TYPE dnf_security_upgrades_pending gauge
+dnf_security_upgrades_pending 0
+# HELP node_reboot_required 1 when the running kernel is not the newest installed kernel.
+# TYPE node_reboot_required gauge
+node_reboot_required 1
+# HELP dnf_updates_check_timestamp_seconds When this file was written.
+# TYPE dnf_updates_check_timestamp_seconds gauge
+dnf_updates_check_timestamp_seconds 1791374133
+
+LISTENER AND SERVICE CONTINUITY
+Target: splunk_siem
+Command:
+TZ=America/New_York date '+%F %I:%M:%S %p %Z'
+ss -H -lun 'sport = :514'
+systemctl show Splunkd sc4s unifi-flow-collector -p Id -p MainPID -p ActiveEnterTimestamp
+Exit code: 0
+stdout:
+2026-10-07 07:56:08 AM EDT
+UNCONN 0      0      0.0.0.0:514 0.0.0.0:*
+UNCONN 0      0      0.0.0.0:514 0.0.0.0:*
+UNCONN 0      0      0.0.0.0:514 0.0.0.0:*
+UNCONN 0      0      0.0.0.0:514 0.0.0.0:*
+MainPID=1189
+Id=Splunkd.service
+ActiveEnterTimestamp=Tue 2026-10-06 00:44:05 EDT
+
+MainPID=6344
+Id=sc4s.service
+ActiveEnterTimestamp=Tue 2026-10-06 00:44:21 EDT
+
+MainPID=1199
+Id=unifi-flow-collector.service
+ActiveEnterTimestamp=Tue 2026-10-06 00:44:05 EDT
+
+stderr:
+
+

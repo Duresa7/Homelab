@@ -813,3 +813,16 @@ admin.env
 !/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Post-Restart-Checks.log
 !/Platforms/Sure/Evidence/Deployment - 2026-10-05/Logs/Yahoo-Finance-Check.log
 !/Platforms/Sure/Evidence/Deployment - 2026-10-05/Exports/
+
+# Sanitized OS package update transcripts, 2026-10-07
+!/Operations/Evidence/OS Package Updates - 2026-10-07/
+/Operations/Evidence/OS Package Updates - 2026-10-07/*
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/
+/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/*
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/blue-server.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/grey-server.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/purple-server.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/red-server.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/splunk-siem.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/monitoring.txt
+!/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/cleanup.txt

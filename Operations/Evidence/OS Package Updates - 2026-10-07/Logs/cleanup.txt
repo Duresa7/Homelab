@@ -1,0 +1,85 @@
+Capture date: 2026-10-07, 7:56 AM EDT
+
+Target: blue_server
+Command:
+TZ=America/New_York date '+%F %I:%M:%S %p %Z'
+test "$(systemctl show os-updates-20261007.service -p ActiveState --value)" = inactive &&
+grep -q '^upgrade_exit=0$' /var/tmp/os-updates-20261007.log &&
+rm -- /var/tmp/os-updates-20261007.sh /var/tmp/os-updates-20261007.log &&
+test ! -e /var/tmp/os-updates-20261007.sh &&
+test ! -e /var/tmp/os-updates-20261007.log &&
+echo temporary_update_files_removed
+Exit code: 0
+stdout:
+2026-10-07 07:56:49 AM EDT
+temporary_update_files_removed
+
+stderr:
+
+
+Target: grey_server
+Command:
+TZ=America/New_York date '+%F %I:%M:%S %p %Z'
+test "$(systemctl show os-updates-20261007.service -p ActiveState --value)" = inactive &&
+grep -q '^upgrade_exit=0$' /var/tmp/os-updates-20261007.log &&
+rm -- /var/tmp/os-updates-20261007.sh /var/tmp/os-updates-20261007.log &&
+test ! -e /var/tmp/os-updates-20261007.sh &&
+test ! -e /var/tmp/os-updates-20261007.log &&
+echo temporary_update_files_removed
+Exit code: 0
+stdout:
+2026-10-07 07:56:49 AM EDT
+temporary_update_files_removed
+
+stderr:
+
+
+Target: purple_server
+Command:
+TZ=America/New_York date '+%F %I:%M:%S %p %Z'
+test "$(systemctl show os-updates-20261007.service -p ActiveState --value)" = inactive &&
+grep -q '^upgrade_exit=0$' /var/tmp/os-updates-20261007.log &&
+rm -- /var/tmp/os-updates-20261007.sh /var/tmp/os-updates-20261007.log &&
+test ! -e /var/tmp/os-updates-20261007.sh &&
+test ! -e /var/tmp/os-updates-20261007.log &&
+echo temporary_update_files_removed
+Exit code: 0
+stdout:
+2026-10-07 07:56:50 AM EDT
+temporary_update_files_removed
+
+stderr:
+
+
+Target: red_server
+Command:
+TZ=America/New_York date '+%F %I:%M:%S %p %Z'
+test "$(systemctl show os-updates-20261007.service -p ActiveState --value)" = inactive &&
+grep -q '^upgrade_exit=0$' /var/tmp/os-updates-20261007.log &&
+rm -- /var/tmp/os-updates-20261007.sh /var/tmp/os-updates-20261007.log &&
+test ! -e /var/tmp/os-updates-20261007.sh &&
+test ! -e /var/tmp/os-updates-20261007.log &&
+echo temporary_update_files_removed
+Exit code: 0
+stdout:
+2026-10-07 07:56:50 AM EDT
+temporary_update_files_removed
+
+stderr:
+
+
+🔐 Sudo command executed
+Server: splunk_siem
+Command: sudo -S -k -p '' bash -c 'TZ=America/New_York date '\''+%F %I:%M:%S %p %Z'\''
+test "$(systemctl show os-updates-20261007.service -p ActiveState --value)" = inactive &&
+grep -q '\''^upgrade_exit=0$'\'' /var/tmp/os-updates-20261007.log &&
+rm -- /var/tmp/os-updates-20261007.sh /var/tmp/os-updates-20261007.log &&
+test ! -e /var/tmp/os-updates-20261007.sh &&
+test ! -e /var/tmp/os-updates-20261007.log &&
+echo temporary_update_files_removed'
+Exit code: 0
+
+Output:
+2026-10-07 07:56:51 AM EDT
+temporary_update_files_removed
+

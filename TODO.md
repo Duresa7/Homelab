@@ -1,11 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-07
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey, Purple and Red need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
 
 - [ ] **Schedule the six VM reboots left after the 2026-10-02 package updates.** Installed kernels, hosts, remaining holds and phased packages are in the [maintenance record](Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md#open-state).
 
