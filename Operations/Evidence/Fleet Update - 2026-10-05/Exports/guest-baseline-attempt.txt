@@ -1,0 +1,25 @@
+[WARNING]: Deprecation warnings can be disabled by setting `deprecation_warnings=False` in ansible.cfg.
+[DEPRECATION WARNING]: The '-o' argument is deprecated. This feature will be removed from ansible-core version 2.23. Use callback configuration to enable the oneline callback instead.
+[DEPRECATION WARNING]: The oneline callback plugin is deprecated. This feature will be removed from ansible-core version 2.23.
+docker-main | FAILED | rc=-1 | (stdout) 
+docker-main | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+docker-network | FAILED | rc=-1 | (stdout) 
+docker-network | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+docker-blue | FAILED | rc=-1 | (stdout) 
+docker-blue | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+media-01 | FAILED | rc=-1 | (stdout) 
+media-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+alpha-prod-01 | FAILED | rc=-1 | (stdout) 
+alpha-prod-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+app-01 | FAILED | rc=-1 | (stdout) 
+app-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+edge-01 | FAILED | rc=-1 | (stdout) 
+edge-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+security-01 | FAILED | rc=-1 | (stdout) 
+security-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+splunk-siem | FAILED | rc=-1 | (stdout) 
+splunk-siem | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+ansible-01 | FAILED | rc=-1 | (stdout) 
+ansible-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}
+monitor-01 | FAILED | rc=-1 | (stdout) 
+monitor-01 | FAILED! => {"changed": false,"msg": "Task failed: Finalization of task args for 'ansible.builtin.shell' failed: Error while resolving value for '_raw_params': Syntax error in template: unexpected '.'"}

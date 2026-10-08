@@ -1,0 +1,424 @@
+{
+  "capture_window": "2026-10-07, approximately 9:17 PM to 9:22 PM EDT",
+  "scope": "Service conflict repairs and final verification through SSH Manager",
+  "results": [
+    {
+      "status": "completed",
+      "result": [
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\\nsystemctl cat node_exporter.service\\nps -eo comm= | sort -u | grep -E '^(apt|apt-get|dpkg|ansible-playbook)$' || true\",\n  \"stdout\": \"2026-10-08T01:17:38Z\\nNRestarts=549638\\nId=node_exporter.service\\nActiveState=activating\\nSubState=auto-restart\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=active\\nSubState=running\\nUnitFileState=enabled\\n# /etc/systemd/system/node_exporter.service\\n# Managed by Ansible: monitoring-exporters/playbooks/node-exporter.yml\\n[Unit]\\nDescription=Prometheus Node Exporter\\nDocumentation=https://github.com/prometheus/node_exporter\\nAfter=network-online.target\\nWants=network-online.target\\n\\n[Service]\\nUser=node_exporter\\nGroup=node_exporter\\nType=simple\\nExecStart=/usr/local/bin/node_exporter --web.listen-address=:9100\\nRestart=on-failure\\nRestartSec=5\\nNoNewPrivileges=true\\nProtectHome=true\\nProtectSystem=strict\\nPrivateTmp=true\\n\\n[Install]\\nWantedBy=multi-user.target\\n\\n# /etc/systemd/system/node_exporter.service.d/textfile.conf\\n# Managed by Ansible: monitoring-exporters/playbooks/textfile-collectors.yml\\n[Service]\\nExecStart=\\nExecStart=/usr/local/bin/node_exporter --web.listen-address=:9100 --collector.textfile.directory=/var/lib/prometheus/node-exporter\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"systemctl list-unit-files 'nut*' --no-pager\\nsystemctl show nut.target nut-driver.target nut-driver-enumerator.service nut-driver-enumerator.path -p Id -p ActiveState -p UnitFileState -p WantedBy -p RequiredBy -p PartOf\\ncat /etc/nut/nut.conf | grep '^MODE='\\nsed -n '/restore/Ip;/enable/Ip' /etc/nut/ups.conf\",\n  \"stdout\": \"UNIT FILE                     STATE    PRESET\\nnut-driver-enumerator.path    enabled  enabled\\nnut-client.service            alias    -\\nnut-driver-enumerator.service enabled  enabled\\nnut-driver@.service           disabled enabled\\nnut-monitor.service           disabled enabled\\nnut-server.service            disabled enabled\\nnut-driver.target             enabled  enabled\\nnut.target                    enabled  enabled\\n\\n8 unit files listed.\\nId=nut.target\\nPartOf=\\nRequiredBy=\\nWantedBy=multi-user.target\\nActiveState=active\\nUnitFileState=enabled\\n\\nId=nut-driver.target\\nPartOf=nut.target\\nRequiredBy=\\nWantedBy=nut-server.service nut.target\\nActiveState=active\\nUnitFileState=enabled\\n\\nId=nut-driver-enumerator.service\\nPartOf=nut.target\\nRequiredBy=\\nWantedBy=nut.target\\nActiveState=inactive\\nUnitFileState=enabled\\n\\nId=nut-driver-enumerator.path\\nPartOf=\\nRequiredBy=\\nWantedBy=nut.target\\nActiveState=active\\nUnitFileState=enabled\\nMODE=netserver\\n# To restore: plug the UPS-01 USB cable into red-server, uncomment the block\\n#     systemctl enable --now nut-server\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"grey_server\",\n  \"command\": \"systemctl show nut-monitor.service nut.target -p Id -p ActiveState -p UnitFileState -p WantedBy -p PartOf\\nzpool list -o name,health\\nsystemctl show 'zfs-import@hddpool\\\\x2d1.service' zfs-import@hddpool.service -p Id -p ActiveState -p UnitFileState\",\n  \"stdout\": \"Id=nut-monitor.service\\nPartOf=nut.target\\nWantedBy=nut.target\\nActiveState=failed\\nUnitFileState=disabled\\n\\nId=nut.target\\nPartOf=\\nWantedBy=multi-user.target\\nActiveState=active\\nUnitFileState=enabled\\nNAME         HEALTH\\nhddpool-1    ONLINE\\nId=zfs-import@hddpool\\\\x2d1.service\\nActiveState=active\\nUnitFileState=enabled\\n\\nId=zfs-import@hddpool.service\\nActiveState=failed\\nUnitFileState=enabled\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"find /home/ansible -maxdepth 4 -name textfile-collectors.yml -print\\nps -eo comm= | sort -u | grep -E '^(apt|apt-get|dpkg|ansible-playbook)$' || true\",\n  \"stdout\": \"/home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml\\n\",\n  \"stderr\": \"find: '/home/ansible/ansible/playbooks/project_3': Permission denied\\nfind: '/home/ansible/ansible/playbooks/project_2': Permission denied\\n\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"set -eu\\ndate -u '+%FT%TZ'\\ntest -x /usr/local/bin/node_exporter\\nsystemctl stop node_exporter.service\\nsystemctl disable --now prometheus-node-exporter.service\\nsystemctl mask prometheus-node-exporter.service\\nsystemctl reset-failed prometheus-node-exporter.service\\nsystemctl start node_exporter.service\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\\ncurl -fsS --retry 3 --retry-connrefused --retry-delay 1 --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error|apt_package_cache_timestamp_seconds)'\\n\",\n  \"stdout\": \"2026-10-08T01:17:55Z\\n\",\n  \"stderr\": \"Synchronizing state of prometheus-node-exporter.service with SysV service script with /lib/systemd/systemd-sysv-install.\\nExecuting: /lib/systemd/systemd-sysv-install disable prometheus-node-exporter\\nRemoved \\\"/etc/systemd/system/multi-user.target.wants/prometheus-node-exporter.service\\\".\\nCreated symlink /etc/systemd/system/prometheus-node-exporter.service -> /dev/null.\\nFailed to reset failed state of unit prometheus-node-exporter.service: Unit prometheus-node-exporter.service not loaded.\\n\",\n  \"code\": 1,\n  \"success\": false\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"systemctl start node_exporter.service\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\\ncurl -fsS --retry 3 --retry-connrefused --retry-delay 1 --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error|apt_package_cache_timestamp_seconds)'\",\n  \"stdout\": \"NRestarts=549642\\nId=node_exporter.service\\nActiveState=active\\nSubState=running\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=inactive\\nSubState=dead\\nUnitFileState=masked\\napt_package_cache_timestamp_seconds 1.7912590877275567e+09\\nnode_exporter_build_info{branch=\\\"HEAD\\\",goarch=\\\"amd64\\\",goos=\\\"linux\\\",goversion=\\\"go1.23.6\\\",revision=\\\"02afa5c53c36123611533f2defea6ccd4546a9bb\\\",tags=\\\"unknown\\\",version=\\\"1.9.0\\\"} 1\\nnode_textfile_scrape_error 0\\n\",\n  \"stderr\": \"curl: (7) Failed to connect to 127.0.0.1 port 9100 after 0 ms: Couldn't connect to server\\n\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: security_01\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\nsystemctl is-active --quiet node_exporter.service\nsystemctl disable --now prometheus-node-exporter.service\nsystemctl mask prometheus-node-exporter.service\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\nsystemctl --failed --no-legend --plain\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep -E '\\''^(node_exporter_build_info|node_textfile_scrape_error)'\\'''\nExit code: 0\n\nOutput:\n2026-10-08T01:18:14Z\nNRestarts=0\nId=node_exporter.service\nActiveState=active\nSubState=running\nUnitFileState=enabled\n\nNRestarts=5\nId=prometheus-node-exporter.service\nActiveState=failed\nSubState=failed\nUnitFileState=masked\nprometheus-node-exporter.service masked failed failed prometheus-node-exporter.service\nnode_exporter_build_info{branch=\"HEAD\",goarch=\"amd64\",goos=\"linux\",goversion=\"go1.23.6\",revision=\"02afa5c53c36123611533f2defea6ccd4546a9bb\",tags=\"unknown\",version=\"1.9.0\"} 1\nnode_textfile_scrape_error 0\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: security_01\nCommand: sudo -S -k -p '' systemctl reset-failed prometheus-node-exporter.service\nExit code: 0\n\nOutput:\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"sha256sum /home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml\\ncommand -v ansible-playbook\\ncat /home/ansible/monitoring-exporters/ansible.cfg\",\n  \"stdout\": \"f1be59ecf59a431058bbcef389deca8c2ea9166b939ac634f7764f5094afea0a  /home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml\\n/usr/local/bin/ansible-playbook\\n[defaults]\\ninventory = inventory/hosts.yml\\nprivate_key_file = ~/.ssh/id_ed25519\\nhost_key_checking = True\\ninterpreter_python = auto_silent\\nretry_files_enabled = False\\ntimeout = 15\\n\\n[ssh_connection]\\npipelining = True\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"sed -n '1,18p' /etc/nut/ups.conf\\nsystemctl cat nut-server.service nut-monitor.service | grep -E '^\\\\[|^Condition|^ExecStart|^WantedBy|^PartOf'\",\n  \"stdout\": \"pollinterval = 5\\nmaxretry = 3\\n\\n# UPS-01 is commented out as of 2026-08-31.\\n#\\n# Its USB data cable was disconnected on 2026-08-28 during a UPS swap and is\\n# not plugged into any node. red-server now draws power from UPS-02, whose\\n# data cable is on grey-server and reports there as ups02.\\n#\\n# With no UPS attached, usbhid-ups failed and systemd restarted it every five\\n# seconds: 12,014 restarts and 75,292 journal lines in the 24 hours to\\n# 2026-08-31, which was also 62.9 per cent of all fleet Wazuh alerts on\\n# 2026-08-29. Commenting out the stanza is what actually stops it, because\\n# nut-driver-enumerator rebuilds the driver under an MD5-hashed instance name\\n# and therefore walks straight past a mask on nut-driver@ups01.service.\\n#\\n# To restore: plug the UPS-01 USB cable into red-server, uncomment the block\\n# below, then run\\n[Unit]\\nPartOf=nut.target\\n[Service]\\nExecStartPre=-/usr/bin/systemd-tmpfiles --create /usr/lib/tmpfiles.d/nut-common-tmpfiles.conf\\nExecStart=/usr/sbin/upsd -F\\n[Install]\\nWantedBy=nut.target\\n[Unit]\\nPartOf=nut.target\\n[Service]\\nExecStartPre=-/usr/bin/systemd-tmpfiles --create /usr/lib/tmpfiles.d/nut-common-tmpfiles.conf\\nExecStart=/usr/sbin/upsmon -F\\n[Install]\\nWantedBy=nut.target\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"monitor_01\",\n  \"command\": \"systemctl is-enabled openipmi.service\\nsystemctl is-active openipmi.service\",\n  \"stdout\": \"enabled\\nfailed\\n\",\n  \"stderr\": \"openipmi.service is not a native service, redirecting to systemd-sysv-install.\\nExecuting: /usr/lib/systemd/systemd-sysv-install is-enabled openipmi\\n\",\n  \"code\": 3,\n  \"success\": false\n}"
+            }
+          ]
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: alpha_prod_01\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:01Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: ansible_01\nCommand: sudo sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:03Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: docker_blue\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:05Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: docker_network\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:08Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: media_01\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:10Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "🔐 Sudo command executed\nServer: monitor_01\nCommand: sudo -S -k -p '' sh -c 'set -eu\ndate -u '\\''+%FT%TZ'\\''\ntest ! -e /dev/ipmi0\ntest ! -e /dev/ipmi/0\ntest ! -e /dev/ipmidev/0\nsystemctl disable --now openipmi.service\nsystemctl mask openipmi.service\nif systemctl is-failed --quiet openipmi.service; then systemctl reset-failed openipmi.service; fi\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState\nsystemctl --failed --no-legend --plain'\nExit code: 0\n\nOutput:\n2026-10-08T01:19:13Z\nActiveState=inactive\nSubState=dead\nUnitFileState=masked\n"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"set -eu\\ndate -u '+%FT%TZ'\\nsystemctl disable --now nut-driver-enumerator.path nut-driver-enumerator.service nut-driver.target nut.target\\nsystemctl disable --now nut-server.service nut-monitor.service\\nsystemctl mask nut-server.service nut-monitor.service\\nfor unit in nut-server.service nut-monitor.service; do\\n  if systemctl is-failed --quiet \\\"$unit\\\"; then systemctl reset-failed \\\"$unit\\\"; fi\\ndone\\npython3 - <<'PY'\\nfrom pathlib import Path\\np=Path('/etc/nut/ups.conf')\\ns=p.read_text()\\nold='#     systemctl enable --now nut-server'\\nassert s.count(old)==1, 'Restoration comment changed; inspect before editing'\\nnew='''#     systemctl unmask nut-server.service\\n#     systemctl enable nut.target nut-driver.target nut-driver-enumerator.service nut-driver-enumerator.path\\n#     systemctl start nut.target\\n#     systemctl enable --now nut-server.service\\n# nut-monitor.service stays masked until automatic shutdown is configured.\\n# The NUT targets and enumerator were disabled on 2026-10-07 while UPS-01\\n# remains disconnected; nut-server.service was masked to prevent boot failures.'''\\np.write_text(s.replace(old,new))\\nprint('Updated UPS-01 restoration instructions')\\nPY\\nsystemctl show nut.target nut-driver.target nut-driver-enumerator.path nut-driver-enumerator.service nut-server.service nut-monitor.service -p Id -p ActiveState -p UnitFileState\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:19:38Z\\nUpdated UPS-01 restoration instructions\\nId=nut.target\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver.target\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver-enumerator.path\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver-enumerator.service\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-server.service\\nActiveState=inactive\\nUnitFileState=masked\\n\\nId=nut-monitor.service\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"Removed '/etc/systemd/system/nut.target.wants/nut-driver-enumerator.service'.\\nRemoved '/etc/systemd/system/nut.target.wants/nut-driver.target'.\\nRemoved '/etc/systemd/system/nut.target.wants/nut-driver-enumerator.path'.\\nRemoved '/etc/systemd/system/multi-user.target.wants/nut.target'.\\nDisabling 'nut-driver-enumerator.service', but its triggering units are still active:\\nnut-driver-enumerator.path\\nSynchronizing state of nut-server.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.\\nExecuting: /usr/lib/systemd/systemd-sysv-install disable nut-server\\nCreated symlink '/etc/systemd/system/nut-server.service' → '/dev/null'.\\nCreated symlink '/etc/systemd/system/nut-monitor.service' → '/dev/null'.\\n\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"grey_server\",\n  \"command\": \"set -eu\\ndate -u '+%FT%TZ'\\ntest \\\"$(zpool list -H -o health hddpool-1)\\\" = ONLINE\\nsystemctl is-active --quiet 'zfs-import@hddpool\\\\x2d1.service'\\nsystemctl disable zfs-import@hddpool.service\\nsystemctl reset-failed zfs-import@hddpool.service\\nsystemctl disable --now nut-monitor.service\\nsystemctl mask nut-monitor.service\\nif systemctl is-failed --quiet nut-monitor.service; then systemctl reset-failed nut-monitor.service; fi\\nsystemctl show zfs-import@hddpool.service 'zfs-import@hddpool\\\\x2d1.service' nut-monitor.service nut-server.service -p Id -p ActiveState -p UnitFileState\\nzpool list -o name,health,alloc,free\\nupsc ups02@localhost ups.status 2>/dev/null\\npct status 110\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:20:00Z\\nId=zfs-import@hddpool.service\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=zfs-import@hddpool\\\\x2d1.service\\nActiveState=active\\nUnitFileState=enabled\\n\\nId=nut-monitor.service\\nActiveState=inactive\\nUnitFileState=masked\\n\\nId=nut-server.service\\nActiveState=active\\nUnitFileState=enabled\\nNAME         HEALTH  ALLOC   FREE\\nhddpool-1    ONLINE  1.26T   567G\\nOL\\nstatus: running\\n\",\n  \"stderr\": \"Removed '/etc/systemd/system/zfs-import.target.wants/zfs-import@hddpool.service'.\\nCreated symlink '/etc/systemd/system/nut-monitor.service' → '/dev/null'.\\n\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"python3 - <<'PY'\\nfrom pathlib import Path\\nimport hashlib\\np=Path('/home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml')\\nassert hashlib.sha256(p.read_bytes()).hexdigest() == 'f1be59ecf59a431058bbcef389deca8c2ea9166b939ac634f7764f5094afea0a', 'Live playbook changed'\\np.write_text(\\\"---\\\\n# Gives the six hosts that run the upstream node_exporter binary the same\\\\n# textfile collector the twelve Debian-package hosts have had all along, so\\\\n# every host in the fleet publishes apt_upgrades_pending (or\\\\n# dnf_upgrades_pending) and node_reboot_required, and grey-server publishes\\\\n# SMART and NVMe health like the other four nodes.\\\\n#\\\\n# The package-managed hosts got prometheus-node-exporter-collectors as a\\\\n# Recommends of prometheus-node-exporter and never needed this. The binary\\\\n# hosts had no /var/lib/prometheus/node-exporter directory and no\\\\n# --collector.textfile.directory flag, which is why the update alerts could\\\\n# not see them.\\\\n#\\\\n# The collectors package is installed without Recommends on purpose. Its\\\\n# Recommends include ipmitool, and ipmitool pulls in openipmi, whose service\\\\n# fails at every boot on a machine with no BMC. None of these has one.\\\\n#\\\\n# Run with -e target=<host> for one host.\\\\n- name: Enable textfile collectors on the binary-installed node_exporter hosts\\\\n  hosts: \\\\\\\"{{ target | default('textfile_collector_targets') }}\\\\\\\"\\\\n  gather_facts: true\\\\n  become: true\\\\n  vars:\\\\n    textfile_dir: /var/lib/prometheus/node-exporter\\\\n    node_exporter_binary: /usr/local/bin/node_exporter\\\\n    node_exporter_port: 9100\\\\n    # Bare metal only. Inside a VM or LXC the SMART and NVMe scripts either\\\\n    # see nothing or see the host's devices without permission to read them,\\\\n    # and either way write a file that reports a fault which is not real.\\\\n    hardware_collectors: \\\\\\\"{{ ansible_facts.virtualization_role | default('guest') == 'host' }}\\\\\\\"\\\\n  environment:\\\\n    DEBIAN_FRONTEND: noninteractive\\\\n    NEEDRESTART_MODE: l\\\\n\\\\n  tasks:\\\\n    - name: Confirm a supported package manager is present\\\\n      ansible.builtin.assert:\\\\n        that:\\\\n          - ansible_facts.pkg_mgr in ['apt', 'dnf', 'dnf5']\\\\n        fail_msg: \\\\\\\"Unsupported package manager '{{ ansible_facts.pkg_mgr }}' on {{ inventory_hostname }}.\\\\\\\"\\\\n        quiet: true\\\\n\\\\n    # This play is for the binary hosts only. A Debian-package host already\\\\n    # has the directory, the flag and the scripts, and its unit is called\\\\n    # prometheus-node-exporter, so the drop-in below would be written for a\\\\n    # unit that does not exist.\\\\n    - name: Confirm this host runs the upstream node_exporter unit\\\\n      ansible.builtin.stat:\\\\n        path: /etc/systemd/system/node_exporter.service\\\\n      register: upstream_unit\\\\n\\\\n    - name: Stop when the host is not a binary-installed node_exporter\\\\n      ansible.builtin.assert:\\\\n        that:\\\\n          - upstream_unit.stat.exists\\\\n        fail_msg: >-\\\\n          {{ inventory_hostname }} has no /etc/systemd/system/node_exporter.service.\\\\n          It is either package-managed, in which case it already has a textfile\\\\n          collector, or has no exporter at all.\\\\n        quiet: true\\\\n\\\\n    - name: Create the textfile collector directory\\\\n      ansible.builtin.file:\\\\n        path: \\\\\\\"{{ textfile_dir }}\\\\\\\"\\\\n        state: directory\\\\n        owner: root\\\\n        group: root\\\\n        mode: \\\\\\\"0755\\\\\\\"\\\\n\\\\n    # -------------------------------------------------------------- Debian\\\\n    - name: Install the collectors package without its Recommends\\\\n      when: ansible_facts.pkg_mgr == 'apt'\\\\n      ansible.builtin.apt:\\\\n        name: prometheus-node-exporter-collectors\\\\n        state: present\\\\n        install_recommends: false\\\\n        update_cache: true\\\\n        cache_valid_time: 3600\\\\n        # Debian 12 and Ubuntu 24.04 depend on the distro exporter too.\\\\n        # Do not let a newly installed dependency claim the upstream port.\\\\n        policy_rc_d: 101\\\\n\\\\n    - name: Discover package services after installing the collectors\\\\n      when: ansible_facts.pkg_mgr == 'apt'\\\\n      ansible.builtin.service_facts:\\\\n\\\\n    - name: Keep the distro exporter stopped on upstream-binary hosts\\\\n      when:\\\\n        - ansible_facts.pkg_mgr == 'apt'\\\\n        - \\\\\\\"'prometheus-node-exporter.service' in ansible_facts.services\\\\\\\"\\\\n      ansible.builtin.systemd_service:\\\\n        name: prometheus-node-exporter.service\\\\n        state: stopped\\\\n        enabled: false\\\\n        masked: true\\\\n\\\\n    - name: Clear a previous distro exporter failure\\\\n      when:\\\\n        - ansible_facts.pkg_mgr == 'apt'\\\\n        - \\\\\\\"'prometheus-node-exporter.service' in ansible_facts.services\\\\\\\"\\\\n      ansible.builtin.shell: |\\\\n        if systemctl is-failed --quiet prometheus-node-exporter.service; then\\\\n          systemctl reset-failed prometheus-node-exporter.service\\\\n          echo cleared\\\\n        fi\\\\n      register: distro_failure_reset\\\\n      changed_when: \\\\\\\"'cleared' in distro_failure_reset.stdout\\\\\\\"\\\\n\\\\n    - name: Install nvme-cli on bare metal so the NVMe script has something to run\\\\n      when:\\\\n        - ansible_facts.pkg_mgr == 'apt'\\\\n        - hardware_collectors | bool\\\\n      ansible.builtin.apt:\\\\n        name: nvme-cli\\\\n        state: present\\\\n        install_recommends: false\\\\n\\\\n    - name: Enable the apt collector timer\\\\n      when: ansible_facts.pkg_mgr == 'apt'\\\\n      ansible.builtin.systemd_service:\\\\n        name: prometheus-node-exporter-apt.timer\\\\n        enabled: true\\\\n        state: started\\\\n        daemon_reload: true\\\\n\\\\n    - name: Enable the SMART and NVMe collector timers on bare metal\\\\n      when:\\\\n        - ansible_facts.pkg_mgr == 'apt'\\\\n        - hardware_collectors | bool\\\\n      ansible.builtin.systemd_service:\\\\n        name: \\\\\\\"{{ item }}\\\\\\\"\\\\n        enabled: true\\\\n        state: started\\\\n      loop:\\\\n        - prometheus-node-exporter-smartmon.timer\\\\n        - prometheus-node-exporter-nvme.timer\\\\n\\\\n    - name: Write the first apt textfile now rather than at the next timer tick\\\\n      when: ansible_facts.pkg_mgr == 'apt'\\\\n      changed_when: false\\\\n      ansible.builtin.systemd_service:\\\\n        name: prometheus-node-exporter-apt.service\\\\n        state: started\\\\n\\\\n    - name: Write the first SMART and NVMe textfiles now on bare metal\\\\n      when:\\\\n        - ansible_facts.pkg_mgr == 'apt'\\\\n        - hardware_collectors | bool\\\\n      changed_when: false\\\\n      ansible.builtin.systemd_service:\\\\n        name: \\\\\\\"{{ item }}\\\\\\\"\\\\n        state: started\\\\n      loop:\\\\n        - prometheus-node-exporter-smartmon.service\\\\n        - prometheus-node-exporter-nvme.service\\\\n\\\\n    # ----------------------------------------------------------------- dnf\\\\n    - name: Install the dnf update script\\\\n      when: ansible_facts.pkg_mgr in ['dnf', 'dnf5']\\\\n      ansible.builtin.copy:\\\\n        src: files/dnf-updates-textfile.sh\\\\n        dest: /usr/local/sbin/dnf-updates-textfile\\\\n        owner: root\\\\n        group: root\\\\n        mode: \\\\\\\"0755\\\\\\\"\\\\n\\\\n    - name: Install the dnf update service and timer\\\\n      when: ansible_facts.pkg_mgr in ['dnf', 'dnf5']\\\\n      ansible.builtin.copy:\\\\n        dest: \\\\\\\"/etc/systemd/system/{{ item.name }}\\\\\\\"\\\\n        owner: root\\\\n        group: root\\\\n        mode: \\\\\\\"0644\\\\\\\"\\\\n        content: \\\\\\\"{{ item.content }}\\\\\\\"\\\\n      loop_control:\\\\n        label: \\\\\\\"{{ item.name }}\\\\\\\"\\\\n      loop:\\\\n        - name: node-exporter-dnf-updates.service\\\\n          content: |\\\\n            # Managed by Ansible: monitoring-exporters/playbooks/textfile-collectors.yml\\\\n            [Unit]\\\\n            Description=Write pending dnf update counts for node_exporter\\\\n\\\\n            [Service]\\\\n            Type=oneshot\\\\n            ExecStart=/usr/local/sbin/dnf-updates-textfile\\\\n        - name: node-exporter-dnf-updates.timer\\\\n          content: |\\\\n            # Managed by Ansible: monitoring-exporters/playbooks/textfile-collectors.yml\\\\n            [Unit]\\\\n            Description=Refresh pending dnf update counts every 15 minutes\\\\n\\\\n            [Timer]\\\\n            OnBootSec=5min\\\\n            OnUnitActiveSec=15min\\\\n            RandomizedDelaySec=2min\\\\n\\\\n            [Install]\\\\n            WantedBy=timers.target\\\\n      register: dnf_units\\\\n\\\\n    - name: Enable the dnf update timer\\\\n      when: ansible_facts.pkg_mgr in ['dnf', 'dnf5']\\\\n      ansible.builtin.systemd_service:\\\\n        name: node-exporter-dnf-updates.timer\\\\n        enabled: true\\\\n        state: started\\\\n        daemon_reload: true\\\\n\\\\n    - name: Write the first dnf textfile now\\\\n      when: ansible_facts.pkg_mgr in ['dnf', 'dnf5']\\\\n      changed_when: false\\\\n      ansible.builtin.systemd_service:\\\\n        name: node-exporter-dnf-updates.service\\\\n        state: started\\\\n\\\\n    # ------------------------------------------------- node_exporter flag\\\\n    # A drop-in rather than an edit to the unit, so the unit stays whatever\\\\n    # installed it (this project's node-exporter.yml on two hosts, a hand\\\\n    # install on the other four). ExecStart= on its own line clears the\\\\n    # original before the replacement is set; systemd requires that for a\\\\n    # Type=simple unit. Every binary host runs the same path and the exporter\\\\n    # defaults to :9100, so one ExecStart fits all six.\\\\n    - name: Create the drop-in directory\\\\n      ansible.builtin.file:\\\\n        path: /etc/systemd/system/node_exporter.service.d\\\\n        state: directory\\\\n        owner: root\\\\n        group: root\\\\n        mode: \\\\\\\"0755\\\\\\\"\\\\n\\\\n    - name: Point node_exporter at the textfile directory\\\\n      ansible.builtin.copy:\\\\n        dest: /etc/systemd/system/node_exporter.service.d/textfile.conf\\\\n        owner: root\\\\n        group: root\\\\n        mode: \\\\\\\"0644\\\\\\\"\\\\n        content: |\\\\n          # Managed by Ansible: monitoring-exporters/playbooks/textfile-collectors.yml\\\\n          [Service]\\\\n          ExecStart=\\\\n          ExecStart={{ node_exporter_binary }} --web.listen-address=:{{ node_exporter_port }} --collector.textfile.directory={{ textfile_dir }}\\\\n      notify: Restart node_exporter\\\\n\\\\n    - name: Flush handlers before verifying\\\\n      ansible.builtin.meta: flush_handlers\\\\n\\\\n    - name: Ensure the upstream exporter is enabled and running\\\\n      ansible.builtin.systemd_service:\\\\n        name: node_exporter.service\\\\n        enabled: true\\\\n        state: started\\\\n\\\\n    - name: Verify the upstream exporter has stayed running\\\\n      ansible.builtin.shell: |\\\\n        set -eu\\\\n        systemctl is-active --quiet node_exporter.service\\\\n        before=$(systemctl show node_exporter.service -p NRestarts --value)\\\\n        sleep 10\\\\n        systemctl is-active --quiet node_exporter.service\\\\n        after=$(systemctl show node_exporter.service -p NRestarts --value)\\\\n        test \\\\\\\"$before\\\\\\\" = \\\\\\\"$after\\\\\\\"\\\\n        if systemctl is-active --quiet prometheus-node-exporter.service; then\\\\n          exit 1\\\\n        fi\\\\n      changed_when: false\\\\n      when: not ansible_check_mode\\\\n\\\\n    # ---------------------------------------------------------- Verification\\\\n    - name: Read the exporter's own view of the textfile collector\\\\n      become: false\\\\n      changed_when: false\\\\n      ansible.builtin.shell:\\\\n        cmd: >-\\\\n          curl -s -m 10 http://127.0.0.1:{{ node_exporter_port }}/metrics\\\\n          | grep -E '^(node_textfile_scrape_error|apt_package_cache_timestamp_seconds|apt_upgrades_pending|dnf_updates_check_timestamp_seconds|dnf_upgrades_pending|node_reboot_required|smartmon_device_smart_healthy|nvme_critical_warning)'\\\\n      register: textfile_metrics\\\\n      retries: 6\\\\n      delay: 5\\\\n      until: textfile_metrics.stdout is search('node_textfile_scrape_error 0')\\\\n\\\\n    # apt_upgrades_pending has one row per origin with pending packages and no\\\\n    # rows at all on a fully patched host, so it cannot prove the collector\\\\n    # ran. The cache timestamp is written unconditionally and can.\\\\n    - name: Fail unless the update collector ran and the scrape is clean\\\\n      ansible.builtin.assert:\\\\n        that:\\\\n          - textfile_metrics.stdout is search('node_textfile_scrape_error 0')\\\\n          - textfile_metrics.stdout is search('(apt_package_cache|dnf_updates_check)_timestamp_seconds')\\\\n          - textfile_metrics.stdout is search('node_reboot_required')\\\\n        fail_msg: >-\\\\n          {{ inventory_hostname }} does not expose the textfile metrics cleanly.\\\\n          Got: {{ textfile_metrics.stdout | default('') | truncate(400) }}\\\\n        quiet: true\\\\n\\\\n    - name: Fail when a bare-metal host has no SMART health rows\\\\n      when: hardware_collectors | bool\\\\n      ansible.builtin.assert:\\\\n        that:\\\\n          - textfile_metrics.stdout is search('smartmon_device_smart_healthy')\\\\n          - textfile_metrics.stdout is search('nvme_critical_warning')\\\\n        fail_msg: \\\\\\\"{{ inventory_hostname }} is bare metal but exposes no SMART or NVMe rows.\\\\\\\"\\\\n        quiet: true\\\\n\\\\n    - name: Report the per-host result\\\\n      ansible.builtin.debug:\\\\n        msg: >-\\\\n          {{ inventory_hostname }}:\\\\n          pkg={{ ansible_facts.pkg_mgr }}\\\\n          virt={{ ansible_facts.virtualization_type | default('none') }}/{{ ansible_facts.virtualization_role | default('none') }}\\\\n          hardware_collectors={{ hardware_collectors }}\\\\n          rows={{ textfile_metrics.stdout_lines | length }}\\\\n\\\\n  handlers:\\\\n    - name: Restart node_exporter\\\\n      ansible.builtin.systemd_service:\\\\n        name: node_exporter\\\\n        state: restarted\\\\n        daemon_reload: true\\\\n\\\")\\nprint(hashlib.sha256(p.read_bytes()).hexdigest())\\nPY\\ncd /home/ansible/monitoring-exporters\\nansible-playbook playbooks/textfile-collectors.yml --syntax-check\\npython3 tests/validate_project.py\",\n  \"stdout\": \"706ecebe77f3bd6ed6f8b53b9b8da933f5aa442575d8d32994aa2e08555e8c00\\n\\nplaybook: playbooks/textfile-collectors.yml\\nValidation passed: 9 node_exporter hosts, 8 cAdvisor hosts.\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"cd /home/ansible/monitoring-exporters\\nnohup sh -c 'ansible-playbook playbooks/textfile-collectors.yml --limit docker-main,security-01 > /tmp/service-repair-20261007-play.log 2>&1; result=$?; printf \\\"%s\\\\n\\\" \\\"$result\\\" > /tmp/service-repair-20261007-play.exit' < /dev/null > /dev/null 2>&1 &\",\n  \"stdout\": \"\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"if test -f /tmp/service-repair-20261007-play.exit; then cat /tmp/service-repair-20261007-play.exit; else echo RUNNING; fi\\ntail -n 35 /tmp/service-repair-20261007-play.log\",\n  \"stdout\": \"RUNNING\\n\\nPLAY [Enable textfile collectors on the binary-installed node_exporter hosts] ***\\n\\nTASK [Gathering Facts] *********************************************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Confirm a supported package manager is present] **************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Confirm this host runs the upstream node_exporter unit] ******************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Stop when the host is not a binary-installed node_exporter] **************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Create the textfile collector directory] *********************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Install the collectors package without its Recommends] *******************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Discover package services after installing the collectors] ***************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Keep the distro exporter stopped on upstream-binary hosts] ***************\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl show node_exporter.service -p ActiveState -p SubState -p NRestarts\\njournalctl -u node_exporter.service --since '2026-10-08 01:19:00 UTC' --no-pager -o cat | grep -Ec 'bind: address already in use|Failed with result' || true\",\n  \"stdout\": \"2026-10-08T01:20:46Z\\nNRestarts=549642\\nActiveState=active\\nSubState=running\\n0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"python3 - <<'PY'\\nfrom pathlib import Path\\ns=Path('/etc/nut/ups.conf').read_text()\\nassert not any(x in s.lower() for x in ['serial =','password','secret','token','wwn']), 'Unexpected protected field; redact before returning'\\nprint(s)\\nPY\",\n  \"stdout\": \"pollinterval = 5\\nmaxretry = 3\\n\\n# UPS-01 is commented out as of 2026-08-31.\\n#\\n# Its USB data cable was disconnected on 2026-08-28 during a UPS swap and is\\n# not plugged into any node. red-server now draws power from UPS-02, whose\\n# data cable is on grey-server and reports there as ups02.\\n#\\n# With no UPS attached, usbhid-ups failed and systemd restarted it every five\\n# seconds: 12,014 restarts and 75,292 journal lines in the 24 hours to\\n# 2026-08-31, which was also 62.9 per cent of all fleet Wazuh alerts on\\n# 2026-08-29. Commenting out the stanza is what actually stops it, because\\n# nut-driver-enumerator rebuilds the driver under an MD5-hashed instance name\\n# and therefore walks straight past a mask on nut-driver@ups01.service.\\n#\\n# To restore: plug the UPS-01 USB cable into red-server, uncomment the block\\n# below, then run\\n#     systemctl unmask nut-server.service\\n#     systemctl enable nut.target nut-driver.target nut-driver-enumerator.service nut-driver-enumerator.path\\n#     systemctl start nut.target\\n#     systemctl enable --now nut-server.service\\n# nut-monitor.service stays masked until automatic shutdown is configured.\\n# The NUT targets and enumerator were disabled on 2026-10-07 while UPS-01\\n# remains disconnected; nut-server.service was masked to prevent boot failures.\\n#     systemctl restart nut-driver-enumerator.service\\n# and re-add the 192.168.70.13 target to the Prometheus nut job and to PeaNUT.\\n#\\n#[ups01]\\n#    driver = usbhid-ups\\n#    port = auto\\n#    vendorid = 051d\\n#    productid = 0002\\n#    desc = \\\"UPS-01 APC Back-UPS Pro BR1500MS2 on red-server\\\"\\n\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"python3 - <<'PY'\\nfrom pathlib import Path\\np=Path('/etc/nut/ups.conf')\\ns=p.read_text()\\nnote='''# nut-monitor.service stays masked until automatic shutdown is configured.\\n# The NUT targets and enumerator were disabled on 2026-10-07 while UPS-01\\n# remains disconnected; nut-server.service was masked to prevent boot failures.\\n'''\\ns=s.replace(note,'')\\ns=s.replace('# and re-add the 192.168.70.13 target to the Prometheus nut job and to PeaNUT.','# and re-add the 192.168.70.13 target to the Prometheus nut job and to PeaNUT.\\\\n'+note.rstrip())\\np.write_text(s)\\nprint(s)\\nPY\",\n  \"stdout\": \"pollinterval = 5\\nmaxretry = 3\\n\\n# UPS-01 is commented out as of 2026-08-31.\\n#\\n# Its USB data cable was disconnected on 2026-08-28 during a UPS swap and is\\n# not plugged into any node. red-server now draws power from UPS-02, whose\\n# data cable is on grey-server and reports there as ups02.\\n#\\n# With no UPS attached, usbhid-ups failed and systemd restarted it every five\\n# seconds: 12,014 restarts and 75,292 journal lines in the 24 hours to\\n# 2026-08-31, which was also 62.9 per cent of all fleet Wazuh alerts on\\n# 2026-08-29. Commenting out the stanza is what actually stops it, because\\n# nut-driver-enumerator rebuilds the driver under an MD5-hashed instance name\\n# and therefore walks straight past a mask on nut-driver@ups01.service.\\n#\\n# To restore: plug the UPS-01 USB cable into red-server, uncomment the block\\n# below, then run\\n#     systemctl unmask nut-server.service\\n#     systemctl enable nut.target nut-driver.target nut-driver-enumerator.service nut-driver-enumerator.path\\n#     systemctl start nut.target\\n#     systemctl enable --now nut-server.service\\n#     systemctl restart nut-driver-enumerator.service\\n# and re-add the 192.168.70.13 target to the Prometheus nut job and to PeaNUT.\\n# nut-monitor.service stays masked until automatic shutdown is configured.\\n# The NUT targets and enumerator were disabled on 2026-10-07 while UPS-01\\n# remains disconnected; nut-server.service was masked to prevent boot failures.\\n#\\n#[ups01]\\n#    driver = usbhid-ups\\n#    port = auto\\n#    vendorid = 051d\\n#    productid = 0002\\n#    desc = \\\"UPS-01 APC Back-UPS Pro BR1500MS2 on red-server\\\"\\n\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"if test -f /tmp/service-repair-20261007-play.exit; then cat /tmp/service-repair-20261007-play.exit; else echo RUNNING; fi\\ntail -n 55 /tmp/service-repair-20261007-play.log\",\n  \"stdout\": \"0\\nskipping: [security-01] => (item=node-exporter-dnf-updates.timer) \\nskipping: [security-01]\\n\\nTASK [Enable the dnf update timer] *********************************************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Write the first dnf textfile now] ****************************************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Create the drop-in directory] ********************************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Point node_exporter at the textfile directory] ***************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Flush handlers before verifying] *****************************************\\n\\nTASK [Flush handlers before verifying] *****************************************\\n\\nTASK [Ensure the upstream exporter is enabled and running] *********************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Verify the upstream exporter has stayed running] *************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Read the exporter's own view of the textfile collector] ******************\\nok: [security-01]\\nok: [docker-main]\\n\\nTASK [Fail unless the update collector ran and the scrape is clean] ************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Fail when a bare-metal host has no SMART health rows] ********************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Report the per-host result] **********************************************\\nok: [docker-main] => {\\n    \\\"msg\\\": \\\"docker-main: pkg=apt virt=lxc/guest hardware_collectors=False rows=4\\\"\\n}\\nok: [security-01] => {\\n    \\\"msg\\\": \\\"security-01: pkg=apt virt=kvm/guest hardware_collectors=False rows=3\\\"\\n}\\n\\nPLAY RECAP *********************************************************************\\ndocker-main                : ok=18   changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   \\nsecurity-01                : ok=18   changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   \\n\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p UnitFileState -p NRestarts\\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error)'\",\n  \"stdout\": \"2026-10-08T01:21:46Z\\nrunning\\nNRestarts=549642\\nId=node_exporter.service\\nActiveState=active\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=inactive\\nUnitFileState=masked\\nnode_exporter_build_info{branch=\\\"HEAD\\\",goarch=\\\"amd64\\\",goos=\\\"linux\\\",goversion=\\\"go1.23.6\\\",revision=\\\"02afa5c53c36123611533f2defea6ccd4546a9bb\\\",tags=\\\"unknown\\\",version=\\\"1.9.0\\\"} 1\\nnode_textfile_scrape_error 0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"security_01\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p UnitFileState -p NRestarts\\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error)'\",\n  \"stdout\": \"2026-10-08T01:21:46Z\\nrunning\\nNRestarts=0\\nId=node_exporter.service\\nActiveState=active\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=inactive\\nUnitFileState=masked\\nnode_exporter_build_info{branch=\\\"HEAD\\\",goarch=\\\"amd64\\\",goos=\\\"linux\\\",goversion=\\\"go1.23.6\\\",revision=\\\"02afa5c53c36123611533f2defea6ccd4546a9bb\\\",tags=\\\"unknown\\\",version=\\\"1.9.0\\\"} 1\\nnode_textfile_scrape_error 0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:46Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"grey_server\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:47Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"alpha_prod_01\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:47Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:46Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_blue\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:47Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_network\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:47Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"media_01\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:47Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"monitor_01\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl is-system-running\\nsystemctl --failed --no-legend --plain\",\n  \"stdout\": \"2026-10-08T01:21:46Z\\nrunning\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    },
+    {
+      "status": "completed",
+      "result": [
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"monitor_01\",\n  \"command\": \"python3 - <<'PY'\\nimport json,urllib.request,urllib.parse,datetime\\nbase='http://127.0.0.1:9090/api/v1/'\\nprint(datetime.datetime.now(datetime.timezone.utc).isoformat())\\nfor query in ['node_exporter_build_info{host=~\\\"docker-main|security-01\\\"}','node_textfile_scrape_error{host=~\\\"docker-main|security-01\\\"}']:\\n    with urllib.request.urlopen(base+'query?'+urllib.parse.urlencode({'query':query}),timeout=10) as r:\\n        d=json.load(r)\\n    print(json.dumps({'query':query,'results':[{'host':x['metric'].get('host'),'version':x['metric'].get('version'),'value':x['value'][1]} for x in d['data']['result']]}))\\nwith urllib.request.urlopen(base+'targets',timeout=10) as r:\\n    ts=json.load(r)['data']['activeTargets']\\nprint(json.dumps({'targets':len(ts),'up':sum(t['health']=='up' for t in ts)}))\\nPY\",\n  \"stdout\": \"2026-10-08T01:22:00.266628+00:00\\n{\\\"query\\\": \\\"node_exporter_build_info{host=~\\\\\\\"docker-main|security-01\\\\\\\"}\\\", \\\"results\\\": [{\\\"host\\\": \\\"security-01\\\", \\\"version\\\": \\\"1.9.0\\\", \\\"value\\\": \\\"1\\\"}, {\\\"host\\\": \\\"docker-main\\\", \\\"version\\\": \\\"1.9.0\\\", \\\"value\\\": \\\"1\\\"}]}\\n{\\\"query\\\": \\\"node_textfile_scrape_error{host=~\\\\\\\"docker-main|security-01\\\\\\\"}\\\", \\\"results\\\": [{\\\"host\\\": \\\"security-01\\\", \\\"version\\\": null, \\\"value\\\": \\\"0\\\"}, {\\\"host\\\": \\\"docker-main\\\", \\\"version\\\": null, \\\"value\\\": \\\"0\\\"}]}\\n{\\\"targets\\\": 50, \\\"up\\\": 50}\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"cat /tmp/service-repair-20261007-play.exit\\ncat /tmp/service-repair-20261007-play.log\\nsha256sum /home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml\",\n  \"stdout\": \"0\\n\\nPLAY [Enable textfile collectors on the binary-installed node_exporter hosts] ***\\n\\nTASK [Gathering Facts] *********************************************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Confirm a supported package manager is present] **************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Confirm this host runs the upstream node_exporter unit] ******************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Stop when the host is not a binary-installed node_exporter] **************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Create the textfile collector directory] *********************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Install the collectors package without its Recommends] *******************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Discover package services after installing the collectors] ***************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Keep the distro exporter stopped on upstream-binary hosts] ***************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Clear a previous distro exporter failure] ********************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Install nvme-cli on bare metal so the NVMe script has something to run] ***\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Enable the apt collector timer] ******************************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Enable the SMART and NVMe collector timers on bare metal] ****************\\nskipping: [docker-main] => (item=prometheus-node-exporter-smartmon.timer) \\nskipping: [docker-main] => (item=prometheus-node-exporter-nvme.timer) \\nskipping: [docker-main]\\nskipping: [security-01] => (item=prometheus-node-exporter-smartmon.timer) \\nskipping: [security-01] => (item=prometheus-node-exporter-nvme.timer) \\nskipping: [security-01]\\n\\nTASK [Write the first apt textfile now rather than at the next timer tick] *****\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Write the first SMART and NVMe textfiles now on bare metal] **************\\nskipping: [docker-main] => (item=prometheus-node-exporter-smartmon.service) \\nskipping: [docker-main] => (item=prometheus-node-exporter-nvme.service) \\nskipping: [docker-main]\\nskipping: [security-01] => (item=prometheus-node-exporter-smartmon.service) \\nskipping: [security-01] => (item=prometheus-node-exporter-nvme.service) \\nskipping: [security-01]\\n\\nTASK [Install the dnf update script] *******************************************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Install the dnf update service and timer] ********************************\\nskipping: [docker-main] => (item=node-exporter-dnf-updates.service) \\nskipping: [docker-main] => (item=node-exporter-dnf-updates.timer) \\nskipping: [docker-main]\\nskipping: [security-01] => (item=node-exporter-dnf-updates.service) \\nskipping: [security-01] => (item=node-exporter-dnf-updates.timer) \\nskipping: [security-01]\\n\\nTASK [Enable the dnf update timer] *********************************************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Write the first dnf textfile now] ****************************************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Create the drop-in directory] ********************************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Point node_exporter at the textfile directory] ***************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Flush handlers before verifying] *****************************************\\n\\nTASK [Flush handlers before verifying] *****************************************\\n\\nTASK [Ensure the upstream exporter is enabled and running] *********************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Verify the upstream exporter has stayed running] *************************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Read the exporter's own view of the textfile collector] ******************\\nok: [security-01]\\nok: [docker-main]\\n\\nTASK [Fail unless the update collector ran and the scrape is clean] ************\\nok: [docker-main]\\nok: [security-01]\\n\\nTASK [Fail when a bare-metal host has no SMART health rows] ********************\\nskipping: [docker-main]\\nskipping: [security-01]\\n\\nTASK [Report the per-host result] **********************************************\\nok: [docker-main] => {\\n    \\\"msg\\\": \\\"docker-main: pkg=apt virt=lxc/guest hardware_collectors=False rows=4\\\"\\n}\\nok: [security-01] => {\\n    \\\"msg\\\": \\\"security-01: pkg=apt virt=kvm/guest hardware_collectors=False rows=3\\\"\\n}\\n\\nPLAY RECAP *********************************************************************\\ndocker-main                : ok=18   changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   \\nsecurity-01                : ok=18   changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   \\n\\n706ecebe77f3bd6ed6f8b53b9b8da933f5aa442575d8d32994aa2e08555e8c00  /home/ansible/monitoring-exporters/playbooks/textfile-collectors.yml\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        },
+        {
+          "status": "fulfilled",
+          "value": [
+            {
+              "type": "text",
+              "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"date -u '+%FT%TZ'\\nsystemctl show node_exporter.service -p NRestarts -p MainPID\\njournalctl -u node_exporter.service --since '2026-10-08 01:19:00 UTC' --no-pager -o cat | grep -Ec 'bind: address already in use|Failed with result' || true\",\n  \"stdout\": \"2026-10-08T01:22:00Z\\nMainPID=44984\\nNRestarts=549642\\n0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+            }
+          ]
+        }
+      ],
+      "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+      "logs": []
+    }
+  ]
+}

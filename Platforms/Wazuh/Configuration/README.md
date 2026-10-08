@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-07
 
 On 2026-09-24 `agent_control -l` listed 15 remote agents plus the manager, all active: IDs `004` to `011`, `013` to `017`, `020` and `021`. I removed disconnected `game-01` agent 018 on 2026-09-12. Earlier counts below remain dated observations.
 
@@ -46,21 +46,21 @@ The local image applies two patches to the pinned upstream image. The Indexer cl
 
 | Host | Package | Manager identity | Address | Service state |
 |---|---|---|---|---|
-| `app-01` | 4.14.6-1 | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
-| `edge-01` | 4.14.5-1 | ID `005`, `edge-01` | `192.168.30.10` | Enabled/active; TCP 1514 established |
-| `alpha-prod-01` | 4.14.6-1, held | ID `006`, `alpha-prod-01` | `192.168.80.118` | Enabled/active; TCP 1514 established |
-| `docker-blue` | 4.14.6-1, held | ID `007`, `docker-blue` | `192.168.40.39` | Enabled/active; TCP 1514 established |
-| `media-01` | 4.14.6-1, held | ID `008`, `media-01` | `192.168.40.42` | Enabled/active; TCP 1514 established |
-| `ansible-01` | 4.14.6-1, held | ID `009`, `ansible-01` | `192.168.40.36` | Enabled/active; TCP 1514 established |
-| `monitor-01` | 4.14.6-1, held | ID `010`, `monitor-01` | `192.168.73.2` | Enabled/active; TCP 1514 established |
-| `docker-network` | 4.14.6-1, held | ID `011`, `docker-network` | `192.168.85.2` | Enabled/active; TCP 1514 established |
-| `grey-server` | 4.14.6-1, held | ID `013`, `grey-server` | `192.168.70.10` | Enabled/active; TCP 1514 established |
-| `purple-server` | 4.14.6-1, held | ID `014`, `purple-server` | `192.168.70.11` | Enabled/active; TCP 1514 established |
-| `blue-server` | 4.14.6-1, held | ID `015`, `blue-server` | `192.168.70.12` | Enabled/active; TCP 1514 established |
-| `red-server` | 4.14.6-1, held | ID `016`, `red-server` | `192.168.70.13` | Enabled/active; TCP 1514 established |
-| `green-server` | 4.14.6-1, held | ID `017`, `green-server` | `192.168.70.14` | Enabled/active; TCP 1514 established |
-| `ubuntu-dev` | 4.14.6-1 | ID `020`, `ubuntu-dev` | `192.168.40.179` | Enabled/active, verified locally 2026-08-14: `wazuh-modulesd`, `wazuh-logcollector`, `wazuh-syscheckd`, `wazuh-agentd`, and `wazuh-execd` all running |
-| `docker-main` | 4.14.6-1, held | ID `021`, `docker-main` | `192.168.40.35` | Enabled/active; re-enrolled and verified 2026-09-06 ([record](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md)) |
+| `app-01` | 4.14.8-1, held | ID `004`, `app-01` | `192.168.80.10` | Enabled/active; TCP 1514 established |
+| `edge-01` | 4.14.8-1, held | ID `005`, `edge-01` | `192.168.30.10` | Enabled/active; TCP 1514 established |
+| `alpha-prod-01` | 4.14.8-1, held | ID `006`, `alpha-prod-01` | `192.168.80.118` | Enabled/active; TCP 1514 established |
+| `docker-blue` | 4.14.8-1, held | ID `007`, `docker-blue` | `192.168.40.39` | Enabled/active; TCP 1514 established |
+| `media-01` | 4.14.8-1, held | ID `008`, `media-01` | `192.168.40.42` | Enabled/active; TCP 1514 established |
+| `ansible-01` | 4.14.8-1, held | ID `009`, `ansible-01` | `192.168.40.36` | Enabled/active; TCP 1514 established |
+| `monitor-01` | 4.14.8-1, held | ID `010`, `monitor-01` | `192.168.73.2` | Enabled/active; TCP 1514 established |
+| `docker-network` | 4.14.8-1, held | ID `011`, `docker-network` | `192.168.85.2` | Enabled/active; TCP 1514 established |
+| `grey-server` | 4.14.8-1, held | ID `013`, `grey-server` | `192.168.70.10` | Enabled/active; TCP 1514 established |
+| `purple-server` | 4.14.8-1, held | ID `014`, `purple-server` | `192.168.70.11` | Enabled/active; TCP 1514 established |
+| `blue-server` | 4.14.8-1, held | ID `015`, `blue-server` | `192.168.70.12` | Enabled/active; TCP 1514 established |
+| `red-server` | 4.14.8-1, held | ID `016`, `red-server` | `192.168.70.13` | Enabled/active; TCP 1514 established |
+| `green-server` | 4.14.8-1, held | ID `017`, `green-server` | `192.168.70.14` | Enabled/active; TCP 1514 established |
+| `ubuntu-dev` | 4.14.8-1, held | ID `020`, `ubuntu-dev` | `192.168.40.179` | Enabled/active, verified locally 2026-08-14: `wazuh-modulesd`, `wazuh-logcollector`, `wazuh-syscheckd`, `wazuh-agentd`, and `wazuh-execd` all running |
+| `docker-main` | 4.14.8-1, held | ID `021`, `docker-main` | `192.168.40.35` | Enabled/active; re-enrolled and verified 2026-09-06 ([record](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md)) |
 
 The manager and dashboard verified IDs `004` through `017` active and synchronized on 2026-08-03. Both interfaces reported zero disconnected, pending, or never-connected agents.
 
@@ -102,19 +102,19 @@ The manager-side `proxmox` group contains exactly five active members: Grey, Pur
 
 ## Agent package state across the fleet
 
-Observed 2026-08-04, after adding the `edge-01` source and correcting two holds:
+I first captured this table on 2026-08-04 after adding the `edge-01` source and correcting two holds. Agent versions below reflect the 2026-10-05 fleet update:
 
 | Host | Agent | Held | Wazuh source |
 |---|---|---|---|
-| `alpha-prod-01`, `media-01`, `docker-network`, `docker-blue`, `ansible-01`, `monitor-01` | 4.14.6-1 | yes | yes |
-| `app-01` | 4.14.6-1 | yes, applied 2026-08-04 | yes |
-| `edge-01` | 4.14.5-1 | yes, applied 2026-08-04 | yes, added 2026-08-04 |
-| `docker-main` | 4.14.6-1 since 2026-09-06; was 4.14.0-1 pointed at the pre-migration manager address and never enrolled | yes, applied 2026-09-06 | yes, added and disabled 2026-09-06 |
+| `alpha-prod-01`, `media-01`, `docker-network`, `docker-blue`, `ansible-01`, `monitor-01` | 4.14.8-1, held | yes | yes |
+| `app-01` | 4.14.8-1, held | yes, applied 2026-08-04 | yes |
+| `edge-01` | 4.14.8-1, held | yes, applied 2026-08-04 | yes, added 2026-08-04 |
+| `docker-main` | 4.14.8-1, held, since 2026-10-05; 4.14.6-1 from 2026-09-06, before that 4.14.0-1 pointed at the pre-migration manager address and never enrolled | yes, applied 2026-09-06 | yes, added and disabled 2026-09-06 |
 | `security-01` | manager 4.14.8-1 since 2026-10-02 | n/a | yes |
 | `splunk-siem` | none | n/a | no |
 
-**The manager caps every agent.** `security-01` ran manager `4.14.6-1` while the repository carried only `4.14.7-1`, because Wazuh publishes one package per release line rather than a back catalogue. An agent must never be newer than its manager, which froze every agent version until the manager moved. I upgraded the central stack to `4.14.7-1` on 2026-08-04 and to `4.14.8-1` during the [2026-10-02 guest package updates](../../../Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md). All 15 remote agents were active afterward. Existing agent holds remain in place.
+**The manager caps every agent.** `security-01` ran manager `4.14.6-1` while the repository carried only `4.14.7-1`, because Wazuh publishes one package per release line rather than a back catalogue. An agent must never be newer than its manager, which froze every agent version until the manager moved. I upgraded the central stack to `4.14.7-1` on 2026-08-04 and to `4.14.8-1` during the [2026-10-02 guest package updates](../../../Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md). All 15 remote agents were active afterward. The holds stayed until the [2026-10-05 fleet update](../../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md), when the deploy play released each one, installed 4.14.8-1 and re-applied it.
 
 That is what the holds are for. `app-01` had the source without a hold, and a simulated fleet run confirmed it would have installed `4.14.7-1` over its `4.14.6-1`, putting the agent ahead of the manager. Holding it was the fix. `edge-01` received the same hold when it received the source, so adding the source could not create the same exposure.
 
-`edge-01` remains on 4.14.5-1 and was active after the manager moved to 4.14.8-1 on 2026-10-02. `docker-main` was the outage this table hid: its 4.14.0-1 agent had never connected to the current manager, which the 2026-09-06 audit found and [the same day's re-enrollment](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) fixed. `edge-01` is now the only agent below 4.14.6-1 and stays [tracked](../Documentation/TODO.md).
+`edge-01` was still on 4.14.5-1 and active after the manager moved to 4.14.8-1 on 2026-10-02. `docker-main` was the outage this table hid: its 4.14.0-1 agent had never connected to the current manager, which the 2026-09-06 audit found and [the same day's re-enrollment](../Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) fixed. `edge-01` was the only agent below 4.14.6-1 until 2026-10-05, when it moved to 4.14.8-1 with the rest of the fleet.

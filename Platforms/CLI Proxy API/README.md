@@ -1,7 +1,7 @@
 # CLI Proxy API
 
 **Created:** 2026-08-10  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-05
 
 I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there from `ubuntu-dev` on 2026-08-19 after its earlier move from `debian-dev` on 2026-08-13. It is available to internal clients at `https://aiproxy.alphasecunited.com`; UniFi resolves that name to Nginx Proxy Manager, and NPM forwards the request to the service's main HTTP listener.
 
@@ -13,7 +13,7 @@ I run CLI Proxy API as a Docker Compose service on `docker-main`. It moved there
 | Compute | Galaxy LXC 110 `docker-main`; `192.168.40.35` on Personal-A |
 | Live Compose path | `/opt/docker/cli-proxy-api` |
 | Container | `cli-proxy-api` |
-| Image | `eceasy/cli-proxy-api:latest`; v7.3.16 (commit `c404af9`, built 2026-09-24), read live on 2026-09-24 |
+| Image | `eceasy/cli-proxy-api:latest`; v8.0.16 (commit `a2976eb`, built 2026-10-05), read live on 2026-10-05 after the fleet pull moved it from v7.3.16 |
 | Restart policy | `unless-stopped` |
 | Main listener | HTTP on TCP 8317 |
 | Internal URL | `https://aiproxy.alphasecunited.com` |

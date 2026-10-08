@@ -76,6 +76,35 @@
         install_recommends: false
         update_cache: true
         cache_valid_time: 3600
+        # Debian 12 and Ubuntu 24.04 depend on the distro exporter too.
+        # Do not let a newly installed dependency claim the upstream port.
+        policy_rc_d: 101
+
+    - name: Discover package services after installing the collectors
+      when: ansible_facts.pkg_mgr == 'apt'
+      ansible.builtin.service_facts:
+
+    - name: Keep the distro exporter stopped on upstream-binary hosts
+      when:
+        - ansible_facts.pkg_mgr == 'apt'
+        - "'prometheus-node-exporter.service' in ansible_facts.services"
+      ansible.builtin.systemd_service:
+        name: prometheus-node-exporter.service
+        state: stopped
+        enabled: false
+        masked: true
+
+    - name: Clear a previous distro exporter failure
+      when:
+        - ansible_facts.pkg_mgr == 'apt'
+        - "'prometheus-node-exporter.service' in ansible_facts.services"
+      ansible.builtin.shell: |
+        if systemctl is-failed --quiet prometheus-node-exporter.service; then
+          systemctl reset-failed prometheus-node-exporter.service
+          echo cleared
+        fi
+      register: distro_failure_reset
+      changed_when: "'cleared' in distro_failure_reset.stdout"
 
     - name: Install nvme-cli on bare metal so the NVMe script has something to run
       when:
@@ -215,6 +244,27 @@
 
     - name: Flush handlers before verifying
       ansible.builtin.meta: flush_handlers
+
+    - name: Ensure the upstream exporter is enabled and running
+      ansible.builtin.systemd_service:
+        name: node_exporter.service
+        enabled: true
+        state: started
+
+    - name: Verify the upstream exporter has stayed running
+      ansible.builtin.shell: |
+        set -eu
+        systemctl is-active --quiet node_exporter.service
+        before=$(systemctl show node_exporter.service -p NRestarts --value)
+        sleep 10
+        systemctl is-active --quiet node_exporter.service
+        after=$(systemctl show node_exporter.service -p NRestarts --value)
+        test "$before" = "$after"
+        if systemctl is-active --quiet prometheus-node-exporter.service; then
+          exit 1
+        fi
+      changed_when: false
+      when: not ansible_check_mode
 
     # ---------------------------------------------------------- Verification
     - name: Read the exporter's own view of the textfile collector

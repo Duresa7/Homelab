@@ -1,9 +1,9 @@
 # Galaxy Cluster Architecture
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-05  
 
-Galaxy is my five-node Proxmox VE 9.2.11 cluster. Every node keeps its guests on its own disks: there is no shared storage and no guest is under HA. I checked everything on this page against the cluster on 2026-09-24.
+Galaxy is my five-node Proxmox VE 9.2.21 cluster. Every node keeps its guests on its own disks: there is no shared storage and no guest is under HA. I checked everything on this page against the cluster on 2026-09-24.
 
 ![Galaxy cluster: five Proxmox nodes on MGMT-A and Cluster-Net, with per-node storage and guests](../../../../../Assets/Diagrams/galaxy-cluster.svg)
 

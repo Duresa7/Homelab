@@ -1,11 +1,17 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-07
 
 This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-10-07: I repaired the duplicate exporters, unused UPS services, obsolete Grey pool import and six OpenIPMI failures. All ten affected hosts reported `running`; Grey's pool stayed ONLINE and CT 110 stayed running. [Service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md).
+
+- 2026-10-06: I rebooted every node except `grey-server` onto kernel 7.0.14-20-pve, and `security-01` and `splunk-siem` onto their waiting kernels; every guest and service came back. [Fleet reboots](../../Maintenance/Fleet%20Reboots%20-%202026-10-06.md).
+
+- 2026-10-05: I upgraded all five nodes to PVE 9.2.21 with kernel 7.0.14-20-pve installed and the node reboots pending, and updated every running Linux guest, Compose project and agent. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-10-05.md).
 
 - 2026-09-28: I expanded `ubuntu-dev` from 150 GiB to 230 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md).
 

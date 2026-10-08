@@ -1,0 +1,75 @@
+2026-10-05 11:49:18 PM EDT
+== compose docker-blue
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-blue]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-blue] => (item=docker-blue/docker-mcp-gateway)
+FAILED - RETRYING: [docker-blue]: Pull images and recreate each stack (2 retries left).
+FAILED - RETRYING: [docker-blue]: Pull images and recreate each stack (1 retries left).
+FAILED - RETRYING: [docker-blue]: Pull images and recreate each stack (0 retries left).
+[ERROR]: Task failed: Module failed: General error: container executor is unhealthy
+Origin: /home/ansible/fleet-updates/playbooks/docker-compose-update.yml:23:7
+
+21     # project so a directory that differs from the project name (immich) is
+22     # updated in place rather than started as a second project.
+23     - name: Pull images and recreate each stack
+         ^ column 7
+
+failed: [docker-blue] (item=docker-blue/executor) => {"actions": [{"id": "ghcr.io/usefulsoftwareco/executor-selfhost:latest", "status": "Pulling", "what": "image"}, {"id": "executor", "status": "Starting", "what": "container"}], "ansible_loop_var": "item", "attempts": 3, "changed": true, "cmd": "/usr/bin/docker compose --ansi never --progress json --project-directory /opt/docker/executor --project-name executor up --detach --no-color --quiet-pull --pull always --wait --wait-timeout 180 --", "containers": [{"Command": "\"bun run dist-server/serve.js\"", "CreatedAt": "2026-10-05 23:49:33 -0400 EDT", "Engine": "", "ExitCode": 0, "Health": "", "ID": "9ba03937b31f1b2c39c93a7751a81846baa555cabf73a368d6598faf67f417d8", "Image": "ghcr.io/usefulsoftwareco/executor-selfhost:latest", "Labels": {"com.docker.compose.config-hash": "ae90007c7b32af2762e0589644ed249d36189196c1d152c8d2fd0278c95c6ea8", "com.docker.compose.container-number": "1", "com.docker.compose.depends_on": "", "com.docker.compose.image": "sha256:d03ceebaef259c69996a983c21e6b0a06b67fc76b03ec01b324a61ddd82fe53b", "com.docker.compose.oneoff": "False", "com.docker.compose.project": "executor", "com.docker.compose.project.config_files": "/opt/docker/executor/docker-compose.yml", "com.docker.compose.project.working_dir": "/opt/docker/executor", "com.docker.compose.replace": "executor", "com.docker.compose.service": "executor", "com.docker.compose.version": "5.6.0", "org.opencontainers.image.description": "Single-container self-hosted Executor", "org.opencontainers.image.licenses": "MIT", "org.opencontainers.image.revision": "3890d6f5e5efd1530f0dba0fe23ada95a39caf86", "org.opencontainers.image.source": "https://github.com/UsefulSoftwareCo/executor", "org.opencontainers.image.title": "Executor self-host", "org.opencontainers.image.version": "1.6.10"}, "LocalVolumes": "0", "Mounts": "/opt/docker/executor/data", "Name": "executor", "Names": ["executor"], "Networks": ["executor_default"], "Ports": "", "Project": "executor", "Publishers": [], "RunningFor": "39 seconds ago", "Service": "executor", "Size": "0B", "State": "restarting", "Status": "Restarting (1) 5 seconds ago"}], "images": [{"ContainerName": "executor", "Created": "2026-09-18T17:29:55.54105423Z", "ID": "sha256:b9e001775d3eb7d662d347c8f7054333c78c1a4fd97cb5a86dc1d1d1406093b9", "LastTagTime": "2026-10-06T03:50:11.755598951Z", "Platform": "linux/amd64", "Repository": "ghcr.io/usefulsoftwareco/executor-selfhost", "Size": 447266417, "Tag": "latest"}], "item": {"name": "executor", "project_src": "/opt/docker/executor"}, "msg": "General error: container executor is unhealthy", "rc": 1, "stderr": "{\"id\":\"Image ghcr.io/usefulsoftwareco/executor-selfhost:latest\",\"status\":\"Working\",\"text\":\"Pulling\"}\n{\"id\":\"Image ghcr.io/usefulsoftwareco/executor-selfhost:latest\",\"status\":\"Done\",\"text\":\"Pulled\"}\n{\"id\":\"Container executor\",\"status\":\"Working\",\"text\":\"Starting\"}\n{\"id\":\"Container executor\",\"status\":\"Done\",\"text\":\"Started\"}\n{\"id\":\"Container executor\",\"status\":\"Working\",\"text\":\"Waiting\"}\n{\"error\":true,\"message\":\"container executor is unhealthy\"}\n", "stderr_lines": ["{\"id\":\"Image ghcr.io/usefulsoftwareco/executor-selfhost:latest\",\"status\":\"Working\",\"text\":\"Pulling\"}", "{\"id\":\"Image ghcr.io/usefulsoftwareco/executor-selfhost:latest\",\"status\":\"Done\",\"text\":\"Pulled\"}", "{\"id\":\"Container executor\",\"status\":\"Working\",\"text\":\"Starting\"}", "{\"id\":\"Container executor\",\"status\":\"Done\",\"text\":\"Started\"}", "{\"id\":\"Container executor\",\"status\":\"Working\",\"text\":\"Waiting\"}", "{\"error\":true,\"message\":\"container executor is unhealthy\"}"], "stdout": "", "stdout_lines": []}
+changed: [docker-blue] => (item=docker-blue/meshcentral)
+changed: [docker-blue] => (item=docker-blue/rustdesk)
+
+PLAY RECAP *********************************************************************
+docker-blue                : ok=1    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
+RC=2
+2026-10-05 11:50:17 PM EDT
+== hawser updaters
+media-01 | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:23.784783496Z
+0.2.50
+alpha-prod-01 | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:26.165815565Z
+0.2.50
+monitor-01 | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:29.051288837Z
+0.2.50
+docker-network | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:29.753751566Z
+0.2.50
+docker-blue | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:29.948671146Z
+0.2.50
+security-01 | CHANGED | rc=0 >>
+ Container hawser Recreated 
+ Container hawser Starting 
+ Container hawser Started 
+Hawser update finished; refresh the environment in Dockhand.
+image=ghcr.io/finsys/hawser:latest health=healthy started=2026-10-06T03:50:35.640516831Z
+0.2.50
+RC=0
+2026-10-05 11:50:41 PM EDT

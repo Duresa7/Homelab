@@ -1,0 +1,97 @@
+{
+  "status": "completed",
+  "result": [
+    {
+      "server": "docker_main",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"docker_main\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error)'\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nNRestarts=549642\\nId=node_exporter.service\\nActiveState=active\\nSubState=running\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=inactive\\nSubState=dead\\nUnitFileState=masked\\nnode_exporter_build_info{branch=\\\"HEAD\\\",goarch=\\\"amd64\\\",goos=\\\"linux\\\",goversion=\\\"go1.23.6\\\",revision=\\\"02afa5c53c36123611533f2defea6ccd4546a9bb\\\",tags=\\\"unknown\\\",version=\\\"1.9.0\\\"} 1\\nnode_textfile_scrape_error 0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "security_01",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"security_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts\\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep -E '^(node_exporter_build_info|node_textfile_scrape_error)'\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nNRestarts=0\\nId=node_exporter.service\\nActiveState=active\\nSubState=running\\nUnitFileState=enabled\\n\\nNRestarts=0\\nId=prometheus-node-exporter.service\\nActiveState=inactive\\nSubState=dead\\nUnitFileState=masked\\nnode_exporter_build_info{branch=\\\"HEAD\\\",goarch=\\\"amd64\\\",goos=\\\"linux\\\",goversion=\\\"go1.23.6\\\",revision=\\\"02afa5c53c36123611533f2defea6ccd4546a9bb\\\",tags=\\\"unknown\\\",version=\\\"1.9.0\\\"} 1\\nnode_textfile_scrape_error 0\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "red_server",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"red_server\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show nut.target nut-driver.target nut-driver-enumerator.service nut-driver-enumerator.path nut-server.service nut-monitor.service -p Id -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nId=nut.target\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver.target\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver-enumerator.service\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-driver-enumerator.path\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-server.service\\nActiveState=inactive\\nUnitFileState=masked\\n\\nId=nut-monitor.service\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "grey_server",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"grey_server\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show 'zfs-import@hddpool\\\\x2d1.service' zfs-import@hddpool.service nut-monitor.service nut-server.service -p Id -p ActiveState -p UnitFileState\\nzpool list -o name,health\\npct status 110\\nupsc ups02@localhost ups.status 2>/dev/null\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nId=zfs-import@hddpool\\\\x2d1.service\\nActiveState=active\\nUnitFileState=enabled\\n\\nId=zfs-import@hddpool.service\\nActiveState=inactive\\nUnitFileState=disabled\\n\\nId=nut-monitor.service\\nActiveState=inactive\\nUnitFileState=masked\\n\\nId=nut-server.service\\nActiveState=active\\nUnitFileState=enabled\\nNAME         HEALTH\\nhddpool-1    ONLINE\\nstatus: running\\nOL\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "alpha_prod_01",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"alpha_prod_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "ansible_01",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:33 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "docker_blue",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"docker_blue\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "docker_network",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"docker_network\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "media_01",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"media_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:34 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    },
+    {
+      "server": "monitor_01",
+      "data": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"monitor_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\nsystemctl --failed --no-legend --plain\\nsystemctl is-system-running\\nsystemctl show openipmi.service -p ActiveState -p UnitFileState\",\n  \"stdout\": \"2026-10-07 09:25:33 PM EDT\\nrunning\\nActiveState=inactive\\nUnitFileState=masked\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    }
+  ],
+  "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+  "logs": []
+}

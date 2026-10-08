@@ -1,0 +1,145 @@
+2026-10-05 11:39:16 PM EDT
+== docker-network
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [docker-network]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [docker-network]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-network]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [docker-network]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-network]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [docker-network]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-network]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-network]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [docker-network]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [docker-network]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [docker-network]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [docker-network]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [docker-network]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [docker-network]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [docker-network]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [docker-network]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [docker-network]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [docker-network]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-network]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-network] => {
+    "msg": "docker-network: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+docker-network             : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:39:23 PM EDT
+== docker-blue
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [docker-blue]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [docker-blue]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [docker-blue]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+changed: [docker-blue]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [docker-blue]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [docker-blue]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [docker-blue]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [docker-blue]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+skipping: [docker-blue]
+
+TASK [Record the current boot ID] **********************************************
+skipping: [docker-blue]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+skipping: [docker-blue]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+skipping: [docker-blue]
+
+TASK [Wait for SSH after the reboot] *******************************************
+skipping: [docker-blue]
+
+TASK [Read the boot ID after reconnect] ****************************************
+skipping: [docker-blue]
+
+TASK [Confirm the guest completed a new boot] **********************************
+skipping: [docker-blue]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+skipping: [docker-blue]
+
+TASK [Record the successful reboot] ********************************************
+skipping: [docker-blue]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [docker-blue]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+skipping: [docker-blue]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-blue] => {
+    "msg": "docker-blue: pkg_mgr=apt changed=True reboot_required=False reboot_policy=report"
+}
+
+PLAY RECAP *********************************************************************
+docker-blue                : ok=6    changed=1    unreachable=0    failed=0    skipped=14   rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:39:31 PM EDT
+== post-state
+2026-10-05 11:39:32 PM EDT

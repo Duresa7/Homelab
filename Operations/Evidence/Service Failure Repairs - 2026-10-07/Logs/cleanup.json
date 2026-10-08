@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "result": [
+    {
+      "type": "text",
+      "text": "{\n  \"server\": \"ansible_01\",\n  \"command\": \"set -eu\\ntest \\\"$(cat /tmp/service-repair-20261007-play.exit)\\\" = 0\\nrm /tmp/service-repair-20261007-play.log /tmp/service-repair-20261007-play.exit\\ntest ! -e /tmp/service-repair-20261007-play.log\\ntest ! -e /tmp/service-repair-20261007-play.exit\\necho Temporary-play-log-and-exit-file-removed\",\n  \"stdout\": \"Temporary-play-log-and-exit-file-removed\\n\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+    }
+  ],
+  "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+  "logs": []
+}

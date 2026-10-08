@@ -1,0 +1,16 @@
+{
+  "status": "completed",
+  "result": {
+    "ok": true,
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"server\": \"monitor_01\",\n  \"command\": \"TZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\\npython3 - <<'PY'\\nimport json,urllib.request\\nbase='http://127.0.0.1:9090/api/v1/'\\nt=json.load(urllib.request.urlopen(base+'targets'))['data']['activeTargets']\\na=json.load(urllib.request.urlopen(base+'alerts'))['data']['alerts']\\nprint(json.dumps({'targets':len(t),'up':sum(x['health']=='up' for x in t),'firing_alerts':sum(x['state']=='firing' for x in a)}))\\nPY\\ncurl -fsS --max-time 10 http://127.0.0.1:3000/api/health\",\n  \"stdout\": \"2026-10-07 09:25:47 PM EDT\\n{\\\"targets\\\": 50, \\\"up\\\": 50, \\\"firing_alerts\\\": 0}\\n{\\n  \\\"database\\\": \\\"ok\\\",\\n  \\\"version\\\": \\\"13.2.3\\\",\\n  \\\"commit\\\": \\\"90ffed056f0884267356c12a0eeb72a022af53f1\\\"\\n}\",\n  \"stderr\": \"\",\n  \"code\": 0,\n  \"success\": true\n}"
+        }
+      ]
+    }
+  },
+  "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute",
+  "logs": []
+}

@@ -1,15 +1,15 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-05
 
 I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
 
 | Item | Value |
 |---|---|
-| Dockhand | 1.0.48 (`fnsys/dockhand:v1.0.48`, pinned by digest in the hub Compose file), read live on 2026-09-24 |
+| Dockhand | 1.0.51 (`fnsys/dockhand:v1.0.51`, pinned by digest in the hub Compose file), updated and read live on 2026-10-05 |
 | Hub | `docker-main` (CT 110, `192.168.40.35:3003`), local Docker socket |
-| Agents | Hawser Edge on six hosts: 0.2.48 on five, 0.2.49 on `alpha-prod-01`, read live on 2026-09-24 |
+| Agents | Hawser Edge 0.2.50 on all six hosts, updated through the six updater helpers and read live on 2026-10-05 |
 | Environments | Seven; `app-01` and Coolify are excluded |
 | Compose projects | 42 imported definitions, counted on 2026-09-16 |
 | Private registry | `forgejo.alphasecunited.com/homelab-images/<image>:stable` |

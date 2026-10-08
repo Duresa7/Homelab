@@ -1,0 +1,11 @@
+{
+  "status": "completed",
+  "result": [
+    {
+      "type": "text",
+      "text": "🔐 Sudo command executed\nServer: security_01\nCommand: sudo -S -k -p '' sh -c 'python3 - <<'\\''PY'\\''\nimport json,datetime\ncutoff=datetime.datetime(2026,10,8,1,19,tzinfo=datetime.timezone.utc)\ntotal=0\nexporter=0\nlatest=None\nwith open('\\''/var/ossec/logs/alerts/alerts.json'\\'') as f:\n    for line in f:\n        try:\n            a=json.loads(line)\n            t=datetime.datetime.fromisoformat(a['\\''timestamp'\\''])\n        except (ValueError,KeyError):\n            continue\n        if t<cutoff: continue\n        total+=1\n        latest=max(latest,t) if latest else t\n        if a.get('\\''agent'\\'',{}).get('\\''name'\\'')=='\\''docker-main'\\'' and '\\''node_exporter'\\'' in a.get('\\''full_log'\\'','\\'''\\''):\n            exporter+=1\nprint(json.dumps({'\\''window_start'\\'':'\\''2026-10-07 9:19 PM EDT'\\'','\\''all_alerts'\\'':total,'\\''docker_main_node_exporter_alerts'\\'':exporter,'\\''latest_alert_utc'\\'':latest.isoformat() if latest else None}))\nPY'\nExit code: 0\n\nOutput:\n{\"window_start\": \"2026-10-07 9:19 PM EDT\", \"all_alerts\": 112, \"docker_main_node_exporter_alerts\": 0, \"latest_alert_utc\": \"2026-10-07T21:22:12.226000-04:00\"}\n"
+    }
+  ],
+  "toolName": "ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_execute_sudo",
+  "logs": []
+}

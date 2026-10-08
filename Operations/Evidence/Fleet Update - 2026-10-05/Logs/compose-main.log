@@ -1,0 +1,109 @@
+2026-10-05 11:41:05 PM EDT
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [monitor-01]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [monitor-01] => (item=monitor-01/monitoring)
+ok: [monitor-01] => (item=monitor-01/peanut)
+changed: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+changed: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+changed: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+changed: [docker-main] => (item=docker-main/bookorbit)
+changed: [media-01] => (item=media-01/media-stack)
+changed: [docker-main] => (item=docker-main/cli-proxy-api)
+ok: [docker-main] => (item=docker-main/deploy)
+changed: [docker-main] => (item=docker-main/dockhand)
+changed: [docker-main] => (item=docker-main/forgejo)
+changed: [docker-main] => (item=docker-main/homarr)
+changed: [docker-main] => (item=docker-main/immich)
+changed: [docker-main] => (item=docker-main/ollama)
+changed: [docker-main] => (item=docker-main/sure)
+
+TASK [Report what changed per stack] *******************************************
+ok: [media-01] => (item=media-01/media-stack) => {
+    "msg": "media-01/media-stack: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent) => {
+    "msg": "alpha-prod-01/playit-agent: changed=True"
+}
+ok: [docker-main] => (item=docker-main/bookorbit) => {
+    "msg": "docker-main/bookorbit: changed=True"
+}
+ok: [monitor-01] => (item=monitor-01/monitoring) => {
+    "msg": "monitor-01/monitoring: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02) => {
+    "msg": "alpha-prod-01/teamspeak-02: changed=True"
+}
+ok: [docker-main] => (item=docker-main/cli-proxy-api) => {
+    "msg": "docker-main/cli-proxy-api: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03) => {
+    "msg": "alpha-prod-01/teamspeak-03: changed=True"
+}
+ok: [docker-main] => (item=docker-main/deploy) => {
+    "msg": "docker-main/deploy: changed=False"
+}
+ok: [monitor-01] => (item=monitor-01/peanut) => {
+    "msg": "monitor-01/peanut: changed=False"
+}
+ok: [docker-main] => (item=docker-main/dockhand) => {
+    "msg": "docker-main/dockhand: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor) => {
+    "msg": "alpha-prod-01/teamspeak-monitor: changed=False"
+}
+ok: [docker-main] => (item=docker-main/forgejo) => {
+    "msg": "docker-main/forgejo: changed=True"
+}
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager) => {
+    "msg": "alpha-prod-01/ts3-manager: changed=True"
+}
+ok: [docker-main] => (item=docker-main/homarr) => {
+    "msg": "docker-main/homarr: changed=True"
+}
+ok: [docker-main] => (item=docker-main/immich) => {
+    "msg": "docker-main/immich: changed=True"
+}
+ok: [docker-main] => (item=docker-main/ollama) => {
+    "msg": "docker-main/ollama: changed=True"
+}
+ok: [docker-main] => (item=docker-main/sure) => {
+    "msg": "docker-main/sure: changed=True"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [alpha-prod-01] => (item=alpha-prod-01/playit-agent)
+ok: [media-01] => (item=media-01/media-stack)
+ok: [docker-main] => (item=docker-main/bookorbit)
+ok: [monitor-01] => (item=monitor-01/monitoring)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-02)
+ok: [docker-main] => (item=docker-main/cli-proxy-api)
+ok: [monitor-01] => (item=monitor-01/peanut)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-03)
+ok: [docker-main] => (item=docker-main/deploy)
+ok: [alpha-prod-01] => (item=alpha-prod-01/teamspeak-monitor)
+ok: [docker-main] => (item=docker-main/dockhand)
+ok: [alpha-prod-01] => (item=alpha-prod-01/ts3-manager)
+ok: [docker-main] => (item=docker-main/forgejo)
+ok: [docker-main] => (item=docker-main/homarr)
+ok: [docker-main] => (item=docker-main/immich)
+ok: [docker-main] => (item=docker-main/ollama)
+ok: [docker-main] => (item=docker-main/sure)
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+docker-main                : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+media-01                   : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+monitor-01                 : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:44:44 PM EDT

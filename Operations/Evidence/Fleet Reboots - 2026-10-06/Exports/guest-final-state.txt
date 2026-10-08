@@ -1,0 +1,11 @@
+alpha-prod-01 kernel=6.12.111+deb13-amd64 up=30 minutes rebootflag=no failed=openipmi.service, wazuh=active
+ansible-01 kernel=7.0.14-20-pve up=27 minutes rebootflag=no failed=openipmi.service, wazuh=active
+app-01 kernel=6.12.111+deb13-amd64 up=30 minutes rebootflag=no failed= wazuh=active
+docker-blue kernel=7.0.14-20-pve up=27 minutes rebootflag=no failed=openipmi.service, wazuh=active
+docker-main kernel=7.0.14-8-pve up=4 weeks, 3 days, 12 hours, 18 minutes rebootflag=no failed= wazuh=active
+docker-network kernel=7.0.14-20-pve up=27 minutes rebootflag=no failed=openipmi.service, wazuh=active
+edge-01 kernel=6.12.111+deb13-amd64 up=30 minutes rebootflag=no failed= wazuh=active
+media-01 kernel=7.0.14-20-pve up=33 minutes rebootflag=no failed=openipmi.service, wazuh=active
+monitor-01 kernel=7.0.14-20-pve up=27 minutes rebootflag=no failed=openipmi.service, wazuh=active
+security-01 kernel=6.8.0-146-generic up=25 minutes rebootflag=no failed=prometheus-node-exporter.service, wazuh=inactive
+splunk-siem kernel=6.12.0-211.61.1.el10_2.x86_64 up=18 minutes rebootflag=no failed= wazuh=inactive

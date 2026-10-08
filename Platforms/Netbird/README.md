@@ -1,19 +1,19 @@
 # NetBird
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-07
 
 NetBird is my self-hosted WireGuard mesh. The control plane runs on the `docker-network` LXC beside Nginx Proxy Manager, and the dashboard is published at `https://netbird.alphasecunited.com` through NPM. Peers reach only Access-A (VLAN 85) and get no DNS from NetBird. The other remote path into the lab is the UniFi `Management Access` WireGuard server; both are described in [Access Paths](../../Architecture/Access-Paths.md).
 
 ## Current State
 
-Versions read back on 2026-09-24; routing and DNS read from the management store on 2026-09-04.
+Versions read back on 2026-10-05 (previously 2026-09-24); routing and DNS read from the management store on 2026-09-04.
 
 | Item | Current value |
 |---|---|
 | Compute | Galaxy CT 107 `docker-network`, `192.168.85.2/24`, VLAN 85 |
 | Containers | `netbird-server` (`netbirdio/netbird-server:latest`, which logs "Starting combined NetBird server") and `netbird-dashboard` (`netbirdio/dashboard:latest`). There is no separate signal or relay container |
-| NetBird release | Management server 0.79.0 (startup log, container started 3:00 AM on 2026-09-19); dashboard v2.93.0 (image label) |
+| NetBird release | Management server 0.80.0 (startup log, container recreated 2026-10-05); dashboard v2.94.0 (image label) |
 | Live path | `/opt/docker/netbird` |
 | Direct bindings | Dashboard `127.0.0.1:8080`; server `127.0.0.1:8081`; STUN `3478/udp` |
 | Live URL | `https://netbird.alphasecunited.com`, NPM proxy host 1 |
@@ -24,7 +24,7 @@ Versions read back on 2026-09-24; routing and DNS read from the management store
 | Overlay DNS | Domain `netbird.selfhosted`. No nameserver groups, zones or records, so a remote peer reaches NPM by address but cannot resolve the `alphasecunited.com` names |
 | VPN path | Validated 2026-07-12: a remote peer reached Access-A through the overlay (`ip route ... dev wt0`, HTTPS `200`) |
 
-Both images track `latest`. The 0.78.1 to 0.79.0 and 2.92.0 to 2.93.0 moves have no change record; the container started at 3:00 AM on 2026-09-19, the time Dockhand's daily update runs.
+Both images track `latest`. The 2026-10-05 fleet Compose run moved them to 0.80.0 and 2.94.0 ([fleet update](../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md)). The 0.78.1 to 0.79.0 and 2.92.0 to 2.93.0 moves have no change record; the container started at 3:00 AM on 2026-09-19, the time Dockhand's daily update runs.
 
 ## Changes
 

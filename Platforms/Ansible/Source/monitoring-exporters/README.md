@@ -1,7 +1,7 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-07
 
 I run three playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on 8 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts. All use the same `ansible` account except for `db-13-dev` and `grey-server`, the same key, and the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope and single-host templates for every playbook.
 
@@ -33,7 +33,9 @@ The `prometheus-node-exporter-collectors` package is present on the package-mana
 
 The three Grafana update rules read the package-update and reboot metrics from node_exporter textfiles: Debian's collectors package writes `apt.prom` from `apt_info.py` on a timer, and `splunk-siem` on Rocky gets [dnf-updates-textfile.sh](playbooks/files/dnf-updates-textfile.sh) on a 15-minute timer instead, writing counts by repository, a security count, a check timestamp and a reboot flag derived from the running kernel differing from the newest installed one. Every host in the group gets a systemd drop-in that adds `--collector.textfile.directory=/var/lib/prometheus/node-exporter` to the upstream unit. The collectors package is installed with `install_recommends: false`, because its Recommends pull in `ipmitool` and `openipmi`, and a failing `openipmi.service` on four Lenovo nodes with no management controller is how I learned that.
 
-The play verifies itself by scraping each host and asserting `node_textfile_scrape_error 0`, a package-cache timestamp, and `node_reboot_required`, plus a SMART and an NVMe row on bare metal. It asserts on the timestamp rather than on `apt_upgrades_pending`, because a fully patched host emits no pending rows and `security-01` failed the first version for being up to date.
+Debian 12 and Ubuntu 24.04 also make the collectors package depend on the distro exporter. On 2026-10-07 I corrected the play to suppress package-install service startup, stop and mask that duplicate unit when present, and keep `node_exporter.service` enabled and running. The packages stay installed for their collector scripts. The mask prevents a later boot or package update from putting the second listener back on port 9100.
+
+The play verifies the upstream service is active with an unchanged restart counter over ten seconds and that the distro exporter is inactive. It also scrapes each host and asserts `node_textfile_scrape_error 0`, a package-cache timestamp, and `node_reboot_required`, plus a SMART and an NVMe row on bare metal. It asserts on the timestamp rather than on `apt_upgrades_pending`, because a fully patched host emits no pending rows and `security-01` failed the first version for being up to date. The repair and live validation are in the [service failure repair record](../../../../Operations/Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md).
 
 I retired WUD on 2026-09-27 and removed its playbook, inventory group and Semaphore manifest entries from this repository and the controller. Dockhand handles image checks and updates. [Retirement record](../../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 

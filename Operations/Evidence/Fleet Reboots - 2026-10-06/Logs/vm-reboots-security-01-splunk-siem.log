@@ -1,0 +1,180 @@
+2026-10-06 12:36:07 AM EDT
+== security-01
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [security-01]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [security-01]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [security-01]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+ok: [security-01]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+skipping: [security-01]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+ok: [security-01]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+skipping: [security-01]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [security-01]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+ok: [security-01]
+
+TASK [Record the current boot ID] **********************************************
+ok: [security-01]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+changed: [security-01]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+ok: [security-01 -> localhost]
+
+TASK [Wait for SSH after the reboot] *******************************************
+ok: [security-01]
+
+TASK [Read the boot ID after reconnect] ****************************************
+ok: [security-01]
+
+TASK [Confirm the guest completed a new boot] **********************************
+ok: [security-01]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (29 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (28 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (27 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (26 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (25 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (24 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (23 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (22 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (21 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (20 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (19 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (18 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (17 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (16 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (15 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (14 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (13 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (12 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (11 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (10 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (9 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (8 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (7 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (6 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (5 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (4 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (3 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (2 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (1 retries left).
+FAILED - RETRYING: [security-01]: Wait for systemd and startup health checks to settle (0 retries left).
+[ERROR]: Task failed: Module failed: The command exited with a non-zero return code.
+Origin: /home/ansible/fleet-updates/playbooks/os-update.yml:197:11
+
+195             quiet: true
+196
+197         - name: Wait for systemd and startup health checks to settle
+              ^ column 11
+
+fatal: [security-01]: FAILED! => {"attempts": 30, "changed": false, "changed_when_result": false, "cmd": ["systemctl", "is-system-running"], "delta": "0:00:00.005402", "end": "2026-10-06 00:42:52.191642", "msg": "The command exited with a non-zero return code.", "rc": 1, "start": "2026-10-06 00:42:52.186240", "stderr": "", "stderr_lines": [], "stdout": "degraded", "stdout_lines": ["degraded"]}
+
+PLAY RECAP *********************************************************************
+security-01                : ok=12   changed=1    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0   
+
+RC=2
+2026-10-06 12:42:52 AM EDT
+== splunk-siem
+
+PLAY [Update OS packages across the Linux fleet] *******************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [splunk-siem]
+
+TASK [Confirm a local controller run is on ansible-01] *************************
+skipping: [splunk-siem]
+
+TASK [Confirm a supported package manager is present] **************************
+ok: [splunk-siem]
+
+TASK [Update apt cache and upgrade packages (Debian and Ubuntu)] ***************
+skipping: [splunk-siem]
+
+TASK [Upgrade all packages (Rocky and other RHEL family)] **********************
+ok: [splunk-siem]
+
+TASK [Check for a pending reboot (Debian family)] ******************************
+skipping: [splunk-siem]
+
+TASK [Check for a pending reboot (RHEL family)] ********************************
+ok: [splunk-siem]
+
+TASK [Record whether a reboot is required] *************************************
+ok: [splunk-siem]
+
+TASK [Refuse an automatic reboot through a local connection] *******************
+ok: [splunk-siem]
+
+TASK [Record the current boot ID] **********************************************
+ok: [splunk-siem]
+
+TASK [Schedule the reboot outside the SSH session] *****************************
+changed: [splunk-siem]
+
+TASK [Wait for the guest to stop answering on SSH] *****************************
+ok: [splunk-siem -> localhost]
+
+TASK [Wait for SSH after the reboot] *******************************************
+ok: [splunk-siem]
+
+TASK [Read the boot ID after reconnect] ****************************************
+ok: [splunk-siem]
+
+TASK [Confirm the guest completed a new boot] **********************************
+ok: [splunk-siem]
+
+TASK [Wait for systemd and startup health checks to settle] ********************
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (29 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (28 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (27 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (26 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (25 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (24 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (23 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (22 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (21 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (20 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (19 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (18 retries left).
+FAILED - RETRYING: [splunk-siem]: Wait for systemd and startup health checks to settle (17 retries left).
+ok: [splunk-siem]
+
+TASK [Record the successful reboot] ********************************************
+ok: [splunk-siem]
+
+TASK [Report a pending automatic reboot in check mode] *************************
+skipping: [splunk-siem]
+
+TASK [Clear the pending-reboot state after a successful reboot] ****************
+ok: [splunk-siem]
+
+TASK [Report the per-host result] **********************************************
+ok: [splunk-siem] => {
+    "msg": "splunk-siem: pkg_mgr=dnf changed=False reboot_required=False reboot_policy=auto"
+}
+
+PLAY RECAP *********************************************************************
+splunk-siem                : ok=16   changed=1    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0   
+
+RC=0
+2026-10-06 12:46:26 AM EDT

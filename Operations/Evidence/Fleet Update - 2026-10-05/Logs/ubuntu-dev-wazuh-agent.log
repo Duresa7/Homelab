@@ -1,0 +1,72 @@
+== wazuh-agent 4.14.8-1 on ubuntu-dev
+2026-10-05 11:43:04 PM EDT
+Canceled hold on wazuh-agent.
+Preparing to unpack …/wazuh-agent_4.14.8-1_amd64.deb…
+Unpacking wazuh-agent (4.14.8-1) over (4.14.6-1)…
+Setting up wazuh-agent (4.14.8-1)…
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+wazuh-agent set on hold.
+Warning: The unit file, source configuration file or drop-ins of wazuh-agent.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+Job for wazuh-agent.service failed because the control process exited with error code.
+See "systemctl status wazuh-agent.service" and "journalctl -xeu wazuh-agent.service" for details.
+failed
+4.14.8-1
+wazuh-agent
+0
+total 28
+drwxr-xr-x 3 root root  4096 2026-10-05 23:43 .
+drwxr-xr-x 4 root root  4096 2026-10-05 23:43 ..
+-rw-r----- 1 root root    84 2026-10-05 23:43 client.keys
+drwxr-xr-x 2 root root  4096 2026-10-05 23:43 group
+-rw-r----- 1 root wazuh  320 2026-06-25 12:57 local_internal_options.conf
+-rw-rw---- 1 root wazuh 6052 2026-08-13 22:05 ossec.conf
+-rw-r--r-- 1 root root     0 2026-10-05 23:43 wazuh.restart
+/usr/bin/lsb_release
+==== configure
+Setting up wazuh-agent (4.14.8-1)…
+
+Configuration file «/etc/systemd/system/wazuh-agent.service»
+ ==> Deleted (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** wazuh-agent.service (Y/I/N/O/D/Z) [default=N] ? dpkg: error processing package wazuh-agent (--configure):
+ end of file on stdin at conffile prompt
+Errors were encountered while processing:
+ wazuh-agent
+configure RC=0
+hU  wazuh-agent    4.14.8-1     amd64        Wazuh agent
+10:      <address>MANAGER_IP</address>
+0 /var/ossec/etc/client.keys
+Job for wazuh-agent.service failed because the control process exited with error code.
+See "systemctl status wazuh-agent.service" and "journalctl -xeu wazuh-agent.service" for details.
+failed
+2026/10/05 23:43:07 wazuh-modulesd:syscollector: INFO: Module finished.
+2026/10/05 23:43:09 wazuh-agentd: ERROR: (4112): Invalid server address found: 'MANAGER_IP'
+2026/10/05 23:43:09 wazuh-agentd: ERROR: (1215): No client configured. Exiting.
+2026/10/05 23:46:35 wazuh-agentd: ERROR: (4112): Invalid server address found: 'MANAGER_IP'
+2026/10/05 23:46:35 wazuh-agentd: ERROR: (1215): No client configured. Exiting.
+0
+Configuration file «/etc/systemd/system/wazuh-agent.service»
+ ==> Deleted (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+ ==> Using current old file as you requested.
+configure RC=0
+hi  wazuh-agent    4.14.8-1     amd64        Wazuh agent
+10:      <address>192.168.72.2</address>
+84 /var/ossec/etc/client.keys
+ls: cannot access '/var/ossec/packages_files/agent_config_files/': No such file or directory
+active
+active
+WAZUH_VERSION="v4.14.8"
+WAZUH_REVISION="rc2"
+2026/10/05 23:47:49 sca: INFO: Skipping policy '/var/ossec/ruleset/sca/cis_ubuntu22-04.yml': 'Check Ubuntu version.'
+2026/10/05 23:47:49 sca: INFO: Security Configuration Assessment scan finished. Duration: 0 seconds.
+2026/10/05 23:47:50 wazuh-modulesd:syscollector: INFO: Evaluation finished.
+2026/10/05 23:47:51 wazuh-logcollector: INFO: (9203): Monitoring journal entries.
+1
+wazuh-agent

@@ -1,7 +1,7 @@
 # Ollama
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-05
 
 I run Ollama on `docker-main` with Grey's GTX 1080 Ti. The API is available directly on the internal Docker host at `http://192.168.40.35:11434`; I did not put it behind Nginx Proxy Manager or a WAN port forward because the API has no built-in authentication. The same Compose project runs an authenticated Open WebUI frontend at `https://openwebui.alphasecunited.com`, with direct recovery access on `http://192.168.40.35:3002`.
 
@@ -13,7 +13,7 @@ I run Ollama on `docker-main` with Grey's GTX 1080 Ti. The API is available dire
 | Host | Galaxy LXC 110 `docker-main`, 4 vCPU, 16 GiB memory, 4 GiB swap |
 | Live project | `/opt/docker/ollama` |
 | Containers | `ollama` and `open-webui`, restart policy `unless-stopped` |
-| Image | `ollama/ollama:0.33.3` (confirmed by `/api/version` on 2026-09-24), pinned to digest `sha256:32931b46719f673c05fdbaa81ccb26da18ea4a1c57590a754874ab28ba269eb2` |
+| Image | `ollama/ollama:0.35.1` (confirmed by `/api/version` on 2026-10-05), pinned to digest `sha256:292ee7945dfc3d5840a181f3ab86fedb1e66703e02c8af98b50f4da56b7e278c`; moved from 0.33.3 on 2026-10-05 |
 | Model | `qwen3.5:2b`, model ID `324d162be6ca`, 2.7 GB on disk; Qwen 3.5 family, 2.3B parameters, Q8_0 |
 | GPU | NVIDIA GeForce GTX 1080 Ti, 11,264 MiB, compute capability 6.1 |
 | Driver | Proprietary NVIDIA 580.159.03 on `grey-server`; matching user space inside `docker-main` |

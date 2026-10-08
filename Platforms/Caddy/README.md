@@ -1,7 +1,7 @@
 # Caddy
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-05
 
 I run Caddy as the edge reverse proxy on edge-01. It gives the Cloudflare Tunnel a single wildcard origin and forwards every `*.alphsec.com` request to the Coolify proxy on app-01. It's the external counterpart to Nginx Proxy Manager, which handles internal services. Public services live under `alphsec.com`; internal HTTPS names live under `alphasecunited.com`. Caddy only sees traffic that already arrived through the tunnel.
 
@@ -15,7 +15,7 @@ I run Caddy as the edge reverse proxy on edge-01. It gives the Cloudflare Tunnel
 | Config | `/etc/caddy/Caddyfile`, root-owned, mode 644 |
 | Listener | HTTP on port 80 only; `auto_https off` |
 | Upstream | `192.168.80.10:80`, the Coolify Traefik proxy |
-| Co-located | cloudflared 2026.8.3, the tunnel connector, unit active on 2026-09-25 |
+| Co-located | cloudflared 2026.10.0, the tunnel connector, restarted onto that build on 2026-10-05 with four connections registered |
 
 TLS terminates at Cloudflare's edge, so Caddy serves plain HTTP on port 80 and requests no certificates. On 2026-08-04 two timestamped copies sat beside the live file (`Caddyfile.bak.20260512-112939` and `Caddyfile.bak.20260512-112953`). My rule is that a host keeps no config copies once the new file works, so they are due for removal; I have not checked since whether they are still there.
 

@@ -1,7 +1,7 @@
 # SSH Identity Automation Runbook
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-07
 
 I run these commands on `ansible-01` as the `ansible` account from `/home/ansible/ssh-key-automation`.
 
@@ -29,7 +29,7 @@ systemctl is-active semaphore
 curl -fsS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:3000/
 ```
 
-The expected release baseline is Ansible 14.2.0, ansible-core 2.21.2, and Semaphore 2.18.27. The service checks should return `enabled`, `active`, and HTTP `200`.
+The expected release baseline is Ansible 14.2.0, ansible-core 2.21.2, and Semaphore 2.19.12 (2.18.27 until the 2026-10-05 fleet update). The service checks should return `enabled`, `active`, and HTTP `200`.
 
 The state checker compares the live database with the pre-upgrade copy and reports structural differences:
 

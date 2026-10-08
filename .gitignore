@@ -826,3 +826,54 @@ admin.env
 !/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/splunk-siem.txt
 !/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/monitoring.txt
 !/Operations/Evidence/OS Package Updates - 2026-10-07/Logs/cleanup.txt
+
+# Reviewed fleet maintenance and service-repair captures, 2026-10-07
+!/Operations/Evidence/Fleet Update - 2026-10-05/
+/Operations/Evidence/Fleet Update - 2026-10-05/*
+!/Operations/Evidence/Fleet Update - 2026-10-05/Exports/
+/Operations/Evidence/Fleet Update - 2026-10-05/Exports/*
+!/Operations/Evidence/Fleet Update - 2026-10-05/Exports/guest-baseline-attempt.txt
+!/Operations/Evidence/Fleet Update - 2026-10-05/Exports/guest-post-state.txt
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/
+/Operations/Evidence/Fleet Update - 2026-10-05/Logs/*
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/blue-hawser.err
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/blue-hawser.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/blue-server-pve-upgrade.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/compose-main.err
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/compose-main.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/green-server-pve-upgrade.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/grey-server-pve-upgrade.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/guest-docker-network-blue.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/guest-main-batch.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/network-cadvisor.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/purple-server-pve-upgrade.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/red-server-pve-upgrade.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/ubuntu-dev-package-update.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/ubuntu-dev-wazuh-agent.log
+!/Operations/Evidence/Fleet Update - 2026-10-05/Logs/wazuh-fleet.log
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/
+/Operations/Evidence/Fleet Reboots - 2026-10-06/*
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Exports/
+/Operations/Evidence/Fleet Reboots - 2026-10-06/Exports/*
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Exports/guest-final-state.txt
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Exports/node-final-state.txt
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/
+/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/*
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/node-green.log
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/node-red-purple-blue.log
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/reboot-node.sh
+!/Operations/Evidence/Fleet Reboots - 2026-10-06/Logs/vm-reboots-security-01-splunk-siem.log
+!/Operations/Evidence/Service Failure Recheck - 2026-10-07/
+/Operations/Evidence/Service Failure Recheck - 2026-10-07/*
+!/Operations/Evidence/Service Failure Recheck - 2026-10-07/Logs/
+/Operations/Evidence/Service Failure Recheck - 2026-10-07/Logs/*
+!/Operations/Evidence/Service Failure Recheck - 2026-10-07/Logs/checks.json
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/
+/Operations/Evidence/Service Failure Repairs - 2026-10-07/*
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/
+/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/*
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/alert-verification.json
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/cleanup.json
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/execution.json
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/final-verification.json
+!/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/monitoring-verification.json

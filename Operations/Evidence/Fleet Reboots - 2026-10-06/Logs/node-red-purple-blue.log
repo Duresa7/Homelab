@@ -1,0 +1,24 @@
+red old_boot=c690b5bc-efea-4bb0-b72f-03fbd432e726 guests_before: media-01=running 
+scheduled 2026-10-06 12:27:47 AM EDT
+red back after 91s new_boot=26cc0347-6534-4532-acf5-d30e4b64c8f6
+kernel=7.0.14-20-pve
+active active activating active active active active 
+Quorate:          Yes Total votes:      5 Flags:            Quorate  
+failed_units=2
+red guests_after (14s): media-01=running 
+purple old_boot=5a135b82-8d90-43f2-ab47-a2e8a3dafe10 guests_before: app-01=running edge-01=running alpha-prod-01=running 
+scheduled 2026-10-06 12:30:09 AM EDT
+purple back after 95s new_boot=c2609a40-6cc3-43bf-938d-219728d355a1
+kernel=7.0.14-20-pve
+active active activating active active active active 
+Quorate:          No Total votes:      1 
+failed_units=0
+purple guests_after (14s): app-01=running edge-01=running alpha-prod-01=running 
+blue old_boot=082f96b2-3db0-41ea-9ab6-c8194bcd6b79 guests_before: ansible-01=running monitor-01=running docker-network=running docker-blue=running 
+scheduled 2026-10-06 12:33:34 AM EDT
+blue back after 102s new_boot=579f4266-5471-48bd-8356-6cc80eeb6f41
+kernel=7.0.14-20-pve
+active active active active active active active 
+Quorate:          Yes Total votes:      5 Flags:            Quorate  
+failed_units=0
+blue guests_after (6s): ansible-01=running monitor-01=running docker-network=running docker-blue=running 

@@ -1,0 +1,725 @@
+2026-10-05 11:56:02 PM EDT
+== wazuh agent deploy 4.14.8-1
+
+PLAY [Deploy pinned Wazuh agents] **********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [docker-network]
+ok: [docker-blue]
+ok: [monitor-01]
+
+TASK [Require a supported Debian-family endpoint] ******************************
+ok: [monitor-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [docker-network] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [docker-blue] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [Verify Wazuh event port reachability] ************************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Verify Wazuh enrollment port reachability] *******************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Read pre-install package facts] ******************************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Decide whether the pinned agent needs installation] **********************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Install repository prerequisites] ****************************************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Download the Wazuh repository signing key] *******************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Check the dearmored Wazuh signing key] ***********************************
+ok: [monitor-01]
+ok: [docker-blue]
+ok: [docker-network]
+
+TASK [Dearmor the Wazuh repository signing key] ********************************
+skipping: [monitor-01]
+skipping: [docker-network]
+skipping: [docker-blue]
+
+TASK [Enable the Wazuh repository for the pinned install] **********************
+changed: [docker-blue]
+changed: [docker-network]
+changed: [monitor-01]
+
+TASK [Install the pinned Wazuh package] ****************************************
+changed: [docker-network]
+changed: [monitor-01]
+changed: [docker-blue]
+
+TASK [Hold the Wazuh agent at the manager-matched version] *********************
+changed: [docker-network]
+changed: [docker-blue]
+changed: [monitor-01]
+
+TASK [Disable the Wazuh repository after installation] *************************
+changed: [docker-network]
+changed: [monitor-01]
+changed: [docker-blue]
+
+TASK [Refresh APT metadata after disabling the Wazuh repository] ***************
+changed: [monitor-01]
+changed: [docker-network]
+changed: [docker-blue]
+
+TASK [Enable and start the Wazuh agent] ****************************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Wait for the endpoint enrollment key] ************************************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Wait for the persistent Wazuh event session] *****************************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Read installed package facts] ********************************************
+ok: [docker-network]
+ok: [monitor-01]
+ok: [docker-blue]
+
+TASK [Wait for the Wazuh agent service to become active] ***********************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Read service facts] ******************************************************
+ok: [monitor-01]
+ok: [docker-network]
+ok: [docker-blue]
+
+TASK [Verify the installed agent] **********************************************
+ok: [monitor-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [docker-network] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [docker-blue] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY [Deploy pinned Wazuh agents] **********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [ansible-01]
+ok: [media-01]
+ok: [alpha-prod-01]
+
+TASK [Require a supported Debian-family endpoint] ******************************
+ok: [alpha-prod-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [media-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [ansible-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [Verify Wazuh event port reachability] ************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Verify Wazuh enrollment port reachability] *******************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Read pre-install package facts] ******************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Decide whether the pinned agent needs installation] **********************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [ansible-01]
+
+TASK [Install repository prerequisites] ****************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Download the Wazuh repository signing key] *******************************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [ansible-01]
+
+TASK [Check the dearmored Wazuh signing key] ***********************************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [ansible-01]
+
+TASK [Dearmor the Wazuh repository signing key] ********************************
+skipping: [alpha-prod-01]
+skipping: [media-01]
+skipping: [ansible-01]
+
+TASK [Enable the Wazuh repository for the pinned install] **********************
+changed: [media-01]
+changed: [alpha-prod-01]
+changed: [ansible-01]
+
+TASK [Install the pinned Wazuh package] ****************************************
+changed: [ansible-01]
+changed: [media-01]
+changed: [alpha-prod-01]
+
+TASK [Hold the Wazuh agent at the manager-matched version] *********************
+changed: [alpha-prod-01]
+changed: [media-01]
+changed: [ansible-01]
+
+TASK [Disable the Wazuh repository after installation] *************************
+changed: [media-01]
+changed: [alpha-prod-01]
+changed: [ansible-01]
+
+TASK [Refresh APT metadata after disabling the Wazuh repository] ***************
+changed: [media-01]
+changed: [alpha-prod-01]
+changed: [ansible-01]
+
+TASK [Enable and start the Wazuh agent] ****************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Wait for the endpoint enrollment key] ************************************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [ansible-01]
+
+TASK [Wait for the persistent Wazuh event session] *****************************
+ok: [alpha-prod-01]
+ok: [media-01]
+ok: [ansible-01]
+
+TASK [Read installed package facts] ********************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Wait for the Wazuh agent service to become active] ***********************
+ok: [alpha-prod-01]
+ok: [ansible-01]
+ok: [media-01]
+
+TASK [Read service facts] ******************************************************
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [ansible-01]
+
+TASK [Verify the installed agent] **********************************************
+ok: [alpha-prod-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [media-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [ansible-01] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY [Deploy pinned Wazuh agents] **********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [purple-server]
+ok: [grey-server]
+ok: [docker-main]
+
+TASK [Require a supported Debian-family endpoint] ******************************
+ok: [docker-main] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [grey-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [purple-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [Verify Wazuh event port reachability] ************************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Verify Wazuh enrollment port reachability] *******************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Read pre-install package facts] ******************************************
+ok: [docker-main]
+ok: [purple-server]
+ok: [grey-server]
+
+TASK [Decide whether the pinned agent needs installation] **********************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Install repository prerequisites] ****************************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Download the Wazuh repository signing key] *******************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Check the dearmored Wazuh signing key] ***********************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Dearmor the Wazuh repository signing key] ********************************
+skipping: [docker-main]
+skipping: [grey-server]
+skipping: [purple-server]
+
+TASK [Enable the Wazuh repository for the pinned install] **********************
+changed: [docker-main]
+changed: [grey-server]
+changed: [purple-server]
+
+TASK [Install the pinned Wazuh package] ****************************************
+changed: [purple-server]
+changed: [grey-server]
+changed: [docker-main]
+
+TASK [Hold the Wazuh agent at the manager-matched version] *********************
+changed: [grey-server]
+changed: [purple-server]
+changed: [docker-main]
+
+TASK [Disable the Wazuh repository after installation] *************************
+changed: [docker-main]
+changed: [grey-server]
+changed: [purple-server]
+
+TASK [Refresh APT metadata after disabling the Wazuh repository] ***************
+changed: [purple-server]
+changed: [grey-server]
+changed: [docker-main]
+
+TASK [Enable and start the Wazuh agent] ****************************************
+ok: [docker-main]
+ok: [purple-server]
+ok: [grey-server]
+
+TASK [Wait for the endpoint enrollment key] ************************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Wait for the persistent Wazuh event session] *****************************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Read installed package facts] ********************************************
+ok: [docker-main]
+ok: [purple-server]
+ok: [grey-server]
+
+TASK [Wait for the Wazuh agent service to become active] ***********************
+ok: [docker-main]
+ok: [grey-server]
+ok: [purple-server]
+
+TASK [Read service facts] ******************************************************
+ok: [docker-main]
+ok: [purple-server]
+ok: [grey-server]
+
+TASK [Verify the installed agent] **********************************************
+ok: [docker-main] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [grey-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [purple-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY [Deploy pinned Wazuh agents] **********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Require a supported Debian-family endpoint] ******************************
+ok: [blue-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [red-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [green-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+TASK [Verify Wazuh event port reachability] ************************************
+ok: [red-server]
+ok: [green-server]
+ok: [blue-server]
+
+TASK [Verify Wazuh enrollment port reachability] *******************************
+ok: [red-server]
+ok: [blue-server]
+ok: [green-server]
+
+TASK [Read pre-install package facts] ******************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Decide whether the pinned agent needs installation] **********************
+ok: [blue-server]
+ok: [red-server]
+ok: [green-server]
+
+TASK [Install repository prerequisites] ****************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Download the Wazuh repository signing key] *******************************
+ok: [red-server]
+ok: [blue-server]
+ok: [green-server]
+
+TASK [Check the dearmored Wazuh signing key] ***********************************
+ok: [blue-server]
+ok: [red-server]
+ok: [green-server]
+
+TASK [Dearmor the Wazuh repository signing key] ********************************
+skipping: [blue-server]
+skipping: [red-server]
+skipping: [green-server]
+
+TASK [Enable the Wazuh repository for the pinned install] **********************
+changed: [red-server]
+changed: [green-server]
+changed: [blue-server]
+
+TASK [Install the pinned Wazuh package] ****************************************
+changed: [blue-server]
+changed: [green-server]
+changed: [red-server]
+
+TASK [Hold the Wazuh agent at the manager-matched version] *********************
+changed: [blue-server]
+changed: [red-server]
+changed: [green-server]
+
+TASK [Disable the Wazuh repository after installation] *************************
+changed: [red-server]
+changed: [green-server]
+changed: [blue-server]
+
+TASK [Refresh APT metadata after disabling the Wazuh repository] ***************
+changed: [green-server]
+changed: [red-server]
+changed: [blue-server]
+
+TASK [Enable and start the Wazuh agent] ****************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Wait for the endpoint enrollment key] ************************************
+ok: [blue-server]
+ok: [red-server]
+ok: [green-server]
+
+TASK [Wait for the persistent Wazuh event session] *****************************
+ok: [blue-server]
+ok: [red-server]
+ok: [green-server]
+
+TASK [Read installed package facts] ********************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Wait for the Wazuh agent service to become active] ***********************
+ok: [blue-server]
+ok: [red-server]
+ok: [green-server]
+
+TASK [Read service facts] ******************************************************
+ok: [green-server]
+ok: [red-server]
+ok: [blue-server]
+
+TASK [Verify the installed agent] **********************************************
+ok: [blue-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [red-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+ok: [green-server] => {
+    "changed": false,
+    "msg": "All assertions passed"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+ansible-01                 : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+blue-server                : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+docker-blue                : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+docker-main                : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+docker-network             : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+green-server               : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+grey-server                : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+media-01                   : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+monitor-01                 : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+purple-server              : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+red-server                 : ok=21   changed=5    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:58:45 PM EDT
+== edge-01 and app-01
+edge-01 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.13"
+    },
+    "cache_update_time": 1791259127,
+    "cache_updated": true,
+    "changed": true,
+    "stderr": "",
+    "stderr_lines": [],
+    "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nThe following packages were automatically installed and are no longer required:\n  linux-image-6.12.94+deb13-amd64 linux-image-6.12.96+deb13-amd64\nUse 'sudo apt autoremove' to remove them.\nThe following held packages will be changed:\n  wazuh-agent\nThe following packages will be upgraded:\n  wazuh-agent\n1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.\nNeed to get 13.2 MB of archives.\nAfter this operation, 536 kB disk space will be freed.\nGet:1 https://packages.wazuh.com/4.x/apt stable/main amd64 wazuh-agent amd64 4.14.8-1 [13.2 MB]\napt-listchanges: Reading changelogs...\nPreconfiguring packages ...\nFetched 13.2 MB in 1s (18.2 MB/s)\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 46500 files and directories currently installed.)\r\nPreparing to unpack .../wazuh-agent_4.14.8-1_amd64.deb ...\r\nUnpacking wazuh-agent (4.14.8-1) over (4.14.5-1) ...\r\nSetting up wazuh-agent (4.14.8-1) ...\r\n\r\nConfiguration file '/etc/systemd/system/wazuh-agent.service'\r\n ==> Deleted (by you or by a script) since installation.\r\n ==> Package distributor has shipped an updated version.\r\n ==> Keeping old config file as default.\r\n",
+    "stdout_lines": [
+        "Reading package lists...",
+        "Building dependency tree...",
+        "Reading state information...",
+        "The following packages were automatically installed and are no longer required:",
+        "  linux-image-6.12.94+deb13-amd64 linux-image-6.12.96+deb13-amd64",
+        "Use 'sudo apt autoremove' to remove them.",
+        "The following held packages will be changed:",
+        "  wazuh-agent",
+        "The following packages will be upgraded:",
+        "  wazuh-agent",
+        "1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.",
+        "Need to get 13.2 MB of archives.",
+        "After this operation, 536 kB disk space will be freed.",
+        "Get:1 https://packages.wazuh.com/4.x/apt stable/main amd64 wazuh-agent amd64 4.14.8-1 [13.2 MB]",
+        "apt-listchanges: Reading changelogs...",
+        "Preconfiguring packages ...",
+        "Fetched 13.2 MB in 1s (18.2 MB/s)",
+        "(Reading database ... ",
+        "(Reading database ... 5%",
+        "(Reading database ... 10%",
+        "(Reading database ... 15%",
+        "(Reading database ... 20%",
+        "(Reading database ... 25%",
+        "(Reading database ... 30%",
+        "(Reading database ... 35%",
+        "(Reading database ... 40%",
+        "(Reading database ... 45%",
+        "(Reading database ... 50%",
+        "(Reading database ... 55%",
+        "(Reading database ... 60%",
+        "(Reading database ... 65%",
+        "(Reading database ... 70%",
+        "(Reading database ... 75%",
+        "(Reading database ... 80%",
+        "(Reading database ... 85%",
+        "(Reading database ... 90%",
+        "(Reading database ... 95%",
+        "(Reading database ... 100%",
+        "(Reading database ... 46500 files and directories currently installed.)",
+        "Preparing to unpack .../wazuh-agent_4.14.8-1_amd64.deb ...",
+        "Unpacking wazuh-agent (4.14.8-1) over (4.14.5-1) ...",
+        "Setting up wazuh-agent (4.14.8-1) ...",
+        "",
+        "Configuration file '/etc/systemd/system/wazuh-agent.service'",
+        " ==> Deleted (by you or by a script) since installation.",
+        " ==> Package distributor has shipped an updated version.",
+        " ==> Keeping old config file as default."
+    ]
+}
+app-01 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.13"
+    },
+    "cache_update_time": 1791259127,
+    "cache_updated": true,
+    "changed": true,
+    "stderr": "",
+    "stderr_lines": [],
+    "stdout": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nThe following packages were automatically installed and are no longer required:\n  linux-image-6.12.101+deb13-amd64 linux-image-6.12.96+deb13-amd64\nUse 'sudo apt autoremove' to remove them.\nThe following held packages will be changed:\n  wazuh-agent\nThe following packages will be upgraded:\n  wazuh-agent\n1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.\nNeed to get 13.2 MB of archives.\nAfter this operation, 28.7 kB of additional disk space will be used.\nGet:1 https://packages.wazuh.com/4.x/apt stable/main amd64 wazuh-agent amd64 4.14.8-1 [13.2 MB]\napt-listchanges: Reading changelogs...\nPreconfiguring packages ...\nFetched 13.2 MB in 0s (46.7 MB/s)\n(Reading database ... \r(Reading database ... 5%\r(Reading database ... 10%\r(Reading database ... 15%\r(Reading database ... 20%\r(Reading database ... 25%\r(Reading database ... 30%\r(Reading database ... 35%\r(Reading database ... 40%\r(Reading database ... 45%\r(Reading database ... 50%\r(Reading database ... 55%\r(Reading database ... 60%\r(Reading database ... 65%\r(Reading database ... 70%\r(Reading database ... 75%\r(Reading database ... 80%\r(Reading database ... 85%\r(Reading database ... 90%\r(Reading database ... 95%\r(Reading database ... 100%\r(Reading database ... 90144 files and directories currently installed.)\r\nPreparing to unpack .../wazuh-agent_4.14.8-1_amd64.deb ...\r\nUnpacking wazuh-agent (4.14.8-1) over (4.14.6-1) ...\r\nSetting up wazuh-agent (4.14.8-1) ...\r\n\r\nConfiguration file '/etc/systemd/system/wazuh-agent.service'\r\n ==> Deleted (by you or by a script) since installation.\r\n ==> Package distributor has shipped an updated version.\r\n ==> Keeping old config file as default.\r\n",
+    "stdout_lines": [
+        "Reading package lists...",
+        "Building dependency tree...",
+        "Reading state information...",
+        "The following packages were automatically installed and are no longer required:",
+        "  linux-image-6.12.101+deb13-amd64 linux-image-6.12.96+deb13-amd64",
+        "Use 'sudo apt autoremove' to remove them.",
+        "The following held packages will be changed:",
+        "  wazuh-agent",
+        "The following packages will be upgraded:",
+        "  wazuh-agent",
+        "1 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.",
+        "Need to get 13.2 MB of archives.",
+        "After this operation, 28.7 kB of additional disk space will be used.",
+        "Get:1 https://packages.wazuh.com/4.x/apt stable/main amd64 wazuh-agent amd64 4.14.8-1 [13.2 MB]",
+        "apt-listchanges: Reading changelogs...",
+        "Preconfiguring packages ...",
+        "Fetched 13.2 MB in 0s (46.7 MB/s)",
+        "(Reading database ... ",
+        "(Reading database ... 5%",
+        "(Reading database ... 10%",
+        "(Reading database ... 15%",
+        "(Reading database ... 20%",
+        "(Reading database ... 25%",
+        "(Reading database ... 30%",
+        "(Reading database ... 35%",
+        "(Reading database ... 40%",
+        "(Reading database ... 45%",
+        "(Reading database ... 50%",
+        "(Reading database ... 55%",
+        "(Reading database ... 60%",
+        "(Reading database ... 65%",
+        "(Reading database ... 70%",
+        "(Reading database ... 75%",
+        "(Reading database ... 80%",
+        "(Reading database ... 85%",
+        "(Reading database ... 90%",
+        "(Reading database ... 95%",
+        "(Reading database ... 100%",
+        "(Reading database ... 90144 files and directories currently installed.)",
+        "Preparing to unpack .../wazuh-agent_4.14.8-1_amd64.deb ...",
+        "Unpacking wazuh-agent (4.14.8-1) over (4.14.6-1) ...",
+        "Setting up wazuh-agent (4.14.8-1) ...",
+        "",
+        "Configuration file '/etc/systemd/system/wazuh-agent.service'",
+        " ==> Deleted (by you or by a script) since installation.",
+        " ==> Package distributor has shipped an updated version.",
+        " ==> Keeping old config file as default."
+    ]
+}
+edge-01 | CHANGED => {
+    "after": "hold",
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.13"
+    },
+    "before": "install",
+    "changed": true
+}
+app-01 | CHANGED => {
+    "after": "hold",
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.13"
+    },
+    "before": "install",
+    "changed": true
+}
+app-01 | CHANGED | rc=0 >>
+active
+4.14.8-1
+wazuh-agent
+1
+edge-01 | CHANGED | rc=0 >>
+active
+4.14.8-1
+wazuh-agent
+1
+RC=0
+2026-10-05 11:59:04 PM EDT
+== manager view
+[ERROR]: Task failed: Module failed: The command exited with a non-zero return code.
+Origin: <adhoc 'shell' task>
+
+{'action': 'shell', 'args': {'_raw_params': '/var/ossec/bin/agent_control -l | grep -E "^ +ID" | sed "s/,/ |/g"; [...]
+
+security-01 | FAILED | rc=1 >>
+   ID: 000 | Name: security-01 (server) | IP: 127.0.0.1 | Active/Local
+   ID: 004 | Name: app-01 | IP: any | Pending
+   ID: 005 | Name: edge-01 | IP: any | Pending
+   ID: 006 | Name: alpha-prod-01 | IP: any | Active
+   ID: 007 | Name: docker-blue | IP: any | Active
+   ID: 008 | Name: media-01 | IP: any | Active
+   ID: 009 | Name: ansible-01 | IP: any | Active
+   ID: 010 | Name: monitor-01 | IP: any | Active
+   ID: 011 | Name: docker-network | IP: any | Active
+   ID: 020 | Name: ubuntu-dev | IP: any | Active
+   ID: 013 | Name: grey-server | IP: any | Active
+   ID: 014 | Name: purple-server | IP: any | Active
+   ID: 015 | Name: blue-server | IP: any | Active
+   ID: 016 | Name: red-server | IP: any | Active
+   ID: 017 | Name: green-server | IP: any | Active
+   ID: 021 | Name: docker-main | IP: any | Active
+14
+0The command exited with a non-zero return code.
+docker-main 4.14.8-1 wazuh-agent, active
+media-01 4.14.8-1 wazuh-agent, active
+docker-blue 4.14.8-1 wazuh-agent, active
+alpha-prod-01 4.14.8-1 wazuh-agent, active
+app-01 4.14.8-1 wazuh-agent, active
+docker-network 4.14.8-1 wazuh-agent, active
+edge-01 4.14.8-1 wazuh-agent, active
+security-01   inactive
+ansible-01 4.14.8-1 wazuh-agent, active
+splunk-siem   inactive/bin/sh: line 1: apt-mark: command not found
+monitor-01 4.14.8-1 wazuh-agent, active
+2026-10-05 11:59:08 PM EDT

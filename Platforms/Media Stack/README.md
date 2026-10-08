@@ -1,13 +1,13 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-07
 
 I run media requests, playback, release automation and VPN-isolated downloading from one Debian LXC, CT 842 `media-01` on `red-server`.
 
 ## Current State
 
-Verified on the host on 2026-09-24.
+I verified this stack on 2026-09-24 and updated the versions after the October 5 fleet pull.
 
 | Item | Value |
 | --- | --- |
@@ -24,8 +24,8 @@ Verified on the host on 2026-09-24.
 
 | Service | Version, 2026-09-24 | Purpose | LAN port |
 | --- | --- | --- | --- |
-| Jellyfin | 12.1.0 | Library and playback, Intel Quick Sync | 8096 |
-| Seerr | 3.4.1 | Requests; container still named `jellyseerr` | 5055 |
+| Jellyfin | 12.2.0 | Library and playback, Intel Quick Sync | 8096 |
+| Seerr | 3.5.0 | Requests; container still named `jellyseerr` | 5055 |
 | Sonarr | 4.0.20.3014 | Television and anime | 8989 |
 | Radarr | 6.4.4.10685 | Movies | 7878 |
 | Prowlarr | 2.6.5.5623 | Indexers | 9696 |

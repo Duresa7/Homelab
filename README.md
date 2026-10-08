@@ -1,7 +1,7 @@
 # AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-05  
 
 This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Coolify, and TeamSpeak.
 
@@ -20,14 +20,14 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 
 | Area | Current state | Checked |
 |---|---|---|
-| Cluster | Five Proxmox VE 9.2.11 nodes (grey, purple, blue, red, green), five of five votes, no shared storage, no HA resources | 2026-09-24 |
+| Cluster | Five Proxmox VE 9.2.21 nodes (grey, purple, blue, red, green), five of five votes, no shared storage, no HA resources | 2026-10-05 |
 | Guests | 18 (12 VMs, 6 LXCs) plus 3 templates; 16 running | 2026-09-24 |
 | Network | UniFi Network 10.6.106 on the Ahsoka gateway, three switches, one access point; 23 networks, 16 routed LANs in 12 zones | 2026-09-24 |
 | Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |
 | Security | Wazuh 4.14.8 with 15 active remote agents (2026-10-02); Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF (2026-09-24) | 2026-10-02 |
-| Monitoring | Prometheus 3.14.0 with 50 targets in 6 jobs, all up; Grafana 13.2.2 with 23 alert rules posting to one Discord channel | 2026-09-27 |
-| Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.79.0 for remote access | 2026-09-27 |
-| Automation | Ansible 14.2.0 and Semaphore 2.18.27 (3 projects, 23 templates); Dockhand 1.0.48 with Hawser agents on six hosts; Executor 1.6.10 in front of the SSH Manager, UniFi, Cloudflare, and Wazuh MCP servers | 2026-09-24 |
+| Monitoring | Prometheus 3.15.0 with 50 targets in 6 jobs, all up; Grafana 13.2.3 with 23 alert rules posting to one Discord channel | 2026-10-05 |
+| Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.80.0 for remote access | 2026-10-05 |
+| Automation | Ansible 14.2.0 and Semaphore 2.19.12 (3 projects, 23 templates); Dockhand 1.0.51 with Hawser 0.2.50 agents on six hosts; Executor 1.6.10 in front of the SSH Manager, UniFi, Cloudflare, and Wazuh MCP servers | 2026-10-05 |
 | Workstations | Jedi PC, my admin workstation, on Secure VLAN 50; ObiPC, a domain-joined Windows 11 PC on Secure Client VLAN 60, reachable over SSH again on 2026-09-27 after being unreachable on 2026-09-24; [physical-access exercise reviewed](Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md) | 2026-09-27 |
 
 The current guest list is in the [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md).

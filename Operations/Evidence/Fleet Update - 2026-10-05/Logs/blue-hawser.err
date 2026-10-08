@@ -1,0 +1,6 @@
+[WARNING]: Docker compose: image forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable: error from registry: unauthorized
+unauthorized
+
+[WARNING]: Docker compose: image forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable: error from registry: unauthorized
+unauthorized
+

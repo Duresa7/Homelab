@@ -1,10 +1,10 @@
 # Guest Package Updates
 
 **Created:** 2026-10-02  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-06
 
 **Implementation date:** 2026-10-02  
-**Status:** Package updates complete; reboots deferred
+**Status:** Package updates complete; five of six reboots done on 2026-10-06, `ubuntu-dev` still pending
 
 ## Scope
 
@@ -54,6 +54,8 @@ I retained the four [package-run logs](../Evidence/Guest%20Package%20Updates%20-
 At 1:42:51 AM EDT I removed the nine run files and their directory from `ansible-01`, and the three run files and their directory from `ubuntu-dev`. Both checks confirmed the directories absent and no matching transient run units remaining ([Ansible cleanup](../Evidence/Guest%20Package%20Updates%20-%202026-10-02/Exports/cleanup-ansible-01.json), [Ubuntu Dev cleanup](../Evidence/Guest%20Package%20Updates%20-%202026-10-02/Exports/cleanup-ubuntu-dev.json)). I created no snapshots or backups.
 
 ## Open state
+
+Update 2026-10-06: five of these six reboots are done; only `ubuntu-dev` still waits for its kernel. [Fleet reboots](Fleet%20Reboots%20-%202026-10-06.md).
 
 I left six VM reboots pending. The Debian guests did not create `/var/run/reboot-required`, but their installed and running kernels differ, so the missing flag does not mean a reboot is unnecessary.
 

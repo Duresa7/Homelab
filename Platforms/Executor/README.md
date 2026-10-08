@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-07
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It gives my MCP clients one endpoint in front of the SSH Manager, UniFi, Wazuh, Cloudflare and other integrations.
 
@@ -9,8 +9,8 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It give
 
 | Item | Value |
 |---|---|
-| Version | 1.6.10, read live on 2026-09-24 |
-| Upgrade to 1.6.10 | The running container was created at 3:00 AM EDT on 2026-09-19, the day after upstream published [v1.6.10](https://github.com/UsefulSoftwareCo/executor/releases/tag/v1.6.10); the earlier version, 1.6.8, is recorded on 2026-09-14 |
+| Version | 1.6.10 by image label, read live on 2026-10-05; the container was recreated that night on the 2026-09-18 build of the rolling tag, which runs as UID 65532 and needed `/opt/docker/executor/data` handed to that user. [Recreation record](Documentation/Change%20Records/Rolling%20Image%20Recreation%20-%202026-10-05.md) |
+| Upgrade to 1.6.10 | The previous container was created at 3:00 AM EDT on 2026-09-19, the day after upstream published [v1.6.10](https://github.com/UsefulSoftwareCo/executor/releases/tag/v1.6.10); the earlier version, 1.6.8, is recorded on 2026-09-14 |
 | OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:latest` (rolling); on 2026-09-21 the running digest matched the upstream `1.6.10` tag |
 | Host | `docker-blue` (CT 108, `192.168.40.39`) |
 | Internal URL | `https://mcp.alphasecunited.com`, through Nginx Proxy Manager |

@@ -1,0 +1,251 @@
+2026-10-05 11:46:57 PM EDT
+== compose docker-network
+
+PLAY [Pull images and recreate docker compose stacks] **************************
+
+TASK [Confirm compose projects are defined for this host] **********************
+ok: [docker-network]
+
+TASK [Pull images and recreate each stack] *************************************
+changed: [docker-network] => (item=docker-network/netbird)
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager)
+
+TASK [Report what changed per stack] *******************************************
+ok: [docker-network] => (item=docker-network/netbird) => {
+    "msg": "docker-network/netbird: changed=True"
+}
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager) => {
+    "msg": "docker-network/nginx-proxy-manager: changed=False"
+}
+
+TASK [Confirm every managed project settled cleanly] ***************************
+ok: [docker-network] => (item=docker-network/netbird)
+ok: [docker-network] => (item=docker-network/nginx-proxy-manager)
+
+PLAY RECAP *********************************************************************
+docker-network             : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:47:08 PM EDT
+== cadvisor
+
+PLAY [Manage cAdvisor as a compose project on the Docker hosts] ****************
+
+TASK [Gathering Facts] *********************************************************
+ok: [docker-network]
+ok: [media-01]
+ok: [docker-main]
+ok: [alpha-prod-01]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Confirm Docker is present] ***********************************************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Read the Docker storage driver] ******************************************
+ok: [docker-main]
+ok: [media-01]
+ok: [app-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [monitor-01]
+ok: [security-01]
+
+TASK [Take the compose project down] *******************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Remove any leftover container] *******************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Remove the project directory] ********************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Confirm nothing answers on the published port] ***************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Report the removal] ******************************************************
+skipping: [docker-main]
+skipping: [docker-network]
+skipping: [docker-blue]
+skipping: [media-01]
+skipping: [alpha-prod-01]
+skipping: [app-01]
+skipping: [security-01]
+skipping: [monitor-01]
+
+TASK [Confirm the chosen host port is free or already ours] ********************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Detect an existing cAdvisor container] ***********************************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Stop when the port is taken by something that is not cAdvisor] ***********
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Create the project directory] ********************************************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Write the compose file] **************************************************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-blue]
+ok: [docker-network]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Bring the project up] ****************************************************
+ok: [alpha-prod-01]
+changed: [docker-main]
+changed: [media-01]
+changed: [security-01]
+changed: [docker-network]
+changed: [monitor-01]
+changed: [docker-blue]
+changed: [app-01]
+
+TASK [Confirm cAdvisor answers on the published port] **************************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Count the named containers cAdvisor actually reports] ********************
+ok: [docker-main]
+ok: [media-01]
+ok: [docker-network]
+ok: [alpha-prod-01]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Count the containers Docker itself reports running] **********************
+ok: [docker-main]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Fail when cAdvisor registered nothing on a host that has containers] *****
+ok: [docker-main]
+ok: [docker-network]
+ok: [docker-blue]
+ok: [media-01]
+ok: [alpha-prod-01]
+ok: [app-01]
+ok: [security-01]
+ok: [monitor-01]
+
+TASK [Report the per-host result] **********************************************
+ok: [docker-main] => {
+    "msg": "docker-main: docker=29.8.2 driver=overlay2 port=9101 named_containers=18 of 18 running"
+}
+ok: [docker-network] => {
+    "msg": "docker-network: docker=29.8.2 driver=overlayfs port=9101 named_containers=5 of 5 running"
+}
+ok: [docker-blue] => {
+    "msg": "docker-blue: docker=29.8.2 driver=overlayfs port=9101 named_containers=10 of 10 running"
+}
+ok: [media-01] => {
+    "msg": "media-01: docker=29.8.2 driver=overlayfs port=9101 named_containers=10 of 10 running"
+}
+ok: [alpha-prod-01] => {
+    "msg": "alpha-prod-01: docker=29.8.2 driver=overlayfs port=9101 named_containers=7 of 7 running"
+}
+ok: [app-01] => {
+    "msg": "app-01: docker=29.8.2 driver=overlayfs port=9101 named_containers=7 of 7 running"
+}
+ok: [security-01] => {
+    "msg": "security-01: docker=29.8.2 driver=overlayfs port=9101 named_containers=3 of 3 running"
+}
+ok: [monitor-01] => {
+    "msg": "monitor-01: docker=29.8.2 driver=overlayfs port=9101 named_containers=9 of 9 running"
+}
+
+PLAY RECAP *********************************************************************
+alpha-prod-01              : ok=14   changed=0    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+app-01                     : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-blue                : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-main                : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+docker-network             : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+media-01                   : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+monitor-01                 : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+security-01                : ok=14   changed=1    unreachable=0    failed=0    skipped=5    rescued=0    ignored=0   
+
+RC=0
+2026-10-05 11:47:30 PM EDT

@@ -1,0 +1,22 @@
+docker-main | CHANGED | rc=0 >>
+boot=cd2511a5-f5c0-4b21-a3cc-48e65e47c08b kernel=7.0.14-8-pve newest= failed= rebootflag=no holds=wazuh-agent, upgradable=0 docker=app-portal=running,bookorbit-app=running,bookorbit-db=running,cadvisor=running,cli-proxy-api=running,dockhand=running,docusaurus=exited,forgejo=running,homarr=running,immich_machine_learning=running,immich_postgres=running,immich_redis=running,immich_server=running,ollama=running,open-webui=running,sure-db=running,sure-redis=running,sure-web=running,sure-worker=running,
+media-01 | CHANGED | rc=0 >>
+boot=91158afb-19af-40de-a2a7-963cac029273 kernel=7.0.14-8-pve newest= failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=cadvisor=running,flaresolverr=running,gluetun=running,hawser=running,hawser-updater=created,jellyfin=running,jellyseerr=running,prowlarr=running,qbittorrent=running,radarr=running,sonarr=running,
+docker-network | CHANGED | rc=0 >>
+boot=eafa777f-c21a-4dff-8ac7-5e302153b76d kernel=7.0.14-15-pve newest= failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=cadvisor=running,hawser=running,hawser-updater=created,netbird-dashboard=running,netbird-server=running,nginx-proxy-manager=running,
+alpha-prod-01 | CHANGED | rc=0 >>
+boot=bde04456-4338-4769-8f79-18c5fb86f39f kernel=6.12.107+deb13-amd64 newest=/boot/vmlinuz-6.12.111+deb13-amd64 failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=cadvisor=running,hawser=running,hawser-updater=created,playit-agent=running,teamspeak-monitor=running,ts3-manager=running,ts-valorant-02=running,ts-valorant-03=running,
+docker-blue | CHANGED | rc=0 >>
+boot=6b91184e-3cfc-42b7-8546-8f2fde1d4d26 kernel=7.0.14-15-pve newest= failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=cadvisor=running,docker-mcp-gateway=running,executor=running,hawser-updater=created,hawser=running,hbbr=running,hbbs=running,mcp-ssh-manager=running,mcp-unifi-network=running,meshcentral=running,ssh-manager-mcp-gateway=running,
+app-01 | CHANGED | rc=0 >>
+boot=75e9c88e-f867-4515-be45-3d6070cbfdf3 kernel=6.12.107+deb13-amd64 newest=/boot/vmlinuz-6.12.111+deb13-amd64 failed= rebootflag=no holds=wazuh-agent, upgradable=1 docker=permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+splunk-siem | CHANGED | rc=0 >>
+boot=02213b64-bfdd-42c2-90da-73eb1a82098e kernel=6.12.0-211.50.1.el10_2.x86_64 newest=/boot/vmlinuz-6.12.0-211.61.1.el10_2.x86_64 failed= rebootflag=no holds= upgradable=0 docker=none
+edge-01 | CHANGED | rc=0 >>
+boot=0585534d-cc48-464d-b885-95ae0734e4fe kernel=6.12.107+deb13-amd64 newest=/boot/vmlinuz-6.12.111+deb13-amd64 failed= rebootflag=no holds=wazuh-agent, upgradable=1 docker=none
+ansible-01 | CHANGED | rc=0 >>
+boot=c42e3e80-6529-4143-8274-ad547923a274 kernel=7.0.14-15-pve newest= failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=none
+security-01 | CHANGED | rc=0 >>
+boot=70060ebf-64a3-4dc4-acfb-318c5c80fbcd kernel=6.8.0-138-generic newest=/boot/vmlinuz-6.8.0-146-generic failed=●, rebootflag=yes holds= upgradable=0 docker=permission denied while trying to connect to the docker API at unix:///var/run/docker.sock
+monitor-01 | CHANGED | rc=0 >>
+boot=4460959e-6a55-40be-b913-e4fccd04479d kernel=7.0.14-15-pve newest= failed=●, rebootflag=no holds=wazuh-agent, upgradable=0 docker=alert-bot=running,blackbox-exporter=running,cadvisor=running,grafana=running,hawser=running,hawser-updater=created,nut-exporter=running,peanut=running,prometheus=running,pve-exporter=running,

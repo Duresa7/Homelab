@@ -1,7 +1,7 @@
 # Ansible Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-10-07
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, & verification for each issue.
 
@@ -24,3 +24,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | 2026-07-14 | <a id="2026-07-14-semaphore-cli-exportimport-limitations"></a>[Semaphore CLI export/import limitations](Semaphore%20CLI%20export-import%20limitations%20-%202026-07-14.md) |
 | 2026-07-14 | <a id="2026-07-14-semaphores-first-view-remained-an-aggregate-view"></a>[Semaphore's first view remained an aggregate view](Semaphore's%20first%20view%20remained%20an%20aggregate%20view%20-%202026-07-14.md) |
 | 2026-07-14 | <a id="2026-07-14-upstream-ansible-virtual-environment-initially-lacked-its-venv-package"></a>[Upstream Ansible virtual environment initially lacked its venv package](Upstream%20Ansible%20virtual%20environment%20initially%20lacked%20its%20venv%20package%20-%202026-07-14.md) |
+| 2026-10-07 | [OpenIPMI failed on guests without IPMI devices](OpenIPMI%20Failed%20on%20Guests%20Without%20IPMI%20Devices%20-%202026-10-07.md) |

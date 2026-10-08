@@ -1,9 +1,9 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-07
 
-I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-09-27 Prometheus 3.14.0 reported 50 targets, all up, across six jobs: `node` 17, `cadvisor` 8, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.2 holds the 23 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
+I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-10-05 Prometheus 3.15.0 reported 50 targets, all up, across six jobs: `node` 17, `cadvisor` 8, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.2 holds the 23 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
 
 The 50 targets are `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 21 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and Prometheus itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 
@@ -32,8 +32,8 @@ The [Galaxy Green baseline and monitoring record](../../Infrastructure/Compute/G
 | A host's own dashboard | `https://grafana.alphasecunited.com/d/node-<host>`, e.g. `/d/node-grey-server` |
 | Live host configuration | `/home/dkadi/monitoring/` on `monitor-01` |
 | Versioned configuration | [Configuration/](Configuration/) |
-| Versions (2026-09-24 on `monitor-01`) | Prometheus 3.14.0, Grafana 13.2.2, PeaNUT 6.0.0, blackbox_exporter 0.28.0, pve-exporter 3.10.0, cAdvisor 0.60.6, node_exporter 1.9.0; all registry-backed monitoring images except the local alert bot follow `:latest` |
-| Fleet exporter versions | node_exporter 1.9.0 on 15 of the 17 hosts, with `ubuntu-dev` on 1.10.2 and `docker-main` on 1.5.0 (2026-09-14); cAdvisor 0.60.5 on `app-01` and `alpha-prod-01` (2026-09-24) |
+| Versions (2026-10-05 on `monitor-01`) | Prometheus 3.15.0, Grafana 13.2.3, PeaNUT 6.0.0, blackbox_exporter 0.28.0, pve-exporter 3.10.1, cAdvisor 0.60.6, node_exporter 1.9.0; all registry-backed monitoring images except the local alert bot follow `:latest` |
+| Fleet exporter versions | node_exporter 1.9.0 on 16 of the 17 hosts, with `ubuntu-dev` on 1.10.2; docker-main now serves 1.9.0 after the [duplicate-exporter repair](Documentation/Troubleshooting/Duplicate%20Exporters%20Contended%20for%20Port%209100%20-%202026-10-07.md), verified 2026-10-07; cAdvisor 0.60.6 on all eight Docker hosts (2026-10-05) |
 | Retention | 15 days |
 | Scrape intervals | 15s default; 30s for cAdvisor and NUT, 60s for blackbox probes |
 
@@ -62,7 +62,7 @@ The current target set has no retired lab endpoints. The retained node-exporter
 targets use the all-interface listener expected by the automation. Prometheus has
 its administrative API disabled. All 56 targets were up on 2026-09-26. I removed the retired dashboard probe and uptime panels; its unreachable alert cleared. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
-cAdvisor follows `ghcr.io/google/cadvisor:latest`: v0.60.6 on `monitor-01` and v0.60.5 on `app-01` and `alpha-prod-01` on 2026-09-24. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
+cAdvisor follows `ghcr.io/google/cadvisor:latest`: v0.60.6 on all eight hosts since the 2026-10-05 playbook run. Its 2026-09-03 reconciliation registered all 69 running containers across the nine Docker hosts. A historical 2026-07-28 query returned 53 named containers across the eight hosts then in scope; `game-01` joined later. cAdvisor covered `docker-main` alone from 2026-07-25 to 2026-07-26, because v0.52.1 registers no containers under Docker 29's `overlayfs` driver and `docker-main` was the only Docker host still on `overlay2`. v0.60.5 handles the containerd snapshotter. See [the troubleshooting record](Documentation/Troubleshooting/cAdvisor%20Registers%20No%20Containers%20Under%20the%20Docker%2029%20overlayfs%20Driver%20-%202026-07-25.md).
 
 ## Grafana Configuration Is Versioned
 

@@ -1,0 +1,136 @@
+{
+  "capture_date": "2026-10-07",
+  "capture_time_zone": "America/New_York",
+  "purpose": "Read-only service failure recheck",
+  "checks": [
+    {
+      "server": "docker_main",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsudo -n systemctl show node_exporter.service prometheus-node-exporter.service -p Id -p LoadState -p ActiveState -p SubState -p UnitFileState -p NRestarts -p Result -p ExecMainStatus -p ActiveEnterTimestamp -p RestartUSec\nsudo -n ss -ltnp 'sport = :9100'\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep '^node_exporter_build_info'\nsudo -n systemctl --failed --no-legend --plain\nps -eo comm= | sort | uniq -c | grep -E 'apt|dpkg|ansible|unattended' || true",
+      "stdout": "2026-10-08T01:13:19Z\nRestartUSec=5s\nResult=exit-code\nNRestarts=549589\nExecMainStatus=1\nId=node_exporter.service\nLoadState=loaded\nActiveState=activating\nSubState=auto-restart\nUnitFileState=enabled\nActiveEnterTimestamp=Wed 2026-10-07 21:13:16 EDT\n\nRestartUSec=100ms\nResult=success\nNRestarts=0\nExecMainStatus=0\nId=prometheus-node-exporter.service\nLoadState=loaded\nActiveState=active\nSubState=running\nUnitFileState=enabled\nActiveEnterTimestamp=Fri 2026-09-04 12:44:28 EDT\nState  Recv-Q Send-Q Local Address:Port Peer Address:PortProcess\nLISTEN 0      4096               *:9100            *:*    users:((\"prometheus-node\",pid=116,fd=3))\nnode_exporter_build_info{branch=\"debian/sid\",goarch=\"amd64\",goos=\"linux\",goversion=\"go1.19.8\",revision=\"1.5.0-1+b6\",version=\"1.5.0\"} 1\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "security_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsudo -n systemctl show node_exporter.service prometheus-node-exporter.service -p Id -p LoadState -p ActiveState -p SubState -p UnitFileState -p NRestarts -p Result -p ExecMainStatus -p ActiveEnterTimestamp -p RestartUSec\nsudo -n ss -ltnp 'sport = :9100'\ncurl -fsS --max-time 10 http://127.0.0.1:9100/metrics | grep '^node_exporter_build_info'\nsudo -n systemctl --failed --no-legend --plain\nps -eo comm= | sort | uniq -c | grep -E 'apt|dpkg|ansible|unattended' || true",
+      "stdout": "2026-10-08T01:13:19Z\nnode_exporter_build_info{branch=\"HEAD\",goarch=\"amd64\",goos=\"linux\",goversion=\"go1.23.6\",revision=\"02afa5c53c36123611533f2defea6ccd4546a9bb\",tags=\"unknown\",version=\"1.9.0\"} 1\n      1 unattended-upgr\n",
+      "stderr": "sudo: a password is required\nsudo: a password is required\nsudo: a password is required\n",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "red_server",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nuname -r\nsystemctl --failed --no-legend --plain\nsystemctl show nut-server.service nut-monitor.service nut-driver@ups01.service nut.target nut-driver.target -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts -p Result -p Wants\nlsusb -d 051d:\nps -eo comm= | sort | uniq -c | grep -E 'apt|dpkg|ansible|unattended' || true",
+      "stdout": "2026-10-08T01:13:19Z\n7.0.14-20-pve\nnut-monitor.service loaded failed failed Network UPS Tools - power device monitor and shutdown controller\nnut-server.service  loaded failed failed Network UPS Tools - power devices information server\nResult=exit-code\nNRestarts=5\nId=nut-server.service\nWants=nut-driver.target\nActiveState=failed\nSubState=failed\nUnitFileState=disabled\n\nResult=exit-code\nNRestarts=5\nId=nut-monitor.service\nWants=nut-server.service\nActiveState=failed\nSubState=failed\nUnitFileState=disabled\n\nResult=success\nNRestarts=0\nId=nut-driver@ups01.service\nWants=systemd-udev-settle.service systemd-udev.service\nActiveState=inactive\nSubState=dead\nUnitFileState=disabled\n\nId=nut.target\nWants=nut-monitor.service nut-driver-enumerator.path nut-driver.target nut-driver-enumerator.service local-fs.target nut-server.service\nActiveState=active\nSubState=active\nUnitFileState=enabled\n\nId=nut-driver.target\nWants=\nActiveState=active\nSubState=active\nUnitFileState=enabled\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "grey_server",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nuname -r\nsystemctl --failed --no-legend --plain\nsystemctl show zfs-import@hddpool.service zfs-import@hddpool-1.service nut-server.service nut-monitor.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts -p Result\nzpool list -o name,health,alloc,free\nupsc ups02@localhost ups.status 2>/dev/null\nps -eo comm= | sort | uniq -c | grep -E 'apt|dpkg|ansible|unattended' || true",
+      "stdout": "2026-10-08T01:13:19Z\n7.0.14-8-pve\nnut-monitor.service        loaded failed failed Network UPS Tools - power device monitor and shutdown controller\nzfs-import@hddpool.service loaded failed failed Import ZFS pool hddpool\nResult=exit-code\nNRestarts=0\nId=zfs-import@hddpool.service\nActiveState=failed\nSubState=failed\nUnitFileState=enabled\n\nResult=success\nNRestarts=0\nId=zfs-import@hddpool-1.service\nActiveState=inactive\nSubState=dead\nUnitFileState=disabled\n\nResult=success\nNRestarts=0\nId=nut-server.service\nActiveState=active\nSubState=running\nUnitFileState=enabled\n\nResult=exit-code\nNRestarts=5\nId=nut-monitor.service\nActiveState=failed\nSubState=failed\nUnitFileState=disabled\nNAME         HEALTH  ALLOC   FREE\nhddpool-1    ONLINE  1.26T   567G\nOL\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "alpha_prod_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:35Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "ansible_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:34Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "docker_blue",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:35Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "docker_network",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:35Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "media_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:35Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "monitor_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl --failed --no-legend --plain\nsystemctl show openipmi.service -p ActiveState -p SubState -p UnitFileState -p Result\nif test -e /dev/ipmi0 || test -e /dev/ipmi/0 || test -e /dev/ipmidev/0; then echo ipmi_device_present; else echo no_ipmi_device; fi",
+      "stdout": "2026-10-08T01:13:34Z\nopenipmi.service loaded failed failed LSB: OpenIPMI Driver init script\nResult=exit-code\nActiveState=failed\nSubState=failed\nUnitFileState=generated\nno_ipmi_device\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "security_01",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl show node_exporter.service prometheus-node-exporter.service -p Id -p ActiveState -p SubState -p UnitFileState -p NRestarts -p Result -p RestartUSec\nsystemctl --failed --no-legend --plain\nsystemctl is-active wazuh-manager wazuh-indexer wazuh-dashboard filebeat\ndpkg-query -W -f='${Package} ${Version}\\n' prometheus-node-exporter prometheus-node-exporter-collectors\napt-cache depends prometheus-node-exporter-collectors",
+      "stdout": "2026-10-08T01:13:34Z\nRestartUSec=100ms\nResult=success\nNRestarts=0\nId=node_exporter.service\nActiveState=active\nSubState=running\nUnitFileState=enabled\n\nRestartUSec=100ms\nResult=exit-code\nNRestarts=5\nId=prometheus-node-exporter.service\nActiveState=failed\nSubState=failed\nUnitFileState=enabled\nprometheus-node-exporter.service loaded failed failed Prometheus exporter for machine metrics\nactive\nactive\nactive\nactive\nprometheus-node-exporter 1.7.0-1ubuntu0.3\nprometheus-node-exporter-collectors 0.0~git20231018.f5c56e7-1\nprometheus-node-exporter-collectors\n |Depends: daemon\n  Depends: systemd-sysv\n  Depends: moreutils\n  Depends: prometheus-node-exporter\n  Depends: python3-apt\n  Depends: python3-prometheus-client\n  Breaks: prometheus-node-exporter\n  Recommends: ipmitool\n  Recommends: jq\n  Recommends: nvme-cli\n  Recommends: python3\n  Recommends: smartmontools\n  Replaces: prometheus-node-exporter\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "docker_main",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl show node_exporter.service -p NRestarts -p SubState\njournalctl -u node_exporter.service --since '2 minutes ago' --no-pager -o cat | grep -E 'bind: address already in use|Failed with result' | tail -n 6\ndpkg-query -W -f='${Package} ${Version}\\n' prometheus-node-exporter prometheus-node-exporter-collectors",
+      "stdout": "2026-10-08T01:13:53Z\nNRestarts=549595\nSubState=auto-restart\ntime=2026-10-08T01:13:37.620Z level=ERROR source=node_exporter.go:247 msg=\"listen tcp :9100: bind: address already in use\"\nnode_exporter.service: Failed with result 'exit-code'.\ntime=2026-10-08T01:13:42.871Z level=ERROR source=node_exporter.go:247 msg=\"listen tcp :9100: bind: address already in use\"\nnode_exporter.service: Failed with result 'exit-code'.\ntime=2026-10-08T01:13:48.124Z level=ERROR source=node_exporter.go:247 msg=\"listen tcp :9100: bind: address already in use\"\nnode_exporter.service: Failed with result 'exit-code'.\nprometheus-node-exporter 1.5.0-1+b6\nprometheus-node-exporter-collectors 0.0~git20230203.6f710f8-1+deb12u2\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "grey_server",
+      "command": "date -u '+%Y-%m-%dT%H:%M:%SZ'\nsystemctl show zfs-import-cache.service zfs-import-scan.service zfs-import.target -p Id -p ActiveState -p SubState -p UnitFileState -p Result -p Wants\njournalctl -b -u zfs-import@hddpool.service --no-pager -o cat | tail -n 8\nfindmnt -no SOURCE,TARGET /hddpool-1\npct status 110",
+      "stdout": "2026-10-08T01:13:53Z\nResult=success\nId=zfs-import-cache.service\nWants=systemd-udev-settle.service\nActiveState=inactive\nSubState=dead\nUnitFileState=enabled\n\nResult=success\nId=zfs-import-scan.service\nWants=systemd-udev-settle.service\nActiveState=active\nSubState=exited\nUnitFileState=enabled\n\nId=zfs-import.target\nWants=zfs-import-scan.service zfs-import@hddpool.service zfs-import-cache.service \"zfs-import@hddpool\\\\x2d1.service\"\nActiveState=active\nSubState=active\nUnitFileState=enabled\nzfs-import@hddpool.service: Main process exited, code=exited, status=1/FAILURE\nzfs-import@hddpool.service: Failed with result 'exit-code'.\nFailed to start zfs-import@hddpool.service - Import ZFS pool hddpool.\nStarting zfs-import@hddpool.service - Import ZFS pool hddpool...\ncannot import 'hddpool': no such pool available\nzfs-import@hddpool.service: Main process exited, code=exited, status=1/FAILURE\nzfs-import@hddpool.service: Failed with result 'exit-code'.\nFailed to start zfs-import@hddpool.service - Import ZFS pool hddpool.\nhddpool-1 /hddpool-1\nstatus: running\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "monitor_01",
+      "command": "python3 - <<'PY'\nimport json,urllib.request,urllib.parse,datetime\nbase='http://127.0.0.1:9090/api/v1/'\nprint(datetime.datetime.now(datetime.timezone.utc).isoformat())\nq='node_exporter_build_info{instance=~\"docker-main|security-01\"}'\nfor path in ['query?'+urllib.parse.urlencode({'query':q}),'targets']:\n    with urllib.request.urlopen(base+path,timeout=10) as r:\n        d=json.load(r)\n    if path=='targets':\n        ts=d['data']['activeTargets']\n        print(json.dumps({'targets':len(ts),'up':sum(t['health']=='up' for t in ts),'down':[{'instance':t['labels'].get('instance'),'job':t['labels'].get('job'),'health':t['health']} for t in ts if t['health']!='up']}))\n    else:\n        print(json.dumps([{'instance':x['metric'].get('instance'),'version':x['metric'].get('version'),'sample':x['value']} for x in d['data']['result']]))\nPY",
+      "stdout": "2026-10-08T01:13:53.206563+00:00\n[]\n{\"targets\": 50, \"up\": 50, \"down\": []}\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "monitor_01",
+      "command": "python3 - <<'PY'\nimport json,urllib.request,urllib.parse\nq=urllib.parse.urlencode({'query':'node_exporter_build_info'})\nwith urllib.request.urlopen('http://127.0.0.1:9090/api/v1/query?'+q,timeout=10) as r:\n    d=json.load(r)\nfor x in d['data']['result']:\n    m=x['metric']\n    if any(s in str(m) for s in ['docker-main','security-01','192.168.40.35','192.168.72.2']):\n        print(json.dumps({k:m[k] for k in ['instance','hostname','host','nodename','version'] if k in m}))\nPY",
+      "stdout": "{\"instance\": \"192.168.72.2:9100\", \"host\": \"security-01\", \"version\": \"1.9.0\"}\n{\"instance\": \"192.168.40.35:9100\", \"host\": \"docker-main\", \"version\": \"1.5.0\"}\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    },
+    {
+      "server": "grey_server",
+      "command": "systemctl show 'zfs-import@hddpool\\x2d1.service' -p Id -p ActiveState -p SubState -p UnitFileState -p Result",
+      "stdout": "Result=success\nId=zfs-import@hddpool\\x2d1.service\nActiveState=active\nSubState=exited\nUnitFileState=enabled\n",
+      "stderr": "",
+      "code": 0,
+      "success": true
+    }
+  ]
+}
+

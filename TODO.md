@@ -9,7 +9,11 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey, Purple and Red need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
 
-- [ ] **Schedule the six VM reboots left after the 2026-10-02 package updates.** Installed kernels, hosts, remaining holds and phased packages are in the [maintenance record](Operations/Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md#open-state).
+- [ ] **Reboot `grey-server`, the one node still on kernel 7.0.14-8-pve.** The other four nodes, their guests, `security-01` and `splunk-siem` were rebooted and verified on 2026-10-06. Grey's reboot restarts `docker-main`, `ubuntu-dev`, `security-01`, `splunk-siem` and the Windows guests, applies `ubuntu-dev`'s waiting 7.0.0-38 kernel, and has to be started from somewhere other than `ubuntu-dev`. I repaired the confirmed exporter, NUT, stale pool-import and OpenIPMI failures on October 7; [repair and verification](Operations/Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md). [Fleet reboots](Operations/Maintenance/Fleet%20Reboots%20-%202026-10-06.md#open-state).
+
+- [ ] **Plan automatic UPS shutdown.** UPS-02 telemetry works, but battery-triggered shutdown is unconfigured. I masked the unused monitors on Red and Grey during the [service repair](Platforms/PeaNUT/Documentation/Troubleshooting/Unused%20NUT%20Services%20Started%20at%20Boot%20-%202026-10-07.md); configure and validate shutdown before unmasking them.
+
+- [ ] **Decide on the four upgrades held back by the 2026-10-05 fleet update:** Homarr 2.2.0, Nginx Proxy Manager 2.16.0, App Portal 0.10.0 and Docker MCP Gateway 0.44.1. [Fleet update](Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md#decisions-i-made-and-what-i-held-back).
 
 - [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 

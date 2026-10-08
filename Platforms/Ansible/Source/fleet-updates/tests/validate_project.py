@@ -32,12 +32,15 @@ EXPECTED_OS_HOSTS = {
 }
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {
-        "booklore": ("/opt/docker/booklore", ()),
+        "bookorbit": ("/opt/docker/bookorbit", ()),
         "cli-proxy-api": ("/opt/docker/cli-proxy-api", ()),
-        "docusaurus": ("/opt/docker/docusaurus/Configuration", ()),
+        "deploy": ("/opt/docker/app-portal/deploy", ()),
+        "dockhand": ("/opt/docker/dockhand", ()),
         "forgejo": ("/opt/docker/forgejo", ()),
+        "homarr": ("/opt/docker/homarr", ()),
         "immich": ("/opt/docker/immich-app", ()),
         "ollama": ("/opt/docker/ollama", ()),
+        "sure": ("/opt/docker/sure", ()),
     },
     "docker-network": {
         "netbird": ("/opt/docker/netbird", ()),
@@ -46,6 +49,7 @@ EXPECTED_COMPOSE_PROJECTS = {
     "docker-blue": {
         "docker-mcp-gateway": ("/opt/docker/mcp-gateway", ()),
         "executor": ("/opt/docker/executor", ()),
+        "meshcentral": ("/opt/docker/meshcentral", ()),
         "rustdesk": ("/opt/docker/rustdesk", ()),
     },
     "media-01": {
@@ -70,8 +74,10 @@ EXPECTED_COMPOSE_PROJECTS = {
     },
 }
 EXPECTED_PULL_OVERRIDES = {
-    ("docker-main", "docusaurus"): "never",
     ("alpha-prod-01", "teamspeak-monitor"): "never",
+}
+EXPECTED_FILES_OVERRIDES = {
+    ("docker-main", "deploy"): ["compose.yaml", "compose.override.yaml"],
 }
 
 
@@ -170,6 +176,12 @@ def main() -> int:
                     f"{host}/{name}: expected pull {expected_pull!r}, "
                     f"found {entry.get('pull')!r}"
                 )
+            expected_files = EXPECTED_FILES_OVERRIDES.get((host, name))
+            if entry.get("files") != expected_files:
+                errors.append(
+                    f"{host}/{name}: expected files {expected_files!r}, "
+                    f"found {entry.get('files')!r}"
+                )
         missing_projects = set(expected_projects) - seen
         if missing_projects:
             errors.append(
@@ -200,8 +212,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 19:
-        errors.append(f"expected 19 compose projects, found {project_count}")
+    if project_count != 23:
+        errors.append(f"expected 23 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

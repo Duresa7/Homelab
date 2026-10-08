@@ -1,7 +1,7 @@
 # PeaNUT UPS Dashboard
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-07
 
 I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each USB connection on its physical Proxmox host; PeaNUT reads the TCP/3493 endpoints from one container on `monitor-01`.
 
@@ -17,7 +17,7 @@ I use PeaNUT as the browser interface for the APC Back-UPS units. NUT owns each 
 
 The dashboard login is held outside this repository. The versioned configuration contains no password, UPS serial number, or command-capable NUT account.
 
-[settings.yml](Configuration/settings.yml) and [NUT/red-server/ups.conf](Configuration/NUT/red-server/ups.conf) predate the 2026-08-31 change: they still carry an enabled `192.168.70.13` entry and an active `[ups01]` stanza. A rebuild from them as they stand would restart the driver loop, so apply the two changes in the troubleshooting record first.
+I refreshed [NUT/red-server/ups.conf](Configuration/NUT/red-server/ups.conf) on 2026-10-07 with the commented UPS-01 stanza and the revised restoration commands. [settings.yml](Configuration/settings.yml) still predates the August 31 change and carries an enabled `192.168.70.13` entry; disable that entry before using it for a rebuild. I also [disabled the unused NUT activation paths and masked the unused services](Documentation/Troubleshooting/Unused%20NUT%20Services%20Started%20at%20Boot%20-%202026-10-07.md).
 
 ## Records
 
@@ -32,6 +32,6 @@ The dashboard login is held outside this repository. The versioned configuration
 
 ## Operations
 
-I open `https://peanut.alphasecunited.com` and use the stored dashboard login. The container runs as `brandawg93/peanut:latest` from `/opt/docker/peanut` on `monitor-01`; its `.env` stays mode `0600` and isn't versioned. NUT exposes telemetry only. `nut-monitor.service` is disabled on Red and Grey, so this deployment doesn't shut down either Proxmox host.
+I open `https://peanut.alphasecunited.com` and use the stored dashboard login. The container runs as `brandawg93/peanut:latest` from `/opt/docker/peanut` on `monitor-01`; its `.env` stays mode `0600` and isn't versioned. NUT exposes telemetry only. `nut-monitor.service` is masked on Red and Grey, so this deployment doesn't shut down either Proxmox host.
 
-PeaNUT now shares `monitor-01` with Prometheus, Grafana, and `prometheus-nut-exporter`, so the dashboard and the metrics collector read the same two NUT endpoints from one host.
+PeaNUT now shares `monitor-01` with Prometheus, Grafana, and `prometheus-nut-exporter`, so the dashboard and the metrics collector read Grey's active NUT endpoint from one host; Red's endpoint stays disabled.

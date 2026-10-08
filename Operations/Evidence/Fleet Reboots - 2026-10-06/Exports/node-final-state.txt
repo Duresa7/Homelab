@@ -1,0 +1,5 @@
+grey-server kernel=7.0.14-8-pve up=9 weeks, 2 days, 13 hours, 46 minutes pve=9.2.21 failed=nut-monitor.service,zfs-import@hddpool.service, quorum=5
+purple-server kernel=7.0.14-20-pve up=31 minutes pve=9.2.21 failed= quorum=5
+blue-server kernel=7.0.14-20-pve up=28 minutes pve=9.2.21 failed= quorum=5
+red-server kernel=7.0.14-20-pve up=34 minutes pve=9.2.21 failed=nut-monitor.service,nut-server.service, quorum=5
+green-server kernel=7.0.14-20-pve up=35 minutes pve=9.2.21 failed= quorum=5
