@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-10-09
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
@@ -55,7 +55,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.15.0<br>Grafana 13.2.3<br>Proxmox exporter 3.10.1<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.80.0 / dashboard 2.94.0<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
-| app-01 | VM 116 | purple-server | App platform | Coolify 4.3.23<br>Traefik 3.7.12<br>Postgres / Redis / Realtime / Sentinel<br>cAdvisor 0.60.6<br>Wazuh agent 4.14.8 |
+| app-01 | VM 116 | purple-server | App platform | Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
 | alpha-prod-01 | VM 401 | purple-server | Voice services | Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
@@ -172,10 +172,11 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 | Workload | Details |
 | --- | --- |
-| Coolify | 4.3.23 from `/var/www/html/config/constants.php` (the image label `v4.5.1-33486634677` is not the app version); Sentinel 1.0.1, Realtime 1.0.19, PostgreSQL 15, Redis 7. [Update record](../../../Platforms/Coolify/Documentation/Change%20Records/Update%20to%204.3.23%20-%202026-09-18.md) |
+| Coolify | 4.4.3, verified 2026-10-09 from the running image tag, `COOLIFY_VERSION`, and `/var/www/html/config/constants.php` (the image label `v4.5.1-33486634677` is not the app version); Sentinel 1.0.2, PostgreSQL 15.19, Redis 7.4.11. No separate realtime container; Coolify itself publishes ports 6001-6002. [Live verification](../../../Platforms/Coolify/README.md#containers-verified-2026-10-09) |
 | Traefik | Coolify ingress proxy `traefik:v3.7`, label v3.7.12 |
 | cAdvisor | 0.60.6 since 2026-10-05 |
-| Generated apps | Coolify-managed application containers |
+| Generated apps | None on 2026-10-09; the complete Docker inventory held six running, healthy platform and monitoring containers and no stopped containers |
+| node_exporter | `node_exporter.service` active on 2026-10-09 |
 | Hawser | Not installed; Coolify manages this host |
 | Wazuh agent | 4.14.8-1 since 2026-10-05, held; manager ID `004` as `app-01` |
 

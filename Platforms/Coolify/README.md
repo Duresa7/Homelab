@@ -1,7 +1,7 @@
 # Coolify
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-09
 
 I run Coolify on app-01 as my self-hosted deployment platform. It builds and runs applications in Docker and fronts them with its own Traefik proxy, which does the per-application Host routing for everything I publish under `*.alphsec.com`. Coolify is where a new external service gets its domain: I set the domain on the resource and the rest of the ingress chain already carries it.
 
@@ -10,26 +10,25 @@ I run Coolify on app-01 as my self-hosted deployment platform. It builds and run
 | Item | Value |
 |---|---|
 | Host | app-01, `192.168.80.10`, VLAN 80, Debian 13 |
-| Coolify version | 4.3.23, updated 2026-09-18; read again on 2026-09-25 from `/var/www/html/config/constants.php` |
-| Traefik runtime | 3.7.12 through the `traefik:v3.7` image tag, verified 2026-09-18 and 2026-09-24 |
+| Coolify version | 4.4.3, verified 2026-10-09 from the running image tag, `COOLIFY_VERSION`, and `/var/www/html/config/constants.php` |
+| Traefik runtime | 3.7.12 through the `traefik:v3.7` image tag, verified with `traefik version` on 2026-10-09 |
 | Public dashboard | `coolify-a1.alphsec.com`, behind Cloudflare Access |
 | Local dashboard | `http://192.168.80.10:8000` |
 | Docker network | `coolify`, bridge |
 | Host SSH account | `coolify`, uid 9999, key-only with `NOPASSWD` sudo, since 2026-09-07; root cannot log in over SSH |
 
-### Containers (verified 2026-09-18, listed again 2026-09-25)
+### Containers (verified 2026-10-09)
 
 | Container | Image | Role |
 |---|---|---|
-| coolify | `docker.io/coollabsio/coolify:4.3.23` | Control panel and API; host `8000` maps to container `8080` |
+| coolify | `docker.io/coollabsio/coolify:4.4.3` | Control panel and API; publishes host ports 8000 and 6001-6002 |
 | coolify-proxy | `traefik:v3.7` | Edge proxy for deployed apps; ports 80, 443, 8080 |
-| coolify-db | `postgres:15-alpine` | Coolify database |
-| coolify-redis | `redis:7-alpine` | Queue and cache |
-| coolify-realtime | `docker.io/coollabsio/coolify-realtime:1.0.19` | Realtime dashboard; ports 6001-6002 |
-| coolify-sentinel | `docker.io/coollabsio/sentinel:1.0.1` | Host and container metrics |
-| cadvisor | cAdvisor, image label 0.60.5 | Container metrics for Prometheus |
+| coolify-db | `postgres:15-alpine`, runtime 15.19 | Coolify database |
+| coolify-redis | `redis:7-alpine`, runtime 7.4.11 | Queue and cache |
+| coolify-sentinel | `docker.io/coollabsio/sentinel:1.0.2` | Host and container metrics |
+| cadvisor | `ghcr.io/google/cadvisor:latest`, image label 0.60.6 | Container metrics for Prometheus; host port 9101 |
 
-I verified the six Coolify containers healthy on 2026-09-18. On 2026-09-25 the same seven containers were running and `coolify` reported healthy. The `coolify` image carries the label `v4.5.1-33486634677`, which is not the application version. app-01 runs no Hawser agent, so Dockhand does not manage it. The local `/login` and `/api/health` endpoints both returned HTTP 200 after the update and again at 12:13 PM Eastern. The [4.3.23 update record](Documentation/Change%20Records/Update%20to%204.3.23%20-%202026-09-18.md) holds the command, checks, and retained follow-up evidence.
+I verified the six Coolify containers healthy on 2026-09-18. On 2026-09-25 the same seven containers were running and `coolify` reported healthy. At 12:27 AM Eastern on 2026-10-09, I read the complete container inventory through SSH Manager: the six containers above were running and healthy, every restart counter was zero, and there were no stopped containers or deployed application containers. The separate `coolify-realtime` container was absent; ports 6001-6002 were published by `coolify` itself. The `coolify` image still carries the label `v4.5.1-33486634677`, which is not the application version. app-01 runs no Hawser agent, so Dockhand does not manage it. At 12:28 AM Eastern, the local `/login` and `/api/health` endpoints both returned HTTP 200. Docker, node_exporter, and Wazuh agent services were active; Wazuh was packaged as 4.14.8-1. I retained no separate repository transcript for this read-only verification. The [4.3.23 update record](Documentation/Change%20Records/Update%20to%204.3.23%20-%202026-09-18.md) holds the earlier update command, checks, and retained follow-up evidence.
 
 ## Installation
 
