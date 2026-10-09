@@ -1,11 +1,13 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-10-09
 
 This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-10-09: I stopped `app-01` with automatic startup disabled, increased `alpha-prod-01` to 6 GiB maximum and minimum RAM, and deployed Minecraft 26.3 through Dockhand. CPU and disk allocations are unchanged; 15 of the 18 guests are running. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 - 2026-10-07: I repaired the duplicate exporters, unused UPS services, obsolete Grey pool import and six OpenIPMI failures. All ten affected hosts reported `running`; Grey's pool stayed ONLINE and CT 110 stayed running. [Service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md).
 

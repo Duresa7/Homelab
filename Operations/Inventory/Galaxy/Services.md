@@ -9,6 +9,8 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-10-09: I deployed Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01` through Dockhand, verified LAN and loopback status, and increased the host VM to 6 GiB maximum and minimum RAM. Both TeamSpeak public paths recovered after the VM restart. `app-01` is temporarily stopped with automatic startup disabled; Coolify is offline. Playit publication for Minecraft remains pending. [Deployment](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+
 - 2026-10-06: I rebooted `green-server`, `red-server`, `purple-server` and `blue-server` onto kernel 7.0.14-20-pve with their guests, plus `security-01` and `splunk-siem` onto their waiting kernels, and verified every service afterwards. `grey-server` and `ubuntu-dev` were not rebooted. [Fleet reboots](../../Maintenance/Fleet%20Reboots%20-%202026-10-06.md).
 
 - 2026-10-05: I updated the whole Linux fleet: packages on all five Proxmox nodes (PVE 9.2.21, kernel 7.0.14-20-pve installed) and all twelve running Linux guests, 23 Compose projects on six hosts, the six Hawser agents, cAdvisor on eight hosts, Semaphore and the Wazuh agents. Node and VM reboots remain pending. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-10-05.md).
@@ -55,10 +57,10 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.15.0<br>Grafana 13.2.3<br>Proxmox exporter 3.10.1<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.80.0 / dashboard 2.94.0<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
-| app-01 | VM 116 | purple-server | App platform | Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
+| app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
-| alpha-prod-01 | VM 401 | purple-server | Voice services | Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
+| alpha-prod-01 | VM 401 | purple-server | Voice and game services | [Vanilla Minecraft Java Edition 26.3](../../../Platforms/Minecraft/README.md), LAN only pending Playit<br>Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunk Enterprise 10.4.0<br>Enterprise Security 8.5.1<br>SC4S<br>No Wazuh agent |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin 12.2.0<br>Seerr 3.5.0<br>Sonarr 4.0.20 / Radarr 6.4.4 / Prowlarr 2.6.5<br>FlareSolverr 3.5.2<br>qBittorrent 5.2.4 through Gluetun and Proton VPN<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 
@@ -170,6 +172,8 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 ## app-01
 
+I stopped VM 116 on 2026-10-09 and disabled automatic startup. The installed workloads below are offline; the same-day running-state checks describe the period before shutdown. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+
 | Workload | Details |
 | --- | --- |
 | Coolify | 4.4.3, verified 2026-10-09 from the running image tag, `COOLIFY_VERSION`, and `/var/www/html/config/constants.php` (the image label `v4.5.1-33486634677` is not the app version); Sentinel 1.0.2, PostgreSQL 15.19, Redis 7.4.11. No separate realtime container; Coolify itself publishes ports 6001-6002. [Live verification](../../../Platforms/Coolify/README.md#containers-verified-2026-10-09) |
@@ -202,10 +206,11 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 ## alpha-prod-01
 
-Eight containers were running on 2026-09-25.
+Eight containers were running on 2026-09-25. On 2026-10-09 I verified eight running containers, now including Minecraft and excluding the retired WUD stack, plus the stopped Hawser updater. The VM has 6 GiB maximum and minimum RAM, six vCPUs and a 60 GiB disk.
 
 | Workload | Details |
 | --- | --- |
+| Minecraft | Vanilla Java Edition 26.3, protocol 777, `itzg/minecraft-server:stable-java25`; TCP 25565; 2 GiB maximum heap, 3 GiB container limit; world under `/opt/docker/minecraft/data`; managed as `minecraft` in Dockhand environment 6. LAN and loopback verified; Playit pending. [Platform record](../../../Platforms/Minecraft/README.md) |
 | TeamSpeak | `ts-valorant-02` and `ts-valorant-03`, both TeamSpeak 3 Server 3.13.8, recreated 2026-09-18. [Teamspeak Hosting](../../../Platforms/Teamspeak%20Hosting/README.md) |
 | TS3 Manager | `joni1802/ts3-manager` on TCP 9000, NPM host 22 |
 | TeamSpeak reachability collector | `teamspeak-monitor` from `forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable`; reads each server's public SRV record every cycle and feeds the reachability dashboard |

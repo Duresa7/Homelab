@@ -1,9 +1,9 @@
 # AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-05  
+**Last updated:** 2026-10-09  
 
-This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Coolify, and TeamSpeak.
+This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Minecraft, and TeamSpeak.
 
 ![Proxmox VE](https://img.shields.io/badge/Proxmox_VE-5--node_cluster-E57000?logo=proxmox&logoColor=white)
 ![UniFi](https://img.shields.io/badge/UniFi-16_routed_LANs,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
@@ -21,7 +21,7 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 | Area | Current state | Checked |
 |---|---|---|
 | Cluster | Five Proxmox VE 9.2.21 nodes (grey, purple, blue, red, green), five of five votes, no shared storage, no HA resources | 2026-10-05 |
-| Guests | 18 (12 VMs, 6 LXCs) plus 3 templates; 16 running | 2026-09-24 |
+| Guests | 18 (12 VMs, 6 LXCs) plus 3 templates; 15 running; app-01 temporarily stopped | 2026-10-09 |
 | Network | UniFi Network 10.6.106 on the Ahsoka gateway, three switches, one access point; 23 networks, 16 routed LANs in 12 zones | 2026-09-24 |
 | Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |
 | Security | Wazuh 4.14.8 with 15 active remote agents (2026-10-02); Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF (2026-09-24) | 2026-10-02 |

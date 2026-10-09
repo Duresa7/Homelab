@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-09
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -18,7 +18,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [BookOrbit](BookOrbit/README.md) | docker-main | v3.1.0 with PostgreSQL 18.6; 42 books imported, TCP 6060 at the existing BookLore HTTPS address (2026-09-28) |
 | [Caddy](Caddy/README.md) | edge-01 | Caddy 2.6.2, the public origin behind the Cloudflare Tunnel (cloudflared 2026.10.0), forwarding to Coolify |
 | [CLI Proxy API](CLI%20Proxy%20API/README.md) | docker-main | v8.0.16 at `https://aiproxy.alphasecunited.com` |
-| [Coolify](Coolify/README.md) | app-01 | Coolify 4.3.23 with Traefik 3.7.12: builds and publishes the public services |
+| [Coolify](Coolify/README.md) | app-01, temporarily stopped 2026-10-09 | Coolify 4.4.3 with Traefik 3.7.12; installed services retained |
 | [Discord Alert Bot](Discord%20Alert%20Bot/README.md) | monitor-01 | Posts Grafana and Splunk alerts to `#bots` |
 | [Docker MCP Gateway](Docker%20MCP%20Gateway/README.md) | docker-blue | Two v0.43.3 gateways, one for UniFi Network MCP and one for SSH Manager MCP |
 | [Dockhand](Dockhand/README.md) | docker-main | Dockhand 1.0.51; manages the Docker hosts through six Hawser agents |
@@ -29,6 +29,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [Media Stack](Media%20Stack/README.md) | media-01 | Jellyfin 12.2.0, Seerr 3.5.0, Sonarr, Radarr, Prowlarr, FlareSolverr and qBittorrent behind Gluetun |
 | [MeshCentral](MeshCentral/README.md) | docker-blue | Remote support pilot, running beside RustDesk |
 | [Microsoft Intune](Microsoft%20Intune/README.md) | Cloud | Device management for the `alphasecunited.com` tenant |
+| [Minecraft](Minecraft/README.md) | alpha-prod-01 | Vanilla Java Edition 26.3 through Dockhand; TCP 25565 on the LAN, Playit publication pending |
 | [NetBird](Netbird/README.md) | docker-network | NetBird 0.80.0 and dashboard 2.94.0, the WireGuard mesh with a routed path into the lab |
 | [Nginx Proxy Manager](Nginx%20Proxy%20Manager/README.md) | docker-network | NPM 2.15.1, 24 internal HTTPS hosts on one DNS-01 wildcard certificate |
 | [Ollama](Ollama/README.md) | docker-main | Ollama 0.35.1 on the GTX 1080 Ti |

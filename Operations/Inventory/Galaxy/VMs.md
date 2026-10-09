@@ -1,11 +1,13 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-09
 
 Galaxy has 12 QEMU VMs and three templates. I read every figure below back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24. Ten VMs were running; `kali-pen` and `HQ-WS001` were stopped. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-10-09: I stopped `app-01` and disabled its automatic startup. I increased `alpha-prod-01` to 6 GiB with its balloon minimum also at 6 GiB, retaining six vCPUs and its 60 GiB disk, and deployed Minecraft through Dockhand. Nine VMs are now running. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 - 2026-09-28: I expanded `ubuntu-dev` from 150 GiB to 230 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md).
 
@@ -20,14 +22,14 @@ Galaxy has 12 QEMU VMs and three templates. I read every figure below back from 
 | 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.40.117/24 | 192.168.40.1 | 40 | disabled |
 | 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 230G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 116 | app-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
+| 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 302 | HQ-DC02 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
 | 303 | HQ-MGT01 | grey-server | running | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
 | 310 | HQ-WS001 | grey-server | stopped | Windows 11 Pro 25H2 | 4 | 8 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
-| 401 | alpha-prod-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 6 | 4 GiB maximum / 2 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
+| 401 | alpha-prod-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 6 | 6 GiB maximum / 6 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -173,6 +175,8 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | net0 | virtio | vmbr0 | 72 | 192.168.72.3/24 | 192.168.72.1 | enabled | `<REDACTED_SPLUNK_VM_MAC>` |
 
 ### VM 116 - app-01
+
+I stopped this VM on 2026-10-09 and set `onboot: 0` while I deployed Minecraft on Alpha. Its disks, services and resource settings remain installed. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 On 2026-09-11 I replaced its 200 GiB system disk with a 64 GiB disk and then moved both disks to Purple's NVMe-backed `local-lvm`. [Replacement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md). A stop and start on 2026-08-10 cleared a stale 24 GiB QEMU allocation. [Resource tuning record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md).
 
@@ -493,6 +497,8 @@ No optical drive is attached. The installation and answer-file media were detach
 
 I moved both disks to Purple on 2026-09-12. The [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/alpha-prod-01%20Purple%20Migration%20-%202026-09-12.md) holds startup and service verification.
 
+On 2026-10-09 I increased memory to 6144 MiB and set the balloon minimum to the same value, retaining six vCPUs and the 60 GiB disk. No memory change remains pending. Minecraft and both TeamSpeak paths passed their post-restart checks. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+
 #### Identity
 | Setting | Value |
 | --- | --- |
@@ -509,8 +515,8 @@ I moved both disks to Purple on 2026-09-12. The [migration record](../../../Infr
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 4 GiB maximum; 2 GiB minimum |
-| Ballooning | on (`balloon: 2048`) |
+| Memory | 6 GiB maximum; 6 GiB minimum |
+| Ballooning | enabled, with minimum equal to maximum (`balloon: 6144`) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |

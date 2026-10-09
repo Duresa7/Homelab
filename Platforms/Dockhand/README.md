@@ -1,9 +1,11 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-09
 
 I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
+
+On 2026-10-09 I added the `minecraft` stack to `alpha-prod-01`, environment 6. Its editable definition is `/opt/docker/dockhand/stacks/alpha_prod_01/minecraft/compose.yaml` on `docker-main`; the world bind mount is `/opt/docker/minecraft/data` on Alpha. The final deployment succeeded through Hawser and the saved file matches the [platform reference](../Minecraft/Configuration/compose.yaml). Minecraft is excluded from automatic updates. [Deployment and verification](../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 | Item | Value |
 |---|---|

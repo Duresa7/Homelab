@@ -3,13 +3,14 @@
 **Created:** 2026-07-24  
 **Last updated:** 2026-10-09
 
-I run Coolify on app-01 as my self-hosted deployment platform. It builds and runs applications in Docker and fronts them with its own Traefik proxy, which does the per-application Host routing for everything I publish under `*.alphsec.com`. Coolify is where a new external service gets its domain: I set the domain on the resource and the rest of the ingress chain already carries it.
+I keep Coolify installed on app-01 as my self-hosted deployment platform. It builds and runs applications in Docker and fronts them with its own Traefik proxy, which does the per-application Host routing for everything I publish under `*.alphsec.com`. I stopped app-01 on 2026-10-09 while deploying Minecraft on Alpha, so Coolify and its ingress are temporarily offline. Automatic startup is disabled. [Deployment and verification](../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 ## Current state
 
 | Item | Value |
 |---|---|
 | Host | app-01, `192.168.80.10`, VLAN 80, Debian 13 |
+| State | VM 116 stopped on 2026-10-09, `onboot: 0`; installed services retained |
 | Coolify version | 4.4.3, verified 2026-10-09 from the running image tag, `COOLIFY_VERSION`, and `/var/www/html/config/constants.php` |
 | Traefik runtime | 3.7.12 through the `traefik:v3.7` image tag, verified with `traefik version` on 2026-10-09 |
 | Public dashboard | `coolify-a1.alphsec.com`, behind Cloudflare Access |
