@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-10-09, 5:10:56 PM Eastern",
+  "name": "minecraft.alphasecunited.com",
+  "client_protocol": 777,
+  "handshake_host": "minecraft.alphasecunited.com",
+  "handshake_port": 25565,
+  "succeeded": false,
+  "error_type": "ConnectionResetError"
+}

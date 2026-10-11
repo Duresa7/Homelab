@@ -1,0 +1,202 @@
+{
+  "captured_at_eastern": "2026-10-09 01:31:14 PM EDT",
+  "host_verification": {
+    "captured_at_eastern": "2026-10-09 01:31:14 PM EDT",
+    "host": "alpha-prod-01",
+    "minecraft": {
+      "state": "running",
+      "health": "healthy",
+      "image": "itzg/minecraft-server:stable-java25",
+      "image_id": "sha256:de5d1b1a83eba576f6c8a688fac2a3523ce457724cdebc8ea48d7818b74cdf6e",
+      "memory_limit_bytes": 3221225472,
+      "memory_swap_bytes": 3221225472,
+      "restart_count": 0,
+      "max_heap": "2G",
+      "version": "26.3",
+      "rcon_enabled": "FALSE",
+      "online_mode": "TRUE",
+      "done_lines": [
+        "[13:29:13] [Server thread/INFO]: Done (0.237s)! For help, type \"help\""
+      ]
+    },
+    "containers": [
+      {
+        "name": "minecraft",
+        "state": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser",
+        "state": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "ts3-manager",
+        "state": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-03",
+        "state": "running",
+        "health": null
+      },
+      {
+        "name": "ts-valorant-02",
+        "state": "running",
+        "health": null
+      },
+      {
+        "name": "playit-agent",
+        "state": "running",
+        "health": null
+      },
+      {
+        "name": "cadvisor",
+        "state": "running",
+        "health": "healthy"
+      },
+      {
+        "name": "hawser-updater",
+        "state": "exited",
+        "health": null
+      },
+      {
+        "name": "teamspeak-monitor",
+        "state": "running",
+        "health": null
+      }
+    ],
+    "memory_MiB": {
+      "MemTotal": 5863,
+      "MemAvailable": 4004,
+      "SwapTotal": 3175,
+      "SwapFree": 3175
+    },
+    "root_free_GiB": 40.13,
+    "world_level_exists": true,
+    "unused_initial_image_removed": true,
+    "server_sha1": "33680f5f2ac32864d6d7cf5e56a705fdb3e05f4c",
+    "teamspeak": {
+      "teamspeak_local_up": [
+        {
+          "server": "ts02",
+          "value": 1
+        },
+        {
+          "server": "ts03",
+          "value": 1
+        }
+      ],
+      "teamspeak_public_up": [
+        {
+          "server": "ts02",
+          "value": 1
+        },
+        {
+          "server": "ts03",
+          "value": 1
+        }
+      ],
+      "teamspeak_dns_srv_up": [
+        {
+          "server": "ts02",
+          "value": 1
+        },
+        {
+          "server": "ts03",
+          "value": 1
+        }
+      ],
+      "teamspeak_query_up": [
+        {
+          "server": "ts02",
+          "value": 1
+        },
+        {
+          "server": "ts03",
+          "value": 1
+        }
+      ],
+      "metrics_age_seconds": 59
+    }
+  },
+  "proxmox_verification": {
+    "116": {
+      "balloon": "4096",
+      "cores": "4",
+      "cpu": "host",
+      "memory": "8192",
+      "name": "app-01",
+      "onboot": "0",
+      "scsi0": "local-lvm:vm-116-disk-2,iothread=1,size=64G,ssd=1",
+      "pending_memory": []
+    },
+    "401": {
+      "balloon": "6144",
+      "cores": "6",
+      "cpu": "host",
+      "memory": "6144",
+      "name": "alpha-prod-01",
+      "onboot": "1",
+      "scsi0": "local-lvm:vm-401-disk-1,discard=on,iothread=1,size=60G,ssd=1",
+      "pending_memory": []
+    },
+    "guest_counts": {
+      "vms": 12,
+      "lxcs": 6,
+      "running": 15
+    },
+    "purple_guests": [
+      {
+        "vmid": 116,
+        "name": "app-01",
+        "status": "stopped",
+        "maxmem": 8589934592,
+        "maxcpu": 4
+      },
+      {
+        "vmid": 121,
+        "name": "edge-01",
+        "status": "running",
+        "maxmem": 4294967296,
+        "maxcpu": 2
+      },
+      {
+        "vmid": 401,
+        "name": "alpha-prod-01",
+        "status": "running",
+        "maxmem": 6442450944,
+        "maxcpu": 6
+      }
+    ],
+    "available_MiB": 4505
+  },
+  "lan_status": {
+    "host": "192.168.80.118",
+    "port": 25565,
+    "latency_ms": 5.2,
+    "version_name": "26.3",
+    "protocol": 777,
+    "players_online": 0,
+    "players_max": 20,
+    "description": "AlphaSec United Minecraft"
+  },
+  "loopback_status": {
+    "host": "127.0.0.1",
+    "port": 25565,
+    "latency_ms": 4.8,
+    "version_name": "26.3",
+    "protocol": 777,
+    "players_online": 0,
+    "players_max": 20,
+    "description": "AlphaSec United Minecraft"
+  },
+  "dockhand": {
+    "environment_id": 6,
+    "stack": "minecraft",
+    "compose_path": "/opt/docker/dockhand/stacks/alpha_prod_01/minecraft/compose.yaml",
+    "reference_matches": true,
+    "final_deploy_id": 1387,
+    "final_deploy_status": "success"
+  }
+}

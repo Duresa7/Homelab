@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-10-09 1:39:32 PM Eastern",
+  "target": "alpha-prod-01",
+  "command": "python3 - <<'PY'\nimport subprocess,json,datetime\nc=json.loads(subprocess.run(['docker','inspect','minecraft'],capture_output=True,text=True,check=True).stdout)[0]\nlabels=c['Config'].get('Labels') or {}\nout={'observed_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'compose_labels':{k:labels.get(k) for k in ['com.docker.compose.project.config_files','com.docker.compose.project.working_dir','dockhand.update']}}\np=subprocess.run(['docker','exec','hawser','docker','compose','-f','/opt/docker/hawser/stacks/minecraft/compose.yaml','config','--quiet'],capture_output=True,text=True)\nout['runtime_validation']={'exit_code':p.returncode,'stdout':p.stdout,'stderr':p.stderr}\nprint(json.dumps(out,indent=2))\nPY",
+  "stdout": "{\n  \"observed_at_utc\": \"2026-10-09T17:39:32.977532+00:00\",\n  \"compose_labels\": {\n    \"com.docker.compose.project.config_files\": \"/opt/docker/hawser/stacks/minecraft/compose.yaml\",\n    \"com.docker.compose.project.working_dir\": \"/opt/docker/hawser/stacks/minecraft\",\n    \"dockhand.update\": \"false\"\n  },\n  \"runtime_validation\": {\n    \"exit_code\": 0,\n    \"stdout\": \"\",\n    \"stderr\": \"\"\n  }\n}\n",
+  "stderr": "",
+  "exit_code": 0,
+  "follow_up_verification": "Docker Compose validation succeeded through the existing Hawser container. The project labels confirm the runtime path and automatic-update exclusion."
+}

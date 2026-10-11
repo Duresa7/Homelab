@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-10-09 1:19:38 PM Eastern",
+  "target": "purple-server",
+  "command": "python3 - <<'PY'\nimport subprocess,json,datetime\nout={\"time_utc\":datetime.datetime.now(datetime.timezone.utc).isoformat(),\"actions\":[]}\nfor args in [[\"qm\",\"set\",\"116\",\"--onboot\",\"0\"],[\"qm\",\"shutdown\",\"116\",\"--timeout\",\"45\"],[\"qm\",\"status\",\"116\"],[\"qm\",\"set\",\"401\",\"--memory\",\"6144\",\"--balloon\",\"4096\"]]:\n p=subprocess.run(args,text=True,capture_output=True)\n out[\"actions\"].append({\"command\":\" \".join(args),\"code\":p.returncode,\"stdout\":p.stdout.strip(),\"stderr\":p.stderr.strip()})\n if p.returncode: break\nprint(json.dumps(out,indent=2))\nPY",
+  "stdout": "{\n  \"time_utc\": \"2026-10-09T17:19:38.981430+00:00\",\n  \"actions\": [\n    {\n      \"command\": \"qm set 116 --onboot 0\",\n      \"code\": 0,\n      \"stdout\": \"update VM 116: -onboot 0\",\n      \"stderr\": \"\"\n    },\n    {\n      \"command\": \"qm shutdown 116 --timeout 45\",\n      \"code\": 0,\n      \"stdout\": \"\",\n      \"stderr\": \"\"\n    },\n    {\n      \"command\": \"qm status 116\",\n      \"code\": 0,\n      \"stdout\": \"status: stopped\",\n      \"stderr\": \"\"\n    },\n    {\n      \"command\": \"qm set 401 --memory 6144 --balloon 4096\",\n      \"code\": 0,\n      \"stdout\": \"update VM 401: -balloon 4096 -memory 6144\",\n      \"stderr\": \"\"\n    }\n  ]\n}\n",
+  "stderr": "",
+  "exit_code": 0,
+  "follow_up_verification": "Final VM Configuration.json"
+}

@@ -1,0 +1,13 @@
+{
+  "metadata": {
+    "success": true,
+    "code": 0,
+    "stdout": "{\"api_success\": true, \"tunnel_count\": 3, \"minecraft_matches\": 1, \"minecraft\": [{\"name\": \"minecraft-01\", \"proto\": \"tcp\", \"local_ip\": \"127.0.0.1\", \"local_port\": 25565, \"tunnel_type\": \"minecraft-java\", \"disabled\": null, \"proxy_protocol\": null, \"assigned_domain_present\": true, \"assigned_port_present\": true}]}\n",
+    "stderr": ""
+  },
+  "policy": {
+    "code": 0,
+    "stdout": "{\"success\": true, \"minecraft_matches\": 1, \"minecraft\": [{\"hostname_verify_level\": \"NoRawIp\", \"active\": true, \"disabled_reason\": null}], \"account_allocations\": {\"tcp_alloc\": {\"allowed\": 4, \"claimed\": 1}, \"udp_alloc\": {\"allowed\": 4, \"claimed\": 2}}}\n",
+    "stderr": ""
+  }
+}

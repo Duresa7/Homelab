@@ -1,0 +1,17 @@
+{
+  "captured_at": "2026-10-09T19:05:09.678Z",
+  "tunnel_label": "minecraft-01",
+  "active_agent": "ts-valorant",
+  "assigned_active_agent": true,
+  "offline_warning": false,
+  "origin_ip": "127.0.0.1",
+  "origin_port": "25565",
+  "proxy_protocol": "None",
+  "enabled": true,
+  "same_public_endpoint": true,
+  "agent_status": {
+    "agentLabel": "ts-valorant",
+    "connected": true,
+    "tunnelCount": "3"
+  }
+}

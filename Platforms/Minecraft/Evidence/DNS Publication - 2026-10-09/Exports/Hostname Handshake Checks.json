@@ -1,0 +1,41 @@
+{
+  "captured_at": "2026-10-09, 5:02:51 PM Eastern",
+  "cases": [
+    {
+      "handshake_host": "SRV target",
+      "client_protocol": 777,
+      "handshake_port": "<REDACTED_RELAY_PORT>",
+      "succeeded": true,
+      "version": {
+        "name": "26.3",
+        "protocol": 777
+      },
+      "latency_ms": 154.2
+    },
+    {
+      "handshake_host": "friendly name",
+      "client_protocol": 767,
+      "handshake_port": "<REDACTED_RELAY_PORT>",
+      "succeeded": false,
+      "error_type": "ConnectionResetError"
+    },
+    {
+      "handshake_host": "friendly name",
+      "client_protocol": 777,
+      "handshake_port": "25565",
+      "succeeded": false,
+      "error_type": "ConnectionResetError"
+    },
+    {
+      "handshake_host": "SRV target",
+      "client_protocol": 767,
+      "handshake_port": "<REDACTED_RELAY_PORT>",
+      "succeeded": true,
+      "version": {
+        "name": "26.3",
+        "protocol": 777
+      },
+      "latency_ms": 146.8
+    }
+  ]
+}

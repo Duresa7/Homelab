@@ -1,0 +1,8 @@
+{
+  "captured_at": "2026-10-11 05:13:32 PM EDT",
+  "target": "ubuntu-dev",
+  "command": "python3 Platforms/Minecraft/Tests/minecraft-status.py 192.168.80.118 && python3 Platforms/Minecraft/Tests/minecraft-status.py minecraft.alphasecunited.com --srv",
+  "combined_stdout_stderr": "Traceback (most recent call last):\n  File \"/home/ai-agent/Documents/Homelab/Platforms/Minecraft/Tests/minecraft-status.py\", line 158, in <module>\n    main()\n    ~~~~^^\n  File \"/home/ai-agent/Documents/Homelab/Platforms/Minecraft/Tests/minecraft-status.py\", line 151, in main\n    query(connect_host, port, args.timeout, display_host=display_host),\n    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ai-agent/Documents/Homelab/Platforms/Minecraft/Tests/minecraft-status.py\", line 102, in query\n    with socket.create_connection((connect_host, port), timeout=timeout) as stream:\n         ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.14/socket.py\", line 870, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.14/socket.py\", line 855, in create_connection\n    sock.connect(sa)\n    ~~~~~~~~~~~~^^^^\nConnectionRefusedError: [Errno 111] Connection refused\n",
+  "exit_code": 1,
+  "follow_up_verification": "LAN and Public Status.json"
+}

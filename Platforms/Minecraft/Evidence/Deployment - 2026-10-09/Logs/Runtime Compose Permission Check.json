@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-10-09 1:38:45 PM Eastern",
+  "target": "alpha-prod-01",
+  "command": "python3 - <<'PY'\nimport subprocess,json,datetime\npath='/opt/docker/hawser/stacks/minecraft/compose.yaml'\np=subprocess.run(['docker','compose','-f',path,'config','--quiet'],capture_output=True,text=True)\nprint(json.dumps({'observed_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'command':['docker','compose','-f',path,'config','--quiet'],'exit_code':p.returncode,'stdout':p.stdout,'stderr':p.stderr},indent=2))\nraise SystemExit(p.returncode)\nPY",
+  "stdout": "{\n  \"observed_at_utc\": \"2026-10-09T17:38:45.010602+00:00\",\n  \"command\": [\n    \"docker\",\n    \"compose\",\n    \"-f\",\n    \"/opt/docker/hawser/stacks/minecraft/compose.yaml\",\n    \"config\",\n    \"--quiet\"\n  ],\n  \"exit_code\": 1,\n  \"stdout\": \"\",\n  \"stderr\": \"time=\\\"2026-10-09T13:38:45-04:00\\\" level=warning msg=\\\"cannot access /opt/docker/hawser/stacks/minecraft/.env, ignoring default env file: stat /opt/docker/hawser/stacks/minecraft/.env: permission denied\\\"\\ntime=\\\"2026-10-09T13:38:45-04:00\\\" level=warning msg=\\\"cannot access /opt/docker/hawser/stacks/minecraft/.env, ignoring default env file: stat /opt/docker/hawser/stacks/minecraft/.env: permission denied\\\"\\ntime=\\\"2026-10-09T13:38:45-04:00\\\" level=warning msg=\\\"cannot access /opt/docker/hawser/stacks/minecraft/.env, ignoring default env file: stat /opt/docker/hawser/stacks/minecraft/.env: permission denied\\\"\\ncompose file \\\"/opt/docker/hawser/stacks/minecraft/compose.yaml\\\" is invalid: open /opt/docker/hawser/stacks/minecraft/compose.yaml: permission denied\\n\"\n}\n",
+  "stderr": "",
+  "exit_code": 1,
+  "follow_up_verification": "Runtime Compose Validation.json; the unprivileged SSH session could not read the protected runtime file."
+}

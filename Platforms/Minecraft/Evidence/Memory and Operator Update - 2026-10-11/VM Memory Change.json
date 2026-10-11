@@ -1,0 +1,9 @@
+{
+  "server": "purple_server",
+  "command": "set -e\nTZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\nqm shutdown 401 --timeout 45\nqm status 401\nqm set 401 --memory 8192 --balloon 8192\nqm start 401\nqm status 401\nqm config 401 | grep -E '^(memory|balloon|cores|sockets|cpu):'\nTZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'",
+  "stdout": "2026-10-11 05:54:34 PM EDT\nstatus: stopped\nupdate VM 401: -balloon 8192 -memory 8192\nstatus: running\nballoon: 8192\ncores: 6\ncpu: host\nmemory: 8192\nsockets: 1\n2026-10-11 05:54:51 PM EDT\n",
+  "stderr": "",
+  "code": 0,
+  "success": true,
+  "follow_up": "VM and Service Verification.json"
+}

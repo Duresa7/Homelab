@@ -1,0 +1,7 @@
+{
+  "captured_at": "2026-10-11 05:13:48 PM EDT",
+  "target": "ubuntu-dev",
+  "command": "date '+%Y-%m-%d %I:%M:%S %p %Z'\npython3 Platforms/Minecraft/Tests/minecraft-status.py 192.168.80.118 && python3 Platforms/Minecraft/Tests/minecraft-status.py minecraft.alphasecunited.com --srv",
+  "combined_stdout_stderr": "2026-10-11 05:13:48 PM EDT\n{\n  \"host\": \"192.168.80.118\",\n  \"port\": 25565,\n  \"latency_ms\": 5.3,\n  \"version_name\": \"26.3\",\n  \"protocol\": 777,\n  \"players_online\": 0,\n  \"players_max\": 20,\n  \"description\": \"AlphaSec United Minecraft\"\n}\n{\n  \"host\": \"minecraft.alphasecunited.com\",\n  \"port\": \"<REDACTED_RELAY_PORT>\",\n  \"latency_ms\": 243.6,\n  \"version_name\": \"26.3\",\n  \"protocol\": 777,\n  \"players_online\": 0,\n  \"players_max\": 20,\n  \"description\": \"AlphaSec United Minecraft\"\n}\n",
+  "exit_code": 0
+}

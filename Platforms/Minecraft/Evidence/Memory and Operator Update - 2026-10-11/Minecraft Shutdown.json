@@ -1,0 +1,9 @@
+{
+  "server": "alpha_prod_01",
+  "command": "set -e\nTZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\ndocker stop --timeout 120 minecraft\ndocker inspect minecraft --format 'running={{.State.Running}} exit={{.State.ExitCode}}'\npython3 - <<'PY'\nimport subprocess,json\ns=json.loads(subprocess.check_output(['docker','inspect','minecraft']))[0]['State']\nassert not s['Running'] and s['ExitCode']==0\nprint('Minecraft clean shutdown verified')\nPY",
+  "stdout": "2026-10-11 05:54:26 PM EDT\nminecraft\nrunning=false exit=0\nMinecraft clean shutdown verified\n",
+  "stderr": "",
+  "code": 0,
+  "success": true,
+  "follow_up": "VM and Service Verification.json"
+}

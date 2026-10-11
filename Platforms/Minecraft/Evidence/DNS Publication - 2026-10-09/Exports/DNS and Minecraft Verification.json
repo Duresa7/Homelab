@@ -1,0 +1,35 @@
+{
+  "captured_at": "2026-10-09, 5:01:37 PM Eastern",
+  "name": "minecraft.alphasecunited.com",
+  "public_dns": [
+    {
+      "resolver": "1.1.1.1",
+      "cname_resolved": true,
+      "srv_resolved": true,
+      "priority": 0,
+      "weight": 0,
+      "target": "<REDACTED_MINECRAFT_RELAY>",
+      "port": "<REDACTED_RELAY_PORT>"
+    },
+    {
+      "resolver": "8.8.8.8",
+      "cname_resolved": true,
+      "srv_resolved": true,
+      "priority": 0,
+      "weight": 0,
+      "target": "<REDACTED_MINECRAFT_RELAY>",
+      "port": "<REDACTED_RELAY_PORT>"
+    }
+  ],
+  "public_protocol": {
+    "host": "minecraft.alphasecunited.com",
+    "port": "<REDACTED_RELAY_PORT>",
+    "latency_ms": 232.2,
+    "version_name": "26.3",
+    "protocol": 777,
+    "players_online": 0,
+    "players_max": 20,
+    "description": "AlphaSec United Minecraft"
+  },
+  "protocol_error_type": "ConnectionResetError"
+}

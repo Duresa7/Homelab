@@ -1,0 +1,8 @@
+{
+  "official_client_version": "26.3",
+  "client_sha1": "e877b6a07acd633fb3bb475002175cec036e7b87",
+  "checksum_matches": true,
+  "server_list_status": "ServerStatusPinger.pingServer passes parsed ServerAddress.getHost() and getPort() to initiateServerboundStatusConnection",
+  "join_connection": "ConnectScreen$1.run uses resolved InetSocketAddress.getHostName() and getPort() with initiateServerboundPlayConnection",
+  "verification": "Inspecting method references and bytecode in the official client supports testing the SRV target for joining; an authenticated player join was not performed"
+}

@@ -1,0 +1,8 @@
+{
+  "server": "purple_server",
+  "command": "set -e\nTZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\nqm status 401\nqm config 401 --current 1 | grep -E '^(memory|balloon|cores|sockets|cpu):'\nqm pending 401 | grep -E 'memory|balloon'\nfree -m",
+  "stdout": "2026-10-11 05:55:56 PM EDT\nstatus: running\nballoon: 8192\ncores: 6\ncpu: host\nmemory: 8192\nsockets: 1\ncur balloon: 8192\ncur memory: 8192\n               total        used        free      shared  buff/cache   available\nMem:           15830        8330        5675          66        2237        7499\nSwap:           8191           0        8191\n",
+  "stderr": "",
+  "code": 0,
+  "success": true
+}

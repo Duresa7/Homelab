@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-10-11 06:33:53 PM EDT",
+  "target": "ubuntu-dev",
+  "command": [
+    "python3",
+    "Platforms/Minecraft/Tests/minecraft-status.py",
+    "minecraft.alphasecunited.com",
+    "--srv"
+  ],
+  "stdout": "{\n  \"host\": \"minecraft.alphasecunited.com\",\n  \"port\": \"<REDACTED_RELAY_PORT>\",\n  \"latency_ms\": 160.9,\n  \"version_name\": \"26.3\",\n  \"protocol\": 777,\n  \"players_online\": 0,\n  \"players_max\": 20,\n  \"description\": \"AlphaSec United Minecraft\"\n}\n",
+  "stderr": "",
+  "exit_code": 0
+}

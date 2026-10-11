@@ -1,0 +1,9 @@
+{
+  "captured_at": "2026-10-09 1:34:56 PM Eastern",
+  "target": "docker-main",
+  "command": "python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib,json,datetime\ncurrent=Path('/opt/docker/dockhand/stacks/alpha_prod_01/minecraft/compose.yaml')\nobsolete=Path('/opt/docker/dockhand/stacks/imported/alpha_prod_01/minecraft/compose.yaml')\nassert hashlib.sha256(current.read_bytes()).hexdigest()=='50987782ca679d6e694fec74d7fe0acea80f5f1002b001c8dc265e3676d017f0'\nassert sorted(p.name for p in obsolete.parent.iterdir())==['compose.yaml']\nassert hashlib.sha256(obsolete.read_bytes()).hexdigest()=='af069f721ba42deee0ed94c815999369eeb241f4caebede7e09d9c068d2afe54'\nobsolete.unlink();obsolete.parent.rmdir()\nprint(json.dumps({'observed_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'removed_obsolete_source':str(obsolete),'obsolete_exists':obsolete.exists(),'authoritative_exists':current.is_file(),'authoritative_sha256':hashlib.sha256(current.read_bytes()).hexdigest()},indent=2))\nPY",
+  "stdout": "{\n  \"observed_at_utc\": \"2026-10-09T17:34:56.416112+00:00\",\n  \"removed_obsolete_source\": \"/opt/docker/dockhand/stacks/imported/alpha_prod_01/minecraft/compose.yaml\",\n  \"obsolete_exists\": false,\n  \"authoritative_exists\": true,\n  \"authoritative_sha256\": \"50987782ca679d6e694fec74d7fe0acea80f5f1002b001c8dc265e3676d017f0\"\n}\n",
+  "stderr": "",
+  "exit_code": 0,
+  "follow_up_verification": "Current source preserved; obsolete source removed."
+}

@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "changed_at": "2026-10-09T21:01:01.569Z",
+  "before": [
+    {
+      "name": "minecraft.alphasecunited.com",
+      "count": 0
+    },
+    {
+      "name": "_minecraft._tcp.minecraft.alphasecunited.com",
+      "count": 0
+    }
+  ],
+  "created": [
+    {
+      "name": "minecraft.alphasecunited.com",
+      "type": "CNAME",
+      "success": true,
+      "status": 200
+    },
+    {
+      "name": "_minecraft._tcp.minecraft.alphasecunited.com",
+      "type": "SRV",
+      "success": true,
+      "status": 200
+    }
+  ],
+  "verification": [
+    {
+      "name": "minecraft.alphasecunited.com",
+      "type": "CNAME",
+      "success": true,
+      "count": 1,
+      "matched": true,
+      "proxied": false,
+      "ttl": 300,
+      "target": "<REDACTED_MINECRAFT_RELAY>"
+    },
+    {
+      "name": "_minecraft._tcp.minecraft.alphasecunited.com",
+      "type": "SRV",
+      "success": true,
+      "count": 1,
+      "matched": true,
+      "proxied": false,
+      "ttl": 300,
+      "priority": 0,
+      "weight": 0,
+      "target": "<REDACTED_MINECRAFT_RELAY>",
+      "port": "<REDACTED_RELAY_PORT>"
+    }
+  ]
+}

@@ -877,3 +877,67 @@ admin.env
 !/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/execution.json
 !/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/final-verification.json
 !/Operations/Evidence/Service Failure Repairs - 2026-10-07/Logs/monitoring-verification.json
+
+# Reviewed Minecraft evidence captures, 2026-10-11: relay targets and ports already masked
+!/Platforms/Minecraft/Evidence/
+/Platforms/Minecraft/Evidence/*
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/
+/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/*
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/
+/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/*
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/Client Address Handling.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/Cloudflare DNS Creation.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/DNS and Minecraft Verification.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/Final Server List Ping Check.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/Hostname Handshake Checks.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/Playit Agent Metadata.json
+!/Platforms/Minecraft/Evidence/DNS Publication - 2026-10-09/Exports/SRV Login Transport Verification.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/
+/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/*
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/
+/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/*
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Container Details and Voice Reachability.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Container and World Verification.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Dockhand Source and Deploy History.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Final VM Configuration.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Obsolete Compose Source Cleanup.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Playit and TeamSpeak Verification.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Runtime Compose Permission Check.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Runtime Compose Validation.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Logs/Shutdown and Initial RAM Setting.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Exports/
+/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Exports/*
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Exports/Playit Account State.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Exports/Playit Public Verification.json
+!/Platforms/Minecraft/Evidence/Deployment - 2026-10-09/Exports/Verification.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/
+/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/*
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Deployment.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Final LAN Status.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Final Live Verification.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Final Public SRV Status.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Function Verification.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/LAN Status.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Public SRV Status.json
+!/Platforms/Minecraft/Evidence/Join Welcome - 2026-10-11/Save and Health Verification.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/
+/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/*
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Dockhand Deployment.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Dockhand Save.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Dockhand Verification.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Initial JVM Check.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/LAN Status.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Minecraft Shutdown.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Proxmox Verification.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Public SRV Status.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/Runtime Compose Verification.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/TeamSpeak Final Verification.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/VM Memory Change.json
+!/Platforms/Minecraft/Evidence/Memory and Operator Update - 2026-10-11/VM and Service Verification.json
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/
+/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/*
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/Initial LAN Check.json
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/Initial Startup Check.json
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/LAN and Public Status.json
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/Reset.json
+!/Platforms/Minecraft/Evidence/World Reset - 2026-10-11/World Verification.json

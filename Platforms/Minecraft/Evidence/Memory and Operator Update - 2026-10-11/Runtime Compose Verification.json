@@ -1,0 +1,8 @@
+{
+  "server": "alpha_prod_01",
+  "command": "set -e\nTZ=America/New_York date '+%Y-%m-%d %I:%M:%S %p %Z'\ndocker exec hawser docker compose -f /opt/docker/hawser/stacks/minecraft/compose.yaml config --quiet\ndocker exec hawser sha256sum /opt/docker/hawser/stacks/minecraft/compose.yaml",
+  "stdout": "2026-10-11 05:57:17 PM EDT\n34b6f49e959e45a80bec5775ffb30e62b4014ea0ab2a5165bda2f7208a9855c3  /opt/docker/hawser/stacks/minecraft/compose.yaml\n",
+  "stderr": "",
+  "code": 0,
+  "success": true
+}

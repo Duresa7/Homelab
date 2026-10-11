@@ -1,0 +1,12 @@
+{
+  "host": "<REDACTED_MINECRAFT_RELAY>",
+  "port": "<REDACTED_RELAY_PORT>",
+  "latency_ms": 280.6,
+  "version_name": "26.3",
+  "protocol": 777,
+  "players_online": 0,
+  "players_max": 20,
+  "description": "AlphaSec United Minecraft",
+  "verified_at": "2026-10-09T19:04:43.779134+00:00",
+  "resolution": "Minecraft SRV"
+}

@@ -1,0 +1,12 @@
+{
+  "captured_at": "2026-10-09, 5:08:33 PM Eastern",
+  "name": "minecraft.alphasecunited.com",
+  "client_protocol": 777,
+  "handshake_host": "resolved SRV target",
+  "player": "testuser",
+  "login_transport_reached_server": true,
+  "first_login_packet_id": 1,
+  "encryption_request_received": true,
+  "online_authentication_required": true,
+  "player_authenticated": false
+}
