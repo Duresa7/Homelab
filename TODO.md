@@ -7,7 +7,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-- [ ] **Confirm the Minecraft Java username for operator access.** Both official lookups returned not found for `mobivalgod`; I need the exact Java profile name before granting permissions. [Pending request](Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md#operator-request).
+- [ ] **Confirm the Minecraft Java username for operator access.** Both official lookups returned not found for `mobivalgod`; I need the exact Java profile name before granting permissions. [Lookup result](Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md#operator-request).
 
 - [ ] **Resolve the Minecraft custom name's server-list ping.** `minecraft.alphasecunited.com` has working DNS and SRV login transport, but Playit rejects the entered hostname used by Minecraft 26.3's ping. [Verification and supported external-domain option](Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md#connection-verification).
 

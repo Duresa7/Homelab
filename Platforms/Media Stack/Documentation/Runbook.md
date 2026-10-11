@@ -1,7 +1,7 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-11
 
 ## Scope and Access
 
@@ -113,6 +113,24 @@ pct exec 842 -- sh -lc 'docker exec gluetun wget -qO- http://127.0.0.1:8080/api/
 ```
 
 Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and `autorun_enabled=false`. The filter applies to newly added torrents; changing it does not retroactively rewrite file priorities for an existing queue. I do not add archive or disc-image patterns without first deciding to reject those release formats.
+
+### Download guard
+
+Behind the filename filter, `media-download-guard.timer` runs `/opt/media-stack/scripts/media-download-guard.py` as root every 30 seconds. It rejects a `tv-sonarr` or `radarr` torrent whose files include a blocked type or no video, blocklists the release in Sonarr or Radarr, deletes the torrent, and triggers at most two replacement searches per item and six per day. The [deployment record](Change%20Records/Download%20Guard%20-%202026-10-11.md) holds the rules and bounds; the [unit tests](../Tests/test-media-download-guard.py) run on any machine with Python 3.
+
+Check it with:
+
+```sh
+pct exec 842 -- sh -lc 'systemctl list-timers media-download-guard.timer --no-pager; journalctl -q -u media-download-guard.service -o cat --since -1d | grep -c "\"event\": \"rejected\""'
+```
+
+The timer should show a `NEXT` time within 30 seconds, and each run logs one JSON line per event: `reject_candidate`, `rejected`, `awaiting_arr_tracking`, `replacement_search`, `retry_error`, `torrent_check_error` or `guard_error`. A silent run is a run that found nothing to reject. `guard_error` with a non-zero exit means a precondition failed, and the first thing to check is that qBittorrent's excluded-name filter is still enabled with `*.exe`. Preview what a run would do without changing anything:
+
+```sh
+pct exec 842 -- sh -lc 'python3 -B /opt/media-stack/scripts/media-download-guard.py --dry-run'
+```
+
+The state file is `/var/lib/media-download-guard/state.json`. Deleting it forgets the denied hashes and the search counters; a torrent already removed stays removed because the release is on the application's blocklist.
 
 ## Rebuild
 

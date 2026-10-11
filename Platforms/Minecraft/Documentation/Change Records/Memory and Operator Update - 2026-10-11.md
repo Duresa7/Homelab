@@ -24,6 +24,6 @@ I [deployed the saved Minecraft stack](../../Evidence/Memory%20and%20Operator%20
 
 ## Operator request
 
-I could not resolve the requested name `mobivalgod`. Both `api.mojang.com/users/profiles/minecraft/mobivalgod` and `api.minecraftservices.com/minecraft/profile/lookup/name/mobivalgod` returned HTTP 404. The server's two-entry player cache contains no matching name; `ops.json` has zero entries. I did not retain separate captures of these lookups. I requested the exact Java profile name and have not granted operator permissions to another account. This is the only pending part of the request.
+I set out to make `mobivalgod` a server operator, but no such Java profile exists. Both `api.mojang.com/users/profiles/minecraft/mobivalgod` and `api.minecraftservices.com/minecraft/profile/lookup/name/mobivalgod` returned HTTP 404. The server's two-entry player cache contains no matching name, and `ops.json` has zero entries. I did not retain separate captures of these lookups. Nobody holds operator permissions until I confirm the exact Java profile name, which stays open in the root [TODO](../../../../TODO.md).
 
 The MOTD remains `AlphaSec United Minecraft`. It appears in the multiplayer server list, as described by the [Minecraft server setup documentation](https://help.minecraft.net/hc/en-us/articles/360058525452). I did not add a custom join message.

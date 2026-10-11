@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, and automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -44,6 +44,8 @@ upnp=False
 Then I compare qBittorrent's listening port with Gluetun's `/gluetun/forwarded_port`. I do not weaken authentication for other source networks.
 
 The live qBittorrent configuration also enables `excluded_file_names_enabled` with the 100-pattern baseline documented in my [payload-filtering research](../Documentation/Download%20Payload%20Filtering%20Research%20-%202026-07-17.md). This setting belongs to qBittorrent rather than Compose because the Web API and WebUI serialize it.
+
+[`media-download-guard.service`](media-download-guard.service) and [`media-download-guard.timer`](media-download-guard.timer) are the installed copies of the systemd units that run the [download guard](../Scripts/media-download-guard.py) behind that filter. They live in `/etc/systemd/system/` on `media-01`; the [deployment record](../Documentation/Change%20Records/Download%20Guard%20-%202026-10-11.md) describes what the guard enforces.
 
 ## Internal HTTPS
 
