@@ -23,7 +23,7 @@ The public path is:
 ```text
 Minecraft client
   -> Cloudflare DNS-only CNAME and Minecraft SRV records
-  -> <REDACTED_MINECRAFT_RELAY_HOST>:26328
+  -> <REDACTED_MINECRAFT_RELAY_HOST>:<REDACTED_RELAY_PORT>
   -> Playit agent 1.0.9 on game-01
   -> 127.0.0.1:25565
   -> minecraft-playit-relay.service
@@ -90,7 +90,7 @@ I added these records to the `alphasecunited.com` Cloudflare zone:
 | Type | Name | Value | TTL | Proxy |
 | --- | --- | --- | --- | --- |
 | CNAME | `minecraft.alphasecunited.com` | `<REDACTED_MINECRAFT_RELAY_HOST>` | 300 | DNS-only |
-| SRV | `_minecraft._tcp.minecraft.alphasecunited.com` | priority 1, weight 1, port 26328, target `<REDACTED_MINECRAFT_RELAY_HOST>` | 300 | n/a |
+| SRV | `_minecraft._tcp.minecraft.alphasecunited.com` | priority 1, weight 1, port <REDACTED_RELAY_PORT>, target `<REDACTED_MINECRAFT_RELAY_HOST>` | 300 | n/a |
 
 Playit's own native custom-domain feature offered a $30/year Premium add-on. I did not purchase it. Minecraft's standard SRV discovery provides the one-name connection I wanted without that subscription.
 
@@ -103,7 +103,7 @@ The Playit tunnel carries only Minecraft. `games.alphasecunited.com`, `wings.alp
 | Fabric boot | `Loading Minecraft 1.21.1 with Fabric Loader 0.19.3`; 163 mods; `Done (11.261s)!` |
 | Local status through loopback relay | Minecraft 1.21.1, protocol 767, 0 of 20 players |
 | DNS CNAME | resolves to `<REDACTED_MINECRAFT_RELAY_HOST>` |
-| DNS SRV | priority 1, weight 1, port 26328, target `<REDACTED_MINECRAFT_RELAY_HOST>` |
+| DNS SRV | priority 1, weight 1, port <REDACTED_RELAY_PORT>, target `<REDACTED_MINECRAFT_RELAY_HOST>` |
 | Public SRV status | `minecraft.alphasecunited.com` returned Minecraft 1.21.1, protocol 767, 0 of 20 players in 114.5 ms |
 | Playit | agent claimed; `playit.service` enabled and active with live control connections |
 | Relay | `minecraft-playit-relay.service` enabled and active; loopback listener and backend connection both passed |
@@ -111,7 +111,7 @@ The Playit tunnel carries only Minecraft. `games.alphasecunited.com`, `wings.alp
 | Host health | healthy; 28.98 percent memory used, root disk 8 percent used |
 | Minecraft container | running; 3.163 GiB of its 10.5 GiB limit at final check |
 
-A low-level test that forced the friendly hostname directly onto port 26328 reset at the relay because it skipped Minecraft SRV discovery. [minecraft-status.py](../../Tests/minecraft-status.py) now has `--srv` mode so the repository test follows the same path as a Minecraft client and does not disclose the relay hostname.
+A low-level test that forced the friendly hostname directly onto port <REDACTED_RELAY_PORT> reset at the relay because it skipped Minecraft SRV discovery. [minecraft-status.py](../../Tests/minecraft-status.py) now has `--srv` mode so the repository test follows the same path as a Minecraft client and does not disclose the relay hostname.
 
 The server log contains non-fatal warnings for optional mixin targets, missing data fixers in some mods, empty Moonlight registries, and one `adorable_eggs` loot-table key. None prevented the server from reaching `Done`, answering status, or remaining up.
 
