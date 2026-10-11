@@ -1,11 +1,13 @@
 # Prometheus TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
-Four items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Twenty-three Grafana alert rules evaluate and route to the Discord alert bot, coloured by class, and delivery is proven in both directions for the infrastructure and updates classes.
+Five items remain open. The 24-hour Grafana lock baseline closed on 2026-07-27 with one successful SQLite retry and zero terminal error lines. The inert Grafana WAL setting is gone from the repository, the live Compose file and the running container as of 2026-09-02. Twenty-three Grafana alert rules evaluate and route to the Discord alert bot, coloured by class, and delivery is proven in both directions for the infrastructure and updates classes.
 
 ## Open
+
+**Expire the app-01 maintenance silences when it returns.** Two Grafana silences mute `app-01` until 11:59 PM on 2026-10-25 while VM 116 is stopped. Expire them as soon as it is back in service, and confirm the bot posted no `Host is down` for it after 6:46 PM on 2026-10-11. IDs and steps are in the [silence record](Change%20Records/app-01%20Maintenance%20Silence%20-%202026-10-11.md#open-state).
 
 **Collect UniFi gateway, switch, and access-point metrics.** WAN throughput and per-AP client counts are the largest remaining blind spot, and the repository has never enumerated the access points or cameras. `unpoller` needs a read-only UniFi local account, which is a new credential and deserves its own change record rather than being folded into a dashboard task.
 

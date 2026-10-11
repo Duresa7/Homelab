@@ -1,7 +1,7 @@
 # Prometheus Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
 ## Health Check
 
@@ -74,6 +74,17 @@ panel-edit and Explore reachable so a query can be read; provisioning still refu
 The alert rules live in `Configuration/grafana/provisioning/alerting/alphasec-united-alerts.yaml`. Change the versioned file first, validate every PromQL expression against the live Prometheus API, upload the file under `~/monitoring/grafana/provisioning/alerting/`, and restart Grafana with `docker restart grafana`. Alerting provisioning is not re-read on an interval, and the authenticated `POST /api/admin/provisioning/alerting/reload` needs the Grafana administrator credential, which the host does not hold; I restarted Grafana for the 2026-09-03, 2026-09-14 and 2026-09-18 rule changes. A clean restart is not the final proof: confirm the Grafana log records `finished to provision alerting`, that all 23 rule UIDs remain present, and that no rule instance holds an evaluation error.
 
 Delivery is `contact-points.yaml` in the same directory: one webhook contact point into the `alert-bot` container and the root policy that routes to it. Its bearer secret is `$ALERT_BOT_SECRET`, which Grafana reads from its environment, which Compose reads from the untracked mode-0600 `.env` beside `docker-compose.yml`. Changing that secret means recreating both `grafana` and `alert-bot`. Do not call a delivery change complete until one throwaway rule has fired and its message has appeared in `#bots`.
+
+## Silence Alerts for Planned Downtime
+
+For a host I take down on purpose, silence its notifications in Grafana rather than editing a rule or removing a target. A silence mutes delivery only: the rule keeps evaluating, the dashboards keep showing the host as down, and nothing under `Configuration/` changes. It lives in Grafana's alertmanager state, so it needs no restart, and it expires on its own.
+
+Create it with the Grafana administrator login, from **Alerting > Silences > New silence** or `POST /api/alertmanager/grafana/api/v2/silences`. Stage the login in a mode-0600 curl configuration file passed with `-K`, never in a command argument. Two silences cover a host, because silence matchers are ANDed and the guest rule labels a VM by its Proxmox `name` rather than `host`:
+
+- `host="<host>"`, for every host-labelled rule, `Host is down` included.
+- `alertname="VM or container is down"` and `name="<guest name>"`, for a VM or LXC.
+
+Set an end time and a comment saying why. Verify with `GET /api/alertmanager/grafana/api/v2/alerts`: the host's alerts should read `suppressed` with the new silence ID in `silencedBy`, and other hosts' alerts should not. When the host is back, expire both silences early with `DELETE /api/alertmanager/grafana/api/v2/silence/<id>` and confirm its targets are `up`. The first use was [app-01 Maintenance Silence - 2026-10-11](Change%20Records/app-01%20Maintenance%20Silence%20-%202026-10-11.md).
 
 ## Rollback
 

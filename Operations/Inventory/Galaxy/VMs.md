@@ -180,6 +180,8 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 
 I stopped this VM on 2026-10-09 and set `onboot: 0` while I deployed Minecraft on Alpha. Its disks, services and resource settings remain installed. [Deployment and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
+On 2026-10-11 I silenced its Grafana alerts until 2026-10-25 so the planned downtime stops posting `Host is down`; expire the two silences when it returns to service. [Silence record](../../../Platforms/Prometheus/Documentation/Change%20Records/app-01%20Maintenance%20Silence%20-%202026-10-11.md).
+
 On 2026-09-11 I replaced its 200 GiB system disk with a 64 GiB disk and then moved both disks to Purple's NVMe-backed `local-lvm`. [Replacement record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%2064%20GiB%20Boot%20Disk%20Replacement%20-%202026-09-11.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/app-01%20and%20edge-01%20Purple%20Migration%20-%202026-09-11.md). A stop and start on 2026-08-10 cleared a stale 24 GiB QEMU allocation. [Resource tuning record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Resource%20Efficiency%20Tuning%20-%202026-08-10.md).
 
 #### Identity
