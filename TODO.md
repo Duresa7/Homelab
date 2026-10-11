@@ -1,13 +1,15 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-11
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
 
-- [ ] **Publish Minecraft through Playit.** The 26.3 server on `alpha-prod-01` is deployed and verified locally. Reuse of the retained tunnel and external verification wait for the Playit details. [Open state](Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md#playit).
+- [ ] **Confirm the Minecraft Java username for operator access.** Both official lookups returned not found for `mobivalgod`; I need the exact Java profile name before granting permissions. [Pending request](Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md#operator-request).
+
+- [ ] **Resolve the Minecraft custom name's server-list ping.** `minecraft.alphasecunited.com` has working DNS and SRV login transport, but Playit rejects the entered hostname used by Minecraft 26.3's ping. [Verification and supported external-domain option](Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md#connection-verification).
 
 - [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey, Purple and Red need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
 

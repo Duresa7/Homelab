@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-11
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
@@ -9,7 +9,9 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
-- 2026-10-09: I deployed Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01` through Dockhand, verified LAN and loopback status, and increased the host VM to 6 GiB maximum and minimum RAM. Both TeamSpeak public paths recovered after the VM restart. `app-01` is temporarily stopped with automatic startup disabled; Coolify is offline. Playit publication for Minecraft remains pending. [Deployment](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+- 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
+
+- 2026-10-09: I deployed Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01` through Dockhand, verified LAN, loopback and public Playit status, and increased the host VM to 6 GiB maximum and minimum RAM. The retained Minecraft tunnel now uses the shared Playit agent; both TeamSpeak public paths remained up after the transfer. I restored `minecraft.alphasecunited.com` in Cloudflare and verified its SRV login transport; the custom name's server-list ping remains rejected by Playit. `app-01` is temporarily stopped with automatic startup disabled; Coolify is offline. [Deployment](../../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md), [DNS publication](../../../Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md).
 
 - 2026-10-06: I rebooted `green-server`, `red-server`, `purple-server` and `blue-server` onto kernel 7.0.14-20-pve with their guests, plus `security-01` and `splunk-siem` onto their waiting kernels, and verified every service afterwards. `grey-server` and `ubuntu-dev` were not rebooted. [Fleet reboots](../../Maintenance/Fleet%20Reboots%20-%202026-10-06.md).
 
@@ -60,7 +62,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
-| alpha-prod-01 | VM 401 | purple-server | Voice and game services | [Vanilla Minecraft Java Edition 26.3](../../../Platforms/Minecraft/README.md), LAN only pending Playit<br>Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
+| alpha-prod-01 | VM 401 | purple-server | Voice and game services | [Vanilla Minecraft Java Edition 26.3](../../../Platforms/Minecraft/README.md), LAN and public Playit verified<br>Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunk Enterprise 10.4.0<br>Enterprise Security 8.5.1<br>SC4S<br>No Wazuh agent |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin 12.2.0<br>Seerr 3.5.0<br>Sonarr 4.0.20 / Radarr 6.4.4 / Prowlarr 2.6.5<br>FlareSolverr 3.5.2<br>qBittorrent 5.2.4 through Gluetun and Proton VPN<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 
@@ -206,15 +208,15 @@ I stopped VM 116 on 2026-10-09 and disabled automatic startup. The installed wor
 
 ## alpha-prod-01
 
-Eight containers were running on 2026-09-25. On 2026-10-09 I verified eight running containers, now including Minecraft and excluding the retired WUD stack, plus the stopped Hawser updater. The VM has 6 GiB maximum and minimum RAM, six vCPUs and a 60 GiB disk.
+Eight containers were running on 2026-09-25. On 2026-10-09 I verified eight running containers, now including Minecraft and excluding the retired WUD stack, plus the stopped Hawser updater. Since 2026-10-11 the VM has 8 GiB maximum and minimum RAM, six vCPUs and a 60 GiB disk.
 
 | Workload | Details |
 | --- | --- |
-| Minecraft | Vanilla Java Edition 26.3, protocol 777, `itzg/minecraft-server:stable-java25`; TCP 25565; 2 GiB maximum heap, 3 GiB container limit; world under `/opt/docker/minecraft/data`; managed as `minecraft` in Dockhand environment 6. LAN and loopback verified; Playit pending. [Platform record](../../../Platforms/Minecraft/README.md) |
+| Minecraft | Vanilla Java Edition 26.3, protocol 777, `itzg/minecraft-server:stable-java25`; TCP 25565; 4 GiB maximum heap, 5 GiB container limit since 2026-10-11; world under `/opt/docker/minecraft/data`; managed as `minecraft` in Dockhand environment 6. LAN, loopback and the retained public Playit tunnel verified on 2026-10-09. `minecraft.alphasecunited.com` resolves through Cloudflare; SRV login transport verified, custom hostname server-list ping rejected. [Platform record](../../../Platforms/Minecraft/README.md) |
 | TeamSpeak | `ts-valorant-02` and `ts-valorant-03`, both TeamSpeak 3 Server 3.13.8, recreated 2026-09-18. [Teamspeak Hosting](../../../Platforms/Teamspeak%20Hosting/README.md) |
 | TS3 Manager | `joni1802/ts3-manager` on TCP 9000, NPM host 22 |
 | TeamSpeak reachability collector | `teamspeak-monitor` from `forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable`; reads each server's public SRV record every cycle and feeds the reachability dashboard |
-| Playit agent | `ghcr.io/playit-cloud/playit-agent:latest`, image label 1.0 |
+| Playit agent | `ghcr.io/playit-cloud/playit-agent:latest`, image label 1.0; three tunnels since 2026-10-09, serving both TeamSpeak instances and Minecraft |
 | cAdvisor, Hawser | cAdvisor 0.60.6, Hawser 0.2.50 |
 | Wazuh agent | 4.14.8-1 since 2026-10-05, held; manager ID `006` as `alpha-prod-01` |
 

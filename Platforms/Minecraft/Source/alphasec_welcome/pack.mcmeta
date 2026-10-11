@@ -1,0 +1,13 @@
+{
+  "pack": {
+    "description": "AlphaSec United welcome for Mobi and Friends",
+    "min_format": [
+      121,
+      0
+    ],
+    "max_format": [
+      121,
+      0
+    ]
+  }
+}

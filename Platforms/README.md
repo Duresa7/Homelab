@@ -29,7 +29,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [Media Stack](Media%20Stack/README.md) | media-01 | Jellyfin 12.2.0, Seerr 3.5.0, Sonarr, Radarr, Prowlarr, FlareSolverr and qBittorrent behind Gluetun |
 | [MeshCentral](MeshCentral/README.md) | docker-blue | Remote support pilot, running beside RustDesk |
 | [Microsoft Intune](Microsoft%20Intune/README.md) | Cloud | Device management for the `alphasecunited.com` tenant |
-| [Minecraft](Minecraft/README.md) | alpha-prod-01 | Vanilla Java Edition 26.3 through Dockhand; TCP 25565 on the LAN, Playit publication pending |
+| [Minecraft](Minecraft/README.md) | alpha-prod-01 | Vanilla Java Edition 26.3 through Dockhand; TCP 25565 on the LAN and `minecraft.alphasecunited.com` through the retained Playit tunnel |
 | [NetBird](Netbird/README.md) | docker-network | NetBird 0.80.0 and dashboard 2.94.0, the WireGuard mesh with a routed path into the lab |
 | [Nginx Proxy Manager](Nginx%20Proxy%20Manager/README.md) | docker-network | NPM 2.15.1, 24 internal HTTPS hosts on one DNS-01 wildcard certificate |
 | [Ollama](Ollama/README.md) | docker-main | Ollama 0.35.1 on the GTX 1080 Ti |

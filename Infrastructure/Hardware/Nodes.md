@@ -1,11 +1,13 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-11
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.78 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green also has unresolved host memory errors from 2026-09-20 and holds no guests. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`.
 
 ## Recent changes
+
+- 2026-10-11: I increased VM 401 `alpha-prod-01` on Purple from 6 GiB to 8 GiB maximum and minimum RAM for Minecraft. Six vCPUs and the 60 GiB disk remain unchanged; `app-01` remains stopped. [Memory increase and verification](../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
 
 - 2026-10-09: On Purple I stopped VM 116 `app-01`, disabled its automatic startup and increased VM 401 `alpha-prod-01` to 6 GiB maximum and minimum RAM for Minecraft. Alpha keeps six vCPUs and its 60 GiB disk. Purple had 4505 MiB available during verification. No physical hardware or storage allocation changed. [Deployment and verification](../../Platforms/Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 

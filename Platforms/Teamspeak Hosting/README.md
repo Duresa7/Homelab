@@ -1,11 +1,13 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-11
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
-On 2026-10-09 I restarted the host to increase its RAM to 6 GiB and added a separate [Minecraft stack](../Minecraft/README.md). Both TeamSpeak servers recovered, and the collector reported local voice, public voice, DNS SRV and ServerQuery up for both. The existing Playit configuration is unchanged. [Deployment and verification](../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+On 2026-10-09 I restarted the host to increase its RAM to 6 GiB and added a separate [Minecraft stack](../Minecraft/README.md). I transferred the retained Minecraft tunnel to the shared Playit agent, which now carries three tunnels. Both TeamSpeak origins stayed unchanged, and the collector reported local voice, public voice, DNS SRV and ServerQuery up for both after the transfer. [Deployment and verification](../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
+
+I restarted `alpha-prod-01` again on 2026-10-11 to increase its memory to 8 GiB for Minecraft. After startup, the collector verified local voice, public voice, DNS SRV and ServerQuery for both TeamSpeak servers. [Memory change and verification](../Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
 
 ## Current State
 

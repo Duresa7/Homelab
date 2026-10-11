@@ -1,9 +1,9 @@
 # Cloudflare
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-02
+**Last updated:** 2026-10-09
 
-Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector runs on `edge-01` in the DMZ and is the only inbound path from the Internet; the gateway forwards no ports. Its ingress is configured from the Cloudflare Zero Trust dashboard, not a local file. Three Access applications control administrative entry to Coolify.
+Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector runs on `edge-01` in the DMZ and carries web ingress; the gateway forwards no ports. Minecraft and TeamSpeak use Playit for their public connections. The Cloudflare Tunnel ingress is configured from the Zero Trust dashboard, not a local file. Three Access applications control administrative entry to Coolify.
 
 | Fact | Value |
 | --- | --- |
@@ -13,7 +13,7 @@ Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector 
 | Public services | `coolify-a1.alphsec.com` straight to Coolify on `app-01`; `*.alphsec.com` through Caddy on `edge-01` to the deployed apps |
 | Access | Three applications for Coolify; two allow policies for the same two email identities and one webhook bypass |
 
-**Last verified against the account:** 2026-09-06, through the Cloudflare Account MCP ([Account Verification](Documentation/Change%20Records/Account%20Verification%20-%202026-09-06.md)). On 2026-09-12 I deleted the Minecraft CNAME and SRV records when I retired Game 01 ([domains](Configuration/domains.md)).
+**Last full verification against the account:** 2026-09-06, through the Cloudflare Account MCP ([Account Verification](Documentation/Change%20Records/Account%20Verification%20-%202026-09-06.md)). On 2026-10-09 I restored the DNS-only CNAME and SRV for `minecraft.alphasecunited.com`, reusing the Playit allocation retained when I retired Game 01 on 2026-09-12. API readback and public DNS checks passed. The [publication record](../../../Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md) records the SRV login transport verification and server-list ping limitation.
 
 ## Records
 

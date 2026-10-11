@@ -3,8 +3,8 @@
 **Created:** 2026-10-09  
 **Last updated:** 2026-10-09
 
-**Status:** LAN deployment complete; Playit publication pending.  
-**Verification:** 2026-10-09, 1:39 PM Eastern.
+**Status:** Deployment and Playit publication complete.  
+**Verification:** 2026-10-09, 3:05 PM Eastern.
 
 I deployed Vanilla Minecraft Java Edition 26.3 as a Docker Compose stack on `alpha-prod-01`, managed through Dockhand. I stopped `app-01` for the time being and added 2 GiB to Alpha's configured memory. CPU and disk allocations are unchanged.
 
@@ -41,8 +41,12 @@ I removed the unused initial `itzg/minecraft-server:java25` image after checking
 
 ## Playit
 
-The [Game 01 retirement record](../../../../Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md#retained-history) says I retained the external Playit allocation while deleting its local agent and removing the Minecraft CNAME and SRV records. That supports trying to reuse the old allocation, but I have not verified its current state in the Playit account.
+The [Game 01 retirement record](../../../../Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md#retained-history) says I retained the external Playit allocation while deleting its local agent and removing the Minecraft CNAME and SRV records. I verified the retained Minecraft Java tunnel still existed in the Playit account, enabled but assigned to the offline agent.
 
-The supplied Playit screenshots show the Minecraft tunnel still allocated to an offline agent and the TeamSpeak agent connected. The [Playit client API](https://github.com/playit-cloud/playit-agent/blob/master/packages/api_client/src/api.rs) supports changing a tunnel's assigned agent through `new_agent_id`. I propose assigning the retained Minecraft tunnel to the connected TeamSpeak agent, keeping the existing tunnel allocation, and setting its TCP origin to `127.0.0.1:25565`. The existing agent runs with host networking on Alpha, so it can reach that origin without another container or credential.
+I opened Origin Configuration, selected Change agent, chose the connected TeamSpeak agent, and applied the transfer with local IP `127.0.0.1`, port `25565` and proxy protocol `None`. At 3:05 PM Eastern, the account showed the tunnel enabled, assigned to the connected agent, with the saved origin intact and the offline warning gone. Its public endpoint matched the value captured before the transfer. The connected agent then reported three tunnels. The existing `playit-agent` container uses host networking on Alpha and reached the origin without a restart, another container or a new credential. I retained the redacted [account-state export](../../Evidence/Deployment%20-%202026-10-09/Exports/Playit%20Account%20State.json); I did not retain an account screenshot or a full browser transcript.
 
-Publication waits for the Playit account-side change or the details needed to restore its separate agent. I will verify the public Minecraft protocol response after connecting the tunnel and restore the public DNS names if requested. I added no WAN port forward, tunnel or DNS record during this deployment. Player login has not been tested.
+At 3:04 PM Eastern, I resolved the public endpoint's Minecraft SRV record and queried the resulting TCP target from `ubuntu-dev`. It returned Minecraft 26.3, protocol 777, zero connected players, a 20-player maximum and `AlphaSec United Minecraft` in 280.6 ms. The [public verification export](../../Evidence/Deployment%20-%202026-10-09/Exports/Playit%20Public%20Verification.json) records that response. I used a temporary private endpoint file for the check and deleted it afterward.
+
+At 3:05 PM Eastern, Minecraft remained healthy and the shared Playit agent and both TeamSpeak containers remained running with their original start times and zero restarts. The TeamSpeak collector file was 54 seconds old and reported local voice, public voice, DNS SRV and ServerQuery up for both servers. I retained the redacted [host verification transcript](../../Evidence/Deployment%20-%202026-10-09/Logs/Playit%20and%20TeamSpeak%20Verification.json). The two TeamSpeak tunnel origins were unchanged. At that stage I had added no WAN port forward, tunnel or DNS record. I restored the custom Minecraft DNS names at 5:01 PM Eastern in the separate [DNS publication](DNS%20Publication%20-%202026-10-09.md), where I verified the SRV login transport and recorded the custom hostname's server-list ping limitation. An authenticated player join has not been tested.
+
+The browser initially failed to open because Ubuntu's AppArmor policy blocked its sandbox. Running `sudo env "PATH=$PATH" t3 browser setup` first failed because root had no active T3 runtime recorded. I repeated it with `T3CODE_HOME=/home/ai-agent/.t3`; setup returned `Allowed Chrome's sandbox for T3's browser` and `This host is ready for T3's browser`, and the Playit page opened successfully. I did not retain a terminal transcript for this setup. After signing in, I returned browser control before applying the account change.

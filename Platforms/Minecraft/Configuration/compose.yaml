@@ -14,7 +14,7 @@ services:
       TYPE: "VANILLA"
       VERSION: "26.3"
       INIT_MEMORY: "1G"
-      MAX_MEMORY: "2G"
+      MAX_MEMORY: "4G"
       ONLINE_MODE: "TRUE"
       ENABLE_RCON: "FALSE"
       MOTD: "AlphaSec United Minecraft"
@@ -22,8 +22,8 @@ services:
       TZ: "America/New_York"
     volumes:
       - /opt/docker/minecraft/data:/data
-    mem_limit: 3g
-    memswap_limit: 3g
+    mem_limit: 5g
+    memswap_limit: 5g
     stop_grace_period: 2m
     labels:
       dockhand.update: "false"

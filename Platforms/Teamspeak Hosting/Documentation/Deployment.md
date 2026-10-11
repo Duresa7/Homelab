@@ -1,7 +1,7 @@
 # TeamSpeak Deployment on alpha-prod-01
 
 **Created:** 2026-05-27  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-09
 
 I run two TeamSpeak 3 servers (3.13.8 on 2026-09-25), one shared Playit agent, and TS3 Manager on `alpha-prod-01`. This record maps the VLAN address, container ports, Playit relays, Cloudflare SRV records, ServerQuery allowlists, Compose projects, and boot recovery.
 
@@ -22,7 +22,7 @@ I run two TeamSpeak 3 servers (3.13.8 on 2026-09-25), one shared Playit agent, a
 | `ts-valorant-02` | 9988/udp | 10012/tcp | 30034/tcp | `ts02.alphasecunited.com` |
 | `ts-valorant-03` | 9989/udp | 10013/tcp | 30035/tcp | `ts03.alphasecunited.com` |
 
-Both containers use host networking. Playit forwards only the two UDP voice ports to loopback; ServerQuery and file transfer remain on the LAN.
+Both containers use host networking. Their Playit tunnels forward the two UDP voice ports to loopback; ServerQuery and file transfer remain on the LAN.
 
 ## DNS Records
 
@@ -43,6 +43,8 @@ The SRV records target the Playit hostnames directly. They don't target the `ts0
 | `ts-valorant-03` | `ts-valorant-03` | `<REDACTED_TEAMSPEAK_RELAY_THREE_HOST>`:49125 | `127.0.0.1:9989/udp` |
 
 The `playit-agent` Compose project is independent of both TeamSpeak projects. Restarting or removing one voice server doesn't stop the agent or the other tunnel.
+
+On 2026-10-09 I assigned the retained Minecraft Java tunnel to this same agent, with TCP origin `127.0.0.1:25565` and proxy protocol disabled. The agent now carries three tunnels. Both TeamSpeak public paths remained up after that transfer. [Minecraft deployment and verification](../../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md#playit).
 
 ## TeamSpeak Containers
 
