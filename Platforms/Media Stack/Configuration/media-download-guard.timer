@@ -1,0 +1,11 @@
+[Unit]
+Description=Check media download payloads every 30 seconds
+
+[Timer]
+OnBootSec=90s
+OnUnitInactiveSec=30s
+AccuracySec=2s
+Unit=media-download-guard.service
+
+[Install]
+WantedBy=timers.target

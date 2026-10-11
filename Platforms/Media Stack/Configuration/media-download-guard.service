@@ -1,0 +1,17 @@
+[Unit]
+Description=Reject unsafe media download payloads
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -B /opt/media-stack/scripts/media-download-guard.py
+User=root
+UMask=0077
+TimeoutStartSec=180
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/media-download-guard
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
