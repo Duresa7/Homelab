@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-11
 
 Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-defined policies, 80 allows and eight blocks, after removing the dashboard policy on 2026-09-26. The table below lists all 88. Generated zone defaults and response companions are not listed.
 
@@ -10,6 +10,8 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-de
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-10-11: I added Andor-ParrotOS-PC (MAC withheld, `192.168.50.102`) to every policy that names Jedi PC: the four MAC lists below and the break-glass source. `AG-PAW` gained the same address. A full list that day returned 89 user-defined policies, one more than this table holds. I have not identified the 89th. [Andor-ParrotOS-PC Admin Access](../Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
 
 - 2026-10-05: I added TCP 3005 to `Allow NPM to docker-main web UIs` for Sure and verified the preserved source, destination and existing ports. [Sure deployment](../../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
@@ -32,7 +34,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | Policy | Enabled | Action | Index | Protocol | Source | Destination |
 |---|---|---|---:|---|---|---|
 | `Block DMZ to Internal` | Yes | BLOCK | 40000 | All | Dmz / Any | Internal / Any |
-| `DMZ Allow List` | Yes | ALLOW | 10001 | All | Internal / 4 MACs | Dmz / Any |
+| `DMZ Allow List` | Yes | ALLOW | 10001 | All | Internal / 5 MACs | Dmz / Any |
 | `Block DMZ to LAN` | Yes | BLOCK | 40001 | All | Dmz / Any | Internal / Any |
 | `Allow VPN to AlphSec-Mgmt` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Mgmt` / Any |
 | `Allow VPN to AlphSec-Servers` | Yes | ALLOW | 10000 | All | Vpn / Any | `AlphaSec-Servers` / Any |
@@ -42,10 +44,10 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Internal to AlphSec-Mgmt` | No | ALLOW | 10000 | All | Internal / Any | `AlphaSec-Mgmt` / Any |
 | `Allow Internal to AlphSec-Servers` | Yes | ALLOW | 10000 | All | Internal / Any | `AlphaSec-Servers` / Any |
 | `Allow edge-01 to app-01 Web` | Yes | ALLOW | 10000 | TCP | Dmz / `edge-01` MAC | `AlphaSec-Servers` / 192.168.80.10 / `App Access` |
-| `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 10 MACs | Internal / Personal-A |
+| `Allow Devices to Personal-A` | Yes | ALLOW | 10001 | All | Internal / 11 MACs | Internal / Personal-A |
 | `Block Trusted to Personal-A` | Yes | BLOCK | 10002 | All | Internal / Trusted | Internal / Personal-A |
-| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 6 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
-| `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / Jedi PC and Parrot OS-Mac MACs | Internal / Management |
+| `Device Access --> Proxmox` | Yes | ALLOW | 10001 | All | Internal / 7 MACs | `AlphaSec-Mgmt` / `Proxmox-Admin-Ports` |
+| `Jedi PC --> Unifi Console SSH` | Yes | ALLOW | 10006 | All | Internal / Jedi PC, Parrot OS-Mac and Andor-ParrotOS-PC MACs | Internal / Management |
 | `Allow Secure and Secure Client to WAC HTTPS` | Yes | ALLOW | 10003 | TCP | Internal / Secure and Secure Client networks | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow MacBook Air and Pixel to WAC HTTPS` | Yes | ALLOW | 10004 | TCP | Internal / MacBook Air M3, Pixel and Parrot OS-Mac device selectors | `AlphaSec-Identity` / 192.168.65.12 / 443 |
 | `Allow WAC to Secure Client WinRM` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Identity` / 192.168.65.12 | Internal / Secure Client network / 5985,5986 |
@@ -102,7 +104,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Observability Web Egress` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / `AG-Observability-Hosts` | External / `PG-Egress-Web` |
 | `Allow Observability NTP Egress` | Yes | ALLOW | 10001 | UDP | `AlphaSec-Observability` / `AG-Observability-Hosts` | External / `PG-NTP` |
 | `Allow NPM to monitor-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | `AlphaSec-Observability` / `AG-Monitor-Collector` / 3000, 8090, 9090 |
-| `Allow Secure to monitor-01 break-glass` | Yes | ALLOW | 10000 | TCP | Internal / 192.168.50.241 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 3000, 8090, 9090 |
+| `Allow Secure to monitor-01 break-glass` | Yes | ALLOW | 10000 | TCP | Internal / 192.168.50.241, 192.168.50.102 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 3000, 8090, 9090 |
 | `Allow Automation to monitor-01 SSH` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.40.36 | `AlphaSec-Observability` / `AG-Monitor-Collector` / 22 |
 | `Allow Monitor DNS to Gateway` | Yes | ALLOW | 10000 | All | `AlphaSec-Observability` / `AG-Monitor-Collector` | Gateway / 53 |
 | `Allow VPN Management Access to PeaNUT` | Yes | ALLOW | 10000 | TCP | Vpn / Management Access | `AlphaSec-Observability` / `AG-Monitor-Collector` / 8090 |

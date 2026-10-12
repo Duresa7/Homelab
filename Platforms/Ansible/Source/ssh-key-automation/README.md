@@ -1,7 +1,7 @@
 # SSH Identity Automation
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-11
 
 I use this project to onboard and rotate SSH public-key identities. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -19,6 +19,7 @@ I use this project to onboard and rotate SSH public-key identities. Semaphore ca
 - I registered `ubuntu-dev` on 2026-08-15. Its key was installed by hand before the project existed, so registration brought an already-present key under management and installed nothing.
 - I added `green-server` to the inventory on 2026-08-15. The public copy had drifted from the live one, which had carried the node for some time. The `jedi-pc` and `mac` allowlists caught up with it on 2026-09-07.
 - `monitor-01`, `game-01` and `ansible-01` joined the inventory on 2026-09-07 as `linux_ssh_key_hosts`, connecting as `ansible` with `dkadi`'s key store like the other guests. `ansible-01` uses `ansible_connection: local`. Sixteen hosts remain under management after the 2026-09-12 retirement, and the audit for every identity reads `present` on every host in its allowlist.
+- I registered `andor-parrotos-pc` on 2026-10-11 with the `jedi-pc` allowlist. It is present on the 15 reachable hosts; `app-01` was parked and still needs it.
 - `ansible-control`'s allowlist holds the nine guests and no node, on purpose. Its key-store override points at the `ansible` account, which does not exist on a node; the controller reaches the nodes as root through the cluster key file, which the Proxmox group manages as one unit.
 
 ## Direct Ansible Commands
@@ -31,13 +32,15 @@ python3 tests/validate_project.py
 ansible-playbook playbooks/ssh-key-audit.yml -e ssh_identity=jedi-pc
 ```
 
-Add an existing key only to the hosts currently missing it:
+Add an existing key only to the hosts the audit reports missing, by naming them:
 
 ```bash
 ansible-playbook playbooks/ssh-identity-onboard.yml \
   -e ssh_identity=jedi-pc \
-  -e ssh_target_group=ssh_key_missing
+  -e '{"ssh_target_hosts": ["app-01"]}'
 ```
+
+`ssh_target_group` takes an inventory group. The audit does not create an `ssh_key_missing` group that a later run can use. Passing one gives an empty host list, and the allowlist check stops the play before it reaches a host.
 
 I don't run that onboarding command until I'm ready to test the new host records.
 

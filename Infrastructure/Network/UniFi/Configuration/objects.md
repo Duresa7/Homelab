@@ -1,7 +1,7 @@
 # UniFi Policy Features and Network Lists
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
 This file holds the reusable policy objects: 22 Network Lists (ten IPv4 address groups and 12 port groups), four OON policies, one traffic route and 16 client groups.
 
@@ -63,7 +63,7 @@ The table covers all 22 Network Lists the controller returned on 2026-09-16. The
 | PG-Printing | Port | 631, 9100 |
 | AG-Domain-Controllers | IPv4 | 192.168.65.10, 192.168.65.11 |
 | AG-Identity-Servers | IPv4 | 192.168.65.10, 192.168.65.11, 192.168.65.12 |
-| AG-PAW | IPv4 | 192.168.50.241 |
+| AG-PAW | IPv4 | 192.168.50.241 (Jedi PC), 192.168.50.102 (Andor-ParrotOS-PC, added 2026-10-11) |
 | PG-AD-Client | Port | 53, 88, 123, 135, 389, 445, 464, 636, 3268, 3269, 49152-65535 |
 | PG-Windows-Admin | Port | 22, 3389, 5985, 5986 |
 | PG-Windows-Exporter | Port | 9182 |

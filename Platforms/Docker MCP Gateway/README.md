@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-11
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -18,7 +18,7 @@ I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves Uni
 | UniFi controller | `192.168.1.1:443`, site `default` |
 | SSH Manager endpoint | `http://192.168.40.39:8812/mcp` (container `ssh-manager-mcp-gateway`), 37 tools; health at `/health` |
 | SSH Manager server | `mcp-ssh-manager`, SSH Manager MCP 3.8.5 with my homelab patch, image `forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable`, private `http://ssh-manager:8080/mcp` |
-| SSH Manager servers | 24, read with `ssh_list_servers` on 2026-09-24 |
+| SSH Manager servers | 25, read with `ssh_list_servers` on 2026-10-11 |
 | Live Compose path | `/opt/docker/mcp-gateway/docker-compose.yml`; Dockhand's imported copy at `/opt/docker/dockhand/stacks/imported/docker_blue/docker-mcp-gateway/compose.yaml` on `docker-main` |
 | Secret files | `/opt/docker/mcp-gateway/.env` (two bearer tokens), `unifi-network.env`, `ssh-manager.env`, all root-owned mode `0600` |
 | Restart policy | `unless-stopped`; SSH Manager also restarts nightly at 4 AM Eastern |
@@ -37,7 +37,7 @@ The live SSH Manager service reads its server definitions from resolved environm
 
 ## Trust Boundary
 
-SSH Manager reaches root on the 17 Linux nodes and guests: direct root login on the five Proxmox nodes and `docker-main`, passwordless sudo on `ansible-01` and `ubuntu-dev`, and password-backed sudo on the other nine. The remaining seven entries are the Windows hosts and two physical laptops. Every entry is unrestricted, Executor holds no approval policy for this connection, and egress is unrestricted by my decision on 2026-09-03.
+SSH Manager reaches root on the 17 Linux nodes and guests: direct root login on the five Proxmox nodes and `docker-main`, passwordless sudo on `ansible-01` and `ubuntu-dev`, and password-backed sudo on the other nine. It also reaches root on the Andor-ParrotOS-PC desktop through password-backed sudo, added on 2026-10-11. The remaining seven entries are the Windows hosts and two physical laptops. Every entry is unrestricted, Executor holds no approval policy for this connection, and egress is unrestricted by my decision on 2026-09-03.
 
 The gateway container needs the host Docker socket, which gives it control of Docker Engine on `docker-blue`. That socket is the main trust boundary. Otherwise the gateway runs with a read-only root filesystem, no Linux capabilities, `no-new-privileges`, 256 MiB, half a CPU, a 256-process limit and bounded JSON logs. Both server services are limited to one CPU and 512 MiB.
 
@@ -69,6 +69,7 @@ Routine checks, image updates and server additions are in the [Runbook](Document
 - [Docker MCP Gateway v2 compatibility rollback](Documentation/Change%20Records/v2%20Compatibility%20Rollback%20-%202026-09-03.md)
 - [SSH Manager shared server cutover](Documentation/Change%20Records/SSH%20Manager%20Shared%20Server%20Cutover%20-%202026-09-03.md)
 - [UniFi shared server cutover](Documentation/Change%20Records/UniFi%20Shared%20Server%20Cutover%20-%202026-09-07.md)
+- [Andor-ParrotOS-PC SSH Manager enrollment](Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Manager%20Enrollment%20-%202026-10-11.md)
 - [Dockhand registry and agent cutover](../Dockhand/Documentation/Change%20Records/Registry%20and%20Agent%20Cutover%20-%202026-09-15.md), which moved both server images to Forgejo
 - [Cutover script](Scripts/ssh-manager-shared-server-cutover.sh)
 - [Nightly restart timer and service](Configuration/systemd/)

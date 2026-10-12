@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
-**Last verified:** 2026-09-27, after adding `192.168.10.176` to `pve_admins`. All five nodes read the 52-line file, report `enabled/running`, and hold five members in the live `pve_admins` set. The earlier check, on 2026-09-06 after removing `192.168.40.39` from `pve_admins`, found this: All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
+**Last verified:** 2026-10-11, after adding `192.168.50.102` to `pve_admins`. All five nodes read the 53-line file (`f9e894e5…`), report `enabled/running`, and hold six members in the live `pve_admins` set. On 2026-09-27, after adding `192.168.10.176`, they read the 52-line file with five members. The earlier check, on 2026-09-06 after removing `192.168.40.39` from `pve_admins`, found this: All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all five `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 
@@ -27,6 +27,7 @@
 | 192.168.10.87 | Pixel |
 | 192.168.10.176 | Parrot OS-Mac |
 | 192.168.50.241 | Jedi PC |
+| 192.168.50.102 | Andor-ParrotOS-PC |
 | 192.168.40.179 | `ubuntu-dev` |
 
 ### `pve_automation`: automation control node (GUI + SSH)
@@ -76,6 +77,8 @@ Proxmox also maintains an auto-generated `management` IPSet for VNC `5900:5999`,
 That generated set holds exactly one member, `192.168.70.0/24`, so its accepts only ever admit a node. Anything a client off MGMT-A needs, `pve_mgmt` has to grant by name. This is not obvious from the rule list, because the generated 3128 and `5900:5999` accepts read as though the ports are open. They are open between nodes and closed to everything else. That is what cost me the SPICE console on 2026-08-07.
 
 ## History
+
+- On 2026-10-11 I added `192.168.50.102` Andor-ParrotOS-PC to `pve_admins`, directly after Jedi PC. The candidate differed by that one line, and the file went from 52 lines to 53. `pve-firewall compile` exited 0. All five nodes read one digest, report `enabled/running`, and `ipset test` finds the address in the live set on each. From the desktop, TCP 22, 8006 and 3128 all open on all five nodes. The UniFi half is the desktop's MAC added to `Device Access --> Proxmox`. I kept no copy of the file. The complete record is [Andor-ParrotOS-PC Admin Access - 2026-10-11](../../../Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
 
 - On 2026-09-27 I added `192.168.10.176` Parrot OS-Mac to `pve_admins`. The candidate differed by that one line, and the file went from 51 lines to 52. `pve-firewall compile` exited 0. All five nodes read one digest, report `enabled/running`, and hold five members in the live set. From the laptop, TCP 22, 8006 and 3128 all open on all five nodes. The UniFi half is the same device's MAC added to `Device Access --> Proxmox`. The pre-change copy is [grey-server-pve-cluster.fw-2026-09-27](../../../../Backups/grey-server-pve-cluster.fw-2026-09-27). The complete record is [Parrot OS-Mac Admin Access - 2026-09-27](../../../Network/UniFi/Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 

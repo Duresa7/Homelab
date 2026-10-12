@@ -1,7 +1,7 @@
 # Access Paths
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-11
 
 This is how anything reaches the lab: the public, the LAN, me from outside, me at a console, and my MCP clients. Five paths, each with one owner. Figures are from the live readback on 2026-09-24 and 2026-09-25 unless a line says otherwise.
 
@@ -60,7 +60,7 @@ Both servers run on CT 108 `docker-blue`, `192.168.40.39`, VLAN 40.
 
 - Executor 1.6.10 on `docker-blue` is the one MCP endpoint. Every tool call is capped at 60 seconds.
 - Docker MCP Gateway v0.43.3 runs two instances on `docker-blue`: UniFi Network MCP on `:8811` and SSH Manager MCP on `:8812`.
-- SSH Manager lists 24 servers. On the 17 Linux nodes and guests its privilege paths reach root.
+- SSH Manager lists 25 servers. On the 17 Linux nodes and guests, and on the Andor-ParrotOS-PC desktop, its privilege paths reach root.
 - UniFi runs in bypass mode: a create, update or delete reaches the controller with no preview step.
 - The Cloudflare Account MCP is remote (`mcp.cloudflare.com`) and holds a full-access account token. The Wazuh MCP on security-01 holds a read-only credential.
 

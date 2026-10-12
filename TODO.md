@@ -7,6 +7,8 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
+- [ ] **Andor-ParrotOS-PC follow-ups.** Since 2026-10-11 ObiPC's hardware runs Parrot Security as Andor-ParrotOS-PC, for now. The two are separate machines, and ObiPC's records and objects stay. Onboard the `andor-parrotos-pc` key to `app-01` when that VM is back. Before ObiPC's Windows goes back on the hardware, remove Andor-ParrotOS-PC's MAC and address grants and rename the UniFi client back to `Obi PC`, or ObiPC inherits Jedi PC's access: [checklist](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md#before-obipcs-windows-returns). [Andor-ParrotOS-PC Admin Access](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
+
 - [ ] **Confirm the Minecraft Java username for operator access.** Both official lookups returned not found for `mobivalgod`; I need the exact Java profile name before granting permissions. [Lookup result](Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md#operator-request).
 
 - [ ] **Resolve the Minecraft custom name's server-list ping.** `minecraft.alphasecunited.com` has working DNS and SRV login transport, but Playit rejects the entered hostname used by Minecraft 26.3's ping. [Verification and supported external-domain option](Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md#connection-verification).

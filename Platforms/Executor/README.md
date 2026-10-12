@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-10-11
 
 I run the self-hosted Executor MCP integration service on `docker-blue`. It gives my MCP clients one endpoint in front of the SSH Manager, UniFi, Wazuh, Cloudflare and other integrations.
 
@@ -25,7 +25,7 @@ I run the self-hosted Executor MCP integration service on `docker-blue`. It give
 | Integration | Connection | Tools | Access |
 |---|---|---|---|
 | UniFi MCP (`unifi-mcp-gateway`) | `unifiMcpGateway`, `http://192.168.40.39:8811/mcp` | 5 | Read, create, update and delete; mutations run without confirmation |
-| SSH Manager MCP (`ssh-manager-mcp-gateway`) | `sshManagerMcpGateway`, `http://192.168.40.39:8812/mcp` | 37 | 24 servers, unrestricted mode |
+| SSH Manager MCP (`ssh-manager-mcp-gateway`) | `sshManagerMcpGateway`, `http://192.168.40.39:8812/mcp` | 37 | 25 servers, unrestricted mode |
 | Wazuh MCP (`wazuh-mcp-server`) | `localWazuh`, `http://192.168.72.2:3000/mcp` | 41 | Read-only: the bearer credential holds only `wazuh:read` |
 | Cloudflare Account MCP (`cloudflare_account`) | `cloudflareAccount`, `https://mcp.cloudflare.com/mcp` | 3 | Full-access account API token, every account and zone permission group |
 | Draw.io MCP (`drawio`) | `drawio`, `https://mcp.draw.io/mcp` | 2 | No authentication |
@@ -43,7 +43,7 @@ The container runs with a read-only root filesystem, no Linux capabilities, `no-
 
 The integrations configured on 2026-09-06 and Draw.io, added on 2026-09-14, carry a workspace policy of Always run, so their tools do not wait for approval. Without one, Executor pauses any tool whose annotations mark it as modifying state, which the Cloudflare `execute` tool did on 2026-09-06 before its policy existed.
 
-That makes Executor a root path into the lab. On 2026-09-24 `ssh_list_servers` returned 24 entries. On the 17 Linux nodes and guests, the recorded privilege paths reach root: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on nine guests, and passwordless sudo on `ansible-01` and `ubuntu-dev`. The other seven entries are HQ-DC01, HQ-DC02 and HQ-MGT01 as `Administrator`, ObiPC, win11-dev, and the physical laptops `surface_pro` and `parrot_os_mac`; I have not swept their privilege level. The UniFi and Cloudflare connections can change or delete anything they reach.
+That makes Executor a root path into the lab. On 2026-09-24 `ssh_list_servers` returned 24 entries. On the 17 Linux nodes and guests, the recorded privilege paths reach root: direct root login on the five Proxmox nodes and `docker-main`, password-backed sudo on nine guests, and passwordless sudo on `ansible-01` and `ubuntu-dev`. The other seven entries are HQ-DC01, HQ-DC02 and HQ-MGT01 as `Administrator`, ObiPC, win11-dev, and the physical laptops `surface_pro` and `parrot_os_mac`; I have not swept their privilege level. On 2026-10-11 I added a 25th, the Parrot desktop `andor_parrot_os_pc`, as `dkadi` with password-backed sudo, so SSH Manager reaches root there too: [Andor-ParrotOS-PC SSH Manager Enrollment](../Docker%20MCP%20Gateway/Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Manager%20Enrollment%20-%202026-10-11.md). The UniFi and Cloudflare connections can change or delete anything they reach.
 
 My three Codex profiles and two Claude Code profiles on `ubuntu-dev` reach Executor as one user-scoped remote MCP server named `executor` at `https://mcp.alphasecunited.com/mcp?search_tools=true`, all over OAuth. Neither client adds an approval gate: Codex approves Executor tools without prompting, and Claude Code allows `mcp__executor__*`.
 

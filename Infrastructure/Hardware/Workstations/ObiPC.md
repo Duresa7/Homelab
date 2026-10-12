@@ -1,7 +1,7 @@
 # ObiPC
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-12
 
 ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` domain. It has an 8-core Ryzen 7 7700X, 32 GB of DDR5, an RTX 3070, a 1 TB and a 500 GB NVMe drive, and a 2.5 Gbps Ethernet adapter. Read from the machine over SSH on 2026-09-11. The operating system was reinstalled on 2026-09-18 after a corruption I did not diagnose; the hardware rows below still hold, and the rows the reinstall changed say so.
 
@@ -73,6 +73,12 @@ Both modules report the same slot label to Windows; the second row is the second
 |---|---|---|---|
 | Ethernet | Realtek Gaming 2.5GbE Family Controller | 2.5 Gbps | Up, the domain-facing connection |
 | Wi-Fi | Realtek 8852BE Wireless LAN WiFi 6 | none | Disconnected |
+
+## Shared hardware with Andor-ParrotOS-PC
+
+Since 2026-10-11 this hardware has been running Parrot Security as [Andor-ParrotOS-PC](Andor-ParrotOS-PC.md), for a while. ObiPC's Windows install is off the disk until then. I treat the two as separate machines, and everything on this page about ObiPC still applies to it.
+
+**Before Windows goes back on this hardware,** I remove Andor-ParrotOS-PC's admin grants. UniFi grants some of them by the Ethernet adapter's MAC, which ObiPC shares, so without that step ObiPC's end-user Windows would get Jedi PC-level access to Proxmox, the DMZ, Personal-A and the UniFi console. The checklist is [Before ObiPC's Windows returns](../../Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md#before-obipcs-windows-returns).
 
 ## Management
 
