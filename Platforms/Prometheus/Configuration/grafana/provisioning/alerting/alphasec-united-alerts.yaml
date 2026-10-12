@@ -369,6 +369,7 @@ groups:
       # 85%: with zfs excluded, the fullest filesystem this rule watches on
       # 2026-08-31 was media-01:/data at 67.1%. hddpool-1 is the fuller thing at
       # 81.4%, and the Proxmox storage rule below is what watches that.
+      # media-01:/data has its own inclusive 90% rule below.
       - uid: homelab-filesystem-filling
         title: Filesystem is almost full
         condition: B
@@ -402,6 +403,8 @@ groups:
                   /
                   node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*|udf|iso9660"}
                 )
+                unless on(host, mountpoint)
+                node_filesystem_size_bytes{host="media-01",mountpoint="/data"}
           - refId: B
             relativeTimeRange: {from: 600, to: 0}
             datasourceUid: __expr__
@@ -417,6 +420,50 @@ groups:
                   reducer: {type: last, params: []}
                   operator: {type: and}
                   evaluator: {type: gt, params: [85]}
+
+      # Media capacity keeps the same 15m delay and reports actual usage.
+      - uid: homelab-media-storage-filling
+        title: Media storage is almost full
+        condition: B
+        for: 15m
+        labels:
+          severity: warning
+          category: capacity
+        annotations:
+          summary: '{{ $labels.host }} {{ $labels.mountpoint }} is {{ humanize $values.A.Value }}% full.'
+          description: >-
+            The media filesystem has been at or above 90% for 15 minutes. There are no
+            backups here by design, so a full disk is fixed by finding what grew
+            rather than by restoring anything.
+        noDataState: NoData
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: >-
+                100 - 100 * (
+                  node_filesystem_avail_bytes{host="media-01",mountpoint="/data",fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*|udf|iso9660"}
+                  /
+                  node_filesystem_size_bytes{host="media-01",mountpoint="/data",fstype!~"tmpfs|overlay|squashfs|ramfs|zfs|fuse.*|udf|iso9660"}
+                )
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: math
+              expression: '$A >= 90'
+              intervalMs: 1000
+              maxDataPoints: 43200
 
       # Owns the ZFS pools and the LVM thin pools. This is not redundant with the
       # filesystem rule: a thin pool holds VM disks that no guest filesystem can
