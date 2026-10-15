@@ -65,4 +65,4 @@ Coolify holds three GitHub App sources, `Public GitHub`, `duresa7-git-access` an
 ## Open
 
 - [ ] Confirm the Security Insights finding clears on its next scan. If the scanner still flags an IP-scoped bypass, mark it Accept risk and link this record.
-- [ ] Keep the list current. GitHub adds ranges to `hooks` without notice; the three `9.234.x` ranges are recent ones. A delivery from a missing range fails at Access and shows only as a failed row in GitHub's Recent Deliveries. Compare the list against `api.github.com/meta` when I next work on Coolify, or automate the sync.
+- [x] Keep the list current. GitHub adds ranges to `hooks` without notice; the three `9.234.x` ranges are recent ones. A delivery from a missing range fails at Access and shows only as a failed row in GitHub's Recent Deliveries. Closed the same day: edge-01 syncs the list daily and Grafana alerts after two missed days; [sync record](GitHub%20Webhook%20Range%20Sync%20on%20edge-01%20-%202026-10-15.md).

@@ -3,7 +3,7 @@
 **Created:** 2026-07-22  
 **Last updated:** 2026-10-15
 
-I last verified these Access applications against the Cloudflare API on 2026-09-06, through the Executor Cloudflare Account MCP connection. All three were unchanged since 2026-07-22, and the two allow applications share one reusable policy, `Allow dkadi`, with the same two email identities. On 2026-10-15 I limited the webhook bypass to GitHub's webhook ranges, held in the Zero Trust IP list `GitHub Webhooks`; [change record](../Documentation/Change%20Records/Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md).
+I last verified these Access applications against the Cloudflare API on 2026-09-06, through the Executor Cloudflare Account MCP connection. All three were unchanged since 2026-07-22, and the two allow applications share one reusable policy, `Allow dkadi`, with the same two email identities. On 2026-10-15 I limited the webhook bypass to GitHub's webhook ranges, held in the Zero Trust IP list `GitHub Webhooks`; [change record](../Documentation/Change%20Records/Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md). edge-01 refreshes that list from `api.github.com/meta` daily; [sync record](../Documentation/Change%20Records/GitHub%20Webhook%20Range%20Sync%20on%20edge-01%20-%202026-10-15.md).
 
 | Application | Protected URL | Decision | Purpose |
 |---|---|---|---|

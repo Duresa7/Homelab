@@ -828,6 +828,61 @@ groups:
                   operator: {type: and}
                   evaluator: {type: lt, params: [14]}
 
+      # edge-01 syncs the Cloudflare IP list that the Coolify webhook's Access
+      # bypass matches against GitHub's published ranges, once a day through
+      # github-webhook-ranges.timer. A range GitHub adds after the sync stops
+      # working fails quietly: the delivery dies at Access and nothing but
+      # GitHub's Recent Deliveries page says so. The script writes the time of
+      # its last successful run; two missed days means the token, the GitHub
+      # endpoint or the host's egress broke. Subtracting from time() in the
+      # query keeps the age as the value, so the threshold sees seconds, not a
+      # boolean. Added 2026-10-15.
+      - uid: homelab-github-webhook-ranges-stale
+        title: GitHub webhook range sync has stopped
+        condition: B
+        for: 30m
+        labels:
+          severity: warning
+          category: network
+        annotations:
+          summary: 'edge-01 last synced the GitHub Webhooks IP list {{ humanizeDuration $values.A.Value }} ago.'
+          description: >-
+            github-webhook-ranges.timer on edge-01 has not completed a
+            successful run in two days. Read `journalctl -u
+            github-webhook-ranges` there. Until it runs, a webhook range GitHub
+            adds is not in the Cloudflare list and deliveries from it fail at
+            Access.
+        noDataState: OK
+        execErrState: Error
+        isPaused: false
+        data:
+          - refId: A
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: bfgnkdi47u5tsa
+            model:
+              refId: A
+              editorMode: code
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              expr: 'time() - github_webhook_ranges_last_success_timestamp_seconds'
+          - refId: B
+            relativeTimeRange: {from: 600, to: 0}
+            datasourceUid: __expr__
+            model:
+              refId: B
+              type: threshold
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              conditions:
+                - type: query
+                  query: {params: [A]}
+                  reducer: {type: last, params: []}
+                  operator: {type: and}
+                  evaluator: {type: gt, params: [172800]}
+
   # =====================================================================
   # Power and hardware.
   # =====================================================================
