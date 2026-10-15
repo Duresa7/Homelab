@@ -4,7 +4,7 @@
 **Last updated:** 2026-10-15
 
 **Implementation date:** 2026-10-15  
-**Status:** Applied; the after-reboot check is open  
+**Status:** Applied; confirmed after a reboot on Green and Red. Purple's after-reboot check is open  
 **Affected systems:** `purple-server`, `green-server` and `red-server`: `/etc/network/interfaces`, onboard Intel I219-LM `nic0` (`e1000e`)  
 **Incident:** [Purple Server NIC Transmit Hang - 2026-10-14](../../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md)
 
@@ -45,9 +45,26 @@ The unchanged `carrier_changes` counters show the link never dropped. The kernel
 
 On Purple, VM 121 `edge-01` and VM 401 `alpha-prod-01` stayed running. On `alpha-prod-01` the `minecraft` container was healthy, `playit-agent` was up and port 25565 accepted a loopback connection. VM 116 `app-01` was stopped, as it has been since it was parked on 2026-10-09.
 
+## After-reboot verification
+
+Later on 2026-10-15 I rebooted Green and then Red, one at a time, so the cluster never had fewer than four votes. Each reboot was a normal `systemctl reboot` scheduled through `systemd-run`. Neither node had `ethtool` run by hand after it booted.
+
+| Node | Shutdown (EDT) | Booted | Kernel | Rejoined cluster | TSO / GSO / GRO after boot | Link |
+|---|---|---|---|---|---|---|
+| `green-server` | 8:30:01 AM | 8:30:52 AM | `7.0.14-20-pve` | 8:31:01 AM | off / off / off | 1000 Mb/s full duplex |
+| `red-server` | 8:34:58 AM | 8:35:57 AM | `7.0.14-22-pve` | 8:36:33 AM | off / off / off | 1000 Mb/s full duplex |
+
+On both nodes, `networking.service` finished within seven seconds of boot. Both nodes came back with RX/TX checksumming and scatter-gather still on, five quorate votes, all eight Corosync peer links connected, `pve-cluster`, `pvedaemon`, `pveproxy`, `pvestatd` and `corosync` active, no failed units, and no `Hardware Unit Hang` lines. Both reached the gateway.
+
+Green has no `7.0.14-22-pve` installed, so it booted the same kernel. Red booted the `7.0.14-22-pve` kernel it had been waiting for since the [2026-10-07 package updates](../../../../../Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
+
+Red's only guest, CT 842 `media-01`, shut down cleanly at 8:35:13 AM and started again at 8:36:35 AM, so the media stack was down for about a minute and a half. All ten of its running containers came back, and `gluetun`, `jellyfin`, `hawser` and `cadvisor` reported healthy. The Docker boot race that hit Minecraft did not recur here. Every container's resolver file names the host's external server, and `jellyfin`, `sonarr`, `radarr`, `prowlarr`, `jellyseerr` and `qbittorrent` (through `gluetun`) all resolved an external name.
+
+Grey could not ping Green after Green's reboot, and Green could not ping Grey. The reboot did not cause this. Grey gets no ping reply from Purple, Blue or Red either, Corosync traffic between the nodes was unaffected, and Green reached the gateway normally.
+
 ## Open
 
-- I have not rebooted any node since the change. The final check is `ethtool -k nic0` reading TSO, GSO and GRO off after each node's next boot. Red is already due a reboot for kernel `7.0.14-22-pve`.
+- Purple has not rebooted since the change. Its check is `ethtool -k nic0` reading TSO, GSO and GRO off after its next boot.
 - Whether this prevents the hang will only show over time. If the hang returns, I will widen the line to every offload and record the recurrence against the incident.
 - With GRO off, the CPU handles each received packet separately. I have not measured the cost.
 - The NIC watchdog, the BIOS/ME check and out-of-band power control are still open in the [Galaxy TODO](../TODO.md#i219-transmit-hang-prevention).
