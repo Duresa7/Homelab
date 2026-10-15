@@ -19,7 +19,7 @@ Open Galaxy work only. Closed sections are listed in the root [COMPLETED](../../
 - [ ] I need to consider a second physical NIC, USB or M.2 A+E, for Corosync link1 so both links no longer share one NIC and cable.
 - [ ] I need to watch Purple, Green and Red for `e1000e` / `Detected Hardware Unit Hang`, record any recurrence against this incident, and widen the `post-up` line to every offload if it returns.
 
-LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed on 2026-10-15. Minecraft's external DNS failure was corrected by a container restart; its [reboot persistence item](../../../../Platforms/Minecraft/README.md#open-items) remains open in the platform backlog.
+LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed on 2026-10-15. Minecraft's external DNS failure was corrected by a container restart, and I [pinned its DNS server](../../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md) the same morning so the boot race can't recur.
 
 ## <a id="green-memory-repair-and-win11-dev-provisioning"></a>Green Memory Repair
 

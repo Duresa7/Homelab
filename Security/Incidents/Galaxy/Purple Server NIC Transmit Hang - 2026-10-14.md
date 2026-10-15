@@ -160,11 +160,15 @@ I recovered Purple by powering it off and on. At 12:35:03 AM I pressed the power
 
 At 12:58:13 AM EDT on 2026-10-15, with 0 of 20 players online, I ran `docker restart minecraft`. It logged `Done (0.301s)` at 12:58:25 AM and was healthy at 12:58:32 AM. Its regenerated resolver file reads `# ExtServers: [host(192.168.80.1)]`, and all three Mojang/Minecraft service names resolve inside the container. At 12:59 AM a LAN server-list ping again gave 26.3 / 777 / 0/20, pong OK, with 1.8 ms connect time.
 
-The restart corrected the current container state. I have not changed the Dockhand-managed stack or the boot-recovery script. The [Minecraft open item](../../../Platforms/Minecraft/README.md#open-items) tracks making DNS survive the next reboot.
+The restart corrected the current container state. Corrective action 4 later removed the race.
 
 ### 3. Disable `nic0` offloads on Purple, Green and Red
 
 At about 8:06 AM EDT on 2026-10-15, I added `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces` on all three M920q nodes. I then ran `ifup nic0` on each, so the configured line applied the change. TSO, GSO and GRO read off on every node. No link dropped, all Corosync links stayed connected, and Purple's guests kept running. ifupdown2 runs the line at every boot. Green, Red and Purple all came back with the offloads off when I rebooted them one at a time later that morning, and Red booted `7.0.14-22-pve`. This is the community workaround, not a proven fix. [Change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
+
+### 4. Pin Minecraft's DNS server
+
+Purple's 9:06 AM verification reboot reproduced the Minecraft DNS boot race, and I restarted the container again at 9:09:01 AM. At 9:19:01 AM, with 0 of 20 players online, I recreated it with `dns: [192.168.80.1]` in its Compose definition, so Docker no longer takes its DNS server from Alpha's resolver file at start. It was healthy at 9:19:18 AM, its resolver file reads `# Overrides: [nameservers]`, and all three authentication names resolve. I have not yet confirmed it across a reboot of `alpha-prod-01`. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
 
 ## Validation
 
@@ -205,7 +209,7 @@ I did not test an authenticated Minecraft join, which needs a real account, or T
 
 The persistent offload change is applied on Purple, Green and Red and held through a reboot on each. I still need to add the NIC watchdog, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
-Purple's verification reboot at 9:06 AM on 2026-10-15 reproduced the Minecraft DNS boot race, and I restarted the container again at 9:09:01 AM. I still need to make Minecraft DNS survive the next reboot, either with pinned `dns: [192.168.80.1]` as for the collector or by adding Minecraft to boot recovery. This requires a Dockhand-managed stack or recovery-script change and remains in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
+Purple's verification reboot at 9:06 AM on 2026-10-15 reproduced the Minecraft DNS boot race. I pinned Minecraft's DNS server at 9:19 AM, which closes that item; confirming it across Alpha's next reboot is recorded in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
 
 ## Related Records
 
