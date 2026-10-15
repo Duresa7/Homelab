@@ -53,9 +53,18 @@ The LAN status probe showed 0 of 20 players at 9:18:56 AM. At 9:19:01 AM I ran `
 - At 9:19:13 AM the log shows `Preparing level "world"` and `Done (0.220s)`, loading the existing world rather than generating a new one.
 - At 9:19:24 AM, server-list pings on the LAN and through the Cloudflare SRV record and Playit both returned 26.3 / 777 / 0/20 with pong OK.
 
-## Not yet tested
+## Reboot test
 
-I have not rebooted `alpha-prod-01` since the change. After its next boot, the resolver file should show `Overrides: [nameservers]` and the three names should resolve without a restart. An authenticated player join also remains untested.
+At 9:23:56 AM I rebooted VM 401 `alpha-prod-01` with `qm reboot 401` from Purple. Before the reboot, Minecraft showed 0 of 20 players. TeamSpeak showed 1 client on each server, which is the monitoring collector's own ServerQuery login; neither server has gone below 1 in the past seven days. The guest shut down cleanly and started again at 9:24:08 AM, and its operating system was up at 9:24:23 AM.
+
+The race happened again on this boot. `minecraft` started at 9:24:28.67 AM, and Alpha wrote `/etc/resolv.conf` at 9:24:32.84 AM, 4.2 seconds later. That is the same gap as the two earlier failures. This time:
+
+- The container's resolver file read `# ExtServers: [192.168.80.1]` and `# Overrides: [nameservers]`.
+- All three authentication names resolved, and the log had no `UnknownHostException`.
+- The container was healthy with restart count 0. Its start time stayed 9:24:28 AM, so nothing restarted it. The TeamSpeak boot-recovery script does not touch Minecraft, and it restarted only the two voice servers, at 9:25:58 AM, and `playit-agent`, at 9:26:18 AM.
+- At 9:26:51 to 9:26:53 AM, `teamspeak_public_up` was 1 for `ts02` and `ts03`, TS3 Manager returned HTTP 200 and no alert was firing. Minecraft server-list pings on the LAN and through the Cloudflare SRV record and Playit both returned 26.3 / 777 / 0/20 with pong OK.
+
+The pin holds across a boot that loses the race. An authenticated player join remains untested.
 
 ## Rollback
 

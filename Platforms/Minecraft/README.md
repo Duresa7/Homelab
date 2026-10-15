@@ -36,4 +36,4 @@ On 2026-10-15, after the [Purple NIC outage that began on October 14](../../Secu
 ## Open items
 
 - [x] Make external DNS survive a reboot. On 2026-10-15 I pinned `dns: [192.168.80.1]` in the Compose definition after the boot race hit twice that day. [Change record](Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
-- [ ] I need to confirm after `alpha-prod-01`'s next reboot that the container's resolver file reads `# Overrides: [nameservers]` and the three authentication names resolve without a restart.
+- [x] Confirm the pin across a reboot. A test reboot of `alpha-prod-01` at 9:24 AM on 2026-10-15 lost the race by 4.2 seconds, and the container still resolved all three authentication names without a restart ([reboot test](Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md#reboot-test)).
