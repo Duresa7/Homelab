@@ -25,8 +25,10 @@ These are the tokens my records document, as of 2026-10-15. Other tokens in the 
 | Token | Permissions | Used by |
 | --- | --- | --- |
 | `UniFi DDNS` | Zone Read and DNS Write on `duresakadi.com`; no client-IP filter, no expiry | Dynamic DNS on Ahsoka Gateway, since 2026-10-13 ([token change](Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md)) |
-| `UniFi Cert V2` | DNS Write | The ACME client that renews the `unifi.duresakadi.com` certificate; I have not identified its host. Last used 2026-10-13 |
+| `UniFi Cert V2` | DNS Write | UniFi's built-in certificate manager on Ahsoka Gateway, which renews the `unifi.duresakadi.com` certificate through DNS-01 ([UniFi](../UniFi/README.md#dynamic-dns-and-the-console-name)). Last used 2026-10-13 |
 | `executor-mcp` | Every account and zone permission group | Executor's Cloudflare Account MCP ([record](../../../Platforms/Executor/Documentation/Change%20Records/Cloudflare%20Account%20MCP%20Integration%20-%202026-09-06.md)) |
+
+> **Before rolling or deleting `UniFi Cert V2`:** create a replacement token first and enter it in the UniFi certificate entry through the **Manage** link on UniFi's Certificates list. Renewal is automatic, and the next one is expected around mid-December 2026. If the token stops working before the certificate entry has the replacement, renewal fails silently and the certificate expires at 1:51 AM on 2027-01-11.
 
 ## Records
 

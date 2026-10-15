@@ -4,11 +4,11 @@
 **Last updated:** 2026-10-15
 
 **Implementation date:** 2026-10-13  
-**Status:** Complete; two follow-ups open  
+**Status:** Complete; one follow-up open  
 **Affected systems:** Cloudflare account API tokens `UniFi DDNS` (new), `UniFi Cert V2` (renamed from `UniFi Dynamic DNS`) and `Unifi Certificate` (deleted); the Cloudflare dynamic DNS entry on Ahsoka Gateway  
 **Incident:** [Dynamic DNS Never Updated the Console Name - 2026-10-13](../../../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)
 
-On 2026-10-13 I gave the gateway's dynamic DNS its own Cloudflare token, named the old token for the certificate client that actually uses it, and deleted a token nothing had used since 2026-07-22. Before the change, one token served both jobs, and the secret UniFi held had been dead since I rolled the token on 2026-08-13. The [troubleshooting record](../../../UniFi/Documentation/Troubleshooting/Cloudflare%20Rejected%20the%20Dynamic%20DNS%20Token%20Since%20Setup%20-%202026-10-13.md) has the investigation.
+On 2026-10-13 I gave the gateway's dynamic DNS its own Cloudflare token, named the old token for UniFi's certificate manager, which actually uses it, and deleted a token nothing had used since 2026-07-22. Before the change, one token served both UniFi features, and the secret UniFi held had been dead since I rolled the token on 2026-08-13. The [troubleshooting record](../../../UniFi/Documentation/Troubleshooting/Cloudflare%20Rejected%20the%20Dynamic%20DNS%20Token%20Since%20Setup%20-%202026-10-13.md) has the investigation.
 
 All times are EDT. Cloudflare's audit log records them in UTC.
 
@@ -33,11 +33,11 @@ I pasted the token into the gateway's Cloudflare dynamic DNS entry in UniFi in p
 
 ### The old token renamed
 
-I renamed `UniFi Dynamic DNS` to `UniFi Cert V2`. Since the roll on 2026-08-13 its secret has belonged to the ACME client that renews the Let's Encrypt certificate for `unifi.duresakadi.com`, and a rename does not change the secret, so that client keeps working. The token holds DNS Write only. I left its permissions alone.
+I renamed `UniFi Dynamic DNS` to `UniFi Cert V2`. Since the roll on 2026-08-13 its secret has been held only by UniFi's built-in certificate manager on Ahsoka Gateway, which renews the Let's Encrypt certificate for `unifi.duresakadi.com` through DNS-01. DNS-01 means it proves it controls the name by writing a TXT record at `_acme-challenge.unifi.duresakadi.com`, which is why the token needs DNS Write. A rename does not change the secret, so renewal keeps working. The token holds DNS Write only. I left its permissions alone.
 
 ### An unused token deleted
 
-At 7:35:24 PM I deleted `Unifi Certificate`, an older token last used on 2026-07-22.
+At 7:35:24 PM I deleted `Unifi Certificate`, an older token last used on 2026-07-22. The certificate entry in UniFi has the same name, "Unifi Certificate", but the two are separate. Renewal uses `UniFi Cert V2`, so deleting the token did not affect the certificate.
 
 ## Verification
 
@@ -51,15 +51,14 @@ At 7:35:24 PM I deleted `Unifi Certificate`, an older token last used on 2026-07
 | Token | Permissions | Used by |
 |---|---|---|
 | `UniFi DDNS` | Zone Read and DNS Write on `duresakadi.com`; no IP filter, no expiry | Dynamic DNS on Ahsoka Gateway |
-| `UniFi Cert V2` | DNS Write | The ACME client for `unifi.duresakadi.com`; last used 3:49:32 AM on 2026-10-13 |
+| `UniFi Cert V2` | DNS Write | UniFi's certificate manager on Ahsoka Gateway, for `unifi.duresakadi.com`; last used 3:49:32 AM on 2026-10-13 |
 
 The current list, with the other documented token, is in the [Cloudflare README](../../README.md#api-tokens).
 
 ## Open
 
-- **Find the certificate client.** Something renews the Let's Encrypt certificate for `unifi.duresakadi.com` through DNS-01 with `UniFi Cert V2`. DNS-01 means the client proves it controls the name by writing a TXT record at `_acme-challenge.unifi.duresakadi.com`. No record in this repository says which host or tool does this. The certificate is valid until 2027-01-11, so the next renewal is due around December 2026. Once I find it, it needs its own record.
-- **Delete the stale challenge record.** The `_acme-challenge.unifi.duresakadi.com` TXT record the client wrote at 3:49:32 AM on 2026-10-13 was still there at 8:19 AM on 2026-10-15. It is harmless and can be deleted. The client apparently does not clean up its challenge records, which I should check when I find it.
+- **Delete the stale challenge record.** UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal. It was still there at 8:19 AM on 2026-10-15. It is harmless and can be deleted. After the next renewal, expected around mid-December 2026, check whether it leaves another one behind.
 
 ## Rollback
 
-None planned: the state before the change was broken. `Unifi Certificate` stays deleted; nothing had used it since 2026-07-22. Renaming `UniFi Cert V2` back would not affect the client that uses it.
+None planned: the state before the change was broken. `Unifi Certificate` stays deleted; nothing had used it since 2026-07-22. Renaming `UniFi Cert V2` back would not affect the certificate manager that uses it.

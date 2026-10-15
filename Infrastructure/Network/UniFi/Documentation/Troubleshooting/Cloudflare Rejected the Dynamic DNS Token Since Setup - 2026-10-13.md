@@ -5,7 +5,7 @@
 
 **Investigated:** 2026-10-13; re-checked 2026-10-15  
 **Owner:** UniFi / Ahsoka Gateway dynamic DNS  
-**Status:** Resolved; two follow-ups open
+**Status:** Resolved; one follow-up open
 
 ## Symptom
 
@@ -29,7 +29,8 @@ I turned on SSH on Ahsoka Gateway (`192.168.1.1`, UCG-Fiber, firmware 5.1.33.340
 - **The service.** UniFi's dynamic DNS with the Cloudflare provider runs inadyn 2.13.0. Its generated configuration is `/run/ddns-eth0-inadyn.conf`, for interface `eth0`, with hostname `unifi-ddns.duresakadi.com`, the zone `duresakadi.com` as username and a Cloudflare API token as password. inadyn runs with `-C`, which keeps it running after an error, and retries about every two minutes.
 - **The logs.** They reach back to 2026-08-26. They held 34,719 `Update forced` lines and 34,711 `Error response` lines for that alias, and no successful update.
 - **The token.** The secret in the configuration was a 53-character `cfat_` account token with a valid built-in checksum. A copying error would break the checksum, so this was a complete secret that Cloudflare no longer accepted.
-- **Cloudflare's audit log.** At 9:27:44 AM EDT on 2026-08-13 I created the A record by hand with the address of the time. At 9:38:51 AM I created the account API token `UniFi Dynamic DNS`, DNS Write only, and pasted it into UniFi. At 10:04:17 AM I rolled it. Rolling gives a token a new secret and invalidates the old one immediately, while the name and permissions stay. The new secret went to the ACME client that renews the Let's Encrypt certificate for `unifi.duresakadi.com`, which used it that day and again at 3:49:32 AM on 2026-10-13. At 10:11 AM I created the DNS-only CNAME `unifi.duresakadi.com` pointing at `unifi-ddns.duresakadi.com`.
+- **Cloudflare's audit log.** At 9:27:44 AM EDT on 2026-08-13 I created the A record by hand with the address of the time. At 9:38:51 AM I created the account API token `UniFi Dynamic DNS`, DNS Write only, and pasted it into UniFi. At 10:04:17 AM I rolled it. Rolling gives a token a new secret and invalidates the old one immediately, while the name and permissions stay. The new secret went only to UniFi's built-in certificate manager on the same gateway, which renews the Let's Encrypt certificate for `unifi.duresakadi.com` and used it that day and again at 3:49:32 AM on 2026-10-13. At 10:11 AM I created the DNS-only CNAME `unifi.duresakadi.com` pointing at `unifi-ddns.duresakadi.com`.
+- **The certificate manager.** On 2026-10-15 UniFi's Certificates list showed one certificate, "Unifi Certificate", for `unifi.duresakadi.com`, issued by Let's Encrypt and valid from 2:51 AM on 2026-10-13 to 1:51 AM on 2027-01-11. Let's Encrypt backdates a certificate's start by about an hour, so it was issued at about 3:51 AM, two minutes after the rolled token wrote the `_acme-challenge` record from inside my home network.
 - **The record.** The A record had never been modified since I created it.
 - **The permissions inadyn needs.** inadyn's Cloudflare plugin first calls `GET /zones?name=<zone>`, then looks up the record, then sends a `PATCH`. The inadyn README requires Zone.Zone Read and Zone.DNS Edit. `UniFi Dynamic DNS` had no Zone Read.
 
@@ -39,7 +40,7 @@ The secret in UniFi was the one I invalidated by rolling the token at 10:04:17 A
 
 ## Fix
 
-In the Cloudflare dashboard, under Manage account, Account API tokens, I created a new account API token `UniFi DDNS` at 6:27:47 PM EDT on 2026-10-13: Zone, Zone, Read and Zone, DNS, Edit, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. I renamed the old token to `UniFi Cert V2` because the certificate client uses it; a rename leaves the secret alone. The [change record](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) covers the token changes and the deletion of an unused token.
+In the Cloudflare dashboard, under Manage account, Account API tokens, I created a new account API token `UniFi DDNS` at 6:27:47 PM EDT on 2026-10-13: Zone, Zone, Read and Zone, DNS, Edit, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. I renamed the old token to `UniFi Cert V2` because UniFi's certificate manager uses it; a rename leaves the secret alone. The [change record](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) covers the token changes and the deletion of an unused token.
 
 ## Verification
 
@@ -57,7 +58,4 @@ A refused dynamic DNS update does not show up until the WAN address changes. The
 
 ## Open
 
-- I don't know which host or tool runs the ACME renewal for `unifi.duresakadi.com` with `UniFi Cert V2`. The certificate is valid until 2027-01-11; the next renewal is due around December 2026.
-- The certificate client's `_acme-challenge.unifi.duresakadi.com` TXT record from 3:49:32 AM EDT on 2026-10-13 was still there at 8:19 AM EDT on 2026-10-15. It is harmless and can be deleted.
-
-Both are tracked in the change record's [open items](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
+UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM EDT on 2026-10-13 for that day's renewal. It was still there at 8:19 AM EDT on 2026-10-15. It is harmless and can be deleted. After the next renewal I'll check whether the certificate manager leaves another one behind. This is tracked in the change record's [open items](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).

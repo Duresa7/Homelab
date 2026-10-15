@@ -54,8 +54,10 @@ Dynamic DNS keeps a public name pointed at the gateway when the ISP changes the 
 | Client | UniFi Dynamic DNS with the Cloudflare provider. The gateway runs inadyn 2.13.0 from the generated `/run/ddns-eth0-inadyn.conf` on `eth0` and retries about every two minutes |
 | Entry | Hostname `unifi-ddns.duresakadi.com`, username the zone `duresakadi.com`, password the Cloudflare account API token `UniFi DDNS` |
 | Token | `UniFi DDNS`: Zone Read and DNS Write on `duresakadi.com` only, no client-IP filter, no expiry. [Cloudflare API tokens](../Cloudflare/README.md#api-tokens) |
-| Certificate | Let's Encrypt, issued over DNS-01 by a separate ACME client with the token `UniFi Cert V2`; valid until 2027-01-11. I have not identified the client's host |
-| Last verified | 2026-10-15 8:19 AM EDT: the A record matched the current WAN address |
+| Certificate | Let's Encrypt, from UniFi's built-in certificate manager on this gateway. Its entry, "Unifi Certificate", renews automatically over DNS-01 with the Cloudflare token `UniFi Cert V2`. DNS-01 means it proves it controls the name by writing a TXT record at `_acme-challenge.unifi.duresakadi.com`. The current certificate is valid until 1:51 AM on 2027-01-11 |
+| Last verified | 2026-10-15 8:19 AM EDT: the A record matched the current WAN address. The same day, UniFi's Certificates list showed the certificate Active and valid |
+
+> **Before rolling or deleting `UniFi Cert V2`:** create a replacement token first and enter it in the certificate entry through the **Manage** link on UniFi's Certificates list. Renewal is automatic, and the next one is expected around mid-December 2026. If the token stops working before the certificate entry has the replacement, renewal fails silently and the certificate expires at 1:51 AM on 2027-01-11.
 
 Dynamic DNS never updated the record from its setup on 2026-08-13 until I replaced its token on 2026-10-13, and nothing in UniFi showed it. The [incident](../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md), [troubleshooting record](Documentation/Troubleshooting/Cloudflare%20Rejected%20the%20Dynamic%20DNS%20Token%20Since%20Setup%20-%202026-10-13.md) and [token change](../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) have the detail. I turned on gateway SSH to read inadyn's configuration and logs for that investigation and turned it off afterwards; on 2026-10-15 port 22 on `192.168.1.1` refused connections.
 
@@ -65,7 +67,7 @@ UniFi shows no obvious error when Cloudflare refuses an update, and a record tha
 
 1. **The record matches the WAN address.** The WAN address is the public address the ISP assigns to the gateway's `Internet 1` connection, and UniFi Network shows it for that WAN. `dig` is a command-line DNS lookup tool. Asking `1.1.1.1`, Cloudflare's public resolver, skips the gateway's own cache, which held the old answer for about 270 seconds on 2026-10-13. Run `dig +short unifi-ddns.duresakadi.com @1.1.1.1`; the answer should be the WAN address.
 2. **The gateway has written the record.** Cloudflare stamps each DNS record with `modified_on`, the time of its last change, and the Cloudflare API returns it with the record. After setting up dynamic DNS, `modified_on` has to move past the time the record was created. A `modified_on` older than the last WAN address change means the gateway has not reported that change.
-3. **The token has been used.** Cloudflare keeps a last-used time for each API token, under Manage account, Account API tokens. A `UniFi DDNS` last-used time older than the last WAN address change means the gateway did not get through. This works only because the token serves one job: on 2026-10-13 the old shared token showed a fresh use by the certificate client while dynamic DNS was still failing.
+3. **The token has been used.** Cloudflare keeps a last-used time for each API token, under Manage account, Account API tokens. A `UniFi DDNS` last-used time older than the last WAN address change means the gateway did not get through. This works only because the token serves one job: on 2026-10-13 the old shared token showed a fresh use by the certificate manager while dynamic DNS was still failing.
 
 ## Records
 

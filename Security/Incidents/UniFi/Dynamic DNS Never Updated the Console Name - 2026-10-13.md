@@ -15,16 +15,16 @@
 | Detected | 2026-10-13; exact time not retained |
 | Duration | About 17 hours, from about 1:25 AM until dynamic DNS updated the record at 6:29:26 PM. The dynamic DNS failure itself ran from its setup at 9:38:51 AM on 2026-08-13 until that update |
 | Recovery | A new Cloudflare account API token with the permissions inadyn needs, entered in the UniFi dynamic DNS entry |
-| Status | Resolved, with two follow-ups open |
+| Status | Resolved, with one follow-up open |
 | Severity | SEV-3 - Service Degradation |
 
 ## Summary
 
-`unifi.duresakadi.com` is a DNS-only CNAME to `unifi-ddns.duresakadi.com`, an A record that UniFi's dynamic DNS is meant to keep pointed at my WAN address. Dynamic DNS had never updated that record. I created the record by hand on 2026-08-13 with the address of the time, then created a Cloudflare token for the gateway and pasted its secret into UniFi. Twenty-five minutes later I rolled that token, which gave it a new secret and invalidated the one UniFi held. The new secret went to the certificate client that renews `unifi.duresakadi.com`'s Let's Encrypt certificate. From then on, every update the gateway sent was refused with `Invalid API Token`.
+`unifi.duresakadi.com` is a DNS-only CNAME to `unifi-ddns.duresakadi.com`, an A record that UniFi's dynamic DNS is meant to keep pointed at my WAN address. Dynamic DNS had never updated that record. I created the record by hand on 2026-08-13 with the address of the time, then created a Cloudflare token for the gateway. That day I set up two UniFi features on Ahsoka Gateway with that one token: dynamic DNS, and UniFi's built-in certificate manager, which gets the Let's Encrypt certificate for `unifi.duresakadi.com`. Twenty-five minutes after pasting the secret into dynamic DNS I rolled the token, which gave it a new secret and invalidated the old one. Only the certificate manager got the new secret. From then on, every update the gateway sent was refused with `Invalid API Token`.
 
 Nothing in the UniFi interface showed it. The hand-made record already held the right address, and the address did not change for two months. On 2026-10-13 a WAN outage ended with a new address, the record kept the old one, and the name stopped reaching the gateway.
 
-At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read and DNS Write on `duresakadi.com`, and entered it in UniFi. At 6:29:26 PM the gateway updated the A record to the current WAN address, the first automatic update the record had ever had. I renamed the old token to `UniFi Cert V2`, since the certificate client still uses it, and deleted an unused token.
+At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read and DNS Write on `duresakadi.com`, and entered it in UniFi. At 6:29:26 PM the gateway updated the A record to the current WAN address, the first automatic update the record had ever had. I renamed the old token to `UniFi Cert V2`, since the certificate manager still uses it, and deleted an unused token.
 
 ## Impact
 
@@ -32,7 +32,7 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 |------|--------|
 | Console name | From about 1:25 AM to 6:29:26 PM on 2026-10-13, public DNS answered `unifi.duresakadi.com` with the previous WAN address, so the name did not reach the gateway. The gateway's own resolver caught up from its cache about 270 seconds after the update |
 | Dynamic DNS | Failed on every attempt from its setup on 2026-08-13 until the fix on 2026-10-13, unnoticed until the address changed |
-| Certificate | Still valid. After the fix `https://unifi.duresakadi.com` returned HTTP 200 with a valid certificate |
+| Certificate | None. The certificate manager held the token's current secret and renewed the certificate at about 3:51 AM on 2026-10-13. After the fix `https://unifi.duresakadi.com` returned HTTP 200 with a valid certificate |
 
 ## Affected Assets
 
@@ -42,8 +42,8 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 | UniFi dynamic DNS entry | Hostname `unifi-ddns.duresakadi.com`, username the zone `duresakadi.com`, password a Cloudflare API token | Held the secret that the 10:04:17 AM roll on 2026-08-13 invalidated |
 | A `unifi-ddns.duresakadi.com` | The record dynamic DNS maintains | Created by hand at 9:27:44 AM on 2026-08-13; never modified until 6:29:26 PM on 2026-10-13 |
 | CNAME `unifi.duresakadi.com` | DNS-only CNAME to `unifi-ddns.duresakadi.com` | Unchanged; followed the stale A record |
-| Cloudflare token `UniFi Dynamic DNS`, now `UniFi Cert V2` | Account API token, DNS Write only | Rolled 2026-08-13; its current secret is held by the certificate client |
-| Certificate client | ACME client that issues the Let's Encrypt certificate for `unifi.duresakadi.com` through DNS-01 | Host and tool not identified |
+| Cloudflare token `UniFi Dynamic DNS`, now `UniFi Cert V2` | Account API token, DNS Write only | Rolled 2026-08-13; its current secret is held by UniFi's certificate manager |
+| UniFi certificate manager | Built into the UniFi console on Ahsoka Gateway. Its entry, named "Unifi Certificate", gets the Let's Encrypt certificate for `unifi.duresakadi.com` through DNS-01 with `UniFi Cert V2` and renews it automatically | Active and valid on 2026-10-15; renewed at about 3:51 AM on 2026-10-13 |
 
 ## Symptoms
 
@@ -58,17 +58,19 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 |------|------|-------|
 | 2026-08-13 | 9:27:44 AM | I created the A record `unifi-ddns.duresakadi.com` by hand with the WAN address of the time |
 | 2026-08-13 | 9:38:51 AM | I created the account API token `UniFi Dynamic DNS` with DNS Write only and pasted its secret into the UniFi dynamic DNS entry |
-| 2026-08-13 | 10:04:17 AM | I rolled the token. Cloudflare issued a new secret and the one in UniFi stopped working at once. The new secret went to the certificate client, which used it the same day |
+| 2026-08-13 | 10:04:17 AM | I rolled the token. Cloudflare issued a new secret and the one in the dynamic DNS entry stopped working at once. The new secret went only to UniFi's certificate manager, which used it the same day |
 | 2026-08-13 | 10:11 AM | I created the DNS-only CNAME `unifi.duresakadi.com` pointing at `unifi-ddns.duresakadi.com` |
 | 2026-08-26 | | The gateway's retained logs begin. Every update from here to the fix failed |
 | 2026-10-13 | About 1:10 AM to 1:25 AM | WAN outage. The ISP assigned a new public address, and the A record kept the old one |
-| 2026-10-13 | 3:49:32 AM | The certificate client used the rolled token and wrote a `_acme-challenge.unifi.duresakadi.com` TXT record |
+| 2026-10-13 | 3:49:32 AM | UniFi's certificate manager used the rolled token, now `UniFi Cert V2`, from inside my home network to write the `_acme-challenge.unifi.duresakadi.com` TXT record, its DNS-01 challenge for a renewal |
+| 2026-10-13 | About 3:51 AM | Let's Encrypt issued the renewed certificate. UniFi shows it as valid from 2:51 AM because Let's Encrypt backdates a certificate's start by about an hour |
 | 2026-10-13 | 6:27:47 PM | I created the account API token `UniFi DDNS`, Zone Read and DNS Write on `duresakadi.com` only, and entered it in the UniFi dynamic DNS entry. I renamed `UniFi Dynamic DNS` to `UniFi Cert V2` |
 | 2026-10-13 | 6:29:26 PM | `UniFi DDNS` updated the A record to the current WAN address, the first automatic update the record had had |
 | 2026-10-13 | After the update | 1.1.1.1 returned the new address; the gateway's resolver caught up about 270 seconds later. `https://unifi.duresakadi.com` returned HTTP 200 with a valid certificate |
 | 2026-10-13 | 7:35:24 PM | I deleted the unused token `Unifi Certificate`, last used 2026-07-22 |
 | 2026-10-15 | | Port 22 on `192.168.1.1` refused connections, so the gateway SSH I enabled for the investigation is off again |
 | 2026-10-15 | 8:19 AM | The A record still matched the current WAN address. The 3:49:32 AM `_acme-challenge` TXT record was still present |
+| 2026-10-15 | | I took screenshots of UniFi's Certificates list. Its one certificate matched the 3:49:32 AM challenge record, which identified the certificate manager as the user of `UniFi Cert V2` |
 
 ## Findings
 
@@ -78,7 +80,23 @@ The token in the generated inadyn configuration was a 53-character `cfat_` accou
 
 ### One token served two jobs
 
-I created `UniFi Dynamic DNS` for the gateway and then rolled it to hand a secret to the certificate client. Rolling a token gives it a new secret and keeps its name and permissions, so the token still carried the name `UniFi Dynamic DNS` while only the certificate client could use it. The certificate client used the new secret on 2026-08-13 and again at 3:49:32 AM on 2026-10-13.
+I set up two UniFi features on Ahsoka Gateway with `UniFi Dynamic DNS`: dynamic DNS and the certificate manager. When I rolled the token 25 minutes later, only the certificate manager got the new secret. Rolling a token gives it a new secret and keeps its name and permissions, so the token still carried the name `UniFi Dynamic DNS` while only the certificate manager could use it. The certificate manager used the new secret on 2026-08-13 and again at 3:49:32 AM on 2026-10-13.
+
+### The certificate comes from UniFi's own certificate manager
+
+On 2026-10-15 I took screenshots of the Certificates list in the UniFi console, which has **Add New** and **Manage** links, and of its one certificate. I did not record the menu path to the list.
+
+| Field | Value |
+|---|---|
+| Name | "Unifi Certificate" |
+| Status | Active |
+| Valid | Yes |
+| Subject CN | `unifi.duresakadi.com` |
+| Issuer | Let's Encrypt, CN `YR2` |
+| Valid From | Oct 13 2026 2:51 AM |
+| Valid To | Jan 11 2027 1:51 AM |
+
+This lines up with Cloudflare's audit log. At 3:49:32 AM on 2026-10-13 the rolled token wrote the `_acme-challenge.unifi.duresakadi.com` TXT record from inside my home network. DNS-01 is the Let's Encrypt challenge that proves control of a name through a TXT record at `_acme-challenge` under it. Let's Encrypt backdates a certificate's start by about an hour, so a 2:51 AM start means it issued the certificate at about 3:51 AM, two minutes after the challenge record. The end reads 1:51 AM rather than 2:51 AM only because January is on standard time; the certificate runs 90 days.
 
 ### The original token could not have worked anyway
 
@@ -94,7 +112,7 @@ The UniFi dynamic DNS entry held a Cloudflare token secret that I invalidated by
 
 ## Contributing Factors
 
-1. **One token for two integrations.** Rolling it for the certificate client broke dynamic DNS, and the token kept the dynamic DNS name.
+1. **One token for two UniFi features.** Dynamic DNS and the certificate manager on the same gateway shared it. After the roll only the certificate manager got the new secret, and the token kept the dynamic DNS name.
 2. **Missing permission.** DNS Write alone does not let inadyn find the zone.
 3. **No check after setup.** I did not confirm that the gateway had written the record once. A record created by hand with the right address looks the same as a working one until the address changes.
 4. **No monitoring.** Nothing watched the record's age or the token's last-used time.
@@ -107,11 +125,11 @@ At 6:27:47 PM on 2026-10-13 I created the account API token `UniFi DDNS` under M
 
 ### 2. The old token renamed for its real job
 
-I renamed `UniFi Dynamic DNS` to `UniFi Cert V2`, because the certificate client is what uses it. A rename does not change the secret, so the client keeps working.
+I renamed `UniFi Dynamic DNS` to `UniFi Cert V2`, because UniFi's certificate manager is what uses it. A rename does not change the secret, so renewal keeps working.
 
 ### 3. An unused token deleted
 
-At 7:35:24 PM I deleted `Unifi Certificate`, an older token last used on 2026-07-22.
+At 7:35:24 PM I deleted `Unifi Certificate`, an older token last used on 2026-07-22. The certificate entry in UniFi has the same name, "Unifi Certificate", but the two are separate. Renewal uses `UniFi Cert V2`, so deleting the token did not affect the certificate.
 
 ### 4. Gateway SSH turned off again
 
@@ -127,8 +145,9 @@ I enabled SSH on the gateway for the investigation and ran only read-only comman
 | Console | `https://unifi.duresakadi.com` returned HTTP 200 with a valid certificate |
 | Re-check, 2026-10-15 8:19 AM | The A record still matched the current WAN address |
 | Gateway SSH, 2026-10-15 | Port 22 on `192.168.1.1` refused connections |
+| Certificate, 2026-10-15 | UniFi's Certificates list showed "Unifi Certificate" Active and valid until 1:51 AM on 2027-01-11 |
 
-I retained no transcript, log extract or export from this investigation. The figures above are from the gateway's logs, the generated inadyn configuration and Cloudflare's audit log as I read them.
+Apart from the 2026-10-15 screenshots of UniFi's Certificates list, I retained no transcript, log extract or export from this investigation. The other figures above are from the gateway's logs, the generated inadyn configuration and Cloudflare's audit log as I read them.
 
 ## Lessons
 
@@ -141,7 +160,7 @@ I retained no transcript, log extract or export from this investigation. The fig
 
 **Resolved:** dynamic DNS has updated the A record, `https://unifi.duresakadi.com` reaches the gateway with a valid certificate, and the record still matched on 2026-10-15.
 
-I still need to find which host or tool runs the ACME renewal for `unifi.duresakadi.com` with `UniFi Cert V2`. The certificate is valid until 2027-01-11, so the next renewal is due around December 2026. I also need to delete the stale `_acme-challenge.unifi.duresakadi.com` TXT record, which the client wrote at 3:49:32 AM on 2026-10-13 and had not removed by 8:19 AM on 2026-10-15. It is harmless. Both are in the change record's [open items](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
+One follow-up is open. UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal, and the record was still there at 8:19 AM on 2026-10-15. It is harmless and can be deleted. After the next renewal, expected around mid-December 2026, I'll check whether the certificate manager leaves another one behind. The item is in the change record's [open items](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
 
 I have no separate record of the 1:10 AM to 1:25 AM WAN outage and do not know its cause.
 
