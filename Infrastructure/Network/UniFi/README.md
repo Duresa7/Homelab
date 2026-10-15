@@ -1,7 +1,7 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-26
+**Last updated:** 2026-10-15
 
 My network runs on UniFi Network 10.6.106: one gateway, three switches and one access point, with 16 routed VLANs in 12 firewall zones. This folder owns the VLANs, zones, firewall policies, local DNS, VPNs, policy objects and port profiles. Proxmox host firewalls stay with the [Galaxy records](../../Compute/Galaxy/README.md).
 
@@ -43,10 +43,35 @@ All five were online with no upgrade pending. Their management addresses are on 
 - [Policy objects: Network Lists, OON policies, traffic routes and client groups](Configuration/objects.md)
 - [VPNs and port profiles](Configuration/vpn-networks-port-profiles.md)
 
+## Dynamic DNS and the console name
+
+Dynamic DNS keeps a public name pointed at the gateway when the ISP changes the WAN address: a client on the gateway notices the change and rewrites a Cloudflare DNS record. I reach the console by name at `https://unifi.duresakadi.com`.
+
+| Item | Value |
+| --- | --- |
+| Console name | `unifi.duresakadi.com`, a DNS-only CNAME to `unifi-ddns.duresakadi.com`. DNS-only means Cloudflare hands out the target's address and does not proxy the traffic |
+| Record dynamic DNS maintains | A `unifi-ddns.duresakadi.com`, holding the WAN address |
+| Client | UniFi Dynamic DNS with the Cloudflare provider. The gateway runs inadyn 2.13.0 from the generated `/run/ddns-eth0-inadyn.conf` on `eth0` and retries about every two minutes |
+| Entry | Hostname `unifi-ddns.duresakadi.com`, username the zone `duresakadi.com`, password the Cloudflare account API token `UniFi DDNS` |
+| Token | `UniFi DDNS`: Zone Read and DNS Write on `duresakadi.com` only, no client-IP filter, no expiry. [Cloudflare API tokens](../Cloudflare/README.md#api-tokens) |
+| Certificate | Let's Encrypt, issued over DNS-01 by a separate ACME client with the token `UniFi Cert V2`; valid until 2027-01-11. I have not identified the client's host |
+| Last verified | 2026-10-15 8:19 AM EDT: the A record matched the current WAN address |
+
+Dynamic DNS never updated the record from its setup on 2026-08-13 until I replaced its token on 2026-10-13, and nothing in UniFi showed it. The [incident](../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md), [troubleshooting record](Documentation/Troubleshooting/Cloudflare%20Rejected%20the%20Dynamic%20DNS%20Token%20Since%20Setup%20-%202026-10-13.md) and [token change](../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) have the detail. I turned on gateway SSH to read inadyn's configuration and logs for that investigation and turned it off afterwards; on 2026-10-15 port 22 on `192.168.1.1` refused connections.
+
+### Checking that dynamic DNS works
+
+UniFi shows no obvious error when Cloudflare refuses an update, and a record that already holds the right address hides the failure until the address changes. I run these checks after any change to the entry or its token, and after the WAN address changes.
+
+1. **The record matches the WAN address.** The WAN address is the public address the ISP assigns to the gateway's `Internet 1` connection, and UniFi Network shows it for that WAN. `dig` is a command-line DNS lookup tool. Asking `1.1.1.1`, Cloudflare's public resolver, skips the gateway's own cache, which held the old answer for about 270 seconds on 2026-10-13. Run `dig +short unifi-ddns.duresakadi.com @1.1.1.1`; the answer should be the WAN address.
+2. **The gateway has written the record.** Cloudflare stamps each DNS record with `modified_on`, the time of its last change, and the Cloudflare API returns it with the record. After setting up dynamic DNS, `modified_on` has to move past the time the record was created. A `modified_on` older than the last WAN address change means the gateway has not reported that change.
+3. **The token has been used.** Cloudflare keeps a last-used time for each API token, under Manage account, Account API tokens. A `UniFi DDNS` last-used time older than the last WAN address change means the gateway did not get through. This works only because the token serves one job: on 2026-10-13 the old shared token showed a fresh use by the certificate client while dynamic DNS was still failing.
+
 ## Records
 
 | Date | Record |
 | --- | --- |
+| 2026-10-13 | [UniFi DDNS Token Separation](../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) |
 | 2026-09-16 | [Policy and DNS Readback](Documentation/Change%20Records/Policy%20and%20DNS%20Readback%20-%202026-09-16.md) |
 | 2026-09-09 | [Identity NTP and Client DNS](Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) |
 | 2026-09-07 | [Identity Plane Network Preparation](Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md) |
@@ -64,6 +89,6 @@ All five were online with no upgrade pending. Their management addresses are on 
 | 2026-07-27 | [UniFi Firewall Audit](../../../Security/Assessments/UniFi%20Firewall%20Audit%20-%202026-07-27.md) |
 | 2026-07-12 | [Security-A Migration](Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md) |
 
-Policy changes made for a platform are recorded with that platform and listed in the [firewall view's records table](Configuration/firewall.md#records). The [troubleshooting index](Documentation/Troubleshooting/README.md) holds three dated issues. The retired Kasm lab network is in the [archive](../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md).
+Policy changes made for a platform are recorded with that platform and listed in the [firewall view's records table](Configuration/firewall.md#records). The [troubleshooting index](Documentation/Troubleshooting/README.md) holds four dated issues. The retired Kasm lab network is in the [archive](../../../Archive/Infrastructure/Network/UniFi/Documentation/Change%20Records/Kasm%20Lab%20Network%20Simplification%20-%202026-07-23.md).
 
 The gateway, Bane Switch POE and the Verizon ONT run on `UPS-02`, an APC Back-UPS RS 1500MS2. [Power equipment](../../Hardware/Power.md).
