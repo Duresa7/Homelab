@@ -203,6 +203,12 @@
 !/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/
 /Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/*
 !/Security/Incidents/Galaxy/Evidence/Blue Server Duplicate VG - 2026-07-30/Logs/*.md
+!/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/
+/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/*
+!/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/Evidence-Index.md
+!/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/Logs/
+/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/Logs/*
+!/Security/Incidents/Galaxy/Evidence/Purple Server NIC Transmit Hang - 2026-10-14/Logs/*.md
 
 # Fleet maintenance evidence records
 !/Platforms/Ansible/Evidence/Fleet Maintenance - 2026-07-28/
