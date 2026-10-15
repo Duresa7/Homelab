@@ -1,7 +1,7 @@
 # Galaxy Troubleshooting
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-10-15
 
 This is my chronological troubleshooting record for the Galaxy Proxmox cluster. Open follow-up work is tracked in the [Galaxy TODO](../TODO.md).
 
@@ -25,3 +25,4 @@ I keep one dated Markdown record per problem in this folder. The index links to 
 | [12](Pending%20Installer%20Removal%20Blocked%20win11-dev%20Migration%20-%202026-09-23.md) | 2026-09-23 | VM 103 migration aborted on an old answer ISO reference | Optical-drive removals were pending; applying them while stopped cleared migration disk discovery | Resolved |
 | [13](Corrupted%20SSH%20Packet%20During%20win11-dev%20Migration%20-%202026-09-23.md) | 2026-09-23 | VM 103 transfer lost its SSH connection after about 48 GiB | Grey rejected a corrupted SSH message; Green's memory fault is a possible cause | Migration completed after checksum repair; underlying cause unconfirmed |
 | [14](Obsolete%20Pool%20Import%20on%20grey-server%20-%202026-10-07.md) | 2026-10-07 | Obsolete hddpool import failed while hddpool-1 was ONLINE | I disabled only the obsolete instance and verified the real import and CT 110 | Resolved without reboot |
+| [15](e1000e%20Transmit%20Hang%20on%20purple-server%20-%202026-10-14.md) | 2026-10-14 | Purple, both Corosync links and its running guests lost connectivity while the switch port stayed up | Intel I219-LM transmit ring stopped; e1000e repeated the hang without resetting. A clean physical power cycle restored service and booted the waiting kernel | Resolved; preventive actions open |
