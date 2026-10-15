@@ -1,11 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-15
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Prevent another I219 transmit hang and establish remote recovery.** I recovered Purple from the 2026-10-14 outage with a physical power cycle on October 15. The preventive actions are in the [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention); the separate [Minecraft DNS persistence item](Platforms/Minecraft/README.md#open-items) remains open after its container restart restored external DNS.
 
 - [ ] **Andor-ParrotOS-PC follow-ups.** Since 2026-10-11 ObiPC's hardware runs Parrot Security as Andor-ParrotOS-PC, for now. The two are separate machines, and ObiPC's records and objects stay. Onboard the `andor-parrotos-pc` key to `app-01` when that VM is back. Before ObiPC's Windows goes back on the hardware, remove Andor-ParrotOS-PC's MAC and address grants and rename the UniFi client back to `Obi PC`, or ObiPC inherits Jedi PC's access: [checklist](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md#before-obipcs-windows-returns). [Andor-ParrotOS-PC Admin Access](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
 
@@ -13,7 +15,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Resolve the Minecraft custom name's server-list ping.** `minecraft.alphasecunited.com` has working DNS and SRV login transport, but Playit rejects the entered hostname used by Minecraft 26.3's ping. [Verification and supported external-domain option](Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md#connection-verification).
 
-- [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey, Purple and Red need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
+- [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey and Red still need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Purple booted its waiting kernel during the October 15 recovery, recorded in the [NIC incident](Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
 
 - [ ] **Reboot `grey-server`, the one node still on kernel 7.0.14-8-pve.** The other four nodes, their guests, `security-01` and `splunk-siem` were rebooted and verified on 2026-10-06. Grey's reboot restarts `docker-main`, `ubuntu-dev`, `security-01`, `splunk-siem` and the Windows guests, applies `ubuntu-dev`'s waiting 7.0.0-38 kernel, and has to be started from somewhere other than `ubuntu-dev`. I repaired the confirmed exporter, NUT, stale pool-import and OpenIPMI failures on October 7; [repair and verification](Operations/Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md). [Fleet reboots](Operations/Maintenance/Fleet%20Reboots%20-%202026-10-06.md#open-state).
 

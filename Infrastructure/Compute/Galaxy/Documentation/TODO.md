@@ -1,9 +1,23 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-15
 
 Open Galaxy work only. Closed sections are listed in the root [COMPLETED](../../../../COMPLETED.md) file with links to their change records, and the root [TODO](../../../../TODO.md) links here.
+
+## I219 Transmit Hang Prevention
+
+**Status:** Open after the 2026-10-14 outage; I recovered Purple on 2026-10-15 with a physical power cycle. Preventive changes are not yet applied.  
+**Incident:** [Purple Server NIC Transmit Hang](../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md)  
+**Troubleshooting record:** [e1000e Transmit Hang on purple-server](Troubleshooting/e1000e%20Transmit%20Hang%20on%20purple-server%20-%202026-10-14.md)
+
+- [ ] I need to disable TSO, GSO and GRO persistently on `nic0` on Purple, Green and Red by adding `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces`. I will verify `ethtool -k nic0` after a reboot on each node and widen the change to every offload if the hang returns. This is a community workaround, not a vendor fix.
+- [ ] I need to check Lenovo for a newer M920q BIOS/ME firmware than `M1UKT45A` dated 2019-07-11.
+- [ ] I need recovery without physical presence: provision Intel AMT on the M920q nodes, or add a host-side watchdog that bounces `nic0` when the gateway stops answering or the hang line appears. The AMT SOL controller is present at `00:16.3`, but I have no provisioning record and treat AMT as unprovisioned.
+- [ ] I need to consider a second physical NIC, USB or M.2 A+E, for Corosync link1 so both links no longer share one NIC and cable.
+- [ ] I need to watch Green and Red for `e1000e` / `Detected Hardware Unit Hang` and record any recurrence against this incident.
+
+LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed on 2026-10-15. Minecraft's external DNS failure was corrected by a container restart; its [reboot persistence item](../../../../Platforms/Minecraft/README.md#open-items) remains open in the platform backlog.
 
 ## <a id="green-memory-repair-and-win11-dev-provisioning"></a>Green Memory Repair
 
