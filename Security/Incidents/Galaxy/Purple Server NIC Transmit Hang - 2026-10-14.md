@@ -128,7 +128,7 @@ I found no other `Hardware Unit Hang` in Purple boots -2 through -5 or in boots 
 
 ### Offload changes are a candidate workaround
 
-Purple's offloads remain unchanged: RX/TX checksumming, scatter-gather, TSO, GSO and GRO are on. EEE is `enabled - inactive`, the TX ring is 256, the kernel command line is only `quiet`, and PCIe ASPM uses the default policy.
+At the time of the hang, RX/TX checksumming, scatter-gather, TSO, GSO and GRO were on. Corrective action 3 later turned TSO, GSO and GRO off. EEE is `enabled - inactive`, the TX ring is 256, the kernel command line is only `quiet`, and PCIe ASPM uses the default policy.
 
 I did not find a specific trigger. Community reports describe this e1000e/I219 hang over several years. Reports include an I219-LM in a Lenovo M920q and describe disabling offloads with `ethtool -K` to stop recurrence: [I219 hardware-unit-hang discussion](https://forum.proxmox.com/threads/intel-nic-e1000e-hardware-unit-hang.106001/post-713319), [M920q report](https://forum.proxmox.com/goto/post?id=745557). Results vary; some needed every offload disabled rather than only TSO/GSO, and settings need network-configuration persistence to survive a reboot: [offload workaround discussion](https://forum.proxmox.com/goto/post?id=391990). These are community reports, not a vendor fix or proof of Purple's trigger.
 
@@ -154,13 +154,17 @@ Purple's onboard Intel I219-LM stopped processing its transmit ring, an e1000e â
 
 ### 1. Power-cycle Purple
 
-I recovered Purple by powering it off and on. At 12:35:03 AM I pressed the power button once; logind began a clean shutdown and pve-guests stopped both running VMs before power-off. I pressed the button again to power on, and wtmp records the boot at 12:36:09 AM. That boot also moved Purple from `7.0.14-20-pve` to the already-installed `7.0.14-22-pve` kernel. I have not changed offloads, firmware, network configuration or recovery controls.
+I recovered Purple by powering it off and on. At 12:35:03 AM I pressed the power button once; logind began a clean shutdown and pve-guests stopped both running VMs before power-off. I pressed the button again to power on, and wtmp records the boot at 12:36:09 AM. That boot also moved Purple from `7.0.14-20-pve` to the already-installed `7.0.14-22-pve` kernel. The power cycle changed no offloads, firmware, network configuration or recovery controls.
 
 ### 2. Restart Minecraft to restore external DNS
 
 At 12:58:13 AM EDT on 2026-10-15, with 0 of 20 players online, I ran `docker restart minecraft`. It logged `Done (0.301s)` at 12:58:25 AM and was healthy at 12:58:32 AM. Its regenerated resolver file reads `# ExtServers: [host(192.168.80.1)]`, and all three Mojang/Minecraft service names resolve inside the container. At 12:59 AM a LAN server-list ping again gave 26.3 / 777 / 0/20, pong OK, with 1.8 ms connect time.
 
 The restart corrected the current container state. I have not changed the Dockhand-managed stack or the boot-recovery script. The [Minecraft open item](../../../Platforms/Minecraft/README.md#open-items) tracks making DNS survive the next reboot.
+
+### 3. Disable `nic0` offloads on Purple, Green and Red
+
+At about 8:06 AM EDT on 2026-10-15, I added `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces` on all three M920q nodes. I then ran `ifup nic0` on each, so the configured line applied the change. TSO, GSO and GRO read off on every node. No link dropped, all Corosync links stayed connected, and Purple's guests kept running. ifupdown2 runs the line at every boot, but I have not yet confirmed it after a reboot. This is the community workaround, not a proven fix. [Change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
 
 ## Validation
 
@@ -199,7 +203,7 @@ I did not test an authenticated Minecraft join, which needs a real account, or T
 
 **Resolved:** Purple rejoined the cluster at 12:36:43 AM on 2026-10-15; public protocol reachability recovered by 12:39:03 AM, ending the roughly 54-minute full outage. LAN/public checks passed for Minecraft, TS-02, TS-03 and TS3 Manager. Minecraft logins were separately most likely impaired after it started at 12:37 AM until DNS recovery at 12:58:32 AM. The service outage and current DNS failure are closed, with preventive actions open. I have not tested an authenticated Minecraft join or TeamSpeak `serverinfo`.
 
-I still need to apply and verify persistent offload changes on Purple, Green and Red, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
+The persistent offload change is applied on Purple, Green and Red; I still need to confirm it after each node's next reboot. I also still need to add the NIC watchdog, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
 I still need to make Minecraft DNS survive the next reboot, either with pinned `dns: [192.168.80.1]` as for the collector or by adding Minecraft to boot recovery. This requires a Dockhand-managed stack or recovery-script change and remains in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
 

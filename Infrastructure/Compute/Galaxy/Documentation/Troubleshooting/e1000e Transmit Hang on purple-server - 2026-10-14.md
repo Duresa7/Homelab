@@ -61,17 +61,17 @@ Minecraft inherited an empty external resolver list at boot and could not resolv
 
 A physical shutdown and power-on is the recovery demonstrated here. I have not tested a NIC bounce. No HA resource was armed on Purple, the watchdog was in standby, and the local guest disks could not fail over. I have no provisioned AMT or other out-of-band power path recorded, so this recovery required physical presence.
 
-## Candidate fix and open work
+## Offload workaround and open work
 
-I have not changed the offloads. RX/TX checksumming, scatter-gather, TSO, GSO and GRO remain on. EEE is `enabled - inactive`, TX ring 256, kernel command line `quiet` and ASPM policy default.
+At the time of the hang, RX/TX checksumming, scatter-gather, TSO, GSO and GRO were all on. EEE is `enabled - inactive`, TX ring 256, kernel command line `quiet` and ASPM policy default.
 
-The candidate workaround is a persistent line on the `nic0` stanza in `/etc/network/interfaces` on Purple, Green and Red:
+The workaround is a persistent line on the `nic0` stanza in `/etc/network/interfaces` on Purple, Green and Red:
 
 ```text
 iface nic0 inet manual
     post-up /sbin/ethtool -K nic0 tso off gso off gro off
 ```
 
-I still need to apply it and verify `ethtool -k nic0` after a reboot. I will widen it to every offload if the hang returns. Community reports describe success on I219 NICs, including a Lenovo M920q, but results vary and some required all offloads disabled: [I219 hang report](https://forum.proxmox.com/threads/intel-nic-e1000e-hardware-unit-hang.106001/post-713319), [M920q report](https://forum.proxmox.com/goto/post?id=745557), [offload workaround discussion](https://forum.proxmox.com/goto/post?id=391990). This is a community workaround, not a vendor fix. An `ethtool -K` change alone does not survive reboot.
+I applied it on all three nodes at about 8:06 AM EDT on 2026-10-15 and ran `ifup nic0`, which turned TSO, GSO and GRO off without dropping the link. ifupdown2 runs the line at every boot. The [change record](../Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md) has the per-node verification. I still need to confirm `ethtool -k nic0` after each node's next reboot. I will widen the line to every offload if the hang returns. Community reports describe success on I219 NICs, including a Lenovo M920q, but results vary and some required all offloads disabled: [I219 hang report](https://forum.proxmox.com/threads/intel-nic-e1000e-hardware-unit-hang.106001/post-713319), [M920q report](https://forum.proxmox.com/goto/post?id=745557), [offload workaround discussion](https://forum.proxmox.com/goto/post?id=391990). This is a community workaround, not a vendor fix. An `ethtool -K` change alone does not survive reboot.
 
 Green and Red share Purple's M920q, BIOS, I219-LM (7) and NVM revision with TSO/GSO enabled. Blue's M910q uses I219-LM (2), NVM `0.8-4`, and has TSO forced off by the driver; Grey uses Realtek NICs. I found no other hang in the retained boots I checked. Firmware, remote recovery, a separate physical link1 NIC and recurrence monitoring are tracked in the [Galaxy TODO](../TODO.md#i219-transmit-hang-prevention).
