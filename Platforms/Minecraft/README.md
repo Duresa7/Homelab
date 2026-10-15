@@ -1,7 +1,7 @@
 # Minecraft
 
 **Created:** 2026-10-09  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-15
 
 I run Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01`, alongside TeamSpeak. Dockhand manages its Docker Compose stack. The server answers on the LAN and through the retained Playit tunnel. The public join name is `minecraft.alphasecunited.com`.
 
@@ -30,3 +30,9 @@ I applied the memory increase on 2026-10-11 and verified the live JVM limits, co
 I deleted the active world and started a fresh world on 2026-10-11, retaining Survival mode, Easy difficulty and an unset seed. The [world reset record](Documentation/Change%20Records/World%20Reset%20-%202026-10-11.md) confirms deletion, new world generation, empty player data, container health and LAN/public SRV responses. The retired `game-01` worlds were deleted on 2026-09-12; the [archived retirement record](../../Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) records that deletion and retention of the external Playit allocation. I keep no snapshots or backups.
 
 I installed the [join welcome datapack](Source/alphasec_welcome/) on 2026-10-11. It sends the Mobi and Friends welcome, Discord name, and clickable Instagram, X, AlphaSec United and Duresa Kadi Portfolio links privately to joining players. The [change record](Documentation/Change%20Records/Join%20Welcome%20-%202026-10-11.md) records the live file hashes, enabled pack, function checks, save and healthy LAN/public responses. An authenticated join and reconnect remain untested. The pack lives in `world/datapacks/alphasec_welcome`; a future world reset must reinstall it.
+
+On 2026-10-15, after the [Purple NIC outage that began on October 14](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md), I found Minecraft had started before Alpha's resolver was populated. Server-list pings worked, but authentication service names failed to resolve; logins were most likely impaired from the 12:37 AM start at boot until 12:58:32 AM EDT. Nobody tried an authenticated join. I restarted the container at 12:58:13 AM with 0/20 players online, verified all three service names resolved and the container was healthy by 12:58:32 AM, and repeated the LAN ping at 12:59 AM. At 12:59:56 AM EDT I resolved `_minecraft._tcp.minecraft.alphasecunited.com` through 1.1.1.1 to `<playit-relay>`, connected and sent a protocol-777 handshake naming the SRV target with next state login, followed by Login Start as unauthenticated `testuser`. The first login packet was `0x01` Encryption Request, requiring online authentication, with a 245 ms round trip. I closed the connection before authentication. This verifies the Cloudflare SRV to Playit to server join route reaches authentication after the DNS correction; an authenticated join remains untested.
+
+## Open items
+
+- [ ] I need to make external DNS survive the next reboot, either by pinning `dns: [192.168.80.1]` in Minecraft's Dockhand-managed Compose definition, as for the TeamSpeak collector, or by adding Minecraft to the DNS-aware boot-recovery script. Neither change is applied. I need to verify name resolution and container health after the next reboot. The [incident's secondary finding and correction](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md#minecraft-inherited-an-empty-external-resolver-list-at-boot) records the failure and restart.
