@@ -16,11 +16,11 @@ All times are EDT. Cloudflare's audit log records them in UTC.
 
 ### A new token for dynamic DNS
 
-At 6:27:47 PM I created the account API token `UniFi DDNS` in the Cloudflare dashboard under Manage account, Account API tokens. An account API token belongs to the account rather than to my user, which suits an integration that runs unattended.
+At 6:27:47 PM I created the account API token `UniFi DDNS` in the Cloudflare dashboard under **Manage account > Account API tokens**. An account API token belongs to the account rather than to my user, which suits an integration that runs unattended.
 
 | Setting | Value |
 |---|---|
-| Permissions | Zone, Zone, Read and Zone, DNS, Edit |
+| Permissions | **Zone > Zone > Read** and **Zone > DNS > Edit** |
 | Zone resources | `duresakadi.com` only |
 | Client IP filter | None |
 | Expiry | None |

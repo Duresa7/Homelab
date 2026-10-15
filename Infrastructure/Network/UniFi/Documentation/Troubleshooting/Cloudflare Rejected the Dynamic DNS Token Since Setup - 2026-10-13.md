@@ -47,7 +47,7 @@ The secret in UniFi was the one I invalidated by rolling the token at 10:04:17 A
 
 ## Fix
 
-In the Cloudflare dashboard, under Manage account, Account API tokens, I created a new account API token `UniFi DDNS` at 6:27:47 PM EDT on 2026-10-13: Zone, Zone, Read and Zone, DNS, Edit, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. I renamed the old token to `UniFi Cert V2` because UniFi's certificate manager uses it; a rename leaves the secret alone. The [change record](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) covers the token changes and the deletion of an unused token.
+In the Cloudflare dashboard, under **Manage account > Account API tokens**, I created a new account API token `UniFi DDNS` at 6:27:47 PM EDT on 2026-10-13: **Zone > Zone > Read** and **Zone > DNS > Edit**, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. I renamed the old token to `UniFi Cert V2` because UniFi's certificate manager uses it; a rename leaves the secret alone. The [change record](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) covers the token changes and the deletion of an unused token.
 
 ## Verification
 

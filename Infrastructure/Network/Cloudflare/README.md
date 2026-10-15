@@ -18,7 +18,7 @@ Cloudflare holds four DNS zones and one Cloudflare Tunnel. The tunnel connector 
 
 ## API tokens
 
-Each token serves one integration and is named for it. Rolling a token gives it a new secret and invalidates the old one at once, so a token shared by two clients cannot be rolled for one without breaking the other. That is how UniFi dynamic DNS failed from 2026-08-13 to 2026-10-13 ([incident](../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)). For an integration that runs unattended I create an account API token, under Manage account, Account API tokens, because it belongs to the account rather than to my user. A dynamic DNS token gets no client-IP filter and no expiry.
+Each token serves one integration and is named for it. Rolling a token gives it a new secret and invalidates the old one at once, so a token shared by two clients cannot be rolled for one without breaking the other. That is how UniFi dynamic DNS failed from 2026-08-13 to 2026-10-13 ([incident](../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)). For an integration that runs unattended I create an account API token, under **Manage account > Account API tokens**, because it belongs to the account rather than to my user. A dynamic DNS token gets no client-IP filter and no expiry.
 
 These are the tokens my records document, as of 2026-10-15. Other tokens in the account serve integrations outside these records.
 

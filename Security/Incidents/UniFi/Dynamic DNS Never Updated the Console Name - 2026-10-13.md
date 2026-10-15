@@ -122,7 +122,7 @@ The UniFi dynamic DNS entry held a Cloudflare token secret that I invalidated by
 
 ### 1. A dedicated token for dynamic DNS
 
-At 6:27:47 PM on 2026-10-13 I created the account API token `UniFi DDNS` under Manage account, Account API tokens in the Cloudflare dashboard. It holds Zone, Zone, Read and Zone, DNS, Edit, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. Details are in the [change record](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md).
+At 6:27:47 PM on 2026-10-13 I created the account API token `UniFi DDNS` under **Manage account > Account API tokens** in the Cloudflare dashboard. It holds **Zone > Zone > Read** and **Zone > DNS > Edit**, scoped to `duresakadi.com` only, with no client-IP filter and no expiry. I pasted it into the UniFi dynamic DNS entry in place of the dead secret. Details are in the [change record](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md).
 
 ### 2. The old token renamed for its real job
 

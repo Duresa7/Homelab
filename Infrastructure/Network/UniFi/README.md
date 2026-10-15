@@ -67,7 +67,7 @@ UniFi shows no obvious error when Cloudflare refuses an update, and a record tha
 
 1. **The record matches the WAN address.** The WAN address is the public address the ISP assigns to the gateway's `Internet 1` connection, and UniFi Network shows it for that WAN. `dig` is a command-line DNS lookup tool. Asking `1.1.1.1`, Cloudflare's public resolver, skips the gateway's own cache, which held the old answer for about 270 seconds on 2026-10-13. Run `dig +short unifi-ddns.duresakadi.com @1.1.1.1`; the answer should be the WAN address.
 2. **The gateway has written the record.** Cloudflare stamps each DNS record with `modified_on`, the time of its last change, and the Cloudflare API returns it with the record. After setting up dynamic DNS, `modified_on` has to move past the time the record was created. A `modified_on` older than the last WAN address change means the gateway has not reported that change.
-3. **The token has been used.** Cloudflare keeps a last-used time for each API token, under Manage account, Account API tokens. A `UniFi DDNS` last-used time older than the last WAN address change means the gateway did not get through. This works only because the token serves one job: on 2026-10-13 the old shared token showed a fresh use by the certificate manager while dynamic DNS was still failing.
+3. **The token has been used.** Cloudflare keeps a last-used time for each API token, under **Manage account > Account API tokens**. A `UniFi DDNS` last-used time older than the last WAN address change means the gateway did not get through. This works only because the token serves one job: on 2026-10-13 the old shared token showed a fresh use by the certificate manager while dynamic DNS was still failing.
 
 ## Records
 
