@@ -52,4 +52,4 @@ The tokens on the GitHub side are unchanged: the Coolify GitHub App's redelivery
 
 ## Open
 
-- [ ] Confirm the Security Insights finding on the Coolify webhook clears on its next scan; tracked in the [bypass record](Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md#open).
+Nothing. The Security Insights finding cleared on the 9:19 AM scan the same day; [bypass record](Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md#open).

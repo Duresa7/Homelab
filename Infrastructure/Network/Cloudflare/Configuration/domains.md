@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-10-15
 
-These are the domains I manage through Cloudflare. I last read all four zones back through the API on 2026-09-06; [Account Verification](../Documentation/Change%20Records/Account%20Verification%20-%202026-09-06.md) summarizes what each zone held that day. `duresakadi.me` is paused, so Cloudflare serves its DNS without proxying any of its records.
+These are the domains I manage through Cloudflare. I last read all four zones back through the API on 2026-09-06; [Account Verification](../Documentation/Change%20Records/Account%20Verification%20-%202026-09-06.md) summarizes what each zone held that day. `duresakadi.me` is paused, so Cloudflare serves its DNS without proxying any of its records. `alphsec.com` has served HSTS with a 180-day max-age and subdomains included since 2026-10-15; [Security Insights review](../Documentation/Change%20Records/Security%20Insights%20Review%20-%202026-10-15.md).
 
 | Domain |
 | --- |
