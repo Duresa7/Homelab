@@ -4,7 +4,7 @@
 **Last updated:** 2026-10-15
 
 **Implementation date:** 2026-10-13  
-**Status:** Complete; one follow-up open  
+**Status:** Complete; one check open after the next certificate renewal  
 **Affected systems:** Cloudflare account API tokens `UniFi DDNS` (new), `UniFi Cert V2` (renamed from `UniFi Dynamic DNS`) and `Unifi Certificate` (deleted); the Cloudflare dynamic DNS entry on Ahsoka Gateway  
 **Incident:** [Dynamic DNS Never Updated the Console Name - 2026-10-13](../../../../../Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)
 
@@ -57,7 +57,7 @@ The current list, with the other documented token, is in the [Cloudflare README]
 
 ## Open
 
-- **Delete the stale challenge record.** UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal. It was still there at 8:19 AM on 2026-10-15. It is harmless and can be deleted. After the next renewal, expected around mid-December 2026, check whether it leaves another one behind.
+- **Check for another leftover challenge record after the next renewal.** UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal. It was still there at 8:19 AM on 2026-10-15, and I deleted it at 8:58:14 AM that day. Afterwards the only `unifi` records in `duresakadi.com` were the A record `unifi-ddns.duresakadi.com` and the CNAME `unifi.duresakadi.com`, both unchanged. After the next renewal, expected around mid-December 2026, I need to check whether the certificate manager leaves another one behind.
 
 ## Rollback
 

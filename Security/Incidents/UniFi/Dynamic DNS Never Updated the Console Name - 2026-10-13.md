@@ -15,7 +15,7 @@
 | Detected | 2026-10-13; exact time not retained |
 | Duration | About 17 hours, from about 1:25 AM until dynamic DNS updated the record at 6:29:26 PM. The dynamic DNS failure itself ran from its setup at 9:38:51 AM on 2026-08-13 until that update |
 | Recovery | A new Cloudflare account API token with the permissions inadyn needs, entered in the UniFi dynamic DNS entry |
-| Status | Resolved, with one follow-up open |
+| Status | Resolved, with one check open after the next certificate renewal |
 | Severity | SEV-3 - Service Degradation |
 
 ## Summary
@@ -72,6 +72,7 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 | 2026-10-15 | | Port 22 on `192.168.1.1` refused connections, so the gateway SSH I enabled for the investigation is off again |
 | 2026-10-15 | 8:19 AM | The A record still matched the current WAN address. The 3:49:32 AM `_acme-challenge` TXT record was still present |
 | 2026-10-15 | | I took screenshots of UniFi's Certificates list. Its one certificate matched the 3:49:32 AM challenge record, which identified the certificate manager as the user of `UniFi Cert V2` |
+| 2026-10-15 | 8:58:14 AM | I deleted the stale `_acme-challenge.unifi.duresakadi.com` TXT record. The only `unifi` records left in `duresakadi.com` were the A record `unifi-ddns.duresakadi.com` and the CNAME `unifi.duresakadi.com`, both unchanged |
 
 ## Findings
 
@@ -161,7 +162,9 @@ Apart from the 2026-10-15 screenshots of UniFi's Certificates list, I retained n
 
 **Resolved:** dynamic DNS has updated the A record, `https://unifi.duresakadi.com` reaches the gateway with a valid certificate, and the record still matched on 2026-10-15.
 
-One follow-up is open. UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal, and the record was still there at 8:19 AM on 2026-10-15. It is harmless and can be deleted. After the next renewal, expected around mid-December 2026, I'll check whether the certificate manager leaves another one behind. The item is in the change record's [open items](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
+UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM on 2026-10-13 for that day's renewal. The record was still there at 8:19 AM on 2026-10-15, and I deleted it at 8:58:14 AM that day. Afterwards the only `unifi` records in `duresakadi.com` were the A record and the CNAME, both unchanged.
+
+One check is open. After the next renewal, expected around mid-December 2026, I'll check whether the certificate manager leaves another challenge record behind. The check is in the change record's [open items](../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
 
 I have no separate record of the 1:10 AM to 1:25 AM WAN outage and do not know its cause.
 

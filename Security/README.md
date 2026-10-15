@@ -15,7 +15,7 @@ My incident reports and security assessments for the AlphaSec United homelab. Ea
 
 | Date | Service | Report | Severity | Status |
 | --- | --- | --- | --- | --- |
-| 2026-10-13 | UniFi | [Dynamic DNS never updated the console name](Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md): a rolled Cloudflare token left dynamic DNS failing from setup, so `unifi.duresakadi.com` kept the old address for about 17 hours after a WAN address change | SEV-3 | Resolved; follow-up open |
+| 2026-10-13 | UniFi | [Dynamic DNS never updated the console name](Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md): a rolled Cloudflare token left dynamic DNS failing from setup, so `unifi.duresakadi.com` kept the old address for about 17 hours after a WAN address change | SEV-3 | Resolved; after-renewal check open |
 | 2026-09-27 | Active Directory | [ObiPC physical access simulation](Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md): my authorized test produced 22 failed interactive events and no successful human sign-in in the reviewed 72 hours | Informational | Exercise closed; follow-ups open |
 | 2026-09-25 | Nginx Proxy Manager | [Scheduled update stranded the proxy](Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md): a Dockhand auto-update stopped NPM and cut its own Hawser path, leaving NPM down about 3 hours | SEV-2 | Resolved |
 | 2026-09-18 | Active Directory | [ObiPC wiped from the recovery menu](Incidents/Active%20Directory/ObiPC%20Wiped%20from%20the%20Recovery%20Menu%20-%202026-09-18.md): a standard user reset the domain workstation through WinRE | SEV-4 | Closed |

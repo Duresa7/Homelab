@@ -5,7 +5,7 @@
 
 **Investigated:** 2026-10-13; re-checked 2026-10-15  
 **Owner:** UniFi / Ahsoka Gateway dynamic DNS  
-**Status:** Resolved; one follow-up open
+**Status:** Resolved; one check open after the next certificate renewal
 
 ## Symptom
 
@@ -65,4 +65,4 @@ A refused dynamic DNS update does not show up until the WAN address changes. The
 
 ## Open
 
-UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM EDT on 2026-10-13 for that day's renewal. It was still there at 8:19 AM EDT on 2026-10-15. It is harmless and can be deleted. After the next renewal I'll check whether the certificate manager leaves another one behind. This is tracked in the change record's [open items](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
+UniFi's certificate manager did not remove the `_acme-challenge.unifi.duresakadi.com` TXT record it wrote at 3:49:32 AM EDT on 2026-10-13 for that day's renewal. It was still there at 8:19 AM EDT on 2026-10-15, and I deleted it at 8:58:14 AM EDT that day; the A record and the CNAME behind `unifi.duresakadi.com` were unchanged. After the next renewal, expected around mid-December 2026, I'll check whether the certificate manager leaves another one behind. This is tracked in the change record's [open items](../../../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
