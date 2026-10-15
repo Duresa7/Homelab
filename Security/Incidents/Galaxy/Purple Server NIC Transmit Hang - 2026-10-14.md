@@ -168,7 +168,7 @@ At about 8:06 AM EDT on 2026-10-15, I added `post-up /sbin/ethtool -K nic0 tso o
 
 ### 4. Pin Minecraft's DNS server
 
-Purple's 9:06 AM verification reboot reproduced the Minecraft DNS boot race, and I restarted the container again at 9:09:01 AM. At 9:19:01 AM, with 0 of 20 players online, I recreated it with `dns: [192.168.80.1]` in its Compose definition, so Docker no longer takes its DNS server from Alpha's resolver file at start. It was healthy at 9:19:18 AM, its resolver file reads `# Overrides: [nameservers]`, and all three authentication names resolve. I have not yet confirmed it across a reboot of `alpha-prod-01`. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
+Purple's 9:06 AM verification reboot reproduced the Minecraft DNS boot race, and I restarted the container again at 9:09:01 AM. At 9:19:01 AM, with 0 of 20 players online, I recreated it with `dns: [192.168.80.1]` in its Compose definition, so Docker no longer takes its DNS server from Alpha's resolver file at start. It was healthy at 9:19:18 AM, its resolver file reads `# Overrides: [nameservers]`, and all three authentication names resolve. A test reboot of `alpha-prod-01` at 9:24 AM confirmed it: the container started 4.2 seconds before Alpha's resolver file and still resolved all three names without a restart. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
 
 ## Validation
 
@@ -209,7 +209,7 @@ I did not test an authenticated Minecraft join, which needs a real account, or T
 
 The persistent offload change is applied on Purple, Green and Red and held through a reboot on each. I still need to add the NIC watchdog, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
-Purple's verification reboot at 9:06 AM on 2026-10-15 reproduced the Minecraft DNS boot race. I pinned Minecraft's DNS server at 9:19 AM, which closes that item; confirming it across Alpha's next reboot is recorded in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
+Purple's verification reboot at 9:06 AM on 2026-10-15 reproduced the Minecraft DNS boot race. I pinned Minecraft's DNS server at 9:19 AM, and a test reboot of `alpha-prod-01` at 9:24 AM confirmed the pin holds, which closes that item ([Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items)).
 
 ## Related Records
 

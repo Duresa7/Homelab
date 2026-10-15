@@ -9,7 +9,7 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
-- 2026-10-15: I pinned Minecraft's DNS server to `192.168.80.1` in its Compose definition after the Docker boot race left it without external DNS twice that day. The container was recreated with 0 players online and verified healthy with all authentication names resolving. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
+- 2026-10-15: I pinned Minecraft's DNS server to `192.168.80.1` in its Compose definition after the Docker boot race left it without external DNS twice that day. The container was recreated with 0 players online and verified healthy with all authentication names resolving. A test reboot of `alpha-prod-01` at 9:24 AM lost the race by 4.2 seconds, and Minecraft still resolved them without a restart; TeamSpeak's public paths recovered through boot recovery. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
 
 - 2026-10-15: I turned TSO, GSO and GRO off on `nic0` on Purple, Green and Red, then rebooted all three to confirm the setting survives a boot. Red now runs `7.0.14-22-pve`; `media-01` was down for about a minute and a half and came back with working DNS. Purple's `edge-01` and `alpha-prod-01` were down for about two minutes; Minecraft hit its DNS boot race again and needed a restart, and the TeamSpeak boot recovery restored both public paths. `app-01` stays off. [Change record and reboot checks](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification).
 
