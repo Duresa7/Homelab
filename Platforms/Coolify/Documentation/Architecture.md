@@ -1,7 +1,7 @@
 # Coolify Architecture
 
 **Created:** 2026-07-24  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-15
 
 Coolify runs as a five-container stack on app-01, including the Traefik proxy that routes public traffic to the applications I deploy. cAdvisor is the sixth container on the host. I verified this layout on 2026-10-09, with no deployed application containers present. This document covers how the pieces fit and how a deployment turns into a working URL. The live state table is in the [platform README](../README.md); the end-to-end ingress path is in the [External Service Ingress design](../../../Architecture/External-Service-Ingress.md).
 
@@ -28,5 +28,5 @@ The dashboard and the apps take different routes on purpose. `coolify-a1.alphsec
 ## Security notes
 
 - Only `coolify-a1.alphsec.com` sits behind Cloudflare Access. Any other `*.alphsec.com` host is public once deployed, so I add Access or app-level auth for anything that shouldn't be open.
-- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.alphsec.com/webhooks/source/github/events`; child paths and the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/applications.md).
+- The GitHub webhook uses a path-scoped Access bypass on `coolify-a1.alphsec.com/webhooks/source/github/events`, limited since 2026-10-15 to GitHub's published webhook ranges; child paths and the rest of the host require an approved identity. See the [Access applications](../../../Infrastructure/Network/Cloudflare/Configuration/applications.md).
 - The UniFi edge policy limits edge-01 to TCP 80 and 8000 on this host.
