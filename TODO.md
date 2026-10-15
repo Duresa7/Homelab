@@ -7,7 +7,11 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-- [ ] **Prevent another I219 transmit hang and establish remote recovery.** I recovered Purple from the 2026-10-14 outage with a physical power cycle on October 15. The preventive actions are in the [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention); the separate [Minecraft DNS persistence item](Platforms/Minecraft/README.md#open-items) remains open after its container restart restored external DNS.
+- [ ] **Disable `nic0` offloads on Purple, Green and Red.** A persistent `post-up` ethtool line for TSO, GSO and GRO, the community workaround for the I219 transmit hang that took Purple down on 2026-10-14. Apply it together with the watchdog below. [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
+
+- [ ] **Add a NIC watchdog on Purple, Green and Red.** Bounce `nic0` when the gateway stops answering, so a transmit hang recovers in about a minute instead of waiting for the power button. [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
+
+- [ ] **Make Minecraft's DNS survive a reboot.** The container came up before Alpha's resolver after the October 15 power cycle and couldn't reach Mojang until I restarted it. Pin `dns: [192.168.80.1]` or add it to TeamSpeak's boot recovery. [Minecraft open items](Platforms/Minecraft/README.md#open-items).
 
 - [ ] **Andor-ParrotOS-PC follow-ups.** Since 2026-10-11 ObiPC's hardware runs Parrot Security as Andor-ParrotOS-PC, for now. The two are separate machines, and ObiPC's records and objects stay. Onboard the `andor-parrotos-pc` key to `app-01` when that VM is back. Before ObiPC's Windows goes back on the hardware, remove Andor-ParrotOS-PC's MAC and address grants and rename the UniFi client back to `Obi PC`, or ObiPC inherits Jedi PC's access: [checklist](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md#before-obipcs-windows-returns). [Andor-ParrotOS-PC Admin Access](Infrastructure/Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
 
