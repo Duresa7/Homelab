@@ -20,7 +20,14 @@ Update forced for alias unifi-ddns.duresakadi.com
 Error response from DDNS server, ignoring ...
 ```
 
-These are the message texts as I counted them, not complete log lines. Cloudflare's answer was `Invalid API Token`. The UniFi interface showed no obvious error.
+These are the message texts as I counted them, not complete log lines. The lines do not include Cloudflare's response body, so they show that every update failed but not why. The UniFi interface showed no obvious error.
+
+Cloudflare's reason came from two read-only calls I made with the token from the gateway's configuration at about 6:06 PM to 6:07 PM EDT on 2026-10-13:
+
+| Call | Cloudflare's answer |
+|---|---|
+| Token-verify endpoint | HTTP 401, error code 1000, `Invalid API Token` |
+| `GET /zones?name=duresakadi.com`, the first call inadyn makes | Error code 9109, `Invalid access token` |
 
 ## What I checked
 

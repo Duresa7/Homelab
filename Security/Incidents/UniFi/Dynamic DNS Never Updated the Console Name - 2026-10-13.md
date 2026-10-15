@@ -20,7 +20,7 @@
 
 ## Summary
 
-`unifi.duresakadi.com` is a DNS-only CNAME to `unifi-ddns.duresakadi.com`, an A record that UniFi's dynamic DNS is meant to keep pointed at my WAN address. Dynamic DNS had never updated that record. I created the record by hand on 2026-08-13 with the address of the time, then created a Cloudflare token for the gateway. That day I set up two UniFi features on Ahsoka Gateway with that one token: dynamic DNS, and UniFi's built-in certificate manager, which gets the Let's Encrypt certificate for `unifi.duresakadi.com`. Twenty-five minutes after pasting the secret into dynamic DNS I rolled the token, which gave it a new secret and invalidated the old one. Only the certificate manager got the new secret. From then on, every update the gateway sent was refused with `Invalid API Token`.
+`unifi.duresakadi.com` is a DNS-only CNAME to `unifi-ddns.duresakadi.com`, an A record that UniFi's dynamic DNS is meant to keep pointed at my WAN address. Dynamic DNS had never updated that record. I created the record by hand on 2026-08-13 with the address of the time, then created a Cloudflare token for the gateway. That day I set up two UniFi features on Ahsoka Gateway with that one token: dynamic DNS, and UniFi's built-in certificate manager, which gets the Let's Encrypt certificate for `unifi.duresakadi.com`. Twenty-five minutes after pasting the secret into dynamic DNS I rolled the token, which gave it a new secret and invalidated the old one. Only the certificate manager got the new secret. From then on, every update the gateway sent failed. When I tested the secret it still held during the investigation, Cloudflare rejected it as `Invalid API Token`.
 
 Nothing in the UniFi interface showed it. The hand-made record already held the right address, and the address did not change for two months. On 2026-10-13 a WAN outage ended with a new address, the record kept the old one, and the name stopped reaching the gateway.
 
@@ -50,7 +50,7 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 - `unifi.duresakadi.com` resolved to the previous WAN address after the 2026-10-13 outage.
 - The UniFi interface showed no obvious dynamic DNS error.
 - The gateway's logs, which reach back to 2026-08-26, held 34,719 `Update forced for alias unifi-ddns.duresakadi.com` lines and 34,711 `Error response from DDNS server, ignoring ...` lines, and no successful update.
-- Cloudflare's answer to each update was `Invalid API Token`.
+- The log lines did not include Cloudflare's response body, so they showed that every update failed but not why.
 
 ## Timeline (EDT)
 
@@ -64,6 +64,7 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 | 2026-10-13 | About 1:10 AM to 1:25 AM | WAN outage. The ISP assigned a new public address, and the A record kept the old one |
 | 2026-10-13 | 3:49:32 AM | UniFi's certificate manager used the rolled token, now `UniFi Cert V2`, from inside my home network to write the `_acme-challenge.unifi.duresakadi.com` TXT record, its DNS-01 challenge for a renewal |
 | 2026-10-13 | About 3:51 AM | Let's Encrypt issued the renewed certificate. UniFi shows it as valid from 2:51 AM because Let's Encrypt backdates a certificate's start by about an hour |
+| 2026-10-13 | About 6:06 PM to 6:07 PM | I made read-only calls to Cloudflare with the token from the gateway's inadyn configuration. The token-verify endpoint returned HTTP 401, error code 1000, `Invalid API Token`. `GET /zones?name=duresakadi.com`, inadyn's first call, returned error code 9109, `Invalid access token` |
 | 2026-10-13 | 6:27:47 PM | I created the account API token `UniFi DDNS`, Zone Read and DNS Write on `duresakadi.com` only, and entered it in the UniFi dynamic DNS entry. I renamed `UniFi Dynamic DNS` to `UniFi Cert V2` |
 | 2026-10-13 | 6:29:26 PM | `UniFi DDNS` updated the A record to the current WAN address, the first automatic update the record had had |
 | 2026-10-13 | After the update | 1.1.1.1 returned the new address; the gateway's resolver caught up about 270 seconds later. `https://unifi.duresakadi.com` returned HTTP 200 with a valid certificate |
@@ -76,7 +77,7 @@ At 6:27:47 PM I created a new account API token, `UniFi DDNS`, with Zone Read an
 
 ### The secret in UniFi was dead from 10:04 AM on setup day
 
-The token in the generated inadyn configuration was a 53-character `cfat_` account token with a valid built-in checksum. It was intact; Cloudflare refused it because the roll at 10:04:17 AM on 2026-08-13 had replaced it, not because of a copy error. That secret was valid for 25 minutes 26 seconds. The gateway's logs start on 2026-08-26, so I cannot see what it sent in that window, but the A record was never modified after I created it, so no update landed then either.
+The token in the generated inadyn configuration was a 53-character `cfat_` account token with a valid built-in checksum. The gateway's log lines carry no response body, so to see Cloudflare's answer I made two read-only calls with that token at about 6:06 PM to 6:07 PM on 2026-10-13. Cloudflare's token-verify endpoint returned HTTP 401 with error code 1000, `Invalid API Token`. `GET /zones?name=duresakadi.com`, the first call inadyn makes, returned error code 9109, `Invalid access token`. The secret was intact; Cloudflare refused it because the roll at 10:04:17 AM on 2026-08-13 had replaced it, not because of a copy error. That secret was valid for 25 minutes 26 seconds. The gateway's logs start on 2026-08-26, so I cannot see what it sent in that window, but the A record was never modified after I created it, so no update landed then either.
 
 ### One token served two jobs
 
@@ -108,7 +109,7 @@ UniFi shows no obvious error when updates are refused, and `-C` keeps inadyn run
 
 ## Root Cause
 
-The UniFi dynamic DNS entry held a Cloudflare token secret that I invalidated by rolling the token 25 minutes after entering it. Cloudflare refused every update from then on with `Invalid API Token`. The token also lacked the Zone Read permission inadyn's Cloudflare plugin needs, so it would have failed even unrolled. The hand-created A record hid the failure until the WAN address changed on 2026-10-13.
+The UniFi dynamic DNS entry held a Cloudflare token secret that I invalidated by rolling the token 25 minutes after entering it. Every update from then on failed, and when I tested that secret during the investigation Cloudflare rejected it as `Invalid API Token`. The token also lacked the Zone Read permission inadyn's Cloudflare plugin needs, so it would have failed even unrolled. The hand-created A record hid the failure until the WAN address changed on 2026-10-13.
 
 ## Contributing Factors
 
