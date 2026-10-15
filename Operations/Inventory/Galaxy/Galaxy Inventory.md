@@ -1,11 +1,13 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-15
 
 This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-10-14: Purple's NIC transmit hang interrupted its guest service paths for about 54 minutes and removed Purple from cluster membership for 51 minutes 42 seconds; the other four nodes stayed quorate. I recovered Purple with a physical power cycle on October 15 and verified both guests running, with `app-01` still stopped. LAN/public service checks passed; Minecraft logins were most likely impaired after it started at 12:37 AM until a separate container restart restored external DNS at 12:58:32 AM. [Minecraft DNS persistence](../../../Platforms/Minecraft/README.md#open-items) remains open. [Incident and preventive actions](../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
 

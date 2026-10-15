@@ -1,13 +1,15 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-15
 
 This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md): docker-main and security-01 serve upstream node_exporter 1.9.0 with their distro units masked; the unused NUT monitors on Red and Grey are masked, and Grey still serves UPS-02 telemetry.
 
 ## Recent changes
+
+- 2026-10-14: Purple's NIC transmit hang took `edge-01` and `alpha-prod-01` offline for about 54 minutes. After my October 15 power cycle, monitoring and workloads recovered and Playit loaded all three tunnels. LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed. Minecraft logins were most likely impaired after it started at 12:37 AM until a separate container restart restored external DNS at 12:58:32 AM; authenticated joins remain untested. [Minecraft DNS persistence](../../../Platforms/Minecraft/README.md#open-items) remains open. [Outage and validation](../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
 
