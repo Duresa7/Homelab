@@ -4,7 +4,7 @@
 **Last updated:** 2026-10-15
 
 **Implementation date:** 2026-10-15  
-**Status:** Applied; confirmed after a reboot on Green and Red. Purple's after-reboot check is open  
+**Status:** Complete; confirmed after a reboot on all three nodes  
 **Affected systems:** `purple-server`, `green-server` and `red-server`: `/etc/network/interfaces`, onboard Intel I219-LM `nic0` (`e1000e`)  
 **Incident:** [Purple Server NIC Transmit Hang - 2026-10-14](../../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md)
 
@@ -47,24 +47,33 @@ On Purple, VM 121 `edge-01` and VM 401 `alpha-prod-01` stayed running. On `alpha
 
 ## After-reboot verification
 
-Later on 2026-10-15 I rebooted Green and then Red, one at a time, so the cluster never had fewer than four votes. Each reboot was a normal `systemctl reboot` scheduled through `systemd-run`. Neither node had `ethtool` run by hand after it booted.
+Later on 2026-10-15 I rebooted Green, Red and then Purple, one at a time, so the cluster never had fewer than four votes. Each reboot was a normal `systemctl reboot` scheduled through `systemd-run`. No node had `ethtool` run by hand after it booted.
 
 | Node | Shutdown (EDT) | Booted | Kernel | Rejoined cluster | TSO / GSO / GRO after boot | Link |
 |---|---|---|---|---|---|---|
 | `green-server` | 8:30:01 AM | 8:30:52 AM | `7.0.14-20-pve` | 8:31:01 AM | off / off / off | 1000 Mb/s full duplex |
 | `red-server` | 8:34:58 AM | 8:35:57 AM | `7.0.14-22-pve` | 8:36:33 AM | off / off / off | 1000 Mb/s full duplex |
+| `purple-server` | 9:06:11 AM | 9:07:09 AM | `7.0.14-22-pve` | 9:07:47 AM | off / off / off | 1000 Mb/s full duplex |
 
-On both nodes, `networking.service` finished within seven seconds of boot. Both nodes came back with RX/TX checksumming and scatter-gather still on, five quorate votes, all eight Corosync peer links connected, `pve-cluster`, `pvedaemon`, `pveproxy`, `pvestatd` and `corosync` active, no failed units, and no `Hardware Unit Hang` lines. Both reached the gateway.
+On each node, `networking.service` finished within eight seconds of boot. Each node came back with RX/TX checksumming and scatter-gather still on, five quorate votes, all eight Corosync peer links connected, `pve-cluster`, `pvedaemon`, `pveproxy`, `pvestatd` and `corosync` active, no failed units, and no `Hardware Unit Hang` lines. Green and Red reached the gateway.
 
 Green has no `7.0.14-22-pve` installed, so it booted the same kernel. Red booted the `7.0.14-22-pve` kernel it had been waiting for since the [2026-10-07 package updates](../../../../../Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
 
 Red's only guest, CT 842 `media-01`, shut down cleanly at 8:35:13 AM and started again at 8:36:35 AM, so the media stack was down for about a minute and a half. All ten of its running containers came back, and `gluetun`, `jellyfin`, `hawser` and `cadvisor` reported healthy. The Docker boot race that hit Minecraft did not recur here. Every container's resolver file names the host's external server, and `jellyfin`, `sonarr`, `radarr`, `prowlarr`, `jellyseerr` and `qbittorrent` (through `gluetun`) all resolved an external name.
 
+### Purple's guests
+
+I had started `app-01` at 8:56 AM for the [Coolify webhook test](../../../../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md), and it was already stopped again by 9:06:08 AM. It is set not to start at boot, and I left it off after the reboot. Purple's shutdown stopped `edge-01` and `alpha-prod-01` between 9:06:17 and 9:06:30 AM. They started again at 9:07:47 and 9:07:50 AM.
+
+- `edge-01`: `cloudflared` registered four tunnel connections between 9:08:06 and 9:08:09 AM, and Caddy was active.
+- Minecraft: the [Docker DNS boot race](../../../../../Platforms/Minecraft/README.md#open-items) recurred. The container started at 9:08:12 AM, about four seconds before Alpha's `/etc/resolv.conf` was written at 9:08:16 AM, and its resolver file read `# NO EXTERNAL NAMESERVERS DEFINED`. I ran `docker restart minecraft` at 9:09:01 AM. It was healthy at 9:09:17 AM with `# ExtServers: [host(192.168.80.1)]`, and `sessionserver.mojang.com`, `api.minecraftservices.com` and `discovery.minecraftservices.com` resolved inside it.
+- TeamSpeak: the boot-recovery script restarted `ts-valorant-02` and `ts-valorant-03` at 9:09:41 and 9:09:42 AM and `playit-agent` at 9:10:02 AM, and Playit reported its tunnels loaded.
+- Checks at 9:10:46 to 9:10:53 AM: `teamspeak_public_up` was 1 for `ts02` and `ts03`. Prometheus `up` was 1 for Purple and `alpha-prod-01`, and every blackbox probe was 1. No alert was firing. TS3 Manager returned HTTP 200. Minecraft server-list pings on the LAN and through the Cloudflare SRV record and Playit both gave 26.3 / 777 / 0/20 with pong OK.
+
 Grey could not ping Green after Green's reboot, and Green could not ping Grey. The reboot did not cause this. Grey gets no ping reply from Purple, Blue or Red either, Corosync traffic between the nodes was unaffected, and Green reached the gateway normally.
 
 ## Open
 
-- Purple has not rebooted since the change. Its check is `ethtool -k nic0` reading TSO, GSO and GRO off after its next boot.
 - Whether this prevents the hang will only show over time. If the hang returns, I will widen the line to every offload and record the recurrence against the incident.
 - With GRO off, the CPU handles each received packet separately. I have not measured the cost.
 - The NIC watchdog, the BIOS/ME check and out-of-band power control are still open in the [Galaxy TODO](../TODO.md#i219-transmit-hang-prevention).

@@ -164,7 +164,7 @@ The restart corrected the current container state. I have not changed the Dockha
 
 ### 3. Disable `nic0` offloads on Purple, Green and Red
 
-At about 8:06 AM EDT on 2026-10-15, I added `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces` on all three M920q nodes. I then ran `ifup nic0` on each, so the configured line applied the change. TSO, GSO and GRO read off on every node. No link dropped, all Corosync links stayed connected, and Purple's guests kept running. ifupdown2 runs the line at every boot. Green and Red came back with the offloads off when I rebooted them later that morning, and Red booted `7.0.14-22-pve`. Purple has not rebooted since. This is the community workaround, not a proven fix. [Change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
+At about 8:06 AM EDT on 2026-10-15, I added `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces` on all three M920q nodes. I then ran `ifup nic0` on each, so the configured line applied the change. TSO, GSO and GRO read off on every node. No link dropped, all Corosync links stayed connected, and Purple's guests kept running. ifupdown2 runs the line at every boot. Green, Red and Purple all came back with the offloads off when I rebooted them one at a time later that morning, and Red booted `7.0.14-22-pve`. This is the community workaround, not a proven fix. [Change record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
 
 ## Validation
 
@@ -203,9 +203,9 @@ I did not test an authenticated Minecraft join, which needs a real account, or T
 
 **Resolved:** Purple rejoined the cluster at 12:36:43 AM on 2026-10-15; public protocol reachability recovered by 12:39:03 AM, ending the roughly 54-minute full outage. LAN/public checks passed for Minecraft, TS-02, TS-03 and TS3 Manager. Minecraft logins were separately most likely impaired after it started at 12:37 AM until DNS recovery at 12:58:32 AM. The service outage and current DNS failure are closed, with preventive actions open. I have not tested an authenticated Minecraft join or TeamSpeak `serverinfo`.
 
-The persistent offload change is applied on Purple, Green and Red and held through reboots on Green and Red; I still need to confirm it after Purple's next reboot. I also still need to add the NIC watchdog, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
+The persistent offload change is applied on Purple, Green and Red and held through a reboot on each. I still need to add the NIC watchdog, check M920q BIOS/ME updates, establish recovery without physical presence, consider a separate physical Corosync link1 path, and watch Green and Red for the same signature. The actionable checklist is in the [Galaxy TODO](../../../Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
-I still need to make Minecraft DNS survive the next reboot, either with pinned `dns: [192.168.80.1]` as for the collector or by adding Minecraft to boot recovery. This requires a Dockhand-managed stack or recovery-script change and remains in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
+Purple's verification reboot at 9:06 AM on 2026-10-15 reproduced the Minecraft DNS boot race, and I restarted the container again at 9:09:01 AM. I still need to make Minecraft DNS survive the next reboot, either with pinned `dns: [192.168.80.1]` as for the collector or by adding Minecraft to boot recovery. This requires a Dockhand-managed stack or recovery-script change and remains in the [Minecraft backlog](../../../Platforms/Minecraft/README.md#open-items).
 
 ## Related Records
 
