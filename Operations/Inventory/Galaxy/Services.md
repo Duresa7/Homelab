@@ -9,6 +9,8 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-10-15: I turned TSO, GSO and GRO off on `nic0` on Purple, Green and Red, then rebooted Green and Red to confirm the setting survives a boot. Red now runs `7.0.14-22-pve`; `media-01` was down for about a minute and a half and came back with all ten running containers and working DNS. [Change record and reboot checks](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification).
+
 - 2026-10-14: Purple's NIC transmit hang took `edge-01` and `alpha-prod-01` offline for about 54 minutes. After my October 15 power cycle, monitoring and workloads recovered and Playit loaded all three tunnels. LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed. Minecraft logins were most likely impaired after it started at 12:37 AM until a separate container restart restored external DNS at 12:58:32 AM; authenticated joins remain untested. [Minecraft DNS persistence](../../../Platforms/Minecraft/README.md#open-items) remains open. [Outage and validation](../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
@@ -35,14 +37,14 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Cluster State
 
-All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upgrade, keep their lowercase `.galaxy` FQDN, and quorum holds at five votes. Each node has kernel `7.0.14-20-pve` installed. Four nodes have run it since the [2026-10-06 reboots](../../Maintenance/Fleet%20Reboots%20-%202026-10-06.md); `grey-server` was not rebooted and still runs `7.0.14-8-pve`. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-10-05.md).
+All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upgrade, keep their lowercase `.galaxy` FQDN, and quorum holds at five votes. The [2026-10-07 package updates](../../Maintenance/OS%20Package%20Updates%20-%202026-10-07.md) installed kernel `7.0.14-22-pve` on every node except Green. Purple booted it during the 2026-10-15 [NIC outage recovery](../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md), and Red during the [offload reboot check](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification) the same morning. Blue still runs `7.0.14-20-pve` from the [2026-10-06 reboots](../../Maintenance/Fleet%20Reboots%20-%202026-10-06.md), and `grey-server` still runs `7.0.14-8-pve`. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-10-05.md).
 
-| Node | FQDN | PVE | Running kernel (2026-10-06) | Installed kernel (2026-10-05) |
+| Node | FQDN | PVE | Running kernel (2026-10-15) | Newest installed kernel (2026-10-15) |
 | --- | --- | --- | --- | --- |
-| grey-server | `grey-server.galaxy` | 9.2.21 | `7.0.14-8-pve` | `7.0.14-20-pve` |
-| purple-server | `purple-server.galaxy` | 9.2.21 | `7.0.14-20-pve` | `7.0.14-20-pve` |
-| blue-server | `blue-server.galaxy` | 9.2.21 | `7.0.14-20-pve` | `7.0.14-20-pve` |
-| red-server | `red-server.galaxy` | 9.2.21 | `7.0.14-20-pve` | `7.0.14-20-pve` |
+| grey-server | `grey-server.galaxy` | 9.2.21 | `7.0.14-8-pve` | `7.0.14-22-pve` |
+| purple-server | `purple-server.galaxy` | 9.2.21 | `7.0.14-22-pve` | `7.0.14-22-pve` |
+| blue-server | `blue-server.galaxy` | 9.2.21 | `7.0.14-20-pve` | `7.0.14-22-pve` |
+| red-server | `red-server.galaxy` | 9.2.21 | `7.0.14-22-pve` | `7.0.14-22-pve` |
 | green-server | `green-server.galaxy` | 9.2.21 | `7.0.14-20-pve` | `7.0.14-20-pve` |
 
 ## Guest Workloads

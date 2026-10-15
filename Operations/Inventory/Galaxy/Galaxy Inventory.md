@@ -7,6 +7,8 @@ This index points to the living records that hold Galaxy's current state. On 202
 
 ## Recent changes
 
+- 2026-10-15: I turned TSO, GSO and GRO off on `nic0` on Purple, Green and Red, then rebooted Green and Red to confirm the setting survives a boot. Red now runs `7.0.14-22-pve`; `media-01` was down for about a minute and a half and came back with all ten running containers and working DNS. [Change record and reboot checks](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification).
+
 - 2026-10-14: Purple's NIC transmit hang interrupted its guest service paths for about 54 minutes and removed Purple from cluster membership for 51 minutes 42 seconds; the other four nodes stayed quorate. I recovered Purple with a physical power cycle on October 15 and verified both guests running, with `app-01` still stopped. LAN/public service checks passed; Minecraft logins were most likely impaired after it started at 12:37 AM until a separate container restart restored external DNS at 12:58:32 AM. [Minecraft DNS persistence](../../../Platforms/Minecraft/README.md#open-items) remains open. [Incident and preventive actions](../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).

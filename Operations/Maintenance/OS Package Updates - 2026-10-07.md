@@ -1,10 +1,10 @@
 # OS Package Updates
 
 **Created:** 2026-10-07  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-10-15
 
 **Implementation date:** 2026-10-07, 7:48 AM to 7:56 AM EDT  
-**Status:** Package installation complete; five reboots pending
+**Status:** Package installation complete; Blue, Grey and Splunk reboots pending
 
 I cleared the OS-update alert for `blue-server`, `grey-server`, `purple-server`, `red-server` and `splunk-siem`. Fresh repository checks confirmed six upgrades on each Proxmox node and nineteen pending packages on Splunk's Rocky Linux host. I updated the five hosts in sequence over SSH Manager, checked each completed transaction, and refreshed their monitoring collectors. I did not reboot any host or change guest placement, resources, application versions or package holds.
 
@@ -59,3 +59,5 @@ I left all five reboots pending. Blue, Purple and Red still run `7.0.14-20-pve`;
 The four Proxmox APT collectors report `node_reboot_required 0` despite the newer installed kernel. Their existing collector reads the reboot marker rather than comparing kernels, so I recorded the required reboots here and in the root [TODO](../../TODO.md). I did not change that collector or create a synthetic marker.
 
 Node reboots need a guest outage or migration plan and post-boot service checks. Grey's reboot also affects `ubuntu-dev`, where this workspace runs, and Splunk, so I would coordinate those rather than reboot Splunk twice. Green was outside this five-host alert and I did not update it.
+
+On 2026-10-15, Purple booted `7.0.14-22-pve` during its [NIC outage recovery](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md), and I rebooted Red onto it at 8:35 AM as part of the [offload reboot check](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification). Red's `media-01` came back with all ten running containers. Blue, Grey and Splunk remain.
