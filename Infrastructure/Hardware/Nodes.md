@@ -7,6 +7,8 @@ I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 114.
 
 ## Recent changes
 
+- 2026-10-15: I turned TSO, GSO and GRO off on the onboard I219-LM `nic0` on Purple, Green and Red, through a `post-up` line in each node's network configuration that runs at every boot. [Change record](../Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
+
 - 2026-10-14: Purple's onboard I219-LM transmit ring hung with the link still up. I recovered it with a clean physical shutdown and power-on on October 15; it booted the waiting `7.0.14-22-pve` kernel. [NIC outage and verification](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).
 
 - 2026-10-11: I increased VM 401 `alpha-prod-01` on Purple from 6 GiB to 8 GiB maximum and minimum RAM for Minecraft. Six vCPUs and the 60 GiB disk remain unchanged; `app-01` remains stopped. [Memory increase and verification](../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).

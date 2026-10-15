@@ -7,8 +7,6 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-- [ ] **Disable `nic0` offloads on Purple, Green and Red.** A persistent `post-up` ethtool line for TSO, GSO and GRO, the community workaround for the I219 transmit hang that took Purple down on 2026-10-14. Apply it together with the watchdog below. [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
-
 - [ ] **Add a NIC watchdog on Purple, Green and Red.** Bounce `nic0` when the gateway stops answering, so a transmit hang recovers in about a minute instead of waiting for the power button. [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
 - [ ] **Make Minecraft's DNS survive a reboot.** The container came up before Alpha's resolver after the October 15 power cycle and couldn't reach Mojang until I restarted it. Pin `dns: [192.168.80.1]` or add it to TeamSpeak's boot recovery. [Minecraft open items](Platforms/Minecraft/README.md#open-items).
@@ -19,7 +17,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Resolve the Minecraft custom name's server-list ping.** `minecraft.alphasecunited.com` has working DNS and SRV login transport, but Playit rejects the entered hostname used by Minecraft 26.3's ping. [Verification and supported external-domain option](Platforms/Minecraft/Documentation/Change%20Records/DNS%20Publication%20-%202026-10-09.md#connection-verification).
 
-- [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey and Red still need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Purple booted its waiting kernel during the October 15 recovery, recorded in the [NIC incident](Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state).
+- [ ] **Schedule reboots after the 2026-10-07 OS updates.** Blue, Grey and Red still need kernel `7.0.14-22-pve`; `splunk-siem` needs `6.12.0-211.62.1.el10_2`. Purple booted its waiting kernel during the October 15 recovery, recorded in the [NIC incident](Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). Reboot scope and verification are in the [maintenance record](Operations/Maintenance/OS%20Package%20Updates%20-%202026-10-07.md#open-state). After Red's reboot, check that `ethtool -k nic0` still reads TSO, GSO and GRO off ([offload change](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md)).
 
 - [ ] **Reboot `grey-server`, the one node still on kernel 7.0.14-8-pve.** The other four nodes, their guests, `security-01` and `splunk-siem` were rebooted and verified on 2026-10-06. Grey's reboot restarts `docker-main`, `ubuntu-dev`, `security-01`, `splunk-siem` and the Windows guests, applies `ubuntu-dev`'s waiting 7.0.0-38 kernel, and has to be started from somewhere other than `ubuntu-dev`. I repaired the confirmed exporter, NUT, stale pool-import and OpenIPMI failures on October 7; [repair and verification](Operations/Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md). [Fleet reboots](Operations/Maintenance/Fleet%20Reboots%20-%202026-10-06.md#open-state).
 

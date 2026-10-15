@@ -7,13 +7,14 @@ Open Galaxy work only. Closed sections are listed in the root [COMPLETED](../../
 
 ## I219 Transmit Hang Prevention
 
-**Status:** Open after the 2026-10-14 outage; I recovered Purple on 2026-10-15 with a physical power cycle. Preventive changes are not yet applied.  
+**Status:** Open after the 2026-10-14 outage; I recovered Purple on 2026-10-15 with a physical power cycle. TSO, GSO and GRO have been off on `nic0` on all three M920q nodes since 2026-10-15; the other preventive changes are not yet applied.  
 **Incident:** [Purple Server NIC Transmit Hang](../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md)  
 **Troubleshooting record:** [e1000e Transmit Hang on purple-server](Troubleshooting/e1000e%20Transmit%20Hang%20on%20purple-server%20-%202026-10-14.md)
 
-- [ ] I need to disable TSO, GSO and GRO persistently on `nic0` on Purple, Green and Red by adding `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to the `nic0` stanza in `/etc/network/interfaces`. I will verify `ethtool -k nic0` after a reboot on each node and widen the change to every offload if the hang returns. This is a community workaround, not a vendor fix.
+- [x] Disable TSO, GSO and GRO persistently on `nic0` on Purple, Green and Red. On 2026-10-15 I added `post-up /sbin/ethtool -K nic0 tso off gso off gro off` to each node's `nic0` stanza and applied it with `ifup nic0` without a link drop. [Change record](Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md). This is a community workaround, not a vendor fix.
+- [ ] I need to confirm `ethtool -k nic0` reads TSO, GSO and GRO off after each of the three nodes' next reboot, and widen the line to every offload if the hang returns. Red is already due a reboot for kernel `7.0.14-22-pve`.
 - [ ] I need to check Lenovo for a newer M920q BIOS/ME firmware than `M1UKT45A` dated 2019-07-11.
-- [ ] I need a NIC watchdog on Purple, Green and Red, applied together with the offload change: a systemd timer that pings the MGMT-A gateway `192.168.70.1` and, after about a minute of failures, bounces `nic0` and logs that it did. On 2026-10-14 the hang never cleared by itself and lasted 50 minutes 36 seconds until the power button; I have not yet tested whether a bounce clears it, so the watchdog has to log the result and fall back to a reboot if the link stays dead.
+- [ ] I need a NIC watchdog on Purple, Green and Red: a systemd timer that pings the MGMT-A gateway `192.168.70.1` and, after about a minute of failures, bounces `nic0` and logs that it did. On 2026-10-14 the hang never cleared by itself and lasted 50 minutes 36 seconds until the power button; I have not yet tested whether a bounce clears it, so the watchdog has to log the result and fall back to a reboot if the link stays dead.
 - [ ] I need out-of-band power control on the M920q nodes for failures a watchdog can't handle. The AMT SOL controller is present at `00:16.3`, but I have no provisioning record and treat AMT as unprovisioned.
 - [ ] I need to consider a second physical NIC, USB or M.2 A+E, for Corosync link1 so both links no longer share one NIC and cable.
 - [ ] I need to watch Green and Red for `e1000e` / `Detected Hardware Unit Hang` and record any recurrence against this incident.
