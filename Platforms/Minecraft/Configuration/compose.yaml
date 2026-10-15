@@ -9,6 +9,8 @@ services:
     tty: true
     ports:
       - "25565:25565/tcp"
+    dns:
+      - 192.168.80.1
     environment:
       EULA: "TRUE"
       TYPE: "VANILLA"
