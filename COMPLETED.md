@@ -7,6 +7,8 @@ This is my public history of work closed from [TODO.md](TODO.md): one line per i
 
 ## Completed
 
+- [x] 2026-10-15: [Stale UniFi challenge record deleted](Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open). UniFi's certificate manager left the `_acme-challenge.unifi.duresakadi.com` TXT record behind after its 2026-10-13 renewal ([incident](Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)). The check after the next renewal stays in [TODO.md](TODO.md).
+
 - [x] 2026-10-15: [`nic0` offloads disabled on Purple, Green and Red](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md). A `post-up` line turns TSO, GSO and GRO off at every boot, the community workaround for the [I219 transmit hang](Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). Green and Red kept it through reboots; Purple's after-reboot check stays in the [Galaxy TODO](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
 - [x] 2026-09-26: [Retired Homelab Dashboard](Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md), removed its deployment and access, and cleared its unreachable alert.

@@ -7,7 +7,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 ## Inbox
 
-- [ ] **Delete the stale `_acme-challenge.unifi.duresakadi.com` TXT record.** UniFi's certificate manager on Ahsoka Gateway wrote it at 3:49 AM on 2026-10-13 for that day's renewal and did not remove it; it was still there at 8:19 AM on 2026-10-15. It is harmless. After the next renewal, expected around mid-December 2026, check whether it leaves another one behind. [Open items](Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
+- [ ] **Check for a leftover challenge record after the next UniFi certificate renewal.** UniFi's certificate manager on Ahsoka Gateway left its `_acme-challenge.unifi.duresakadi.com` TXT record behind after the 2026-10-13 renewal, and I deleted it at 8:58 AM on 2026-10-15. After the next renewal, expected around mid-December 2026, check whether it leaves another one. [Open items](Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
 
 - [ ] **Add a NIC watchdog on Purple, Green and Red.** Bounce `nic0` when the gateway stops answering, so a transmit hang recovers in about a minute instead of waiting for the power button. [Galaxy checklist](Infrastructure/Compute/Galaxy/Documentation/TODO.md#i219-transmit-hang-prevention).
 
