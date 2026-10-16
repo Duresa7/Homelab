@@ -4,7 +4,7 @@
 **Last updated:** 2026-10-16
 
 **Implementation date:** 2026-10-15  
-**Status:** HSTS and DMARC applied; security.txt and the Accept-risk classifications open  
+**Status:** HSTS, DMARC and Microsoft 365 DKIM applied; security.txt and the Accept-risk classifications open  
 **Affected systems:** Cloudflare zone `alphsec.com` (HSTS, mail lockdown), `duresakadi.com` (mail lockdown), `alphasecunited.com` (DMARC Management), the Cloudflare login (two-factor authentication), Security Insights classifications  
 **Related:** [Coolify Webhook Bypass Limited to GitHub - 2026-10-15](Coolify%20Webhook%20Bypass%20Limited%20to%20GitHub%20-%202026-10-15.md)
 
@@ -38,7 +38,9 @@ For `alphasecunited.com` that same record would have bounced my own mail. Resend
 
 ### Microsoft 365 DKIM for alphasecunited.com
 
-Turning on DKIM signing for the domain in the Defender portal (Email authentication settings, DKIM tab) fails until the two DNS records Microsoft issues exist. At 8:09:19 PM on 2026-10-15 I added both to the zone through the API, DNS-only, with the comment `Microsoft 365 DKIM`. Within a minute both answered from the zone's authoritative server, 1.1.1.1 and 8.8.8.8, and each chains to a live key at Microsoft's end. DKIM record names, targets and keys are withheld from this repository. The signing toggle itself is flipped in the Defender portal after the records exist, which is the open item below.
+Turning on DKIM signing for the domain in the Defender portal (Email authentication settings, DKIM tab) fails until the two DNS records Microsoft issues exist. At 8:09:19 PM on 2026-10-15 I added both to the zone through the API, DNS-only, with the comment `Microsoft 365 DKIM`. Within a minute both answered from the zone's authoritative server, 1.1.1.1 and 8.8.8.8, and each chains to a live key at Microsoft's end. DKIM record names, targets and keys are withheld from this repository. The signing toggle itself is flipped in the Defender portal after the records exist. The first attempts failed because Microsoft's resolvers had cached the records' absence from the attempt that produced the error; Cloudflare's negative TTL on the zone is 30 minutes, and the toggle accepted once that had passed.
+
+At 8:39:17 PM I sent a message from my Microsoft 365 mailbox to my personal mailbox. The receiving side's `Authentication-Results` reported `dkim=pass` with `header.d=alphasecunited.com`, `spf=pass`, and `dmarc=pass`, and the message carried a `DKIM-Signature` with `d=alphasecunited.com`. Microsoft's own `ARC-Authentication-Results` on the way out said the same. Microsoft 365 mail from the domain is now DKIM-signed and aligned, so it passes DMARC on both SPF and DKIM.
 
 ## Verification
 
@@ -58,7 +60,7 @@ For DMARC, deleting a `_dmarc` record returns the zone to no policy, and Cloudfl
 ## Open
 
 - [x] Add `_dmarc.alphasecunited.com`. Done 2026-10-15 through DMARC Management, above.
-- [ ] Flip the DKIM signing toggle for `alphasecunited.com` in the Defender portal now that both DNS records resolve, then confirm a sent message carries a `DKIM-Signature` with `d=alphasecunited.com`. Until then Microsoft 365 mail passes DMARC only through SPF.
+- [x] Flip the DKIM signing toggle for `alphasecunited.com` in the Defender portal and confirm a sent message carries a `DKIM-Signature` with `d=alphasecunited.com`. Done 2026-10-15 at 8:39 PM, above.
 - [ ] After a few weeks of DMARC Management showing only Microsoft 365 and Resend as passing senders, move `alphasecunited.com` to `p=quarantine`, then `p=reject`.
 - [ ] Decide whether to enable the managed `security.txt` on `alphsec.com`, `alphasecunited.com` and `duresakadi.com`.
 - [ ] Mark the six Intune and Entra findings Accept risk in Security Insights, and dismiss the AI Labyrinth suggestion. The API I use has no call for classifications, so this is six clicks in the dashboard.
