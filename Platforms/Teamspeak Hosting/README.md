@@ -1,13 +1,15 @@
 # TeamSpeak Hosting
 
 **Created:** 2026-07-28  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-22
 
 I run two TeamSpeak 3 voice servers on `alpha-prod-01` (`192.168.80.118`, VLAN 80), published to the internet through a shared Playit agent and reached by Cloudflare SRV names. TS3 Manager handles administration from the LAN.
 
 On 2026-10-09 I restarted the host to increase its RAM to 6 GiB and added a separate [Minecraft stack](../Minecraft/README.md). I transferred the retained Minecraft tunnel to the shared Playit agent, which now carries three tunnels. Both TeamSpeak origins stayed unchanged, and the collector reported local voice, public voice, DNS SRV and ServerQuery up for both after the transfer. [Deployment and verification](../Minecraft/Documentation/Change%20Records/Deployment%20-%202026-10-09.md).
 
 I restarted `alpha-prod-01` again on 2026-10-11 to increase its memory to 8 GiB for Minecraft. After startup, the collector verified local voice, public voice, DNS SRV and ServerQuery for both TeamSpeak servers. [Memory change and verification](../Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
+
+On 2026-10-22 I ran a Dockhand update under my `dkadi` login at 12:49 AM. It pulled the republished `teamspeak:latest` image, passed the Grype and Trivy gate, and recreated both voice containers at 12:53 AM. The version stayed 3.13.8, both servers kept their data volumes and listeners, and the 60-second collector recorded no local or public outage for the restart. Over the 7 days to 9:20 PM that evening, local voice and ServerQuery never failed. The public path failed for single minutes, all classified as tunnel faults: `ts02` nine times and `ts03` four, with the longest cluster between 9:52 and 10:02 PM on 2026-10-18 on `ts02`. At 6:19 PM on 2026-10-21 the SRV lookup failed for one cycle on both names. The Playit agent logs intermittent 503 and 522 responses from Playit's control API, while the relays kept carrying voice.
 
 ## Current State
 
@@ -16,7 +18,7 @@ Read back on 2026-09-25 unless a row says otherwise.
 | Item | Value |
 |---|---|
 | Host | `alpha-prod-01` (`192.168.80.118`), Debian 13; VM 401 on `purple-server`, NVMe-backed `local-lvm` |
-| Voice containers | `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`, built 2026-09-17), both TeamSpeak 3 Server 3.13.8, both recreated 12:17 PM on 2026-09-18 |
+| Voice containers | `ts-valorant-02`, `ts-valorant-03` (image `teamspeak`, upstream build of 2026-10-21), both TeamSpeak 3 Server 3.13.8, both recreated 12:53 AM on 2026-10-22 by a Dockhand image update; read back 2026-10-22 |
 | Tunnel agent | `playit-agent` (`ghcr.io/playit-cloud/playit-agent:latest`, image label 1.0) |
 | Collector | `teamspeak-monitor` (`forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable`) |
 | Administration | `ts3-manager` (`joni1802/ts3-manager`) at `https://ts3-manager.alphasecunited.com` through internal NPM (proxy host 22); direct fallback `http://192.168.80.118:9000` |
@@ -65,7 +67,8 @@ The [`teamspeak-monitor`](Source/teamspeak-monitor/) collector probes each serve
 - [Server 01 retirement (2026-08-09)](Documentation/Change%20Records/Server%2001%20Retirement%20-%202026-08-09.md)
 - [Duplicate TS03 DNS alias removal (2026-08-09)](Documentation/Change%20Records/Duplicate%20TS03%20DNS%20Alias%20Removal%20-%202026-08-09.md)
 - [Collector DNS failure after a boot race (2026-08-27)](Documentation/Change%20Records/Collector%20DNS%20Failure%20After%20a%20Boot%20Race%20-%202026-08-27.md)
-- Incidents: [UDP relay outage (2026-04-24)](../../Security/Incidents/Teamspeak/UDP%20Relay%20Outage%20-%202026-04-24.md), [DNS and ServerQuery (2026-04-24)](../../Security/Incidents/Teamspeak/DNS%20and%20ServerQuery%20-%202026-04-24.md)
+- [Robotic voice on ts03 (2026-10-22)](Documentation/Troubleshooting/Robotic%20Voice%20on%20ts03%20-%202026-10-22.md)
+- Incidents: [UDP relay outage (2026-04-24)](../../Security/Incidents/Teamspeak/UDP%20Relay%20Outage%20-%202026-04-24.md), [DNS and ServerQuery (2026-04-24)](../../Security/Incidents/Teamspeak/DNS%20and%20ServerQuery%20-%202026-04-24.md), [robotic voice from Playit relay degradation (2026-10-22)](../../Security/Incidents/Teamspeak/Robotic%20Voice%20from%20Playit%20Relay%20Degradation%20-%202026-10-22.md)
 - [Scripts](Scripts/README.md)
 - [Archived three-server walkthrough](../../Archive/Guides/TeamSpeak.md)
 

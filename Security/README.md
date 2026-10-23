@@ -1,7 +1,7 @@
 # Security
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-22
 
 My incident reports and security assessments for the AlphaSec United homelab. Each incident lives under `Incidents/<Service>/` even when the service keeps its records under `Platforms/` or `Infrastructure/`.
 
@@ -15,6 +15,7 @@ My incident reports and security assessments for the AlphaSec United homelab. Ea
 
 | Date | Service | Report | Severity | Status |
 | --- | --- | --- | --- | --- |
+| 2026-10-22 | TeamSpeak | [Robotic voice from Playit relay degradation](Incidents/Teamspeak/Robotic%20Voice%20from%20Playit%20Relay%20Degradation%20-%202026-10-22.md): the Playit relay path doubled in latency and spiked for about 30 minutes, distorting voice on `ts03` twice; it recovered without a change on my side | SEV-4 | Resolved; closed |
 | 2026-10-13 | UniFi | [Dynamic DNS never updated the console name](Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md): a rolled Cloudflare token left dynamic DNS failing from setup, so `unifi.duresakadi.com` kept the old address for about 17 hours after a WAN address change | SEV-3 | Resolved; after-renewal check open |
 | 2026-09-27 | Active Directory | [ObiPC physical access simulation](Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md): my authorized test produced 22 failed interactive events and no successful human sign-in in the reviewed 72 hours | Informational | Exercise closed; follow-ups open |
 | 2026-09-25 | Nginx Proxy Manager | [Scheduled update stranded the proxy](Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md): a Dockhand auto-update stopped NPM and cut its own Hawser path, leaving NPM down about 3 hours | SEV-2 | Resolved |
