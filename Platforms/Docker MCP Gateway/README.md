@@ -1,7 +1,7 @@
 # Docker MCP Gateway
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-27
 
 I run two isolated Docker MCP Gateway endpoints on `docker-blue`. One serves UniFi Network MCP and the other serves SSH Manager MCP. Keeping them on separate endpoints lets clients such as Executor present them as separate integrations instead of one combined tool catalog.
 
@@ -37,7 +37,7 @@ The live SSH Manager service reads its server definitions from resolved environm
 
 ## Trust Boundary
 
-SSH Manager reaches root on the 17 Linux nodes and guests: direct root login on the five Proxmox nodes and `docker-main`, passwordless sudo on `ansible-01` and `ubuntu-dev`, and password-backed sudo on the other nine. It also reaches root on the Andor-ParrotOS-PC desktop through password-backed sudo, added on 2026-10-11. The remaining seven entries are the Windows hosts and two physical laptops. Every entry is unrestricted, Executor holds no approval policy for this connection, and egress is unrestricted by my decision on 2026-09-03.
+SSH Manager reaches root on the 17 Linux nodes and guests: direct root login on the five Proxmox nodes and `docker-main`, passwordless sudo on `ansible-01`, `ubuntu-dev` and, since 2026-10-27, `media-01`, and password-backed sudo on the other eight. It also reaches root on the Andor-ParrotOS-PC desktop through password-backed sudo, added on 2026-10-11. The remaining seven entries are the Windows hosts and two physical laptops. Every entry is unrestricted, Executor holds no approval policy for this connection, and egress is unrestricted by my decision on 2026-09-03.
 
 The gateway container needs the host Docker socket, which gives it control of Docker Engine on `docker-blue`. That socket is the main trust boundary. Otherwise the gateway runs with a read-only root filesystem, no Linux capabilities, `no-new-privileges`, 256 MiB, half a CPU, a 256-process limit and bounded JSON logs. Both server services are limited to one CPU and 512 MiB.
 
