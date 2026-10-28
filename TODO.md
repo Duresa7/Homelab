@@ -1,11 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-27
+**Last updated:** 2026-10-28
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Finish the remaining Compose update checks and deployment.** CLI Proxy API is on v8.0.46. Minecraft and Playit are excluded from this pass. [Remaining updates and verification gaps](Operations/Maintenance/Compose%20Update%20Check%20-%202026-10-28.md#open-work).
 
 - [ ] **Check for a leftover challenge record after the next UniFi certificate renewal.** UniFi's certificate manager on Ahsoka Gateway left its `_acme-challenge.unifi.duresakadi.com` TXT record behind after the 2026-10-13 renewal, and I deleted it at 8:58 AM on 2026-10-15. After the next renewal, expected around mid-December 2026, check whether it leaves another one. [Open items](Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open).
 
