@@ -1,7 +1,7 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-27
 
 ## Scope and Access
 
@@ -116,7 +116,7 @@ Expected values are `excluded_file_names_enabled=true`, `pattern_count=100`, and
 
 ### Download guard
 
-Behind the filename filter, `media-download-guard.timer` runs `/opt/media-stack/scripts/media-download-guard.py` as root every 30 seconds. It rejects a `tv-sonarr` or `radarr` torrent whose files include a blocked type or no video, blocklists the release in Sonarr or Radarr, deletes the torrent, and triggers at most two replacement searches per item and six per day. The [deployment record](Change%20Records/Download%20Guard%20-%202026-10-11.md) holds the rules and bounds; the [unit tests](../Tests/test-media-download-guard.py) run on any machine with Python 3.
+Behind the filename filter, `media-download-guard.timer` runs `/opt/media-stack/scripts/media-download-guard.py` as root every 30 seconds. It rejects a `tv-sonarr` or `radarr` torrent whose files include a blocked type, an archive with no video, or no video, blocklists the release in Sonarr or Radarr, deletes the torrent, and triggers at most two replacement searches per item and six per day. The [deployment record](Change%20Records/Download%20Guard%20-%202026-10-11.md) holds the rules and bounds, and the [archive rejection record](Change%20Records/Download%20Guard%20Archive%20Rejection%20-%202026-10-27.md) adds the `archive_payload` reason and the **Archive or Executable Release** custom format that stops the same releases at grab time in Sonarr and Radarr; the [unit tests](../Tests/test-media-download-guard.py) run on any machine with Python 3.
 
 Check it with:
 

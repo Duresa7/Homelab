@@ -40,9 +40,15 @@ class Tests(unittest.TestCase):
    self.assertEqual(g.classify([{'name':name}],[]),'blocked_file_type')
  def test_executable_alongside_video_rejected(self):
   self.assertEqual(g.classify([{'name':'film.mkv'},{'name':'codec.exe'}],[]),'blocked_file_type')
- def test_good_video_and_archives_preserved(self):
-  for names in [['film.mkv','info.txt'],['film.rar','film.r00'],['film.iso'],['unknown.bin']]:
+ def test_good_video_and_disc_preserved(self):
+  for names in [['film.mkv','info.txt'],['film.mkv','sample.zip'],['film.iso'],['unknown.bin']]:
    c=Fake(names);self.run_guard(c);self.assertEqual(c.actions,[])
+ def test_archive_without_video_rejected(self):
+  for names in [['Show S02E04 1080p WEB H264-CAKES.7z'],['film.ZIP','readme.txt'],['film.rar','film.r00'],['film.part1.rar']]:
+   self.assertEqual(g.classify([{'name':n} for n in names],[]),'archive_payload')
+ def test_archive_payload_rejected_without_grace(self):
+  c=Fake(['Show S02E04 1080p WEB H264-CAKES.7z']);c.t['added_on']=NOW;self.run_guard(c)
+  self.assertEqual([a[0] for a in c.actions],['torrents/stop','blocklist','torrents/delete'])
  def test_metadata_pending_preserved(self):
   c=Fake([]);self.run_guard(c);self.assertEqual(c.actions,[])
  def test_no_video_grace(self):

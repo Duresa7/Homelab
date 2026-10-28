@@ -25,10 +25,14 @@ def classify(files, patterns):
         name = f['name'].casefold()
         if PurePosixPath(name).suffix in CODE or any(fnmatch.fnmatchcase(PurePosixPath(name).name, p.casefold()) for p in patterns):
             return 'blocked_file_type'
-    # Preserve archive/disc workflows and leave unknown formats for review.
     suffixes = {PurePosixPath(f['name'].casefold()).suffix for f in files}
-    if suffixes & (VIDEO | ARCHIVE) or any(s.startswith('.r') and s[2:].isdigit() for s in suffixes):
+    if suffixes & VIDEO:
         return None
+    # Nothing here unpacks, so an archive with no video can never import; it is
+    # also how fake releases hide an executable from the excluded-name filter.
+    if suffixes & ARCHIVE or any(s.startswith('.r') and s[2:].isdigit() for s in suffixes):
+        return 'archive_payload'
+    # Leave unknown formats for review.
     if suffixes and suffixes <= {'.txt', '.nfo', '.jpg', '.jpeg', '.png', '.srt', '.sub', '.idx', '.url', '.html', '.htm'}:
         return 'no_video_payload'
     return None

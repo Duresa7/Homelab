@@ -1,7 +1,7 @@
 # Media Stack TODO
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-27
 
 ## HDD Data Migration
 
@@ -28,6 +28,12 @@ Completed items are recorded with evidence in the [application onboarding change
 - [ ] Decide whether to backfill the 16 cutoff-unmet Mushoku Tensei episodes. Twelve are Italian-audio `WEBDL-1080p` that score 0 against a profile minimum of 100. A season search on series 26 acts on it; the guide is built for acquisition going forward, so nothing happens until I run one.
 - [ ] Decide whether Radarr gets anime handling. It keeps `HD-1080p` and Seerr has no Radarr anime route, so an anime film needs its profile set per movie or a second Radarr instance.
 - [ ] Consider Recyclarr against the `sonarr/templates/anime-remux-1080p.yml` template so the tier lists track SeaDex instead of staying a 2026-08-27 point-in-time copy. Drop the template's `quality_definition: type: anime` block for the single-instance reason above.
+
+## Download Guard
+
+- [x] 2026-10-27: Rejected archive-only torrents in the guard and added the **Archive or Executable Release** custom format to Sonarr and Radarr after ten fake LimeTorrents releases hid a Windows executable in `.7z` archives. The [change record](Change%20Records/Download%20Guard%20Archive%20Rejection%20-%202026-10-27.md) holds the verification.
+- [ ] Log the file that triggered each guard rejection, so a `blocked_file_type` event shows whether it was an executable or a shortcut.
+- [ ] Confirm the guard's retries found real releases for Tulsa King S04E03, Dark Matter S02E10, Avatar: Seven Havens S01E10 and MobLand S02E07.
 
 ## Backups, Capacity and Updates
 

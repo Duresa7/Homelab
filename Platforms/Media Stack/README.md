@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-27
 
 I run media requests, playback, release automation and VPN-isolated downloading from one Debian LXC, CT 842 `media-01` on `red-server`.
 
@@ -18,7 +18,7 @@ I verified this stack on 2026-09-24 and updated the versions after the October 5
 | Compose project | `/opt/media-stack/compose.yml`, 8 containers |
 | Beside it | cAdvisor and Hawser, each under `/opt/docker/<name>/` |
 | Image policy | Application images track `latest`; I update them through the [runbook](Documentation/Runbook.md) |
-| Download guard | Root-owned script on a 30-second systemd timer since 2026-10-11; rejects, blocklists and re-searches torrents whose payload holds a blocked file type or no video. [Deployment](Documentation/Change%20Records/Download%20Guard%20-%202026-10-11.md) |
+| Download guard | Root-owned script on a 30-second systemd timer since 2026-10-11; rejects, blocklists and re-searches torrents whose payload holds a blocked file type, an archive with no video, or no video. Sonarr and Radarr also refuse release titles ending in an archive or executable extension. [Deployment](Documentation/Change%20Records/Download%20Guard%20-%202026-10-11.md), [archive rejection](Documentation/Change%20Records/Download%20Guard%20Archive%20Rejection%20-%202026-10-27.md) |
 | Internal HTTPS | Six names under `alphasecunited.com` through Nginx Proxy Manager |
 
 ## Services
@@ -38,6 +38,7 @@ qBittorrent runs with `network_mode: service:gluetun`, so its only path out is t
 
 ## Records
 
+- [Download guard archive rejection](Documentation/Change%20Records/Download%20Guard%20Archive%20Rejection%20-%202026-10-27.md), 2026-10-27; active, ten fake releases rejected live the same day
 - [Download guard deployment](Documentation/Change%20Records/Download%20Guard%20-%202026-10-11.md), 2026-10-11; active, timer verified the same day
 - [Jellyfin Enhanced, Intro Skipper, and Media Bar installation](Documentation/Change%20Records/Jellyfin%20Plugins%20-%202026-09-27.md), 2026-09-27; active, with initial segment analysis running
 - [Architecture](Documentation/Architecture.md)
