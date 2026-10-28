@@ -132,6 +132,16 @@ pct exec 842 -- sh -lc 'python3 -B /opt/media-stack/scripts/media-download-guard
 
 The state file is `/var/lib/media-download-guard/state.json`. Deleting it forgets the denied hashes and the search counters; a torrent already removed stays removed because the release is on the application's blocklist.
 
+## Season Pack Left in missingFiles
+
+I don't seed. qBittorrent's global share limit is ratio 0 with the stop action, so a torrent stops the moment it completes and Sonarr imports from it by moving files rather than hardlinking them. If Sonarr imports only part of a season pack on its first pass, the moved files leave the torrent in `missingFiles` at 0%, and Sonarr waits on it with `qBittorrent is reporting missing files`. I keep the setting and recover by hand:
+
+1. List the torrent's files against `/data/downloads/complete` to see which are still on disk.
+2. Import the remaining files through Sonarr's manual import in copy mode, mapped to their episodes. Leave the torrent's download ID off the request: with it, Sonarr 4.0.20 throws `NullReferenceException` after the files land.
+3. Confirm each new library file shares an inode with its download file, then remove the queue rows with **Remove from client** so the torrent and its leftover files go.
+
+The [2026-10-27 record](Troubleshooting/Season%20Pack%20Stranded%20by%20Move%20Import%20-%202026-10-27.md) is the worked case.
+
 ## Rebuild
 
 I keep no backups or snapshots. Recovery is a rebuild: a fresh CT 842 from the [Linux host baseline](../../../Guides/Linux-Host-Baseline.md), the [Compose reference](../Configuration/compose.example.yml) and [environment template](../Configuration/media-stack.env.example), then the application settings from the [configuration reference](../Configuration/README.md) and the change records.
