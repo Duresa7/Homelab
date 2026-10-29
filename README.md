@@ -1,7 +1,7 @@
 # AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-09  
+**Last updated:** 2026-10-29  
 
 This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Minecraft, and TeamSpeak.
 
@@ -59,7 +59,7 @@ The current guest list is in the [Galaxy inventory](Operations/Inventory/Galaxy/
 
 The full list is in [TODO.md](TODO.md); closed work is in [COMPLETED.md](COMPLETED.md).
 
-- Repair `green-server`'s memory and activate `win11-dev` ([Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md)).
+- Activate `win11-dev` ([Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md)).
 - Finish the MeshCentral pilot on `docker-blue` ([deployment record](Platforms/MeshCentral/Documentation/Change%20Records/Deployment%20-%202026-09-12.md)).
 - Complete the Action1 Deployer on `HQ-MGT01` ([preparation record](Platforms/Action1/Documentation/Change%20Records/AD%20Deployer%20Preparation%20-%202026-09-12.md)).
 - Finish the App Portal rollout for ObiPC ([App Portal](Platforms/App%20Portal/README.md)).

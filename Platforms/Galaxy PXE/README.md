@@ -1,7 +1,7 @@
 # Galaxy PXE
 
 **Created:** 2026-07-31  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-29
 
 I run Galaxy PXE as the dedicated bare-metal provisioning service for Galaxy Proxmox nodes. `ansible-01` hosts the service, but the machine registry, installer policy, first-boot behavior, tests, operating records, and evidence belong here because they form one deployed service.
 
@@ -13,8 +13,8 @@ I run Galaxy PXE as the dedicated bare-metal provisioning service for Galaxy Pro
 - Provisioning lane: `Server-Provision`, VLAN 5
 - Last deployed node: Proxmox node `green-server`; UniFi alias `green-node`
 - Completed attempt: `complete` at 2026-07-31 12:41:27 UTC
-- Physical memory requirement: at least 12 GiB; 16 GiB preferred
-- Green's installed memory: 16 GB across two 8 GB DDR4-2667 SODIMMs, 15.46 GiB usable to Proxmox on 2026-09-24. On 2026-09-20 an online `memtester` pass on Green reported 25 failure lines, and the fault is not isolated yet ([memory-failure record](../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md)). Green hosts no guests.
+- Physical memory requirement: at least 12 GiB; 16 GiB preferred. Green is below it on one module, so a PXE reinstall of Green needs the replacement module first
+- Green's installed memory: one 8 GB Micron DDR4-2667 SO-DIMM, 7.60 GiB usable to Proxmox, since 2026-10-28. It deployed with two 8 GB modules; the SK Hynix one failed `memtester` alone in both slots and came out ([memory-failure record](../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md)).
 - Install disk: `/dev/nvme0n1`
 - Preserved secondary disk: `/dev/sda`
 - Cluster join peer: `grey-server`, `192.168.70.10`

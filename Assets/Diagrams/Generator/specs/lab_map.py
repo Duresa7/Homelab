@@ -32,7 +32,7 @@ d.card("galaxy", "grey", "grey-server", sub1="192.168.70.10", sub2="10 guests, G
 d.card("galaxy", "purple", "purple-server", sub1="192.168.70.11", sub2="3 guests", logo="proxmox", node="purple")
 d.card("galaxy", "blue", "blue-server", sub1="192.168.70.12", sub2="4 guests", logo="proxmox", node="blue")
 d.card("galaxy", "red", "red-server", sub1="192.168.70.13", sub2="1 guest, media disk", logo="proxmox", node="red")
-d.card("galaxy", "green", "green-server", sub1="192.168.70.14", sub2="no guests, memory errors", logo="proxmox", node="green", warn=True)
+d.card("galaxy", "green", "green-server", sub1="192.168.70.14", sub2="no guests, 8 GB", logo="proxmox", node="green")
 d.group("ws", "Workstations", badge="no guide of their own", family="Internal", notes=[(None, "Personal-A, VLAN 40")])
 d.card("ws", "ubuntu", "ubuntu-dev", sub1="Ubuntu 26.04.1, Docker", sub2="VS Code, agent tooling", logo="ubuntu", node="grey")
 d.card("ws", "win11", "win11-dev", sub1="Windows 11 Pro 25H2", sub2="OpenSSH, dev VM", logo="windows-11", node="grey")

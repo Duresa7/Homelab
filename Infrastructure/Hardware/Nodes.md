@@ -1,9 +1,9 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-28
+**Last updated:** 2026-10-29
 
-I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 106.92 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and Green runs on one 8 GB Micron module and holds no guests. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Green's memory, read on 2026-10-28.
+I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 106.92 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and Green runs on one 8 GB Micron module. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Green's memory, read on 2026-10-28.
 
 ## Recent changes
 
@@ -106,13 +106,13 @@ The photo dates from 2026-04-13, before the 2026-07-31 module swap, and shows tw
 | Node | Slot 1 | Slot 2 | Installed | Usable memory |
 | --- | --- | --- | ---: | ---: |
 | blue-server | Samsung `M471A5644EB0-CPB`, 2 GB DDR4-2133 | SK Hynix `HMA851S6AFR6N-UH`, 4 GB DDR4-2400 at 2133 MT/s | 6 GB | 5.68 GiB |
-| green-server | Empty | Micron `8ATF1G64HZ-2G6E1`, 8 GB DDR4-2667 | 8 GB | 7.60 GiB |
+| green-server | Micron `8ATF1G64HZ-2G6E1`, 8 GB DDR4-2667 | Empty | 8 GB | 7.60 GiB |
 
 I moved Blue's former 8 GB module to Green and installed the 2 GB module in Blue on 2026-07-31. The live SMBIOS and Proxmox memory readbacks produced the values above.
 
 On 2026-09-27 I verified the Micron module in `ChannelA-DIMM0` and SK Hynix in `ChannelB-DIMM0`, both single-rank at 2666 MT/s and 1.2 V. A new locked 8 GiB test failed six seconds after launch. Neither module nor slot is isolated as the cause; Green remains empty. BIOS is `M1UKT45A` dated 2019-07-11. The [diagnosis and physical isolation plan](../Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md#component-diagnosis-on-2026-09-27) holds the evidence.
 
-On 2026-10-28 I tested each module alone. The SK Hynix `HMA81GS6CJR8N-VK`, the module moved from Blue on 2026-07-31, logged 25 failures in 45 seconds in `ChannelB-DIMM0` and 20 in 36 seconds in `ChannelA-DIMM0`, with the same bit-flip signature. The Micron ran 20 minutes in `ChannelB-DIMM0` with none. The SK Hynix is defective. Before Green carries a guest it runs on the Micron alone in `ChannelB-DIMM0`, with `ChannelA-DIMM0` empty. The [single-module tests](../Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md#sk-hynix-alone-in-channelb-dimm0) hold the readback.
+On 2026-10-28 I tested each module alone. The SK Hynix `HMA81GS6CJR8N-VK`, the module moved from Blue on 2026-07-31, logged 25 failures in 45 seconds in `ChannelB-DIMM0` and 20 in 36 seconds in `ChannelA-DIMM0`, with the same bit-flip signature. The Micron ran 20 minutes in `ChannelB-DIMM0` with none. The SK Hynix is defective and out of the node. On 2026-10-29 `dmidecode` read the Micron alone in `ChannelA-DIMM0` at 2666 MT/s, with `ChannelB-DIMM0` empty, and Proxmox reported 7,778 MiB. The [single-module tests](../Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md#sk-hynix-alone-in-channelb-dimm0) hold the readback.
 
 ## Superseded Snapshots
 

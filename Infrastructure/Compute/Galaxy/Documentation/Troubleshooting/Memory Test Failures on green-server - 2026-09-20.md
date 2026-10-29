@@ -1,9 +1,9 @@
 # Memory Test Failures on green-server
 
 **Created:** 2026-09-20  
-**Last updated:** 2026-10-28
+**Last updated:** 2026-10-29
 
-**Status:** Resolved on 2026-10-28. The SK Hynix module fails on its own in both slots and the Micron module passes in `ChannelB-DIMM0`. The SK Hynix is defective and out of service; Green runs on the Micron module alone, 8 GB.
+**Status:** Resolved on 2026-10-28. The SK Hynix module fails on its own in both slots and the Micron module passes in `ChannelB-DIMM0`. The SK Hynix is defective and out of service; Green runs on the Micron module alone in `ChannelA-DIMM0`, 8 GB.
 
 While installing VM 103 `win11-dev`, Windows Setup stopped with `PFN_LIST_CORRUPT (0x4E)`. Green already had a [2026-08-09 cross-process fault investigation](Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md), when two 1 GiB online memory passes had passed and the hardware cause remained unproven. This larger test now fails independently of Windows and its drivers.
 
@@ -174,4 +174,6 @@ FAILURE: 0x0c043b818ca06f05 != 0x0c043b818ca06f45 at offset 0x00000000140230b0.
 That is the same signature, from the same pattern seed, as in slot B. No `memtester` process remained and quorum stayed at five votes.
 
 The SK Hynix `HMA81GS6CJR8N-VK` fails in both slots and the Micron passes in slot B. The module is the fault. It is defective and comes out of service.
+
+On 2026-10-29 Green ran the Micron module alone in `ChannelA-DIMM0`, with `ChannelB-DIMM0` empty, 7,778 MiB total and five quorate votes.
 

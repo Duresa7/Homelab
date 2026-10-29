@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-28
+**Last updated:** 2026-10-29
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -31,7 +31,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 
-- [ ] **Repair Green memory and activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete; the guest now runs on Grey after the verified 2026-09-23 migration. Host memory repair and Windows activation remain open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
+- [ ] **Activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete; the guest now runs on Grey after the verified 2026-09-23 migration. Green's memory fault was traced to one module and removed on 2026-10-28. Windows activation remains open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
 
 - [ ] **Observe offline sign-in and unlock on the domain workstations.** I applied the online-sign-in policy on 2026-09-19, verified both clients, and confirmed `HQ-WS001` retained domain membership through a disconnect and recovered its secure channel. Interactive checks remain in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#online-workstation-sign-in-applied-2026-09-19-interactive-checks-open).
 - [ ] **Complete the physical-access exercise follow-ups.** The 2026-09-27 ObiPC review found no successful human sign-in in the selected 72 hours. Audit coverage, centralized detection and controlled retest criteria are in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#physical-access-exercise-follow-ups-2026-09-27).

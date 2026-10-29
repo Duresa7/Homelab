@@ -24,8 +24,8 @@ node("blue", "blue-server", "192.168.70.12", [("intel", "Core i5-7500T, 4c"), (N
      (None, "NVMe 238 GiB"), (None, "HDD 465 GiB · unused")])
 node("red", "red-server", "192.168.70.13", [("intel", "Core i5-8500T, 6c"), (None, "15.46 GiB memory"), (None, "integrated graphics"),
      (None, "NVMe 238 GiB"), (None, "HDD 931 GiB · media /data")])
-node("green", "green-server", "192.168.70.14", [("intel", "Core i5-8500T, 6c"), (None, "15.46 GiB memory"), (None, "integrated graphics"),
-     (None, "NVMe 238 GiB"), (None, "!empty storage pool"), (None, "!host memory errors unresolved"), (None, "no guests")])
+node("green", "green-server", "192.168.70.14", [("intel", "Core i5-8500T, 6c"), (None, "7.60 GiB memory, one module"), (None, "integrated graphics"),
+     (None, "NVMe 238 GiB"), (None, "!empty storage pool"), (None, "no guests")])
 
 def guest(node_id, id, name, kind, vlan, ip, logo, icons=()):
     d.card(node_id, id, name, sub1=f"{kind} · VLAN {vlan}", sub2=ip, logo=logo, icons=icons)
@@ -62,5 +62,5 @@ d.edge("ups", "red", "", color="grey", from_side="top", to_side="bottom")
 
 d.legend_family("Mgmt", "Proxmox VE node (AlphaSec-Mgmt)"); d.legend_family("External", "power")
 d.legend_edge("Corosync link0", "solid", "blue"); d.legend_edge("Corosync link1", "dashed", "purple"); d.legend_edge("AC power", "solid", "grey")
-d.footnote("Guest addresses are the VLAN-side interfaces. win11-dev moved from green to grey on 2026-09-23; green-server carries no guests until its memory errors are resolved.")
+d.footnote("Guest addresses are the VLAN-side interfaces. win11-dev moved from green to grey on 2026-09-23; green-server runs on one 8 GB module since its failed SK Hynix module came out on 2026-10-28.")
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

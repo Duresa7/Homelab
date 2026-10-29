@@ -80,7 +80,7 @@ d.card("galaxy", "grey", "grey-server", sub1="192.168.70.10 · Ryzen 7 3700X 8c/
 d.card("galaxy", "purple", "purple-server", sub1="192.168.70.11 · i5-8500T 6c", sub2="15.46 GiB · NVMe, SSD", logo="proxmox", icons=["intel"], node="purple")
 d.card("galaxy", "blue", "blue-server", sub1="192.168.70.12 · i5-7500T 4c", sub2="5.68 GiB · NVMe", logo="proxmox", icons=["intel"], node="blue")
 d.card("galaxy", "red", "red-server", sub1="192.168.70.13 · i5-8500T 6c", sub2="15.46 GiB · NVMe, HDD (media)", logo="proxmox", icons=["intel"], node="red")
-d.card("galaxy", "green", "green-server", sub1="192.168.70.14 · i5-8500T 6c", sub2="15.46 GiB · empty pool, memory errors", logo="proxmox", icons=["intel"], node="green", warn=True)
+d.card("galaxy", "green", "green-server", sub1="192.168.70.14 · i5-8500T 6c", sub2="7.60 GiB · NVMe, empty pool", logo="proxmox", icons=["intel"], node="green")
 
 d.row("ext")
 d.row("access", "unifi", "dmz")

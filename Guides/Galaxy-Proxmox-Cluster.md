@@ -1,7 +1,7 @@
 # Galaxy Proxmox Cluster Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-29
 
 ## What This Guide Covers
 
@@ -85,7 +85,7 @@ Stop if quorum drops, a node loses both management paths, or the edited `corosyn
 
 Galaxy has no shared storage. Every guest disk sits on its node's own storage, so a failed node takes its guests down until it returns. CT 107 and CT 108 were once HA resources pinned to `blue-server`; on 2026-09-24 `ha-manager config` was empty. ([HA removal record](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md)) The [2026-07-20 stranding incident](../Security/Incidents/Galaxy/HA%20Local%20Storage%20Stranding%20-%202026-07-20.md) shows what HA does with node-local disks.
 
-`green-server` has unresolved memory errors from 2026-09-20 and runs no guests. The [memory failure record](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Provisioning%20and%20Green%20Memory%20Failure%20-%202026-09-20.md) holds the test results.
+`green-server` runs on 8 GB. Its memory errors from 2026-09-20 traced to one bad SK Hynix module on 2026-10-28, and I pulled it. The [memory failure record](../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md) holds the test results.
 
 ## Source Records
 

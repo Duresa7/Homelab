@@ -36,7 +36,7 @@ Edge colours (`PALETTE["edges"]`): blue `#2B6CB0` publishing and HTTPS, orange `
 
 Node colours (`PALETTE["nodes"]`): grey `#495057`, purple `#6B3FA0`, blue `#1D5FB0`, red `#B02A2A`, green `#22773B`. A guest card carries its node as a 8 px stripe on its left edge; on galaxy-cluster the node frame's header strip takes the same colour. The names are literal, so no legend lookup is needed beyond the first glance.
 
-Text: ink `#1F2933`, muted `#5C6873`, faint `#8B949E`, borders `#D0D7DE`. Warnings (green-server) use amber `#B7791F`.
+Text: ink `#1F2933`, muted `#5C6873`, faint `#8B949E`, borders `#D0D7DE`. Warnings use amber `#B7791F`.
 
 ### Card anatomy
 
