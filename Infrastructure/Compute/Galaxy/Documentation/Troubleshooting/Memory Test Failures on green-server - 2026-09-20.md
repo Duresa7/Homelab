@@ -1,9 +1,9 @@
 # Memory Test Failures on green-server
 
 **Created:** 2026-09-20  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-10-28
 
-**Status:** Confirmed memory data corruption; component isolation and repair remain open.
+**Status:** Resolved on 2026-10-28. The SK Hynix module fails on its own in both slots and the Micron module passes in `ChannelB-DIMM0`. The SK Hynix is defective and out of service; Green runs on the Micron module alone, 8 GB.
 
 While installing VM 103 `win11-dev`, Windows Setup stopped with `PFN_LIST_CORRUPT (0x4E)`. Green already had a [2026-08-09 cross-process fault investigation](Status%20Unknown%20and%20Cross-Process%20Faults%20on%20green-server%20-%202026-08-09.md), when two 1 GiB online memory passes had passed and the hardware cause remained unproven. This larger test now fails independently of Windows and its drivers.
 
@@ -111,3 +111,67 @@ The next useful experiment changes the physical module/slot combination. Repeati
 5. After correcting the failing configuration, complete an extended offline test across the final installed memory before placing a guest on Green.
 
 Memtest86+ 7.20-1 is already installed, with x64 EFI and legacy images referenced in GRUB. I have not selected an offline boot entry. Physical access is needed for module isolation and to observe the boot-time test; a usable remote firmware console has not been established. Shutdown and that physical test remain pending approval and hands-on access.
+
+## Recheck on 2026-10-28
+
+I retested Green before placing a guest on it. The same two modules were still in place: Micron `8ATF1G64HZ-2G6E1` in `ChannelA-DIMM0` and SK Hynix `HMA81GS6CJR8N-VK` in `ChannelB-DIMM0`. Green held no guests, had 13,713 MiB available and had last booted on 2026-10-21, after an unclean stop on 2026-10-15 that the journal recorded as a crash. Kernel messages since 2026-09-28 held no machine-check entries. `EDAC ie31200` reports `No ECC support`, so the host cannot log memory errors by itself.
+
+I ran the same test as on 2026-09-27:
+
+```sh
+systemd-run --unit=green-memory-recheck-20261028 --property=MemoryMax=9G --property=MemorySwapMax=0 --property=RuntimeMaxSec=180 --property=Nice=10 /usr/sbin/memtester 8192M 1
+```
+
+It locked 8 GiB at 6:20:47 PM Eastern. `Stuck Address` passed this time. `Random Value` failed with one flipped bit:
+
+```text
+FAILURE: 0x6c67e5e46d7f128a != 0x6c67e5ec6d7f128a at offset 0x0000000010ddd8c0.
+```
+
+The two words differ only in bit 35. The comparison tests and `Sequential Increment` passed after it. The 180-second limit stopped the unit at 6:23:46 PM, partway through the loop, with an 8 GiB peak. No `memtester` process remained afterward, available memory went back to 13,908 MiB and quorum stayed at five votes.
+
+This is the third independent failure across three sessions, and the first single-bit flip in a data pattern rather than an address-line fault. An online test cannot say which module failed. Both channels are interleaved, `memtester` reports an offset in its own virtual buffer, and without ECC the hardware reports no physical location. Bit 35 points to one DRAM chip position within a module, but both modules have that position. The [isolation plan](#cause-assessment-and-isolation-plan) above is still the way to tell one stick from the slot.
+
+### SK Hynix alone in `ChannelB-DIMM0`
+
+That evening I removed the Micron module and left the SK Hynix module in `ChannelB-DIMM0`. `dmidecode` read back `ChannelA-DIMM0` as `No Module Installed` and `ChannelB-DIMM0` as 8 GB `HMA81GS6CJR8N-VK` at 2666 MT/s. Green booted at 7:12 PM. VLAN 70 then dropped because the switch port was missing the Proxmox trunk VLANs; Corosync kept Green on link 1. Green booted again at 7:21 PM. After I restored the trunk in UniFi, VLAN 70 came back, with 7,778 MiB total memory, no guests, all eight Corosync peer links connected and five quorate votes.
+
+I sized the test to the single module:
+
+```sh
+systemd-run --unit=green-memory-hynix-b-20261028 --property=MemoryMax=6G --property=MemorySwapMax=0 --property=RuntimeMaxSec=900 --property=Nice=10 /usr/sbin/memtester 5120M 3
+```
+
+It locked 5 GiB at 7:34:40 PM and failed at once. `Stuck Address` reported a possible bad address line, then `Random Value` and the `Compare XOR`, `SUB`, `MUL`, `DIV` and `AND` tests failed. All data failures were within a few KiB of offset `0x08484a78` to `0x084880b0`, and each changed bit 1 or bit 6 of the low byte, for example:
+
+```text
+FAILURE: 0x0c043b818ca06f05 != 0x0c043b818ca06f45 at offset 0x0000000008487dc0.
+FAILURE: 0x0000000000000002 != 0x0000000000000042 at offset 0x0000000008487dc0.
+```
+
+I stopped the unit at 7:35:25 PM after 25 `FAILURE` lines in 45 seconds and a 5 GiB peak. No `memtester` process remained and quorum stayed at five votes.
+
+The failures are worse than with both modules installed, which fits a defect on this module: with two modules interleaved, only part of each test landed on it. This run does not rule out `ChannelB-DIMM0` itself. The Micron module alone in `ChannelB-DIMM0` is the test that separates the module from the slot. If it passes, the SK Hynix module is the fault.
+
+### Micron alone in `ChannelB-DIMM0`
+
+I then swapped the Micron module into `ChannelB-DIMM0` with `ChannelA-DIMM0` empty. `dmidecode` read back 8 GB `8ATF1G64HZ-2G6E1` at 2666 MT/s in slot B. Green booted at 7:38 PM with no guests, 7,778 MiB total, all eight Corosync peer links connected and five quorate votes. I ran the same command under the unit `green-memory-micron-b-20261028` with a 20-minute limit.
+
+It locked 5 GiB at 7:41:03 PM. `Stuck Address`, `Random Value`, every `Compare` test, `Sequential Increment`, `Solid Bits`, `Block Sequential`, `Checkerboard`, `Bit Spread` and `Bit Flip` completed with no `FAILURE` line, and `Walking Ones` was running when the limit stopped the unit at 8:01:03 PM. That is 20 minutes and zero failures, against 25 failures in 45 seconds for the SK Hynix module in the same slot with the same command. No `memtester` process remained and quorum stayed at five votes.
+
+The error follows the module, not the slot. This was one partial loop, not the extended offline test, so the Micron result shows it is far better than the SK Hynix rather than that it is perfect.
+
+### SK Hynix alone in `ChannelA-DIMM0`
+
+To rule out slot B, I moved the SK Hynix module to `ChannelA-DIMM0` with `ChannelB-DIMM0` empty. `dmidecode` read back 8 GB `HMA81GS6CJR8N-VK` at 2666 MT/s in slot A. Green booted at 9:36 PM with no guests, all eight Corosync peer links connected and five quorate votes. I ran the same command under `green-memory-hynix-a-20261028`.
+
+It started at 9:41:04 PM. `Stuck Address` reported a possible bad address line, and `Random Value` and every `Compare` test failed. I stopped the unit at 9:41:40 PM after 20 `FAILURE` lines in 36 seconds. The failures again sat within a few KiB of one another, now near offset `0x14020000`, and again flipped bit 1 or bit 6 of the low byte:
+
+```text
+FAILURE: 0x0c043b818ca06f05 != 0x0c043b818ca06f45 at offset 0x00000000140230b0.
+```
+
+That is the same signature, from the same pattern seed, as in slot B. No `memtester` process remained and quorum stayed at five votes.
+
+The SK Hynix `HMA81GS6CJR8N-VK` fails in both slots and the Micron passes in slot B. The module is the fault. It is defective and comes out of service.
+
