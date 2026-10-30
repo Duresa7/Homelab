@@ -104,6 +104,33 @@ From `ci-k3s-01` at about 1:31 PM:
 
 Traffic between `ci-k3s-01` and `win11-dev` stays on VLAN 82 and never reaches the gateway, so the zone policies do not separate them.
 
+## Re-check the same afternoon
+
+I went back over the build between 2:30 PM and 2:55 PM.
+
+**Credentials.** Installing k3s created two credentials that existed only on `ci-k3s-01`: the server join token in `/var/lib/rancher/k3s/server/token`, which the Grey node will need, and the cluster-admin kubeconfig in `/etc/rancher/k3s/k3s.yaml`. I piped each from the VM into my password manager, the token as an API credential item and the kubeconfig as a document, without printing either. The SHA-256 of each stored value matched the file on the VM. Every credential this build created is now in the password manager: the `gh-runner` password, the join token and the kubeconfig. The throwaway `dkadi` hash from the install no longer exists; `account-passwords.yml` replaced it.
+
+**Boot delay.** A reboot of `ci-k3s-01` came back with `systemctl is-system-running` reporting `degraded`: `systemd-networkd-wait-online.service` timed out after two minutes with `Timeout occurred while waiting for network connectivity`. `ens18` itself was `routable` and `online`. Netplan's generator had written a drop-in, `/run/systemd/generator.late/systemd-networkd-wait-online.service.d/10-netplan.conf`, that waited for `-i eth0`, an interface this VM does not have. The installer's netplan file selected the NIC by `match: driver: virtio_net` under the ID `lan`, and the generator could not resolve that to an interface name. I rewrote `/etc/netplan/00-installer-config.yaml` (`0600 root`) with the interface named `ens18` and the same address, route and DNS, ran `netplan generate` and `systemctl daemon-reload`, and the drop-in then read `-i ens18`. I changed the [autoinstall template](../../Configuration/ci-k3s-01-autoinstall.yaml) the same way.
+
+**Reboot test.** After the fix, a second reboot finished in 16.7 seconds (`systemd-analyze`), the state was `running` with no failed units, and every check came back:
+
+| Check | Result |
+|---|---|
+| `verify-baseline.sh` | every line as in section 3; `sudo` still `/usr/bin/sudo.ws` |
+| k3s | node `Ready`, all pods `Running` or `Completed`, Helm releases `arc`, `traefik`, `traefik-crd` |
+| Packages | zero upgradable, no reboot required |
+| SSH Manager | `ci_k3s_01` returns `dkadi`, `ssh_execute_sudo` returns `root`; `win11_dev` returns `win11-dev\dkadi` |
+| Wazuh | agent 022 `Active` |
+| Prometheus | `up{host="ci-k3s-01"}` = 1 |
+
+Ansible's `reboot` and `raw` paths with `become` fail with exit 141 and `Shared connection ... closed` on this controller, and they fail the same way on `docker-network` and `alpha-prod-01`, so that is the controller, not this host. I rebooted with `systemd-run --on-active=3 systemctl reboot` instead.
+
+**`win11-dev`.** With the runner idle, I restarted its service. It logged on again as `.\gh-runner` with the stored password, wrote `Listening for Jobs` at 2:47 PM, and GitHub reported it `online`. No staging file, script or scheduled task remained.
+
+**UniFi.** KUB-A, its zone and all eight policies read back enabled, KUB-A was off the `Proxmox-Trunk` exclusion list, and the `win11-dev` client held no fixed IP. The full list held 97 user-defined policies, 88 allows and nine blocks, with exactly the names in the [firewall table](../../../../Infrastructure/Network/UniFi/Configuration/firewall.md). The count of 96 I first wrote rested on an older total that was already one allow short, and I corrected it.
+
+**Copies and leftovers.** The nine inventory and validator files on `ansible-01` hashed the same as the repository's, both SSH Manager Compose files hashed `a14eea96…`, and I deleted three console screenshots and a download log from Green's `/tmp`.
+
 ## Left in place
 
 - `ubuntu-26.04.1-live-server-amd64.iso` stays on Green's `local` storage for the Grey node.

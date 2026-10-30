@@ -3,7 +3,7 @@
 **Created:** 2026-07-09  
 **Last updated:** 2026-10-30
 
-Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 96 user-defined policies, 87 allows and nine blocks, after adding the eight KUB-A policies on 2026-10-30. The table below lists all 96. Generated zone defaults and response companions are not listed.
+Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 97 user-defined policies, 88 allows and nine blocks, after adding the eight KUB-A policies on 2026-10-30. The table below lists all 97; a full list that day returned exactly these names. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 

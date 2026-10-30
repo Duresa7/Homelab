@@ -19,9 +19,9 @@ autoinstall:
   network:
     version: 2
     ethernets:
-      lan:
-        match:
-          driver: virtio_net
+      # Name the interface. A driver match makes netplan's wait-online drop-in
+      # wait for a nonexistent eth0, which adds a two-minute timeout to every boot.
+      ens18:
         dhcp4: false
         addresses: [192.168.82.10/24]
         routes:

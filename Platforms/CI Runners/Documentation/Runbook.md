@@ -77,6 +77,8 @@ qm start 820
 
 If the console shows `Malformed autoinstall`, a `late-commands` item is not a string. `build-seed.sh` asserts this before writing the seed.
 
+Name the NIC in the netplan section (`ens18:`), never match it by driver. A driver match leaves netplan's wait-online drop-in waiting for `eth0` and every boot stalls for two minutes. Check after the first boot with `grep ExecStart /run/systemd/generator.late/systemd-networkd-wait-online.service.d/10-netplan.conf`.
+
 ## 3. Linux baseline
 
 Add the host to the inventories and to the validators that pin host sets, in the repository first, then copy each changed `inventory/hosts.yml` and `tests/validate_project.py` to `~/<project>/` on `ansible-01` and run `python3 tests/validate_project.py` there:
@@ -165,6 +167,12 @@ curl -fsS "https://api.github.com/repos/actions/actions-runner-controller/releas
 
 Then run [install-k3s-helm.sh](../Scripts/install-k3s-helm.sh) and [install-arc.sh](../Scripts/install-arc.sh) as root through Ansible's `script` module, overriding `K3S_VERSION`, `HELM_VERSION` or `ARC_VERSION` if needed. `/etc/rancher/k3s/k3s.yaml` is `0600 root`, so use `sudo kubectl` and `sudo helm` on the node.
 
+Reboot through a plain command, because Ansible's `reboot` and `raw` modules with `become` fail with exit 141 on this controller for every host:
+
+```sh
+ansible -i inventory/hosts.yml ci-k3s-01 -b -m shell -a "systemd-run --on-active=3 systemctl reboot"
+```
+
 Health check:
 
 ```sh
@@ -172,6 +180,16 @@ sudo kubectl get nodes -o wide
 sudo kubectl get pods -A
 sudo helm list -A
 ```
+
+## Credentials to store
+
+Every credential the build creates goes into the password manager before the step that made it is called done, piped from the host without printing it and confirmed by comparing SHA-256 digests:
+
+| Credential | Source | Stored as |
+|---|---|---|
+| k3s server join token | `/var/lib/rancher/k3s/server/token` | API credential item |
+| k3s admin kubeconfig | `/etc/rancher/k3s/k3s.yaml` | document |
+| `gh-runner` password | generated on `ubuntu-dev` | login item |
 
 ## 6. Windows runner host
 

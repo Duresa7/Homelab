@@ -26,7 +26,7 @@ All five were online with no upgrade pending. Their management addresses are on 
 | Networks | 24 (17 corporate LANs, 2 WANs, 1 VPN client, 4 remote-user VPN servers) | 2026-10-30 |
 | Firewall zones | 13 (7 built-in, 6 custom) | 2026-10-30 |
 | Static DNS records | 30 | 2026-09-24 |
-| User-defined firewall policies | 96 (87 allow, 9 block) | 2026-10-30 |
+| User-defined firewall policies | 97 (88 allow, 9 block) | 2026-10-30 |
 | Network Lists | 22 | 2026-09-16 |
 | Client groups | 16 | 2026-09-06 |
 | Traffic routes | 1 (`VPN - Proton`) | 2026-09-06 |
