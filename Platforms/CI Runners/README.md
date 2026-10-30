@@ -32,10 +32,12 @@ Every job runs on my hardware, including pull requests to my public repositories
 
 ## Configuration
 
+- [Scripts/](Scripts/): the seed builder, k3s, Helm and ARC installers, baseline and isolation checks, and the three `win11-dev` scripts. Secrets are read from the environment or a file deleted on read.
 - [Autoinstall template for `ci-k3s-01`](Configuration/ci-k3s-01-autoinstall.yaml). The published copy carries three placeholders that were filled only in the seed ISO on Green during the install.
 
 ## Records
 
+- [Runbook](Documentation/Runbook.md): how to rebuild or extend every part, step by step
 - [Phase 1 Build - 2026-10-30](Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md)
 - [KUB-A VLAN 82 - 2026-10-30](../../Infrastructure/Network/UniFi/Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md), the UniFi side
 - [Memory Test Failures on green-server](../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md), which cleared Green to carry a guest
