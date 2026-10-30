@@ -1,9 +1,9 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-29
+**Last updated:** 2026-10-30
 
-Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 12 VMs, six LXCs and three templates on node-local storage, with no shared storage and no HA resources. This folder owns the bridges, the two-link Corosync setup, the storage references, the Datacenter firewall, and the cluster's change and troubleshooting records.
+Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 13 VMs, six LXCs and three templates on node-local storage, with no shared storage and no HA resources. This folder owns the bridges, the two-link Corosync setup, the storage references, the Datacenter firewall, and the cluster's change and troubleshooting records.
 
 ![Galaxy cluster: five Proxmox nodes on MGMT-A and Cluster-Net, with per-node storage and guests](../../../Assets/Diagrams/galaxy-cluster.svg)
 
@@ -12,7 +12,7 @@ Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 12 VMs, six LXCs and t
 | Nodes | `grey-server`, `purple-server`, `blue-server`, `red-server`, `green-server` (192.168.70.10 to .14) |
 | Quorum | 5 of 5 votes, `config_version: 9` |
 | Corosync | `link0` on MGMT-A (VLAN 70), `link1` on Cluster-Net (VLAN 71, 192.168.71.0/24) |
-| Guests | 18 (16 running; `kali-pen` and `HQ-WS001` stopped); `green-server` holds none |
+| Guests | 19 (15 running on 2026-10-30; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` stopped); `green-server` holds VM 820 `ci-k3s-01` |
 | HA | `ha-manager config` empty |
 | `green-server` memory | 8 GB, one Micron module, since the failed SK Hynix came out on 2026-10-28 |
 

@@ -33,6 +33,7 @@ EXPECTED_TARGETS = {
     "http://192.168.40.35:9100/metrics": ("node", "docker-main"),
     "http://192.168.40.36:9100/metrics": ("node", "ansible-01"),
     "http://192.168.40.179:9100/metrics": ("node", "ubuntu-dev"),
+    "http://192.168.82.10:9100/metrics": ("node", "ci-k3s-01"),
     "http://192.168.40.39:9100/metrics": ("node", "docker-blue"),
     "http://192.168.40.42:9100/metrics": ("node", "media-01"),
     "http://192.168.80.10:9100/metrics": ("node", "app-01"),

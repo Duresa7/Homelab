@@ -1,7 +1,7 @@
 {
   "uid": "monitoring-health",
   "title": "Monitoring Health",
-  "description": "Prometheus watching itself: target health, scrape cost, TSDB growth, and the state of the 17 node_exporters.",
+  "description": "Prometheus watching itself: target health, scrape cost, TSDB growth, and the state of the 18 node_exporters.",
   "tags": [
     "homelab",
     "monitoring"

@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-30
 
 The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, the ProtonVPN client network and four remote-user VPN servers. Ahsoka Gateway routes every LAN.
 
@@ -9,6 +9,7 @@ The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, th
 
 ## Recent changes
 
+- 2026-10-30: KUB-A, VLAN 82, created for the CI runners; `win11-dev` moved to it at static `192.168.82.11` and its `192.168.40.117` reservation was turned off. [KUB-A VLAN 82](../Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md).
 - 2026-09-21: DHCP reservation for `win11-dev` at `192.168.40.117`. [win11-dev Completion](../../../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
 - 2026-09-09: DHCP DNS on Secure and Secure Client moved to `192.168.65.10`, then `192.168.65.11`. [Identity NTP and Client DNS](../Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md).
 - 2026-09-07: IDENTITY-A verified and admitted on `Proxmox-Trunk`. [Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md).
@@ -33,6 +34,7 @@ The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, th
 | MONITOR-A | 73 | 192.168.73.0/24 | 192.168.73.1 | .6 – .254 | Ahsoka Gateway |
 | SERVERS-A | 80 | 192.168.80.0/24 | 192.168.80.1 | .6 – .254 | Ahsoka Gateway |
 | Access-A | 85 | 192.168.85.0/24 | 192.168.85.1 | .6 – .254 | Ahsoka Gateway |
+| KUB-A | 82 | 192.168.82.0/24 | 192.168.82.1 | .100 – .150 | Ahsoka Gateway |
 
 ## Purpose and Device Placement
 
@@ -55,6 +57,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Security-A (72) | `AlphaSec-Observability` | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to web and NTP from the three-member `AG-Observability-Hosts` Network List. |
 | MONITOR-A (73) | `AlphaSec-Observability` | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
 | SERVERS-A (80) | `AlphaSec-Servers` | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers and databases (`app-01` = .10, `alpha-prod-01` = .118). |
+| KUB-A (82) | `AlphaSec-Kube` | Isolated CI execution | Self-hosted GitHub Actions runners: `ci-k3s-01` = .10 (k3s node, VM 820) and `win11-dev` = .11 (Windows runner, VM 103). Internet web, DNS and NTP out; Wazuh out; SSH, k3s API and RDP in from named admin hosts only. [Platform](../../../../Platforms/CI%20Runners/README.md). |
 | Access-A (85) | `AlphaSec-Access` | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
 
 ### Placement by Workload

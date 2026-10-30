@@ -38,6 +38,8 @@ EXPECTED_AI_AGENT_TARGETS = {
     "splunk-siem",
     "docker-blue",
     "ansible-01",
+    # Added 2026-10-30: the KUB-A k3s node on green-server.
+    "ci-k3s-01",
 }
 # The account and its sudoers drop-in already exist here; only the key file is
 # written. Its authorized_keys was 0 bytes, which is why the account was

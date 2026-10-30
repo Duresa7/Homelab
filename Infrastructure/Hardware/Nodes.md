@@ -1,12 +1,13 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-29
+**Last updated:** 2026-10-30
 
 I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 106.92 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and Green runs on one 8 GB Micron module. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Green's memory, read on 2026-10-28.
 
 ## Recent changes
 
+- 2026-10-30: Green carries its first guest since its memory repair, VM 820 `ci-k3s-01` at 6 GiB, leaving about 2.3 GiB available on the host. [Phase 1 Build](../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 - 2026-10-15: I turned TSO, GSO and GRO off on the onboard I219-LM `nic0` on Purple, Green and Red, through a `post-up` line in each node's network configuration that runs at every boot. [Change record](../Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
 
 - 2026-10-14: Purple's onboard I219-LM transmit ring hung with the link still up. I recovered it with a clean physical shutdown and power-on on October 15; it booted the waiting `7.0.14-22-pve` kernel. [NIC outage and verification](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md).

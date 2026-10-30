@@ -38,6 +38,8 @@ NODES = [
          pve="purple-server", vmid="qemu/401", docker=True,  apt=True, teamspeak=True),
     dict(host="ubuntu-dev",     role="workstation", ip="192.168.40.179", kind="qemu",
          pve="grey-server",  vmid="qemu/105", docker=False, apt=True),
+    dict(host="ci-k3s-01",      role="ci",         ip="192.168.82.10", kind="qemu",
+         pve="green-server", vmid="qemu/820", docker=False, apt=True),
 
     dict(host="ansible-01",     role="automation", ip="192.168.40.36", kind="lxc",
          pve="blue-server",  vmid="lxc/100",  docker=False, apt=True),

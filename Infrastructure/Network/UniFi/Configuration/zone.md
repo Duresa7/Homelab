@@ -1,9 +1,9 @@
 # UniFi Firewall Zones
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-30
 
-The controller has 12 firewall zones: seven built-in and five custom (`AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, `AlphaSec-Identity`).
+The controller has 13 firewall zones: seven built-in and six custom (`AlphaSec-Servers`, `AlphaSec-Mgmt`, `AlphaSec-Observability`, `AlphaSec-Access`, `AlphaSec-Identity`, `AlphaSec-Kube`).
 
 **Last verified against the controller:** 2026-09-24 for the zone names and count (`unifi_list_firewall_zones`). That call returns `"networks": []` for every zone, so membership comes from each network's `firewall_zone_id`, last read on 2026-09-07 ([Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md)). See [zone membership is absent from the zone-matrix endpoint](../Documentation/Troubleshooting/Zone%20Membership%20Absent%20From%20Zone-Matrix%20Endpoint%20-%202026-07-27.md).
 
@@ -23,6 +23,7 @@ The controller has 12 firewall zones: seven built-in and five custom (`AlphaSec-
 | `AlphaSec-Observability` | Custom | Security-A (VLAN 72), MONITOR-A (VLAN 73) |
 | `AlphaSec-Access` | Custom | Access-A (VLAN 85) |
 | `AlphaSec-Identity` | Custom | IDENTITY-A (VLAN 65) |
+| `AlphaSec-Kube` | Custom | KUB-A (VLAN 82), created 2026-10-30 |
 
 `Proton-WiFi`/VLAN 45 sits in `Internal`. Its containment is the network isolation toggle, not a zone, so it needs no policy of its own. [Proton-WiFi VLAN 45](../Documentation/Change%20Records/Proton-WiFi%20VLAN%2045%20-%202026-08-10.md).
 

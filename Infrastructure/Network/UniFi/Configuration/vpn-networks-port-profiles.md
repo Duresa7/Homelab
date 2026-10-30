@@ -1,7 +1,7 @@
 # UniFi VPNs and Port Profiles
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-30
 
 Five WireGuard servers, one WireGuard client and five switch port profiles. The Network Lists and the traffic route are in [Policy objects](objects.md).
 
@@ -39,7 +39,7 @@ On 2026-09-24 the controller returned four remote-user VPN networks, FamilyVPN, 
 
 The controller stores `Proxmox-Trunk` as an exclusion list, not a list of tagged VLANs, and adds every new network to that exclusion list automatically. A new VLAN reaches the Proxmox nodes only after I remove it from the list.
 
-DMZ (30) came off the `Proxmox-Trunk` exclusions during the [edge-01 move](../Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md), and IDENTITY-A (65) came off on 2026-09-07 ([Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md)). `Server-Provision` still excludes DMZ (30). VLAN 45 stays excluded on both, because a wireless VPN-egress network has no reason to reach a hypervisor.
+DMZ (30) came off the `Proxmox-Trunk` exclusions during the [edge-01 move](../Documentation/Change%20Records/edge-01%20Move%20to%20DMZ%20VLAN%2030%20-%202026-08-07.md), and IDENTITY-A (65) came off on 2026-09-07 ([Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md)). KUB-A (82) came off on 2026-10-30 ([KUB-A VLAN 82](../Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md)); `Server-Provision` still excludes it. `Server-Provision` still excludes DMZ (30). VLAN 45 stays excluded on both, because a wireless VPN-egress network has no reason to reach a hypervisor.
 
 `Server-Provision` adds native VLAN 5 for bare-metal installs; UniFi DHCP advertises `192.168.40.36` and `galaxy-ipxe.efi` on that network. Bane port 4 carried it for the `green-server` install and has used `Proxmox-Trunk` since Green joined on 2026-07-31.
 

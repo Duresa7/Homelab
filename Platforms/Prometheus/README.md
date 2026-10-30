@@ -1,7 +1,7 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-30
 
 I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-10-05 Prometheus 3.15.0 reported 50 targets, all up, across six jobs: `node` 17, `cadvisor` 8, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.3 holds the 25 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
 
@@ -68,7 +68,7 @@ cAdvisor follows `ghcr.io/google/cadvisor:latest`: v0.60.6 on all eight hosts si
 
 Until 2026-07-25 the datasource and both imported dashboards existed only inside the `grafana_data` Docker volume. Removing that volume would have destroyed all of it with nothing in git to rebuild from.
 
-`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 27 dashboards, and 25 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
+`Configuration/grafana/` now holds the datasource definition, the dashboard providers, all 28 dashboards, and 25 Grafana-managed alert rules, mounted read-only into the container. `allowUiUpdates` is off, so the repository stays authoritative.
 
 The 25 rules sit in six groups. Availability, Capacity, Network and Power and hardware cover host, exporter, service, Proxmox node and named guest availability, container restart loops, filesystem, Proxmox storage, memory, CPU, load and disk capacity, service latency, TLS certificate expiry, the GitHub webhook range sync on edge-01, UPS state and hardware temperature. Storage health reads the SMART and NVMe textfiles on the five nodes. Updates carries three notify-only rules for pending security updates, other OS updates and a required reboot, fed by the node_exporter textfile collectors on all 17 hosts. Only those three Updates rules carry a `class` label, `class: updates`; the other 22 carry no `class` label at all, and the Discord alert bot supplies `infrastructure` as the fallback when the label is absent. Grafana holds all 25 as file-provisioned rules with no evaluation error in the folder `AlphaSec United Alerts`, renamed from `Homelab Alerts` on 2026-09-03; the bot prints the folder name in each message footer. Since 2026-09-02 the root notification policy routes every alert to the contact point `discord-bot`, a webhook into the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same Compose network, which posts to `#bots` as the Anubis AS bot user and colours the message by class; a child route groups the Updates class by rule name and repeats once a year, so an update is announced once and resolved once. The records are [Grafana Alert Rules - 2026-09-01](Documentation/Change%20Records/Grafana%20Alert%20Rules%20-%202026-09-01.md), [Guest, CPU and Load Alert Rules - 2026-09-02](Documentation/Change%20Records/Guest%20CPU%20and%20Load%20Alert%20Rules%20-%202026-09-02.md) [Certificate, Drive Health and Update Alert Rules - 2026-09-02](Documentation/Change%20Records/Certificate,%20Drive%20Health%20and%20Update%20Alert%20Rules%20-%202026-09-02.md) and, for the webhook range rule, [GitHub Webhook Range Sync on edge-01 - 2026-10-15](../../Infrastructure/Network/Cloudflare/Documentation/Change%20Records/GitHub%20Webhook%20Range%20Sync%20on%20edge-01%20-%202026-10-15.md).
 
@@ -80,7 +80,7 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 
 ## Dashboards
 
-27 dashboards in two Grafana folders, all generated from [Tools/](Tools/README.md) and committed here.
+28 dashboards in two Grafana folders, all generated from [Tools/](Tools/README.md) and committed here.
 
 | Folder | Dashboard | UID | Purpose |
 |---|---|---|---|
@@ -92,12 +92,12 @@ The datasource file pins `name: prometheus` and `uid: bfgnkdi47u5tsa` on purpose
 | Homelab | Storage & Drive Health | `storage-health` | Capacity and days-to-full first, then NVMe, SATA SMART and ZFS |
 | Homelab | Network | `network` | Throughput, errors and drops, TCP state, connection tracking |
 | Homelab | Power & UPS | `power-ups` | UPS-02 battery, runtime, load, mains, and status flags; UPS-01 is absent while its data cable remains disconnected |
-| Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 17 node_exporters |
+| Homelab | Monitoring Health | `monitoring-health` | Target health, scrape cost, TSDB growth, the 18 node_exporters |
 | Homelab | TeamSpeak | `teamspeak` | ts02 and ts03, with the fault isolated to the server or the path in front of it |
 | Nodes | one per host | `node-<host>` | Status, CPU, memory, filesystems, disk, network, then whatever else that host has |
 
 Every header carries two dashboard-link dropdowns filtered by tag: **Homelab** lists the ten and **Nodes** the
-seventeen, and both keep the current time range. The fleet table, the guest table, the filesystem and drive
+eighteen, and both keep the current time range. The fleet table, the guest table, the filesystem and drive
 tables and the scrape target list link their host column to that host's dashboard, so each of those is a route
 into a node board. A host column is not a link everywhere; several tables, among them the failing-check table
 on the overview, print the name on its own.

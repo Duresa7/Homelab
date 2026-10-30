@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-29
+**Last updated:** 2026-10-30
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -31,7 +31,8 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 
-- [ ] **Activate win11-dev.** Windows 11 Pro and SSH Manager setup are complete; the guest now runs on Grey after the verified 2026-09-23 migration. Green's memory fault was traced to one module and removed on 2026-10-28. Windows activation remains open. [Galaxy backlog](Infrastructure/Compute/Galaxy/Documentation/TODO.md#green-memory-repair-and-win11-dev-provisioning).
+- [x] **Activate win11-dev.** Windows reported a retail licence with `LicenseStatus 1` on 2026-10-30; `win11-dev` is now a runner-only CI host. [Phase 1 Build](Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
+- [ ] **Wire the first repository to the self-hosted CI runners.** Phase 1 is built: KUB-A, `ci-k3s-01` with k3s and the ARC controller, and `win11-dev` as the Windows runner. Next: ARC authentication, the first scale set, fork pull request approval, the Docker-in-Docker scale set and the Windows toolchains. [CI Runners](Platforms/CI%20Runners/README.md).
 
 - [ ] **Observe offline sign-in and unlock on the domain workstations.** I applied the online-sign-in policy on 2026-09-19, verified both clients, and confirmed `HQ-WS001` retained domain membership through a disconnect and recovered its secure channel. Interactive checks remain in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#online-workstation-sign-in-applied-2026-09-19-interactive-checks-open).
 - [ ] **Complete the physical-access exercise follow-ups.** The 2026-09-27 ObiPC review found no successful human sign-in in the selected 72 hours. Audit coverage, centralized detection and controlled retest criteria are in the [Active Directory TODO](Platforms/Active%20Directory/Documentation/TODO.md#physical-access-exercise-follow-ups-2026-09-27).

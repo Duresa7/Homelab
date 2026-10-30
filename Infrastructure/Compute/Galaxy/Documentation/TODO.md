@@ -1,7 +1,7 @@
 # Galaxy TODO
 
 **Created:** 2026-07-14  
-**Last updated:** 2026-10-29
+**Last updated:** 2026-10-30
 
 Open Galaxy work only. Closed sections are listed in the root [COMPLETED](../../../../COMPLETED.md) file with links to their change records, and the root [TODO](../../../../TODO.md) links here.
 
@@ -32,9 +32,9 @@ LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed on 2026-10-15. Min
 
 ## win11-dev Activation
 
-**Status:** Open. VM 103 runs on Grey since 2026-09-23. [Completion record](Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
+**Status:** Done. On 2026-10-30 Windows reported a retail licence with `LicenseStatus 1` ([Phase 1 Build](../../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md)). VM 103 runs on Grey since 2026-09-23. [Completion record](Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
 
-- [ ] Activate Windows with a valid license.
+- [x] Activate Windows with a valid license.
 
 ## Scope of the `galaxy-pxe-join` Key
 

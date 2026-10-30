@@ -25,13 +25,13 @@ node("blue", "blue-server", "192.168.70.12", [("intel", "Core i5-7500T, 4c"), (N
 node("red", "red-server", "192.168.70.13", [("intel", "Core i5-8500T, 6c"), (None, "15.46 GiB memory"), (None, "integrated graphics"),
      (None, "NVMe 238 GiB"), (None, "HDD 931 GiB · media /data")])
 node("green", "green-server", "192.168.70.14", [("intel", "Core i5-8500T, 6c"), (None, "7.60 GiB memory, one module"), (None, "integrated graphics"),
-     (None, "NVMe 238 GiB"), (None, "!empty storage pool"), (None, "no guests")])
+     (None, "NVMe 238 GiB · local-lvm")])
 
 def guest(node_id, id, name, kind, vlan, ip, logo, icons=()):
     d.card(node_id, id, name, sub1=f"{kind} · VLAN {vlan}", sub2=ip, logo=logo, icons=icons)
 
 guest("grey", "kali", "kali-pen", "VM 102", 40, "stopped", "kali-linux")
-guest("grey", "win11", "win11-dev", "VM 103", 40, "192.168.40.117", "windows-11")
+guest("grey", "win11", "win11-dev", "VM 103", 82, "192.168.82.11", "windows-11", ["github"])
 guest("grey", "ubuntu", "ubuntu-dev", "VM 105", 40, "192.168.40.179", "ubuntu")
 guest("grey", "splunk", "splunk-siem", "VM 109", 72, "192.168.72.3", "splunk", ["rocky-linux"])
 guest("grey", "dmain", "docker-main", "LXC 110", 40, "192.168.40.35", "docker", ["immich", "forgejo"])
@@ -48,6 +48,7 @@ guest("blue", "mon01", "monitor-01", "LXC 104", 73, "192.168.73.2", "grafana", [
 guest("blue", "dnet", "docker-network", "LXC 107", 85, "192.168.85.2", "nginx-proxy-manager", ["netbird"])
 guest("blue", "dblue", "docker-blue", "LXC 108", 40, "192.168.40.39", "docker", ["rustdesk", "meshcentral"])
 guest("red", "media", "media-01", "LXC 842", 40, "192.168.40.42", "jellyfin", ["seerr", "sonarr", "radarr", "gluetun"])
+guest("green", "cik3s", "ci-k3s-01", "VM 820", 82, "192.168.82.10", "ubuntu", ["github"])
 
 d.group("power", "Power", badge="UPS", family="External")
 d.card("power", "ups", "UPS-02", sub1="feeds grey, blue and red", sub2="purple and green not on it", logo="apc")
@@ -62,5 +63,5 @@ d.edge("ups", "red", "", color="grey", from_side="top", to_side="bottom")
 
 d.legend_family("Mgmt", "Proxmox VE node (AlphaSec-Mgmt)"); d.legend_family("External", "power")
 d.legend_edge("Corosync link0", "solid", "blue"); d.legend_edge("Corosync link1", "dashed", "purple"); d.legend_edge("AC power", "solid", "grey")
-d.footnote("Guest addresses are the VLAN-side interfaces. win11-dev moved from green to grey on 2026-09-23; green-server runs on one 8 GB module since its failed SK Hynix module came out on 2026-10-28.")
+d.footnote("Guest addresses are the VLAN-side interfaces. win11-dev moved from green to grey on 2026-09-23; green-server runs on one 8 GB module since 2026-10-28 and carries the k3s CI node since 2026-10-30.")
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

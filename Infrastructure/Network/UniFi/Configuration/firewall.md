@@ -1,15 +1,17 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-30
 
-Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 88 user-defined policies, 80 allows and eight blocks, after removing the dashboard policy on 2026-09-26. The table below lists all 88. Generated zone defaults and response companions are not listed.
+Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 96 user-defined policies, 87 allows and nine blocks, after adding the eight KUB-A policies on 2026-10-30. The table below lists all 96. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-10-30: Eight policies for KUB-A, zone `AlphaSec-Kube`: web, NTP and gateway DNS out with every other external destination blocked, Wazuh out, exporter scrape, SSH and k3s API from four admin hosts, and RDP to `win11-dev` from Jedi PC. [KUB-A VLAN 82](../Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md).
 
 - 2026-10-11: I added Andor-ParrotOS-PC (MAC withheld, `192.168.50.102`) to every policy that names Jedi PC: the four MAC lists below and the break-glass source. `AG-PAW` gained the same address. A full list that day returned 89 user-defined policies, one more than this table holds. I have not identified the 89th. [Andor-ParrotOS-PC Admin Access](../Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
 
@@ -122,6 +124,14 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Block Identity Other External Egress` | Yes | BLOCK | 10002 | All | `AlphaSec-Identity` / Any | External / Any |
 | `Allow Identity to Splunk - Security-A` | Yes | ALLOW | 10001 | TCP+UDP | `AlphaSec-Identity` / Any | `AlphaSec-Observability` / 192.168.72.3 / 514 |
 | `Allow Automation to Identity SSH` | Yes | ALLOW | 10002 | TCP | Internal / `AG-Automation-Hosts` | `AlphaSec-Identity` / `AG-Identity-Servers` / 22 |
+| `Allow Kube DNS to Gateway` | Yes | ALLOW | 10000 | TCP+UDP | `AlphaSec-Kube` / Any | Gateway / Any / 53 |
+| `Allow Kube Web Egress` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Kube` / Any | External / Any / 80, 443 |
+| `Allow Kube NTP Egress` | Yes | ALLOW | 10001 | UDP | `AlphaSec-Kube` / Any | External / Any / 123 |
+| `Block Kube Other External Egress` | Yes | BLOCK | 10002 | All | `AlphaSec-Kube` / Any | External / Any |
+| `Allow Kube to Wazuh - Security-A` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Kube` / Any | `AlphaSec-Observability` / 192.168.72.2 / 1514, 1515 |
+| `Allow Monitor to Kube Exporters` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Observability` / 192.168.73.2 | `AlphaSec-Kube` / Any / 9100, 9182 |
+| `Allow Admin to Kube SSH and k3s API` | Yes | ALLOW | 10000 | TCP | Internal / 192.168.40.179, 192.168.40.39, 192.168.40.36, 192.168.50.241 | `AlphaSec-Kube` / Any / 22, 6443 |
+| `Allow PAW RDP to win11-dev` | Yes | ALLOW | 10001 | TCP | Internal / 192.168.50.241 | `AlphaSec-Kube` / 192.168.82.11 / 3389 |
 
 ## Order-Sensitive Policy Sets
 
@@ -130,6 +140,8 @@ The Access-to-External trio and Observability-to-External trio use indexes 10000
 1. Allow web egress to `PG-Egress-Web`.
 2. Allow NTP.
 3. Block every other IPv4 destination.
+
+The Kube-to-External trio follows the same pattern with explicit ports 80, 443 and 123, the same indexes and logging on its block.
 
 Automatic respond-policy generation is disabled for all six. The observability trio uses `AG-Observability-Hosts`, `PG-Egress-Web`, and `PG-NTP`. The final controller ordering readback matched those indexes.
 

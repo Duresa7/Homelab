@@ -1,9 +1,9 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-10-30
 
-This index points to the living records that hold Galaxy's current state. On 2026-09-24 the cluster held five nodes, 12 VMs, six LXCs and three templates; 16 guests were running, `kali-pen` and `HQ-WS001` were stopped, and `green-server` held no guests. No guest is an HA resource and there is no shared storage.
+This index points to the living records that hold Galaxy's current state. On 2026-10-30 the cluster held five nodes, 13 VMs, six LXCs and three templates; 15 guests were running, `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped, and `green-server` held VM 820 `ci-k3s-01`. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
 

@@ -67,12 +67,15 @@ d.card("secure", "jedi", "Jedi PC", sub1="192.168.50.241", sub2="privileged work
 # --- row 4: lab and utility guests ------------------------------------------------
 d.group("personal", "Personal-A", badge="VLAN 40 · Internal", family="Internal")
 d.card("personal", "ubuntu", "ubuntu-dev", sub1="192.168.40.179 · Docker", sub2="Ubuntu 26.04.1, VS Code", logo="ubuntu", icons=["node-exporter", "wazuh"], node="grey")
-d.card("personal", "win11", "win11-dev", sub1="192.168.40.117 · OpenSSH", sub2="Windows 11 Pro 25H2 dev", logo="windows-11", node="grey")
 d.card("personal", "kali", "kali-pen", sub1="stopped · Kali 2026.2", sub2="pentest VM", logo="kali-linux", icons=[], node="grey")
 d.card("personal", "ansible", "ansible-01", sub1="192.168.40.36 · Ansible 14.2", sub2="Semaphore 2.18, PXE", logo="ansible", icons=["semaphore", "wazuh"], node="blue")
 d.card("personal", "dblue", "docker-blue", sub1="192.168.40.39 · LXC", sub2="Executor and MCP gateways", logo="docker", icons=["rustdesk", "meshcentral", "wazuh"], node="blue")
 d.card("personal", "dmain", "docker-main", sub1="192.168.40.35 · Immich 3.2", sub2="Forgejo 16, Dockhand 1.0.48", logo="docker", icons=["forgejo", "ollama", "open-webui", "booklore", "dockhand", "wazuh"], node="grey")
 d.card("personal", "media", "media-01", sub1="192.168.40.42 · Jellyfin", sub2="Seerr, *arr, qBittorrent", logo="jellyfin", icons=["seerr", "sonarr", "radarr", "gluetun", "wazuh"], node="red")
+
+d.group("kube", "KUB-A · self-hosted CI runners", badge="VLAN 82 · AlphaSec-Kube", family="Servers", notes=[(None, "internet web, DNS, NTP and Wazuh out; admin SSH, k3s API and RDP in")])
+d.card("kube", "cik3s", "ci-k3s-01", sub1="192.168.82.10 · Ubuntu 26.04", sub2="k3s 1.36, ARC controller", logo="ubuntu", icons=["github", "wazuh"], node="green")
+d.card("kube", "win11", "win11-dev", sub1="192.168.82.11 · Win 11 Pro", sub2="GitHub Actions runner", logo="windows-11", icons=["github"], node="grey")
 
 # --- row 5: the compute substrate ----------------------------------------------------
 d.group("galaxy", "Galaxy cluster · Proxmox VE 9.2.11", badge="MGMT-A VLAN 70 · Cluster-Net VLAN 71 · AlphaSec-Mgmt", family="Mgmt")
@@ -80,12 +83,13 @@ d.card("galaxy", "grey", "grey-server", sub1="192.168.70.10 · Ryzen 7 3700X 8c/
 d.card("galaxy", "purple", "purple-server", sub1="192.168.70.11 · i5-8500T 6c", sub2="15.46 GiB · NVMe, SSD", logo="proxmox", icons=["intel"], node="purple")
 d.card("galaxy", "blue", "blue-server", sub1="192.168.70.12 · i5-7500T 4c", sub2="5.68 GiB · NVMe", logo="proxmox", icons=["intel"], node="blue")
 d.card("galaxy", "red", "red-server", sub1="192.168.70.13 · i5-8500T 6c", sub2="15.46 GiB · NVMe, HDD (media)", logo="proxmox", icons=["intel"], node="red")
-d.card("galaxy", "green", "green-server", sub1="192.168.70.14 · i5-8500T 6c", sub2="7.60 GiB · NVMe, empty pool", logo="proxmox", icons=["intel"], node="green")
+d.card("galaxy", "green", "green-server", sub1="192.168.70.14 · i5-8500T 6c", sub2="7.60 GiB · NVMe, ci-k3s-01", logo="proxmox", icons=["intel"], node="green")
 
 d.row("ext")
 d.row("access", "unifi", "dmz")
 d.row("other", "servers", "sec", "mon")
 d.row("identity", "secure_client", "secure")
+d.row("kube")
 d.row("personal")
 d.row("galaxy")
 
@@ -109,8 +113,8 @@ d.legend_family("Internal", "Internal"); d.legend_family("Dmz", "Dmz"); d.legend
 d.legend_family("Servers", "AlphaSec-Servers"); d.legend_family("Observability", "AlphaSec-Observability")
 d.legend_family("Identity", "AlphaSec-Identity"); d.legend_family("Mgmt", "AlphaSec-Mgmt"); d.legend_family("External", "outside the lab")
 d.legend_edge("traffic or telemetry", "solid", "grey"); d.legend_edge("tunnel, VPN or mesh", "dashed", "teal")
-d.legend_icon("wazuh", "Wazuh agent: the five nodes and ten Linux guests report to security-01")
+d.legend_icon("wazuh", "Wazuh agent: the five nodes and eleven Linux guests report to security-01")
 for n in ("grey", "purple", "blue", "red", "green"): d.legend_badge(f"{n}-server", n)
-d.footnote("Prometheus on monitor-01 scrapes 50 targets across six jobs. Dockhand manages containers through Hawser Edge agents. Ansible and Semaphore on ansible-01 run fleet updates.")
+d.footnote("Prometheus on monitor-01 scrapes 51 targets across six jobs. Dockhand manages containers through Hawser Edge agents. Ansible and Semaphore on ansible-01 run fleet updates.")
 
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

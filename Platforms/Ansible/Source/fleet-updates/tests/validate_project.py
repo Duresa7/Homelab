@@ -29,6 +29,7 @@ EXPECTED_OS_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
+    "ci-k3s-01",
 }
 EXPECTED_COMPOSE_PROJECTS = {
     "docker-main": {
@@ -106,7 +107,7 @@ def main() -> int:
 
     if set(os_hosts) != EXPECTED_OS_HOSTS:
         errors.append(
-            "OS-update host set differs from the approved eleven-host fleet: "
+            "OS-update host set differs from the approved twelve-host fleet: "
             f"{sorted(os_hosts)}"
         )
     if set(compose_hosts) != set(EXPECTED_COMPOSE_PROJECTS):
