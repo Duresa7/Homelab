@@ -1,11 +1,11 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
 
 ## Scope
 
-I operate Nginx Proxy Manager 2.15.1 on `docker-network` through SSH Manager target `docker_network`. The live Compose project is `/opt/docker/nginx-proxy-manager`.
+I operate Nginx Proxy Manager 2.15.1 on `docker-network` through the ssh-mcp profile `docker_network`. The live Compose project is `/opt/docker/nginx-proxy-manager`.
 
 ## Routine Health Check
 

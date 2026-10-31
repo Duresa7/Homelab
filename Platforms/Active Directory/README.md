@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-31
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
 
@@ -30,7 +30,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Default password policy | 8 characters (lowered from 14 on 2026-09-10, accepted as the standing minimum), complexity on, history 24, no expiry, lockout 10 attempts for 15 minutes |
 | Fine-grained policy | `PSO-Admins`, precedence 10, 14 characters (lowered from 20 on 2026-09-10 for a testing window; restore to 20), 365-day maximum age, lockout 5 attempts for 30 minutes |
 | Time source | `HQ-DC01` synchronises from `time.cloudflare.com` at stratum 4; the other two follow the domain hierarchy |
-| Remote access | `hq_dc01`, `hq_dc02`, `hq_mgt01` and `obipc` in SSH Manager over OpenSSH on port 22, key only. `HQ-WS001` runs `sshd` since 2026-09-19, reachable from Secure VLAN 50 only and not in SSH Manager; automation reaches it through the QEMU guest agent. RDP on all five machines since 2026-09-12, Network Level Authentication required, host firewall scoped to Trusted VLAN 10, Secure VLAN 50, `192.168.40.179`, `192.168.40.39`, and the `10.6.0.0/24` Management Access VPN |
+| Remote access | `hq_dc01`, `hq_dc02`, `hq_mgt01` and `obipc` are ssh-mcp profiles over OpenSSH on port 22, key only. `HQ-WS001` runs `sshd` since 2026-09-19, reachable from Secure VLAN 50 only and with no ssh-mcp profile; automation reaches it through the QEMU guest agent. RDP on all five machines since 2026-09-12, Network Level Authentication required, host firewall scoped to Trusted VLAN 10, Secure VLAN 50, `192.168.40.179`, `192.168.40.39`, and the `10.6.0.0/24` Management Access VPN |
 | Endpoint management | [Action1](../Action1/README.md) agents on `ObiPC`, `HQ-WS001` and `HQ-MGT01`. Neither workstation is Intune managed (`MDM: None`, 2026-09-11) |
 | Entra Cloud Sync agent | Version 1.1.2334.0 on `HQ-MGT01`, registered 2026-09-10, running as gMSA `pGMSA_e6620264$` |
 | Entra Cloud Sync configuration | AD to Microsoft Entra ID, password hash sync on, device sync on, scoped to `APP-EntraCloudSync-Users` and `APP-EntraCloudSync-Devices`. `IK-user`, `AH-user`, `testuser`, `DK-user` and both workstations are in the tenant; `DK-user@alphasecunited.com` soft-matched onto its directory account on 2026-09-10 with its object id unchanged, and its roles moved to the cloud-only `DK-admin` |
@@ -96,7 +96,7 @@ The steps and completion checks are in the [Active Directory TODO](Documentation
 - The ObiPC AppLocker Script collection is audit-only, and the OneDrive per-user path is undecided.
 - The four shared test passwords and `PSO-Admins` at 14 characters are still in their 2026-09-10 testing state.
 - Neither controller audits `Credential Validation` failures, so a lockout leaves no 4776 trail.
-- The `HQ-WS001` SSH rule is unproven from Jedi PC, and the host is not in SSH Manager.
+- The `HQ-WS001` SSH rule is unproven from Jedi PC, and the host has no ssh-mcp profile.
 - My first elevation as `DK-user` on ObiPC after the 2026-09-11 group change is unobserved.
 - Future WAC targets need WinRM HTTPS, trusted certificates and delegation from HQ-MGT01 at onboarding.
 - Intune co-management of the two workstations is an open decision in the [Microsoft Intune TODO](../Microsoft%20Intune/Documentation/TODO.md).

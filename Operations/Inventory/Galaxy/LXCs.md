@@ -1,7 +1,7 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
 
 Galaxy has six LXCs, all running, on blue-server, grey-server and red-server. I read them back from `pvesh get /cluster/resources` and each container's configuration on 2026-09-24. Together they hold 13 vCPUs, 27 GiB of memory and 8.5 GiB of swap. No container is an HA resource: `ha-manager config` and `ha-manager rules config` return nothing.
 
@@ -80,7 +80,7 @@ The LXC keeps its address static in the Proxmox network configuration. UniFi DHC
 
 ### Administrative Access
 
-- SSH is public-key only as `dkadi` and `ansible`; I installed my administrative keys. SSH Manager reaches it through a ProxyJump.
+- SSH is public-key only as `dkadi` and `ansible`; I installed my administrative keys. ssh-mcp reaches it directly from `docker-blue` as profile `monitor_01` since 2026-10-31; SSH Manager, which it replaced, went through a ProxyJump.
 - `dkadi` holds `(ALL : ALL) ALL` through the `sudo` group behind a password prompt that `/etc/sudoers.d/00-rootpw` points at root's password. Its `90-dkadi` NOPASSWD drop-in came off on 2026-09-07. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. [NOPASSWD Drop-ins Removed on docker-network, monitor-01 and media-01](../../Maintenance/NOPASSWD%20Drop-ins%20Removed%20on%20docker-network,%20monitor-01%20and%20media-01%20-%202026-09-07.md).
 - Root and `dkadi` carry known passwords since 2026-08-15, for the console and the sudo prompt only.
 
@@ -150,7 +150,7 @@ The rootfs is on node-local `local-lvm`, so there is no shared-storage failover.
 ### Administrative Access
 
 - SSH is public-key only as `dkadi`, with `(ALL : ALL) ALL` through the `sudo` group behind a prompt that `/etc/sudoers.d/00-rootpw` points at root's password. `ansible` keeps NOPASSWD; `ai-agent` cannot run sudo. Root login is disabled.
-- The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07. The SSH Manager restart timer names its zone explicitly and still fires at 4 AM Eastern; no container on the host mounts the host's zone file.
+- The host clock moved from `Etc/UTC` to `America/New_York` on 2026-09-07. No container on the host mounts the host's zone file.
 
 ## LXC 110 - docker-main
 

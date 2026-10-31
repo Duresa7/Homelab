@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -21,9 +21,9 @@ This directory holds my deployed applications and services, one folder per platf
 | [CLI Proxy API](CLI%20Proxy%20API/README.md) | docker-main | v8.0.16 at `https://aiproxy.alphasecunited.com` |
 | [Coolify](Coolify/README.md) | app-01, temporarily stopped 2026-10-09 | Coolify 4.4.3 with Traefik 3.7.12; installed services retained |
 | [Discord Alert Bot](Discord%20Alert%20Bot/README.md) | monitor-01 | Posts Grafana and Splunk alerts to `#bots` |
-| [Docker MCP Gateway](Docker%20MCP%20Gateway/README.md) | docker-blue | Two v0.43.3 gateways, one for UniFi Network MCP and one for SSH Manager MCP |
+| [Docker MCP Gateway](Docker%20MCP%20Gateway/README.md) | docker-blue | One v0.43.3 gateway in front of UniFi Network MCP; the SSH Manager MCP gateway was removed on 2026-10-31 |
 | [Dockhand](Dockhand/README.md) | docker-main | Dockhand 1.0.51; manages the Docker hosts through six Hawser agents |
-| [Executor](Executor/README.md) | docker-blue | Executor 1.6.10, one MCP endpoint in front of SSH Manager, UniFi, Wazuh, Cloudflare and other integrations |
+| [Executor](Executor/README.md) | docker-blue | Executor 2.0.0-beta.34 at `executor.alphasecunited.com`, one MCP endpoint in front of ssh-mcp, UniFi, Wazuh, Cloudflare and other integrations; replaced Executor 1.6.10 on 2026-10-31 |
 | [Galaxy PXE](Galaxy%20PXE/README.md) | ansible-01 | Bare-metal provisioning for Galaxy Proxmox nodes |
 | [Homarr](Homarr/README.md) | docker-main | Homarr 1.77.2, internal dashboard at `dashboard.alphasecunited.com`, deployed 2026-09-27 |
 | [Immich](Immich/README.md) | docker-main | Immich 3.2.4, photo library with NVENC transcoding on the GTX 1080 Ti |
@@ -40,6 +40,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [RustDesk](RustDesk/README.md) | docker-blue | Self-hosted remote desktop, `hbbs` and `hbbr` 1.1.16 |
 | [Samba](Samba/README.md) | ubuntu-dev | File server for my own machines |
 | [Splunk](Splunk/README.md) | splunk-siem | Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S |
+| [SSH MCP](SSH%20MCP/README.md) | docker-blue | ssh-mcp 2.22.0, the agents' SSH path to 26 hosts through Executor; replaced SSH Manager MCP on 2026-10-31 |
 | [Sure](Sure/README.md) | docker-main | Sure 0.7.5-hotfix.1 personal finance tracker at `sure.alphasecunited.com`, deployed 2026-10-05 |
 | [TeamSpeak Hosting](Teamspeak%20Hosting/README.md) | alpha-prod-01 | Two TeamSpeak 3 Server 3.13.8 instances published through Playit, with TS3 Manager |
 | [Wazuh](Wazuh/README.md) | security-01 | Wazuh 4.14.8 manager with 15 active remote agents (2026-10-02) |

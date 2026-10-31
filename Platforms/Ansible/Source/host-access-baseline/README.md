@@ -1,7 +1,7 @@
 # Host Access Baseline
 
 **Created:** 2026-08-15  
-**Last updated:** 2026-09-12
+**Last updated:** 2026-10-31
 
 I use this project to own accounts and sudo policy on the Linux guests. Semaphore can launch these files, but the same commands work directly through Ansible.
 
@@ -12,7 +12,7 @@ It exists because `ssh-key-automation` should keep meaning what its README says.
 - Every host connects as `ansible`, which already holds passwordless root on all of them. `ansible-01` runs through a local connection guarded by a hostname assertion.
 - The Proxmox nodes are absent. Node root access is the cluster-backed key file that `ssh-key-automation` owns, not a POSIX account.
 - `ubuntu-dev` and `docker-main` are outside the model by decision and appear in no group. `ubuntu-dev` is the single-account workstation, and `docker-main` stays root-login only. The validator fails if either turns up in a target group.
-- The Wazuh host is `security-01`, matching the other Ansible projects and SSH Manager.
+- The Wazuh host is `security-01`, matching the other Ansible projects and the ssh-mcp profile `security_01`.
 - `ai_agent_key_only` is empty after Game 01’s retirement on 2026-09-12.
 - The `ai-agent` key carries **no** restriction prefix: no `from=`, no forwarding limits, no `no-pty`. That is a decision taken on 2026-08-14, not an omission. The validator fails if a restriction appears, so a later reader cannot quietly "fix" it.
 - The key itself lives in `vars/ai-agent-key.yml`, which is gitignored. The repository publishes only `vars/ai-agent-key.yml.example`, following `ssh-key-automation/identities/`. The validator fails if a real key reaches the example, if the playbook hardcodes one, or if the gitignore entry disappears. See [vars/PUBLICATION-NOTICE.md](vars/PUBLICATION-NOTICE.md).

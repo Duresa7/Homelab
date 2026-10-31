@@ -1,7 +1,7 @@
 # Andor-ParrotOS-PC
 
 **Created:** 2026-10-11  
-**Last updated:** 2026-10-12
+**Last updated:** 2026-10-31
 
 Andor-ParrotOS-PC is my Parrot Security desktop for security work, on Secure, VLAN 50. It has the same admin access as Jedi PC. It runs on the same physical hardware as [ObiPC](ObiPC.md): an 8-core Ryzen 7 7700X, 32 GB of DDR5, an RTX 3070, a 1 TB and a 500 GB NVMe drive, and a 2.5 Gbps Ethernet adapter. On 2026-10-11 I removed ObiPC's Windows 11 install and installed Parrot Security 7.4. This is temporary. I treat Andor-ParrotOS-PC and ObiPC as two separate machines, and ObiPC's records stay as they are. I read everything below from the machine over SSH that evening.
 
@@ -83,7 +83,7 @@ Two USB drives (a Samsung Type-C 1100 and a SanDisk 3.2Gen1, both exFAT) were at
 
 ## Management and access
 
-- **SSH Manager:** server `andor_parrot_os_pc`, key login as `dkadi` with password-backed sudo: [Andor-ParrotOS-PC SSH Manager Enrollment](../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Manager%20Enrollment%20-%202026-10-11.md).
+- **ssh-mcp:** profile `andor_parrot_os_pc`, key login as `dkadi` with password-backed sudo. It moved over from SSH Manager on 2026-10-31 and is untested, because the machine was off that day: [Deployment and SSH Manager Replacement](../../../Platforms/SSH%20MCP/Documentation/Change%20Records/Deployment%20and%20SSH%20Manager%20Replacement%20-%202026-10-31.md). The original enrollment is [Andor-ParrotOS-PC SSH Manager Enrollment](../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Manager%20Enrollment%20-%202026-10-11.md).
 - **Its own key:** ED25519 `andor-parrotos-pc`, `SHA256:EkErC2I8oBnZLf7PK2339LfRK9jCrbUXzAL49c8ZMRA`, managed as identity `andor-parrotos-pc` on the same 16 hosts as Jedi PC. Like Jedi PC's key, it is also in `ai-agent`'s `authorized_keys` on `ubuntu-dev`, which I set up by hand. The UniFi and Proxmox grants that match Jedi PC's are in [Andor-ParrotOS-PC Admin Access](../../Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md).
-- **SSH:** key-only since 2026-10-12. Root login is off, and `dkadi` accepts `mac-air3-dkadi`, `jedi-pc`, `parrot-os-mac` and `ai-agent@ubuntu-dev` (the SSH Manager's key): [Andor-ParrotOS-PC SSH Lockdown](../Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Lockdown%20-%202026-10-12.md).
+- **SSH:** key-only since 2026-10-12. Root login is off, and `dkadi` accepts `mac-air3-dkadi`, `jedi-pc`, `parrot-os-mac` and `ai-agent@ubuntu-dev` (the key ssh-mcp uses, carried over from SSH Manager): [Andor-ParrotOS-PC SSH Lockdown](../Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Lockdown%20-%202026-10-12.md).
 - **Password:** `dkadi` uses the standard account password, at the console and for `sudo`. SSH no longer accepts it.

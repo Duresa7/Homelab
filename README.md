@@ -1,7 +1,7 @@
 # AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-30  
+**Last updated:** 2026-10-31  
 
 This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Minecraft, and TeamSpeak.
 
@@ -27,7 +27,7 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 | Security | Wazuh 4.14.8 with 15 active remote agents (2026-10-02); Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF (2026-09-24) | 2026-10-02 |
 | Monitoring | Prometheus 3.15.0 with 50 targets in 6 jobs, all up; Grafana 13.2.3 with 23 alert rules posting to one Discord channel | 2026-10-05 |
 | Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.80.0 for remote access | 2026-10-05 |
-| Automation | Ansible 14.2.0 and Semaphore 2.19.12 (3 projects, 23 templates); Dockhand 1.0.51 with Hawser 0.2.50 agents on six hosts; Executor 1.6.10 in front of the SSH Manager, UniFi, Cloudflare, and Wazuh MCP servers | 2026-10-05 |
+| Automation | Ansible 14.2.0 and Semaphore 2.19.12 (3 projects, 23 templates) and Dockhand 1.0.51 with Hawser 0.2.50 agents on six hosts (2026-10-05); Executor 2.0.0-beta.34 in front of the ssh-mcp, UniFi, Cloudflare, and Wazuh MCP servers | 2026-10-31 |
 | Workstations | Jedi PC, my admin workstation, on Secure VLAN 50; ObiPC, a domain-joined Windows 11 PC on Secure Client VLAN 60, reachable over SSH again on 2026-09-27 after being unreachable on 2026-09-24; [physical-access exercise reviewed](Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md) | 2026-09-27 |
 
 The current guest list is in the [Galaxy inventory](Operations/Inventory/Galaxy/Galaxy%20Inventory.md).

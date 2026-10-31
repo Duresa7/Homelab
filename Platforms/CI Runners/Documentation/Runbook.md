@@ -1,7 +1,7 @@
 # CI Runners Runbook
 
 **Created:** 2026-10-30  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 This is how I built phase 1 of the CI runners, written so I can repeat any part of it: a second k3s node, a rebuilt `ci-k3s-01`, or another Windows runner host. The account of the 2026-10-30 build, with its results and the two failures along the way, is the [Phase 1 Build](Change%20Records/Phase%201%20Build%20-%202026-10-30.md) record. The scripts referenced below are in [Scripts/](../Scripts/).
 
@@ -13,8 +13,8 @@ Every command runs from `ubuntu-dev` unless a step says otherwise. Secrets never
 |---|---|
 | `green-server`, `grey-server` | `ssh root@192.168.70.14`, `ssh root@192.168.70.10` |
 | `ansible-01` | `ssh ansible@192.168.40.36`; projects live as plain copies under `~/<project>`, not a git checkout |
-| `ci-k3s-01` | SSH Manager `ci_k3s_01`, `ssh dkadi@192.168.82.10`, or Ansible as `ansible` from `ansible-01` |
-| `win11-dev` | SSH Manager `win11_dev`, `ssh dkadi@192.168.82.11` (default shell PowerShell, so chain with `;`) |
+| `ci-k3s-01` | ssh-mcp profile `ci_k3s_01`, `ssh dkadi@192.168.82.10`, or Ansible as `ansible` from `ansible-01` |
+| `win11-dev` | ssh-mcp profile `win11_dev`, `ssh dkadi@192.168.82.11` (default shell PowerShell, so chain with `;`) |
 | `docker-blue`, `docker-main` | Ansible from `ansible-01` with `-i ~/ssh-key-automation/inventory/hosts.yml`; `docker-main` is in no other inventory, and Ansible exits 0 when a host matches nothing |
 
 ## 1. Network in UniFi
@@ -138,22 +138,13 @@ Pass the manager's exact package version, read with `dpkg-query -W wazuh-manager
 
 Finish with `touch /etc/cloud/cloud-init.disabled` (the installer already writes it) and run [verify-baseline.sh](../Scripts/verify-baseline.sh) through Ansible's `script` module. Ad hoc `shell` commands containing `{{` fail in Ansible's templating, so anything with Go templates or braces goes in a script file.
 
-## 4. SSH Manager
+## 4. SSH MCP
 
-The SSH Manager key is one of the identities `ssh-key-automation` installs on `dkadi`, so no extra key is needed on a host that went through step 3. Compare the host's `ssh-keygen -lf /home/dkadi/.ssh/authorized_keys` with `docker-network`'s to confirm.
+The key ssh-mcp uses, carried over from SSH Manager, is one of the identities `ssh-key-automation` installs on `dkadi`, so no extra key is needed on a host that went through step 3. Compare the host's `ssh-keygen -lf /home/dkadi/.ssh/authorized_keys` with `docker-network`'s to confirm.
 
-1. Build the entry on `ubuntu-dev` as a `0600` staging file: eight JSON-quoted lines `SSH_SERVER_<NAME>_HOST`, `_USER` (`dkadi`), `_SUDO_PASSWORD` (root's password), `_MODE` (`unrestricted`), `_PORT`, `_KEYPATH` (`/keys/id_ed25519`), `_PLATFORM`, `_DESCRIPTION`, eight-space indented and comma-separated, plus a plain `SSH_SERVER_<NAME>_SUDO_PASSWORD=<value>` line for `ssh-manager.env`. Check first that the value needs no quoting.
-2. Copy the staging files through `ansible-01` to `/tmp/<dir>` (mode `0700`) on `docker-blue` and `docker-main` with Ansible's `copy` module.
-3. On `docker-blue`, insert the block after the last server's `_DESCRIPTION` line in `/opt/docker/mcp-gateway/docker-compose.yml`, adding the comma; append the env line to `ssh-manager.env`; run `docker compose config -q`.
-4. `ssh-keyscan -t rsa,ecdsa,ed25519 <host> | grep -v '^#' | docker exec -i mcp-ssh-manager sh -c 'cat >> /state/ssh/known_hosts'`. Windows hosts fail with `Host denied` unless all three key types are present.
-5. Make the same insertion in Dockhand's copy, `/opt/docker/dockhand/stacks/imported/docker_blue/docker-mcp-gateway/compose.yaml` on `docker-main`, and confirm both files hash the same.
-6. Shred every staging copy, then recreate detached so the recreate does not cut the session running it:
+Add the host as a profile on `docker-blue` with [Changing a Profile or Adding a Host](../../SSH%20MCP/Documentation/Runbook.md#changing-a-profile-or-adding-a-host) in the SSH MCP runbook: `user = "dkadi"`, `role = "admin"` and `group = "homelab"` in `config.toml`, the host's keys in `/opt/docker/ssh-mcp/known_hosts`, and root's password as `SSH_MCP_<PROFILE>_SUDO_PASSWORD`, since `rootpw` makes `sudo` ask for it. A Windows host gets no sudo password. The env file change needs the container recreated, not only reloaded.
 
-```sh
-nohup sh -c 'cd /opt/docker/mcp-gateway && docker compose up -d --no-deps --pull never --no-build ssh-manager' > /tmp/sshm-recreate.log 2>&1 &
-```
-
-Verify with `ssh_list_servers`, `ssh_execute` (returns `dkadi`) and `ssh_execute_sudo` (returns `root`).
+Verify with the [fleet smoke test](../../SSH%20MCP/Tests/fleet-smoke.mjs) for that profile: `whoami` returns the `dkadi` login, and on a Linux host `id -u` through `privileged-command` returns `0`.
 
 ## 5. k3s and ARC
 
@@ -212,7 +203,7 @@ Within its 15-second wait, retag the NIC on Grey, keeping the MAC by editing the
 n=$(qm config 103 | sed -n 's/^net0: //p'); qm set 103 --net0 "$(echo "$n" | sed 's/tag=40/tag=82/')"
 ```
 
-Reach the VM at the new address, confirm the profile is Private, then `Unregister-ScheduledTask NetMoveKubA` and delete `C:\ProgramData\netmove.*`. Turn off the old UniFi reservation with `unifi_set_client_ip_settings` and `use_fixedip: false`, and repeat step 4's SSH Manager change for the new host address. Confirm the runner with `gh api repos/<owner>/<repo>/actions/runners`.
+Reach the VM at the new address, confirm the profile is Private, then `Unregister-ScheduledTask NetMoveKubA` and delete `C:\ProgramData\netmove.*`. Turn off the old UniFi reservation with `unifi_set_client_ip_settings` and `use_fixedip: false`, and repeat step 4 for the profile's new address. Confirm the runner with `gh api repos/<owner>/<repo>/actions/runners`.
 
 ## 7. Monitoring
 

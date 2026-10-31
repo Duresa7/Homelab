@@ -1,11 +1,11 @@
 # NetBird Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
 
 ## Scope
 
-I operate the NetBird management server and dashboard on `docker-network` through SSH Manager target `docker_network`. On 2026-09-24 the startup log of the combined `netbird-server` container reported management server 0.79.0 and the dashboard image label read v2.93.0. Both images track `latest`. The live Compose project is `/opt/docker/netbird`.
+I operate the NetBird management server and dashboard on `docker-network` through the ssh-mcp profile `docker_network`. On 2026-09-24 the startup log of the combined `netbird-server` container reported management server 0.79.0 and the dashboard image label read v2.93.0. Both images track `latest`. The live Compose project is `/opt/docker/netbird`.
 
 The Nginx Proxy Manager host, advanced routes, Let's Encrypt wildcard/apex certificate, Force SSL, and HTTP/2 are active. My authoritative client entry point is `https://netbird.alphasecunited.com`; direct local checks stay useful for isolating a container or proxy failure.
 

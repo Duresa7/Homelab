@@ -1,13 +1,15 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 This inventory maps the workloads on Galaxy's 19 guests: 13 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md): docker-main and security-01 serve upstream node_exporter 1.9.0 with their distro units masked; the unused NUT monitors on Red and Grey are masked, and Grey still serves UPS-02 telemetry.
 
 ## Recent changes
+
+- 2026-10-31: On `docker-blue`, Executor 2.0.0-beta.34 replaced Executor 1.6.10, now at `https://executor.alphasecunited.com` through NPM host 37, and ssh-mcp 2.22.0 replaced SSH Manager MCP and its gateway instance on TCP 8812. The UniFi gateway on 8811 did not change. [Executor 2 Migration](../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md), [ssh-mcp deployment](../../../Platforms/SSH%20MCP/Documentation/Change%20Records/Deployment%20and%20SSH%20Manager%20Replacement%20-%202026-10-31.md), [SSH Manager retirement](../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Retirement%20-%202026-10-31.md).
 
 - 2026-10-30: New VM 820 `ci-k3s-01` runs k3s and the ARC controller for my CI runners; `win11-dev` became a runner-only GitHub Actions host on KUB-A. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 
@@ -67,7 +69,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | docker-main | LXC 110 | grey-server | Docker apps | Homarr 1.77.2<br>Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.15.0<br>Grafana 13.2.3<br>Proxmox exporter 3.10.1<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.80.0 / dashboard 2.94.0<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
-| docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3, two instances<br>SSH Manager MCP<br>UniFi Network MCP<br>Executor 1.6.10<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
+| docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3<br>UniFi Network MCP<br>Executor 2.0.0-beta.34<br>ssh-mcp 2.22.0<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
 | security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
@@ -161,10 +163,10 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 
 | Workload | Details |
 | --- | --- |
-| Docker MCP Gateway | `docker/mcp-gateway:v0.43.3`, two instances: `docker-mcp-gateway` for UniFi Network on `192.168.40.39:8811` and `ssh-manager-mcp-gateway` for SSH Manager on `192.168.40.39:8812`, both bearer-authenticated Streamable HTTP |
+| Docker MCP Gateway | `docker/mcp-gateway:v0.43.3`, one instance since 2026-10-31: `docker-mcp-gateway` for UniFi Network on `192.168.40.39:8811`, bearer-authenticated Streamable HTTP. [Platform record](../../../Platforms/Docker%20MCP%20Gateway/README.md) |
 | UniFi Network MCP | `mcp-unifi-network` from `forgejo.alphasecunited.com/homelab-images/unifi-network-mcp:stable`; one shared controller connection, no published host port |
-| SSH Manager MCP | `mcp-ssh-manager` from `forgejo.alphasecunited.com/homelab-images/mcp-ssh-manager:stable`, SSH Manager behind mcp-proxy on the Compose network only; 24 server definitions on 2026-09-24; enrolled host keys on the `ssh-manager-state` volume |
-| Executor | 1.6.10 from `ghcr.io/usefulsoftwareco/executor-selfhost:latest`, container recreated 2026-10-05 on the image that runs as UID 65532; Compose under `/opt/docker/executor`; internal HTTPS at `mcp.alphasecunited.com`. [Platform record](../../../Platforms/Executor/README.md) |
+| SSH MCP | ssh-mcp 2.22.0, container `ssh-mcp` from the locally built `homelab/ssh-mcp:2.22.0`; bearer-authenticated Streamable HTTP on `192.168.40.39:8813`; 26 profiles with pinned host keys on 2026-10-31; Compose under `/opt/docker/ssh-mcp`. Replaced SSH Manager MCP on 2026-10-31. [Platform record](../../../Platforms/SSH%20MCP/README.md) |
+| Executor | 2.0.0-beta.34, container `executor-v2` from `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.34` pinned by digest, running as UID 1000; listener `192.168.40.39:4400`; Compose under `/opt/docker/executor-v2`; internal HTTPS at `executor.alphasecunited.com` through NPM host 37. Replaced Executor 1.6.10 on 2026-10-31. [Platform record](../../../Platforms/Executor/README.md) |
 | RustDesk | `hbbs` and `hbbr` 1.1.16 from `rustdesk/rustdesk-server:latest`; [platform record](../../../Platforms/RustDesk/README.md) |
 | MeshCentral | 1.2.6 (image label `1.2.6-mongodb`) from `ghcr.io/ylianst/meshcentral:latest`; HTTPS on `192.168.40.39:443`, published as `mesh.alphasecunited.com` through NPM host 29. [Platform record](../../../Platforms/MeshCentral/README.md) |
 | cAdvisor, Hawser | `ghcr.io/google/cadvisor:latest` 0.60.6, Hawser 0.2.50 |

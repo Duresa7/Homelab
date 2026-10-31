@@ -1,11 +1,11 @@
 # Wazuh Runbook
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
 
 ## Manager Health
 
-Use SSH Manager against `security_01`. Expected units are enabled/active and expected listeners are TCP 1514, 1515, 443, and 55000:
+Use the ssh-mcp profile `security_01`. Expected units are enabled/active and expected listeners are TCP 1514, 1515, 443, and 55000:
 
 ```bash
 systemctl is-active wazuh-manager wazuh-indexer wazuh-dashboard

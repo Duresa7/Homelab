@@ -1,11 +1,11 @@
 # Media Stack Operations Runbook
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-10-27
+**Last updated:** 2026-10-31
 
 ## Scope and Access
 
-I operate the LXC through the SSH Manager target `red_server` with `pct`, or directly through the target `media_01` (in use since 2026-08-03). The live Compose project is `/opt/media-stack` inside CT 842, and Compose loads deployment-specific values from `/opt/media-stack/.env`.
+I operate the LXC through the ssh-mcp profile `red_server` with `pct`, or directly through the profile `media_01` (a direct target since 2026-08-03). The live Compose project is `/opt/media-stack` inside CT 842, and Compose loads deployment-specific values from `/opt/media-stack/.env`.
 
 Enter a guest shell when interactive work is necessary:
 

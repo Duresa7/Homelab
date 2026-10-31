@@ -1,7 +1,7 @@
 # ObiPC
 
 **Created:** 2026-09-11  
-**Last updated:** 2026-10-12
+**Last updated:** 2026-10-31
 
 ObiPC is the first physical end-user workstation on the `ad.alphasecunited.com` domain. It has an 8-core Ryzen 7 7700X, 32 GB of DDR5, an RTX 3070, a 1 TB and a 500 GB NVMe drive, and a 2.5 Gbps Ethernet adapter. Read from the machine over SSH on 2026-09-11. The operating system was reinstalled on 2026-09-18 after a corruption I did not diagnose; the hardware rows below still hold, and the rows the reinstall changed say so.
 
@@ -82,4 +82,4 @@ Since 2026-10-11 this hardware has been running Parrot Security as [Andor-Parrot
 
 ## Management
 
-OpenSSH Server, key only, reached as `local-obipc` from SSH Manager as server `obipc`. On 2026-09-25 at 1:37 AM Eastern the SSH Manager health check failed with `EHOSTUNREACH`, so the machine was off the network or powered down. The local account's password is in my password manager; the built-in `Administrator` password is managed by Windows LAPS and retrieved with `Get-LapsADPassword -Identity OBIPC -AsPlainText`. The build is recorded in [ObiPC Workstation Join - 2026-09-11](../../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md) and the rebuild in [ObiPC Rebuild and Rejoin - 2026-09-18](../../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md).
+OpenSSH Server, key only, reached as `local-obipc` through [ssh-mcp](../../../Platforms/SSH%20MCP/README.md) profile `obipc`. That profile replaced SSH Manager's server of the same name on 2026-10-31 and is untested, because the hardware was off that day. On 2026-09-25 at 1:37 AM Eastern the SSH Manager health check failed with `EHOSTUNREACH`, so the machine was off the network or powered down. The local account's password is in my password manager; the built-in `Administrator` password is managed by Windows LAPS and retrieved with `Get-LapsADPassword -Identity OBIPC -AsPlainText`. The build is recorded in [ObiPC Workstation Join - 2026-09-11](../../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Workstation%20Join%20-%202026-09-11.md) and the rebuild in [ObiPC Rebuild and Rejoin - 2026-09-18](../../../Platforms/Active%20Directory/Documentation/Change%20Records/ObiPC%20Rebuild%20and%20Rejoin%20-%202026-09-18.md).

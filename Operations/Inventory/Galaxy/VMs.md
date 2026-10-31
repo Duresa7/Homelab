@@ -1,7 +1,7 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. I read the other guests' figures back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24, and VM 820's and VM 103's network on 2026-10-30. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
@@ -47,7 +47,7 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 
 ### VM 103 - win11-dev
 
-I built this guest on Green between 2026-09-20 and 2026-09-21 and moved it to Grey on 2026-09-23 after Green's memory test failures. It runs standalone in `WORKGROUP` with local `dkadi`, and SSH Manager reaches it as `win11_dev`. Windows reports a retail licence, `LicenseStatus 1`. Since 2026-10-30 it is a runner-only machine for GitHub Actions on KUB-A VLAN 82 at static `192.168.82.11`; App Portal's `windows-x64-1` runner service logs on as local administrator `gh-runner`, and RDP is open to Jedi PC only. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md). [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
+I built this guest on Green between 2026-09-20 and 2026-09-21 and moved it to Grey on 2026-09-23 after Green's memory test failures. It runs standalone in `WORKGROUP` with local `dkadi`, and ssh-mcp reaches it as profile `win11_dev`. Windows reports a retail licence, `LicenseStatus 1`. Since 2026-10-30 it is a runner-only machine for GitHub Actions on KUB-A VLAN 82 at static `192.168.82.11`; App Portal's `windows-x64-1` runner service logs on as local administrator `gh-runner`, and RDP is open to Jedi PC only. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md). [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
 
 OVMF with pre-enrolled Secure Boot keys, TPM 2.0, `virtio-scsi-single`, and `vmbr0` VLAN 82. Disks: `local-lvm:vm-103-disk-0` (4 MiB EFI), `vm-103-disk-1` (120 GiB system), and `vm-103-disk-2` (4 MiB TPM). `onboot=1`; no installation discs remain attached. Secure Boot is enabled and TPM is ready. `sshd` and `QEMU-GA` start automatically; the final device query reports no unresolved drivers. No development tools are installed.
 
@@ -453,7 +453,7 @@ Its local `Administrator` password is managed by Windows LAPS, so the directory 
 
 I built it with 4 GiB because `grey-server` was carrying 51 GiB of its 62 GiB at the time. On 2026-09-24 the configuration read `memory: 8192`, `balloon: 0`, `onboot: 0`, and the VM was stopped. [HQ-WS001 Memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/HQ-WS001%20Memory%20at%208%20GiB%20-%202026-09-24.md).
 
-OpenSSH Server has been enabled on this machine since 2026-09-19, and `Allow Secure to HQ-WS001 SSH` admits VLAN 50 to it. It is not enrolled in SSH Manager. [SSH enablement record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20SSH%20Enablement%20-%202026-09-19.md).
+OpenSSH Server has been enabled on this machine since 2026-09-19, and `Allow Secure to HQ-WS001 SSH` admits VLAN 50 to it. It has no ssh-mcp profile. [SSH enablement record](../../../Platforms/Active%20Directory/Documentation/Change%20Records/HQ-WS001%20SSH%20Enablement%20-%202026-09-19.md).
 
 #### Identity
 | Setting | Value |
@@ -546,7 +546,7 @@ On 2026-10-11 I increased both memory settings to 8192 MiB through a clean shutd
 
 ### VM 820 - ci-k3s-01
 
-I built this guest on 2026-10-30 as the single k3s server node for my self-hosted GitHub Actions runners. Ubuntu Server 26.04.1 LTS minimized from autoinstall, k3s v1.36.5+k3s1 and the ARC controller chart 0.15.1. It carries the Linux host baseline with `sudo.ws` selected in place of Ubuntu's default `sudo-rs`. SSH Manager reaches it as `ci_k3s_01`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
+I built this guest on 2026-10-30 as the single k3s server node for my self-hosted GitHub Actions runners. Ubuntu Server 26.04.1 LTS minimized from autoinstall, k3s v1.36.5+k3s1 and the ARC controller chart 0.15.1. It carries the Linux host baseline with `sudo.ws` selected in place of Ubuntu's default `sudo-rs`. ssh-mcp reaches it as profile `ci_k3s_01`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 
 q35, OVMF with a 4 MiB EFI disk and no pre-enrolled keys, `cpu: host`, 4 cores, 6144 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-820-disk-0` (4 MiB EFI) and `vm-820-disk-1` (120 GiB, `discard`, `iothread`, `ssd`, `cache=writeback`). `virtio` on `vmbr0`, VLAN 82, `firewall=1`. QEMU agent on, `onboot=1`, no installation media attached. 6 GiB is the ceiling while Green runs on one 8 GB memory module.
 

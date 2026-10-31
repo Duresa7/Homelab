@@ -1,7 +1,7 @@
 # Linux Host Baseline Walkthrough
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
 
 ## What This Guide Covers
 
@@ -100,7 +100,7 @@ If `sshd -t` fails, do not restart SSH. Fix the reported file and line from the 
 
 ## Known Limits
 
-Windows hosts follow separate records. This guide covers the human administrative account only. The unattended automation accounts are the ones that carry `NOPASSWD`, and any host that drops it has to replace every Ansible and SSH Manager step that depends on `sudo -n` succeeding.
+Windows hosts follow separate records. This guide covers the human administrative account only. The unattended automation accounts are the ones that carry `NOPASSWD`, and any host that drops it has to replace every Ansible and ssh-mcp step that depends on passwordless sudo.
 
 ## Source Records
 
