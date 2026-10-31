@@ -25,6 +25,8 @@ services:
       ENVIRONMENT: production
       AUTH_MODE: bearer
       MCP_API_KEY_SCOPES: wazuh:read
+      # Still names Executor 1's retired hostname. Executor 2's `wazuh` app reached this
+      # server on 2026-10-31 with the value unchanged.
       ALLOWED_ORIGINS: https://mcp.alphasecunited.com
       LOG_LEVEL: INFO
       RESPONSE_FORMAT: json

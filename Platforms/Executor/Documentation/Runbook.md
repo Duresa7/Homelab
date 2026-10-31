@@ -1,128 +1,80 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-10-31
+
+These steps cover Executor 2 on `docker-blue` (`192.168.40.39`). The current state is on the [platform front page](../README.md). Executor 1's procedures went with it on 2026-10-31 and are in this file's history.
 
 ## Deployment Layout
 
 | Path | Purpose |
 |---|---|
-| `/opt/docker/executor/docker-compose.yml` | Live Compose definition on `docker-blue` |
-| `/opt/docker/executor/data` | SQLite database and generated authentication/encryption keys |
+| `/opt/docker/executor-v2/docker-compose.yml` | Live Compose definition |
+| `/opt/docker/executor-v2/data` | PGlite database, app source and builds, `auth-secret.key`, `encryption.key`; UID 1000, mode 0700 |
+| `/opt/docker/executor-v2/motel-data` | The bundled trace collector's store; UID 1000, mode 0700 |
 | `Platforms/Executor/Configuration/docker-compose.yml` | Versioned Compose reference |
 
-The live data directory is owned by root with mode `0700`. Generated key files are mode `0600`. I do not put the data directory, keys, administrator credentials, or tokens in Git.
-
-`EXECUTOR_ALLOW_LOCAL_NETWORK` is enabled because the UniFi and SSH Manager gateways are intentional local integrations at `192.168.40.39:8811` and `192.168.40.39:8812`, and Wazuh MCP is at `192.168.72.2:3000`. Local STDIO MCP servers remain disabled.
-
-## Initial Deployment Process
-
-1. Confirm that the official GitHub container package still publishes `latest` and note the version and manifest it currently resolves to.
-2. Keep the versioned Compose reference on `ghcr.io/usefulsoftwareco/executor-selfhost:latest`.
-3. Install the same file as `/opt/docker/executor/docker-compose.yml` on `docker-blue` and create `/opt/docker/executor/data`.
-4. Validate and start the project:
-
-   ```bash
-   cd /opt/docker/executor
-   docker compose config --quiet
-   docker compose pull
-   docker compose up -d
-   ```
-
-5. Configure Nginx Proxy Manager for `mcp.alphasecunited.com` with the wildcard certificate, Force SSL, HTTP/2, WebSocket support, Block Common Exploits, and these streaming settings:
-
-   ```nginx
-   proxy_buffering off;
-   proxy_cache off;
-   proxy_read_timeout 3600s;
-   proxy_send_timeout 3600s;
-   send_timeout 3600s;
-   ```
-
-6. Create the internal UniFi A record pointing the name to `192.168.85.2` and the narrow TCP policy from Nginx Proxy Manager to `192.168.40.39:4788`.
-7. Verify internal DNS, the HTTP-to-HTTPS redirect, the wildcard certificate, `/api/health`, the unauthenticated `401` response at `/mcp`, and a restart with persistent keys unchanged.
-8. Open `https://mcp.alphasecunited.com` and create the first administrator account.
+The two directories must belong to UID 1000 before the first start, because the container starts as that user and cannot chown them. I do not put the data directory, its keys, or any token in Git.
 
 ## Routine Checks
 
-Run on `docker-blue`:
+On `docker-blue`:
 
 ```bash
-cd /opt/docker/executor
+cd /opt/docker/executor-v2
 docker compose ps
 docker compose logs --tail 100 executor
-docker stats executor --no-stream
-curl -fsS http://192.168.40.39:4788/api/health
+docker stats executor-v2 --no-stream
+curl -fsS http://192.168.40.39:4400/health
 ```
 
-Run from an internal client:
+From an internal client: `curl -fsS https://executor.alphasecunited.com/health` returns `{"status":"ok"}`, and a POST to `/mcp` without a token returns `401` with a `WWW-Authenticate: Bearer resource_metadata=...` header.
 
-```bash
-curl -fsS https://mcp.alphasecunited.com/api/health
-```
-
-A healthy response is `{"status":"ok"}`. A request to `/mcp` without authentication should return `401`; that is application enforcement, not a proxy failure.
-
-For the Docker MCP Gateway integrations, confirm all of the following in Executor after an upgrade or credential change:
-
-- Integration `unifi-mcp-gateway` points to `http://192.168.40.39:8811/mcp`, and personal connection `unifiMcpGateway` reports healthy.
-- A refresh of `unifiMcpGateway` discovers 5 names under `unifi_`.
-- Executor can execute `unifi-mcp-gateway.user.unifiMcpGateway.unifi_tool_index`.
-- The UniFi connection identity label is `UniFi MCP`, and its description is `Full UniFi Network read, create, update, and delete access.`
-- Executor has no tool policy targeting the UniFi connection. A no-confirm mutation probe reaches the handler without returning `requires_confirmation`.
-- Integration `ssh-manager-mcp-gateway` points to `http://192.168.40.39:8812/mcp`, and personal connection `sshManagerMcpGateway` reports healthy.
-- A refresh of `sshManagerMcpGateway` discovers 37 names under `ssh_` while SSH Manager remains at 3.8.5.
-- `docker ps -a --filter label=docker-mcp-name=ssh-manager` on `docker-blue` returns nothing, and the `mcp-ssh-manager` service is healthy. Since 2026-09-03 the SSH Manager server is a persistent service rather than a container the gateway starts per session, so any managed container here is a sign the old catalog entry came back.
-- Executor can execute `ssh-manager-mcp-gateway.user.sshManagerMcpGateway.ssh_list_servers`.
-- The SSH Manager connection identity label is `SSH Manager MCP`, and its description is `SSH Manager access.`
-- `ssh_list_servers` returns all 24 catalog entries, the count I read on 2026-09-24. A privilege sweep proves the five Proxmox nodes and `docker_main` return UID `0` through root login and the other eleven Linux guests return UID `0` through `ssh_execute_sudo`. The five Windows entries and the two laptops (`surface_pro`, `parrot`) sit outside that sweep.
-- Both integrations have empty static request-header maps. Each bearer token belongs in its connection's encrypted credential.
-- The retired `docker-mcp-gateway` integration and `dockerMcpGateway` connection remain absent.
-
-For Wazuh MCP, confirm all of the following:
-
-- Integration `wazuh-mcp-server` points to `http://192.168.72.2:3000/mcp`, and user connection `localWazuh` reports healthy.
-- A refresh discovers 41 tools for Wazuh MCP Server 4.3.0 and none of the 14 `wazuh:write` tools.
-- Executor can execute `wazuh-mcp-server.user.localWazuh.validate_wazuh_connection`.
-- `get_wazuh_agents`, `get_wazuh_alert_summary`, and `get_wazuh_vulnerability_summary` each return an MCP success result.
-- The connection identity label is `Local Wazuh`, and its bearer credential is in Executor's encrypted provider rather than the integration's static header map.
-- On `security-01`, `/ready` reports `wazuh_manager`, `wazuh_indexer`, and `mcp` healthy.
-
-Tool counts change when a managed server changes its surface. Record each new count rather than treating 5, 37, and 41 as permanent release invariants.
+Through the MCP endpoint, `search({ query: "<app>" })` should list each app's tools: 15 for `ssh`, 5 for `unifi`, 41 for `wazuh`, 4 for `cloudflare`, as counted on 2026-10-31. Tool counts change when a server changes its surface, so record a new count rather than treating these as invariants. One read per app proves its account: `list-connections` on `ssh`, `unifi_execute` with `unifi_list_networks` on `unifi`, `validate_wazuh_connection` on `wazuh`, `whoami` on `cloudflare`.
 
 ## Updating
 
-1. Check the official GitHub container package for the current `latest` manifest and note the running version before the update.
-2. Confirm the repository Compose reference still uses `ghcr.io/usefulsoftwareco/executor-selfhost:latest`.
-3. Install the same Compose file on `docker-blue`.
-4. Apply and verify:
+1. Read every beta's release notes from the running version forward. The beta publishes about daily.
+2. Resolve the new tag's digest from `ghcr.io/usefulsoftwareco/executor-selfhost` and change the tag and digest in the Compose reference together.
+3. Install the file on `docker-blue`, then `docker compose pull && docker compose up -d`. Startup runs the database's data steps before HTTP opens, so give it 30 seconds.
+4. Check health and the log for failed data steps.
+5. Read `framework.release`. If it changed, set `FRAMEWORK` in [bearer-apps.config.mjs](../Scripts/bearer-apps.config.mjs) to it and rerun [deploy-bearer-apps.mjs](../Scripts/deploy-bearer-apps.mjs), which refuses to deploy against a different framework. It redeploys the source and leaves linked accounts alone.
+6. Run one read through each app, then record the version on the front page.
 
-   ```bash
-   cd /opt/docker/executor
-   docker compose config --quiet
-   docker compose pull
-   docker compose up -d
-   docker compose ps
-   curl -fsS http://192.168.40.39:4788/api/health
-   ```
+## Adding an MCP Server
 
-5. Recheck the HTTPS health endpoint and authenticated MCP connection before removing any older image. Then run one live call through each integration, since a recreate drops every client session. The [1.6.8 update](Change%20Records/Update%20to%201.6.8%20-%202026-09-06.md) is the worked example.
+A server that needs no sign-in or offers OAuth: `tools.executor.apps.importCustom({ body: { source: { kind: "mcp", name, url } } })`. The app's name decides its slug. For OAuth, connect the account afterwards from the app's **Accounts** tab while signed in to the dashboard.
+
+A server behind a static bearer token: add a row to `bearer-apps.config.mjs` with the server, the provider host and the password-manager item, then run the deploy script for that slug with `EXECUTOR_PAT` and `TOKEN_<SLUG>` injected from my password manager.
+
+A server at a private address works from app code because of `EXECUTOR_APPS_ALLOW_PRIVATE_FETCH`. Adding one by URL, or signing in to one with OAuth, also needs its exact origin in `EXECUTOR_URL_ALLOW_HTTP_ORIGINS`, followed by a container recreate.
+
+## Rotating a Bearer Token
+
+Change the token at its server and in my password manager, then replace the account's credentials from the app's **Accounts** tab with **Update credentials**. The account keeps its ID, so the app link survives.
+
+## Clients
+
+A client needs the server once, then a browser sign-in:
+
+```bash
+claude mcp add --transport http --scope user executor https://executor.alphasecunited.com/mcp   # then /mcp in a session
+codex mcp add executor --url https://executor.alphasecunited.com/mcp && codex mcp login executor
+```
+
+The dashboard's **Connected agents** lists every approved client and revokes a grant. A personal access token from **Account settings, Tokens** works as the bearer token for a script or a client that cannot sign in.
 
 ## Restarting and Stopping
 
 ```bash
-cd /opt/docker/executor
+cd /opt/docker/executor-v2
 docker compose restart executor
 docker compose stop
 docker compose up -d
 ```
 
-Stopping or recreating the container does not remove `/opt/docker/executor/data`.
-
-## Long Calls
-
-Executor 1.6.10 ends every MCP tool call after 60 seconds of active work, whatever timeout the SSH tool is given. I start longer remote work detached and poll for its result in later calls. The limit is traced in [Active Work Timeout in 1.6.10](Troubleshooting/Active%20Work%20Timeout%20in%201.6.10%20-%202026-09-21.md).
+None of these removes the data directory. A restart ends every MCP session, and a program running at that moment cannot resume.
 
 ## Recovery
 
-Executor's durable state is the complete `/opt/docker/executor/data` directory: `data.db`, its SQLite companion files when present, and both generated key files. I keep no backup of it. If the directory is lost, I rebuild: redeploy with the initial deployment process above, claim the administrator account, and re-create each integration and connection from its change record.
+The durable state is the whole `data` directory together. Its key files are tied to the database: a missing or replaced `encryption.key` makes every stored credential unreadable, and startup refuses a missing key for an existing database. I keep no backup. If the directory is lost I rebuild: start a fresh container with empty directories owned by UID 1000, claim the owner account with `POST /api/auth/self-host/setup` using my standard application account and organization name `AlphaSec United`, create a new personal access token, rerun the deploy script for the bearer apps, re-add the URL apps, reconnect the three OAuth accounts in the browser, and sign in each client again.
