@@ -49,7 +49,7 @@ EXPECTED_COMPOSE_PROJECTS = {
     },
     "docker-blue": {
         "docker-mcp-gateway": ("/opt/docker/mcp-gateway", ()),
-        "executor": ("/opt/docker/executor", ()),
+        "executor-v2": ("/opt/docker/executor-v2", ()),
         "meshcentral": ("/opt/docker/meshcentral", ()),
         "rustdesk": ("/opt/docker/rustdesk", ()),
     },
