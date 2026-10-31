@@ -42,7 +42,7 @@ Executor is internal only. UniFi resolves `executor.alphasecunited.com` to Nginx
 
 The container runs as UID 1000, the image's `executor` user, with no Linux capabilities, `no-new-privileges`, a 512-process limit and bounded JSON logs. Starting as that user skips the entrypoint's root branch, which would chown the data directories and drop privileges. Unlike Executor 1, the root filesystem is not read-only: I have not tested Executor 2 with one. `/tmp` is a 256 MiB tmpfs.
 
-`EXECUTOR_APPS_ALLOW_PRIVATE_FETCH=true` lets app code reach private addresses. Every app shares that network position, so any app I add can reach the lab. `EXECUTOR_URL_ALLOW_HTTP_ORIGINS` lists `https://sure.alphasecunited.com` as the one private origin Executor's own requests may use, for the add-by-URL check and Sure's OAuth. Analytics are off.
+`EXECUTOR_APPS_ALLOW_PRIVATE_FETCH=true` lets app code reach private addresses. Every app shares that network position, so any app I add can reach the lab. `EXECUTOR_URL_ALLOW_HTTP_ORIGINS` lists `https://sure.alphasecunited.com` as the one private origin Executor's own requests may use, for the add-by-URL check and Sure's OAuth. `EXECUTOR_CATALOG_URL` points **Add app** at Executor's official feed, `https://catalog.executor.sh/index.json`; self-host has no default, and without it the catalog lists only the built-in Executor app: [official app catalog](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md). Analytics are off.
 
 That makes Executor a root path into the lab. Through the `ssh` app it reaches root on every Linux node and guest ssh-mcp holds, and the UniFi and Cloudflare apps can change or delete anything they reach.
 
@@ -55,6 +55,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 ## Records
 
 - [Executor 2 migration - 2026-10-31](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md)
+- [Official app catalog - 2026-10-31](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)
