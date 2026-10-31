@@ -1,7 +1,7 @@
 # Homarr
 
 **Created:** 2026-09-27  
-**Last updated:** 2026-09-28
+**Last updated:** 2026-10-31
 
 I run Homarr 1.77.2 at [dashboard.alphasecunited.com](https://dashboard.alphasecunited.com) on `docker-main`. It replaces the [retired Homelab Dashboard](../../Archive/Platforms/Homelab%20Dashboard/README.md) at the same internal HTTPS name. I completed onboarding with the standard application account and verified a fresh login through HTTPS after restarting the container.
 
@@ -44,3 +44,5 @@ Of the 32 retained shortcuts, 27 returned HTTP 200 in the earlier status check. 
 I manage the deployment from `/opt/docker/homarr` with Docker Compose. I validate with `docker compose config --quiet`, inspect state with `docker compose ps`, and test `/api/health/ready` through HTTPS. The image has no Docker health check; HTTP readiness and authenticated requests are the verification paths. For upgrades I review the official release notes, change the pinned image tag, pull it and run `docker compose up -d`, then repeat the HTTPS and login checks. The `.env` key and `appdata` directory must stay together; replacing the encryption key breaks access to encrypted integration secrets.
 
 On 2026-09-28 I renamed the BookLore shortcut to BookOrbit and switched its icon to the application favicon. The destination remains `https://booklore.alphasecunited.com`, and the Homarr status check returned HTTP 200. [Migration](../BookOrbit/Documentation/Change%20Records/Migration%20from%20BookLore%20-%202026-09-28.md).
+
+On 2026-10-31 I pointed the Executor shortcut at `https://executor.alphasecunited.com` through the app API, after Executor 2 replaced `mcp.alphasecunited.com`. No shortcut references the old name. [Executor 2 Migration](../Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).

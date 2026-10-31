@@ -145,7 +145,7 @@ scrape_configs:
           - https://ts3-manager.alphasecunited.com/
           - https://openwebui.alphasecunited.com/
           - https://aiproxy.alphasecunited.com/
-          - https://mcp.alphasecunited.com/
+          - https://executor.alphasecunited.com/
           - https://mesh.alphasecunited.com/
           - https://netbird.alphasecunited.com/
           # The Discord alert bot's own health endpoint, over the Compose

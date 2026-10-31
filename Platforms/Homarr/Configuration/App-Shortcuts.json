@@ -78,7 +78,7 @@
   },
   {
     "name": "Executor",
-    "href": "https://mcp.alphasecunited.com",
+    "href": "https://executor.alphasecunited.com",
     "pingUrl": null,
     "iconUrl": "https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons@master/svg/terminal.svg",
     "description": "Development"
