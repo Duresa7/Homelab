@@ -1,0 +1,42 @@
+name: ssh-mcp
+
+services:
+  ssh-mcp:
+    build:
+      context: .
+    image: homelab/ssh-mcp:2.22.0
+    container_name: ssh-mcp
+    restart: unless-stopped
+    init: true
+    # SSH_MCP_BEARER_TOKEN and one SSH_MCP_<PROFILE>_SUDO_PASSWORD per password-gated host.
+    # Root-owned, mode 0600, raw format so every value stays literal.
+    env_file:
+      - path: ./ssh-mcp.env
+        format: raw
+    ports:
+      - 192.168.40.39:8813:8813
+    volumes:
+      - ./config:/config:ro
+      - ./keys:/keys:ro
+      - ./data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8813/health').then(r=>r.json()).then(b=>process.exit(b.configured?0:1),()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 384m
+    cpus: 1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

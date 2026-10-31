@@ -1,0 +1,313 @@
+# ssh-mcp 2.22.0 configuration for docker-blue.
+#
+# Live copy: /opt/docker/ssh-mcp/config/config.toml, owned by UID 65532, mode 0600, in a
+# 0700 directory; ssh-mcp refuses to start otherwise. Scripts/pin-host-keys.py writes the
+# live copy from this file and adds a trustedHostKey pin to every profile from the host's
+# known_hosts. The pins are not tracked here.
+#
+# Access matches the SSH Manager setup this replaced on 2026-10-31: every profile is
+# admin on one custom tier that holds all four command classes, and nothing waits for an
+# approval. ssh-mcp's built-in never-allowed list still applies and cannot be configured
+# away (shutdown, reboot, halt, poweroff, eval, mkfs, writes naming /etc/cron*,
+# /etc/systemd or authorized_keys, and a few more).
+
+[defaults]
+# A call that names no profile runs here, on the workstation the agents run on.
+defaultProfile = "ubuntu_dev"
+approvalMode = "auto"
+commandTimeoutMs = 240000
+commandMaxChars = 0
+commandMaxOutputBytes = 1048576
+approvalGrantTtlMs = 0
+commandQuotaPerDay = 0
+
+[policy.roleBindings.admin]
+homelab = ["read-only", "safe", "destructive", "privileged"]
+
+# Alpha Production 01 (Debian 13), docker-compose services
+[[profiles]]
+name = "alpha_prod_01"
+host = "192.168.80.118"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Andor-ParrotOS-PC, wired Parrot Security 7.4 desktop, Secure VLAN 50
+[[profiles]]
+name = "andor_parrot_os_pc"
+host = "192.168.50.102"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Ansible control node (LXC 100 on grey-server)
+[[profiles]]
+name = "ansible_01"
+host = "192.168.40.36"
+port = 22
+user = "ansible"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# App Server 01 (Debian 13), Coolify
+[[profiles]]
+name = "app_01"
+host = "192.168.80.10"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Proxmox node blue-server
+[[profiles]]
+name = "blue_server"
+host = "192.168.70.12"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Ubuntu 26.04 k3s CI node (VM 820 on green-server), KUB-A VLAN 82
+[[profiles]]
+name = "ci_k3s_01"
+host = "192.168.82.10"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Debian 13 Docker host (CT 108 on blue-server)
+[[profiles]]
+name = "docker_blue"
+host = "192.168.40.39"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Docker host docker-main
+[[profiles]]
+name = "docker_main"
+host = "192.168.40.35"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Debian 13 Docker host for NetBird and Nginx Proxy Manager
+[[profiles]]
+name = "docker_network"
+host = "192.168.85.2"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Edge Server 01 (Debian 13), Caddy and the Cloudflare tunnel
+[[profiles]]
+name = "edge_01"
+host = "192.168.30.10"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Proxmox node green-server
+[[profiles]]
+name = "green_server"
+host = "192.168.70.14"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Proxmox node grey-server
+[[profiles]]
+name = "grey_server"
+host = "192.168.70.10"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Windows Server 2025 domain controller HQ-DC01 (VM 301 on grey-server) (Windows OpenSSH)
+[[profiles]]
+name = "hq_dc01"
+host = "192.168.65.10"
+port = 22
+user = "Administrator"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Windows Server 2025 domain controller HQ-DC02 (VM 302 on grey-server) (Windows OpenSSH)
+[[profiles]]
+name = "hq_dc02"
+host = "192.168.65.11"
+port = 22
+user = "Administrator"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Windows Server 2025 management server HQ-MGT01 (VM 303 on grey-server) (Windows OpenSSH)
+[[profiles]]
+name = "hq_mgt01"
+host = "192.168.65.12"
+port = 22
+user = "Administrator"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Media stack Docker host (LXC 842 on red-server)
+[[profiles]]
+name = "media_01"
+host = "192.168.40.42"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Monitoring server (LXC 104 on blue-server), Prometheus and Grafana. SSH Manager reached
+# it through ansible-01; ssh-mcp 2.22.0's handshake through that jump is cut short
+# (sshd logs "incomplete message"), and docker-blue reaches it directly, so no jump.
+[[profiles]]
+name = "monitor_01"
+host = "192.168.73.2"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Physical Windows 11 Pro workstation ObiPC, Secure Client VLAN 60 (Windows OpenSSH)
+[[profiles]]
+name = "obipc"
+host = "192.168.60.102"
+port = 22
+user = "local-obipc"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Parrot OS-Mac, MacBook Pro running Parrot Security 7.3, Trusted VLAN 10
+[[profiles]]
+name = "parrot_os_mac"
+host = "192.168.10.176"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Proxmox node purple-server
+[[profiles]]
+name = "purple_server"
+host = "192.168.70.11"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Proxmox node red-server
+[[profiles]]
+name = "red_server"
+host = "192.168.70.13"
+port = 22
+user = "root"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Ubuntu VM hosting the Wazuh manager, indexer and dashboard
+[[profiles]]
+name = "security_01"
+host = "192.168.72.2"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Rocky Linux VM hosting Splunk Enterprise, Splunk ES and SC4S
+[[profiles]]
+name = "splunk_siem"
+host = "192.168.72.3"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Physical Surface Pro laptop (Ubuntu)
+[[profiles]]
+name = "surface_pro"
+host = "192.168.10.211"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Development workstation (VM 105 on grey-server)
+[[profiles]]
+name = "ubuntu_dev"
+host = "192.168.40.179"
+port = 22
+user = "ai-agent"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
+# Windows 11 Pro CI runner (VM 103 on grey-server), KUB-A VLAN 82 (Windows OpenSSH)
+[[profiles]]
+name = "win11_dev"
+host = "192.168.82.11"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
