@@ -1,9 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-31
 
-On 2026-10-05 I added Sure as host 36. Readback returned 25 live hosts: the 24 rows below plus NetBird (ID 1). On 2026-09-27 I added Homarr as host 34, then retired WUD host 35. The 35 database rows include eleven soft-deleted hosts. UniFi holds 25 local A records pointing at `192.168.85.2`, one per live host. [WUD retirement](../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
+On 2026-10-31 I replaced Executor 1's host 27, `mcp.alphasecunited.com`, with host 37, `executor.alphasecunited.com`, for Executor 2. The active host count stayed at 25: the 24 rows below plus NetBird (ID 1). On 2026-10-05 I added Sure as host 36. On 2026-09-27 I added Homarr as host 34, then retired WUD host 35. The 35 database rows include eleven soft-deleted hosts. UniFi holds 25 local A records pointing at `192.168.85.2`, one per live host. [WUD retirement](../../Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 Soft-deleted IDs: 11 termix, 12 dashboard, 14 portainer, 16 syncthing, 21 kasm, 23 kasm, 24 games, 25 wings, 30 dockge, 33 weebarr, 35 wud.
 
@@ -31,7 +31,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 | 20 | `splunk.alphasecunited.com` | `192.168.72.3:8000` | HTTPS | NPM connects to Splunk Web's existing HTTPS listener. HEC, syslog, and management ports remain direct backend services. |
 | 22 | `ts3-manager.alphasecunited.com` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, and Playit ports remain outside NPM. |
 | 26 | `aiproxy.alphasecunited.com` | `192.168.40.35:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. I repointed the upstream from `ubuntu-dev` to `docker-main` on 2026-08-19; five provider auth files and clients are loaded. |
-| 27 | `mcp.alphasecunited.com` | `192.168.40.39:4788` | HTTP | Executor on `docker-blue`. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The administrator account is claimed. |
+| 37 | `executor.alphasecunited.com` | `192.168.40.39:4400` | HTTP | Executor 2 on `docker-blue`, added 2026-10-31 with the settings and advanced configuration of host 27, which it replaced. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The owner account is claimed. |
 | 28 | `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |
 | 29 | `mesh.alphasecunited.com` | `192.168.40.39:443` | HTTPS | MeshCentral on `docker-blue`, proxy host 29, added 2026-09-13. Forwards over HTTPS so the hop to the backend stays encrypted. WebSocket upgrade is on, which both the browser and the agents need. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. |
 | 32 | `appportal.alphasecunited.com` | `192.168.40.35:3004` | HTTP | App Portal on `docker-main`, proxy host 32, added 2026-09-19. Serves the desktop client's API, so it carries a device bearer token and exists to keep that token off the wire in the clear. WebSocket upgrade is off; the client polls. |
@@ -39,6 +39,8 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
 
 The implementation and rollback record is [Internal HTTPS Service Onboarding - 2026-07-22](../Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
+
+I replaced host 27 with host 37 on 2026-10-31: [Executor 2 Migration - 2026-10-31](../../Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
 I added App Portal as proxy host 32 on 2026-09-19: [Internal HTTPS, ObiPC Enrollment and the First Self-Update - 2026-09-19](../../App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
 

@@ -1,7 +1,7 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 97 user-defined policies, 88 allows and nine blocks, after adding the eight KUB-A policies on 2026-10-30. The table below lists all 97; a full list that day returned exactly these names. Generated zone defaults and response companions are not listed.
 
@@ -10,6 +10,8 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 97 user-de
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-10-31: I moved `Allow NPM to docker-blue Executor` from TCP 4788 to 4400 for Executor 2. It carried both ports while the two ran side by side, and `https://executor.alphasecunited.com/health` returned `200` through NPM after 4788 came off. I could not change its description through the UniFi MCP, so it still reads `Permit Nginx Proxy Manager to reach the Executor HTTPS upstream only.` `Allow docker-blue SSH Manager to Proxmox` keeps its name and now carries ssh-mcp, which runs on the same host and reached all five nodes that day. [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md), [ssh-mcp deployment](../../../../Platforms/SSH%20MCP/Documentation/Change%20Records/Deployment%20and%20SSH%20Manager%20Replacement%20-%202026-10-31.md).
 
 - 2026-10-30: Eight policies for KUB-A, zone `AlphaSec-Kube`: web, NTP and gateway DNS out with every other external destination blocked, Wazuh out, exporter scrape, SSH and k3s API from four admin hosts, and RDP to `win11-dev` from Jedi PC. [KUB-A VLAN 82](../Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md).
 
@@ -89,7 +91,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
-| `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4788 |
+| `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4400 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
 | `Allow Homarr to Grey Proxmox API` | Yes | ALLOW | 10005 | TCP | Internal / 192.168.40.35 | `AlphaSec-Mgmt` / 192.168.70.10 / 8006 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
@@ -167,6 +169,7 @@ Every policy change has a dated record with its before-and-after tests:
 
 | Date | Change | Record |
 | --- | --- | --- |
+| 2026-10-31 | `Allow NPM to docker-blue Executor` moved from TCP 4788 to 4400 | [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md) |
 | 2026-09-27 | Parrot OS-Mac added to six admin policies; `Allow Trusted SSH replies to Admin Hosts` row corrected | [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md) |
 | 2026-09-21 | TCP 18080 added to `Allow NPM to media-01 web UIs` for Weebarr; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md), [Weebarr Retirement](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md) |
 | 2026-09-20 | `Allow App Portal to Identity LDAPS` | [Directory Sign-In for the Portal](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Directory%20Sign-In%20for%20the%20Portal%20-%202026-09-20.md) |

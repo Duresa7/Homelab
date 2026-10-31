@@ -1,7 +1,7 @@
 # Access Paths
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-31
 
 This is how anything reaches the lab: the public, the LAN, me from outside, me at a console, and my MCP clients. Five paths, each with one owner. Figures are from the live readback on 2026-09-24 and 2026-09-25 unless a line says otherwise.
 
@@ -15,7 +15,7 @@ This is how anything reaches the lab: the public, the LAN, me from outside, me a
 | Internal HTTPS | LAN clients | Nginx Proxy Manager at `192.168.85.2` | `*.alphasecunited.com` | [Nginx Proxy Manager](../Platforms/Nginx%20Proxy%20Manager/README.md) |
 | Remote access | Me, off the LAN | UniFi `Management Access` WireGuard server; NetBird mesh | addresses, not names | [UniFi VPN networks](../Infrastructure/Network/UniFi/Configuration/vpn-networks-port-profiles.md), [NetBird](../Platforms/Netbird/README.md) |
 | Remote control | Me, at a device's console | MeshCentral and RustDesk on `docker-blue` | `mesh.alphasecunited.com` | [MeshCentral](../Platforms/MeshCentral/README.md), [RustDesk](../Platforms/RustDesk/README.md) |
-| Agent access | My MCP clients on `ubuntu-dev` | Executor at `mcp.alphasecunited.com` | one MCP endpoint | [Executor](../Platforms/Executor/README.md) |
+| Agent access | My MCP clients on `ubuntu-dev` | Executor at `executor.alphasecunited.com` | one MCP endpoint | [Executor](../Platforms/Executor/README.md) |
 
 The router forwards no ports. Public traffic enters only through the Cloudflare Tunnel. The UniFi WireGuard server listens on the gateway itself.
 
@@ -56,15 +56,14 @@ Both servers run on CT 108 `docker-blue`, `192.168.40.39`, VLAN 40.
 
 ## Agent access
 
-`MCP client on ubuntu-dev -> https://mcp.alphasecunited.com (NPM host 27) -> Executor 192.168.40.39:4788 -> gateways and remote MCPs`
+`MCP client on ubuntu-dev -> https://executor.alphasecunited.com/mcp (NPM host 37) -> Executor 192.168.40.39:4400 -> apps -> internal and remote MCP servers`
 
-- Executor 1.6.10 on `docker-blue` is the one MCP endpoint. Every tool call is capped at 60 seconds.
-- Docker MCP Gateway v0.43.3 runs two instances on `docker-blue`: UniFi Network MCP on `:8811` and SSH Manager MCP on `:8812`.
-- SSH Manager lists 25 servers. On the 17 Linux nodes and guests, and on the Andor-ParrotOS-PC desktop, its privilege paths reach root.
-- UniFi runs in bypass mode: a create, update or delete reaches the controller with no preview step.
+- Executor 2.0.0-beta.34 on `docker-blue` is the one MCP endpoint. It replaced Executor 1.6.10 on 2026-10-31. Each integration is an app, and a `call` or `execute` gets 5 minutes; Executor 1's 60-second cap on every tool call is gone.
+- ssh-mcp 2.22.0 on `docker-blue`, `:8813`, is the SSH path. It replaced SSH Manager MCP and its gateway instance on `:8812` on 2026-10-31 and holds 26 profiles. That day its privilege paths reached root on 17 Linux nodes and guests; `app-01`, Andor-ParrotOS-PC, Parrot OS-Mac and the Surface Pro carry the same setup and were powered off.
+- Docker MCP Gateway v0.43.3 runs one instance on `docker-blue`, UniFi Network MCP on `:8811`. UniFi runs in bypass mode: a create, update or delete reaches the controller with no preview step.
 - The Cloudflare Account MCP is remote (`mcp.cloudflare.com`) and holds a full-access account token. The Wazuh MCP on security-01 holds a read-only credential.
 
-Neither gateway holds a mutation back, so the read-only default is my rule, not a control. I keep diagnostics read-only unless a change is planned, and I approve anything disruptive before it runs. The trust detail is in the [Executor](../Platforms/Executor/README.md) and [Docker MCP Gateway](../Platforms/Docker%20MCP%20Gateway/README.md) records.
+Nothing on this path holds a mutation back. No Executor app declares an approval, and ssh-mcp runs every profile with automatic approval, so the read-only default is my rule, not a control. I keep diagnostics read-only unless a change is planned, and I approve anything disruptive before it runs. The trust detail is in the [Executor](../Platforms/Executor/README.md), [SSH MCP](../Platforms/SSH%20MCP/README.md) and [Docker MCP Gateway](../Platforms/Docker%20MCP%20Gateway/README.md) records.
 
 ## Open
 

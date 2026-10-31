@@ -1,7 +1,7 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-10-31
 
 **Last verified:** 2026-10-11, after adding `192.168.50.102` to `pve_admins`. All five nodes read the 53-line file (`f9e894e5…`), report `enabled/running`, and hold six members in the live `pve_admins` set. On 2026-09-27, after adding `192.168.10.176`, they read the 52-line file with five members. The earlier check, on 2026-09-06 after removing `192.168.40.39` from `pve_admins`, found this: All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
 
@@ -49,7 +49,7 @@
 |---|---|
 | 192.168.40.39 | docker-blue |
 
-This set and its TCP 22 rule are the only Proxmox-side grant `docker-blue` holds. Until 2026-09-06 the address was also a `pve_admins` member, which admitted it to 8006 and 3128 as well; I removed that membership the same day, so the SSH Manager reaches the nodes on port 22 through a set named for what it is and nothing else. The set had been on the file since 2026-08-31 without appearing in this record.
+This set and its TCP 22 rule are the only Proxmox-side grant `docker-blue` holds. Since 2026-10-31 they carry [ssh-mcp](../../../../Platforms/SSH%20MCP/README.md), which replaced SSH Manager on the same host and reached all five nodes through them that day. The set name and the rule comment still say SSH Manager. Until 2026-09-06 the address was also a `pve_admins` member, which admitted it to 8006 and 3128 as well; I removed that membership the same day, so `docker-blue` reaches the nodes on port 22 and nothing else. The set had been on the file since 2026-08-31 without appearing in this record.
 
 ## Security Group: `pve_mgmt`
 

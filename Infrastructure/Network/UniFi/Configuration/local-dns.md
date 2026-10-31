@@ -1,7 +1,7 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-10-05
+**Last updated:** 2026-10-31
 
 The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 25 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
@@ -10,6 +10,8 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 
 ## Recent changes
+
+- 2026-10-31: I added `executor.alphasecunited.com` for Executor 2 through NPM, record `6ae628c8e2482aecb95a2c9b`, and deleted Executor 1's `mcp.alphasecunited.com`, record `6a94416df9e5db24858d3005`. The gateway resolver at `192.168.40.1` no longer answers for the old name. [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
 - 2026-10-05: I added `sure.alphasecunited.com` for Sure through NPM, record `6ac3e46b25574794b94ddd9b`. Before the change the controller listed 30 records with 24 pointing at NPM. [Sure deployment](../../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
@@ -45,7 +47,7 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | `prometheus.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a864` | Prometheus through NPM |
 | `ts3-manager.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a68b26f052792cd2140bfdc` | TS3 Manager through NPM |
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
-| `mcp.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a94416df9e5db24858d3005` | Executor on `docker-blue` through NPM |
+| `executor.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ae628c8e2482aecb95a2c9b` | Executor 2 on `docker-blue` through NPM proxy host 37 |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
 | `dockhand.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa9de4e25574794b908a860` | Dockhand on `docker-main` through NPM proxy host 31 |
 | `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
@@ -61,6 +63,7 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 
 | Date | Change | Record |
 | --- | --- | --- |
+| 2026-10-31 | `executor` added; `mcp` removed | [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md) |
 | 2026-09-21 | `weebarr` added; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md) |
 | 2026-09-15 | Dockge record replaced by `dockhand` | [Dockge Replacement](../../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md) |
 | 2026-09-13 | `mesh` added | [MeshCentral Internal HTTPS](../../../../Platforms/MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md) |
