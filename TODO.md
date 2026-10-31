@@ -1,11 +1,21 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-10-31
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [x] **Sign in the agent clients on ubuntu-dev to Executor 2.** Both Claude Code profiles, all three Codex profiles, Copilot CLI and Antigravity signed in on 2026-10-31, and I connected my other two PCs myself. [Clients](Platforms/Executor/README.md#clients).
+
+- [ ] **Connect the Sure account in Executor 2.** The app shows no tools until I sign in from its **Accounts** tab. [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
+
+- [x] **Clean up Dockhand on `docker_blue`.** Done 2026-10-31: the stale `executor` stack is removed and `executor-v2` and `ssh-mcp` are adopted. [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
+
+- [x] **Fix the live Homarr Executor tile.** Done 2026-10-31: it links to `https://executor.alphasecunited.com`, matching the [tracked shortcut](Platforms/Homarr/Configuration/App-Shortcuts.json). [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
+
+- [x] **Delete the `mcp-ssh-manager:stable` image from my Forgejo registry.** Done 2026-10-31, with the other leftovers of the old setup. [Open items](Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Retirement%20-%202026-10-31.md#open-items).
 
 - [ ] **Finish the remaining Compose update checks and deployment.** CLI Proxy API is on v8.0.46. Minecraft and Playit are excluded from this pass. [Remaining updates and verification gaps](Operations/Maintenance/Compose%20Update%20Check%20-%202026-10-28.md#open-work).
 
@@ -50,11 +60,11 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Work out how to fill a login in the T3 Code preview browser without the password appearing in any captured output.** On 2026-09-06 that gap stopped me signing in to the Executor console from the preview, and the fallback was to sign in by hand. Options to evaluate: a browser extension inside the preview browser, a bridge that drives the browser from the shell so the value never crosses into captured output, or a session-cookie handoff, which only moves the exposure from the password to the cookie. [Executor](Platforms/Executor/README.md).
 
-- [ ] **Decide whether to maintain a custom Executor build or request a configurable upstream timeout.** On 2026-09-21 I verified that 1.6.10 uses its own hard-coded 60-second active-work deadline. SSH Manager accepts up to five minutes, but cannot extend that earlier timer. No installed setting raises it. Long remote work remains detached and polled. [Current verification](Platforms/Executor/Documentation/Troubleshooting/Active%20Work%20Timeout%20in%201.6.10%20-%202026-09-21.md).
+- [x] **Decide whether to maintain a custom Executor build or request a configurable upstream timeout.** Moot since 2026-10-31: Executor 2 replaced 1.6.10 and gives a `call` or `execute` 5 minutes, and ssh-mcp runs a command for up to 240 seconds. [Executor 2 Migration](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md), [1.6.10 timeout record](Platforms/Executor/Documentation/Troubleshooting/Active%20Work%20Timeout%20in%201.6.10%20-%202026-09-21.md).
 
 ## Active Priorities
 
-- [ ] **Low priority.** Review the 20 authored diagrams under [Assets/Diagrams](Assets/Diagrams) and redraw the ones that no longer match the environment. One is known: [prometheus.svg](Assets/Diagrams/prometheus.svg) showed a seven-target set against a live 57 (2026-09-24). Searching an SVG for a figure proves nothing, because coordinates and colours are plain numbers too, so each diagram has to be opened.
+- [ ] **Low priority.** Review the 20 authored diagrams under [Assets/Diagrams](Assets/Diagrams) and redraw the ones that no longer match the environment. Known: [prometheus.svg](Assets/Diagrams/prometheus.svg) showed a seven-target set against a live 57 (2026-09-24). Since the 2026-10-31 Executor 2 and ssh-mcp cutover, [linux-baseline](Assets/Diagrams/linux-baseline.svg) still names SSH Manager MCP, [lab-map](Assets/Diagrams/lab-map.svg) and [wazuh](Assets/Diagrams/wazuh.svg) name Executor 1.6.10, and [nginx-proxy-manager](Assets/Diagrams/nginx-proxy-manager.svg) shows `mcp` on port 4788. The written records are current; the diagrams are not. Searching an SVG for a figure proves nothing, because coordinates and colours are plain numbers too, so each diagram has to be opened.
 
 ## Scheduled
 
