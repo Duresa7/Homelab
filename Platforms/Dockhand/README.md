@@ -1,7 +1,7 @@
 # Dockhand
 
 **Created:** 2026-09-15  
-**Last updated:** 2026-10-09
+**Last updated:** 2026-10-31
 
 I run Dockhand on `docker-main` at [dockhand.alphasecunited.com](https://dockhand.alphasecunited.com) to manage the Docker hosts in the lab. It replaced Dockge on 2026-09-15 and Portainer on 2026-09-16.
 
@@ -48,6 +48,10 @@ The imported files are the source for future Dockhand stack edits. Deploying a p
 ## Homelab Dashboard retirement
 
 I removed the stopped `homelab-dashboard-aio` stack and its imported definition through the authenticated stack API on 2026-09-26, then removed its deployment directory, data, images and unused network. [Retirement](../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
+
+## Executor 2 and ssh-mcp on docker-blue
+
+On 2026-10-31 I removed the stale `executor` stack from `docker-blue`, environment 2, through the stack API with files removed and volumes kept; Executor 1 had already been removed from the host. I adopted `executor-v2` and `ssh-mcp` from normalized definitions under `imported/docker_blue/`, written root-only at mode 0600 straight from `docker-blue` so their resolved secrets never left the two hosts. Both containers kept running throughout. [Executor 2 Migration](../Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
 ## Portainer retirement
 
