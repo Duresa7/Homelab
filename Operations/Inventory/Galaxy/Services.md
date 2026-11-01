@@ -9,6 +9,8 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-11-01: I set `allow-flight=true` on Minecraft so lag no longer gets players kicked for floating. The container was recreated with 0 players online and verified healthy, with LAN and public SRV status checks passing. [Change record](../../../Platforms/Minecraft/Documentation/Change%20Records/Flight%20Kick%20Disabled%20-%202026-11-01.md).
+
 - 2026-10-31: On `docker-blue`, Executor 2.0.0-beta.34 replaced Executor 1.6.10, now at `https://executor.alphasecunited.com` through NPM host 37, and ssh-mcp 2.22.0 replaced SSH Manager MCP and its gateway instance on TCP 8812. The UniFi gateway on 8811 did not change. [Executor 2 Migration](../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md), [ssh-mcp deployment](../../../Platforms/SSH%20MCP/Documentation/Change%20Records/Deployment%20and%20SSH%20Manager%20Replacement%20-%202026-10-31.md), [SSH Manager retirement](../../../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Retirement%20-%202026-10-31.md).
 
 - 2026-10-30: New VM 820 `ci-k3s-01` runs k3s and the ARC controller for my CI runners; `win11-dev` became a runner-only GitHub Actions host on KUB-A. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
@@ -224,7 +226,7 @@ Eight containers were running on 2026-09-25. On 2026-10-09 I verified eight runn
 
 | Workload | Details |
 | --- | --- |
-| Minecraft | Vanilla Java Edition 26.3, protocol 777, `itzg/minecraft-server:stable-java25`; TCP 25565; 4 GiB maximum heap, 5 GiB container limit since 2026-10-11; world under `/opt/docker/minecraft/data`; managed as `minecraft` in Dockhand environment 6. LAN, loopback and the retained public Playit tunnel verified on 2026-10-09. `minecraft.alphasecunited.com` resolves through Cloudflare; SRV login transport verified, custom hostname server-list ping rejected. [Platform record](../../../Platforms/Minecraft/README.md) |
+| Minecraft | Vanilla Java Edition 26.3, protocol 777, `itzg/minecraft-server:stable-java25`; TCP 25565; 4 GiB maximum heap, 5 GiB container limit since 2026-10-11; world under `/opt/docker/minecraft/data`; managed as `minecraft` in Dockhand environment 6; `allow-flight=true` since 2026-11-01. LAN, loopback and the retained public Playit tunnel verified on 2026-10-09. `minecraft.alphasecunited.com` resolves through Cloudflare; SRV login transport verified, custom hostname server-list ping rejected. [Platform record](../../../Platforms/Minecraft/README.md) |
 | TeamSpeak | `ts-valorant-02` and `ts-valorant-03`, both TeamSpeak 3 Server 3.13.8, recreated 2026-09-18. [Teamspeak Hosting](../../../Platforms/Teamspeak%20Hosting/README.md) |
 | TS3 Manager | `joni1802/ts3-manager` on TCP 9000, NPM host 22 |
 | TeamSpeak reachability collector | `teamspeak-monitor` from `forgejo.alphasecunited.com/homelab-images/teamspeak-monitor:stable`; reads each server's public SRV record every cycle and feeds the reachability dashboard |

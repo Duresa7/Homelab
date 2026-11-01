@@ -1,7 +1,7 @@
 # Backups
 
 **Created:** 2026-08-05  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-11-01
 
 This folder holds config files I copied off a host before editing them. It exists so a host does not have to keep the copy.
 
@@ -9,6 +9,7 @@ This folder holds config files I copied off a host before editing them. It exist
 
 | File | Source host | Taken | Record |
 |---|---|---|---|
+| [`alpha-prod-01-minecraft-compose-2026-10-15.yaml`](alpha-prod-01-minecraft-compose-2026-10-15.yaml) | alpha-prod-01 and docker-main (identical copies) | 2026-10-15 | [Pinned DNS resolver](../Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md); host copies removed in [Flight kick disabled](../Platforms/Minecraft/Documentation/Change%20Records/Flight%20Kick%20Disabled%20-%202026-11-01.md) |
 | [`ansible-01-sshd_config-2026-08-15`](ansible-01-sshd_config-2026-08-15) | ansible-01 | 2026-08-15 | [Root SSH disabled](../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md) |
 | [`ansible-01-tftpd-hpa-before-migration-2026-09-12.conf`](ansible-01-tftpd-hpa-before-migration-2026-09-12.conf) | ansible-01 | 2026-09-12 | [ansible-01 Blue migration](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) |
 | [`docker-blue-docker-compose-2026-09-02.yml`](docker-blue-docker-compose-2026-09-02.yml) | docker-blue | 2026-09-02 | [SSH Manager gateway process exhaustion](../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md) |

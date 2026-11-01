@@ -21,6 +21,7 @@ services:
       ENABLE_RCON: "FALSE"
       MOTD: "AlphaSec United Minecraft"
       MAX_PLAYERS: "20"
+      ALLOW_FLIGHT: "TRUE"
       TZ: "America/New_York"
     volumes:
       - /opt/docker/minecraft/data:/data

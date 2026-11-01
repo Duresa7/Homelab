@@ -1,7 +1,7 @@
 # Minecraft
 
 **Created:** 2026-10-09  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-11-01
 
 I run Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01`, alongside TeamSpeak. Dockhand manages its Docker Compose stack. The server answers on the LAN and through the retained Playit tunnel. The public join name is `minecraft.alphasecunited.com`.
 
@@ -15,7 +15,7 @@ I run Vanilla Minecraft Java Edition 26.3 on `alpha-prod-01`, alongside TeamSpea
 | Public endpoint | `minecraft.alphasecunited.com`, using a DNS-only CNAME and Minecraft SRV record in Cloudflare; the retained tunnel sends TCP traffic through the shared `playit-agent` to `127.0.0.1:25565`, with proxy protocol disabled |
 | Java heap | 1 GiB initial, 4 GiB maximum |
 | Container memory | 5 GiB; memory plus swap limit also 5 GiB, so the container cannot consume swap |
-| Players | 20 maximum; online authentication enabled; RCON disabled |
+| Players | 20 maximum; online authentication enabled; RCON disabled; `allow-flight=true` since 2026-11-01, so the server does not kick players for floating |
 | World and server files | `/opt/docker/minecraft/data/` on `alpha-prod-01`, mounted at `/data` |
 | Editable Compose | `/opt/docker/dockhand/stacks/alpha_prod_01/minecraft/compose.yaml` on `docker-main`, in Dockhand environment 6 |
 | Runtime Compose | `/opt/docker/hawser/stacks/minecraft/compose.yaml` on `alpha-prod-01` |
@@ -33,7 +33,10 @@ I installed the [join welcome datapack](Source/alphasec_welcome/) on 2026-10-11.
 
 On 2026-10-15, after the [Purple NIC outage that began on October 14](../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md), I found Minecraft had started before Alpha's resolver was populated. Server-list pings worked, but authentication service names failed to resolve; logins were most likely impaired from the 12:37 AM start at boot until 12:58:32 AM EDT. Nobody tried an authenticated join. I restarted the container at 12:58:13 AM with 0/20 players online, verified all three service names resolved and the container was healthy by 12:58:32 AM, and repeated the LAN ping at 12:59 AM. At 12:59:56 AM EDT I resolved `_minecraft._tcp.minecraft.alphasecunited.com` through 1.1.1.1 to `<playit-relay>`, connected and sent a protocol-777 handshake naming the SRV target with next state login, followed by Login Start as unauthenticated `testuser`. The first login packet was `0x01` Encryption Request, requiring online authentication, with a 245 ms round trip. I closed the connection before authentication. This verifies the Cloudflare SRV to Playit to server join route reaches authentication after the DNS correction; an authenticated join remains untested. The same race recurred after Purple's 9:06 AM reboot that morning, so I pinned the container's DNS server in its Compose definition at 9:19 AM ([change record](Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md)).
 
+On 2026-11-01 I set `ALLOW_FLIGHT` to `TRUE` after a lagging player was kicked for floating too long during a Playit connection stall. The setting removes the kick and does not give survival players flight ([change record](Documentation/Change%20Records/Flight%20Kick%20Disabled%20-%202026-11-01.md)).
+
 ## Open items
 
 - [x] Make external DNS survive a reboot. On 2026-10-15 I pinned `dns: [192.168.80.1]` in the Compose definition after the boot race hit twice that day. [Change record](Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md).
 - [x] Confirm the pin across a reboot. A test reboot of `alpha-prod-01` at 9:24 AM on 2026-10-15 lost the race by 4.2 seconds, and the container still resolved all three authentication names without a restart ([reboot test](Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md#reboot-test)).
+- [x] Remove the 2026-10-15 Compose copies from both hosts. On 2026-11-01 I committed the file to `Backups/` and deleted both host copies ([record](Documentation/Change%20Records/Flight%20Kick%20Disabled%20-%202026-11-01.md#old-backup-copies-removed)).
