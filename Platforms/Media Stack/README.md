@@ -1,7 +1,7 @@
 # Media Stack
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-10-27
+**Last updated:** 2026-11-01
 
 I run media requests, playback, release automation and VPN-isolated downloading from one Debian LXC, CT 842 `media-01` on `red-server`.
 
@@ -59,4 +59,4 @@ qBittorrent runs with `network_mode: service:gluetun`, so its only path out is t
 - [Container image updates](../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md), 2026-09-13
 - [Media Stack guide](../../Guides/Media-Stack.md)
 
-I connected all six media applications and Gluetun to Homarr on 2026-09-27. Gluetun now publishes its authenticated control API on `192.168.40.42:8000`, with a dedicated GET-only role; qBittorrent still uses its VPN network namespace. [Integration and restart verification](../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+I connected all six media applications and Gluetun to Homarr on 2026-09-27 ([integration record](../../Archive/Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md)) and retired Homarr on 2026-11-01. With it I removed Gluetun's control API: port 8000 is no longer published or allowed through Gluetun's firewall, the GET-only auth file is deleted, and only `gluetun` and `qbittorrent` were recreated. Gluetun came back healthy, qBittorrent is in its network namespace, and the listening port matches the forwarded port. [Retirement](../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).

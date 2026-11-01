@@ -97,7 +97,7 @@ I then removed `supabase` too, which had no account connected. `apps.remove` ret
 - Done 2026-10-31: every client on ubuntu-dev is signed in, and I connected my other two PCs myself.
 - I still need to connect Sure from its app's **Accounts** tab while signed in to the dashboard.
 - Done 2026-10-31: Dockhand's stale `executor` stack on `docker_blue` is removed through the stack API, with files removed and volumes kept, and `executor-v2` and `ssh-mcp` are adopted from normalized definitions under `/opt/docker/dockhand/stacks/imported/docker_blue/` on `docker-main`. Both containers kept running throughout.
-- Done 2026-10-31: the live Homarr Executor tile links to `https://executor.alphasecunited.com`, matching the [tracked shortcut](../../../Homarr/Configuration/App-Shortcuts.json).
+- Done 2026-10-31: the live Homarr Executor tile links to `https://executor.alphasecunited.com`, matching the [tracked shortcut](../../../../Archive/Platforms/Homarr/Configuration/App-Shortcuts.json).
 - The sign-in probe left a registered OAuth client named `dcr-probe` with no grants. The signed-in client list needs an admin endpoint that answered 401, so it stays.
 - Done 2026-10-31: I revoked Copilot CLI's OAuth grant after it moved to its own API key, deleted its local OAuth registration and keyring tokens, revoked the four sign-in sessions my scripts had left open, and removed an unused anonymous volume from Executor 2's first start.
 - Done 2026-10-31: I archived the password-manager item `executor`, created 2026-08-31 for Executor 1's console. It held the same email and password as my standard account, which Executor 2 uses.

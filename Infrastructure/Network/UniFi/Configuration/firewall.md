@@ -1,15 +1,17 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01
 
-Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 97 user-defined policies, 88 allows and nine blocks, after adding the eight KUB-A policies on 2026-10-30. The table below lists all 97; a full list that day returned exactly these names. Generated zone defaults and response companions are not listed.
+Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 96 user-defined policies, 87 allows and nine blocks, after I deleted `Allow Homarr to Grey Proxmox API` on 2026-11-01. The table below lists all 96. A full list on 2026-10-30, after adding the eight KUB-A policies, returned the same names plus the one I deleted. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-11-01: I deleted `Allow Homarr to Grey Proxmox API` (`6ab919b425574794b932ace9`) and removed TCP 7575 from `Allow NPM to docker-main web UIs` when I retired Homarr. Readback of the shared policy showed `2283,3000,3002,3003,3004,3005,6060` with its source object, destination, zones and index 10002 unchanged. [Retirement](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
 
 - 2026-10-31: I moved `Allow NPM to docker-blue Executor` from TCP 4788 to 4400 for Executor 2. It carried both ports while the two ran side by side, and `https://executor.alphasecunited.com/health` returned `200` through NPM after 4788 came off. I could not change its description through the UniFi MCP, so it still reads `Permit Nginx Proxy Manager to reach the Executor HTTPS upstream only.` `Allow docker-blue SSH Manager to Proxmox` keeps its name and now carries ssh-mcp, which runs on the same host and reached all five nodes that day. [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md), [ssh-mcp deployment](../../../../Platforms/SSH%20MCP/Documentation/Change%20Records/Deployment%20and%20SSH%20Manager%20Replacement%20-%202026-10-31.md).
 
@@ -21,9 +23,9 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 97 user-de
 
 - 2026-09-27: I added Parrot OS-Mac (MAC withheld, `192.168.10.176`) to the six policies that name the MacBook Air M3 or give Jedi PC the UniFi console. I also corrected the row for `Allow Trusted SSH replies to Admin Hosts` to match the controller. [Parrot OS-Mac Admin Access](../Documentation/Change%20Records/Parrot%20OS-Mac%20Admin%20Access%20-%202026-09-27.md).
 
-- 2026-09-27: I allowed Homarr `192.168.40.35` to Grey `192.168.70.10` on TCP 8006 and added TCP 9102 to the existing NPM-to-docker-main policy for authenticated WUD HTTPS. [Integration record](../../../../Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+- 2026-09-27: I allowed Homarr `192.168.40.35` to Grey `192.168.70.10` on TCP 8006 and added TCP 9102 to the existing NPM-to-docker-main policy for authenticated WUD HTTPS. [Integration record](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
 
-- 2026-09-27: I added TCP 7575 to `Allow NPM to docker-main web UIs` for Homarr and verified the preserved source, destination and existing ports. [Homarr deployment](../../../../Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+- 2026-09-27: I added TCP 7575 to `Allow NPM to docker-main web UIs` for Homarr and verified the preserved source, destination and existing ports. [Homarr deployment](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
 
 - 2026-09-26: I removed `Docker-main Allowed -> Server` and TCP 3001 from `Allow NPM to docker-main web UIs` when I retired Homelab Dashboard. [Retirement](../../../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md).
 
@@ -87,13 +89,12 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow Device --> media-01` | Yes | ALLOW | 10004 | All | Internal / 2 MACs | Internal / Personal-A |
 | `Allow NPM to media-01 web UIs` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.42 / 5055, 7878, 8080, 8096, 8989, 9696 |
 | `Allow NPM to ansible-01 Semaphore` | Yes | ALLOW | 10001 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.36 / 3000 |
-| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 3005, 6060, 7575 |
+| `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 3005, 6060 |
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4400 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |
-| `Allow Homarr to Grey Proxmox API` | Yes | ALLOW | 10005 | TCP | Internal / 192.168.40.35 | `AlphaSec-Mgmt` / 192.168.70.10 / 8006 |
 | `Allow ubuntu-dev to Proxmox` | Yes | ALLOW | 10003 | All | Internal / 192.168.40.179 | `AlphaSec-Mgmt` / Any / `Proxmox GUI+SSH` port group |
 | `Allow Trusted SSH replies to Admin Hosts` | Yes | ALLOW | 10000 | TCP (IPv4), established and related only | Internal / 192.168.10.211, 192.168.10.176 / source port 22 | Internal / 192.168.40.179, 192.168.40.39, 192.168.40.36 |
 | `Allow NPM to alpha-prod-01 TS3 Manager` | Yes | ALLOW | 10000 | TCP | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.118 / 9000 |

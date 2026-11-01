@@ -1,23 +1,25 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01
 
-The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 25 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
+The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 24 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
-**Last verified against the controller:** 2026-10-05. `unifi_list_dns_records` returned 30 static records, 24 of them NPM names, before I added Sure's. The controller now holds 31, and the 25 NPM names match the 25 live NPM proxy hosts one for one.
+**Last verified against the controller:** 2026-11-01. After I deleted Homarr's record, `unifi_list_dns_records` returned 30 static records, and the 24 NPM names match the 24 live NPM proxy hosts one for one.
 
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 
 ## Recent changes
 
+- 2026-11-01: I deleted `dashboard.alphasecunited.com`, record `6ab90b1425574794b9328224`, when I retired Homarr. Neither the gateway at `192.168.1.1` nor `1.1.1.1` answers for the name. [Retirement](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
+
 - 2026-10-31: I added `executor.alphasecunited.com` for Executor 2 through NPM, record `6ae628c8e2482aecb95a2c9b`, and deleted Executor 1's `mcp.alphasecunited.com`, record `6a94416df9e5db24858d3005`. The gateway resolver at `192.168.40.1` no longer answers for the old name. [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
 - 2026-10-05: I added `sure.alphasecunited.com` for Sure through NPM, record `6ac3e46b25574794b94ddd9b`. Before the change the controller listed 30 records with 24 pointing at NPM. [Sure deployment](../../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
-- 2026-09-27: I added `wud.alphasecunited.com` for Homarr's authenticated WUD connection, record `6ab91af825574794b932b0d5`. [Integration record](../../../../Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
+- 2026-09-27: I added `wud.alphasecunited.com` for Homarr's authenticated WUD connection, record `6ab91af825574794b932b0d5`. [Integration record](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md).
 
-- 2026-09-27: I recreated `dashboard.alphasecunited.com` for Homarr through NPM, record `6ab90b1425574794b9328224`. [Homarr deployment](../../../../Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+- 2026-09-27: I recreated `dashboard.alphasecunited.com` for Homarr through NPM, record `6ab90b1425574794b9328224`. [Homarr deployment](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
 
 - 2026-09-24: no `weebarr.alphasecunited.com` record. I added it on 2026-09-21 and have no record of its removal. [Weebarr Retirement](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md).
 - 2026-09-19: I added `appportal.alphasecunited.com`. [Internal HTTPS record](../../../../Platforms/App%20Portal/Documentation/Change%20Records/Internal%20HTTPS%2C%20ObiPC%20Enrollment%20and%20the%20First%20Self-Update%20-%202026-09-19.md).
@@ -37,7 +39,6 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | `semaphore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2a2d027bb05525a840` | Semaphore through NPM |
 | `immich.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a841` | Immich through NPM |
 | `booklore.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a844` | BookOrbit through NPM; legacy BookLore address retained |
-| `dashboard.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ab90b1425574794b9328224` | Homarr on `docker-main` through NPM proxy host 34 |
 | `sure.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ac3e46b25574794b94ddd9b` | Sure on `docker-main` through NPM proxy host 36 |
 | `forgejo.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a850` | Forgejo through NPM |
 | `peanut.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a60fd2b2d027bb05525a853` | PeaNUT through NPM |

@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01
 
 This inventory maps the workloads on Galaxy's 19 guests: 13 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
@@ -27,6 +27,8 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 - 2026-10-05: I updated the whole Linux fleet: packages on all five Proxmox nodes (PVE 9.2.21, kernel 7.0.14-20-pve installed) and all twelve running Linux guests, 23 Compose projects on six hosts, the six Hawser agents, cAdvisor on eight hosts, Semaphore and the Wazuh agents. Node and VM reboots remain pending. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-10-05.md).
 
+- 2026-11-01: I retired Homarr from `docker-main`: container, data, image, NPM host 34, DNS name, firewall access, `homarr@pve` Proxmox account and the Gluetun control API on `media-01` removed. [Retirement](../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
+
 - 2026-10-05: I deployed Sure 0.7.5-hotfix.1 on `docker-main` at `https://sure.alphasecunited.com` through NPM host 36, as four containers on TCP 3005. [Deployment](../../../Platforms/Sure/Documentation/Change%20Records/Deployment%20-%202026-10-05.md).
 
 - 2026-10-02: I updated host packages on all twelve running Linux guests. Docker Engine is 29.8.2 on all nine Docker hosts; Wazuh central packages are 4.14.8-1. Six VM reboots remain pending. [Maintenance and verification](../../Maintenance/Guest%20Package%20Updates%20-%202026-10-02.md).
@@ -35,7 +37,7 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 - 2026-09-27: I removed WUD from all six hosts and retired its monitoring, deployment and HTTPS configuration. [Retirement](../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
-- 2026-09-27: I deployed Homarr 1.77.2 on `docker-main` at `https://dashboard.alphasecunited.com` through NPM host 34. [Deployment](../../../Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
+- 2026-09-27: I deployed Homarr 1.77.2 on `docker-main` at `https://dashboard.alphasecunited.com` through NPM host 34. [Deployment](../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Deployment%20-%202026-09-27.md).
 
 - 2026-09-24: Weebarr, deployed on `media-01` on 2026-09-21, was absent: no container, image or Compose entry, and its proxy host and DNS record deleted. [Weebarr Retirement](../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md).
 - 2026-09-23: I moved VM 103 `win11-dev` from Green to Grey. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
@@ -66,7 +68,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | ci-k3s-01 | VM 820 | green-server | k3s node for the self-hosted GitHub Actions runners (`192.168.82.10`, VLAN 82) | Ubuntu 26.04.1 LTS<br>k3s v1.36.5+k3s1 with Traefik and ServiceLB<br>ARC `gha-runner-scale-set-controller` 0.15.1, no scale sets<br>Helm v4.3.1<br>node_exporter 1.9.0<br>Wazuh agent 4.14.8 |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.8<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.19.12<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.8 |
-| docker-main | LXC 110 | grey-server | Docker apps | Homarr 1.77.2<br>Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |
+| docker-main | LXC 110 | grey-server | Docker apps | Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.15.0<br>Grafana 13.2.3<br>Proxmox exporter 3.10.1<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.80.0 / dashboard 2.94.0<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3<br>UniFi Network MCP<br>Executor 2.0.0-beta.34<br>ssh-mcp 2.22.0<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
@@ -119,11 +121,10 @@ Node.js is installed per-user through nvm rather than system-wide. It resolves i
 
 ## docker-main
 
-19 containers were running on 2026-10-05 after adding Sure's four. No Hawser agent runs here, because Dockhand itself does.
+17 containers were running on 2026-11-01 after I retired Homarr; there were 19 on 2026-10-05 after adding Sure's four. No Hawser agent runs here, because Dockhand itself does.
 
 | Workload | Details |
 | --- | --- |
-| Homarr | 1.77.2 from `ghcr.io/homarr-labs/homarr:v1.77.2`; `/opt/docker/homarr`; TCP 7575; `dashboard.alphasecunited.com` through NPM host 34; persistent `/appdata` and initial administrator verified after restart; nine integrations on one private dashboard, consolidated on 2026-09-27. [Platform record](../../../Platforms/Homarr/README.md) |
 | Sure | 0.7.5-hotfix.1 from `ghcr.io/we-promise/sure:0.7.5-hotfix.1`, with PostgreSQL 16 and Redis 8; `/opt/docker/sure`; TCP 3005; `sure.alphasecunited.com` through NPM host 36; administrator login and data verified after a full stack restart; sign-up closed. [Platform record](../../../Platforms/Sure/README.md) |
 | Internal documentation site | `docusaurus` container from `forgejo.alphasecunited.com/homelab-images/docusaurus:stable`; exited with code 0 at 3:40 AM Eastern on 2026-09-22 and still stopped on 2026-09-24, with restart policy `unless-stopped`. NPM has no proxy host for it |
 | Immich | Server and machine learning v3.2.4 since 2026-10-05 (`release-cuda` for machine learning); PostgreSQL `14-vectorchord0.4.3-pgvector0.8.1-pgvectors0.2.0` and Valkey 9; NVENC transcoding and CUDA machine learning on the GTX 1080 Ti since 2026-09-05; TCP 2283 |

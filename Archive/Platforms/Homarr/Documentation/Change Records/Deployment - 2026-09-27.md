@@ -6,7 +6,7 @@
 **Status:** Complete  
 **Date:** 2026-09-27
 
-I deployed Homarr 1.77.2 on CT 110 `docker-main` and published it internally at `https://dashboard.alphasecunited.com` through Nginx Proxy Manager. This replaces the address of the application I [retired on 2026-09-26](../../../../Archive/Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md). I kept its source archive intact.
+I deployed Homarr 1.77.2 on CT 110 `docker-main` and published it internally at `https://dashboard.alphasecunited.com` through Nginx Proxy Manager. This replaces the address of the application I [retired on 2026-09-26](../../../Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md). I kept its source archive intact.
 
 ## Official deployment method
 

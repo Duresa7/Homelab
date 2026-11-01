@@ -1,7 +1,7 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
@@ -13,7 +13,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [x] **Clean up Dockhand on `docker_blue`.** Done 2026-10-31: the stale `executor` stack is removed and `executor-v2` and `ssh-mcp` are adopted. [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
 
-- [x] **Fix the live Homarr Executor tile.** Done 2026-10-31: it links to `https://executor.alphasecunited.com`, matching the [tracked shortcut](Platforms/Homarr/Configuration/App-Shortcuts.json). [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
+- [x] **Fix the live Homarr Executor tile.** Done 2026-10-31: it links to `https://executor.alphasecunited.com`, matching the [tracked shortcut](Archive/Platforms/Homarr/Configuration/App-Shortcuts.json). [Open items](Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md#open-items).
 
 - [x] **Delete the `mcp-ssh-manager:stable` image from my Forgejo registry.** Done 2026-10-31, with the other leftovers of the old setup. [Open items](Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Retirement%20-%202026-10-31.md#open-items).
 
@@ -37,7 +37,7 @@ This file is my central backlog and index. It holds active priorities plus links
 
 - [ ] **Plan automatic UPS shutdown.** UPS-02 telemetry works, but battery-triggered shutdown is unconfigured. I masked the unused monitors on Red and Grey during the [service repair](Platforms/PeaNUT/Documentation/Troubleshooting/Unused%20NUT%20Services%20Started%20at%20Boot%20-%202026-10-07.md); configure and validate shutdown before unmasking them.
 
-- [ ] **Decide on the four upgrades held back by the 2026-10-05 fleet update:** Homarr 2.2.0, Nginx Proxy Manager 2.16.0, App Portal 0.10.0 and Docker MCP Gateway 0.44.1. [Fleet update](Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md#decisions-i-made-and-what-i-held-back).
+- [ ] **Decide on the three upgrades still held back from the 2026-10-05 fleet update:** Nginx Proxy Manager 2.16.0, App Portal 0.10.0 and Docker MCP Gateway 0.44.1. The fourth, Homarr 2.2.0, went away when I [retired Homarr](Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md) on 2026-11-01. [Fleet update](Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md#decisions-i-made-and-what-i-held-back).
 
 - [ ] **Confirm the 2026-09-26 3:00 AM Dockhand run leaves NPM alone, then plan the 2.16.0 upgrade.** A scheduled update stopped NPM on 2026-09-25 and cut off the Dockhand connection that would have replaced it. NPM is now pinned and labelled out of updates. [Incident](Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md), [upgrade step](Platforms/Nginx%20Proxy%20Manager/Documentation/TODO.md#manual-upgrades).
 

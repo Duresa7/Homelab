@@ -744,38 +744,45 @@ admin.env
 /.ansible/
 
 # Homarr deployment verification, reviewed exports
-!/Platforms/Homarr/Evidence/
-/Platforms/Homarr/Evidence/*
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/
-/Platforms/Homarr/Evidence/Deployment - 2026-09-27/*
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/
-/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/*
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Completion-Verification.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Compose-Deployment.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/HTTPS-Verification.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/NPM-Proxy-Host.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Network-Readback.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Persistence-Restart.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Post-Restart-Verification.json
-!/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Runtime-and-Nginx-Verification.json
+!/Archive/Platforms/Homarr/Evidence/
+/Archive/Platforms/Homarr/Evidence/*
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/
+/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/*
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/
+/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/*
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Completion-Verification.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Compose-Deployment.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/HTTPS-Verification.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/NPM-Proxy-Host.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Network-Readback.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Persistence-Restart.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Post-Restart-Verification.json
+!/Archive/Platforms/Homarr/Evidence/Deployment - 2026-09-27/Exports/Runtime-and-Nginx-Verification.json
 
 # Homarr integration verification, filtered exports
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/
-/Platforms/Homarr/Evidence/Integrations - 2026-09-27/*
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/
-/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/*
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Verification.json
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Boards.json
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/NPM-WUD.json
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/
+/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/*
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/
+/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/*
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Verification.json
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Boards.json
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/NPM-WUD.json
 
-!/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Combined-Board.json
+!/Archive/Platforms/Homarr/Evidence/Integrations - 2026-09-27/Exports/Combined-Board.json
 
 # Homarr app status verification, filtered export
-!/Platforms/Homarr/Evidence/Apps - 2026-09-27/
-/Platforms/Homarr/Evidence/Apps - 2026-09-27/*
-!/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/
-/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/*
-!/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/App-Status-Verification.json
+!/Archive/Platforms/Homarr/Evidence/Apps - 2026-09-27/
+/Archive/Platforms/Homarr/Evidence/Apps - 2026-09-27/*
+!/Archive/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/
+/Archive/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/*
+!/Archive/Platforms/Homarr/Evidence/Apps - 2026-09-27/Exports/App-Status-Verification.json
+
+# Homarr retirement verification, filtered export
+!/Archive/Platforms/Homarr/Evidence/Retirement - 2026-11-01/
+/Archive/Platforms/Homarr/Evidence/Retirement - 2026-11-01/*
+!/Archive/Platforms/Homarr/Evidence/Retirement - 2026-11-01/Exports/
+/Archive/Platforms/Homarr/Evidence/Retirement - 2026-11-01/Exports/*
+!/Archive/Platforms/Homarr/Evidence/Retirement - 2026-11-01/Exports/Final-Verification.json
 
 # Reviewed BookOrbit migration summary
 !/Platforms/BookOrbit/Evidence/

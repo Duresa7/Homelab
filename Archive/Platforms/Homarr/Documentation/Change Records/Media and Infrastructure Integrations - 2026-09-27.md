@@ -38,7 +38,7 @@ The [Homarr Proxmox documentation](https://homarr.dev/docs/integrations/proxmox/
 
 ## WUD HTTPS
 
-The initial WUD connection test passed because `/api/app` is accessible, but the widget failed against protected `/api/containers`. The standard application credentials returned 401; this WUD deployment uses the distinct service credential established during the [September 13 exporter migration](../../../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md).
+The initial WUD connection test passed because `/api/app` is accessible, but the widget failed against protected `/api/containers`. The standard application credentials returned 401; this WUD deployment uses the distinct service credential established during the [September 13 exporter migration](../../../../../Operations/Maintenance/Container%20Image%20Updates%20-%202026-09-13.md).
 
 Homarr 1.77.2 sends WUD Basic authentication only to an HTTPS URL. I added NPM proxy host 35, `wud.alphasecunited.com`, forwarding HTTP to `192.168.40.35:9102`, using certificate 1 with Force SSL, HTTP/2 and WebSockets. Existing WUD authentication remains enabled. UniFi DNS record `6ab91af825574794b932b0d5` resolves this name to `192.168.85.2`, TTL 300. TCP 9102 joins the existing NPM-to-docker-main policy; its source, destination and other ports are preserved.
 
@@ -70,7 +70,7 @@ The [board export](../../Evidence/Integrations%20-%202026-09-27/Exports/Boards.j
 
 Gluetun runs under Compose profile `vpn`; qBittorrent shares its network namespace. Initially, port 8000 was not published and control requests without authentication returned 401. I prepared a narrow Compose override and GET-only auth role, validated the override against the live project, and explained that recreating these two containers would briefly interrupt downloads. I proceeded after confirmation to continue.
 
-I merged the validated change into `/opt/media-stack/compose.yml`: publish `192.168.40.42:8000:8000/tcp` and change `FIREWALL_INPUT_PORTS` from `8080` to `8080,8000`. I generated a dedicated API token, stored it in the approved credential vault, and installed `/opt/media-stack/config/gluetun/auth/config.toml` at mode 0600, inside a mode-0700 directory already covered by the existing `/gluetun` mount. The [authentication template](../../../Media%20Stack/Configuration/gluetun-homarr-auth.toml.example) and [Compose reference](../../../Media%20Stack/Configuration/compose.example.yml) capture the deployed shape without credentials.
+I merged the validated change into `/opt/media-stack/compose.yml`: publish `192.168.40.42:8000:8000/tcp` and change `FIREWALL_INPUT_PORTS` from `8080` to `8080,8000`. I generated a dedicated API token, stored it in the approved credential vault, and installed `/opt/media-stack/config/gluetun/auth/config.toml` at mode 0600, inside a mode-0700 directory already covered by the existing `/gluetun` mount. The [authentication template](../../Configuration/gluetun-homarr-auth.toml.example) and [Compose reference](../../../../../Platforms/Media%20Stack/Configuration/compose.example.yml) capture the deployed shape without credentials.
 
 The role permits only `GET /v1/vpn/status`, `GET /v1/dns/status`, `GET /v1/publicip/ip` and `GET /v1/vpn/settings`. It grants no VPN stop, start or settings-write route. [Gluetun's control-server documentation](https://raw.githubusercontent.com/qdm12/gluetun-wiki/main/setup/advanced/control-server.md) confirms that loading the auth file requires a restart.
 

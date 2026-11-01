@@ -38,7 +38,6 @@ EXPECTED_COMPOSE_PROJECTS = {
         "deploy": ("/opt/docker/app-portal/deploy", ()),
         "dockhand": ("/opt/docker/dockhand", ()),
         "forgejo": ("/opt/docker/forgejo", ()),
-        "homarr": ("/opt/docker/homarr", ()),
         "immich": ("/opt/docker/immich-app", ()),
         "ollama": ("/opt/docker/ollama", ()),
         "sure": ("/opt/docker/sure", ()),
@@ -213,8 +212,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 23:
-        errors.append(f"expected 23 compose projects, found {project_count}")
+    if project_count != 22:
+        errors.append(f"expected 22 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

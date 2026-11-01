@@ -1,7 +1,7 @@
 # Homelab Dashboard
 
 **Created:** 2026-09-26  
-**Last updated:** 2026-09-27
+**Last updated:** 2026-11-01
 
 I retired Homelab Dashboard from `docker-main` on 2026-09-26. It ran `ghcr.io/duresa7/homelab-dashboard-aio:latest` as `homelab-dashboard`, with host networking on TCP 3001 and data under `/opt/docker/homelab-dashboard-aio/data`.
 
@@ -10,4 +10,4 @@ I removed the deployment, data, images, imported Dockhand stack, unused network,
 - [Retirement and verification](Documentation/Change%20Records/Retirement%20-%202026-09-26.md)
 - [Final monitoring and HTTPS checks](Evidence/Retirement%20-%202026-09-26/Exports/Final-Verification.json)
 
-On 2026-09-27 I deployed [Homarr](../../../Platforms/Homarr/README.md) as the replacement at `dashboard.alphasecunited.com`. This archive retains the retired application; its data and integrations were not migrated.
+On 2026-09-27 I deployed [Homarr](../Homarr/README.md) as the replacement at `dashboard.alphasecunited.com`. This archive retains the retired application; its data and integrations were not migrated. I retired Homarr on 2026-11-01, and nothing serves that name now.

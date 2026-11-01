@@ -1,7 +1,7 @@
 # Media Stack Configuration Reference
 
 **Created:** 2026-07-17  
-**Last updated:** 2026-10-11
+**Last updated:** 2026-11-01
 
 [`compose.example.yml`](compose.example.yml) shows the service relationships, mounts, ports, VPN isolation, and automatic Proton port synchronization used by `/opt/media-stack/compose.yml`.
 
@@ -55,4 +55,4 @@ Sonarr, Radarr, and Prowlarr each carry `<APP>__SERVER__TRUSTEDNETWORKS` set to 
 
 The names, upstreams, verification, and rollback points are in [Internal HTTPS Service Onboarding - 2026-07-22](../../Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md). The [qBittorrent Host Validation issue](../Documentation/Troubleshooting/qBittorrent%20Host%20Validation%20Blocked%20Arr%20Clients%20-%202026-07-22.md) records why all three entries are required.
 
-On 2026-09-27 I enabled Gluetun's authenticated control API on `192.168.40.42:8000` for Homarr. `compose.example.yml` includes the new binding and firewall input port. `gluetun-homarr-auth.toml.example` contains the four GET routes; the live auth file is mode 0600 at `/opt/media-stack/config/gluetun/auth/config.toml` with a dedicated API token. [Implementation and verification](../../Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md#gluetun-control-api).
+On 2026-09-27 I enabled Gluetun's authenticated control API on `192.168.40.42:8000` for Homarr ([implementation](../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Media%20and%20Infrastructure%20Integrations%20-%202026-09-27.md#gluetun-control-api)). On 2026-11-01 I removed it with Homarr: `FIREWALL_INPUT_PORTS` is back to `8080`, the `8000` binding is gone from the live file and from `compose.example.yml`, and `/opt/media-stack/config/gluetun/auth` is deleted. The role template moved to the [Homarr archive](../../../Archive/Platforms/Homarr/Configuration/gluetun-homarr-auth.toml.example). [Retirement](../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
