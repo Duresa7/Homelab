@@ -58,6 +58,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 - [Executor 2 migration - 2026-10-31](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md)
 - [Official app catalog - 2026-10-31](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md)
 - [App page domain - 2026-11-02](Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md)
+- [Safari 17 URL.parse polyfill - 2026-11-02](Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)

@@ -30,6 +30,8 @@ Read back on 2026-09-24 unless a row says otherwise.
 
 ## Changes
 
+- 2026-11-02: I gave proxy host 37, `executor.alphasecunited.com`, its own `location /` in the advanced configuration. It removes `Accept-Encoding` and uses `sub_filter` to insert a `URL.parse` polyfill at the top of Executor's HTML, because iPadOS 17 browsers lack that function and Executor's sign-in page crashed on them. Readback reported nginx online with no error. [Safari 17 URL.parse polyfill](../Executor/Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md).
+
 - 2026-11-02: I added proxy host 38, `*.executor.apps.alphasecunited.com` to `192.168.40.39:4400`, with host 37's settings and a new DNS-01 certificate 2 for that wildcard, so Executor 2 app pages have an HTTPS address. Readback reported nginx online with no error, and the page presented certificate 2. [App page domain](../Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
 - 2026-11-01: I deleted Homarr's proxy host 34, `dashboard.alphasecunited.com`, when I retired Homarr. `nginx -t` passed, 24 hosts remain live, and all 24 answered over HTTPS without a gateway error. [Retirement](../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
