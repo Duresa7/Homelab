@@ -49,7 +49,7 @@ The cost is that Executor's responses to NPM are no longer compressed. Traffic b
 - `/login` comes back with the script as the first element in `<head>`, once per page, for both plain and gzip-accepting requests.
 - `/` returned 307. `/login`, `/favicon.png`, `/api/auth/get-session`, `/api/auth/self-host/config` and an `/assets/` script returned 200. Executor MCP calls kept working after the reload.
 - In Chromium, I deleted `URL.parse` and ran the script exactly as served. It restored `URL.parse`, and a sign-in page with an `/app-auth` redirect kept its form.
-- I have not yet seen a sign-in on the iPad itself.
+- After the change, sign-in worked on the iPadOS 17.7.11 iPad.
 
 ## Removal
 
