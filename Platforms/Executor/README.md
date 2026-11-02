@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-02
 
 I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one endpoint in front of SSH, UniFi, Wazuh, Cloudflare and the other integrations. On 2026-10-31 I moved from Executor 1.6.10 to the Executor 2 beta, which is a different server with its own database, and retired Executor 1: [Executor 2 migration](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
@@ -17,6 +17,7 @@ I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one end
 | Live Compose path | `/opt/docker/executor-v2/docker-compose.yml` |
 | Persistent state | `/opt/docker/executor-v2/data` (PGlite database, app source and builds, `auth-secret.key`, `encryption.key`) and `/opt/docker/executor-v2/motel-data` (traces), both UID 1000, mode 0700 |
 | Organization | `AlphaSec United`, slug `executor`, one owner signed in with my standard application account |
+| App pages | `https://<app-slug>.executor.apps.alphasecunited.com`, base `EXECUTOR_APP_UI_BASE_URL=https://apps.alphasecunited.com` since 2026-11-02, through NPM proxy host 38 and one UniFi A record per page: [app page domain](Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md) |
 | Memory | 757 MiB at idle after the first start; the container limit is 1.5 GiB |
 | Restart policy | `unless-stopped` |
 
@@ -38,7 +39,7 @@ The bearer tokens stay in my password manager under the items named in the confi
 
 ## Access and Trust
 
-Executor is internal only. UniFi resolves `executor.alphasecunited.com` to Nginx Proxy Manager, and policy `Allow NPM to docker-blue Executor` lets only `192.168.85.2` reach `192.168.40.39:4400`. No public DNS record or WAN forward exists.
+Executor is internal only. UniFi resolves `executor.alphasecunited.com` and each app-page name under `executor.apps.alphasecunited.com` to Nginx Proxy Manager, and policy `Allow NPM to docker-blue Executor` lets only `192.168.85.2` reach `192.168.40.39:4400`. No public DNS record or WAN forward exists.
 
 The container runs as UID 1000, the image's `executor` user, with no Linux capabilities, `no-new-privileges`, a 512-process limit and bounded JSON logs. Starting as that user skips the entrypoint's root branch, which would chown the data directories and drop privileges. Unlike Executor 1, the root filesystem is not read-only: I have not tested Executor 2 with one. `/tmp` is a 256 MiB tmpfs.
 
@@ -56,6 +57,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 
 - [Executor 2 migration - 2026-10-31](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md)
 - [Official app catalog - 2026-10-31](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md)
+- [App page domain - 2026-11-02](Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)

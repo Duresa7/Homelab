@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-02
 
 Nginx Proxy Manager (NPM) is my internal HTTPS front door. It runs on the `docker-network` LXC and serves every internal `*.alphasecunited.com` name with one Let's Encrypt DNS-01 wildcard certificate. It has no public DNS and no WAN ingress. Public traffic goes through Caddy on `edge-01` instead; see [Access Paths](../../Architecture/Access-Paths.md).
 
@@ -20,14 +20,17 @@ Read back on 2026-09-24 unless a row says otherwise.
 | Guest bindings | TCP 80, 81 and 443 |
 | Docker network | External `proxy`, `172.31.85.0/24`; NPM fixed at `172.31.85.10` |
 | Persistent data | `data/` and `letsencrypt/` bind mounts |
-| Proxy hosts | 24 live (NetBird plus 23 applications) after deleting Homarr's host 34 on 2026-11-01, 13 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
+| Proxy hosts | 25 live (NetBird plus 24 applications) after adding Executor app-page host 38 on 2026-11-02, 13 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
 | Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`, expires 2026-12-08 at 3:03 AM UTC; renews automatically through Cloudflare DNS-01 |
-| Shared TLS policy | Every live host uses certificate 1 with Force SSL and HTTP/2; HSTS off |
-| Local DNS | 24 UniFi A records point at `192.168.85.2`, one per live host |
+| Second certificate | Certificate 2, `*.executor.apps.alphasecunited.com`, for host 38 only, issued 2026-11-02 and expiring 2027-01-31; same Cloudflare DNS-01 renewal path |
+| Shared TLS policy | Every live host uses Force SSL and HTTP/2 with HSTS off; all but host 38 use certificate 1 |
+| Local DNS | 25 UniFi A records point at `192.168.85.2`: one per named host, and one per Executor app page behind wildcard host 38 |
 | Administrator UI | `http://192.168.85.2:81`, no domain name |
 
 
 ## Changes
+
+- 2026-11-02: I added proxy host 38, `*.executor.apps.alphasecunited.com` to `192.168.40.39:4400`, with host 37's settings and a new DNS-01 certificate 2 for that wildcard, so Executor 2 app pages have an HTTPS address. Readback reported nginx online with no error, and the page presented certificate 2. [App page domain](../Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
 - 2026-11-01: I deleted Homarr's proxy host 34, `dashboard.alphasecunited.com`, when I retired Homarr. `nginx -t` passed, 24 hosts remain live, and all 24 answered over HTTPS without a gateway error. [Retirement](../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
 

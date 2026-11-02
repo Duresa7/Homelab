@@ -1,7 +1,7 @@
 # Backups
 
 **Created:** 2026-08-05  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-02
 
 This folder holds config files I copied off a host before editing them. It exists so a host does not have to keep the copy.
 
@@ -13,6 +13,7 @@ This folder holds config files I copied off a host before editing them. It exist
 | [`ansible-01-sshd_config-2026-08-15`](ansible-01-sshd_config-2026-08-15) | ansible-01 | 2026-08-15 | [Root SSH disabled](../Operations/Maintenance/Root%20SSH%20Disabled%20on%20ansible-01%20and%20security-01%20-%202026-08-15.md) |
 | [`ansible-01-tftpd-hpa-before-migration-2026-09-12.conf`](ansible-01-tftpd-hpa-before-migration-2026-09-12.conf) | ansible-01 | 2026-09-12 | [ansible-01 Blue migration](../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md) |
 | [`docker-blue-docker-compose-2026-09-02.yml`](docker-blue-docker-compose-2026-09-02.yml) | docker-blue | 2026-09-02 | [SSH Manager gateway process exhaustion](../Platforms/Docker%20MCP%20Gateway/Documentation/Change%20Records/SSH%20Manager%20Gateway%20Process%20Exhaustion%20-%202026-09-02.md) |
+| [`docker-blue-executor-v2-docker-compose-2026-11-02.yml`](docker-blue-executor-v2-docker-compose-2026-11-02.yml) | docker-blue | 2026-11-02 | [Executor app page domain](../Platforms/Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md) |
 | [`docker-blue-meshcentral-config-pre-proxy-2026-09-13.json`](docker-blue-meshcentral-config-pre-proxy-2026-09-13.json) | docker-blue | 2026-09-13 | [MeshCentral internal HTTPS](../Platforms/MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md) |
 | [`docker-main-immich-docker-compose-2026-09-05.yml`](docker-main-immich-docker-compose-2026-09-05.yml) | docker-main | 2026-09-05 | [Immich NVENC transcoding](../Platforms/Immich/Documentation/Change%20Records/GTX%201080%20Ti%20NVENC%20Transcoding%20-%202026-09-05.md) |
 | [`docker-main-ossec.conf-2026-09-06`](docker-main-ossec.conf-2026-09-06) | docker-main | 2026-09-06 | [docker-main agent re-enrollment](../Platforms/Wazuh/Documentation/Change%20Records/docker-main%20Agent%20Re-enrollment%20-%202026-09-06.md) |

@@ -1,7 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-02
+
+On 2026-11-02 I added host 38, `*.executor.apps.alphasecunited.com`, for Executor 2's app pages, with its own certificate 2. The active host count is 25: the 24 rows below plus NetBird (ID 1). The database holds 38 rows, 13 of them soft-deleted. UniFi local DNS has no wildcard, so each app page has its own A record: [app page domain](../../Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
 On 2026-11-01 I deleted Homarr's host 34, `dashboard.alphasecunited.com`, when I [retired Homarr](../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md). The active host count is 24: the 23 rows below plus NetBird (ID 1). The database holds 37 rows, 13 of them soft-deleted. UniFi holds 24 local A records pointing at `192.168.85.2`, one per live host.
 
@@ -9,7 +11,7 @@ On 2026-10-31 I replaced Executor 1's host 27, `mcp.alphasecunited.com`, with ho
 
 Soft-deleted IDs: 11 termix, 12 dashboard, 14 portainer, 16 syncthing, 21 kasm, 23 kasm, 24 games, 25 wings, 27 mcp, 30 dockge, 33 weebarr, 34 dashboard (Homarr), 35 wud.
 
-Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
+Every row except host 38 uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and WebSocket support. HSTS remains disabled. NPM's `Public` access-list label means no NPM access list is assigned; it doesn't mean the name exists in public DNS or has WAN ingress.
 
 | ID | Service name | Upstream | Scheme | Notes |
 |---|---|---|---|---|
@@ -33,6 +35,7 @@ Every row uses certificate ID 1, Force SSL, HTTP/2, Block Common Exploits, and W
 | 22 | `ts3-manager.alphasecunited.com` | `192.168.80.118:9000` | HTTP | TS3 Manager keeps its existing application path; TeamSpeak voice, ServerQuery, file-transfer, and Playit ports remain outside NPM. |
 | 26 | `aiproxy.alphasecunited.com` | `192.168.40.35:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. I repointed the upstream from `ubuntu-dev` to `docker-main` on 2026-08-19; five provider auth files and clients are loaded. |
 | 37 | `executor.alphasecunited.com` | `192.168.40.39:4400` | HTTP | Executor 2 on `docker-blue`, added 2026-10-31 with the settings and advanced configuration of host 27, which it replaced. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The owner account is claimed. |
+| 38 | `*.executor.apps.alphasecunited.com` | `192.168.40.39:4400` | HTTP | Executor 2 app pages, added 2026-11-02 with host 37's settings and advanced configuration. Uses certificate 2, `*.executor.apps.alphasecunited.com`, Let's Encrypt DNS-01 through Cloudflare, expiring 2027-01-31. |
 | 28 | `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |
 | 29 | `mesh.alphasecunited.com` | `192.168.40.39:443` | HTTPS | MeshCentral on `docker-blue`, proxy host 29, added 2026-09-13. Forwards over HTTPS so the hop to the backend stays encrypted. WebSocket upgrade is on, which both the browser and the agents need. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. |
 | 32 | `appportal.alphasecunited.com` | `192.168.40.35:3004` | HTTP | App Portal on `docker-main`, proxy host 32, added 2026-09-19. Serves the desktop client's API, so it carries a device bearer token and exists to keep that token off the wire in the clear. WebSocket upgrade is off; the client polls. |

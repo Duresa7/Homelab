@@ -1,0 +1,49 @@
+name: executor-v2
+
+# Executor 2 self-host: one container with the API, the MCP endpoint, sign-in, the app
+# runtime (workerd) and the dashboard over an embedded PGlite database. Pinned to one beta
+# build by digest; the `beta` tag moves daily.
+
+services:
+  executor:
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.34@sha256:1af389b0a9ffca783c175a514df1667d3e911bd01df63262c9908d90872900e3
+    container_name: executor-v2
+    restart: unless-stopped
+    init: true
+    # The image's `executor` user. Starting as that user skips the entrypoint's root branch,
+    # which chowns the data directories and drops privileges, so no capability is needed.
+    # Both directories are created on the host owned by 1000:1000, mode 0700.
+    user: "1000:1000"
+    environment:
+      BETTER_AUTH_URL: https://executor.alphasecunited.com
+      # App code, which includes every imported MCP server, reaches only public addresses
+      # unless this is set. The UniFi gateway, ssh-mcp, Wazuh MCP and Sure are all internal.
+      EXECUTOR_APPS_ALLOW_PRIVATE_FETCH: "true"
+      # Executor's own requests (the add-by-URL probe and OAuth) refuse private addresses
+      # except for these exact origins. Sure resolves to Nginx Proxy Manager internally.
+      EXECUTOR_URL_ALLOW_HTTP_ORIGINS: '["https://sure.alphasecunited.com"]'
+      # Self-host has no default feed, so without this Add app lists only the built-in
+      # Executor app. The desktop and CLI builds default to this same URL.
+      EXECUTOR_CATALOG_URL: https://catalog.executor.sh/index.json
+      EXECUTOR_DISABLE_ANALYTICS: "1"
+      DO_NOT_TRACK: "1"
+      EXECUTOR_APP_WORKERS: "16"
+    ports:
+      - 192.168.40.39:4400:4400
+    volumes:
+      - ./data:/app/data
+      - ./motel-data:/app/motel-data
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=256m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 512
+    mem_limit: 1536m
+    stop_grace_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"

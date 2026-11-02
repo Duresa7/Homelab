@@ -1,15 +1,17 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-02
 
-The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 24 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
+The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 25 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
 **Last verified against the controller:** 2026-11-01. After I deleted Homarr's record, `unifi_list_dns_records` returned 30 static records, and the 24 NPM names match the 24 live NPM proxy hosts one for one.
 
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 
 ## Recent changes
+
+- 2026-11-02: I added `book-digest.executor.apps.alphasecunited.com`, record `6ae87f44e2482aecb9604963`, the first Executor 2 app page. It resolves to `192.168.85.2`, where NPM wildcard host 38 forwards it to Executor. [App page domain](../../../../Platforms/Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
 - 2026-11-01: I deleted `dashboard.alphasecunited.com`, record `6ab90b1425574794b9328224`, when I retired Homarr. Neither the gateway at `192.168.1.1` nor `1.1.1.1` answers for the name. [Retirement](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
 
@@ -49,6 +51,7 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | `ts3-manager.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a68b26f052792cd2140bfdc` | TS3 Manager through NPM |
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
 | `executor.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ae628c8e2482aecb95a2c9b` | Executor 2 on `docker-blue` through NPM proxy host 37 |
+| `book-digest.executor.apps.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ae87f44e2482aecb9604963` | Executor 2 app page through NPM wildcard proxy host 38 |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
 | `dockhand.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa9de4e25574794b908a860` | Dockhand on `docker-main` through NPM proxy host 31 |
 | `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
@@ -64,6 +67,7 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 
 | Date | Change | Record |
 | --- | --- | --- |
+| 2026-11-02 | `book-digest.executor.apps` added | [App page domain](../../../../Platforms/Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md) |
 | 2026-10-31 | `executor` added; `mcp` removed | [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md) |
 | 2026-09-21 | `weebarr` added; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md) |
 | 2026-09-15 | Dockge record replaced by `dockhand` | [Dockge Replacement](../../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md) |

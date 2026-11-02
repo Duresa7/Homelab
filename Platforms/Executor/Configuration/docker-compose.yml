@@ -25,6 +25,9 @@ services:
       # Self-host has no default feed, so without this Add app lists only the built-in
       # Executor app. The desktop and CLI builds default to this same URL.
       EXECUTOR_CATALOG_URL: https://catalog.executor.sh/index.json
+      # App pages live at https://<app-slug>.<org-slug>.apps.alphasecunited.com; NPM proxy
+      # host 38 (*.executor.apps.alphasecunited.com) forwards them to this listener.
+      EXECUTOR_APP_UI_BASE_URL: https://apps.alphasecunited.com
       EXECUTOR_DISABLE_ANALYTICS: "1"
       DO_NOT_TRACK: "1"
       EXECUTOR_APP_WORKERS: "16"
