@@ -7,6 +7,7 @@ Galaxy has six LXCs, all running, on blue-server, grey-server and red-server. I 
 
 ## Recent changes
 
+- 2026-10-31: I pruned unused Docker images on docker-main, docker-blue, docker-network, monitor-01 and media-01. monitor-01's rootfs went from 75% to 60% of 20 GiB and docker-main's from 68% to 46%. No container changed. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
 - 2026-09-24: I found monitor-01's rootfs at 20G and the HA resources for CT 107 and CT 108 removed. [monitor-01 Rootfs at 20 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/monitor-01%20Rootfs%20at%2020%20GiB%20-%202026-09-24.md), [CT 107 and CT 108 HA Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md).
 - 2026-09-12: I moved CT 100 `ansible-01` to Blue's `local-lvm`. [Migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ansible-01%20Blue%20Migration%20-%202026-09-12.md).
 - 2026-09-12: I retired `game-01` and deleted CT 123 with its 80 GiB volume on `green-server`. [Archived guest record](../../../Archive/Operations/Inventory/Galaxy/Game%2001%20Archived%20Guest%20-%202026-09-12.md).

@@ -7,6 +7,8 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 
 ## Recent changes
 
+- 2026-10-31: I pruned unused Docker images on `alpha-prod-01` (2.3 GB reclaimed) and `security-01` (430.7 MB). No container changed. I left `ubuntu-dev`'s local build images in place, and `app-01` stayed stopped. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
+
 - 2026-10-30: I created VM 820 `ci-k3s-01` on Green, the k3s node for my CI runners, on KUB-A VLAN 82. VM 103 `win11-dev` became a runner-only machine and moved from VLAN 40 to VLAN 82 at `192.168.82.11`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
