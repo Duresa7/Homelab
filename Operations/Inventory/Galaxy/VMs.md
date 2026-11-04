@@ -1,11 +1,13 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-04
 
 Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. I read the other guests' figures back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24, and VM 820's and VM 103's network on 2026-10-30. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-11-04: I reduced VM 200 `security-01` on Grey from 10 GiB with an 8 GiB balloon floor to a fixed 8 GiB, through one clean power cycle. Wazuh and its forwarder came back and 14 agents reconnected. [security-01 Memory Reduction](../../../Platforms/Wazuh/Documentation/Change%20Records/security-01%20Memory%20Reduction%20-%202026-11-04.md).
 
 - 2026-10-31: I pruned unused Docker images on `alpha-prod-01` (2.3 GB reclaimed) and `security-01` (430.7 MB). No container changed. I left `ubuntu-dev`'s local build images in place, and `app-01` stayed stopped. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
 
@@ -30,7 +32,7 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
-| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 10 GiB maximum / 8 GiB minimum | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
 | 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 302 | HQ-DC02 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
 | 303 | HQ-MGT01 | grey-server | running | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
@@ -289,8 +291,8 @@ I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. [Migration
 | --- | --- |
 | vCPU | 4 |
 | CPU type | host |
-| Memory | 10 GiB maximum; 8 GiB minimum |
-| Ballooning | on (`balloon: 8192`) |
+| Memory | 8 GiB |
+| Ballooning | default, floor equal to maximum (no `balloon` key) |
 | BIOS | ovmf |
 | Machine | q35 |
 | SCSI controller | virtio-scsi-single |
