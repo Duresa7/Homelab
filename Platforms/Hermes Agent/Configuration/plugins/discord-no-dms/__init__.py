@@ -1,7 +1,13 @@
-"""Drop all Discord DMs at gateway ingress.
+"""Keep Discord DMs away from Horus.
 
-Hermes's Discord adapter always admits DMs from allowlisted users and ignores
-dm_policy, so this pre_gateway_dispatch hook fails closed: a Discord event
+Hermes's Discord adapter turns the DM intents on and always admits DMs from
+allowlisted users, ignoring dm_policy. Two layers stop that:
+
+1. At registration the plugin wraps discord.py's commands.Bot.__init__ so
+   the dm_messages, dm_reactions and dm_typing intents are cleared before
+   the bot connects. Discord then never delivers a DM event, so the adapter
+   neither reacts to a DM nor dispatches it.
+2. A pre_gateway_dispatch hook fails closed for anything that still arrives: a Discord event
 passes only when its chat type is a server channel or thread ("group",
 "thread" or "channel"). Everything else, "dm" included, is skipped. Server
 messages fall through to normal handling, where DISCORD_ALLOWED_USERS and
@@ -32,5 +38,31 @@ def drop_discord_dms(event, **kwargs):
     return {"action": "skip", "reason": "discord-dms-disabled"}
 
 
+DM_INTENTS = ("dm_messages", "dm_reactions", "dm_typing")
+
+
+def _strip_dm_intents():
+    try:
+        from discord.ext import commands
+    except Exception as exc:  # discord.py missing: the hook still drops DMs
+        log.warning("DM intents left on, discord.py not importable: %s", exc)
+        return
+    if getattr(commands.Bot.__init__, "_no_dms_wrapped", False):
+        return
+    original = commands.Bot.__init__
+
+    def __init__(self, *args, **kwargs):
+        intents = kwargs.get("intents")
+        if intents is not None:
+            for name in DM_INTENTS:
+                setattr(intents, name, False)
+            log.info("cleared Discord DM intents (%s)", ", ".join(DM_INTENTS))
+        original(self, *args, **kwargs)
+
+    __init__._no_dms_wrapped = True
+    commands.Bot.__init__ = __init__
+
+
 def register(ctx):
+    _strip_dm_intents()
     ctx.register_hook("pre_gateway_dispatch", drop_discord_dms)
