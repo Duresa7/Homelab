@@ -138,6 +138,8 @@ At about 11:12 PM:
 
 Two exchanges in `#bots` threads after the restart, at 11:14 PM and 11:31 PM, each logged one `Sending response` line, 364 and 1,003 characters. The second, a request from `MB-user` to change a Minecraft server setting, took 87.9 seconds and 12 API calls, and its `mcp__executor__execute` calls appear in `tool_calls.log` at 23:30 rather than in the thread.
 
+On 2026-11-05 at 11:07 AM I changed `discord-no-dms` to fail closed. It had skipped only an event whose `chat_type` was exactly `dm`, so any other value would have fallen through to authorization, which admits allowlisted DMs. The adapter sets `chat_type` as a plain string, `group` or `thread` for server messages and `dm` for DMs, so the old check matched every DM it was given; the change guards against a value it did not expect. The hook now lowercases the platform and chat type, unwrapping an enum's `.value`, and passes a Discord event only when its chat type is `group`, `thread` or `channel`. A local test with stub events skipped `dm`, `DM`, a missing chat type and an unknown one, and passed `group`, `thread`, `channel` and a Telegram `dm`. The file on the host matched the tracked copy by SHA-256, `hermes plugins list` showed the plugin `enabled`, and after the restart the gateway connected as `Horus AS#9152`.
+
 Tracked copies of every file I deployed on the host are under [Configuration](../../Configuration/).
 
 ## Left open
