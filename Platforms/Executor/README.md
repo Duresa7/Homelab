@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-11-02
+**Last updated:** 2026-11-05
 
 I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one endpoint in front of SSH, UniFi, Wazuh, Cloudflare and the other integrations. On 2026-10-31 I moved from Executor 1.6.10 to the Executor 2 beta, which is a different server with its own database, and retired Executor 1: [Executor 2 migration](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
@@ -9,8 +9,8 @@ I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one end
 
 | Item | Value |
 |---|---|
-| Version | 2.0.0-beta.34, apps framework `0.0.1-beta.117` |
-| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.34`, pinned by digest `sha256:1af389b0a9ffca783c175a514df1667d3e911bd01df63262c9908d90872900e3`; the `beta` tag moves daily |
+| Version | 2.0.0-beta.37 since 2026-11-05, apps framework `0.0.1-beta.120`; the four bearer apps still run on `0.0.1-beta.117` |
+| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.37`, pinned by digest `sha256:23b1f96c4098b48ec8bdf71da76bcd6c656ea7c2d390d96287d82442c39d7230`; the `beta` tag moves daily |
 | Host | `docker-blue` (CT 108, `192.168.40.39`) |
 | URL | `https://executor.alphasecunited.com`, through Nginx Proxy Manager proxy host 37; MCP at `/mcp` |
 | Upstream listener | `192.168.40.39:4400` |
@@ -59,6 +59,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 - [Official app catalog - 2026-10-31](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md)
 - [App page domain - 2026-11-02](Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md)
 - [Safari 17 URL.parse polyfill - 2026-11-02](Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md)
+- [Update to 2.0.0-beta.37 - 2026-11-05](Documentation/Change%20Records/Update%20to%202.0.0-beta.37%20-%202026-11-05.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)
