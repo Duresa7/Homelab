@@ -1,0 +1,6 @@
+name: horus
+description: Horus branding for AlphaSec United's agent
+branding:
+  agent_name: "Horus"
+  welcome: "Horus is watching. Type a message to begin."
+  response_label: " 𓂀 Horus "

@@ -1,0 +1,3 @@
+name: discord-no-dms
+version: "1.0"
+description: Drops every Discord direct message before authorization or dispatch, so Hermes only answers in server channels.

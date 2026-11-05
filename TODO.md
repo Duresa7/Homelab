@@ -1,11 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-04
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Clean template 101 `debian13-template`.** It carries the unrestricted Ansible controller key in `dkadi`'s `authorized_keys`, an attached netinst ISO and pending config changes that a clone discards. [Template findings](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md#2-what-the-template-left-behind).
 
 - [x] **Sign in the agent clients on ubuntu-dev to Executor 2.** Both Claude Code profiles, all three Codex profiles, Copilot CLI and Antigravity signed in on 2026-10-31, and I connected my other two PCs myself. [Clients](Platforms/Executor/README.md#clients).
 

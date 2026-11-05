@@ -1,15 +1,17 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-04
 
-Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 96 user-defined policies, 87 allows and nine blocks, after I deleted `Allow Homarr to Grey Proxmox API` on 2026-11-01. The table below lists all 96. A full list on 2026-10-30, after adding the eight KUB-A policies, returned the same names plus the one I deleted. Generated zone defaults and response companions are not listed.
+Ahsoka Gateway runs UniFi's zone-based firewall. The controller held 97 user-defined policies, 88 allows and nine blocks, after the 2026-11-03 changes for the CI runners; a full list after the last of them returned 97. On 2026-11-04 I added `Allow hermes-01 to NPM HTTPS`, which makes 98 by that count; I did not re-list the controller afterwards, and the table below adds the new row. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
 - 2026-09-27: I removed WUD TCP 9102 from the exporter port group and both inline NPM/monitoring policies after retiring all six instances. [Retirement](../../../../Platforms/Prometheus/Documentation/Change%20Records/WUD%20Retirement%20-%202026-09-27.md).
 
 ## Recent changes
+
+- 2026-11-04: I created `Allow hermes-01 to NPM HTTPS` (`6aebf996e2482aecb9697567`), TCP 443 from `192.168.80.22` in `AlphaSec-Servers` to NPM at `192.168.85.2` in `AlphaSec-Access`, logging on, modelled on the Hawser rule. Before it, HTTPS from `hermes-01` to `executor.alphasecunited.com` timed out; after it, `/mcp` returned `401` with valid TLS. [Install and Discord Gateway](../../../../Platforms/Hermes%20Agent/Documentation/Change%20Records/Install%20and%20Discord%20Gateway%20-%202026-11-04.md#6-executor-mcp).
 
 - 2026-11-01: I deleted `Allow Homarr to Grey Proxmox API` (`6ab919b425574794b932ace9`) and removed TCP 7575 from `Allow NPM to docker-main web UIs` when I retired Homarr. Readback of the shared policy showed `2283,3000,3002,3003,3004,3005,6060` with its source object, destination, zones and index 10002 unchanged. [Retirement](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
 
@@ -92,6 +94,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow NPM to docker-main web UIs` | Yes | ALLOW | 10002 | TCP | `AlphaSec-Access` / `AG-Reverse-Proxy` | Internal / 192.168.40.35 / 2283, 3000, 3002, 3003, 3004, 3005, 6060 |
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
+| `Allow hermes-01 to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.22 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4400 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |

@@ -7,6 +7,8 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 
 ## Recent changes
 
+- 2026-11-04: I created VM 112 `hermes-01` on Grey, a Debian 13 clone of template 101 on SERVERS-A VLAN 80 at `192.168.80.22`, with the Linux host baseline and no workload yet. It will run Hermes Agent. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
+
 - 2026-11-04: I reduced VM 200 `security-01` on Grey from 10 GiB with an 8 GiB balloon floor to a fixed 8 GiB, through one clean power cycle. Wazuh and its forwarder came back and 14 agents reconnected. [security-01 Memory Reduction](../../../Platforms/Wazuh/Documentation/Change%20Records/security-01%20Memory%20Reduction%20-%202026-11-04.md).
 
 - 2026-10-31: I pruned unused Docker images on `alpha-prod-01` (2.3 GB reclaimed) and `security-01` (430.7 MB). No container changed. I left `ubuntu-dev`'s local build images in place, and `app-01` stayed stopped. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
@@ -30,6 +32,7 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 | 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.82.11/24 | 192.168.82.1 | 82 | disabled |
 | 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 230G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
+| 112 | hermes-01 | grey-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
@@ -553,6 +556,12 @@ On 2026-10-11 I increased both memory settings to 8192 MiB through a clean shutd
 I built this guest on 2026-10-30 as the single k3s server node for my self-hosted GitHub Actions runners. Ubuntu Server 26.04.1 LTS minimized from autoinstall, k3s v1.36.5+k3s1 and the ARC controller chart 0.15.1. It carries the Linux host baseline with `sudo.ws` selected in place of Ubuntu's default `sudo-rs`. ssh-mcp reaches it as profile `ci_k3s_01`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 
 q35, OVMF with a 4 MiB EFI disk and no pre-enrolled keys, `cpu: host`, 4 cores, 6144 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-820-disk-0` (4 MiB EFI) and `vm-820-disk-1` (120 GiB, `discard`, `iothread`, `ssd`, `cache=writeback`). `virtio` on `vmbr0`, VLAN 82, `firewall=1`. QEMU agent on, `onboot=1`, no installation media attached. 6 GiB is the ceiling while Green runs on one 8 GB memory module.
+
+### VM 112 - hermes-01
+
+I built this guest on 2026-11-04 to run [Hermes Agent](../../../Platforms/Hermes%20Agent/README.md), installed the same evening as `dkadi` and reachable in Discord as Horus AS. It is a full clone of template 101 with a new machine ID and host keys, Debian 13 on kernel 6.12.115, and the Linux host baseline. There is no desktop environment, no Docker, no monitoring exporter and no Wazuh agent. ssh-mcp reaches it as profile `hermes_01`. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
+
+q35, OVMF with a 4 MiB EFI disk, `cpu: host`, 2 cores, 4096 MiB with ballooning off, `virtio-scsi-single`. Disks: `ssd-lvm1:vm-112-disk-0` (4 MiB EFI) and `vm-112-disk-1` (60 GiB, `discard`, `iothread`, `ssd`). `virtio` on `vmbr0`, VLAN 80, `firewall=1`. Static `192.168.80.22/24` in `/etc/network/interfaces`, gateway and resolver `192.168.80.1`. QEMU agent on, `onboot=1`, no installation media attached.
 
 ## Template Details
 

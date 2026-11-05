@@ -90,6 +90,17 @@ keyRef = "/keys/id_ed25519"
 role = "admin"
 group = "homelab"
 
+# Debian 13 Hermes Agent host (VM 112 on grey-server), SERVERS-A VLAN 80
+[[profiles]]
+name = "hermes_01"
+host = "192.168.80.22"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
 # Debian 13 Docker host (CT 108 on blue-server)
 [[profiles]]
 name = "docker_blue"

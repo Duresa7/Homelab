@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-04
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -23,6 +23,7 @@ This directory holds my deployed applications and services, one folder per platf
 | [Discord Alert Bot](Discord%20Alert%20Bot/README.md) | monitor-01 | Posts Grafana and Splunk alerts to `#bots` |
 | [Docker MCP Gateway](Docker%20MCP%20Gateway/README.md) | docker-blue | One v0.43.3 gateway in front of UniFi Network MCP; the SSH Manager MCP gateway was removed on 2026-10-31 |
 | [Dockhand](Dockhand/README.md) | docker-main | Dockhand 1.0.51; manages the Docker hosts through six Hawser agents |
+| [Hermes Agent](Hermes%20Agent/README.md) | hermes-01 | Hermes Agent v0.22.7, a personal assistant I message in Discord as the Horus AS bot |
 | [Executor](Executor/README.md) | docker-blue | Executor 2.0.0-beta.34 at `executor.alphasecunited.com`, one MCP endpoint in front of ssh-mcp, UniFi, Wazuh, Cloudflare and other integrations; replaced Executor 1.6.10 on 2026-10-31 |
 | [Galaxy PXE](Galaxy%20PXE/README.md) | ansible-01 | Bare-metal provisioning for Galaxy Proxmox nodes |
 | [Immich](Immich/README.md) | docker-main | Immich 3.2.4, photo library with NVENC transcoding on the GTX 1080 Ti |

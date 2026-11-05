@@ -1,11 +1,13 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-11-04
 
-This index points to the living records that hold Galaxy's current state. On 2026-10-30 the cluster held five nodes, 13 VMs, six LXCs and three templates; 15 guests were running, `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped, and `green-server` held VM 820 `ci-k3s-01`. No guest is an HA resource and there is no shared storage.
+This index points to the living records that hold Galaxy's current state. On 2026-11-04 the cluster held five nodes, 17 VMs, six LXCs and four templates; 17 guests were running and `kali-pen`, `app-01`, `win11-dev`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. `green-server` holds VM 820 `ci-k3s-01`, `grey-server` VM 821 `ci-k3s-02` and VM 112 `hermes-01`, and `red-server` VM 822 `kube-management`. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-11-04: I added VM 112 `hermes-01` on Grey, the Debian 13 host Hermes Agent will run on, on SERVERS-A. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
 
 - 2026-10-15: I turned TSO, GSO and GRO off on `nic0` on Purple, Green and Red, then rebooted all three to confirm the setting survives a boot. Red now runs `7.0.14-22-pve`; `media-01` was down for about a minute and a half and came back with working DNS. Purple's `edge-01` and `alpha-prod-01` were down for about two minutes; Minecraft hit its DNS boot race again and needed a restart, and the TeamSpeak boot recovery restored both public paths. `app-01` stays off. [Change record and reboot checks](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md#after-reboot-verification).
 
