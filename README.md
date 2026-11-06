@@ -20,7 +20,7 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 
 | Area | Current state | Checked |
 |---|---|---|
-| Cluster | Five Proxmox VE 9.2.21 nodes (grey, purple, blue, red, green), five of five votes, no shared storage, no HA resources | 2026-10-05 |
+| Cluster | Five Proxmox VE 9.2.26 nodes (grey, purple, blue, red, green) on kernel 7.0.14-28-pve, five of five votes, no shared storage, no HA resources | 2026-11-06 |
 | Guests | 19 (13 VMs, 6 LXCs) plus 3 templates; 15 running; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` stopped | 2026-10-30 |
 | Network | UniFi Network 10.6.106 on the Ahsoka gateway, three switches, one access point; 23 networks, 16 routed LANs in 12 zones | 2026-09-24 |
 | Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |

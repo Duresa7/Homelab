@@ -1,13 +1,15 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-06
 
 This inventory maps the workloads on Galaxy's 19 guests: 13 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md): docker-main and security-01 serve upstream node_exporter 1.9.0 with their distro units masked; the unused NUT monitors on Red and Grey are masked, and Grey still serves UPS-02 telemetry.
 
 ## Recent changes
+
+- 2026-11-06: I updated OS packages on all twelve running Linux guests. Docker Engine is 29.9.3 and containerd 2.4.2 on every Docker host; the Wazuh central packages are 4.14.10-1. `security-01`, `splunk-siem` and `ubuntu-dev` need reboots for new kernels. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-11-06.md).
 
 - 2026-11-04: New VM 112 `hermes-01` runs Hermes Agent v0.22.7 as `dkadi`, reachable in Discord as the Horus AS bot. [Install and Discord Gateway](../../../Platforms/Hermes%20Agent/Documentation/Change%20Records/Install%20and%20Discord%20Gateway%20-%202026-11-04.md).
 
@@ -79,7 +81,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3<br>UniFi Network MCP<br>Executor 2.0.0-beta.34<br>ssh-mcp 2.22.0<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
-| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.8<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
+| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.10<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
 | alpha-prod-01 | VM 401 | purple-server | Voice and game services | [Vanilla Minecraft Java Edition 26.3](../../../Platforms/Minecraft/README.md), LAN and public Playit verified<br>Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunk Enterprise 10.4.0<br>Enterprise Security 8.5.1<br>SC4S<br>No Wazuh agent |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin 12.2.0<br>Seerr 3.5.0<br>Sonarr 4.0.20 / Radarr 6.4.4 / Prowlarr 2.6.5<br>FlareSolverr 3.5.2<br>qBittorrent 5.2.4 through Gluetun and Proton VPN<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
@@ -176,7 +178,7 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 | RustDesk | `hbbs` and `hbbr` 1.1.16 from `rustdesk/rustdesk-server:latest`; [platform record](../../../Platforms/RustDesk/README.md) |
 | MeshCentral | 1.2.6 (image label `1.2.6-mongodb`) from `ghcr.io/ylianst/meshcentral:latest`; HTTPS on `192.168.40.39:443`, published as `mesh.alphasecunited.com` through NPM host 29. [Platform record](../../../Platforms/MeshCentral/README.md) |
 | cAdvisor, Hawser | `ghcr.io/google/cadvisor:latest` 0.60.6, Hawser 0.2.50 |
-| Docker runtime | Docker Engine 29.8.2 and containerd 2.3.6 after the 2026-10-02 package updates; runc 1.5.1 was last recorded on 2026-09-06 |
+| Docker runtime | Docker Engine 29.9.3 and containerd 2.4.2 after the 2026-11-06 fleet update; runc 1.5.1 was last recorded on 2026-09-06 |
 | Wazuh agent | 4.14.8-1 since 2026-10-05, held; manager ID `007` as `docker-blue` |
 
 ## docker-network

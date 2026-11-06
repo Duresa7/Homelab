@@ -1,11 +1,13 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-06
 
 This index points to the living records that hold Galaxy's current state. On 2026-11-04 the cluster held five nodes, 17 VMs, six LXCs and four templates; 17 guests were running and `kali-pen`, `app-01`, `win11-dev`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. `green-server` holds VM 820 `ci-k3s-01`, `grey-server` VM 821 `ci-k3s-02` and VM 112 `hermes-01`, and `red-server` VM 822 `kube-management`. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
+
+- 2026-11-06: I upgraded all five nodes to PVE 9.2.26 and rebooted each onto kernel `7.0.14-28-pve`, Grey last. Every guest came back in its previous power state. `docker-main` needed the GTX 1080 Ti's DKMS driver built for the new kernel before it would start. [PVE 9.2.26 node reboots](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/PVE%209.2.26%20Update%20and%20Node%20Reboots%20-%202026-11-06.md).
 
 - 2026-11-04: I added VM 112 `hermes-01` on Grey, the Debian 13 host Hermes Agent will run on, on SERVERS-A. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
 

@@ -1,7 +1,7 @@
 # Ollama Operations Runbook
 
 **Created:** 2026-09-04  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-11-06
 
 ## Routine Check
 
@@ -102,6 +102,8 @@ dkms status nvidia/580.159.03
 modinfo -F version nvidia
 systemctl is-enabled nvidia-lxc-devices.service
 ```
+
+Grey's kernel packages don't pull in their headers, so DKMS doesn't build the driver for a new kernel on its own. On 2026-11-06, `7.0.14-28-pve` booted without the module and `docker-main` failed to start. If `dkms status` doesn't list the target kernel, I install `proxmox-headers-<kernel>` and run `dkms install nvidia/580.159.03 -k <kernel>` before rebooting. [PVE 9.2.26 node reboots](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/PVE%209.2.26%20Update%20and%20Node%20Reboots%20-%202026-11-06.md#docker-main-and-the-gpu-driver).
 
 Inside `docker-main`, NVIDIA user space must match the loaded host module. I do not install DKMS or a kernel module in the LXC.
 
