@@ -9,7 +9,9 @@ whether each key is present.
 """
 
 import asyncio
+import importlib
 import importlib.util
+import inspect
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -48,6 +50,13 @@ if len(sys.argv) > 2:
     finally:
         reset_secret_scope(token)
         set_multiplex_active(False)
+    from gateway.platforms.base import BasePlatformAdapter
+    discord_adapter = importlib.import_module("plugins.platforms.discord.adapter").DiscordAdapter
+    intake = inspect.getsource(discord_adapter._handle_message)
+    check("self._enqueue_text_event(event)" in intake and "await self.handle_message(event)" in intake,
+          "live: every Discord message goes through _enqueue_text_event or handle_message")
+    check("_handle_message_while_active" in inspect.getsource(BasePlatformAdapter.handle_message),
+          "live: a message sent while Horus is answering also goes through handle_message")
 
 SECRETS = {"DISCORD_ALLOWED_USERS": ALLOWED, plugin.CODE_ENV: plugin.hash_code(TEST_CODE)}
 plugin._launch_secrets = lambda: SECRETS
@@ -93,12 +102,25 @@ def profile_for(src):
     return route.profile if route else "default (no route)"
 
 
+def event(src, text, message_id="m1", internal=False):
+    return SimpleNamespace(text=text, source=src, message_id=message_id, internal=internal)
+
+
+async def cleanups_done():
+    await asyncio.gather(*list(plugin._CLEANUPS))
+
+
 def dispatch(src, text, message_id="m1"):
     calls.clear()
-    return asyncio.run(plugin.on_dispatch(SimpleNamespace(text=text, source=src, message_id=message_id)))
+
+    async def run():
+        reason = plugin.screen(event(src, text, message_id))
+        await cleanups_done()
+        return reason
+    return asyncio.run(run())
 
 
-SKIP = {"action": "skip", "reason": "server-code"}
+SKIP = "server-code"
 
 check(profile_for(in_thread(OUTSIDER, "t1")) == "public", "before the code, an outsider in an #ai-bot thread gets public")
 check(profile_for(in_thread(ALLOWED, "t1")) == "public", "before the code, an allowlisted user gets public too")
@@ -131,7 +153,7 @@ check(dispatch(in_thread(OUTSIDER, "s1", channel=SECRET), TEST_CODE) == SKIP, "t
 check(calls == [("s1", "m1", plugin.WRONG_CHANNEL)], "#secret answers that the code only works in #ai-bot")
 check(profile_for(in_thread(OUTSIDER, "s1", channel=SECRET)) == "public", "#secret never unlocks")
 
-check(dispatch(in_thread(OUTSIDER, "t5"), "/restart") == {"action": "skip", "reason": "open-channel-commands-allowlisted"},
+check(dispatch(in_thread(OUTSIDER, "t5"), "/restart") == "open-channel-commands-allowlisted",
       "an outsider's typed command is dropped")
 check(dispatch(in_thread(ALLOWED, "t5"), "/restart") is None, "an allowlisted user's typed command passes")
 
@@ -151,6 +173,15 @@ SECRETS[plugin.CODE_ENV] = plugin.hash_code(TEST_CODE)
 
 
 class FakeAdapter:
+    def __init__(self):
+        self.batched, self.handled = [], []
+
+    async def handle_message(self, event):
+        self.handled.append(event.message_id)
+
+    def _enqueue_text_event(self, event):
+        self.batched.append(event.message_id)
+
     def _is_allowed_user(self, user_id, author=None, *, guild=None, is_dm=False, channel_ids=None):
         return False
 
@@ -174,6 +205,26 @@ check(adapter._derive_auto_thread_name(f"run {TEST_CODE}") == "Horus", "no threa
 check(adapter._is_allowed_user("x", guild=object(), channel_ids=[AI_BOT]), "the adapter admits senders in #ai-bot")
 check(not adapter._is_allowed_user("x", guild=object(), channel_ids=["999"]), "the adapter leaves other channels alone")
 
+
+async def adapter_intake():
+    calls.clear()
+    adapter._enqueue_text_event(event(in_thread(OUTSIDER, "b1"), "hello", "m-hello"))
+    adapter._enqueue_text_event(event(in_thread(OUTSIDER, "b1"), TEST_CODE, "m-code"))
+    unlocked_at_once = profile_for(in_thread(OUTSIDER, "b1")) == "default"
+    busy = event(in_thread(OTHER, "b2"), TEST_CODE, "m-busy")
+    await adapter.handle_message(busy)
+    await adapter.handle_message(event(in_thread(OTHER, "b2"), "hi", "m-hi"))
+    await adapter.handle_message(event(in_thread(OTHER, "b3"), TEST_CODE, "m-internal", internal=True))
+    await cleanups_done()
+    return unlocked_at_once, busy
+
+unlocked_at_once, busy = asyncio.run(adapter_intake())
+check(adapter.batched == ["m-hello"], "a typed code never joins a text batch, the text around it still does")
+check(unlocked_at_once, "the unlock holds before the batch is sent on, so a request right after the code gets default")
+check(("b1", "m-code", plugin.ACCEPTED) in calls, "the batched code message itself is the one deleted and answered")
+check(adapter.handled == ["m-hi", "m-internal"], "handle_message drops the code and passes other messages on")
+check(busy._gateway_accepted is False, "a dropped message is not marked accepted")
+check(("b2", "m-busy", plugin.ACCEPTED) in calls, "a code sent while Horus is answering is deleted and answered too")
 
 print(f"\n{len(failures)} failure(s)")
 sys.exit(1 if failures else 0)

@@ -11,11 +11,15 @@ opens the channels in CHANNELS to every sender:
   person in that thread for 15 minutes. A code typed in the channel itself
   unlocks all of that person's #ai-bot threads.
 
-The code never reaches the model. The pre_gateway_dispatch hook checks every
-message against HORUS_SERVER_CODE_HASH (an HMAC of the code, in ~/.hermes/.env),
-deletes a message that contains the code, answers it, and drops it before
-Hermes records or routes it. The chat-only profile has no tools that touch a
-server, so nothing a sender says to it can stand in for the code.
+The code never reaches the model. The Discord adapter checks every message
+against HORUS_SERVER_CODE_HASH (an HMAC of the code, in ~/.hermes/.env), deletes
+a message that contains the code, answers it, and drops it before Hermes batches,
+routes or records it. The chat-only profile has no tools that touch a server, so
+nothing a sender says to it can stand in for the code.
+
+The check cannot be a pre_gateway_dispatch hook. A multiplexing gateway routes a
+message first and runs that hook with the routed profile's plugins, and the
+chat-only profile has none, so a locked sender's code would never be checked.
 
 Routing lives in config.yaml (gateway.profile_routes). A channel route sends
 #ai-bot to `public`. Route UNLOCK_ROUTE sends #ai-bot to `default` for user_id
@@ -33,8 +37,13 @@ Patches, each failing closed:
 4. DiscordAdapter.send keeps lifecycle notices out of quiet channels.
 5. DiscordAdapter._auto_create_thread and _derive_auto_thread_name skip a
    message holding the code, so the code never becomes a thread title.
+6. DiscordAdapter._enqueue_text_event and handle_message drop what screen()
+   refuses. Every Discord message passes one of them before routing, including
+   one sent while Horus is still answering. Text batching merges a burst into its
+   first message, so typed text is screened before it joins a batch.
 """
 
+import asyncio
 import contextvars
 import hashlib
 import hmac
@@ -296,9 +305,27 @@ def _patch_adapter_class(cls):
     cls._is_allowed_user = _is_allowed_user
     cls.send = send
 
+    original_handle = cls.handle_message
+    original_enqueue = getattr(cls, "_enqueue_text_event", None)
+
+    async def handle_message(self, event):
+        if screen(event) is None:
+            return await original_handle(self, event)
+        event._gateway_accepted = False
+
+    cls.handle_message = handle_message
+    if original_enqueue is not None:
+        def _enqueue_text_event(self, event):
+            if screen(event) is None:
+                return original_enqueue(self, event)
+        cls._enqueue_text_event = _enqueue_text_event
+    else:
+        log.warning("server code: DiscordAdapter._enqueue_text_event not found, "
+                    "a code inside a burst of messages may stay visible")
+
     # The adapter auto-threads an @mention in the channel, naming the thread from the
-    # message, before pre_gateway_dispatch runs. A message holding the code gets no
-    # thread, and no thread is ever named after it.
+    # message, before it builds the event screen() sees. A message holding the code
+    # gets no thread, and no thread is ever named after it.
     original_auto_thread = getattr(cls, "_auto_create_thread", None)
     if original_auto_thread is not None:
         async def _auto_create_thread(self, message, *args, **kwargs):
@@ -458,9 +485,20 @@ async def _discord_cleanup(channel_id, message_id, reply):
         log.warning("server code: Discord call failed in %s: %s", channel_id, type(exc).__name__)
 
 
-async def on_dispatch(event, **kwargs):
+_CLEANUPS = set()
+
+
+def _clean_up_later(channel_id, message_id, reply):
+    task = asyncio.get_running_loop().create_task(_discord_cleanup(channel_id, message_id, reply))
+    _CLEANUPS.add(task)
+    task.add_done_callback(_CLEANUPS.discard)
+
+
+def screen(event):
+    """Why a Discord message must not reach the gateway, or None. A message holding the
+    code grants its unlock here and is deleted and answered in the background."""
     source = getattr(event, "source", None)
-    if not _server_source(source):
+    if getattr(event, "internal", False) or not _server_source(source):
         return None
     code = _server_code()
     text = str(getattr(event, "text", "") or "")
@@ -478,15 +516,15 @@ async def on_dispatch(event, **kwargs):
                          source.user_id, source.chat_id)
             message_id = getattr(event, "message_id", None) or getattr(
                 getattr(event, "raw_message", None), "id", None)
-            await _discord_cleanup(source.chat_id, message_id, reply)
-            return {"action": "skip", "reason": "server-code"}
+            _clean_up_later(source.chat_id, message_id, reply)
+            return "server-code"
     if (
         _channel_policy(source) is not None
         and not _allowlisted(source.user_id)
         and text.lstrip().startswith("/")
     ):
         log.info("dropped a command in open channel %s from user %s", source.chat_id, source.user_id)
-        return {"action": "skip", "reason": "open-channel-commands-allowlisted"}
+        return "open-channel-commands-allowlisted"
     return None
 
 
@@ -497,4 +535,3 @@ def register(ctx):
     _hook_bot_init()
     _patch_gateway_authz()
     _patch_profile_routes()
-    ctx.register_hook("pre_gateway_dispatch", on_dispatch)
