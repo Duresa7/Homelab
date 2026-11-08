@@ -4,7 +4,7 @@
 **Last updated:** 2026-11-07
 
 **Implementation date:** 2026-11-07, about 5:50 PM to 7:30 PM Eastern  
-**Status:** Deployed. Two live tests failed. The second fix went live at 7:21 PM, and the retest is still to do.  
+**Status:** Working. Two live tests failed. The retest after the second fix passed at 7:30 PM.  
 **Affected systems:** `hermes-01` (`~/.hermes/plugins/discord-open-channel/`, `~/.hermes/config.yaml`, `~/.hermes/.env`, `~/.hermes/profiles/public/SOUL.md`)
 
 Anyone who can see `#ai-bot` can now talk to Horus there. They get the chat-only `public` profile, which has no terminal, files, MCP or Discord fetch tool. Server work needs the server code. Typing it unlocks the full `default` profile for that person, in that thread, for 15 minutes. A code typed in the channel itself, with an @mention, unlocks all of that person's `#ai-bot` threads for 15 minutes. My account and `MB-user` need the code too.
@@ -100,10 +100,19 @@ The same steps as the first time:
 - Replaced the code with `[redacted]` in `profiles/public/logs/gateway.log` (2 lines) and `agent.log` (4 lines), and ran `VACUUM` on `profiles/public/state.db`. Afterwards: 0 free pages, `integrity_check` ok.
 - A search of `~/.hermes`, outside the Hermes source, tools and caches, found no file containing the code.
 
+## Retest passed
+
+At 7:30 PM, in a new thread:
+
+1. A question without the code went to the chat-only `public` profile (7:30:13).
+2. The code typed alone was deleted and answered. The plugin logged `server code accepted` at 7:30:23, with no warning from the delete or the reply.
+3. The Minecraft question that followed went to the full `default` profile (7:30:54). It loaded the `homelab-ops` skill and called Executor.
+
+Afterwards a search of `~/.hermes`, outside the Hermes source, tools and caches, found no file containing the code.
+
 ## Open
 
-- Retest in Discord: a message without the code gets the chat-only Horus; the code alone in a thread is deleted and answered; a server request then works; a second person in the same thread stays chat-only; after 15 minutes the thread is chat-only again.
+- Not yet tried in Discord: a second person in an unlocked thread staying chat-only, and the thread locking again after 15 minutes. The test script covers both.
 - Nothing limits guesses at the code, and anyone in `#ai-bot` can spend Anthropic credit.
 - After each `hermes update`, run the test script with the live home and check `agent.log` for the two plugin lines above. Its live checks fail if Hermes stops sending every Discord message through the two wrapped methods.
-- Delete `plugin-backups/discord-open-channel-2026-11-07-pre-adaptergate.tar` and the older plugin backups once the retest passes.
-- Delete the `.bak-2026-11-07-servercode` files once this has run for a while.
+- Delete `plugin-backups/discord-open-channel-2026-11-07-pre-adaptergate.tar`, the older plugin backups and the `.bak-2026-11-07-servercode` files once this has run for a while.
