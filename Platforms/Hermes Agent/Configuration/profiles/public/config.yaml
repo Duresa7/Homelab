@@ -1,0 +1,18 @@
+# ~/.hermes/profiles/public/config.yaml: the chat-only Horus that answers in #secret.
+model:
+  default: claude-sonnet-5-5
+  provider: anthropic
+platform_toolsets:
+  cli: [vision]
+  discord: [vision]
+memory:
+  memory_enabled: false
+  user_profile_enabled: false
+display:
+  skin: horus
+  platforms:
+    discord:
+      tool_progress: log
+      interim_assistant_messages: false
+      show_reasoning: false
+_config_version: 52
