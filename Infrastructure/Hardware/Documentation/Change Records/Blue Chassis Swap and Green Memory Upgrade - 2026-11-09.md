@@ -46,7 +46,7 @@ Green booted at 7:22:23 AM and rejoined at four votes. `dmidecode -t 17` and Pro
 
 Proxmox reports 15,830 MiB, 15.46 GiB, the same as Purple and Red. The new module is the same part as the one already in Green, so Green runs dual-channel again.
 
-A 12 GiB `memtester` pass started on Green at 8:28:52 AM, locked across both modules. The result is in [Memory test](#memory-test).
+A 12 GiB `memtester` pass across both modules passed every test. Details are in [Memory test](#memory-test).
 
 ## Step 4: Blue booted without a network
 
@@ -92,7 +92,7 @@ UniFi kept the `blue-server` client record, with its fixed IP `192.168.70.12`, o
 
 ## Memory test
 
-Pending. The `memtester 12G 1` run on Green started at 8:28:52 AM and writes to `/root/memtester-2026-11-09.log`.
+Passed. I ran `memtester 12G 1` on Green from 8:28:52 AM to 9:12:18 AM, with 12,288 MB `locked` across both modules and no guests on the node. All 18 tests read `ok`: Stuck Address, Random Value, Compare XOR, SUB, MUL, DIV, OR and AND, Sequential Increment, Solid Bits, Block Sequential, Checkerboard, Bit Spread, Bit Flip, Walking Ones, Walking Zeroes, 8-bit Writes and 16-bit Writes. The log held no `FAILURE` line, and memtester ended with `Done.` and exit code 0. The faulty SK Hynix had failed the same kind of locked test within six seconds. I deleted the log from Green afterwards.
 
 ## Result
 
