@@ -1,7 +1,7 @@
 # Galaxy Network Configuration
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-11-09
 
 This file is the reference for Galaxy's Proxmox bridge, VLAN interfaces, host routes and cluster-facing addresses. UniFi owns the matching switch-port, VLAN, zone and gateway rules; cross-system changes link both owners.
 
@@ -23,11 +23,15 @@ All five nodes admit VLAN IDs 2 through 4094 on the VLAN-aware bridge; step S-09
 
 ## nic0 Offloads on the M920q Nodes
 
-Since 2026-10-15, the `nic0` stanza on `purple-server`, `green-server` and `red-server` carries a `post-up` line that turns TSO, GSO and GRO off at every boot:
+Since 2026-10-15, the `nic0` stanza on `purple-server`, `green-server` and `red-server` carries a `post-up` line that turns TSO, GSO and GRO off at every boot. `blue-server` has carried it since 2026-11-09:
 
 ```text
 iface nic0 inet manual
 	post-up /sbin/ethtool -K nic0 tso off gso off gro off
 ```
 
-It is the community workaround for the I219-LM transmit hang in the [Purple NIC incident](../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). `blue-server` and `grey-server` don't have the line: Blue's driver already forces TSO off, and Grey uses Realtek NICs. Keep the line if a node's network configuration is rewritten. [Change record](../Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
+It is the community workaround for the I219-LM transmit hang in the [Purple NIC incident](../../../../Security/Incidents/Galaxy/Purple%20Server%20NIC%20Transmit%20Hang%20-%202026-10-14.md). `grey-server` doesn't have the line because it uses Realtek NICs. Blue went without it while it ran on an M910q, whose I219-LM (2) driver already forces TSO off. On 2026-11-09 Blue moved into an M920q with the same I219-LM (7) as the others, read TSO, GSO and GRO on, and got the line, applied live ([chassis swap](../../../Hardware/Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md#step-6-nic0-offloads-on-blue)). Keep the line if a node's network configuration is rewritten. [Change record](../Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
+
+## nic0 Is Pinned by MAC Address
+
+Every node names its onboard NIC `nic0` through `/usr/local/lib/systemd/network/50-pmx-nic0.link`, written by the Proxmox installer, which matches on `MACAddress=`. `vmbr0` uses `bridge-ports nic0`. A node's boot drive moved into another chassis, or a replaced motherboard or NIC, boots with the NIC under its default name and no physical bridge port, so it is unreachable until the link file carries the new MAC address. Every node's switch port must also use the UniFi `Proxmox-Trunk` profile, because the node addresses are on tagged VLANs 70 and 71. Blue hit both on 2026-11-09: [blue-server Unreachable After Chassis Swap](../Documentation/Troubleshooting/blue-server%20Unreachable%20After%20Chassis%20Swap%20-%202026-11-09.md).

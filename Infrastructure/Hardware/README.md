@@ -1,7 +1,7 @@
 # Physical Hardware
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-09
 
 Specifications and power for my physical equipment: five Galaxy nodes, two workstations, two UPS units and the drives. Guest and service inventories are under [Operations/Inventory](../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md).
 
@@ -18,6 +18,7 @@ Specifications and power for my physical equipment: five Galaxy nodes, two works
 
 | Date | Record |
 | --- | --- |
+| 2026-11-09 | [Blue chassis swap and Green memory upgrade](Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md): Blue onto a ThinkCentre M920q with an i5-8500T, the M910q kept for parts, Green back to 16 GB |
 | 2026-10-12 | [Andor-ParrotOS-PC SSH Lockdown](Documentation/Change%20Records/Andor-ParrotOS-PC%20SSH%20Lockdown%20-%202026-10-12.md): key-only SSH with the standard keys, root login off |
 | 2026-10-11 | [Andor-ParrotOS-PC NVIDIA driver installation](Documentation/Change%20Records/Andor-ParrotOS-PC%20NVIDIA%20Driver%20Installation%20-%202026-10-11.md): 615.71.09 open kernel modules from NVIDIA's Debian 13 repository |
 | 2026-10-11 | [Andor-ParrotOS-PC Admin Access](../Network/UniFi/Documentation/Change%20Records/Andor-ParrotOS-PC%20Admin%20Access%20-%202026-10-11.md): Jedi PC's SSH, UniFi and Proxmox access for the Parrot desktop |

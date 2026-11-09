@@ -1,0 +1,22 @@
+auto lo
+iface lo inet loopback
+iface nic0 inet manual
+iface nic1 inet manual
+auto vmbr0
+iface vmbr0 inet manual
+	bridge-ports nic0
+	bridge-stp off
+	bridge-fd 0
+	bridge-vlan-aware yes
+	bridge-vids 2-4094
+auto vmbr0.70
+iface vmbr0.70 inet static
+	address 192.168.70.12/24
+	gateway 192.168.70.1
+
+auto vmbr0.71
+iface vmbr0.71 inet static
+	address 192.168.71.12/24
+#Cluster-Net Corosync link1
+
+source /etc/network/interfaces.d/*

@@ -1,7 +1,7 @@
 # Galaxy Cluster Architecture
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-11-06  
+**Last updated:** 2026-11-09  
 
 Galaxy is my five-node Proxmox VE 9.2.26 cluster. Every node keeps its guests on its own disks: there is no shared storage and no guest is under HA. I checked everything on this page against the cluster on 2026-09-24.
 
@@ -13,9 +13,9 @@ Galaxy is my five-node Proxmox VE 9.2.26 cluster. Every node keeps its guests on
 | --- | --- | --- | --- | --- | --- |
 | grey-server | 192.168.70.10 | 192.168.71.10 | Ryzen 7 3700X, 8 cores / 16 threads, GTX 1080 Ti | 62.72 GiB | VMs 102, 103, 105, 109, 200, 301, 302, 303 and 310, CT 110, and templates 101, 300 and 9000 |
 | purple-server | 192.168.70.11 | 192.168.71.11 | i5-8500T, 6 cores | 15.46 GiB | VMs 116 `app-01`, 121 `edge-01`, 401 `alpha-prod-01` |
-| blue-server | 192.168.70.12 | 192.168.71.12 | i5-7500T, 4 cores | 5.68 GiB | CTs 100 `ansible-01`, 104 `monitor-01`, 107 `docker-network`, 108 `docker-blue` |
+| blue-server | 192.168.70.12 | 192.168.71.12 | i5-8500T, 6 cores | 5.63 GiB | CTs 100 `ansible-01`, 104 `monitor-01`, 107 `docker-network`, 108 `docker-blue` |
 | red-server | 192.168.70.13 | 192.168.71.13 | i5-8500T, 6 cores | 15.46 GiB | CT 842 `media-01` |
-| green-server | 192.168.70.14 | 192.168.71.14 | i5-8500T, 6 cores | 7.60 GiB, one module since 2026-10-28 | VM 820 `ci-k3s-01`, since 2026-10-30 |
+| green-server | 192.168.70.14 | 192.168.71.14 | i5-8500T, 6 cores | 15.46 GiB | VM 820 `ci-k3s-01`, since 2026-10-30 |
 
 Grey carries most of the load: 51.61 of its 62.72 GiB was in use on 2026-09-24. The full hardware record is [Nodes](../../../../Hardware/Nodes.md) and the guest records are in [Operations/Inventory/Galaxy](../../../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md).
 

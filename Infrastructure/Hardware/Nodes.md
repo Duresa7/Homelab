@@ -1,12 +1,13 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-09
 
-I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 106.92 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and Green runs on one 8 GB Micron module. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Green's memory, read on 2026-10-28.
+I run Galaxy as five nodes with 32 physical CPU cores, 40 hardware threads, 114.73 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and on 2026-11-09 I paired its Micron module with a second one. Blue moved into a ThinkCentre M920q on 2026-11-09, so four of the five nodes are M920q systems. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Blue's and Green's memory, read on 2026-11-09.
 
 ## Recent changes
 
+- 2026-11-09: Blue moved from its ThinkCentre M910q into a ThinkCentre M920q with an i5-8500T, taking its NVMe, HDD and memory along; the M910q is kept for spare parts. Green took a second Micron 8 GB module and reports 15.46 GiB. Blue's `nic0` pin had to be pointed at the new NIC before it rejoined, and Blue now carries the offload `post-up` line. [Chassis swap and memory upgrade](Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md), [troubleshooting](../Compute/Galaxy/Documentation/Troubleshooting/blue-server%20Unreachable%20After%20Chassis%20Swap%20-%202026-11-09.md).
 - 2026-11-04: Grey carries VM 112 `hermes-01` (2 vCPU, a fixed 4 GiB, 60 GiB on `ssd-lvm1`). Afterwards Grey had 45.67 GiB of 62.72 GiB in use with 17.0 GiB available, and `ssd-lvm1` was 14.15% used. [hermes-01 Provisioning](../Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
 - 2026-10-30: Green carries its first guest since its memory repair, VM 820 `ci-k3s-01` at 6 GiB, leaving about 2.3 GiB available on the host. [Phase 1 Build](../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
 - 2026-10-15: I turned TSO, GSO and GRO off on the onboard I219-LM `nic0` on Purple, Green and Red, through a `post-up` line in each node's network configuration that runs at every boot. [Change record](../Compute/Galaxy/Documentation/Change%20Records/nic0%20Offloads%20Disabled%20on%20Purple,%20Green%20and%20Red%20-%202026-10-15.md).
@@ -27,11 +28,13 @@ I run Galaxy as five nodes with 30 physical CPU cores, 38 hardware threads, 106.
 
 | Node | IP | CPU | Cores / Threads | Memory | Memory used (2026-09-24) | GPU | Physical storage | Power source |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| blue-server | 192.168.70.12 | Intel Core i5-7500T @ 2.70GHz | 4 / 4 | 5.68 GiB | 2.99 GiB | Intel HD Graphics 630, integrated | 1x NVMe, 1x HDD | [UPS-02](Power.md) |
-| green-server | 192.168.70.14 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 7.60 GiB | 1.91 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | Not reported |
+| blue-server | 192.168.70.12 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 5.63 GiB | 2.99 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | [UPS-02](Power.md) |
+| green-server | 192.168.70.14 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | 1.91 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | Not reported |
 | grey-server | 192.168.70.10 | AMD Ryzen 7 3700X | 8 / 16 | 62.72 GiB | 51.61 GiB | NVIDIA GeForce GTX 1080 Ti, discrete | 1x NVMe, 1x SSD, 1x HDD | [UPS-02](Power.md) |
 | purple-server | 192.168.70.11 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | 11.68 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x SSD | Not reported |
 | red-server | 192.168.70.13 | Intel Core i5-8500T @ 2.10GHz | 6 / 6 | 15.46 GiB | 3.29 GiB | Intel UHD Graphics 630, integrated | 1x NVMe, 1x HDD | [UPS-02](Power.md) |
+
+Blue, Green, Purple and Red are Lenovo ThinkCentre M920q `10RRS0LN00` systems on BIOS `M1UKT45A` with an onboard Intel I219-LM (7). Blue moved into its M920q on 2026-11-09; the ThinkCentre M910q it ran on before, BIOS `M1AKT35A` with an I219-LM (2), is kept for spare parts. The Memory used column predates the move.
 
 ## Physical Storage
 
@@ -94,7 +97,7 @@ On 2026-09-27 I checked `lscpu`, SMBIOS memory-device entries through `dmidecode
 | Node | Installed RAM | RAM sticks | Physical drives, nominal capacity |
 | --- | ---: | --- | --- |
 | blue-server | 6 GB | 2 sticks: 2 GB + 4 GB DDR4 | 256 GB NVMe SSD + 500 GB SATA HDD |
-| green-server | 8 GB | 1 stick: Micron `8ATF1G64HZ-2G6E1` 8 GB DDR4, configured at 2666 MT/s | 256 GB NVMe SSD + 320 GB SATA HDD |
+| green-server | 16 GB | 2 sticks: Micron `8ATF1G64HZ-2G6E1` 8 GB each, DDR4, configured at 2666 MT/s | 256 GB NVMe SSD + 320 GB SATA HDD |
 | grey-server | 64 GB | 4 sticks: 16 GB each, DDR4 `F4-3600C18-16GVK`, configured at 3200 MT/s | 1 TB NVMe SSD + 2 TB SATA SSD + 2 TB SATA HDD |
 | purple-server | 16 GB | 2 sticks: Micron `8ATF1G64HZ-2G6E1` 8 GB + SK Hynix `HMA81GS6AFR8N-UH` 8 GB DDR4, configured at 2400 MT/s | 256 GB NVMe SSD + 250 GB SATA SSD |
 | red-server | 16 GB | 2 sticks: Micron `8ATF1G64HZ-2G6E1` 8 GB each, DDR4, configured at 2666 MT/s | 256 GB NVMe SSD + 1 TB SATA HDD |
@@ -107,10 +110,10 @@ The photo dates from 2026-04-13, before the 2026-07-31 module swap, and shows tw
 
 | Node | Slot 1 | Slot 2 | Installed | Usable memory |
 | --- | --- | --- | ---: | ---: |
-| blue-server | Samsung `M471A5644EB0-CPB`, 2 GB DDR4-2133 | SK Hynix `HMA851S6AFR6N-UH`, 4 GB DDR4-2400 at 2133 MT/s | 6 GB | 5.68 GiB |
-| green-server | Micron `8ATF1G64HZ-2G6E1`, 8 GB DDR4-2667 | Empty | 8 GB | 7.60 GiB |
+| blue-server | Samsung `M471A5644EB0-CPB`, 2 GB DDR4-2133 | SK Hynix `HMA851S6AFR6N-UH`, 4 GB DDR4-2400 at 2133 MT/s | 6 GB | 5.63 GiB |
+| green-server | Micron `8ATF1G64HZ-2G6E1`, 8 GB DDR4-2667 | Micron `8ATF1G64HZ-2G6E1`, 8 GB DDR4-2667 | 16 GB | 15.46 GiB |
 
-I moved Blue's former 8 GB module to Green and installed the 2 GB module in Blue on 2026-07-31. The live SMBIOS and Proxmox memory readbacks produced the values above.
+I moved Blue's former 8 GB module to Green and installed the 2 GB module in Blue on 2026-07-31. On 2026-11-09 both of Blue's modules moved with it into the M920q, which reports them as 5.63 GiB usable, and Green took a second Micron `8ATF1G64HZ-2G6E1` in `ChannelB-DIMM0`. The live SMBIOS and Proxmox memory readbacks produced the values above.
 
 On 2026-09-27 I verified the Micron module in `ChannelA-DIMM0` and SK Hynix in `ChannelB-DIMM0`, both single-rank at 2666 MT/s and 1.2 V. A new locked 8 GiB test failed six seconds after launch. Neither module nor slot is isolated as the cause; Green remains empty. BIOS is `M1UKT45A` dated 2019-07-11. The [diagnosis and physical isolation plan](../Compute/Galaxy/Documentation/Troubleshooting/Memory%20Test%20Failures%20on%20green-server%20-%202026-09-20.md#component-diagnosis-on-2026-09-27) holds the evidence.
 
