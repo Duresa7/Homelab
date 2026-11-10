@@ -7,6 +7,7 @@ This index points to the living records that hold Galaxy's current state. On 202
 
 ## Recent changes
 
+- 2026-11-09: I expanded `ubuntu-dev` from 230 GiB to 330 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
 - 2026-11-09: I moved `blue-server` into a ThinkCentre M920q with an i5-8500T and added a second 8 GB module to `green-server`. No guest moved. Blue's four containers were down from 7:08 AM to about 8:20 AM, because the new NIC did not match Blue's `nic0` pin and its cable then sat in an IoT access port. [Chassis swap and memory upgrade](../../../Infrastructure/Hardware/Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md), [troubleshooting](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/blue-server%20Unreachable%20After%20Chassis%20Swap%20-%202026-11-09.md).
 
 - 2026-11-06: I upgraded all five nodes to PVE 9.2.26 and rebooted each onto kernel `7.0.14-28-pve`, Grey last. Every guest came back in its previous power state. `docker-main` needed the GTX 1080 Ti's DKMS driver built for the new kernel before it would start. [PVE 9.2.26 node reboots](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/PVE%209.2.26%20Update%20and%20Node%20Reboots%20-%202026-11-06.md).

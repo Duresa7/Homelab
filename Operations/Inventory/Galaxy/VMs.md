@@ -1,11 +1,13 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-09
 
 Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. I read the other guests' figures back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24, and VM 820's and VM 103's network on 2026-10-30. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-11-09: I expanded `ubuntu-dev` from 230 GiB to 330 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
 
 - 2026-11-04: I created VM 112 `hermes-01` on Grey, a Debian 13 clone of template 101 on SERVERS-A VLAN 80 at `192.168.80.22`, with the Linux host baseline and no workload yet. It will run Hermes Agent. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
 
@@ -30,7 +32,7 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | kali-pen | grey-server | stopped | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured | 192.168.40.1 | 40 | disabled |
 | 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.82.11/24 | 192.168.82.1 | 82 | disabled |
-| 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 230G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
+| 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 330G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 112 | hermes-01 | grey-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
@@ -139,7 +141,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | local-lvm | vm-105-disk-0 | 230G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | local-lvm | vm-105-disk-0 | 330G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | local-lvm | vm-105-disk-1 | 4M | disk | efitype 4m |
 
 #### Network
