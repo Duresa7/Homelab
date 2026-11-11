@@ -1,9 +1,9 @@
 # SSH MCP
 
 **Created:** 2026-10-31  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-10
 
-I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the agents' SSH path into the lab. It replaced SSH Manager MCP on 2026-10-31 and kept the same 26 servers under the same names; on 2026-11-03 I added `ci_k3s_02` and `kube_management`, for 28. The live configuration held 30 on 2026-11-04, with `ci_cache_01` and `garm_01`, and I added `hermes_01` the same day for 31. Agents reach it through [Executor](../Executor/README.md) as the `ssh` app.
+I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the agents' SSH path into the lab. It replaced SSH Manager MCP on 2026-10-31 and kept the same 26 servers under the same names. On 2026-11-04 I added `hermes_01`, and on 2026-11-05 the live configuration held 26 profiles. On 2026-11-10 I renamed `parrot_os_mac` to `macbook_pro`. Agents reach it through [Executor](../Executor/README.md) as the `ssh` app.
 
 ## Current State
 
@@ -15,9 +15,10 @@ I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the ag
 | Endpoint | `http://192.168.40.39:8813/`, Streamable HTTP at `POST /`, bearer token required; `GET /health` is open |
 | Live Compose path | `/opt/docker/ssh-mcp/docker-compose.yml` |
 | Live configuration | `/opt/docker/ssh-mcp/config/config.toml`, UID 65532, mode 0600 in a 0700 directory |
-| Secrets | `/opt/docker/ssh-mcp/ssh-mcp.env` (bearer token and sixteen sudo passwords), root-only at mode 0600, read by Docker at start; `keys/id_ed25519`, owned by the container user (UID 65532) at mode 0400 in a 0700 directory |
+| Secrets | `/opt/docker/ssh-mcp/ssh-mcp.env` (bearer token and eleven sudo passwords), root-only at mode 0600, read by Docker at start; `keys/id_ed25519`, owned by the container user (UID 65532) at mode 0400 in a 0700 directory |
 | Audit log | `/opt/docker/ssh-mcp/data/ssh-mcp/audit.log`, one JSON record per command, rotated at 100 MB with ten files kept |
-| Profiles | 31 on 2026-11-04, after adding `hermes_01`; the install script reported `profiles: 31`, `pins: 31`, `sudo passwords: 16`. [hermes-01 Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md) |
+| Profiles | 26 on 2026-11-05; the install script reported `profiles: 26`, `pins: 26`, `sudo passwords: 11`. `hermes_01` was added on 2026-11-04: [hermes-01 Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md) |
+| Profile renames | 2026-11-10: `parrot_os_mac` became `macbook_pro`. I changed the `name` line in the tracked config, in `config.unpinned.toml` and in the live config, leaving the pin, host and key untouched, then sent `HUP`. The log printed `Profiles: added macbook_pro; removed parrot_os_mac.`, `list-connections` still showed 26 profiles, and the live config kept UID 65532 and mode 0600. The profile has no sudo password, so `ssh-mcp.env` did not change. The Mac was off, so the new name is untested against the host. Hermes's `homelab-ops` skill on `hermes-01` and its [tracked copy](../Hermes%20Agent/Configuration/skills/homelab-ops/SKILL.md) use the new name |
 | Tools | 15 |
 | Restart policy | `unless-stopped` |
 
@@ -27,7 +28,7 @@ The bearer token is in my password manager as `SSH MCP Bearer Token - docker-blu
 
 Every profile is `role = "admin"` on one custom tier, `homelab`, which holds all four command classes: `read-only`, `safe`, `destructive` and `privileged`. `approvalMode = "auto"`, so nothing waits for approval. That matches the unrestricted SSH Manager setup it replaced, where I am the confirmation step.
 
-The profiles reach root the way SSH Manager did: direct root login on the five Proxmox nodes and `docker-main`; passwordless sudo on `ansible-01`, `ubuntu-dev` and `media-01`; password-backed sudo on `alpha-prod-01`, `andor_parrot_os_pc`, `app-01`, `ci-cache-01`, `ci-k3s-01`, `ci-k3s-02`, `docker-blue`, `docker-network`, `edge-01`, `garm-01`, `hermes-01`, `kube-management`, `monitor-01`, `security-01`, `splunk-siem` and `surface_pro`. The five Windows profiles log in as `Administrator` on HQ-DC01, HQ-DC02 and HQ-MGT01, `local-obipc` on ObiPC and `dkadi` on win11-dev. `parrot_os_mac` uses `dkadi`.
+The profiles reach root the way SSH Manager did: direct root login on the five Proxmox nodes and `docker-main`; passwordless sudo on `ansible-01`, `ubuntu-dev` and `media-01`; password-backed sudo on `alpha-prod-01`, `andor_parrot_os_pc`, `app-01`, `docker-blue`, `docker-network`, `edge-01`, `hermes-01`, `monitor-01`, `security-01`, `splunk-siem` and `surface_pro`. The five Windows profiles log in as `Administrator` on HQ-DC01, HQ-DC02 and HQ-MGT01, `local-obipc` on ObiPC and `dkadi` on win11-dev. `macbook_pro` uses `dkadi`.
 
 ssh-mcp refuses a fixed list whatever the policy grants, and no setting removes it: `shutdown`, `reboot`, `halt`, `poweroff` and `eval` as commands; `rm -rf /`, `mkfs`, `dd of=/dev/`, `iptables -F`, a recursive `chmod 777 /` or `chown /`, `curl | sh`, fork bombs; and any write that names `/etc/cron*`, `/etc/systemd` or an `authorized_keys` file through a redirect, `tee`, `cp`, `mv`, `install`, `dd of=` or an upload. On 2026-10-31 `reboot` and `tee /etc/systemd/system/x.service` were both refused with `POLICY_DENIED`.
 

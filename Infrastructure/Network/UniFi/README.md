@@ -1,7 +1,7 @@
 # UniFi Network
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-11-05
 
 My network runs on UniFi Network 10.6.106: one gateway, three switches and one access point, with 16 routed VLANs in 12 firewall zones. This folder owns the VLANs, zones, firewall policies, local DNS, VPNs, policy objects and port profiles. Proxmox host firewalls stay with the [Galaxy records](../../Compute/Galaxy/README.md).
 
@@ -23,10 +23,10 @@ All five were online with no upgrade pending. Their management addresses are on 
 
 | Object | Count | Verified |
 | --- | ---: | --- |
-| Networks | 24 (17 corporate LANs, 2 WANs, 1 VPN client, 4 remote-user VPN servers) | 2026-10-30 |
-| Firewall zones | 13 (7 built-in, 6 custom) | 2026-10-30 |
-| Static DNS records | 30 | 2026-09-24 |
-| User-defined firewall policies | 97 (88 allow, 9 block) | 2026-10-30 |
+| Networks | 23 (16 corporate LANs, 2 WANs, 1 VPN client, 4 remote-user VPN servers) | 2026-11-05 |
+| Firewall zones | 12 (7 built-in, 5 custom) | 2026-11-05 |
+| Static DNS records | 31 | 2026-11-05 |
+| User-defined firewall policies | 89 (81 allow, 8 block) | 2026-11-05 |
 | Network Lists | 22 | 2026-09-16 |
 | Client groups | 16 | 2026-09-06 |
 | Traffic routes | 1 (`VPN - Proton`) | 2026-09-06 |
@@ -73,7 +73,6 @@ UniFi shows no obvious error when Cloudflare refuses an update, and a record tha
 
 | Date | Record |
 | --- | --- |
-| 2026-10-30 | [KUB-A VLAN 82](Documentation/Change%20Records/KUB-A%20VLAN%2082%20-%202026-10-30.md) |
 | 2026-10-13 | [UniFi DDNS Token Separation](../Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md) |
 | 2026-09-16 | [Policy and DNS Readback](Documentation/Change%20Records/Policy%20and%20DNS%20Readback%20-%202026-09-16.md) |
 | 2026-09-09 | [Identity NTP and Client DNS](Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md) |

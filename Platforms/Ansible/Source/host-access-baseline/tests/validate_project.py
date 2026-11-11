@@ -38,8 +38,6 @@ EXPECTED_AI_AGENT_TARGETS = {
     "splunk-siem",
     "docker-blue",
     "ansible-01",
-    # Added 2026-10-30: the KUB-A k3s node on green-server.
-    "ci-k3s-01",
     # Added 2026-11-04: the Hermes Agent host on SERVERS-A.
     "hermes-01",
 }

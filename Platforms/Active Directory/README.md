@@ -1,7 +1,7 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-05
 
 I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
 
@@ -12,7 +12,7 @@ I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard dom
 | Deployment status | Operational. Replication, DNS, policy, LAPS, and external time verified 2026-09-09 |
 | Forest and domain | `ad.alphasecunited.com`, NetBIOS `ALPHASEC` |
 | Functional level | `Windows2016Forest` and `Windows2016Domain` |
-| Domain controllers | `HQ-DC01` at `192.168.65.10` (VM 301) and `HQ-DC02` at `192.168.65.11` (VM 302), both running on 2026-09-24 |
+| Domain controllers | `HQ-DC01` at `192.168.65.10` (VM 301) and `HQ-DC02` at `192.168.65.11` (VM 302), both running on 2026-11-05 |
 | Operations masters | All five roles on `HQ-DC01`: schema, domain naming, PDC, RID, infrastructure |
 | Global catalog | Both controllers |
 | Site | `HQ`, with `192.168.65.0/24`, `192.168.50.0/24`, and `192.168.60.0/24` mapped to it |

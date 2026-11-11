@@ -9,13 +9,13 @@ Galaxy is my five-node Proxmox VE 9.2.26 cluster. Every node keeps its guests on
 
 ## Nodes
 
-| Node | MGMT-A (link0) | Cluster-Net (link1) | CPU | Memory | Guests on 2026-09-24 |
+| Node | MGMT-A (link0) | Cluster-Net (link1) | CPU | Memory | Guests on 2026-11-05 |
 | --- | --- | --- | --- | --- | --- |
-| grey-server | 192.168.70.10 | 192.168.71.10 | Ryzen 7 3700X, 8 cores / 16 threads, GTX 1080 Ti | 62.72 GiB | VMs 102, 103, 105, 109, 200, 301, 302, 303 and 310, CT 110, and templates 101, 300 and 9000 |
+| grey-server | 192.168.70.10 | 192.168.71.10 | Ryzen 7 3700X, 8 cores / 16 threads, GTX 1080 Ti | 62.72 GiB | VMs 102, 103, 105, 109, 112, 200, 301, 302, 303 and 310, CT 110, and templates 101, 300 and 9000 |
 | purple-server | 192.168.70.11 | 192.168.71.11 | i5-8500T, 6 cores | 15.46 GiB | VMs 116 `app-01`, 121 `edge-01`, 401 `alpha-prod-01` |
 | blue-server | 192.168.70.12 | 192.168.71.12 | i5-8500T, 6 cores | 5.63 GiB | CTs 100 `ansible-01`, 104 `monitor-01`, 107 `docker-network`, 108 `docker-blue` |
 | red-server | 192.168.70.13 | 192.168.71.13 | i5-8500T, 6 cores | 15.46 GiB | CT 842 `media-01` |
-| green-server | 192.168.70.14 | 192.168.71.14 | i5-8500T, 6 cores | 15.46 GiB | VM 820 `ci-k3s-01`, since 2026-10-30 |
+| green-server | 192.168.70.14 | 192.168.71.14 | i5-8500T, 6 cores | 15.46 GiB | None |
 
 Grey carries most of the load: 51.61 of its 62.72 GiB was in use on 2026-09-24. The full hardware record is [Nodes](../../../../Hardware/Nodes.md) and the guest records are in [Operations/Inventory/Galaxy](../../../../../Operations/Inventory/Galaxy/Galaxy%20Inventory.md).
 
@@ -35,14 +35,14 @@ Each node's storage belongs to that node alone.
 | Node | Storage | Type | Backing device | Holds |
 | --- | --- | --- | --- | --- |
 | grey-server | `local-lvm` | LVM-thin | 1 TB Crucial P310 NVMe | VMs 102, 103, 105 and CT 110's rootfs |
-| grey-server | `ssd-lvm1` | LVM-thin | 2 TB Crucial BX500 SATA SSD | VMs 109, 200, 301, 302, 303, 310 and the three templates |
+| grey-server | `ssd-lvm1` | LVM-thin | 2 TB Crucial BX500 SATA SSD | VMs 109, 112, 200, 301, 302, 303, 310 and the three templates |
 | grey-server | `hddpool-1` | ZFS | 2 TB Toshiba HDD | CT 110's `/data` (Immich) |
 | purple-server | `local-lvm` | LVM-thin | 256 GB Toshiba NVMe | VMs 116, 121, 401 |
 | purple-server | `ssd-lvm2` | LVM-thin, restricted to Purple | Samsung 850 EVO 250 GB | Empty |
 | blue-server | `local-lvm` | LVM-thin | 256 GB Samsung NVMe | CTs 100, 104, 107, 108 |
 | red-server | `local-lvm` | LVM-thin | 256 GB Samsung NVMe | CT 842's rootfs |
 | red-server | host ext4 bind mount | Directory | 1 TB Seagate HDD | CT 842's `/data` media library |
-| green-server | `local-lvm` | LVM-thin | 256 GB Samsung NVMe | VM 820 |
+| green-server | `local-lvm` | LVM-thin | 256 GB Samsung NVMe | Empty |
 
 Every node also has a `local` directory storage for ISOs and templates. Usage figures are in [Nodes](../../../../Hardware/Nodes.md#cluster-storage). Moving a guest to another node copies its disks across the network; the September moves are in the [change records](../Change%20Records/). The [shared storage research](../Shared%20Storage%20Migration%20and%20Load%20Balancing%20Research%20-%202026-08-23.md) of 2026-08-23 covers what shared storage would take; nothing from it has been built.
 

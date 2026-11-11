@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-05
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -17,7 +17,6 @@ This directory holds my deployed applications and services, one folder per platf
 | [BookLore](BookLore/README.md) | Retired 2026-09-28 | Replaced by BookOrbit; original settings data retained |
 | [BookOrbit](BookOrbit/README.md) | docker-main | v3.1.0 with PostgreSQL 18.6; 42 books imported, TCP 6060 at the existing BookLore HTTPS address (2026-09-28) |
 | [Caddy](Caddy/README.md) | edge-01 | Caddy 2.6.2, the public origin behind the Cloudflare Tunnel (cloudflared 2026.10.0), forwarding to Coolify |
-| [CI Runners](CI%20Runners/README.md) | ci-k3s-01, win11-dev | Self-hosted GitHub Actions runners: k3s v1.36.5+k3s1 with the ARC controller 0.15.1 on KUB-A, plus the Windows runner host; no scale sets yet |
 | [CLI Proxy API](CLI%20Proxy%20API/README.md) | docker-main | v8.0.16 at `https://aiproxy.alphasecunited.com` |
 | [Coolify](Coolify/README.md) | app-01, temporarily stopped 2026-10-09 | Coolify 4.4.3 with Traefik 3.7.12; installed services retained |
 | [Discord Alert Bot](Discord%20Alert%20Bot/README.md) | monitor-01 | Posts Grafana and Splunk alerts to `#bots` |

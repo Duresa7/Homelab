@@ -43,7 +43,7 @@ LAN/public Minecraft, TeamSpeak and TS3 Manager checks passed on 2026-10-15. Min
 
 ## win11-dev Activation
 
-**Status:** Done. On 2026-10-30 Windows reported a retail licence with `LicenseStatus 1` ([Phase 1 Build](../../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md)). VM 103 runs on Grey since 2026-09-23. [Completion record](Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
+**Status:** Done. On 2026-10-30 Windows reported a retail licence with `LicenseStatus 1`. VM 103 runs on Grey since 2026-09-23. [Completion record](Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
 
 - [x] Activate Windows with a valid license.
 

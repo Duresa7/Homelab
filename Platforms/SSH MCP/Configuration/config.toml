@@ -79,17 +79,6 @@ keyRef = "/keys/id_ed25519"
 role = "admin"
 group = "homelab"
 
-# Ubuntu 26.04 k3s CI node (VM 820 on green-server), KUB-A VLAN 82
-[[profiles]]
-name = "ci_k3s_01"
-host = "192.168.82.10"
-port = 22
-user = "dkadi"
-auth = "key"
-keyRef = "/keys/id_ed25519"
-role = "admin"
-group = "homelab"
-
 # Debian 13 Hermes Agent host (VM 112 on grey-server), SERVERS-A VLAN 80
 [[profiles]]
 name = "hermes_01"
@@ -237,7 +226,7 @@ group = "homelab"
 
 # Parrot OS-Mac, MacBook Pro running Parrot Security 7.3, Trusted VLAN 10
 [[profiles]]
-name = "parrot_os_mac"
+name = "macbook_pro"
 host = "192.168.10.176"
 port = 22
 user = "dkadi"
@@ -312,10 +301,10 @@ keyRef = "/keys/id_ed25519"
 role = "admin"
 group = "homelab"
 
-# Windows 11 Pro CI runner (VM 103 on grey-server), KUB-A VLAN 82 (Windows OpenSSH)
+# Windows 11 Pro dev VM (VM 103 on grey-server), Personal-A VLAN 40 (Windows OpenSSH)
 [[profiles]]
 name = "win11_dev"
-host = "192.168.82.11"
+host = "192.168.40.117"
 port = 22
 user = "dkadi"
 auth = "key"

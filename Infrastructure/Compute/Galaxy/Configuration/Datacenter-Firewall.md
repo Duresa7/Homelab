@@ -1,9 +1,9 @@
 # Galaxy Data Center Firewall
 
 **Created:** 2026-07-04  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-05
 
-**Last verified:** 2026-10-11, after adding `192.168.50.102` to `pve_admins`. All five nodes read the 53-line file (`f9e894e5…`), report `enabled/running`, and hold six members in the live `pve_admins` set. On 2026-09-27, after adding `192.168.10.176`, they read the 52-line file with five members. The earlier check, on 2026-09-06 after removing `192.168.40.39` from `pve_admins`, found this: All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
+**Last verified:** 2026-11-05. The file has 53 lines (`29bac090…`), Grey and Red report `enabled/running`, and the live `pve_svc_clients` set on both holds two members. On 2026-10-11, after adding `192.168.50.102` to `pve_admins`, all five nodes read the 53-line file (`f9e894e5…`), reported `enabled/running`, and held six members in the live `pve_admins` set. On 2026-09-27, after adding `192.168.10.176`, they read the 52-line file with five members. The earlier check, on 2026-09-06 after removing `192.168.40.39` from `pve_admins`, found this: All five nodes read the 51-line file, `pve-firewall status` is enabled and running on each, the live `pve_admins` set holds four members without `192.168.40.39`, the live `pve_ssh_manager` set holds it, and from `docker-blue` TCP 22 opens to all five nodes while TCP 8006 does not. Earlier the same day the audit readback of the 52-line file had found the `pve_ssh_manager` IPSet and its rule, which this record had never listed.
 
 `/etc/pve/firewall/cluster.fw` enables the Datacenter firewall and applies `pve_mgmt` through `[RULES]`. The `GROUP` enters all five `PVEFW-HOST-IN` chains, so one ordered rule set governs every node. No node has a separate `host.fw`.
 

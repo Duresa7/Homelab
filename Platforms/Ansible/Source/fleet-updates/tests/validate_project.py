@@ -29,7 +29,6 @@ EXPECTED_OS_HOSTS = {
     "splunk-siem",
     "ansible-01",
     "monitor-01",
-    "ci-k3s-01",
     "hermes-01",
 }
 EXPECTED_COMPOSE_PROJECTS = {

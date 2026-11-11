@@ -1,7 +1,7 @@
 # Architecture
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-10-28
+**Last updated:** 2026-09-25
 
 Architecture holds designs that cross more than one owner: dependency maps, data flows and trust boundaries. The diagrams live in [Assets/Diagrams](../Assets/Diagrams).
 
@@ -11,7 +11,6 @@ Service-specific architecture stays with the service under `Platforms/<Service>/
 
 - [Access Paths](Access-Paths.md): the five ways into the lab (public ingress, internal HTTPS, remote access, remote control, agent access)
 - [External Service Ingress](External-Service-Ingress.md): the public path in detail, from Cloudflare through the edge-01 tunnel, Caddy and Traefik
-- [Cross-Platform CI Research](Cross-Platform%20CI%20Research%20-%202026-10-28.md): measured GitHub workflow timings, proposed Linux and Windows runner pools on Proxmox, Mac execution, caching and release constraints
 - [Diagrams](../Assets/Diagrams/): the diagram sources and SVGs
 
 ## Archived Designs

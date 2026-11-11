@@ -1,11 +1,11 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-02
+**Last updated:** 2026-11-05
 
 The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 25 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
-**Last verified against the controller:** 2026-11-01. After I deleted Homarr's record, `unifi_list_dns_records` returned 30 static records, and the 24 NPM names match the 24 live NPM proxy hosts one for one.
+**Last verified against the controller:** 2026-11-05. `unifi_list_dns_records` returned 31 static records.
 
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 

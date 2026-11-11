@@ -42,9 +42,6 @@ EXPECTED_NODE_EXPORTER_HOSTS = {
     # It stays out of EXPECTED_CADVISOR_HOSTS: the containers there are
     # throwaway development builds, so per-container history is noise.
     "db-13-dev",
-    # Added 2026-10-30: the KUB-A k3s node. Node exporter only; runner pods
-    # are throwaway, so cAdvisor history would be noise.
-    "ci-k3s-01",
 }
 # All eight Docker hosts. The set was docker-main alone from 2026-07-25 to
 # 2026-07-26, while cAdvisor v0.52.1 could not register containers under the

@@ -1,7 +1,7 @@
 # Dashboard Tooling
 
 **Created:** 2026-08-27  
-**Last updated:** 2026-10-30
+**Last updated:** 2026-11-03
 
 Every dashboard under `Configuration/grafana/dashboards/` is generated. Do not hand-edit the JSON; change
 the source here and re-run the builder, or the next build overwrites the edit.
@@ -11,7 +11,7 @@ cd Platforms/Prometheus
 python3 Tools/build_dashboards.py
 ```
 
-That writes 28 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
+That writes 27 dashboards and `Tests/allow-empty.json`, and prints a panel count per dashboard. It needs no
 network access and nothing but the standard library.
 
 ## Source files
@@ -27,7 +27,7 @@ network access and nothing but the standard library.
 
 **Change how everything looks.** Edit a constant in `dashlib.py`. `PCT_USED` is the amber-at-80,
 red-at-95 threshold used by every capacity panel; `TS_CUSTOM` is the line weight and fill; `TINT` is the six
-resource colours a single-series graph and a neutral stat tile draw from. One edit moves all 28 dashboards
+resource colours a single-series graph and a neutral stat tile draw from. One edit moves all 27 dashboards
 together, which is the reason they are generated.
 
 **Write no prose into a dashboard.** `Grid.section()` takes a title and an optional `collapsed` flag, with
@@ -71,7 +71,7 @@ python3 Tests/assert_dashboard_layout.py Configuration/grafana/dashboards
 python3 Tests/assert_dashboard_queries.py Configuration/grafana/dashboards http://192.168.73.2:9090
 ```
 
-The first is offline and checks the grid. The second runs all 1,513 queries against Prometheus and fails on
+The first is offline and checks the grid. The second runs all 1,458 queries against Prometheus and fails on
 any that error or return nothing unexpectedly. Run both before deploying.
 
 ## Deploying

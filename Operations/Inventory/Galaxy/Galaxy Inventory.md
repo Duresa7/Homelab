@@ -3,7 +3,7 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-11-09
 
-This index points to the living records that hold Galaxy's current state. On 2026-11-04 the cluster held five nodes, 17 VMs, six LXCs and four templates; 17 guests were running and `kali-pen`, `app-01`, `win11-dev`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. `green-server` holds VM 820 `ci-k3s-01`, `grey-server` VM 821 `ci-k3s-02` and VM 112 `hermes-01`, and `red-server` VM 822 `kube-management`. No guest is an HA resource and there is no shared storage.
+This index points to the living records that hold Galaxy's current state. On 2026-11-05 the cluster held five nodes, 13 VMs, six LXCs and three templates; 15 guests were running and `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. `grey-server` holds VM 112 `hermes-01` since 2026-11-04, and `green-server` holds no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
 

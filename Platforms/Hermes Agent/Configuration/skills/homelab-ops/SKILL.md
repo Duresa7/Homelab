@@ -42,10 +42,9 @@ Pass `profile` on every call. A call without one runs on `ubuntu_dev`, which is 
 | `ansible_01` | Ansible controller (logs in as `ansible`) |
 | `edge_01` | Caddy on the DMZ |
 | `app_01` | Coolify host, usually stopped |
-| `kube_management`, `ci_k3s_01`, `ci_k3s_02`, `ci_cache_01`, `garm_01` | Rancher and the CI runner cluster |
 | `hermes_01` | Your own host. Restarting `hermes-gateway` there ends your current reply |
 | `hq_dc01`, `hq_dc02`, `hq_mgt01` | Windows Server: domain controllers and the management server. The shell is PowerShell 5.1; `;` separates statements |
-| `win11_dev`, `obipc`, `surface_pro`, `parrot_os_mac`, `andor_parrot_os_pc`, `ubuntu_dev` | Personal PCs and dkadi's workstation. Touch them only when asked by name |
+| `win11_dev`, `obipc`, `surface_pro`, `macbook_pro`, `andor_parrot_os_pc`, `ubuntu_dev` | Personal PCs and dkadi's workstation. Touch them only when asked by name |
 
 Run `list-connections` if a name here does not match what someone says.
 
