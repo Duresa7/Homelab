@@ -1,7 +1,7 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-11
 
 I run Wazuh 4.14.10 as an all-in-one install (manager, indexer and dashboard) on VM 200 `security-01` at `192.168.72.2` on Security-A, VLAN 72. On 2026-11-06 `wazuh-control info` reported v4.14.10 and `agent_control -l` listed 15 agents Active, with `app-01` disconnected while its VM is stopped. Every Proxmox node and every running Linux guest carries an agent except `splunk-siem`, which has none. `kali-pen` is stopped and not enrolled, and there are no Windows agents. Alerts forward to Splunk, and Wazuh MCP Server 4.3.0 gives Executor a read-only path to the manager and indexer.
 
@@ -9,7 +9,7 @@ I run Wazuh 4.14.10 as an all-in-one install (manager, indexer and dashboard) on
 
 | Item | Value |
 |---|---|
-| Host | VM 200 `security-01` on `grey-server`, Ubuntu 24.04.4 LTS, 4 vCPU, 8 GiB memory since the [2026-11-04 reduction](Documentation/Change%20Records/security-01%20Memory%20Reduction%20-%202026-11-04.md), 100 GiB on `ssd-lvm1` (`qm config 200`, 2026-11-04) |
+| Host | VM 200 `security-01` on `grey-server`, Ubuntu 24.04.4 LTS, 4 vCPU, 8 GiB memory since the [2026-11-04 reduction](Documentation/Change%20Records/security-01%20Memory%20Reduction%20-%202026-11-04.md), 64 GiB on `ssd-lvm1` since the [2026-11-11 disk shrink](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md) (`qm config 200`, 2026-11-11) |
 | Packages | `wazuh-manager`, `wazuh-indexer`, `wazuh-dashboard` 4.14.10-1 since the [2026-11-06 fleet update](../../Operations/Maintenance/Fleet%20Update%20-%202026-11-06.md); the Wazuh repository stays enabled on this host, so an OS update moves all three together |
 | Agents | 15 active on 2026-10-06: IDs `004` to `011`, `013` to `017`, `020` (`ubuntu-dev`) and `021` (`docker-main`). All 15 run 4.14.8-1, held, since the [2026-10-05 fleet update](../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md) released the holds and moved them from 4.14.6-1 (`edge-01` from 4.14.5-1); the per-host table is in the [configuration reference](Configuration/README.md#endpoint-installation-state) |
 | Agent groups | `default` on every agent; `edge` on `edge-01`, `proxmox` on the five nodes, `workstation` on `ubuntu-dev` |

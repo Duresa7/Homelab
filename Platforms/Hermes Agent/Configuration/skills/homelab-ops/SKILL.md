@@ -44,7 +44,7 @@ Pass `profile` on every call. A call without one runs on `ubuntu_dev`, which is 
 | `app_01` | Coolify host, usually stopped |
 | `hermes_01` | Your own host. Restarting `hermes-gateway` there ends your current reply |
 | `hq_dc01`, `hq_dc02`, `hq_mgt01` | Windows Server: domain controllers and the management server. The shell is PowerShell 5.1; `;` separates statements |
-| `win11_dev`, `obipc`, `surface_pro`, `macbook_pro`, `andor_parrot_os_pc`, `ubuntu_dev` | Personal PCs and dkadi's workstation. Touch them only when asked by name |
+| `obipc`, `surface_pro`, `macbook_pro`, `andor_parrot_os_pc`, `ubuntu_dev` | Personal PCs and dkadi's workstation. Touch them only when asked by name |
 
 Run `list-connections` if a name here does not match what someone says.
 

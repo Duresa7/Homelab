@@ -1,9 +1,9 @@
 # SSH MCP
 
 **Created:** 2026-10-31  
-**Last updated:** 2026-11-10
+**Last updated:** 2026-11-11
 
-I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the agents' SSH path into the lab. It replaced SSH Manager MCP on 2026-10-31 and kept the same 26 servers under the same names. On 2026-11-04 I added `hermes_01`, and on 2026-11-05 the live configuration held 26 profiles. On 2026-11-10 I renamed `parrot_os_mac` to `macbook_pro`. Agents reach it through [Executor](../Executor/README.md) as the `ssh` app.
+I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the agents' SSH path into the lab. It replaced SSH Manager MCP on 2026-10-31 and kept the same 26 servers under the same names. On 2026-11-04 I added `hermes_01`, and on 2026-11-05 the live configuration held 26 profiles. On 2026-11-10 I renamed `parrot_os_mac` to `macbook_pro`, and on 2026-11-11 I removed `win11_dev` with its VM, leaving 25 profiles. Agents reach it through [Executor](../Executor/README.md) as the `ssh` app.
 
 ## Current State
 
@@ -19,6 +19,7 @@ I run [ssh-mcp](https://github.com/tufantunc/ssh-mcp) on `docker-blue` as the ag
 | Audit log | `/opt/docker/ssh-mcp/data/ssh-mcp/audit.log`, one JSON record per command, rotated at 100 MB with ten files kept |
 | Profiles | 26 on 2026-11-05; the install script reported `profiles: 26`, `pins: 26`, `sudo passwords: 11`. `hermes_01` was added on 2026-11-04: [hermes-01 Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md) |
 | Profile renames | 2026-11-10: `parrot_os_mac` became `macbook_pro`. I changed the `name` line in the tracked config, in `config.unpinned.toml` and in the live config, leaving the pin, host and key untouched, then sent `HUP`. The log printed `Profiles: added macbook_pro; removed parrot_os_mac.`, `list-connections` still showed 26 profiles, and the live config kept UID 65532 and mode 0600. The profile has no sudo password, so `ssh-mcp.env` did not change. The Mac was off, so the new name is untested against the host. Hermes's `homelab-ops` skill on `hermes-01` and its [tracked copy](../Hermes%20Agent/Configuration/skills/homelab-ops/SKILL.md) use the new name |
+| Profile removals | 2026-11-11: `win11_dev`, after I deleted VM 103. I removed its block from the tracked config, `config.unpinned.toml` and the live config with a script that checks every other profile parses back identical, then sent `HUP`. The log printed `Profiles: removed win11_dev.`, `list-connections` showed 25 profiles, and the live config kept UID 65532 and mode 0600. `ssh-mcp.env` held nothing for it. [win11-dev Removal](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md) |
 | Tools | 15 |
 | Restart policy | `unless-stopped` |
 
@@ -28,7 +29,7 @@ The bearer token is in my password manager as `SSH MCP Bearer Token - docker-blu
 
 Every profile is `role = "admin"` on one custom tier, `homelab`, which holds all four command classes: `read-only`, `safe`, `destructive` and `privileged`. `approvalMode = "auto"`, so nothing waits for approval. That matches the unrestricted SSH Manager setup it replaced, where I am the confirmation step.
 
-The profiles reach root the way SSH Manager did: direct root login on the five Proxmox nodes and `docker-main`; passwordless sudo on `ansible-01`, `ubuntu-dev` and `media-01`; password-backed sudo on `alpha-prod-01`, `andor_parrot_os_pc`, `app-01`, `docker-blue`, `docker-network`, `edge-01`, `hermes-01`, `monitor-01`, `security-01`, `splunk-siem` and `surface_pro`. The five Windows profiles log in as `Administrator` on HQ-DC01, HQ-DC02 and HQ-MGT01, `local-obipc` on ObiPC and `dkadi` on win11-dev. `macbook_pro` uses `dkadi`.
+The profiles reach root the way SSH Manager did: direct root login on the five Proxmox nodes and `docker-main`; passwordless sudo on `ansible-01`, `ubuntu-dev` and `media-01`; password-backed sudo on `alpha-prod-01`, `andor_parrot_os_pc`, `app-01`, `docker-blue`, `docker-network`, `edge-01`, `hermes-01`, `monitor-01`, `security-01`, `splunk-siem` and `surface_pro`. The four Windows profiles log in as `Administrator` on HQ-DC01, HQ-DC02 and HQ-MGT01 and `local-obipc` on ObiPC. `macbook_pro` uses `dkadi`.
 
 ssh-mcp refuses a fixed list whatever the policy grants, and no setting removes it: `shutdown`, `reboot`, `halt`, `poweroff` and `eval` as commands; `rm -rf /`, `mkfs`, `dd of=/dev/`, `iptables -F`, a recursive `chmod 777 /` or `chown /`, `curl | sh`, fork bombs; and any write that names `/etc/cron*`, `/etc/systemd` or an `authorized_keys` file through a redirect, `tee`, `cp`, `mv`, `install`, `dd of=` or an upload. On 2026-10-31 `reboot` and `tee /etc/systemd/system/x.service` were both refused with `POLICY_DENIED`.
 

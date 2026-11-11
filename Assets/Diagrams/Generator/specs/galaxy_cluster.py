@@ -31,7 +31,6 @@ def guest(node_id, id, name, kind, vlan, ip, logo, icons=()):
     d.card(node_id, id, name, sub1=f"{kind} · VLAN {vlan}", sub2=ip, logo=logo, icons=icons)
 
 guest("grey", "kali", "kali-pen", "VM 102", 40, "stopped", "kali-linux")
-guest("grey", "win11", "win11-dev", "VM 103", 40, "192.168.40.117", "windows-11")
 guest("grey", "ubuntu", "ubuntu-dev", "VM 105", 40, "192.168.40.179", "ubuntu")
 guest("grey", "splunk", "splunk-siem", "VM 109", 72, "192.168.72.3", "splunk", ["rocky-linux"])
 guest("grey", "dmain", "docker-main", "LXC 110", 40, "192.168.40.35", "docker", ["immich", "forgejo"])
@@ -62,5 +61,5 @@ d.edge("ups", "red", "", color="grey", from_side="top", to_side="bottom")
 
 d.legend_family("Mgmt", "Proxmox VE node (AlphaSec-Mgmt)"); d.legend_family("External", "power")
 d.legend_edge("Corosync link0", "solid", "blue"); d.legend_edge("Corosync link1", "dashed", "purple"); d.legend_edge("AC power", "solid", "grey")
-d.footnote("Guest addresses are the VLAN-side interfaces. win11-dev moved from green to grey on 2026-09-23; green-server runs on one 8 GB module since its failed SK Hynix module came out on 2026-10-28.")
+d.footnote("Guest addresses are the VLAN-side interfaces. green-server runs on one 8 GB module since its failed SK Hynix module came out on 2026-10-28.")
 d.render(OUT, png=os.environ.get("PNG") == "1", readme_width=int(os.environ.get("README_W", "0")) or None)

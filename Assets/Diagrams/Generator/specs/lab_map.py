@@ -35,7 +35,6 @@ d.card("galaxy", "red", "red-server", sub1="192.168.70.13", sub2="1 guest, media
 d.card("galaxy", "green", "green-server", sub1="192.168.70.14", sub2="no guests, 8 GB", logo="proxmox", node="green")
 d.group("ws", "Workstations", badge="no guide of their own", family="Internal", notes=[(None, "Personal-A, VLAN 40")])
 d.card("ws", "ubuntu", "ubuntu-dev", sub1="Ubuntu 26.04.1, Docker", sub2="VS Code, agent tooling", logo="ubuntu", node="grey")
-d.card("ws", "win11", "win11-dev", sub1="Windows 11 Pro 25H2", sub2="OpenSSH, dev VM", logo="windows-11", node="grey")
 d.card("ws", "kali", "kali-pen", sub1="Kali 2026.2", sub2="pentest VM, stopped", logo="kali-linux", node="grey")
 
 # --- rows 0 to 2: access (row 0), identity, security and monitoring (row 2) --------

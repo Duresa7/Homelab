@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-11-11
 
 The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, the ProtonVPN client network and four remote-user VPN servers. Ahsoka Gateway routes every LAN.
 
@@ -9,6 +9,7 @@ The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, th
 
 ## Recent changes
 
+- 2026-11-11: I deleted the `win11-dev` VM. Two API forgets of its client returned success, but its Personal-A reservation at `192.168.40.117` is still on the controller and needs a forget from the UI. [win11-dev Removal](../../../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 - 2026-09-21: DHCP reservation for `win11-dev` at `192.168.40.117`. [win11-dev Completion](../../../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md).
 - 2026-09-09: DHCP DNS on Secure and Secure Client moved to `192.168.65.10`, then `192.168.65.11`. [Identity NTP and Client DNS](../Documentation/Change%20Records/Identity%20NTP%20and%20Client%20DNS%20-%202026-09-09.md).
 - 2026-09-07: IDENTITY-A verified and admitted on `Proxmox-Trunk`. [Identity Plane Network Preparation](../Documentation/Change%20Records/Identity%20Plane%20Network%20Preparation%20-%202026-09-07.md).

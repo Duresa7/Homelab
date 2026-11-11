@@ -1,12 +1,14 @@
 # Galaxy Inventory
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-09
+**Last updated:** 2026-11-11
 
-This index points to the living records that hold Galaxy's current state. On 2026-11-05 the cluster held five nodes, 13 VMs, six LXCs and three templates; 15 guests were running and `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. `grey-server` holds VM 112 `hermes-01` since 2026-11-04, and `green-server` holds no guests. No guest is an HA resource and there is no shared storage.
+This index points to the living records that hold Galaxy's current state. On 2026-11-11 the cluster held five nodes, 12 VMs, six LXCs and three templates; 12 guests were running and `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. `grey-server` holds VM 112 `hermes-01` since 2026-11-04, and `green-server` holds no guests. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
 
+- 2026-11-11: I deleted VM 103 `win11-dev` from Grey's `local-lvm`, which was 53.49% used earlier that afternoon and 48.87% after. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
+- 2026-11-11: I lowered six system disks on Grey's `ssd-lvm1` ahead of a migration: `splunk-siem` 150G to 100G, `security-01` 100G to 64G, `HQ-DC01` and `HQ-DC02` 80G to 48G, `HQ-MGT01` 100G to 64G and `HQ-WS001` 80G to 64G. The pool went from 13.07% to 12.66% used. [Guest Disk Shrink](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
 - 2026-11-09: I expanded `ubuntu-dev` from 230 GiB to 330 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
 - 2026-11-09: I moved `blue-server` into a ThinkCentre M920q with an i5-8500T and added a second 8 GB module to `green-server`. No guest moved. Blue's four containers were down from 7:08 AM to about 8:20 AM, because the new NIC did not match Blue's `nic0` pin and its cable then sat in an IoT access port. [Chassis swap and memory upgrade](../../../Infrastructure/Hardware/Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md), [troubleshooting](../../../Infrastructure/Compute/Galaxy/Documentation/Troubleshooting/blue-server%20Unreachable%20After%20Chassis%20Swap%20-%202026-11-09.md).
 

@@ -1,14 +1,15 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-11
 
-This inventory maps the workloads on Galaxy's 19 guests: 13 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
+This inventory maps the workloads on Galaxy's 18 guests: 12 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
 I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%20Repairs%20-%202026-10-07.md): docker-main and security-01 serve upstream node_exporter 1.9.0 with their distro units masked; the unused NUT monitors on Red and Grey are masked, and Grey still serves UPS-02 telemetry.
 
 ## Recent changes
 
+- 2026-11-11: I deleted VM 103 `win11-dev`, which held the offline GitHub Actions runner `windows-x64-1` for `Duresa7/app-portal`. The runner's registration and the repository's `WINDOWS_RUNNER` variable are still in place. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 - 2026-11-06: I updated OS packages on all twelve running Linux guests. Docker Engine is 29.9.3 and containerd 2.4.2 on every Docker host; the Wazuh central packages are 4.14.10-1. `security-01`, `splunk-siem` and `ubuntu-dev` need reboots for new kernels. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-11-06.md).
 
 - 2026-11-04: New VM 112 `hermes-01` runs Hermes Agent v0.22.7 as `dkadi`, reachable in Discord as the Horus AS bot. [Install and Discord Gateway](../../../Platforms/Hermes%20Agent/Documentation/Change%20Records/Install%20and%20Discord%20Gateway%20-%202026-11-04.md).
@@ -68,7 +69,6 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) 2.7.21.5, HTTPS 443<br>Azure Connected Machine agent 1.67.03504.3207, Connected<br>Entra provisioning agent service running<br>OpenSSH |
 | HQ-WS001 | VM 310 | grey-server | Windows 11 test workstation (`192.168.65.20`, VLAN 65); stopped on 2026-09-24 | Windows 11 Pro 25H2<br>Windows LAPS and the Tier 2 local-administrator policy<br>OpenSSH since 2026-09-19 |
 | kali-pen | VM 102 | grey-server | Penetration-testing VM on VLAN 40; stopped on 2026-09-24 | Kali Linux 2026.2 installer build |
-| win11-dev | VM 103 | grey-server | Standalone Windows development workstation (`192.168.40.117`, VLAN 40) | Windows 11 Pro 25H2<br>OpenSSH Server<br>QEMU guest agent<br>GitHub Actions runner `windows-x64-1` for `Duresa7/app-portal`, a LocalSystem service; no development tools installed |
 | hermes-01 | VM 112 | grey-server | Hermes Agent personal assistant (`192.168.80.22`, VLAN 80), Discord bot Horus AS | Debian 13<br>Hermes Agent v0.22.7, stable channel, user units `hermes-gateway.service` and `hermes-dashboard.service` with linger<br>Dashboard on TCP 9119, password login<br>Executor MCP through the `SSH` connection, approvals off<br>Anthropic API, `claude-sonnet-5-5`<br>No monitoring or Wazuh agent |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.8<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.19.12<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.8 |

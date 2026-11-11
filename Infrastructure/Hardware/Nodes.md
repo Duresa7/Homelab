@@ -1,12 +1,14 @@
 # Galaxy Node Spec Sheet
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-09
+**Last updated:** 2026-11-11
 
 I run Galaxy as five nodes with 32 physical CPU cores, 40 hardware threads, 114.73 GiB of usable memory, five NVMe boot devices, two SATA SSDs, and four SATA HDDs. Blue's 465.76 GiB HDD is unused after passing its extended test. Green's 298.09 GiB HDD is blank but failed its extended test and must not receive data. Green's memory errors traced to its SK Hynix module on 2026-10-28; I removed it, and on 2026-11-09 I paired its Micron module with a second one. Blue moved into a ThinkCentre M920q on 2026-11-09, so four of the five nodes are M920q systems. The memory and storage-pool figures below are the 2026-09-24 readback through `pvesh`, except Blue's and Green's memory, read on 2026-11-09.
 
 ## Recent changes
 
+- 2026-11-11: I deleted VM 103 `win11-dev` and its three volumes from Grey's `local-lvm`, which was then 48.87% used with 425,583,802 KiB available. [win11-dev Removal](../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
+- 2026-11-11: I lowered six system disks on Grey's `ssd-lvm1`, VMs 109, 200, 301, 302, 303 and 310, by 202 GiB of provisioned size in total. Afterwards `ssd-lvm1` was 12.66% used with 1,676,777,747 KiB available. [Guest Disk Shrink](../Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
 - 2026-11-09: I expanded VM 105 `ubuntu-dev` on Grey's NVMe-backed `local-lvm` from 230 GiB to 330 GiB. Afterward, the pool was 39.80% used with 501,078,523 KiB available. [Storage expansion](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
 - 2026-11-09: Blue moved from its ThinkCentre M910q into a ThinkCentre M920q with an i5-8500T, taking its NVMe, HDD and memory along; the M910q is kept for spare parts. Green took a second Micron 8 GB module and reports 15.46 GiB. Blue's `nic0` pin had to be pointed at the new NIC before it rejoined, and Blue now carries the offload `post-up` line. [Chassis swap and memory upgrade](Documentation/Change%20Records/Blue%20Chassis%20Swap%20and%20Green%20Memory%20Upgrade%20-%202026-11-09.md), [troubleshooting](../Compute/Galaxy/Documentation/Troubleshooting/blue-server%20Unreachable%20After%20Chassis%20Swap%20-%202026-11-09.md).
 - 2026-11-04: Grey carries VM 112 `hermes-01` (2 vCPU, a fixed 4 GiB, 60 GiB on `ssd-lvm1`). Afterwards Grey had 45.67 GiB of 62.72 GiB in use with 17.0 GiB available, and `ssd-lvm1` was 14.15% used. [hermes-01 Provisioning](../Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
@@ -46,7 +48,7 @@ I verified the devices against all five nodes on 2026-08-04. The Used-by column 
 | blue-server | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 465.76 GiB | Unused; empty GPT, no filesystem or LVM; passed its extended SMART test |
 | green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and an empty `local-lvm` |
 | green-server | /dev/sda | HDD | HITACHI HTS723232A7A364 | 298.09 GiB | Blank; extended test stopped with a read failure and two pending sectors; do not use |
-| grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot and `local-lvm`: VMs 102, 103 and 105 and CT 110's rootfs |
+| grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot and `local-lvm`: VMs 102 and 105 and CT 110's rootfs |
 | grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin: VMs 109, 112, 200, 301, 302, 303 and 310 and templates 101, 300 and 9000 |
 | grey-server | /dev/sdb | HDD | TOSHIBA_DT01ACA200 | 1.82 TiB | `hddpool-1` ZFS: CT 110's `/data` |
 | purple-server | /dev/nvme0n1 | NVMe | THNSF5256GPUK TOSHIBA | 238.47 GiB | Proxmox boot and `local-lvm`: VMs 116, 121 and 401 |

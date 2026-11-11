@@ -67,7 +67,6 @@ d.card("secure", "jedi", "Jedi PC", sub1="192.168.50.241", sub2="privileged work
 # --- row 4: lab and utility guests ------------------------------------------------
 d.group("personal", "Personal-A", badge="VLAN 40 · Internal", family="Internal")
 d.card("personal", "ubuntu", "ubuntu-dev", sub1="192.168.40.179 · Docker", sub2="Ubuntu 26.04.1, VS Code", logo="ubuntu", icons=["node-exporter", "wazuh"], node="grey")
-d.card("personal", "win11", "win11-dev", sub1="192.168.40.117 · OpenSSH", sub2="Windows 11 Pro 25H2 dev", logo="windows-11", node="grey")
 d.card("personal", "kali", "kali-pen", sub1="stopped · Kali 2026.2", sub2="pentest VM", logo="kali-linux", icons=[], node="grey")
 d.card("personal", "ansible", "ansible-01", sub1="192.168.40.36 · Ansible 14.2", sub2="Semaphore 2.18, PXE", logo="ansible", icons=["semaphore", "wazuh"], node="blue")
 d.card("personal", "dblue", "docker-blue", sub1="192.168.40.39 · LXC", sub2="Executor and MCP gateways", logo="docker", icons=["rustdesk", "meshcentral", "wazuh"], node="blue")

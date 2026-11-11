@@ -300,14 +300,3 @@ auth = "key"
 keyRef = "/keys/id_ed25519"
 role = "admin"
 group = "homelab"
-
-# Windows 11 Pro dev VM (VM 103 on grey-server), Personal-A VLAN 40 (Windows OpenSSH)
-[[profiles]]
-name = "win11_dev"
-host = "192.168.40.117"
-port = 22
-user = "dkadi"
-auth = "key"
-keyRef = "/keys/id_ed25519"
-role = "admin"
-group = "homelab"

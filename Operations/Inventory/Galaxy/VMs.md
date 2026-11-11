@@ -1,11 +1,15 @@
 # Galaxy VMs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-09
+**Last updated:** 2026-11-11
 
-Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` were stopped. I read the other guests' figures back from `pvesh get /cluster/resources` and the guest configuration files on 2026-09-24, and VM 820's and VM 103's network on 2026-10-30. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
+Galaxy has 12 QEMU VMs and three templates. On 2026-11-11 six VMs were running; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. I read every guest's node, state and memory back from `pvesh get /cluster/resources` and `qm config` on 2026-11-02, and the other figures on 2026-09-24. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-11-11: I deleted VM 103 `win11-dev` on Grey with its 120G disk, EFI and TPM volumes, and removed its `win11_dev` ssh-mcp profile and its diagram cards. Its UniFi reservation at `192.168.40.117` survived two API forgets and is still open. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
+
+- 2026-11-11: I lowered six system disks on `ssd-lvm1` before migrating them: `splunk-siem` from 150G to 100G, `security-01` from 100G to 64G, `HQ-DC01` and `HQ-DC02` from 80G to 48G, `HQ-MGT01` from 100G to 64G and `HQ-WS001` from 80G to 64G. Each booted on its new disk and passed its checks. `HQ-DC02` had been shut down at 1:01 PM that day, before the work, and I left it stopped; a readback afterwards also found `win11-dev` and `hermes-01` stopped. [Guest Disk Shrink](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
 
 - 2026-11-09: I expanded `ubuntu-dev` from 230 GiB to 330 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
 
@@ -13,9 +17,9 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 
 - 2026-11-04: I reduced VM 200 `security-01` on Grey from 10 GiB with an 8 GiB balloon floor to a fixed 8 GiB, through one clean power cycle. Wazuh and its forwarder came back and 14 agents reconnected. [security-01 Memory Reduction](../../../Platforms/Wazuh/Documentation/Change%20Records/security-01%20Memory%20Reduction%20-%202026-11-04.md).
 
-- 2026-10-31: I pruned unused Docker images on `alpha-prod-01` (2.3 GB reclaimed) and `security-01` (430.7 MB). No container changed. I left `ubuntu-dev`'s local build images in place, and `app-01` stayed stopped. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
+- 2026-11-03: A readback of every VM found `splunk-siem` at 8 GiB, not the 12 GiB this file listed, and `HQ-MGT01` stopped.
 
-- 2026-10-30: I created VM 820 `ci-k3s-01` on Green, the k3s node for my CI runners, on KUB-A VLAN 82. VM 103 `win11-dev` became a runner-only machine and moved from VLAN 40 to VLAN 82 at `192.168.82.11`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
+- 2026-10-31: I pruned unused Docker images on `alpha-prod-01` (2.3 GB reclaimed) and `security-01` (430.7 MB). No container changed. I left `ubuntu-dev`'s local build images in place, and `app-01` stayed stopped. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
 
 - 2026-10-11: I increased `alpha-prod-01` to 8 GiB maximum and minimum RAM and Minecraft to a 4 GiB maximum heap with a 5 GiB container limit. I verified the retained world, Minecraft LAN/public responses and both TeamSpeak paths after the VM restart. [Memory increase and verification](../../../Platforms/Minecraft/Documentation/Change%20Records/Memory%20and%20Operator%20Update%20-%202026-10-11.md).
 
@@ -31,19 +35,17 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 | VMID | Name | Node | State | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 102 | kali-pen | grey-server | stopped | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured | 192.168.40.1 | 40 | disabled |
-| 103 | win11-dev | grey-server | running | Windows 11 Pro 25H2 | 4 | 8 GiB | 120G | 192.168.82.11/24 | 192.168.82.1 | 82 | disabled |
 | 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 330G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
-| 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 12 GiB | 150G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 112 | hermes-01 | grey-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
+| 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 8 GiB | 100G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
+| 112 | hermes-01 | grey-server | stopped | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
-| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 100G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
-| 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
-| 302 | HQ-DC02 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 80G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
-| 303 | HQ-MGT01 | grey-server | running | Windows Server 2025 Standard | 2 | 6 GiB | 100G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
-| 310 | HQ-WS001 | grey-server | stopped | Windows 11 Pro 25H2 | 4 | 8 GiB | 80G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
+| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 64G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 48G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
+| 302 | HQ-DC02 | grey-server | stopped | Windows Server 2025 Standard | 4 | 4 GiB | 48G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
+| 303 | HQ-MGT01 | grey-server | stopped | Windows Server 2025 Standard | 2 | 6 GiB | 64G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
+| 310 | HQ-WS001 | grey-server | stopped | Windows 11 Pro 25H2 | 4 | 8 GiB | 64G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
 | 401 | alpha-prod-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 6 | 8 GiB maximum / 8 GiB minimum | 60G | 192.168.80.118/24 | 192.168.80.1 | 80 | disabled |
-| 820 | ci-k3s-01 | green-server | running | Ubuntu 26.04.1 LTS | 4 | 6 GiB | 120G | 192.168.82.10/24 | 192.168.82.1 | 82 | disabled |
 
 ## Templates
 | VMID | Name | Node | OS | vCPU | Memory | Disk | IPv4 | Gateway | VLAN | HA |
@@ -53,53 +55,6 @@ Galaxy has 13 QEMU VMs and three templates. On 2026-10-30 nine VMs were running;
 | 9000 | ubuntu-cloud-template | grey-server | Ubuntu 24.04.4 LTS | 2 | 2 GiB | 20G | none | none | 80 | disabled |
 
 ## VM Details
-
-### VM 103 - win11-dev
-
-I built this guest on Green between 2026-09-20 and 2026-09-21 and moved it to Grey on 2026-09-23 after Green's memory test failures. It runs standalone in `WORKGROUP` with local `dkadi`, and ssh-mcp reaches it as profile `win11_dev`. Windows reports a retail licence, `LicenseStatus 1`. Since 2026-10-30 it is a runner-only machine for GitHub Actions on KUB-A VLAN 82 at static `192.168.82.11`; App Portal's `windows-x64-1` runner service logs on as local administrator `gh-runner`, and RDP is open to Jedi PC only. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md). [Completion record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Completion%20-%202026-09-21.md), [migration record](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Grey%20Migration%20-%202026-09-23.md).
-
-OVMF with pre-enrolled Secure Boot keys, TPM 2.0, `virtio-scsi-single`, and `vmbr0` VLAN 82. Disks: `local-lvm:vm-103-disk-0` (4 MiB EFI), `vm-103-disk-1` (120 GiB system), and `vm-103-disk-2` (4 MiB TPM). `onboot=1`; no installation discs remain attached. Secure Boot is enabled and TPM is ready. `sshd` and `QEMU-GA` start automatically; the final device query reports no unresolved drivers. No development tools are installed.
-
-### VM 102 - kali-pen
-
-I rebuilt this VM on 2026-08-26. The earlier `kali-pen` was VM 106, a 4 vCPU, 5.86 GiB guest with a 50G disk, no VLAN tag, and the Kali 2025.2 installer; I destroyed it at 10:42 EDT and created this one at 10:52 EDT under VMID 102. The new guest is tagged VLAN 40, carries the Kali 2026.2 installer, and has the QEMU agent and a QXL display enabled. It was stopped on 2026-09-06 and again on 2026-09-24, so its address has never been read back; the previous VM held 192.168.40.226.
-
-#### Identity
-| Setting | Value |
-| --- | --- |
-| Node | grey-server |
-| High availability | disabled |
-| Template | no |
-| OS family | Linux |
-| Guest OS | Kali Linux, 2026.2 installer |
-| IPv4 | Not captured; the VM was stopped at every readback |
-| Gateway | 192.168.40.1 |
-
-#### Hardware
-| Setting | Value |
-| --- | --- |
-| vCPU | 6 |
-| CPU type | host |
-| Memory | 8 GiB |
-| Ballooning | default; no `balloon` key, so the minimum equals the maximum |
-| BIOS | ovmf |
-| Machine | q35 |
-| SCSI controller | virtio-scsi-single |
-| Display | qxl |
-| QEMU agent | enabled |
-| TPM | disabled |
-
-#### Storage
-| Device | Bus | Storage | Volume | Size | Media | Options |
-| --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | local-lvm | vm-102-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
-| ide2 | ide | local | iso/kali-linux-2026.2-installer-amd64.iso | 4689972K | cdrom | default |
-| efidisk0 | efidisk | local-lvm | vm-102-disk-0 | 4M | disk | efitype 4m |
-
-#### Network
-| NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| net0 | virtio | vmbr0 | 40 | Not captured | 192.168.40.1 | disabled | `<REDACTED_KALI_VM_MAC>` |
 
 ### VM 105 - ubuntu-dev
 
@@ -167,7 +122,7 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 | --- | --- |
 | vCPU | 6 |
 | CPU type | host |
-| Memory | 12 GiB |
+| Memory | 8 GiB |
 | Ballooning | off; fixed memory |
 | BIOS | ovmf |
 | Machine | q35 |
@@ -179,9 +134,8 @@ I applied the Linux Host Baseline Standard on 2026-08-13, following the single-a
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-109-disk-1 | 150G | disk | discard, I/O thread, SSD emulation |
-| ide2 | ide | local | iso/Rocky-10.2-x86_64-boot.iso | 1024940K | cdrom | default |
-| efidisk0 | efidisk | ssd-lvm1 | vm-109-disk-0 | 4M | disk | default |
+| scsi0 | scsi | ssd-lvm1 | vm-109-disk-2 | 100G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | ssd-lvm1 | vm-109-disk-0 | 528K | disk | default |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
@@ -308,7 +262,7 @@ I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. [Migration
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-200-disk-1 | 100G | disk | cache=writeback, discard, I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm1 | vm-200-disk-1 | 64G | disk | cache=writeback, discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | ssd-lvm1 | vm-200-disk-0 | 4M | disk | default |
 
 #### Network
@@ -352,7 +306,7 @@ Cloned from VM 300 on 2026-09-09 and promoted the same day. This guest holds the
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-301-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm1 | vm-301-disk-1 | 48G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | ssd-lvm1 | vm-301-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
 | tpmstate0 | tpmstate | ssd-lvm1 | vm-301-disk-2 | 4M | disk | version 2.0 |
 | ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
@@ -398,7 +352,7 @@ Cloned from VM 300 on 2026-09-09 and promoted into the existing domain. It holds
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-302-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm1 | vm-302-disk-1 | 48G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | ssd-lvm1 | vm-302-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
 | tpmstate0 | tpmstate | ssd-lvm1 | vm-302-disk-2 | 4M | disk | version 2.0 |
 | ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
@@ -444,7 +398,7 @@ Cloned from VM 300 on 2026-09-09 and joined to the domain, where it sits in `OU=
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-303-disk-1 | 100G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm1 | vm-303-disk-1 | 64G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | ssd-lvm1 | vm-303-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
 | tpmstate0 | tpmstate | ssd-lvm1 | vm-303-disk-2 | 4M | disk | version 2.0 |
 | ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
@@ -498,7 +452,7 @@ OpenSSH Server has been enabled on this machine since 2026-09-19, and `Allow Sec
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-310-disk-1 | 80G | disk | discard, I/O thread, SSD emulation |
+| scsi0 | scsi | ssd-lvm1 | vm-310-disk-1 | 64G | disk | discard, I/O thread, SSD emulation |
 | efidisk0 | efidisk | ssd-lvm1 | vm-310-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
 | tpmstate0 | tpmstate | ssd-lvm1 | vm-310-disk-2 | 4M | disk | version 2.0 |
 
@@ -552,12 +506,6 @@ On 2026-10-11 I increased both memory settings to 8192 MiB through a clean shutd
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | net0 | virtio | vmbr0 | 80 | 192.168.80.118/24 | 192.168.80.1 | enabled | `<REDACTED_TEAMSPEAK_HOST_MAC>` |
-
-### VM 820 - ci-k3s-01
-
-I built this guest on 2026-10-30 as the single k3s server node for my self-hosted GitHub Actions runners. Ubuntu Server 26.04.1 LTS minimized from autoinstall, k3s v1.36.5+k3s1 and the ARC controller chart 0.15.1. It carries the Linux host baseline with `sudo.ws` selected in place of Ubuntu's default `sudo-rs`. ssh-mcp reaches it as profile `ci_k3s_01`. [Phase 1 Build](../../../Platforms/CI%20Runners/Documentation/Change%20Records/Phase%201%20Build%20-%202026-10-30.md).
-
-q35, OVMF with a 4 MiB EFI disk and no pre-enrolled keys, `cpu: host`, 4 cores, 6144 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-820-disk-0` (4 MiB EFI) and `vm-820-disk-1` (120 GiB, `discard`, `iothread`, `ssd`, `cache=writeback`). `virtio` on `vmbr0`, VLAN 82, `firewall=1`. QEMU agent on, `onboot=1`, no installation media attached. 6 GiB is the ceiling while Green runs on one 8 GB memory module.
 
 ### VM 112 - hermes-01
 

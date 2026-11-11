@@ -1,7 +1,7 @@
 # Galaxy Proxmox Cluster
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-11
 
 Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 13 VMs, six LXCs and three templates on node-local storage, with no shared storage and no HA resources. This folder owns the bridges, the two-link Corosync setup, the storage references, the Datacenter firewall, and the cluster's change and troubleshooting records.
 
@@ -12,7 +12,7 @@ Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 13 VMs, six LXCs and t
 | Nodes | `grey-server`, `purple-server`, `blue-server`, `red-server`, `green-server` (192.168.70.10 to .14) |
 | Quorum | 5 of 5 votes, `config_version: 9` |
 | Corosync | `link0` on MGMT-A (VLAN 70), `link1` on Cluster-Net (VLAN 71, 192.168.71.0/24) |
-| Guests | 19 (15 running on 2026-11-05; `kali-pen`, `app-01`, `HQ-MGT01` and `HQ-WS001` stopped); `green-server` holds none |
+| Guests | 18 (12 running on 2026-11-11; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` stopped); `green-server` holds none |
 | HA | `ha-manager config` empty |
 | `green-server` memory | 8 GB, one Micron module, since the failed SK Hynix came out on 2026-10-28 |
 
@@ -34,6 +34,8 @@ UniFi owns the VLAN, zone, switch-port and gateway policy records under [Infrast
 
 | Date | Record |
 | --- | --- |
+| 2026-11-11 | [win11-dev Removal](Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md) |
+| 2026-11-11 | [Guest Disk Shrink](Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md) |
 | 2026-10-12 | [ubuntu-dev X11 Forwarding Enabled](Documentation/Change%20Records/ubuntu-dev%20X11%20Forwarding%20Enabled%20-%202026-10-12.md) |
 | 2026-09-28 | [ubuntu-dev Storage Expansion](Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-09-28.md) |
 | 2026-09-24 | [CT 107 and CT 108 HA Removal](Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md) |

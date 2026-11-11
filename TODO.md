@@ -1,11 +1,15 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-06
+**Last updated:** 2026-11-11
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
+
+- [ ] **Finish the `win11-dev` leftovers.** Forget its client in the UniFi UI to drop the `192.168.40.117` reservation; delete or repoint `WINDOWS_RUNNER` on `Duresa7/app-portal` and remove the offline `windows-x64-1` runner; copy the tracked `homelab-ops` skill to `hermes-01` when it next runs. [Open items](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md#open-items).
+
+- [ ] **Decide what happens to `HQ-WS001`'s BitLocker.** Its C: is fully encrypted with protection off, no key protectors and no recovery key in AD, so the key sits in the clear on the disk. Either add a TPM protector and escrow the recovery key to AD, or turn the encryption off. [Guest Disk Shrink findings](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md#findings-outside-this-change).
 
 - [ ] **Install `proxmox-default-headers` on `grey-server`.** Kernel packages arrive without headers, so DKMS doesn't build the GTX 1080 Ti driver, and `docker-main` won't start after the next kernel reboot. [Open items](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/PVE%209.2.26%20Update%20and%20Node%20Reboots%20-%202026-11-06.md#open-items).
 
