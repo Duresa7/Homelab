@@ -1,9 +1,9 @@
 # Active Directory
 
 **Created:** 2026-09-09  
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-11
 
-I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy's `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
+I run the `ad.alphasecunited.com` forest on two Windows Server 2025 Standard domain controllers in IDENTITY-A, VLAN 65, on Galaxy: `HQ-DC01` on `green-server` since the [2026-11-11 move](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md), `HQ-DC02` and the other identity guests on `grey-server`. I built it on 2026-09-09. It shares no state with the Windows Server work I retired to the archive on 2026-09-06.
 
 ## Current State
 

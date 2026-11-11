@@ -34,7 +34,7 @@ d.group("workstation", "workstation group", badge="ID 020", family="Internal", n
 agent("workstation", "ubuntu", "ubuntu-dev", "192.168.40.179", "020", "grey", extra="agent 4.14.6-1", icons=["ubuntu"])
 
 # --- row 1: the manager host, Splunk and the alert bot ---------------------------------
-d.group("sec01", "security-01 · 192.168.72.2 · VM 200 on grey-server · Ubuntu 24.04", badge="Security-A · VLAN 72", family="Observability", cols=3)
+d.group("sec01", "security-01 · 192.168.72.2 · VM 200 on green-server · Ubuntu 24.04", badge="Security-A · VLAN 72", family="Observability", cols=3)
 d.card("sec01", "mgr", "Wazuh manager 4.14.7", sub1="1514 events · 1515 enrolment", sub2="15 remote agents, all active", logo="wazuh")
 d.card("sec01", "idx", "Indexer and dashboard", sub1="HTTPS 443 · API 55000", sub2="wazuh.alphasecunited.com, NPM", logo="wazuh", icons=["nginx-proxy-manager"])
 d.card("sec01", "malware", "Malware detection, twice", sub1="VirusTotal on new file hashes", sub2="rule 100200, known-bad list", logo="virustotal")

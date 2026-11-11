@@ -7,6 +7,7 @@ I run Galaxy as five nodes with 32 physical CPU cores, 40 hardware threads, 114.
 
 ## Recent changes
 
+- 2026-11-11: Green carries VM 301 `HQ-DC01` and VM 200 `security-01` (12 GiB between them) on its `local-lvm`, which was 33.50% used afterwards, and Red carries the stopped VM 112 `hermes-01` beside CT 842. Grey went from 39.2 to 27.0 GiB in use. Green is not on a UPS. [Guest Moves to Green and Red](../Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 - 2026-11-11: I deleted VM 103 `win11-dev` and its three volumes from Grey's `local-lvm`, which was then 48.87% used with 425,583,802 KiB available. [win11-dev Removal](../Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 - 2026-11-11: I lowered six system disks on Grey's `ssd-lvm1`, VMs 109, 200, 301, 302, 303 and 310, by 202 GiB of provisioned size in total. Afterwards `ssd-lvm1` was 12.66% used with 1,676,777,747 KiB available. [Guest Disk Shrink](../Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
 - 2026-11-09: I expanded VM 105 `ubuntu-dev` on Grey's NVMe-backed `local-lvm` from 230 GiB to 330 GiB. Afterward, the pool was 39.80% used with 501,078,523 KiB available. [Storage expansion](../Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
@@ -46,14 +47,14 @@ I verified the devices against all five nodes on 2026-08-04. The Used-by column 
 | --- | --- | --- | --- | --- | --- |
 | blue-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLW256HEHP-000L7 | 238.47 GiB | Proxmox boot, root, swap, `local-lvm`, and CTs 100, 104, 107 and 108 |
 | blue-server | /dev/sda | HDD | WDC WD5000LPVX-08V0TT5 | 465.76 GiB | Unused; empty GPT, no filesystem or LVM; passed its extended SMART test |
-| green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot, root, swap, and an empty `local-lvm` |
+| green-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot and `local-lvm`: VMs 200 and 301 |
 | green-server | /dev/sda | HDD | HITACHI HTS723232A7A364 | 298.09 GiB | Blank; extended test stopped with a read failure and two pending sectors; do not use |
 | grey-server | /dev/nvme0n1 | NVMe | CT1000P310SSD8 | 931.51 GiB | Proxmox boot and `local-lvm`: VMs 102 and 105 and CT 110's rootfs |
-| grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin: VMs 109, 112, 200, 301, 302, 303 and 310 and templates 101, 300 and 9000 |
+| grey-server | /dev/sda | SSD | CT2000BX500SSD1 | 1.82 TiB | `ssd-lvm1` LVM-thin: VMs 109, 302, 303 and 310 and templates 101, 300 and 9000 |
 | grey-server | /dev/sdb | HDD | TOSHIBA_DT01ACA200 | 1.82 TiB | `hddpool-1` ZFS: CT 110's `/data` |
 | purple-server | /dev/nvme0n1 | NVMe | THNSF5256GPUK TOSHIBA | 238.47 GiB | Proxmox boot and `local-lvm`: VMs 116, 121 and 401 |
 | purple-server | /dev/sda | SSD | Samsung SSD 850 EVO 250GB | 232.89 GiB | `ssd-lvm2` LVM-thin, restricted to Purple; empty |
-| red-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot and `local-lvm`: CT 842's rootfs |
+| red-server | /dev/nvme0n1 | NVMe | SAMSUNG MZVLB256HAHQ-000L7 | 238.47 GiB | Proxmox boot and `local-lvm`: VM 112 and CT 842's rootfs |
 | red-server | /dev/sda | HDD | ST1000LM035-1RK172 | 931.51 GiB | CT 842 `/data` through a host ext4 bind mount |
 
 Purple's boot device changed on 2026-07-25. The Samsung MZVLB256HAHQ-000L7 that shipped in it wore out at 169% of rated endurance, so I cloned it onto the Toshiba THNSF5256GPUK listed above and added the 850 EVO on the SATA port at the same time. On 2026-07-28 I configured the 850 EVO as `ssd-lvm2`, restricted the pool to Purple, and moved Kasm VM 122 onto it. The pool returned to 0.00 percent after I destroyed VM 122 and all of its volumes on 2026-08-19. Both drives and the retired Samsung are in the [drive inventory](Components/Drives/README.md); the swap is written up in [Purple Boot NVMe Replacement](../Compute/Galaxy/Documentation/Change%20Records/Purple%20Boot%20NVMe%20Replacement%20-%202026-07-25.md).

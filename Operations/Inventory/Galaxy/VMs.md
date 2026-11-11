@@ -7,6 +7,8 @@ Galaxy has 12 QEMU VMs and three templates. On 2026-11-11 six VMs were running; 
 
 ## Recent changes
 
+- 2026-11-11: I moved VM 301 `HQ-DC01` and VM 200 `security-01` from Grey to Green, and VM 112 `hermes-01` from Grey to Red, each shut down and copied to the new node's `local-lvm`. Both running guests came back and passed their checks; `hermes-01` stays stopped. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
+
 - 2026-11-11: I deleted VM 103 `win11-dev` on Grey with its 120G disk, EFI and TPM volumes, and removed its `win11_dev` ssh-mcp profile and its diagram cards. Its UniFi reservation at `192.168.40.117` survived two API forgets and is still open. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 
 - 2026-11-11: I lowered six system disks on `ssd-lvm1` before migrating them: `splunk-siem` from 150G to 100G, `security-01` from 100G to 64G, `HQ-DC01` and `HQ-DC02` from 80G to 48G, `HQ-MGT01` from 100G to 64G and `HQ-WS001` from 80G to 64G. Each booted on its new disk and passed its checks. `HQ-DC02` had been shut down at 1:01 PM that day, before the work, and I left it stopped; a readback afterwards also found `win11-dev` and `hermes-01` stopped. [Guest Disk Shrink](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
@@ -37,11 +39,11 @@ Galaxy has 12 QEMU VMs and three templates. On 2026-11-11 six VMs were running; 
 | 102 | kali-pen | grey-server | stopped | Kali Linux 2026.2 | 6 | 8 GiB | 100G | Not captured | 192.168.40.1 | 40 | disabled |
 | 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 330G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 8 GiB | 100G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
-| 112 | hermes-01 | grey-server | stopped | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
+| 112 | hermes-01 | red-server | stopped | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
-| 200 | security-01 | grey-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 64G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
-| 301 | HQ-DC01 | grey-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 48G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
+| 200 | security-01 | green-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 64G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
+| 301 | HQ-DC01 | green-server | running | Windows Server 2025 Standard | 4 | 4 GiB | 48G | 192.168.65.10/24 | 192.168.65.1 | 65 | disabled |
 | 302 | HQ-DC02 | grey-server | stopped | Windows Server 2025 Standard | 4 | 4 GiB | 48G | 192.168.65.11/24 | 192.168.65.1 | 65 | disabled |
 | 303 | HQ-MGT01 | grey-server | stopped | Windows Server 2025 Standard | 2 | 6 GiB | 64G | 192.168.65.12/24 | 192.168.65.1 | 65 | disabled |
 | 310 | HQ-WS001 | grey-server | stopped | Windows 11 Pro 25H2 | 4 | 8 GiB | 64G | 192.168.65.20/24 | 192.168.65.1 | 65 | disabled |
@@ -237,7 +239,7 @@ I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. [Migration
 #### Identity
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | green-server |
 | High availability | disabled |
 | Template | no |
 | OS family | Linux |
@@ -262,8 +264,8 @@ I moved both disks to Purple's NVMe-backed `local-lvm` on 2026-09-11. [Migration
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-200-disk-1 | 64G | disk | cache=writeback, discard, I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-200-disk-0 | 4M | disk | default |
+| scsi0 | scsi | local-lvm | vm-200-disk-1 | 64G | disk | cache=writeback, discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-200-disk-0 | 528K | disk | default |
 
 #### Network
 | NIC | Model | Bridge | VLAN | IPv4 | Gateway | Firewall | MAC |
@@ -277,7 +279,7 @@ Cloned from VM 300 on 2026-09-09 and promoted the same day. This guest holds the
 #### Identity
 | Setting | Value |
 | --- | --- |
-| Node | grey-server |
+| Node | green-server |
 | Guest hostname | HQ-DC01 |
 | Role | First domain controller; all five operations master roles, global catalog, AD-integrated DNS |
 | High availability | disabled |
@@ -306,9 +308,9 @@ Cloned from VM 300 on 2026-09-09 and promoted the same day. This guest holds the
 #### Storage
 | Device | Bus | Storage | Volume | Size | Media | Options |
 | --- | --- | --- | --- | --- | --- | --- |
-| scsi0 | scsi | ssd-lvm1 | vm-301-disk-1 | 48G | disk | discard, I/O thread, SSD emulation |
-| efidisk0 | efidisk | ssd-lvm1 | vm-301-disk-0 | 4M | disk | efitype 4m, pre-enrolled keys |
-| tpmstate0 | tpmstate | ssd-lvm1 | vm-301-disk-2 | 4M | disk | version 2.0 |
+| scsi0 | scsi | local-lvm | vm-301-disk-1 | 48G | disk | discard, I/O thread, SSD emulation |
+| efidisk0 | efidisk | local-lvm | vm-301-disk-0 | 528K | disk | efitype 4m, pre-enrolled keys |
+| tpmstate0 | tpmstate | local-lvm | vm-301-disk-2 | 4M | disk | version 2.0 |
 | ide0 | ide | local | virtio-win-0.1.285.iso | 771138K | cdrom | virtio driver media |
 
 #### Network
@@ -511,7 +513,9 @@ On 2026-10-11 I increased both memory settings to 8192 MiB through a clean shutd
 
 I built this guest on 2026-11-04 to run [Hermes Agent](../../../Platforms/Hermes%20Agent/README.md), installed the same evening as `dkadi` and reachable in Discord as Horus AS. It is a full clone of template 101 with a new machine ID and host keys, Debian 13 on kernel 6.12.115, and the Linux host baseline. There is no desktop environment, no Docker, no monitoring exporter and no Wazuh agent. ssh-mcp reaches it as profile `hermes_01`. [hermes-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md).
 
-q35, OVMF with a 4 MiB EFI disk, `cpu: host`, 2 cores, 4096 MiB with ballooning off, `virtio-scsi-single`. Disks: `ssd-lvm1:vm-112-disk-0` (4 MiB EFI) and `vm-112-disk-1` (60 GiB, `discard`, `iothread`, `ssd`). `virtio` on `vmbr0`, VLAN 80, `firewall=1`. Static `192.168.80.22/24` in `/etc/network/interfaces`, gateway and resolver `192.168.80.1`. QEMU agent on, `onboot=1`, no installation media attached.
+q35, OVMF with a 4 MiB EFI disk, `cpu: host`, 2 cores, 4096 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-112-disk-0` (EFI, 528K) and `vm-112-disk-1` (60 GiB, `discard`, `iothread`, `ssd`). `virtio` on `vmbr0`, VLAN 80, `firewall=1`. Static `192.168.80.22/24` in `/etc/network/interfaces`, gateway and resolver `192.168.80.1`. QEMU agent on, `onboot=1`, no installation media attached.
+
+On 2026-11-11 I moved it from Grey's `ssd-lvm1` to Red's `local-lvm` while it was stopped, and left it stopped. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 
 ## Template Details
 

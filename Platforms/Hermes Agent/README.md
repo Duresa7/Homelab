@@ -1,7 +1,7 @@
 # Hermes Agent
 
 **Created:** 2026-11-04  
-**Last updated:** 2026-11-07
+**Last updated:** 2026-11-11
 
 I run [Hermes Agent](https://github.com/NousResearch/hermes-agent) from Nous Research on `hermes-01` as a personal assistant I can message in Discord. The agent calls itself **Horus**; Hermes is only the software underneath. It talks to me through its own bot user, **Horus AS**, kept separate from the **Anubis AS** alert bot so a fault or token reset here cannot touch alert delivery. It reaches my lab through Executor's `SSH` connection, which gives it ssh-mcp and therefore root or sudo on every host ssh-mcp holds, with no approval prompts.
 
@@ -9,7 +9,7 @@ I run [Hermes Agent](https://github.com/NousResearch/hermes-agent) from Nous Res
 
 | Item | Value |
 |---|---|
-| Host | `hermes-01`, VM 112 on `grey-server`, `192.168.80.22` on SERVERS-A. [Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md) |
+| Host | `hermes-01`, VM 112 on `red-server` since the [2026-11-11 move](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md), stopped, `192.168.80.22` on SERVERS-A. [Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/hermes-01%20Provisioning%20-%202026-11-04.md) |
 | Version | Hermes Agent v0.22.7 (2026.9.24), `stable` channel, git checkout, Python 3.14.9 |
 | Install | The upstream installer, run as `dkadi`: install directory `/home/dkadi/.hermes/hermes-agent`, data and config in `/home/dkadi/.hermes` (mode 0700) |
 | Config | `/home/dkadi/.hermes/config.yaml` (mode 0600) |

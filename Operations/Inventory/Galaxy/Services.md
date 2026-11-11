@@ -9,6 +9,7 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-11-11: `HQ-DC01` and `security-01` run on `green-server`, and the stopped `hermes-01` sits on `red-server`. Their workloads did not change. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 - 2026-11-11: I deleted VM 103 `win11-dev`, which held the offline GitHub Actions runner `windows-x64-1` for `Duresa7/app-portal`. The runner's registration and the repository's `WINDOWS_RUNNER` variable are still in place. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 - 2026-11-06: I updated OS packages on all twelve running Linux guests. Docker Engine is 29.9.3 and containerd 2.4.2 on every Docker host; the Wazuh central packages are 4.14.10-1. `security-01`, `splunk-siem` and `ubuntu-dev` need reboots for new kernels. [Fleet update](../../Maintenance/Fleet%20Update%20-%202026-11-06.md).
 
@@ -64,12 +65,12 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 
 | Guest | Type | Node | Role | Key workloads |
 | --- | --- | --- | --- | --- |
-| HQ-DC01 | VM 301 | grey-server | First domain controller for `ad.alphasecunited.com` (`192.168.65.10`, VLAN 65) | AD DS, AD-integrated DNS, global catalog, all five operations master roles<br>LDAPS on TCP 636 since 2026-09-20<br>OpenSSH |
+| HQ-DC01 | VM 301 | green-server | First domain controller for `ad.alphasecunited.com` (`192.168.65.10`, VLAN 65) | AD DS, AD-integrated DNS, global catalog, all five operations master roles<br>LDAPS on TCP 636 since 2026-09-20<br>OpenSSH |
 | HQ-DC02 | VM 302 | grey-server | Second domain controller (`192.168.65.11`, VLAN 65) | AD DS, AD-integrated DNS, global catalog<br>LDAPS on TCP 636 since 2026-09-20<br>OpenSSH |
 | HQ-MGT01 | VM 303 | grey-server | Windows management and hybrid identity (`192.168.65.12`, VLAN 65) | [Windows Admin Center](../../../Platforms/Windows%20Admin%20Center/README.md) 2.7.21.5, HTTPS 443<br>Azure Connected Machine agent 1.67.03504.3207, Connected<br>Entra provisioning agent service running<br>OpenSSH |
 | HQ-WS001 | VM 310 | grey-server | Windows 11 test workstation (`192.168.65.20`, VLAN 65); stopped on 2026-09-24 | Windows 11 Pro 25H2<br>Windows LAPS and the Tier 2 local-administrator policy<br>OpenSSH since 2026-09-19 |
 | kali-pen | VM 102 | grey-server | Penetration-testing VM on VLAN 40; stopped on 2026-09-24 | Kali Linux 2026.2 installer build |
-| hermes-01 | VM 112 | grey-server | Hermes Agent personal assistant (`192.168.80.22`, VLAN 80), Discord bot Horus AS | Debian 13<br>Hermes Agent v0.22.7, stable channel, user units `hermes-gateway.service` and `hermes-dashboard.service` with linger<br>Dashboard on TCP 9119, password login<br>Executor MCP through the `SSH` connection, approvals off<br>Anthropic API, `claude-sonnet-5-5`<br>No monitoring or Wazuh agent |
+| hermes-01 | VM 112 | red-server | Hermes Agent personal assistant (`192.168.80.22`, VLAN 80), Discord bot Horus AS | Debian 13<br>Hermes Agent v0.22.7, stable channel, user units `hermes-gateway.service` and `hermes-dashboard.service` with linger<br>Dashboard on TCP 9119, password login<br>Executor MCP through the `SSH` connection, approvals off<br>Anthropic API, `claude-sonnet-5-5`<br>No monitoring or Wazuh agent |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.8<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.19.12<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.8 |
 | docker-main | LXC 110 | grey-server | Docker apps | Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |
@@ -78,7 +79,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3<br>UniFi Network MCP<br>Executor 2.0.0-beta.34<br>ssh-mcp 2.22.0<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
-| security-01 | VM 200 | grey-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.10<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
+| security-01 | VM 200 | green-server | Security monitoring (`192.168.72.2`, VLAN 72) | Wazuh 4.14.10<br>Wazuh MCP Server<br>node_exporter<br>cAdvisor<br>Hawser Edge 0.2.50 |
 | alpha-prod-01 | VM 401 | purple-server | Voice and game services | [Vanilla Minecraft Java Edition 26.3](../../../Platforms/Minecraft/README.md), LAN and public Playit verified<br>Two TeamSpeak 3 Server 3.13.8 instances<br>TS3 Manager<br>TeamSpeak reachability collector<br>Playit agent<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | splunk-siem | VM 109 | grey-server | SIEM (`192.168.72.3`, VLAN 72) | Splunk Enterprise 10.4.0<br>Enterprise Security 8.5.1<br>SC4S<br>No Wazuh agent |
 | media-01 | LXC 842 | red-server | Media automation and playback | Jellyfin 12.2.0<br>Seerr 3.5.0<br>Sonarr 4.0.20 / Radarr 6.4.4 / Prowlarr 2.6.5<br>FlareSolverr 3.5.2<br>qBittorrent 5.2.4 through Gluetun and Proton VPN<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |

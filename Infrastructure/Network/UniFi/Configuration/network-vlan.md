@@ -50,7 +50,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Proton-WiFi (45) | Internal | Isolated VPN egress | Wireless clients whose traffic must leave through ProtonVPN rather than the WAN. Network isolation blocks it from every other network, the SSID carries L2 isolation so its own clients cannot address each other, and DHCP hands out Quad9 so lookups travel the tunnel. Egress and the kill switch come from the `VPN - Proton` route. No servers and no wired ports. |
 | Secure (50) | Internal | Primary admin workstation | I keep Jedi PC at 192.168.50.241 as my privileged workstation. It remains part of the MGMT-A allowed set. |
 | Secure Client (60) | Internal | End-user workstations | End-user PCs on DHCP: `ObiPC`, last seen at `192.168.60.102`. |
-| IDENTITY-A (65) | `AlphaSec-Identity` | Active Directory identity plane | The `ad.alphasecunited.com` guests on grey-server: HQ-DC01 = .10, HQ-DC02 = .11, HQ-MGT01 = .12 (Windows Server 2025) and the HQ-WS001 test workstation = .20. |
+| IDENTITY-A (65) | `AlphaSec-Identity` | Active Directory identity plane | The `ad.alphasecunited.com` guests on grey-server and green-server: HQ-DC01 = .10, HQ-DC02 = .11, HQ-MGT01 = .12 (Windows Server 2025) and the HQ-WS001 test workstation = .20. |
 | MGMT-A (70) | `AlphaSec-Mgmt` | Hypervisor mgmt plane | Proxmox node management interfaces and hypervisor administration: the registered cluster node IPs from `.10` through `.14`, PVE GUI/API/SSH, and Corosync link0. Out-of-band / IPMI belongs here. |
 | Cluster-Net (71) | `AlphaSec-Mgmt` | Cluster interconnect | Proxmox east-west cluster traffic only: Corosync link1 and replication on node IPs `.10` through `.14`. No DHCP, no Internet access, and no general hosts. It shares the management trust zone with MGMT-A but remains a separate broadcast domain. |
 | Security-A (72) | `AlphaSec-Observability` | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to web and NTP from the three-member `AG-Observability-Hosts` Network List. |
@@ -63,7 +63,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 - Phone, tablet, or personal laptop (mine or family) → **Trusted (10)**; the same device when it must egress through ProtonVPN instead → **Proton-WiFi (45)**
 - Smart-home gadget, camera, TV, or appliance → **IoT (20)**
 - Jedi PC, my privileged workstation at 192.168.50.241 → **Secure (50)**; every end-user PC, using DHCP → **Secure Client (60)**
-- HQ-DC01, HQ-DC02, HQ-MGT01 and domain test workstations on grey-server → **IDENTITY-A (65)**
+- HQ-DC01, HQ-DC02, HQ-MGT01 and domain test workstations on Galaxy → **IDENTITY-A (65)**
 - Proxmox node management IP → **MGMT-A (70)**; that node's Corosync/cluster link → **Cluster-Net (71)**
 - Internal application or database VM → **SERVERS-A (80)**
 - Security or logging tool → **Security-A (72)**; the central monitoring collector → **MONITOR-A (73)**. Both use the `AlphaSec-Observability` zone.

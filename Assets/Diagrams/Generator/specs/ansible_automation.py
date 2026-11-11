@@ -79,7 +79,7 @@ guest("alpha", "alpha-prod-01", "teamspeak", "purple", "Compose 5 · cAdvisor", 
 guest("mon01", "monitor-01", "grafana", "blue", "Compose 2 · cAdvisor", "node_exporter · accounts")
 guest("app01", "app-01", "coolify", "purple", "cAdvisor · textfile · accounts", "Coolify owns its images")
 guest("edge01", "edge-01", "caddy", "purple", "textfile · accounts", "exports on 9100 already")
-guest("sec01", "security-01", "wazuh", "grey", "cAdvisor · textfile · accounts", "exports on 9100 already")
+guest("sec01", "security-01", "wazuh", "green", "cAdvisor · textfile · accounts", "exports on 9100 already")
 guest("splunk", "splunk-siem", "splunk", "grey", "node_exporter · textfile (dnf)", "accounts · Podman host")
 guest("ans01", "ansible-01", "ansible", "blue", "node_exporter · accounts", "local connection")
 

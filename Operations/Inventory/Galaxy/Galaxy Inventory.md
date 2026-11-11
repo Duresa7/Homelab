@@ -3,10 +3,11 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-11-11
 
-This index points to the living records that hold Galaxy's current state. On 2026-11-11 the cluster held five nodes, 12 VMs, six LXCs and three templates; 12 guests were running and `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. `grey-server` holds VM 112 `hermes-01` since 2026-11-04, and `green-server` holds no guests. No guest is an HA resource and there is no shared storage.
+This index points to the living records that hold Galaxy's current state. On 2026-11-11 the cluster held five nodes, 12 VMs, six LXCs and three templates; 12 guests were running and `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. Since 2026-11-11 `green-server` holds `HQ-DC01` and `security-01`, and `red-server` holds `hermes-01` beside `media-01`. No guest is an HA resource and there is no shared storage.
 
 ## Recent changes
 
+- 2026-11-11: I moved `HQ-DC01` and `security-01` from Grey to Green and `hermes-01` from Grey to Red. Grey went from 39.2 to 27.0 GiB of memory in use and Green to 12.5 of 15.5 GiB. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 - 2026-11-11: I deleted VM 103 `win11-dev` from Grey's `local-lvm`, which was 53.49% used earlier that afternoon and 48.87% after. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
 - 2026-11-11: I lowered six system disks on Grey's `ssd-lvm1` ahead of a migration: `splunk-siem` 150G to 100G, `security-01` 100G to 64G, `HQ-DC01` and `HQ-DC02` 80G to 48G, `HQ-MGT01` 100G to 64G and `HQ-WS001` 80G to 64G. The pool went from 13.07% to 12.66% used. [Guest Disk Shrink](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md).
 - 2026-11-09: I expanded `ubuntu-dev` from 230 GiB to 330 GiB and grew its root filesystem online without a restart. [Storage expansion](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/ubuntu-dev%20Storage%20Expansion%20-%202026-11-09.md).
