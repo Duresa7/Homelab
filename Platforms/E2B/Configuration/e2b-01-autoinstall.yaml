@@ -1,0 +1,68 @@
+#cloud-config
+# Ubuntu Server 26.04.1 autoinstall for VM 113 e2b-01 on grey-server.
+# Published copy: the three placeholders are filled only in the seed ISO built
+# on the node at install time, and that ISO is deleted after the install.
+#   __DKADI_HASH__        throwaway SHA-512 crypt hash; the real dkadi password
+#                         comes from account-passwords.yml afterwards
+#   __UBUNTU_DEV_KEY__    ai-agent@ubuntu-dev public key (approved for dkadi)
+#   __CONTROLLER_KEY__    ansible-control public key from ansible-01
+autoinstall:
+  version: 1
+  interactive-sections: []
+  locale: en_US.UTF-8
+  timezone: America/New_York
+  keyboard:
+    layout: us
+  source:
+    id: ubuntu-server-minimal
+    search_drivers: false
+  network:
+    version: 2
+    ethernets:
+      # Name the interface. A driver match makes netplan's wait-online drop-in
+      # wait for a nonexistent eth0, which adds a two-minute timeout to every boot.
+      ens18:
+        dhcp4: false
+        addresses: [192.168.80.30/24]
+        routes:
+          - to: default
+            via: 192.168.80.1
+        nameservers:
+          addresses: [192.168.80.1]
+  storage:
+    layout:
+      name: lvm
+      sizing-policy: all
+  identity:
+    hostname: e2b-01
+    username: dkadi
+    password: "__DKADI_HASH__"
+  ssh:
+    install-server: true
+    allow-pw: false
+    authorized-keys:
+      - "__UBUNTU_DEV_KEY__"
+  packages:
+    - qemu-guest-agent
+    - iptables
+    - rsync
+    - e2fsprogs
+    - iproute2
+    - python3-venv
+    - nftables
+    - locales
+  late-commands:
+    - |
+      set -e
+      curtin in-target -- useradd -m -s /bin/bash ansible
+      install -d -m 0700 /target/home/ansible/.ssh
+      echo 'from="192.168.40.36",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty __CONTROLLER_KEY__' > /target/home/ansible/.ssh/authorized_keys
+      chmod 0600 /target/home/ansible/.ssh/authorized_keys
+      curtin in-target -- chown -R ansible:ansible /home/ansible/.ssh
+      echo 'ansible ALL=(ALL:ALL) NOPASSWD: ALL' > /target/etc/sudoers.d/90-ansible
+      chmod 0440 /target/etc/sudoers.d/90-ansible
+      curtin in-target -- visudo -cf /etc/sudoers.d/90-ansible
+      printf 'PermitRootLogin no\nPubkeyAuthentication yes\nPasswordAuthentication no\nKbdInteractiveAuthentication no\n' > /target/etc/ssh/sshd_config.d/99-hardening.conf
+      mkdir -p /target/run/sshd
+      curtin in-target -- sshd -t
+  shutdown: poweroff

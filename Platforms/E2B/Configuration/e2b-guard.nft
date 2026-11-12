@@ -1,0 +1,30 @@
+#!/usr/sbin/nft -f
+# e2b-01 port guard, installed as /etc/nftables.d/e2b-guard.nft and loaded by
+# e2b-nft-guard.service. It owns one table and never flushes the ruleset, so
+# Docker's and E2B's own rules (the orchestrator's per-sandbox tables, the
+# TCP MSS clamp) are left alone when it loads or reloads.
+#
+# Embed binds twelve ports on every interface. Only NPM may reach the three
+# client ports, and the other nine (including the orchestrator's
+# unauthenticated control API on 5008) answer only from the VM itself. The
+# rules match the LAN interface alone: sandbox traffic reaches the
+# orchestrator's egress proxies over its own veth interfaces, which must stay
+# open. The pprof ports 6060 and 6061 are listed too, in case they ever bind
+# beyond loopback.
+
+table inet e2b_guard
+delete table inet e2b_guard
+
+table inet e2b_guard {
+    set e2b_internal {
+        type inet_service
+        elements = { 3003, 5007, 5008, 5009, 5010, 5016, 5017, 5018, 5109, 6060, 6061 }
+    }
+
+    chain input {
+        type filter hook input priority filter - 10; policy accept;
+        iifname "ens18" tcp dport 3000-3002 ip saddr 192.168.85.2 accept
+        iifname "ens18" tcp dport 3000-3002 counter drop
+        iifname "ens18" tcp dport @e2b_internal counter drop
+    }
+}

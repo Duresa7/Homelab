@@ -3,9 +3,13 @@
 **Created:** 2026-07-08  
 **Last updated:** 2026-11-11
 
-Galaxy has 12 QEMU VMs and three templates. On 2026-11-11 six VMs were running; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. I read every guest's node, state and memory back from `pvesh get /cluster/resources` and `qm config` on 2026-11-02, and the other figures on 2026-09-24. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
+Galaxy has 13 QEMU VMs and three templates. On 2026-11-11 seven VMs were running; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` were stopped. I read every guest's node, state and memory back from `pvesh get /cluster/resources` and `qm config` on 2026-11-02, and the other figures on 2026-09-24. No VM is an HA resource: `ha-manager config` returns nothing. This file records each guest's CPU, memory, storage, firmware, network, VLAN, firewall, TPM, and QEMU-agent state.
 
 ## Recent changes
+
+- 2026-11-11: I grew VM 113 `e2b-01`'s disk from 120 GiB to 300 GiB online, after E2B template builds filled its root filesystem; inside, `growpart`, `pvresize` and `lvextend -r` took `/` to 292 GB. `fstrim` then returned 142.9 GiB to Grey's thin pool. [Extra Templates and Disk Growth](../../../Platforms/E2B/Documentation/Change%20Records/Extra%20Templates%20and%20Disk%20Growth%20-%202026-11-11.md).
+
+- 2026-11-11: I created VM 113 `e2b-01` on Grey, Ubuntu 26.04.1 from the server ISO with an autoinstall seed, 8 vCPU, a fixed 16 GiB and 120 GiB on `local-lvm`, on SERVERS-A VLAN 80 at `192.168.80.30`, with `onboot=0`. It carries the Linux host baseline, Docker, the Wazuh agent and the [E2B](../../../Platforms/E2B/README.md) Embed trial. [e2b-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/e2b-01%20Provisioning%20-%202026-11-11.md).
 
 - 2026-11-11: I moved VM 301 `HQ-DC01` and VM 200 `security-01` from Grey to Green, and VM 112 `hermes-01` from Grey to Red, each shut down and copied to the new node's `local-lvm`. Both running guests came back and passed their checks; `hermes-01` stays stopped. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 
@@ -40,6 +44,7 @@ Galaxy has 12 QEMU VMs and three templates. On 2026-11-11 six VMs were running; 
 | 105 | ubuntu-dev | grey-server | running | Ubuntu 26.04.1 LTS, GNOME 50 | 6 | 12 GiB | 330G | 192.168.40.179/24 | 192.168.40.1 | 40 | disabled |
 | 109 | splunk-siem | grey-server | running | Rocky Linux 10.2 (Red Quartz) | 6 | 8 GiB | 100G | 192.168.72.3/24 | 192.168.72.1 | 72 | disabled |
 | 112 | hermes-01 | red-server | stopped | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB | 60G | 192.168.80.22/24 | 192.168.80.1 | 80 | disabled |
+| 113 | e2b-01 | grey-server | running | Ubuntu 26.04.1 LTS | 8 | 16 GiB | 300G | 192.168.80.30/24 | 192.168.80.1 | 80 | disabled |
 | 116 | app-01 | purple-server | stopped | Debian GNU/Linux 13 (trixie) | 4 | 8 GiB maximum / 4 GiB minimum | 64G | 192.168.80.10/24 | 192.168.80.1 | 80 | disabled |
 | 121 | edge-01 | purple-server | running | Debian GNU/Linux 13 (trixie) | 2 | 4 GiB maximum / 2 GiB minimum | 30G | 192.168.30.10/24 | 192.168.30.1 | 30 | disabled |
 | 200 | security-01 | green-server | running | Ubuntu 24.04.4 LTS | 4 | 8 GiB | 64G | 192.168.72.2/24 | 192.168.72.1 | 72 | disabled |
@@ -516,6 +521,14 @@ I built this guest on 2026-11-04 to run [Hermes Agent](../../../Platforms/Hermes
 q35, OVMF with a 4 MiB EFI disk, `cpu: host`, 2 cores, 4096 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-112-disk-0` (EFI, 528K) and `vm-112-disk-1` (60 GiB, `discard`, `iothread`, `ssd`). `virtio` on `vmbr0`, VLAN 80, `firewall=1`. Static `192.168.80.22/24` in `/etc/network/interfaces`, gateway and resolver `192.168.80.1`. QEMU agent on, `onboot=1`, no installation media attached.
 
 On 2026-11-11 I moved it from Grey's `ssd-lvm1` to Red's `local-lvm` while it was stopped, and left it stopped. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
+
+### VM 113 - e2b-01
+
+I built this guest on 2026-11-11 for the [E2B](../../../Platforms/E2B/README.md) Embed trial, which runs untrusted agent code in Firecracker microVMs nested inside it. Ubuntu 26.04.1 LTS on kernel `7.0.0-43-generic`, installed from `ubuntu-26.04.1-live-server-amd64.iso` with an autoinstall seed, with the Linux host baseline, Docker Engine 29.9.3, the Wazuh agent (ID `022`) and the `e2b_guard` nftables table. No desktop environment and no monitoring exporter. ssh-mcp reaches it as `e2b_01`.
+
+q35, OVMF with a 4 MiB EFI disk, `cpu: host` for nested KVM (`/dev/kvm` present in the guest), 8 cores, 16384 MiB with ballooning off, `virtio-scsi-single`. Disks: `local-lvm:vm-113-disk-0` (EFI, 4M) and `vm-113-disk-1` (300 GiB since 2026-11-11, grown online from 120 GiB; `discard`, `iothread`, `ssd`, `cache=writeback`). `virtio` on `vmbr0`, VLAN 80, `firewall=1`. Static `192.168.80.30/24` in netplan on `ens18`, gateway and resolver `192.168.80.1`. QEMU agent on, `onboot=0` for the trial, no installation media attached. Embed reserves 3072 hugepages (6 GiB) of its memory for sandboxes.
+
+[e2b-01 Provisioning](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/e2b-01%20Provisioning%20-%202026-11-11.md), [Embed Trial Deployment](../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 
 ## Template Details
 

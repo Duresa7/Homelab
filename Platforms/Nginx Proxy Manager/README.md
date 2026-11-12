@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-02
+**Last updated:** 2026-11-11
 
 Nginx Proxy Manager (NPM) is my internal HTTPS front door. It runs on the `docker-network` LXC and serves every internal `*.alphasecunited.com` name with one Let's Encrypt DNS-01 wildcard certificate. It has no public DNS and no WAN ingress. Public traffic goes through Caddy on `edge-01` instead; see [Access Paths](../../Architecture/Access-Paths.md).
 
@@ -20,15 +20,20 @@ Read back on 2026-09-24 unless a row says otherwise.
 | Guest bindings | TCP 80, 81 and 443 |
 | Docker network | External `proxy`, `172.31.85.0/24`; NPM fixed at `172.31.85.10` |
 | Persistent data | `data/` and `letsencrypt/` bind mounts |
-| Proxy hosts | 25 live (NetBird plus 24 applications) after adding Executor app-page host 38 on 2026-11-02, 13 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
-| Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`, expires 2026-12-08 at 3:03 AM UTC; renews automatically through Cloudflare DNS-01 |
+| Proxy hosts | 29 live (NetBird plus 28 applications) after adding E2B hosts 39 to 42 on 2026-11-11, 13 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
+| Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`; the API read `expires_on` 2027-02-06 07:45 UTC on 2026-11-11, after an automatic renewal through Cloudflare DNS-01 |
 | Second certificate | Certificate 2, `*.executor.apps.alphasecunited.com`, for host 38 only, issued 2026-11-02 and expiring 2027-01-31; same Cloudflare DNS-01 renewal path |
-| Shared TLS policy | Every live host uses Force SSL and HTTP/2 with HSTS off; all but host 38 use certificate 1 |
-| Local DNS | 25 UniFi A records point at `192.168.85.2`: one per named host, and one per Executor app page behind wildcard host 38 |
+| Third certificate | Certificate 3, `*.e2b.alphasecunited.com` and `e2b.alphasecunited.com`, for hosts 39 to 42, issued 2026-11-11 and expiring 2027-02-09; same Cloudflare DNS-01 renewal path |
+| Shared TLS policy | Every live host uses Force SSL and HTTP/2 with HSTS off; all but hosts 38 to 42 use certificate 1 |
+| Local DNS | 29 UniFi A records point at `192.168.85.2`: one per named host, and one per Executor app page behind wildcard host 38 |
 | Administrator UI | `http://192.168.85.2:81`, no domain name |
 
 
 ## Changes
+
+- 2026-11-11: I added proxy host 42, `desktop.e2b.alphasecunited.com` to `192.168.80.30:3002` with certificate 3, a viewer for E2B Desktop sandboxes whose advanced configuration sets the sandbox routing headers from the URL path. An unquoted `{15,40}` in its regex failed `nginx -t` (`pcre2_compile() failed: missing closing parenthesis`); NPM took only host 42 offline and the others kept answering. After the fix, noVNC and its WebSocket (`101`) answered through it. [Extra Templates and Disk Growth](../E2B/Documentation/Change%20Records/Extra%20Templates%20and%20Disk%20Growth%20-%202026-11-11.md).
+
+- 2026-11-11: I added proxy hosts 39 `e2b.alphasecunited.com`, 40 `api.e2b.alphasecunited.com` and 41 `sandbox.e2b.alphasecunited.com`, all to `192.168.80.30` (ports 3001, 3000 and 3002) for the E2B Embed trial, with a new Let's Encrypt DNS-01 certificate 3 for `*.e2b.alphasecunited.com` and `e2b.alphasecunited.com` through the API. The certificate request failed with `data/meta must NOT have additional properties` until I dropped `letsencrypt_agree` from the meta. `/health` through host 40 returned `200`, host 39 `200` with `http://` answering `301`, and a sandbox port and a 70-second stream passed through host 41. [Embed Trial Deployment](../E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 
 - 2026-11-02: I gave proxy host 37, `executor.alphasecunited.com`, its own `location /` in the advanced configuration. It removes `Accept-Encoding` and uses `sub_filter` to insert a `URL.parse` polyfill at the top of Executor's HTML, because iPadOS 17 browsers lack that function and Executor's sign-in page crashed on them. Readback reported nginx online with no error. [Safari 17 URL.parse polyfill](../Executor/Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md).
 

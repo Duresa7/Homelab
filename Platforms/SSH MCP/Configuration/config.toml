@@ -90,6 +90,17 @@ keyRef = "/keys/id_ed25519"
 role = "admin"
 group = "homelab"
 
+# Ubuntu 26.04 E2B Embed trial host (VM 113 on grey-server), SERVERS-A VLAN 80
+[[profiles]]
+name = "e2b_01"
+host = "192.168.80.30"
+port = 22
+user = "dkadi"
+auth = "key"
+keyRef = "/keys/id_ed25519"
+role = "admin"
+group = "homelab"
+
 # Debian 13 Docker host (CT 108 on blue-server)
 [[profiles]]
 name = "docker_blue"

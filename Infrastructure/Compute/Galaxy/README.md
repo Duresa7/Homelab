@@ -12,7 +12,7 @@ Galaxy is my five-node Proxmox VE 9.2.11 cluster. It runs 13 VMs, six LXCs and t
 | Nodes | `grey-server`, `purple-server`, `blue-server`, `red-server`, `green-server` (192.168.70.10 to .14) |
 | Quorum | 5 of 5 votes, `config_version: 9` |
 | Corosync | `link0` on MGMT-A (VLAN 70), `link1` on Cluster-Net (VLAN 71, 192.168.71.0/24) |
-| Guests | 18 (12 running on 2026-11-11; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` stopped); `green-server` holds VMs 200 and 301 since 2026-11-11 |
+| Guests | 19 (13 running on 2026-11-11; `kali-pen`, `hermes-01`, `app-01`, `HQ-DC02`, `HQ-MGT01` and `HQ-WS001` stopped); `green-server` holds VMs 200 and 301 since 2026-11-11; `grey-server` gained VM 113 `e2b-01` the same day |
 | HA | `ha-manager config` empty |
 | `green-server` memory | 8 GB, one Micron module, since the failed SK Hynix came out on 2026-10-28 |
 
@@ -34,6 +34,7 @@ UniFi owns the VLAN, zone, switch-port and gateway policy records under [Infrast
 
 | Date | Record |
 | --- | --- |
+| 2026-11-11 | [e2b-01 Provisioning](Documentation/Change%20Records/e2b-01%20Provisioning%20-%202026-11-11.md) |
 | 2026-11-11 | [Guest Moves to Green and Red](Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md) |
 | 2026-11-11 | [win11-dev Removal](Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md) |
 | 2026-11-11 | [Guest Disk Shrink](Documentation/Change%20Records/Guest%20Disk%20Shrink%20-%202026-11-11.md) |

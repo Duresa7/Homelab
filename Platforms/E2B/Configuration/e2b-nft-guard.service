@@ -1,0 +1,18 @@
+# /etc/systemd/system/e2b-nft-guard.service on e2b-01. Loads only the
+# e2b_guard table; Ubuntu's nftables.service stays disabled because its
+# /etc/nftables.conf flushes the whole ruleset and its stop action would wipe
+# Docker's rules.
+[Unit]
+Description=E2B port guard (nftables table inet e2b_guard)
+Wants=network-pre.target
+Before=network-pre.target docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/nftables.d/e2b-guard.nft
+ExecReload=/usr/sbin/nft -f /etc/nftables.d/e2b-guard.nft
+ExecStop=/usr/sbin/nft delete table inet e2b_guard
+
+[Install]
+WantedBy=multi-user.target

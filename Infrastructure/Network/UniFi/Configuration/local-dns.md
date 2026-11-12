@@ -1,15 +1,19 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-11
 
-The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 25 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
+The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 29 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
-**Last verified against the controller:** 2026-11-05. `unifi_list_dns_records` returned 31 static records.
+**Last verified against the controller:** 2026-11-05. `unifi_list_dns_records` returned 31 static records. On 2026-11-11 I added four, making 35.
 
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 
 ## Recent changes
+
+- 2026-11-11: I added `desktop.e2b.alphasecunited.com` (`16d6e343-18a2-4cec-b806-a041542cc524`), A to `192.168.85.2`, the E2B Desktop viewer on NPM host 42. [Extra Templates and Disk Growth](../../../../Platforms/E2B/Documentation/Change%20Records/Extra%20Templates%20and%20Disk%20Growth%20-%202026-11-11.md).
+
+- 2026-11-11: I added `e2b.alphasecunited.com` (`fa4e90f0-8ec5-4ab1-89af-7428e900102a`), `api.e2b.alphasecunited.com` (`0f41c33c-c3da-4416-80f0-974d524a74c1`) and `sandbox.e2b.alphasecunited.com` (`7e423abc-2a58-4e08-bff5-18674fe56a32`) for the E2B Embed trial, A records to `192.168.85.2`. Each resolves there from `ubuntu-dev`. E2B clients also need `E2B_SANDBOX_URL`, because the SDK otherwise addresses `<port>-<sandbox id>.e2b.alphasecunited.com` and these records cannot hold a wildcard. [Embed Trial Deployment](../../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 
 - 2026-11-02: I added `book-digest.executor.apps.alphasecunited.com`, record `6ae87f44e2482aecb9604963`, the first Executor 2 app page. It resolves to `192.168.85.2`, where NPM wildcard host 38 forwards it to Executor. [App page domain](../../../../Platforms/Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
@@ -52,6 +56,10 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | `aiproxy.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a7a605fdee8c70a32dec053` | CLI Proxy API on `docker-main` through NPM |
 | `executor.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ae628c8e2482aecb95a2c9b` | Executor 2 on `docker-blue` through NPM proxy host 37 |
 | `book-digest.executor.apps.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6ae87f44e2482aecb9604963` | Executor 2 app page through NPM wildcard proxy host 38 |
+| `e2b.alphasecunited.com` | A | `192.168.85.2` | Controller default | Yes | `fa4e90f0-8ec5-4ab1-89af-7428e900102a` | E2B dashboard on `e2b-01` through NPM proxy host 39 |
+| `api.e2b.alphasecunited.com` | A | `192.168.85.2` | Controller default | Yes | `0f41c33c-c3da-4416-80f0-974d524a74c1` | E2B API on `e2b-01` through NPM proxy host 40 |
+| `sandbox.e2b.alphasecunited.com` | A | `192.168.85.2` | Controller default | Yes | `7e423abc-2a58-4e08-bff5-18674fe56a32` | E2B sandbox traffic (client-proxy) on `e2b-01` through NPM proxy host 41 |
+| `desktop.e2b.alphasecunited.com` | A | `192.168.85.2` | Controller default | Yes | `16d6e343-18a2-4cec-b806-a041542cc524` | E2B Desktop viewer on `e2b-01` through NPM proxy host 42 |
 | `openwebui.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6a9b3fe6f9e5db2485a29667` | Open WebUI on `docker-main` through NPM proxy host 28 |
 | `dockhand.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa9de4e25574794b908a860` | Dockhand on `docker-main` through NPM proxy host 31 |
 | `mesh.alphasecunited.com` | A | `192.168.85.2` | 300 | Yes | `6aa6313625574794b9fefb1b` | MeshCentral on `docker-blue` through NPM proxy host 29 |
@@ -67,6 +75,8 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 
 | Date | Change | Record |
 | --- | --- | --- |
+| 2026-11-11 | `desktop.e2b` added | [Extra Templates and Disk Growth](../../../../Platforms/E2B/Documentation/Change%20Records/Extra%20Templates%20and%20Disk%20Growth%20-%202026-11-11.md) |
+| 2026-11-11 | `e2b`, `api.e2b` and `sandbox.e2b` added | [Embed Trial Deployment](../../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md) |
 | 2026-11-02 | `book-digest.executor.apps` added | [App page domain](../../../../Platforms/Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md) |
 | 2026-10-31 | `executor` added; `mcp` removed | [Executor 2 Migration](../../../../Platforms/Executor/Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md) |
 | 2026-09-21 | `weebarr` added; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md) |

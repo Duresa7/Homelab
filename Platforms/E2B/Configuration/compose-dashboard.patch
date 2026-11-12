@@ -1,0 +1,13 @@
+--- a/embed/compose/compose.yaml
++++ b/embed/compose/compose.yaml
+@@ -471,8 +471,8 @@
+       HOSTNAME: 0.0.0.0
+       PUBLIC_E2B_DOMAIN: localhost
+       E2B_INFRA_API_URL: http://127.0.0.1:3000
+-      PUBLIC_SANDBOX_URL: http://${E2B_DASHBOARD_HOST:-localhost}:3002
+-      DASHBOARD_COOKIE_SECURE: "false"
++      PUBLIC_SANDBOX_URL: https://sandbox.e2b.alphasecunited.com
++      DASHBOARD_COOKIE_SECURE: "true"
+     depends_on:
+       api:
+         condition: service_healthy

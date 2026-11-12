@@ -1,0 +1,10 @@
+# ~/.config/e2b/env on a client machine (mode 0600), sourced from line 2 of
+# ~/.bashrc so non-interactive agent shells see it too:
+#   [ -r "$HOME/.config/e2b/env" ] && . "$HOME/.config/e2b/env"
+# Installed on ubuntu-dev on 2026-11-11 with @e2b/cli 2.23.0.
+export E2B_DOMAIN=e2b.alphasecunited.com
+# Header routing through one host. Without it the SDK and CLI send sandbox
+# traffic to <port>-<sandbox id>.e2b.alphasecunited.com, which UniFi local DNS
+# cannot answer because it has no wildcard records.
+export E2B_SANDBOX_URL=https://sandbox.e2b.alphasecunited.com
+export E2B_API_KEY=<REDACTED_E2B_TEAM_API_KEY>

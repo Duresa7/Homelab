@@ -1,9 +1,9 @@
 # UniFi Firewall Policies
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-11
 
-Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 89 user-defined policies, 81 allows and eight blocks. On 2026-11-05 a full list returned exactly the 89 names in the table below. Generated zone defaults and response companions are not listed.
+Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 90 user-defined policies, 82 allows and eight blocks. On 2026-11-11 a full list returned exactly the 90 names in the table below. Generated zone defaults and response companions are not listed.
 
 **Last verified against the controller:** 2026-09-24, for the 13 policies that name Nginx Proxy Manager (`Allow NPM to media-01 web UIs` carries 5055, 7878, 8080, 8096, 8989 and 9696, with no 18080). On 2026-09-26 a full policy list returned 88 policies, with 80 allows and eight blocks; the two dashboard-related changes were read back individually.
 
@@ -11,6 +11,7 @@ Ahsoka Gateway runs UniFi's zone-based firewall. The controller holds 89 user-de
 
 ## Recent changes
 
+- 2026-11-11: I created `Allow NPM to e2b-01 E2B` (`c194c04e-12f3-41b5-98fe-723ab776d682`), TCP IPv4 from NPM at `192.168.85.2` in `AlphaSec-Access` to `192.168.80.30` ports 3000 to 3002 in `AlphaSec-Servers`, logging on, modelled on `Allow NPM to alpha-prod-01 TS3 Manager`. Through it NPM serves the E2B API, dashboard and sandbox proxy; `https://api.e2b.alphasecunited.com/health` returned `200`. The same evening UniFi's intrusion prevention dropped SSH from `ansible-01`, and later `ubuntu-dev`, to `192.168.80.30` as `Scanning Activity` (`EMERGING_SCAN`) after several connections within minutes; no policy was involved. [Embed Trial Deployment](../../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 - 2026-11-04: I created `Allow hermes-01 to NPM HTTPS` (`6aebf996e2482aecb9697567`), TCP 443 from `192.168.80.22` in `AlphaSec-Servers` to NPM at `192.168.85.2` in `AlphaSec-Access`, logging on, modelled on the Hawser rule. Before it, HTTPS from `hermes-01` to `executor.alphasecunited.com` timed out; after it, `/mcp` returned `401` with valid TLS. [Install and Discord Gateway](../../../../Platforms/Hermes%20Agent/Documentation/Change%20Records/Install%20and%20Discord%20Gateway%20-%202026-11-04.md#6-executor-mcp).
 
 - 2026-11-01: I deleted `Allow Homarr to Grey Proxmox API` (`6ab919b425574794b932ace9`) and removed TCP 7575 from `Allow NPM to docker-main web UIs` when I retired Homarr. Readback of the shared policy showed `2283,3000,3002,3003,3004,3005,6060` with its source object, destination, zones and index 10002 unchanged. [Retirement](../../../../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md).
@@ -93,6 +94,7 @@ Every custom policy uses the `Always` schedule. The Source and Destination colum
 | `Allow alpha-prod-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10000 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.118 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow security-01 Hawser to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Observability` / 192.168.72.2 | `AlphaSec-Access` / 192.168.85.2 / 443 |
 | `Allow hermes-01 to NPM HTTPS` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Servers` / 192.168.80.22 | `AlphaSec-Access` / 192.168.85.2 / 443 |
+| `Allow NPM to e2b-01 E2B` | Yes | ALLOW | 10001 | TCP (IPv4) | `AlphaSec-Access` / 192.168.85.2 | `AlphaSec-Servers` / 192.168.80.30 / 3000-3002 |
 | `Allow NPM to docker-main CLI Proxy API` | Yes | ALLOW | 10004 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.35 / 8317 |
 | `Allow NPM to docker-blue Executor` | Yes | ALLOW | 10005 | TCP | `AlphaSec-Access` / 192.168.85.2 | Internal / 192.168.40.39 / 4400 |
 | `Allow docker-blue SSH Manager to Proxmox` | Yes | ALLOW | 10004 | TCP | Internal / 192.168.40.39 | `AlphaSec-Mgmt` / .10, .11, .12, .13, .14 / 22 |

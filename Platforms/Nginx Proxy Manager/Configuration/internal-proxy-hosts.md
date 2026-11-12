@@ -1,7 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-11-02
+**Last updated:** 2026-11-11
+
+On 2026-11-11 I added hosts 39, 40 and 41 for the E2B Embed trial on `e2b-01`, with a new certificate 3, `*.e2b.alphasecunited.com` and `e2b.alphasecunited.com`, and later host 42, the Desktop viewer. The active host count is 29: the 28 rows below plus NetBird (ID 1). [Embed Trial Deployment](../../E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 
 On 2026-11-02 I added host 38, `*.executor.apps.alphasecunited.com`, for Executor 2's app pages, with its own certificate 2. The active host count is 25: the 24 rows below plus NetBird (ID 1). The database holds 38 rows, 13 of them soft-deleted. UniFi local DNS has no wildcard, so each app page has its own A record: [app page domain](../../Executor/Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md).
 
@@ -36,6 +38,10 @@ Every row except host 38 uses certificate ID 1, Force SSL, HTTP/2, Block Common 
 | 26 | `aiproxy.alphasecunited.com` | `192.168.40.35:8317` | HTTP | CLI Proxy API. Request and response buffering and proxy caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. I repointed the upstream from `ubuntu-dev` to `docker-main` on 2026-08-19; five provider auth files and clients are loaded. |
 | 37 | `executor.alphasecunited.com` | `192.168.40.39:4400` | HTTP | Executor 2 on `docker-blue`, added 2026-10-31 with the settings and advanced configuration of host 27, which it replaced. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. The owner account is claimed. Since 2026-11-02 its advanced configuration has its own `location /` that removes `Accept-Encoding` and uses `sub_filter` to insert a `URL.parse` polyfill into HTML for iPadOS 17: [Safari 17 URL.parse polyfill](../../Executor/Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md). |
 | 38 | `*.executor.apps.alphasecunited.com` | `192.168.40.39:4400` | HTTP | Executor 2 app pages, added 2026-11-02 with host 37's settings and advanced configuration. Uses certificate 2, `*.executor.apps.alphasecunited.com`, Let's Encrypt DNS-01 through Cloudflare, expiring 2027-01-31. |
+| 39 | `e2b.alphasecunited.com` | `192.168.80.30:3001` | HTTP | E2B dashboard on `e2b-01`, added 2026-11-11. Certificate 3, Force SSL, HTTP/2, Block Common Exploits, WebSocket support, HSTS off. Proxy buffering, caching and request buffering off; 3,600-second proxy read, proxy send and send timeouts; `client_max_body_size 1024m`. |
+| 40 | `api.e2b.alphasecunited.com` | `192.168.80.30:3000` | HTTP | E2B API on `e2b-01`, added 2026-11-11, same settings as host 39. |
+| 41 | `sandbox.e2b.alphasecunited.com` | `192.168.80.30:3002` | HTTP | E2B client-proxy (sandbox traffic, routed on the `E2b-Sandbox-Id` and `E2b-Sandbox-Port` headers) on `e2b-01`, added 2026-11-11, same settings as host 39. A 70-second streaming command passed through it. |
+| 42 | `desktop.e2b.alphasecunited.com` | `192.168.80.30:3002` | HTTP | E2B Desktop viewer, added 2026-11-11. Certificate 3, same flags as host 39. Its advanced configuration ([npm-desktop-viewer.conf](../../E2B/Configuration/npm-desktop-viewer.conf)) routes `/<sandbox id>/...` to that sandbox's port 6080 by setting `E2b-Sandbox-Id`, `E2b-Sandbox-Port` and `Host: sandbox.e2b.alphasecunited.com`, with WebSocket upgrades. |
 | 28 | `openwebui.alphasecunited.com` | `192.168.40.35:3002` | HTTP | Authenticated Open WebUI frontend for Ollama. Its HTTPS root is included in the Prometheus blackbox target set. |
 | 29 | `mesh.alphasecunited.com` | `192.168.40.39:443` | HTTPS | MeshCentral on `docker-blue`, proxy host 29, added 2026-09-13. Forwards over HTTPS so the hop to the backend stays encrypted. WebSocket upgrade is on, which both the browser and the agents need. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. |
 | 32 | `appportal.alphasecunited.com` | `192.168.40.35:3004` | HTTP | App Portal on `docker-main`, proxy host 32, added 2026-09-19. Serves the desktop client's API, so it carries a device bearer token and exists to keep that token off the wire in the clear. WebSocket upgrade is off; the client polls. |

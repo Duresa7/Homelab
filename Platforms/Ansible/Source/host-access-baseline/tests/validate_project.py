@@ -40,6 +40,8 @@ EXPECTED_AI_AGENT_TARGETS = {
     "ansible-01",
     # Added 2026-11-04: the Hermes Agent host on SERVERS-A.
     "hermes-01",
+    # Added 2026-11-11: the E2B Embed trial host on SERVERS-A.
+    "e2b-01",
 }
 # The account and its sudoers drop-in already exist here; only the key file is
 # written. Its authorized_keys was 0 bytes, which is why the account was
