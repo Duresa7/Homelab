@@ -1,7 +1,7 @@
 # Splunk Enterprise TODO
 
 **Created:** 2026-07-02  
-**Last updated:** 2026-09-03
+**Last updated:** 2026-11-12
 
 I track unfinished Splunk Enterprise work here. Completed deployment steps are in [Build Log.md](Build%20Log.md).
 
@@ -36,3 +36,11 @@ I track unfinished Splunk Enterprise work here. Completed deployment steps are i
 - [ ] Break high-risk flows down by `ips_category`. The collector captures it and no panel uses it yet.
 - [x] 2026-08-28: CIM normalization done in `unifi_insights` rather than through `cefutils`. Network_Traffic, Intrusion_Detection and Authentication all return UniFi data.
 - [x] 2026-08-29: Extended the CIM mapping to all three products and corrected two faults in it. `unifi_cef_firewall` was matching `UNIFIcategory=Security`, which put 11,819 IDS detections into Network_Traffic as if they were connections; it is now class 203 only. Severity now falls back to the CEF header grading, so a health event is no longer always informational. Network_Sessions, Change and Alerts populate as well, and 40 of 41 event classes carry an event type.
+
+## Housekeeping
+
+- [x] 2026-11-12: Disabled the four cloud-only apps (`Splunk_AI_Assistant_Cloud`, `splunk_cloud_connect`, `splunk_app_for_splunk_o11y_cloud`, `splunk_secure_gateway`), none of which had been set up, and turned off anonymized usage and web analytics telemetry. See [Cloud Apps and Usage Telemetry Disabled - 2026-11-12](Change%20Records/Cloud%20Apps%20and%20Usage%20Telemetry%20Disabled%20-%202026-11-12.md).
+- [ ] Cut `_audit` retention. It keeps six years with no real size cap and held 11 GB on 2026-11-12, growing about 2.4 GB a month. The trade-off is losing the older record of who searched for what.
+- [ ] Give `_introspection` (14 days, 9.9 GB) and `_internal` (30 days, 8.8 GB) a size cap. Both sit under the default 500,000 MB cap on a 92 GB disk.
+- [ ] Turn off acceleration on the data models nothing feeds: Certificates, Domain_Analysis, Email, Network_Resolution, Performance, Ticket_Management, Updates, Vulnerabilities and Web. Confirm each is empty with `tstats` first.
+- [ ] Review the 218 enabled scheduled searches and disable the Enterprise Security content for data I do not collect.

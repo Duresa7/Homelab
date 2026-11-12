@@ -1,7 +1,7 @@
 # Splunk Enterprise
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-11-12
 
 I run Splunk Enterprise 10.4.0 (build `f798d4d49089`) on VM 109 `splunk-siem`, Rocky Linux 10.2, at `192.168.72.3` on Security-A, VLAN 72. It indexes UniFi CEF syslog, UniFi traffic flows and Wazuh alerts, and posts nine security searches to Discord. The figures below were read on 2026-09-24.
 
@@ -12,7 +12,7 @@ I run Splunk Enterprise 10.4.0 (build `f798d4d49089`) on VM 109 `splunk-siem`, R
 | Inputs | SC4S (podman, `container3:latest`) on 1514 for UniFi CEF into `netops`; HEC on 8088 for SC4S and the flow collector; splunktcp on 9997 for the Wazuh Universal Forwarder |
 | Indexes in use | `netops` (UniFi CEF), `netfw` (UniFi traffic flows), `wazuh` (Wazuh alerts, 30 days) |
 | Flow collector | `unifi-flow-collector.service` runs [unifi_flow_collector.py](Scripts/unifi_flow_collector.py) from `/opt/unifi-flow-collector` and polls the controller's Traffic Flows API |
-| My apps | [unifi_insights](Configuration/unifi_insights/) (CIM mapping, three dashboards, 11 saved searches) and [wazuh_insights](Configuration/wazuh_insights/) (dashboard, 5 saved searches), among 65 installed apps |
+| My apps | [unifi_insights](Configuration/unifi_insights/) (CIM mapping, three dashboards, 11 saved searches) and [wazuh_insights](Configuration/wazuh_insights/) (dashboard, 5 saved searches), among 65 installed apps; the four cloud-only apps are disabled since [2026-11-12](Documentation/Change%20Records/Cloud%20Apps%20and%20Usage%20Telemetry%20Disabled%20-%202026-11-12.md) |
 | Discord | Nine saved searches (five UniFi, four Wazuh) post through the webhook action to the [Discord Alert Bot](../../Discord%20Alert%20Bot/README.md) at `http://192.168.73.2:8080/splunk` |
 | Premium app | [Enterprise Security](../Enterprise%20Security/README.md) 8.5.1 on the same instance |
 
@@ -42,3 +42,4 @@ Wazuh alerts arrive from the Universal Forwarder on `security-01` into `wazuh`, 
   - [Wazuh Insights App - 2026-08-29](Documentation/Change%20Records/Wazuh%20Insights%20App%20-%202026-08-29.md)
   - [Discord Delivery for UniFi and Wazuh Alerts - 2026-09-03](Documentation/Change%20Records/Discord%20Delivery%20for%20UniFi%20and%20Wazuh%20Alerts%20-%202026-09-03.md)
   - [UniFi Scan Exclusion Correction - 2026-09-12](Documentation/Change%20Records/UniFi%20Scan%20Exclusion%20Correction%20-%202026-09-12.md)
+  - [Cloud Apps and Usage Telemetry Disabled - 2026-11-12](Documentation/Change%20Records/Cloud%20Apps%20and%20Usage%20Telemetry%20Disabled%20-%202026-11-12.md)
