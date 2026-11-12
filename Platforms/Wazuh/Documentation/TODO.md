@@ -1,7 +1,7 @@
 # Wazuh TODO
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-10-06
+**Last updated:** 2026-11-12
 
 ## Manager process health
 
@@ -10,6 +10,10 @@
 
 ## Coverage and host hygiene
 
+- [x] 2026-11-12: Indexer retention. ISM policy `wazuh-retention-15d` deletes alert, archive, monitoring and statistics indices after 15 days; nothing was deleted before and the node was at 730 of 1,000 shards. [Indexer 15-Day Retention](Change%20Records/Indexer%2015-Day%20Retention%20-%202026-11-12.md).
+- [ ] Confirm `wazuh-alerts-4.x-2026.11.13` picks up `wazuh-retention-15d` through the `ism_template`.
+- [ ] Delete rotated alert files under `/var/ossec/logs/alerts/YYYY/Mon` after 15 days (156 MB since 2026-02 on 2026-11-12), scheduled through Ansible because ssh-mcp refuses cron and systemd writes.
+- [ ] Bound `/var/log/wazuh-indexer`: 427 daily `wazuh-cluster` logs, 540 MB, never deleted.
 - [ ] Decide whether `splunk-siem` gets an agent. On 2026-09-24 it was the only running Linux guest without one (Rocky 10.2); `kali-pen` is stopped and not enrolled either.
 - [ ] Check `security-01` for `/var/ossec/etc/client.keys.bak.security-monitoring-cleanup-20260713`, the pre-reset copy of the agent registry from the 2026-07-13 removal. It is not a valid rollback point, and a copy taken before an edit does not stay on the host, so remove it if it is still there.
 

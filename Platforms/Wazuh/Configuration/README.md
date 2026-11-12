@@ -1,7 +1,7 @@
 # Wazuh Configuration Reference
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-11-12
 
 On 2026-09-24 `agent_control -l` listed 15 remote agents plus the manager, all active: IDs `004` to `011`, `013` to `017`, `020` and `021`. I removed disconnected `game-01` agent 018 on 2026-09-12. Earlier counts below remain dated observations.
 
@@ -19,6 +19,7 @@ I record endpoints, paths, package versions and agent state here. Every version 
 | Dashboard | HTTPS 443 |
 | Manager data/config root | `/var/ossec` (root:`wazuh`, mode 0750) |
 | Indexer data | `/var/lib/wazuh-indexer` (`wazuh-indexer`, mode 0750) |
+| Indexer retention | [Indexer/wazuh-retention-15d.json](Indexer/wazuh-retention-15d.json), ISM policy, 15 days from index creation, since 2026-11-12 |
 | Dashboard config | `/etc/wazuh-dashboard` (`wazuh-dashboard`, mode 0750) |
 
 ## MCP Server

@@ -1,0 +1,26 @@
+{
+  "policy": {
+    "description": "Delete Wazuh alert, archive, monitoring and statistics indices 15 days after creation",
+    "default_state": "hot",
+    "states": [
+      {
+        "name": "hot",
+        "actions": [],
+        "transitions": [
+          { "state_name": "delete", "conditions": { "min_index_age": "15d" } }
+        ]
+      },
+      {
+        "name": "delete",
+        "actions": [ { "delete": {} } ],
+        "transitions": []
+      }
+    ],
+    "ism_template": [
+      {
+        "index_patterns": [ "wazuh-alerts-*", "wazuh-archives-*", "wazuh-monitoring-*", "wazuh-statistics-*" ],
+        "priority": 100
+      }
+    ]
+  }
+}

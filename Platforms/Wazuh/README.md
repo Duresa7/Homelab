@@ -1,7 +1,7 @@
 # Wazuh
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 I run Wazuh 4.14.10 as an all-in-one install (manager, indexer and dashboard) on VM 200 `security-01` at `192.168.72.2` on Security-A, VLAN 72. On 2026-11-06 `wazuh-control info` reported v4.14.10 and `agent_control -l` listed 15 agents Active, with `app-01` disconnected while its VM is stopped. Every Proxmox node and every running Linux guest carries an agent except `splunk-siem`, which has none. `kali-pen` is stopped and not enrolled, and there are no Windows agents. Alerts forward to Splunk, and Wazuh MCP Server 4.3.0 gives Executor a read-only path to the manager and indexer.
 
@@ -14,6 +14,7 @@ I run Wazuh 4.14.10 as an all-in-one install (manager, indexer and dashboard) on
 | Agents | 15 active on 2026-10-06, plus `022` (`e2b-01`, 4.14.10-1) enrolled `Active` on 2026-11-11 ([e2b-01 Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/e2b-01%20Provisioning%20-%202026-11-11.md)): IDs `004` to `011`, `013` to `017`, `020` (`ubuntu-dev`) and `021` (`docker-main`). All 15 run 4.14.8-1, held, since the [2026-10-05 fleet update](../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md) released the holds and moved them from 4.14.6-1 (`edge-01` from 4.14.5-1); the per-host table is in the [configuration reference](Configuration/README.md#endpoint-installation-state) |
 | Agent groups | `default` on every agent; `edge` on `edge-01`, `proxmox` on the five nodes, `workstation` on `ubuntu-dev` |
 | Detection | File integrity monitoring per group ([widened 2026-08-29](Documentation/Change%20Records/File%20Integrity%20Monitoring%20Widening%20-%202026-08-29.md)), local rule 100200 against a weekly MalwareBazaar hash list, and the VirusTotal integration ([Malware Detection - 2026-08-29](Documentation/Change%20Records/Malware%20Detection%20-%202026-08-29.md)) |
+| Indexer retention | ISM policy `wazuh-retention-15d` deletes `wazuh-alerts-*`, `wazuh-archives-*`, `wazuh-monitoring-*` and `wazuh-statistics-*` indices 15 days after creation ([Indexer 15-Day Retention - 2026-11-12](Documentation/Change%20Records/Indexer%2015-Day%20Retention%20-%202026-11-12.md)); `wazuh-states-*` is not covered |
 | Splunk forwarding | A Universal Forwarder on `security-01` ships `/var/ossec/logs/alerts/alerts.json` to `splunk-siem` `192.168.72.3:9997`, index `wazuh`, 30-day retention ([Alert Forwarding to Splunk - 2026-08-29](Documentation/Change%20Records/Alert%20Forwarding%20to%20Splunk%20-%202026-08-29.md)); four Wazuh saved searches in Splunk post to Discord |
 | MCP | Wazuh MCP Server 4.3.0 in Docker at `http://192.168.72.2:3000/mcp`, used by Executor on `docker-blue` ([MCP Server and Executor Integration - 2026-09-03](Documentation/Change%20Records/MCP%20Server%20and%20Executor%20Integration%20-%202026-09-03.md)) |
 
@@ -21,7 +22,7 @@ On 2026-09-11 the weekly hash refresh terminated the manager's processes. I rest
 
 ## Layout
 
-- `Configuration/`: reference to the live endpoints, paths, agent state, agent group fragments, detection rules, the Splunk forwarder files and the MCP deployment.
+- `Configuration/`: reference to the live endpoints, paths, agent state, agent group fragments, detection rules, the indexer retention policy, the Splunk forwarder files and the MCP deployment.
 - `Source/agent-deployment/`: idempotent Ansible deployment for the Linux fleet.
 - `Scripts/`: the weekly known-bad hash list refresh and its systemd timer.
 - `Documentation/Runbook.md`: health checks, enrollment, the MCP server, and recovery.
