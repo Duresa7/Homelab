@@ -6,7 +6,7 @@ name: executor-v2
 
 services:
   executor:
-    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.37@sha256:23b1f96c4098b48ec8bdf71da76bcd6c656ea7c2d390d96287d82442c39d7230
+    image: ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.41@sha256:712dc482432c918d48a84f80cc79b12125e951f9bb6929efc7b4594e5523c576
     container_name: executor-v2
     restart: unless-stopped
     init: true

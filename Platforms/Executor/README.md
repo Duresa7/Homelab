@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-11-05
+**Last updated:** 2026-11-11
 
 I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one endpoint in front of SSH, UniFi, Wazuh, Cloudflare and the other integrations. On 2026-10-31 I moved from Executor 1.6.10 to the Executor 2 beta, which is a different server with its own database, and retired Executor 1: [Executor 2 migration](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
@@ -9,8 +9,8 @@ I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one end
 
 | Item | Value |
 |---|---|
-| Version | 2.0.0-beta.37 since 2026-11-05, apps framework `0.0.1-beta.120`; the four bearer apps still run on `0.0.1-beta.117` |
-| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.37`, pinned by digest `sha256:23b1f96c4098b48ec8bdf71da76bcd6c656ea7c2d390d96287d82442c39d7230`; the `beta` tag moves daily |
+| Version | 2.0.0-beta.41 since 2026-11-11, apps framework `0.0.1-beta.122`; the four bearer apps still run on `0.0.1-beta.117` |
+| OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.41`, pinned by digest `sha256:712dc482432c918d48a84f80cc79b12125e951f9bb6929efc7b4594e5523c576`; the `beta` tag moves daily |
 | Host | `docker-blue` (CT 108, `192.168.40.39`) |
 | URL | `https://executor.alphasecunited.com`, through Nginx Proxy Manager proxy host 37; MCP at `/mcp` |
 | Upstream listener | `192.168.40.39:4400` |
@@ -43,7 +43,7 @@ Executor is internal only. UniFi resolves `executor.alphasecunited.com` and each
 
 The container runs as UID 1000, the image's `executor` user, with no Linux capabilities, `no-new-privileges`, a 512-process limit and bounded JSON logs. Starting as that user skips the entrypoint's root branch, which would chown the data directories and drop privileges. Unlike Executor 1, the root filesystem is not read-only: I have not tested Executor 2 with one. `/tmp` is a 256 MiB tmpfs.
 
-`EXECUTOR_APPS_ALLOW_PRIVATE_FETCH=true` lets app code reach private addresses. Every app shares that network position, so any app I add can reach the lab. `EXECUTOR_URL_ALLOW_HTTP_ORIGINS` lists `https://sure.alphasecunited.com` as the one private origin Executor's own requests may use, for the add-by-URL check and Sure's OAuth. `EXECUTOR_CATALOG_URL` points **Add app** at Executor's official feed, `https://catalog.executor.sh/index.json`; self-host has no default, and without it the catalog lists only the built-in Executor app: [official app catalog](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md). Analytics are off.
+`EXECUTOR_APPS_ALLOW_PRIVATE_FETCH=true` lets app code reach private addresses. Every app shares that network position, so any app I add can reach the lab. `EXECUTOR_URL_ALLOW_HTTP_ORIGINS` lists `https://sure.alphasecunited.com` as the one private origin Executor's own requests may use, for the add-by-URL check and Sure's OAuth. `EXECUTOR_CATALOG_URL` points **Add app** at Executor's official feed, `https://catalog.executor.sh/index.json`. Before 2.0.0-beta.41 self-host had no default and listed only the built-in Executor app without it; since then the official feed is the default and `off` disables it: [official app catalog](Documentation/Change%20Records/Official%20App%20Catalog%20-%202026-10-31.md). Analytics are off.
 
 That makes Executor a root path into the lab. Through the `ssh` app it reaches root on every Linux node and guest ssh-mcp holds, and the UniFi and Cloudflare apps can change or delete anything they reach.
 
@@ -60,6 +60,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 - [App page domain - 2026-11-02](Documentation/Change%20Records/App%20Page%20Domain%20-%202026-11-02.md)
 - [Safari 17 URL.parse polyfill - 2026-11-02](Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md)
 - [Update to 2.0.0-beta.37 - 2026-11-05](Documentation/Change%20Records/Update%20to%202.0.0-beta.37%20-%202026-11-05.md)
+- [Update to 2.0.0-beta.41 - 2026-11-11](Documentation/Change%20Records/Update%20to%202.0.0-beta.41%20-%202026-11-11.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)
