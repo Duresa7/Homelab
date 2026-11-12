@@ -1,0 +1,115 @@
+diff -ruN a/code-interpreter/requirements.txt b/code-interpreter/requirements.txt
+--- a/code-interpreter/requirements.txt	2026-11-11 23:21:52.822436834 -0500
++++ b/code-interpreter/requirements.txt	2026-11-11 23:21:52.837863006 -0500
+@@ -4,7 +4,7 @@
+ ipython==9.15.0
+ 
+ orjson==3.11.9
+-pandas==2.2.3
++pandas==2.3.3
+ matplotlib==3.11.2
+ pillow==13.0.0
+ 
+@@ -15,7 +15,6 @@
+ aiohttp==3.14.5
+ beautifulsoup4==4.15.0
+ bokeh==3.9.1
+-gensim==4.4.0
+ imageio==2.37.3
+ joblib==1.5.3
+ librosa==0.11.0
+@@ -30,12 +29,12 @@
+ python-docx==1.1.2
+ pytz==2025.2
+ requests==2.33.0
+-scikit-image==0.25.2
+-scikit-learn==1.6.1
++scikit-image==0.26.0
++scikit-learn==1.7.2
+ scipy==1.17.1
+ seaborn==0.13.2
+ soundfile==0.13.1
+-spacy==3.8.14
++spacy==3.8.18
+ textblob==0.19.0
+ tornado==6.6
+ urllib3==2.8.0
+diff -ruN a/code-interpreter/server/requirements.txt b/code-interpreter/server/requirements.txt
+--- a/code-interpreter/server/requirements.txt	2026-11-11 23:21:52.822663971 -0500
++++ b/code-interpreter/server/requirements.txt	2026-11-11 23:53:33.257254813 -0500
+@@ -4,5 +4,5 @@
+ websockets==17.3
+ uvicorn[standard]==0.54.0
+ requests==2.33.0
+-pydantic==2.9.1
++pydantic==2.12.5
+ certifi==2026.10.19
+diff -ruN a/code-interpreter/template.py b/code-interpreter/template.py
+--- a/code-interpreter/template.py	2026-11-11 23:21:52.822786949 -0500
++++ b/code-interpreter/template.py	2026-11-11 23:57:15.315299505 -0500
+@@ -11,7 +11,7 @@
+     # Start with base template
+     template = (
+         Template()
+-        .from_image("python:3.13")
++        .from_image("ubuntu:26.04")
+         .set_user("root")
+         .set_workdir("/root")
+         .set_envs(
+@@ -24,6 +24,9 @@
+                 "JAVA_HOME": "/usr/lib/jvm/jdk-${JAVA_VERSION}",
+                 "IJAVA_VERSION": "1.3.0",
+                 "R_VERSION": "4.5.*",
++                # Ubuntu 24.04 and later refuse system-wide pip installs (PEP 668).
++                "PIP_BREAK_SYSTEM_PACKAGES": "1",
++                "DEBIAN_FRONTEND": "noninteractive",
+             }
+         )
+         .apt_install(
+@@ -35,14 +38,19 @@
+                 "jq",
+                 "sudo",
+                 "fonts-noto-cjk",
+-                "ca-certificates=20250419+deb13u1",
++                "ca-certificates",
++                # python:3.13 brought these; ubuntu:26.04 does not.
++                "python3",
++                "python3-pip",
++                "python3-venv",
++                "python3-dev",
++                "python-is-python3",
++                "wget",
++                "unzip",
+             ]
+         )
+-        .run_cmd(
+-            "python -m pip install --use-deprecated=legacy-certs"
+-            " --cert /etc/ssl/certs/ca-certificates.crt --upgrade pip==26.2.2"
+-        )
+-        .run_cmd("curl -fsSL https://deb.nodesource.com/setup_20.x | bash -")
++        # Ubuntu's own pip stays: replacing a distribution-managed pip fails.
++        .run_cmd("curl -fsSL https://deb.nodesource.com/setup_26.x | bash -")
+         .apt_install("nodejs")
+         .run_cmd(
+             "echo 'export NODE_OPTIONS=\"--use-openssl-ca${NODE_OPTIONS:+ $NODE_OPTIONS}\"' > /etc/profile.d/node-ca.sh"
+@@ -66,10 +74,16 @@
+ 
+     # Install JavaScript Kernel if requested
+     if "javascript" in enabled_kernels:
+-        template = template.npm_install(
+-            "--unsafe-perm git+https://github.com/e2b-dev/ijavascript.git",
+-            g=True,
+-        ).run_cmd("ijsinstall --install=global")
++        # E2B's ijavascript fork needs zeromq 5, which builds only on Node 20 (end
++        # of life). Deno's own Jupyter kernel takes its place under the same kernel
++        # name, so the server's "javascript" and "typescript" contexts reach it.
++        template = template.run_cmd(
++            "curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh -s -- -y"
++        ).run_cmd("deno jupyter --install --name javascript --display JavaScript --force").run_cmd(
++            # Deno colors values with terminal escape codes unless NO_COLOR is set.
++            "k=/root/.local/share/jupyter/kernels/javascript/kernel.json"
++            " && jq '.env = ((.env // {}) + {\"NO_COLOR\": \"1\"})' $k > $k.new && mv $k.new $k"
++        )
+ 
+     # Install Bash Kernel if requested
+     if "bash" in enabled_kernels:

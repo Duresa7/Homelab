@@ -1,13 +1,13 @@
 # Homelab TODO
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 This file is my central backlog and index. It holds active priorities plus links to system backlogs; implementation steps stay in the owning system's TODO. I keep closed work in [Completed Work](COMPLETED.md).
 
 ## Inbox
 
-- [ ] **Review the E2B trial on 2026-11-25.** Keep `e2b-01` if agents used its sandboxes for real work most weeks: then build the Executor MCP app, set `onboot=1` with a boot-time `docker compose up -d --wait`, add monitoring, and put the CLI on the Mac, Windows and Linux machines. Otherwise tear it down and archive the platform. Before then, sign in to the dashboard in a browser and open a sandbox terminal. [E2B](Platforms/E2B/README.md#open-items).
+- [ ] **Review the E2B trial on 2026-11-25.** Keep `e2b-01` if agents used its sandboxes for real work most weeks: then set `onboot=1` with a boot-time `docker compose up -d --wait`, add monitoring, and put the CLI and skill on the Mac, Windows and Linux machines. Otherwise tear it down and archive the platform. Before then, sign in to the dashboard in a browser and open a sandbox terminal. [E2B](Platforms/E2B/README.md#open-items).
 
 - [ ] **Put `green-server` on a UPS.** Since 2026-11-11 it runs `HQ-DC01`, which holds every FSMO role, and `security-01`, and it is the one node of Grey, Green and Red with no battery behind it; `UPS-02` read 19% load on 2026-08-31. Also decide `onboot` for both guests and whether `HQ-DC02` runs permanently. [Open items](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md#open-items).
 

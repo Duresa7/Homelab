@@ -1,7 +1,7 @@
 # Galaxy Services
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 This inventory maps the workloads on Galaxy's 19 guests: 13 VMs and six LXCs. I read the versions below from the running services on 2026-09-24 and 2026-09-25, through SSH Manager, from each service's version endpoint, its OCI image label, or its package manager. On 2026-09-24 Prometheus scraped 57 targets across seven jobs with all 57 up, the Wazuh manager listed 15 remote agents with all 15 active, and six Docker hosts ran a Hawser Edge agent for Dockhand. A version marked with an earlier date is the last reading I have.
 
@@ -9,6 +9,7 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-11-11: I rebuilt `e2b-01`'s four E2B templates on Ubuntu 26.04, with Deno's Jupyter kernel for JavaScript in `code-interpreter-v1`, and deleted 138.1 GiB of template build layers no live template used. [Ubuntu 26.04 Templates and Storage Cleanup](../../../Platforms/E2B/Documentation/Change%20Records/Ubuntu%2026.04%20Templates%20and%20Storage%20Cleanup%20-%202026-11-11.md)
 - 2026-11-11: New VM 113 `e2b-01` on `grey-server` runs the [E2B](../../../Platforms/E2B/README.md) Embed 0.30.0 trial: Firecracker sandboxes for agents, reached through Nginx Proxy Manager at `e2b`, `api.e2b` and `sandbox.e2b.alphasecunited.com`. [Embed Trial Deployment](../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 - 2026-11-11: `HQ-DC01` and `security-01` run on `green-server`, and the stopped `hermes-01` sits on `red-server`. Their workloads did not change. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
 - 2026-11-11: I deleted VM 103 `win11-dev`, which held the offline GitHub Actions runner `windows-x64-1` for `Duresa7/app-portal`. The runner's registration and the repository's `WINDOWS_RUNNER` variable are still in place. [win11-dev Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/win11-dev%20Removal%20-%202026-11-11.md).
@@ -72,7 +73,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | HQ-WS001 | VM 310 | grey-server | Windows 11 test workstation (`192.168.65.20`, VLAN 65); stopped on 2026-09-24 | Windows 11 Pro 25H2<br>Windows LAPS and the Tier 2 local-administrator policy<br>OpenSSH since 2026-09-19 |
 | kali-pen | VM 102 | grey-server | Penetration-testing VM on VLAN 40; stopped on 2026-09-24 | Kali Linux 2026.2 installer build |
 | hermes-01 | VM 112 | red-server | Hermes Agent personal assistant (`192.168.80.22`, VLAN 80), Discord bot Horus AS | Debian 13<br>Hermes Agent v0.22.7, stable channel, user units `hermes-gateway.service` and `hermes-dashboard.service` with linger<br>Dashboard on TCP 9119, password login<br>Executor MCP through the `SSH` connection, approvals off<br>Anthropic API, `claude-sonnet-5-5`<br>No monitoring or Wazuh agent |
-| e2b-01 | VM 113 | grey-server | E2B Embed trial (`192.168.80.30`, VLAN 80): throwaway Firecracker sandboxes for agents, until the 2026-11-25 review | Ubuntu 26.04.1<br>Docker 29.9.3<br>E2B Embed 0.30.0: API TCP 3000, dashboard 3001, client-proxy 3002, all reached only through Nginx Proxy Manager; orchestrator with Firecracker, Postgres, Redis, ClickHouse, OpenTelemetry collector<br>Templates `base`, `dev`, `code-interpreter-v1` and `desktop`<br>nftables `e2b_guard`<br>Wazuh agent 4.14.10 |
+| e2b-01 | VM 113 | grey-server | E2B Embed trial (`192.168.80.30`, VLAN 80): throwaway Firecracker sandboxes for agents, until the 2026-11-25 review | Ubuntu 26.04.1<br>Docker 29.9.3<br>E2B Embed 0.30.0: API TCP 3000, dashboard 3001, client-proxy 3002, all reached only through Nginx Proxy Manager; orchestrator with Firecracker, Postgres, Redis, ClickHouse, OpenTelemetry collector<br>Templates `base`, `dev`, `code-interpreter-v1` and `desktop` on Ubuntu 26.04, plus `medsim-blender` and `medsim-tools` on 24.04<br>nftables `e2b_guard`<br>Wazuh agent 4.14.10 |
 | ubuntu-dev | VM 105 | grey-server | Ubuntu development workstation | GNOME Shell 50.1<br>Docker 29.7.2<br>VS Code 1.136.1<br>Node.js 24.19.0 via nvm<br>GitHub CLI 2.98.0<br>Wazuh agent 4.14.8<br>node_exporter 1.10.2<br>Samba (SMB2 to SMB3, TCP 445 on `lo` and `ens18`, shares `ai-agent` and `shared-folder`, Samba user `dkadi`), see [Samba](../../../Platforms/Samba/README.md) |
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.19.12<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.8 |
 | docker-main | LXC 110 | grey-server | Docker apps | Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |

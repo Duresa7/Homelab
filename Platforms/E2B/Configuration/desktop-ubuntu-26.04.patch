@@ -1,0 +1,64 @@
+diff -ruN a/desktop/template.py b/desktop/template.py
+--- a/desktop/template.py	2026-11-11 23:21:52.820283999 -0500
++++ b/desktop/template.py	2026-11-11 23:45:29.489021452 -0500
+@@ -2,7 +2,7 @@
+ 
+ template = (
+     Template(file_context_path="files")
+-    .from_image("ubuntu:22.04")
++    .from_image("ubuntu:26.04")
+     .set_user("root")
+     .set_workdir("/")
+     .set_envs(
+@@ -14,10 +14,12 @@
+             "PIP_DEFAULT_TIMEOUT": "100",
+             "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+             "PIP_NO_CACHE_DIR": "1",
++            # Ubuntu 24.04 and later refuse system-wide pip installs (PEP 668).
++            "PIP_BREAK_SYSTEM_PACKAGES": "1",
+         }
+     )
+     # Initial system setup and packages
+-    .run_cmd("yes | unminimize")
++    # unminimize is a separate package on 26.04 and only restores man pages.
+     .apt_install(
+         [
+             "xserver-xorg",
+@@ -38,7 +40,7 @@
+             "ffmpeg",
+             "x11vnc",
+             "net-tools",
+-            "netcat",
++            "netcat-openbsd",
+             "x11-apps",
+             "libreoffice",
+             "xpdf",
+@@ -50,6 +52,10 @@
+             "software-properties-common",
+             "apt-transport-https",
+             "libgtk-3-bin",
++            "gnupg",
++            # 22.04 pulled dbus-x11 in with xfce4; 26.04 does not, and without
++            # dbus-launch xfce4-session never starts xfwm4 or xfdesktop.
++            "dbus-x11",
+         ]
+     )
+     .pip_install("numpy")
+@@ -66,11 +72,12 @@
+     # Install browsers and set up repositories
+     .run_cmd(
+         [
+-            "add-apt-repository ppa:mozillateam/ppa",
+-            "wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -",
+-            'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list',
+-            "wget -qO- https://packages.microsoft.com/keys/microsoft.asc | apt-key add -",
+-            'add-apt-repository -y "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"',
++            # apt 3 on 26.04 has no apt-key: signed-by keyrings instead.
++            "add-apt-repository -y ppa:mozillateam/ppa",
++            "wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg",
++            'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list',
++            "wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft.gpg",
++            'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list',
+             "apt-get update",
+         ],
+     )

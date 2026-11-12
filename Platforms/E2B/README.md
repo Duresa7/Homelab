@@ -1,7 +1,7 @@
 # E2B
 
 **Created:** 2026-11-11  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 I run [E2B Embed](https://github.com/e2b-dev/runtime/tree/main/embed), the single-machine package of E2B's open-source runtime, on `e2b-01` as a trial. Agents on my machines use it to run code in throwaway Firecracker microVMs on Grey instead of on the machine they run on. A sandbox is restored from a snapshot in well under a second, can reach the internet but not my LAN, and is gone when killed. The trial ends with a keep-or-remove review on 2026-11-25.
 
@@ -15,8 +15,8 @@ I run [E2B Embed](https://github.com/e2b-dev/runtime/tree/main/embed), the singl
 | Addresses | Dashboard `https://e2b.alphasecunited.com`, API `https://api.e2b.alphasecunited.com`, sandbox traffic `https://sandbox.e2b.alphasecunited.com`, Desktop viewer `https://desktop.e2b.alphasecunited.com`, through Nginx Proxy Manager hosts 39, 40, 41 and 42 with certificate 3 (`*.e2b.alphasecunited.com`, expires 2027-02-09). LAN and VPN only. |
 | Access control | UniFi `Allow NPM to e2b-01 E2B` admits only NPM to TCP 3000 to 3002. The VM's [e2b-guard.nft](Configuration/e2b-guard.nft) drops those three from anyone else and the other nine Embed ports, including the unauthenticated control API on 5008, from everywhere off the VM. |
 | Authentication | One team API key, held in my password manager with the API's admin token and hash seed, pinned in `/opt/e2b/.env`. The dashboard has no user accounts: you paste the team key, and it keeps it in an httpOnly cookie marked `Secure` since 2026-11-11. |
-| Templates | `base` (Debian 12, Python 3.11, 2 vCPU, 512 MiB); `dev` (Python 3.12 with `uv`, Node 22, `git`, `gh`, `build-essential`; 2 vCPU, 1 GiB, 9.4 GB free disk); `code-interpreter-v1` (E2B's Code Interpreter: Jupyter kernels for Python, JavaScript, R, Java and Bash; 2 vCPU, 2 GiB); `desktop` (E2B's Desktop: Xfce and Firefox for computer use; 4 vCPU, 2 GiB) |
-| Capacity | `HUGEPAGES=3072` (6 GiB) since 2026-11-11, up from 2048: about twelve 512 MiB sandboxes at full memory, or one `desktop` and one `code-interpreter-v1` at full memory beside small ones; at most 3 starting at once; 64 NBD devices |
+| Templates | Ubuntu 26.04 since 2026-11-11. `base` (Python 3.14; 2 vCPU, 512 MiB); `dev` (Python 3.15 as `python3` through `uv`, Ubuntu's 3.14 beside it, Node 26, `git`, `gh`, `build-essential`; 2 vCPU, 1 GiB, 9.0 GB free disk); `code-interpreter-v1` (E2B's Code Interpreter with Jupyter kernels for Python 3.14, JavaScript and TypeScript on Deno 2.9.8, and Bash; 2 vCPU, 2 GiB); `desktop` (E2B's Desktop: Xfce with Firefox, Chrome and VS Code for computer use; 4 vCPU, 2 GiB). `medsim-blender` and `medsim-tools` (Ubuntu 24.04, 2 GiB each) are my medsim work's own templates, built outside these scripts. |
+| Capacity | `HUGEPAGES=3072` (6 GiB) since 2026-11-11, up from 2048: about twelve 512 MiB sandboxes at full memory, or one `desktop` and one `code-interpreter-v1` at full memory beside small ones; at most 3 starting at once; 64 NBD devices. Disk: 123 of 292 GB used on `/` on 2026-11-12, after the layer cleanup. |
 | Sandbox network | Internet allowed; 10/8, 172.16/12, 192.168/16, 100.64/10 and link-local denied inside every sandbox (E2B's default) |
 | Team limits | Embed's `default_limits` row: `disk_mb` 10240 (raised from 512 on 2026-11-11), sandboxes at most 24 hours per run (`max_length_hours` 24, raised from 1 on 2026-11-11), 20 concurrent, 8 vCPU and 8 GiB per sandbox |
 | Telemetry | Embed's built-in OpenTelemetry collector into its own ClickHouse; Wazuh agent `022` on `security-01`; no Prometheus or Discord alerts during the trial |
@@ -63,22 +63,23 @@ Commands run as root in `/opt/e2b` on `e2b-01`, through ssh-mcp profile `e2b_01`
 | After a reboot of `e2b-01` or Grey | Start VM 113, then `docker compose up -d --wait`. It recreates the TCP MSS clamp and `/var/run/netns`, which do not survive a reboot. |
 | Upgrade | Rerun [setup-embed.sh](Scripts/setup-embed.sh) with the new runtime commit and no secrets file: it downloads both files again, reapplies the dashboard patch, carries the secrets over and runs `up`, which pulls the newly pinned image tags. Then `docker compose up -d --wait --remove-orphans` drops services the new file no longer defines. Running sandboxes end when the orchestrator restarts. |
 | Raise capacity | `HUGEPAGES=<n>` in `.env` and `docker compose up -d --wait`; each 512 MiB sandbox takes 256 pages at full memory. On a running host the page cache holds most free memory, so run `sync; echo 3 > /proc/sys/vm/drop_caches; echo 1 > /proc/sys/vm/compact_memory` first. If `host-setup` still cannot reserve them all it exits 1 and Compose leaves the recreated dashboard stopped; lower the number and run `up` again. A larger pool than the free memory allows takes a reboot of `e2b-01`, or more VM memory. |
-| Build a template | [build-dev-template.py](Scripts/build-dev-template.py) is the pattern, and [build-upstream-template.py](Scripts/build-upstream-template.py) builds E2B's published ones from a clone. A `copy()` step uploads through port 5008, which needs `ssh -N -L 5008:127.0.0.1:5008 dkadi@192.168.80.30`. Each step gets the team's `disk_mb` (10240) of working space; `min_free_disk_mb` only sets the space left afterwards. Each step restores the previous step's snapshot while the old VM still holds its memory, so a template's memory has to fit in the pool twice. Every step is stored as a layer under `/var/lib/e2b/storage/templates` and again in `/orchestrator/build`, and nothing removes layers of failed or superseded builds: check `df -h /` before building. |
+| Build a template | [build-dev-template.py](Scripts/build-dev-template.py) is the pattern, and [build-upstream-template.py](Scripts/build-upstream-template.py) builds E2B's published ones from a clone. A `copy()` step uploads through port 5008, which needs `ssh -N -L 5008:127.0.0.1:5008 dkadi@192.168.80.30`. Each step gets the team's `disk_mb` (10240) of working space; `min_free_disk_mb` only sets the space left afterwards. Each step restores the previous step's snapshot while the old VM still holds its memory, so a template's memory has to fit in the pool twice, beside every running sandbox. On Ubuntu 26.04 a step that runs `pip install` system-wide needs `PIP_BREAK_SYSTEM_PACKAGES=1`. Every step is stored as a layer under `/var/lib/e2b/storage/templates`, and nothing removes layers of failed or superseded builds: check `df -h /` before building and clean up afterwards. |
+| Clean up template storage | `python3 /root/storage-gc.py` reports the build directories no live template reaches, and `--delete` removes them; it refuses while a build is waiting or building, and keeps every `medsim-` build. Then `fstrim -v /` hands the space back to Grey's thin pool. Embed's preflight needs 20 GiB free on `/`, or the next `up` refuses to start. [storage-gc.py](Scripts/storage-gc.py) |
 | Remove everything | `docker compose down -v`, `docker compose --profile purge run --rm host-teardown`, destroy VM 113, then remove NPM hosts 39 to 42 and certificate 3, the four UniFi records and the firewall policy |
 
 SSH to `e2b-01` from one host several times within a few minutes trips UniFi's `EMERGING_SCAN` intrusion-prevention signature, and that host's SSH to `e2b-01` is then dropped for several minutes. ssh-mcp holds its connection open and has not tripped it.
 
 ## Open Items
 
-- Layer storage: about 140 GB after four templates and their failed attempts. Work out a cleanup that keeps the layers live templates depend on before building more.
-- Grey's `local-lvm` thin pool: `e2b-01` may grow to 300 GiB; the pool had 267 GB free on 2026-11-11.
+- Grey's `local-lvm` thin pool: `e2b-01` may grow to 300 GiB; on 2026-11-12 the pool read 64.74% used with 293,488,849 KiB available, and `e2b-01`'s volume 41.97%.
 - Sign in to the dashboard in a browser and open a sandbox terminal, the path the HTTPS sandbox URL patch is for.
-- Trial review on 2026-11-25. Keeping it brings an Executor MCP app, `onboot=1` with a boot-time `up`, monitoring, and the CLI on the Mac, Windows and Linux machines.
+- Trial review on 2026-11-25. Keeping it brings `onboot=1` with a boot-time `up`, monitoring, and the CLI and skill on the Mac, Windows and Linux machines. Agents use the CLI directly, with no Executor app.
 
 ## Records
 
 | Date | Record |
 |---|---|
+| 2026-11-11 | [Ubuntu 26.04 Templates and Storage Cleanup](Documentation/Change%20Records/Ubuntu%2026.04%20Templates%20and%20Storage%20Cleanup%20-%202026-11-11.md) |
 | 2026-11-11 | [Extra Templates and Disk Growth](Documentation/Change%20Records/Extra%20Templates%20and%20Disk%20Growth%20-%202026-11-11.md) |
 | 2026-11-11 | [Embed Trial Deployment](Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md) |
 | 2026-11-11 | [e2b-01 Provisioning](../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/e2b-01%20Provisioning%20-%202026-11-11.md) |
