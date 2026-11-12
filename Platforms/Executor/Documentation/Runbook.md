@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-12
 
 These steps cover Executor 2 on `docker-blue` (`192.168.40.39`). The current state is on the [platform front page](../README.md). Executor 1's procedures went with it on 2026-10-31 and are in this file's history.
 
@@ -61,6 +61,15 @@ A client needs the server once, then a browser sign-in:
 claude mcp add --transport http --scope user executor https://executor.alphasecunited.com/mcp   # then /mcp in a session
 codex mcp add executor --url https://executor.alphasecunited.com/mcp && codex mcp login executor
 ```
+
+Codex Alt and Codex Personal share `~/.codex/config.toml` through symlinks in their T3 shadow homes, so the server is added once, in `~/.codex`, and never with `CODEX_HOME` set. Only the sign-in is per profile, because each profile holds its own token:
+
+```bash
+CODEX_HOME=~/.codex_alt codex mcp login executor --no-browser
+CODEX_HOME=~/.codex_personal codex mcp login executor --no-browser
+```
+
+The browser that signs in runs on Jedi PC, so its redirect to `http://127.0.0.1:<port>/callback` does not load. I copy that URL from the address bar and either paste it at the login prompt or request it with `curl` on `ubuntu-dev`, where the listener is. Afterwards `ls -l ~/.codex_alt/config.toml` must still show a symlink. I signed both profiles in this way on 2026-11-12.
 
 The dashboard's **Connected agents** lists every approved client and revokes a grant. A personal access token from **Account settings, Tokens** works as the bearer token for a script or a client that cannot sign in.
 
