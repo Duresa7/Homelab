@@ -16,6 +16,17 @@ SPLUNK_SOURCE_IP is accepted, and the UniFi policy "Allow splunk-siem to alert
 bot" is what lets that one address reach this port at all. Every Splunk alert
 is class security. Added 2026-09-02.
 
+Grafana re-sends a whole notification group whenever any alert in it changes,
+and repeats a still-firing group every repeat_interval. Posting every one of
+those turned a host that stayed down, or five VMs stopping one after another,
+into a message every five minutes. Since 2026-11-12 the bot remembers the last
+status it posted for each alert, keyed by Grafana's fingerprint, and posts an
+alert only when that status changes: once when it fires, once when it
+resolves. A batch whose alerts are all unchanged is acknowledged and dropped.
+The memory is a JSON file at STATE_FILE inside the container, so it survives a
+restart; a rebuild starts it empty, and the first repeat after that posts each
+still-firing alert once more.
+
 Deployed at /home/dkadi/monitoring/alert-bot/ on monitor-01, built by the
 monitoring Compose project. Configuration is environment only:
 
@@ -24,12 +35,17 @@ monitoring Compose project. Configuration is environment only:
   DISCORD_CHANNEL_ID   numeric channel id for #bots
   ALERT_BOT_SECRET     shared secret Grafana sends as "Authorization: Bearer"
   SPLUNK_SOURCE_IP     the one address allowed to POST /splunk, splunk-siem
+  STATE_FILE           where the posted-status memory lives, default
+                       /tmp/alert-state.json
 """
 import asyncio
+import hashlib
+import json
 import logging
 import os
 import re
 import sys
+import time
 from collections import OrderedDict
 
 import discord
@@ -43,6 +59,10 @@ CHANNEL_ID = int(os.environ["DISCORD_CHANNEL_ID"])
 SECRET = os.environ["ALERT_BOT_SECRET"]
 PORT = int(os.environ.get("PORT", "8080"))
 SPLUNK_SOURCE_IP = os.environ.get("SPLUNK_SOURCE_IP", "192.168.72.3")
+STATE_FILE = os.environ.get("STATE_FILE", "/tmp/alert-state.json")
+# A resolved alert is forgotten after a week. If it fires again after that it
+# is new anyway; a firing alert is kept for as long as it keeps firing.
+FORGET_RESOLVED_AFTER = 7 * 86400
 
 # Infrastructure alerts colour by severity. The other two classes colour by
 # class, because "a security event" and "an update is waiting" are the whole
@@ -209,6 +229,57 @@ async def post_embeds(embeds: list[discord.Embed], source: str) -> int:
     return posted
 
 
+def load_state() -> dict[str, dict]:
+    try:
+        with open(STATE_FILE) as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except FileNotFoundError:
+        return {}
+    except Exception as exc:
+        log.warning("could not read %s, starting with no memory: %s", STATE_FILE, exc)
+        return {}
+
+
+def save_state() -> None:
+    tmp = f"{STATE_FILE}.tmp"
+    try:
+        with open(tmp, "w") as f:
+            json.dump(posted_status, f)
+        os.replace(tmp, STATE_FILE)
+    except Exception as exc:
+        log.warning("could not write %s: %s", STATE_FILE, exc)
+
+
+# fingerprint -> {"status": "firing" | "resolved", "at": epoch seconds}
+posted_status: dict[str, dict] = load_state()
+grafana_lock = asyncio.Lock()
+
+
+def alert_key(alert: dict) -> str:
+    """Grafana's fingerprint, or a hash of the labels if a payload lacks one."""
+    fingerprint = alert.get("fingerprint")
+    if fingerprint:
+        return str(fingerprint)
+    labels = json.dumps(alert.get("labels", {}), sort_keys=True)
+    return hashlib.sha256(labels.encode()).hexdigest()[:16]
+
+
+def changed_alerts(alerts: list[dict]) -> list[dict]:
+    """The alerts whose status differs from the last one posted for them."""
+    return [a for a in alerts if posted_status.get(alert_key(a), {}).get("status") != a.get("status")]
+
+
+def remember(alerts: list[dict]) -> None:
+    now = time.time()
+    for alert in alerts:
+        posted_status[alert_key(alert)] = {"status": alert.get("status"), "at": now}
+    for key in [k for k, v in posted_status.items()
+                if v.get("status") == "resolved" and now - v.get("at", 0) > FORGET_RESOLVED_AFTER]:
+        del posted_status[key]
+    save_state()
+
+
 async def handle_grafana(request: web.Request) -> web.Response:
     auth = request.headers.get("Authorization", "")
     if auth != f"Bearer {SECRET}":
@@ -222,8 +293,14 @@ async def handle_grafana(request: web.Request) -> web.Response:
     if not client.is_ready():
         log.error("received %d alert(s) but discord session not ready", len(alerts))
         return web.Response(status=503, text="discord not ready")
-    posted = await post_embeds(embeds_for(alerts), "grafana")
-    return web.json_response({"posted": posted, "alerts": len(alerts)})
+    async with grafana_lock:
+        fresh = changed_alerts(alerts)
+        if not fresh:
+            log.info("dropped grafana batch of %d alert(s): none changed status", len(alerts))
+            return web.json_response({"posted": 0, "alerts": len(alerts), "unchanged": len(alerts)})
+        posted = await post_embeds(embeds_for(fresh), "grafana")
+        remember(fresh)
+    return web.json_response({"posted": posted, "alerts": len(alerts), "unchanged": len(alerts) - len(fresh)})
 
 
 def build_splunk_embed(payload: dict) -> discord.Embed:
