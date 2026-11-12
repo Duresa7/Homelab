@@ -79,7 +79,7 @@ A Python script on SDK 2.63.0 with `E2B_DOMAIN=e2b.alphasecunited.com` created a
 
 - `npm i -g @e2b/cli@2.23.0` under nvm's Node 24.19.0; `e2b --version` prints `2.23.0`.
 - [`~/.config/e2b/env`](../../Configuration/client-env.reference), `0600`, sets `E2B_DOMAIN`, `E2B_SANDBOX_URL` and `E2B_API_KEY`. Line 2 of `~/.bashrc` sources it, above the early return for non-interactive shells, so agent shells see it.
-- The [e2b-sandbox skill](../../Configuration/skills/e2b-sandbox/SKILL.md) lives at `~/.agents/skills/e2b-sandbox`, which Codex reads, with a `~/.claude/skills/e2b-sandbox` symlink for Claude Code.
+- The [e2b-sandbox skill](https://github.com/Duresa7/tools-and-scripts/tree/main/ai-configs/skills/e2b-sandbox) lives at `~/.agents/skills/e2b-sandbox`, which Codex reads, with a `~/.claude/skills/e2b-sandbox` symlink for Claude Code.
 
 CLI checks: `e2b sandbox create dev --detach` returned the ID in 0.35 seconds. A directory went in through `tar czf - | e2b sandbox exec <id> 'tar xzf - -C /home/user'`, and `uv run --with pytest pytest -q` inside reported `1 passed`. Piped stdin reached `python3`, `exit 3` came back as the CLI's exit code 3, `sudo -n true` succeeded inside, and the default lifetime is 300 seconds. On `base` (Debian 12, Python 3.11.6), a file written before `e2b sandbox pause` was still there after `resume`; the pause took under a second and the resume about one.
 

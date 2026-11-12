@@ -20,7 +20,7 @@ I run [E2B Embed](https://github.com/e2b-dev/runtime/tree/main/embed), the singl
 | Sandbox network | Internet allowed; 10/8, 172.16/12, 192.168/16, 100.64/10 and link-local denied inside every sandbox (E2B's default) |
 | Team limits | Embed's `default_limits` row: `disk_mb` 10240 (raised from 512 on 2026-11-11), sandboxes at most 24 hours per run (`max_length_hours` 24, raised from 1 on 2026-11-11), 20 concurrent, 8 vCPU and 8 GiB per sandbox |
 | Telemetry | Embed's built-in OpenTelemetry collector into its own ClickHouse; Wazuh agent `022` on `security-01`; no Prometheus or Discord alerts during the trial |
-| Clients | `ubuntu-dev`: `@e2b/cli` 2.23.0, [`~/.config/e2b/env`](Configuration/client-env.reference), and the [e2b-sandbox skill](Configuration/skills/e2b-sandbox/SKILL.md) for Claude Code and Codex |
+| Clients | `ubuntu-dev`: `@e2b/cli` 2.23.0, [`~/.config/e2b/env`](Configuration/client-env.reference), and the [e2b-sandbox skill](https://github.com/Duresa7/tools-and-scripts/tree/main/ai-configs/skills/e2b-sandbox) for Claude Code and Codex, which lives in my `tools-and-scripts` repository and is linked in from its clone at `~/Documents/code-projects/tools-and-scripts` |
 
 ## Features on this deployment
 
@@ -48,10 +48,7 @@ After `stream.start()` in the Desktop SDK, open `https://desktop.e2b.alphasecuni
 
 ## Using it from a machine
 
-1. Install the CLI: `npm i -g @e2b/cli` (Node 22.19 or newer).
-2. Write `~/.config/e2b/env` in the shape of [client-env.reference](Configuration/client-env.reference), mode `0600`, with the team key from my password manager, and source it near the top of `~/.bashrc`, above any early return for non-interactive shells.
-3. Install the [e2b-sandbox skill](Configuration/skills/e2b-sandbox/SKILL.md) for the agents on that machine.
-4. Check: `e2b sandbox create base --detach` prints an ID, and `e2b sandbox kill <id>` removes it.
+The whole setup, for macOS, Linux and Windows, is the skill's [SETUP.md](https://github.com/Duresa7/tools-and-scripts/blob/main/ai-configs/skills/e2b-sandbox/SETUP.md): install the CLI (Node 22.19 or newer), set `E2B_API_KEY`, `E2B_DOMAIN`, `E2B_SANDBOX_URL` and `E2B_DESKTOP_VIEWER_URL` (the values are in [client-env.reference](Configuration/client-env.reference), the key in my password manager), link the skill into `~/.claude/skills` and `~/.agents/skills`, and check with `e2b sandbox create base --detach` and `e2b sandbox kill <id>`.
 
 The machine needs HTTPS to NPM at `192.168.85.2`, which every Internal network and the VPN already have.
 

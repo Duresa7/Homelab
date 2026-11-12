@@ -85,7 +85,7 @@ With a Desktop sandbox running `stream.start()`, `https://desktop.e2b.alphasecun
 
 ## 7. Skill
 
-The [e2b-sandbox skill](../../Configuration/skills/e2b-sandbox/SKILL.md) now lists the four templates, the 24-hour cap, the small in-memory `/tmp`, egress allow lists through the SDK, `--lifecycle.ontimeout pause --lifecycle.autoresume`, how to use the Code Interpreter and Desktop SDKs, and the viewer address.
+The [e2b-sandbox skill](https://github.com/Duresa7/tools-and-scripts/tree/main/ai-configs/skills/e2b-sandbox) now lists the four templates, the 24-hour cap, the small in-memory `/tmp`, egress allow lists through the SDK, `--lifecycle.ontimeout pause --lifecycle.autoresume`, how to use the Code Interpreter and Desktop SDKs, and the viewer address. The same evening I moved it to my `tools-and-scripts` repository (commit `0bc4a75`) as a generic skill that reads the deployment from environment variables, with a setup guide and PowerShell steps, and linked it into `~/.agents/skills` from the clone. Headless Claude Code runs found two traps it now covers: `exec` waits on an open stdin until it closes, so every `exec` without piped input gets `< /dev/null` (`$null |` in PowerShell), and options placed after the sandbox ID become part of the remote command.
 
 ## Left open
 
