@@ -22,8 +22,8 @@ services:
       # Executor's own requests (the add-by-URL probe and OAuth) refuse private addresses
       # except for these exact origins. Sure resolves to Nginx Proxy Manager internally.
       EXECUTOR_URL_ALLOW_HTTP_ORIGINS: '["https://sure.alphasecunited.com"]'
-      # Self-host has no default feed, so without this Add app lists only the built-in
-      # Executor app. The desktop and CLI builds default to this same URL.
+      # The official app feed's index.json that onboarding and Add app list. Since 2.0.0-beta.41
+      # this is also the default; set it to off for an instance without outbound internet access.
       EXECUTOR_CATALOG_URL: https://catalog.executor.sh/index.json
       # App pages live at https://<app-slug>.<org-slug>.apps.alphasecunited.com; NPM proxy
       # host 38 (*.executor.apps.alphasecunited.com) forwards them to this listener.

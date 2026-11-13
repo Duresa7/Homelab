@@ -1,7 +1,7 @@
 # Executor Runbook
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-11-12
+**Last updated:** 2026-11-13
 
 These steps cover Executor 2 on `docker-blue` (`192.168.40.39`). The current state is on the [platform front page](../README.md). Executor 1's procedures went with it on 2026-10-31 and are in this file's history.
 
@@ -38,7 +38,7 @@ Through the MCP endpoint, `search({ query: "<app>" })` should list each app's to
 2. Resolve the new tag's digest from `ghcr.io/usefulsoftwareco/executor-selfhost` and change the tag and digest in the Compose reference together.
 3. Install the file on `docker-blue`, then `docker compose pull && docker compose up -d`. Startup runs the database's data steps before HTTP opens, so give it 30 seconds.
 4. Check health and the log for failed data steps.
-5. Read `framework.release`. If it changed, set `FRAMEWORK` in [bearer-apps.config.mjs](../Scripts/bearer-apps.config.mjs) to it and rerun [deploy-bearer-apps.mjs](../Scripts/deploy-bearer-apps.mjs), which refuses to deploy against a different framework. It redeploys the source and leaves linked accounts alone.
+5. Read `framework.release`. If it changed, set `FRAMEWORK` in [bearer-apps.config.mjs](../Scripts/bearer-apps.config.mjs) to it and rerun [deploy-bearer-apps.mjs](../Scripts/deploy-bearer-apps.mjs), which refuses to deploy against a different framework. It redeploys the source and leaves linked accounts alone, so a redeploy needs only `EXECUTOR_PAT` injected and no `TOKEN_<SLUG>`. Name the slugs (`node deploy-bearer-apps.mjs ssh unifi wazuh`) so the run touches only those apps.
 6. Run one read through each app, then record the version on the front page.
 
 ## Adding an MCP Server

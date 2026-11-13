@@ -1,7 +1,7 @@
 # Update to 2.0.0-beta.41
 
 **Created:** 2026-11-11  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-13
 
 On 2026-11-11 I moved Executor 2 on `docker-blue` from 2.0.0-beta.37 to 2.0.0-beta.41, the newest v2 pre-release that evening. It skipped beta.38 (2026-11-09), beta.39 (2026-11-10) and beta.40 (2026-11-11 morning). The `beta` tag on GHCR resolved to the same digest as `2.0.0-beta.41`.
 
@@ -26,7 +26,7 @@ No file under the storage migrations or any `.sql` file changed between the two 
 4. I updated the [Compose reference](../../Configuration/docker-compose.yml). Its SHA-256 (`d5f822f7…dcc55ec`) matches the live file.
 5. After verification I deleted `data.pre-beta41`, the script, the switch log and the pull log from `docker-blue`. The beta.37 image stays on the host for a rollback.
 
-I did not redeploy the four bearer apps. They still run on framework `0.0.1-beta.117`, which beta.41 keeps serving, and [bearer-apps.config.mjs](../../Scripts/bearer-apps.config.mjs) still names that version.
+I did not redeploy the three bearer apps, `ssh`, `unifi` and `wazuh`. They still run on framework `0.0.1-beta.117`, which beta.41 keeps serving, and [bearer-apps.config.mjs](../../Scripts/bearer-apps.config.mjs) still names that version.
 
 ## Verification
 
@@ -39,8 +39,10 @@ I did not redeploy the four bearer apps. They still run on framework `0.0.1-beta
 
 ## Open
 
-- The Compose comment above `EXECUTOR_CATALOG_URL` still says self-host has no default feed. That stopped being true with this build. The setting itself is still correct. I left the comment alone so the reference stays byte-identical to the live file, and will reword both together.
-- The bearer apps are two framework releases behind. The runbook's step 5 calls for a redeploy on `0.0.1-beta.122`.
+Both items below were closed on 2026-11-13 by the [bearer app redeploy](Bearer%20App%20Redeploy%20on%20Framework%200.0.1-beta.122%20-%202026-11-13.md).
+
+- The Compose comment above `EXECUTOR_CATALOG_URL` still said self-host has no default feed. That stopped being true with this build. The setting itself was correct. I left the comment alone so the reference stayed byte-identical to the live file, and reworded both together later.
+- The bearer apps were two framework releases behind. The runbook's step 5 calls for a redeploy on `0.0.1-beta.122`.
 
 ## Rollback
 

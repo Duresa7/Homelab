@@ -1,10 +1,12 @@
 // Executor 2 apps that wrap an MCP server behind a static bearer token. Each token lives
 // in the password manager under `item` and reaches the deploy script as TOKEN_<SLUG>.
 export const ORIGIN = 'https://executor.alphasecunited.com';
-// framework.release on 2026-10-31 (Executor 2.0.0-beta.34). Bump with the image.
-export const FRAMEWORK = '0.0.1-beta.117';
+// framework.release on 2026-11-13 (Executor 2.0.0-beta.41). Bump with the image.
+export const FRAMEWORK = '0.0.1-beta.122';
 export const MCP_SDK = '1.32.1';
 
+// Cloudflare left this list on 2026-11-01, when the `cloudflare` slug became the official
+// catalog app with its own OAuth account. Deploying a bearer app to that slug would replace it.
 export const APPS = [
   {
     slug: 'ssh',
@@ -36,15 +38,5 @@ export const APPS = [
     timeoutMs: 120000,
     item: 'Wazuh MCP Server credentials',
     field: 'MCP API key',
-  },
-  {
-    slug: 'cloudflare',
-    name: 'Cloudflare',
-    provider: 'Cloudflare account MCP',
-    url: 'https://mcp.cloudflare.com/mcp',
-    host: 'mcp.cloudflare.com',
-    timeoutMs: 120000,
-    item: 'Cloudflare API - executor-mcp',
-    field: 'credential',
   },
 ];

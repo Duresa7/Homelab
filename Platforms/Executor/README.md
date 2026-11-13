@@ -1,7 +1,7 @@
 # Executor
 
 **Created:** 2026-08-30  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-13
 
 I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one endpoint in front of SSH, UniFi, Wazuh, Cloudflare and the other integrations. On 2026-10-31 I moved from Executor 1.6.10 to the Executor 2 beta, which is a different server with its own database, and retired Executor 1: [Executor 2 migration](Documentation/Change%20Records/Executor%202%20Migration%20-%202026-10-31.md).
 
@@ -9,7 +9,7 @@ I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one end
 
 | Item | Value |
 |---|---|
-| Version | 2.0.0-beta.41 since 2026-11-11, apps framework `0.0.1-beta.122`; the four bearer apps still run on `0.0.1-beta.117` |
+| Version | 2.0.0-beta.41 since 2026-11-11, apps framework `0.0.1-beta.122`; the three bearer apps run on it since 2026-11-13 |
 | OCI image | `ghcr.io/usefulsoftwareco/executor-selfhost:2.0.0-beta.41`, pinned by digest `sha256:712dc482432c918d48a84f80cc79b12125e951f9bb6929efc7b4594e5523c576`; the `beta` tag moves daily |
 | Host | `docker-blue` (CT 108, `192.168.40.39`) |
 | URL | `https://executor.alphasecunited.com`, through Nginx Proxy Manager proxy host 37; MCP at `/mcp` |
@@ -23,17 +23,17 @@ I run the self-hosted Executor on `docker-blue`. It gives my MCP clients one end
 
 ## Apps
 
-Each integration is an app, and agents call its tools as `tools.<slug>.<tool>`. The four bearer-token apps are generated from one template by [deploy-bearer-apps.mjs](Scripts/deploy-bearer-apps.mjs) and [bearer-apps.config.mjs](Scripts/bearer-apps.config.mjs). Each declares one app account, linked once for every caller, and lists its server as the provider's only host, so app code holds an opaque handle and Executor substitutes the token only on requests to that host. Sure was added by URL. I removed Brandfetch, Draw.io, Excalidraw, Microsoft Learn, Mermaid Chart, Miro and Supabase on 2026-10-31.
+Each integration is an app, and agents call its tools as `tools.<slug>.<tool>`. The three bearer-token apps, `ssh`, `unifi` and `wazuh`, are generated from one template by [deploy-bearer-apps.mjs](Scripts/deploy-bearer-apps.mjs) and [bearer-apps.config.mjs](Scripts/bearer-apps.config.mjs). Each declares one app account, linked once for every caller, and lists its server as the provider's only host, so app code holds an opaque handle and Executor substitutes the token only on requests to that host. `cloudflare` started as a fourth bearer app; on 2026-11-01 that slug became Executor's official catalog app `@executor.sh/cloudflare`, which signs in with OAuth, and the deploy script no longer lists it. Sure was added by URL. I removed Brandfetch, Draw.io, Excalidraw, Microsoft Learn, Mermaid Chart, Miro and Supabase on 2026-10-31.
 
 | App | Server | Account | Tools on 2026-10-31 |
 |---|---|---|---|
 | `ssh` | [ssh-mcp](../SSH%20MCP/README.md), `http://192.168.40.39:8813/` | Bearer token, app account | 15 |
 | `unifi` | [UniFi gateway](../Docker%20MCP%20Gateway/README.md), `http://192.168.40.39:8811/mcp` | Bearer token, app account | 5 |
 | `wazuh` | [Wazuh MCP Server](../Wazuh/README.md), `http://192.168.72.2:3000/mcp` | `wazuh_` API key as a bearer token, app account; read-only scope | 41 |
-| `cloudflare` | `https://mcp.cloudflare.com/mcp` | Account API token as a bearer token, app account | 4 |
+| `cloudflare` | `https://mcp.cloudflare.com/mcp` | Official catalog app since 2026-11-01; OAuth, my own account | 4 |
 | `sure` | [Sure](../Sure/README.md), `https://sure.alphasecunited.com/mcp` | OAuth, my own account | Not connected yet |
 
-No app declares an approval, and an omitted approval runs without asking, so no tool waits for one. That keeps the posture Executor 1 had.
+No bearer app declares an approval, and an omitted approval runs without asking, so none of their tools waits for one. That keeps the posture Executor 1 had. The catalog `cloudflare` app is the exception: its `mcp.search` paused for Executor's approval prompt on 2026-11-05.
 
 The bearer tokens stay in my password manager under the items named in the config file. The deploy script opens each account's connection with `appAccounts.appConnect` over MCP and posts the token straight to `/api/organizations/<org>/connections/<id>/submit` over HTTPS, so no token passes through an MCP call.
 
@@ -61,6 +61,7 @@ Scripts use a personal access token instead, as the bearer token on `https://exe
 - [Safari 17 URL.parse polyfill - 2026-11-02](Documentation/Change%20Records/Safari%2017%20URL.parse%20Polyfill%20-%202026-11-02.md)
 - [Update to 2.0.0-beta.37 - 2026-11-05](Documentation/Change%20Records/Update%20to%202.0.0-beta.37%20-%202026-11-05.md)
 - [Update to 2.0.0-beta.41 - 2026-11-11](Documentation/Change%20Records/Update%20to%202.0.0-beta.41%20-%202026-11-11.md)
+- [Bearer app redeploy on framework 0.0.1-beta.122 - 2026-11-13](Documentation/Change%20Records/Bearer%20App%20Redeploy%20on%20Framework%200.0.1-beta.122%20-%202026-11-13.md)
 - [Runbook](Documentation/Runbook.md)
 - [Compose reference](Configuration/docker-compose.yml)
 - [Bearer app deploy script](Scripts/deploy-bearer-apps.mjs) and [its app table](Scripts/bearer-apps.config.mjs)
