@@ -93,7 +93,7 @@ curl -fsS -o /dev/null -w 'https=%{http_code} remote=%{remote_ip}\n' https://net
 
 My established baseline is a valid certificate, HTTP `200`, and a successfully authenticated administrator dashboard without mixed-content errors. After a configuration change or upgrade I also exercise the management, signal, relay/WebSocket, and gRPC routes through the same name. I completed first-peer and routed VPN-path validation on 2026-07-12; it is recorded in the linked change record below.
 
-The corresponding Nginx Proxy Manager settings and advanced routes live in its [runbook](../../Nginx%20Proxy%20Manager/Documentation/Runbook.md).
+The corresponding Nginx Proxy Manager settings and advanced routes live in its [runbook](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md).
 
 ## Peers, Networks, and the VPN Path
 

@@ -1,7 +1,7 @@
 # Platforms
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 This directory holds my deployed applications and services, one folder per platform. Versions are the live readback of 2026-09-24 and 2026-09-25 unless the row says otherwise. Retired platforms are in the [Archive](../Archive/README.md).
 
@@ -31,7 +31,6 @@ This directory holds my deployed applications and services, one folder per platf
 | [MeshCentral](MeshCentral/README.md) | docker-blue | Remote support pilot, running beside RustDesk |
 | [Microsoft Intune](Microsoft%20Intune/README.md) | Cloud | Device management for the `alphasecunited.com` tenant |
 | [Minecraft](Minecraft/README.md) | alpha-prod-01 | Vanilla Java Edition 26.3 through Dockhand; TCP 25565 on the LAN and `minecraft.alphasecunited.com` through the retained Playit tunnel |
-| [NetBird](Netbird/README.md) | docker-network | NetBird 0.80.0 and dashboard 2.94.0, the WireGuard mesh with a routed path into the lab |
 | [Nginx Proxy Manager](Nginx%20Proxy%20Manager/README.md) | docker-network | NPM 2.15.1, 24 internal HTTPS hosts on one DNS-01 wildcard certificate |
 | [Ollama](Ollama/README.md) | docker-main | Ollama 0.35.1 on the GTX 1080 Ti |
 | [Open WebUI](Open%20WebUI/README.md) | docker-main | Open WebUI 0.11.4, the authenticated frontend for Ollama |

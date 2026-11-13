@@ -76,7 +76,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 **Evidence:**
 
-![Proxmox web UI showing the blue-server node summary during the preflight check, with the node's guest list, uptime, and resource usage visible](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S01-Proxmox-Blue-Server-Preflight-2026-07-10.jpg)
+![Proxmox web UI showing the blue-server node summary during the preflight check, with the node's guest list, uptime, and resource usage visible](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S01-Proxmox-Blue-Server-Preflight-2026-07-10.jpg)
 
 ### Step 2: Create the docker-network LXC
 
@@ -88,7 +88,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 **Evidence:**
 
-![Validated LXC configuration](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S02-Docker-Network-LXC-Created-2026-07-10.jpg)
+![Validated LXC configuration](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S02-Docker-Network-LXC-Created-2026-07-10.jpg)
 
 ### Step 3: Harden SSH and add the guest to HA
 
@@ -100,7 +100,7 @@ The HA resource is backed by node-local `local-lvm`. I accepted that this starts
 
 **Evidence:**
 
-![Proxmox summary showing CT 107 running as an unprivileged container on blue-server with HA state started](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S03-Docker-Network-SSH-HA-Ready-2026-07-10.jpg)
+![Proxmox summary showing CT 107 running as an unprivileged container on blue-server with HA state started](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S03-Docker-Network-SSH-HA-Ready-2026-07-10.jpg)
 
 ### Step 4: Install and verify Docker
 
@@ -127,7 +127,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![Terminal capture showing Docker Engine 29.6.1 client and server, Docker Compose v5.3.1, the proxy network at 172.31.85.0/24, and exit code 0](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S04-Docker-Runtime-Current-Validation-2026-07-11.jpg)
+![Terminal capture showing Docker Engine 29.6.1 client and server, Docker Compose v5.3.1, the proxy network at 172.31.85.0/24, and exit code 0](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S04-Docker-Runtime-Current-Validation-2026-07-11.jpg)
 
 ### Step 5: Deploy Nginx Proxy Manager
 
@@ -139,9 +139,9 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![NPM healthy first-run state](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-First-Run-Healthy-2026-07-10.jpg)
+![NPM healthy first-run state](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-First-Run-Healthy-2026-07-10.jpg)
 
-![NPM initialized administrator](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
+![NPM initialized administrator](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
 
 ### Step 5A: Apply the Access-A egress policies
 
@@ -153,7 +153,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![Access-A egress policy set](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
+![Access-A egress policy set](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 
 ### Step 6: Add internal DNS
 
@@ -165,7 +165,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![UniFi internal DNS record](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
+![UniFi internal DNS record](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
 ### Step 7: Issue TLS and publish the NetBird proxy
 
@@ -177,9 +177,9 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![Wildcard certificate issued](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
+![Wildcard certificate issued](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 
-![NetBird proxy online in NPM](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg)
+![NetBird proxy online in NPM](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg)
 
 ### Step 8: Deploy the NetBird control plane
 
@@ -191,7 +191,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![Authenticated NetBird dashboard](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg)
+![Authenticated NetBird dashboard](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S08-NetBird-Authenticated-Dashboard-2026-07-11.jpg)
 
 ### Step 9: Test restart persistence
 
@@ -203,7 +203,7 @@ The capture showed the client & server versions, Compose version, active service
 
 **Evidence:**
 
-![NetBird healthy after restart](../../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S09-NetBird-Healthy-After-Restart-2026-07-11.jpg)
+![NetBird healthy after restart](../../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S09-NetBird-Healthy-After-Restart-2026-07-11.jpg)
 
 ### Step 10: Remove temporary files and restrict permissions
 
@@ -227,4 +227,4 @@ Destruction of the LXC and its `local-lvm` disk is intentionally not automated; 
 
 ## Follow-on Status
 
-I validated first-peer enrollment and the routed VPN path on 2026-07-12, then verified the non-interactive ACME renewal path and bounded logging. I intentionally descoped the controlled guest reboot and the remaining hardening items I declined. See the platform [operational follow-ups/descope record](../../../../../Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). No infrastructure follow-up remains tracked from this change.
+I validated first-peer enrollment and the routed VPN path on 2026-07-12, then verified the non-interactive ACME renewal path and bounded logging. I intentionally descoped the controlled guest reboot and the remaining hardening items I declined. See the platform [operational follow-ups/descope record](../../../../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). No infrastructure follow-up remains tracked from this change.

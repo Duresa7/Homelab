@@ -11,7 +11,7 @@ HTTP_SERVICES = {
     'aiproxy': 'CLI Proxy API', 'booklore': 'Booklore',
     'forgejo': 'Forgejo', 'grafana': 'Grafana', 'immich': 'Immich',
     'jellyfin': 'Jellyfin', 'mcp': 'Executor', 'mesh': 'MeshCentral',
-    'netbird': 'NetBird', 'openwebui': 'Open WebUI', 'peanut': 'PeaNUT',
+    'openwebui': 'Open WebUI', 'peanut': 'PeaNUT',
     'prometheus': 'Prometheus', 'prowlarr': 'Prowlarr',
     'qbittorrent': 'qBittorrent', 'radarr': 'Radarr', 'seerr': 'Seerr',
     'semaphore': 'Semaphore', 'sonarr': 'Sonarr', 'splunk': 'Splunk',

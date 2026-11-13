@@ -1,7 +1,7 @@
 # Monitoring Exporters
 
 **Created:** 2026-07-25  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-11-12
 
 I run three playbooks from `ansible-01` to keep Prometheus exporters installed across the fleet. `node-exporter.yml` puts `node_exporter` 1.9.0 on every running Linux guest that lacked it, `cadvisor.yml` manages cAdvisor on 8 Docker hosts, `textfile-collectors.yml` gives the six hosts on the upstream `node_exporter` binary the textfile collector and its update, reboot and drive scripts. All use the same `ansible` account except for `db-13-dev` and `grey-server`, the same key, and the same inventory style as `fleet-updates` next door. The Semaphore project is declared in `semaphore/task-templates.yml`; it exposes whole-scope and single-host templates for every playbook.
 
@@ -49,7 +49,7 @@ v0.60.5 handles the snapshotter. It lives on `ghcr.io/google/cadvisor`; `gcr.io/
 
 The playbook no longer asserts on the storage driver, because that assert would have refused the version that fixes the problem. It reports the driver, and after installing it compares the containers cAdvisor registered against the containers Docker says are running, failing the play when a host with containers reports none. That catches this failure and any future one, whatever the cause.
 
-cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server uses 8081 on `docker-network`. Port 9101 was available on all eight hosts and sits next to `node_exporter`.
+cAdvisor publishes on 9101 instead of the usual 8080. `coolify-proxy` uses 8080 on `app-01`, and the NetBird server used 8081 on `docker-network` until its retirement on 2026-11-12. Port 9101 was available on all eight hosts and sits next to `node_exporter`.
 
 ## Running the playbooks
 

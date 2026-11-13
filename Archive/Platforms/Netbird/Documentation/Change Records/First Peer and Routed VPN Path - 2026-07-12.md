@@ -10,7 +10,7 @@
 
 I enrolled the first two peers, exercised the WireGuard data path, and routed one peer into Access-A through CT 107. The checks covered the overlay tunnel, route selection, HTTPS service path, and UniFi firewall behavior.
 
-This closed the Internal-and-VPN reachability item in the completed network segmentation work and the "First Peer and VPN Path" section of the platform [TODO](../TODO.md). The current network result is indexed from the [UniFi configuration record](../../../../Infrastructure/Network/UniFi/README.md).
+This closed the Internal-and-VPN reachability item in the completed network segmentation work and the "First Peer and VPN Path" section of the platform [TODO](../TODO.md). The current network result is indexed from the [UniFi configuration record](../../../../../Infrastructure/Network/UniFi/README.md).
 
 ## Starting state
 

@@ -68,7 +68,7 @@ I kept management sources in the `pve_admins` IPSet and verified live SSH before
 
 I created CT 107 `docker-network` on VLAN 85 on 2026-07-10 with 2 vCPU, 4 GiB memory, a 32 GiB root disk, nesting, key-only SSH, Docker Engine 29.6.1, and Docker Compose 5.3.1. It became the shared host for Nginx Proxy Manager and NetBird. I cut its memory to 2 GiB on 2026-08-10, which is what it runs today.
 
-![docker-network LXC after creation](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S02-Docker-Network-LXC-Created-2026-07-10.jpg)
+![docker-network LXC after creation](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S02-Docker-Network-LXC-Created-2026-07-10.jpg)
 
 ## What I Checked After Each Step
 

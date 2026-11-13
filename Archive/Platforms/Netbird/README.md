@@ -1,9 +1,11 @@
 # NetBird
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-10-07
+**Last updated:** 2026-11-12
 
-NetBird is my self-hosted WireGuard mesh. The control plane runs on the `docker-network` LXC beside Nginx Proxy Manager, and the dashboard is published at `https://netbird.alphasecunited.com` through NPM. Peers reach only Access-A (VLAN 85) and get no DNS from NetBird. The other remote path into the lab is the UniFi `Management Access` WireGuard server; both are described in [Access Paths](../../Architecture/Access-Paths.md).
+**Retired 2026-11-12.** I removed the control plane, its data, the routing-peer client, the proxy host and the DNS name; the [retirement record](Documentation/Change%20Records/Retirement%20-%202026-11-12.md) has the detail. Everything below describes the service as it ran before that date.
+
+NetBird was my self-hosted WireGuard mesh. The control plane runs on the `docker-network` LXC beside Nginx Proxy Manager, and the dashboard is published at `https://netbird.alphasecunited.com` through NPM. Peers reach only Access-A (VLAN 85) and get no DNS from NetBird. The other remote path into the lab is the UniFi `Management Access` WireGuard server; both are described in [Access Paths](../../../Architecture/Access-Paths.md).
 
 ## Current State
 
@@ -24,7 +26,7 @@ Versions read back on 2026-10-05 (previously 2026-09-24); routing and DNS read f
 | Overlay DNS | Domain `netbird.selfhosted`. No nameserver groups, zones or records, so a remote peer reaches NPM by address but cannot resolve the `alphasecunited.com` names |
 | VPN path | Validated 2026-07-12: a remote peer reached Access-A through the overlay (`ip route ... dev wt0`, HTTPS `200`) |
 
-Both images track `latest`. The 2026-10-05 fleet Compose run moved them to 0.80.0 and 2.94.0 ([fleet update](../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md)). The 0.78.1 to 0.79.0 and 2.92.0 to 2.93.0 moves have no change record; the container started at 3:00 AM on 2026-09-19, the time Dockhand's daily update runs.
+Both images track `latest`. The 2026-10-05 fleet Compose run moved them to 0.80.0 and 2.94.0 ([fleet update](../../../Operations/Maintenance/Fleet%20Update%20-%202026-10-05.md)). The 0.78.1 to 0.79.0 and 2.92.0 to 2.93.0 moves have no change record; the container started at 3:00 AM on 2026-09-19, the time Dockhand's daily update runs.
 
 ## Changes
 
@@ -37,13 +39,13 @@ Both images track `latest`. The 2026-10-05 fleet Compose run moved them to 0.80.
 - [Deployment record (2026-07-10)](Documentation/Deployment.md)
 - [Change record: first peer and routed VPN path (2026-07-12)](Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md)
 - [Change record: operational follow-ups and hardening descope (2026-07-12)](Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
-- [Fleet maintenance record (2026-08-31)](../Ansible/Documentation/Change%20Records/Compose%20Fleet%20Maintenance%20-%202026-08-31.md)
+- [Fleet maintenance record (2026-08-31)](../../../Platforms/Ansible/Documentation/Change%20Records/Compose%20Fleet%20Maintenance%20-%202026-08-31.md)
 - [Operations runbook](Documentation/Runbook.md)
 - [Troubleshooting index](Documentation/Troubleshooting/README.md)
 - [Platform backlog](Documentation/TODO.md)
 - [Configuration reference](Configuration/README.md)
 - [Access-A network reference](Configuration/Access-Network.md)
-- [Nginx Proxy Manager platform](../Nginx%20Proxy%20Manager/README.md)
+- [Nginx Proxy Manager platform](../../../Platforms/Nginx%20Proxy%20Manager/README.md)
 
 ## Layout
 

@@ -1,9 +1,9 @@
 # Prometheus
 
 **Created:** 2026-07-13  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-11-12
 
-I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-10-05 Prometheus 3.15.0 reported 50 targets, all up, across six jobs: `node` 17, `cadvisor` 8, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.3 holds the 25 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host.
+I run Prometheus and Grafana in Docker on CT 104 `monitor-01` at `192.168.73.2`. On 2026-10-05 Prometheus 3.15.0 reported 50 targets, all up, across six jobs: `node` 17, `cadvisor` 8, `blackbox` 22, `proxmox` 1, `nut` 1 and `prometheus` 1. Grafana 13.2.3 holds the 25 alert rules as file provisioning; Prometheus itself holds no rules, and there is no Alertmanager. Grafana routes every alert to the [Discord Alert Bot](../Discord%20Alert%20Bot/README.md) on the same host. On 2026-11-12 I removed the NetBird probe when I [retired NetBird](../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md), and Prometheus reported 49 active targets.
 
 The 50 targets are `node_exporter` on 17 Linux hosts, cAdvisor on all 8 Docker hosts, the Proxmox API exporter, `blackbox_exporter` probes of 21 internal service names plus the Discord alert bot's health endpoint, UPS-02 over NUT, and Prometheus itself. TeamSpeak voice reachability arrives as node_exporter textfile metrics from `alpha-prod-01` rather than a scrape target, so those four public and local UDP checks add series without changing the target count: see [TeamSpeak Reachability Monitoring - 2026-07-28](../Teamspeak%20Hosting/Documentation/Change%20Records/TeamSpeak%20Reachability%20Monitoring%20-%202026-07-28.md).
 

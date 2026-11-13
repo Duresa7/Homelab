@@ -1,7 +1,7 @@
 # UniFi Networks and VLANs
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 The controller holds 23 networks: 16 routed corporate LANs (below), two WANs, the ProtonVPN client network and four remote-user VPN servers. Ahsoka Gateway routes every LAN.
 
@@ -56,7 +56,7 @@ I use this table when placing a new device or workload. The **Zone** column name
 | Security-A (72) | `AlphaSec-Observability` | Security and detection | SIEM and log workloads: `security-01` = .2 and `splunk-siem` = .3. It shares the observability posture with MONITOR-A. Egress is limited to web and NTP from the three-member `AG-Observability-Hosts` Network List. |
 | MONITOR-A (73) | `AlphaSec-Observability` | Monitoring collector | CT 104 `monitor-01` at static 192.168.73.2 runs Prometheus, Grafana, and their backend exporters. DHCP remains enabled from .6 through .254. The shared zone does not merge VLANs 72 and 73. |
 | SERVERS-A (80) | `AlphaSec-Servers` | Internal app/data | Internal (non-internet-facing) application and database servers/VMs: app servers and databases (`app-01` = .10, `alpha-prod-01` = .118). |
-| Access-A (85) | `AlphaSec-Access` | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager and NetBird). Tightly restricted egress. |
+| Access-A (85) | `AlphaSec-Access` | Ingress / remote access | Network-access, ingress, and remote-access tooling: reverse proxies and VPN/mesh gateways (docker-network = .2 running Nginx Proxy Manager; NetBird ran here until 2026-11-12). Tightly restricted egress. |
 
 ### Placement by Workload
 

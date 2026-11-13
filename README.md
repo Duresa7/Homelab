@@ -1,7 +1,7 @@
 # AlphaSec United Homelab
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-05  
+**Last updated:** 2026-11-12  
 
 This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox VE cluster behind a zone-segmented UniFi network, running an Active Directory forest, a Wazuh and Splunk security stack, Prometheus and Grafana monitoring, and self-hosted services such as Immich, Jellyfin, Forgejo, Minecraft, and TeamSpeak.
 
@@ -9,10 +9,9 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 ![UniFi](https://img.shields.io/badge/UniFi-16_routed_LANs,_12_zones-0559C9?logo=ubiquiti&logoColor=white)
 ![Splunk](https://img.shields.io/badge/Splunk-Enterprise_10.4_+_ES-000000?logo=splunk&logoColor=white)
 ![Wazuh](https://img.shields.io/badge/Wazuh-15_active_remote_agents-3585BB)
-![Prometheus](https://img.shields.io/badge/Prometheus-50_targets,_6_jobs-E6522C?logo=prometheus&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-49_targets,_6_jobs-E6522C?logo=prometheus&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-DNS_+_Tunnel-F38020?logo=cloudflare&logoColor=white)
 ![Ansible](https://img.shields.io/badge/Ansible-23_Semaphore_templates-EE0000?logo=ansible&logoColor=white)
-![NetBird](https://img.shields.io/badge/NetBird-WireGuard_mesh-F78F1E)
 
 [![Homelab overview: Cloudflare and the internet edge in front of the UniFi gateway and its 12 firewall zones, the five Galaxy Proxmox nodes with their 18 guests, and the security, monitoring, identity, and access flows between them](Assets/Diagrams/homelab-overview.svg)](Assets/Diagrams/homelab-overview.svg)
 
@@ -26,7 +25,7 @@ This is my homelab, AlphaSec United (`alphasecunited.com`): a five-node Proxmox 
 | Identity | Forest `ad.alphasecunited.com` on `HQ-DC01` and `HQ-DC02` (Windows Server 2025); `HQ-MGT01` runs Windows Admin Center 2.7 and the Entra Cloud Sync agent for Microsoft 365 | 2026-09-25 |
 | Security | Wazuh 4.14.8 with 15 active remote agents (2026-10-02); Splunk Enterprise 10.4.0 with Enterprise Security 8.5.1 and SC4S taking UniFi CEF (2026-09-24) | 2026-10-02 |
 | Monitoring | Prometheus 3.15.0 with 50 targets in 6 jobs, all up; Grafana 13.2.3 with 23 alert rules posting to one Discord channel | 2026-10-05 |
-| Access | Public services through a Cloudflare Tunnel to `edge-01`; 24 internal HTTPS names on Nginx Proxy Manager 2.15.1 with a DNS-01 wildcard; NetBird 0.80.0 for remote access | 2026-10-05 |
+| Access | Public services through a Cloudflare Tunnel to `edge-01`; 28 internal HTTPS names on Nginx Proxy Manager 2.15.1 with DNS-01 certificates; the UniFi `Management Access` WireGuard server for remote access, since I retired NetBird on 2026-11-12 | 2026-11-12 |
 | Automation | Ansible 14.2.0 and Semaphore 2.19.12 (3 projects, 23 templates) and Dockhand 1.0.51 with Hawser 0.2.50 agents on six hosts (2026-10-05); Executor 2.0.0-beta.34 in front of the ssh-mcp, UniFi, Cloudflare, and Wazuh MCP servers | 2026-10-31 |
 | Workstations | Jedi PC, my admin workstation, on Secure VLAN 50; ObiPC, a domain-joined Windows 11 PC on Secure Client VLAN 60, reachable over SSH again on 2026-09-27 after being unreachable on 2026-09-24; [physical-access exercise reviewed](Security/Incidents/Active%20Directory/ObiPC%20Physical%20Access%20Simulation%20-%202026-09-27.md) | 2026-09-27 |
 

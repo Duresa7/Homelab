@@ -10,7 +10,7 @@
 
 I deployed NetBird and Nginx Proxy Manager on Debian 13 LXC 107 `docker-network`. The service runs on VLAN 85 in `/opt/docker/<service>` projects and resolves through an internal UniFi DNS record. Nginx Proxy Manager routes the dashboard, HTTP API, WebSocket, and gRPC paths and terminates a Let's Encrypt certificate issued through Cloudflare DNS-01.
 
-The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) holds the 11-step sequence for the guest, SSH, Docker, UniFi, DNS, TLS, proxy, and restart evidence. This record follows the same deployment from the NetBird platform boundary.
+The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) holds the 11-step sequence for the guest, SSH, Docker, UniFi, DNS, TLS, proxy, and restart evidence. This record follows the same deployment from the NetBird platform boundary.
 
 ## Starting State
 
@@ -23,7 +23,7 @@ The infrastructure-owned [Galaxy Docker-Network LXC walkthrough](../../../Infras
 
 ### Compute and access foundation
 
-NetBird depends on CT 107 `docker-network` on `blue-server`, VLAN 85 address `192.168.85.2/24`, key-only administrative SSH, and HA desired state `started`. I keep the resource choices, hardening steps, troubleshooting, and S01 through S03 evidence in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) instead of duplicating them here.
+NetBird depends on CT 107 `docker-network` on `blue-server`, VLAN 85 address `192.168.85.2/24`, key-only administrative SSH, and HA desired state `started`. I keep the resource choices, hardening steps, troubleshooting, and S01 through S03 evidence in the [Galaxy infrastructure walkthrough](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md) instead of duplicating them here.
 
 ### Docker runtime
 
@@ -33,7 +33,7 @@ The platform depends on Docker Engine 29.6.1, Docker Compose 5.3.1, and:
 - `/opt/docker/nginx-proxy-manager`
 - external Docker network `proxy`, subnet `172.31.85.0/24`
 
-The installation and S04 terminal evidence remain in the [Galaxy infrastructure walkthrough](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md#step-4-install-and-verify-docker).
+The installation and S04 terminal evidence remain in the [Galaxy infrastructure walkthrough](../../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md#step-4-install-and-verify-docker).
 
 ### Nginx Proxy Manager dependency
 

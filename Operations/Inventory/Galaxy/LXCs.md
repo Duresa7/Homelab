@@ -1,12 +1,13 @@
 # Galaxy LXCs
 
 **Created:** 2026-07-08  
-**Last updated:** 2026-11-04
+**Last updated:** 2026-11-12
 
 Galaxy has six LXCs, all running, on blue-server, grey-server and red-server. I read them back from `pvesh get /cluster/resources` and each container's configuration on 2026-09-24. Together they hold 13 vCPUs, 19 GiB of memory and 8.5 GiB of swap. CT 110 dropped from 16 to 8 GiB on 2026-11-04. No container is an HA resource: `ha-manager config` and `ha-manager rules config` return nothing.
 
 ## Recent changes
 
+- 2026-11-12: I removed NetBird and its routing-peer client from CT 107 `docker-network`, which now runs Nginx Proxy Manager, Hawser and cAdvisor. [NetBird Retirement](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md).
 - 2026-11-04: I cut CT 110 `docker-main` from 16 GiB of memory to 8 GiB, live with no restart. Its 15-day peak was 5.31 GiB. [docker-main Memory at 8 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/docker-main%20Memory%20at%208%20GiB%20-%202026-11-04.md).
 - 2026-10-31: I pruned unused Docker images on docker-main, docker-blue, docker-network, monitor-01 and media-01. monitor-01's rootfs went from 75% to 60% of 20 GiB and docker-main's from 68% to 46%. No container changed. [Unused Docker Image Prune](../../Maintenance/Unused%20Docker%20Image%20Prune%20-%202026-10-31.md).
 - 2026-09-24: I found monitor-01's rootfs at 20G and the HA resources for CT 107 and CT 108 removed. [monitor-01 Rootfs at 20 GiB](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/monitor-01%20Rootfs%20at%2020%20GiB%20-%202026-09-24.md), [CT 107 and CT 108 HA Removal](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/CT%20107%20and%20CT%20108%20HA%20Removal%20-%202026-09-24.md).

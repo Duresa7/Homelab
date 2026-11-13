@@ -50,13 +50,13 @@ I created three Access-to-External rules in this order:
 
 The current rules use `PG-Egress-Web` and `PG-NTP`. The reverse proxy itself is represented by `AG-Reverse-Proxy` in its cross-zone policies.
 
-![Access-A egress rules after deployment](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
+![Access-A egress rules after deployment](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05A-UniFi-Access-A-Egress-Policies-After-2026-07-11.jpg)
 
 ### Step 5: Add Local DNS
 
 I added `netbird.alphasecunited.com` as an A record for `192.168.85.2` with TTL 300. The browser path, NPM certificate, and NetBird HTTPS check all depend on clients resolving that internal address. Every internal HTTPS name since has followed the same pattern, an A record at `192.168.85.2` per NPM proxy host.
 
-![UniFi local DNS record for the NetBird host](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
+![UniFi local DNS record for the NetBird host](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
 
 ### Step 6: Order Identity Egress and Point Clients at the Domain Controllers
 

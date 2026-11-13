@@ -145,7 +145,6 @@ scrape_configs:
           - https://aiproxy.alphasecunited.com/
           - https://executor.alphasecunited.com/
           - https://mesh.alphasecunited.com/
-          - https://netbird.alphasecunited.com/
           # The Discord alert bot's own health endpoint, over the Compose
           # network. /health answers 200 only while its Discord session is
           # ready, so a dead bot trips "Internal service is unreachable" rather

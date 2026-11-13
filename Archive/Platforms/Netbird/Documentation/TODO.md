@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-09-25
 
-NetBird has no open items. The list below is completed work, kept as a log; the implementation is in [Deployment.md](Deployment.md) and the [Change Records](Change%20Records/).
+NetBird has no open items. The list below is completed work, kept as a log; the implementation is in [Deployment.md](Deployment.md) and the [Change Records](Change%20Records).
 
 ## Completed Deployment
 

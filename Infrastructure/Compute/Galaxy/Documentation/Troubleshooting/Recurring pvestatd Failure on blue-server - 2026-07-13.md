@@ -68,7 +68,7 @@ I tracked a controlled follow-up in the [Galaxy TODO](../TODO.md), beginning wit
 
 ## Related records
 
-- I recorded the first operational discovery and temporary restart in the [NetBird troubleshooting record](../../../../../Platforms/Netbird/Documentation/Troubleshooting/pvestatd%20Was%20Failed%20on%20blue-server%20-%202026-07-10.md).
+- I recorded the first operational discovery and temporary restart in the [NetBird troubleshooting record](../../../../../Archive/Platforms/Netbird/Documentation/Troubleshooting/pvestatd%20Was%20Failed%20on%20blue-server%20-%202026-07-10.md).
 - Lenovo BIOS notice: <https://support.lenovo.com/us/en/solutions/ht507019-new-recommended-version-of-system-bios-available-for-thinkcentre-all-m700-m710q-m800-m900s-m900t-all-m910-and-thinkstation-p320-tiny-systems>
 - Lenovo M910q BIOS package: <https://pcsupport.lenovo.com/it/it/products/desktops-and-all-in-ones/thinkcentre-m-series-desktops/thinkcentre-m910q/downloads/ds120436>
 - Proxmox discussion of the recurring crash pattern: <https://forum.proxmox.com/threads/pvestatd-segfaults.170897/>

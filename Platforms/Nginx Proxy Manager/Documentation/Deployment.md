@@ -91,7 +91,7 @@ The advanced configuration sends dashboard traffic to `netbird-dashboard` and Ne
 - After controlled NPM and NetBird Compose restarts, all containers returned healthy and the authenticated HTTPS dashboard remained reachable.
 - Docker inspection confirmed bounded `json-file` logging with `max-size=10m` and `max-file=3` on the NPM container.
 
-These results verify the runtime, inter-container path, saved host, certificate assignment and automated renewal path, HTTPS client path, authenticated dashboard, peer-dependent VPN traffic, Compose-level restart recovery, and bounded logging. See the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+These results verify the runtime, inter-container path, saved host, certificate assignment and automated renewal path, HTTPS client path, authenticated dashboard, peer-dependent VPN traffic, Compose-level restart recovery, and bounded logging. See the NetBird [operational follow-ups/descope record](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 ## Rollback and Recovery
 
@@ -107,4 +107,4 @@ On 2026-07-22 I added 19 internal application proxy hosts without changing the N
 
 On 2026-07-28 I added TS3 Manager at `ts3-manager.alphasecunited.com` with one exact NPM-to-backend TCP 9000 policy and one local A record. Termix had been retired earlier that day, so NPM returned to 20 total hosts rather than growing past its earlier count. The [TS3 Manager Internal HTTPS record](Change%20Records/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28.md) holds the saved IDs, restart check, 46-target monitoring result, and rollback commands. No backup from that change remains.
 
-No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material.
+No further NPM hardening is tracked. I descoped the remaining manual or declined items on 2026-07-12; see the NetBird [operational follow-ups/descope record](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md). Recovery guidance above remains reference material.

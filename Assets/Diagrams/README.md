@@ -21,7 +21,7 @@ Eighteen architecture diagrams, each a self-contained SVG that GitHub renders in
 | `boot-model.svg` | The controller boot chain from blue-server to Semaphore and the PXE services | [Ansible architecture](../../Platforms/Ansible/Documentation/Architecture.md) |
 | `media-stack.svg` | The media stack on media-01: request path, acquisition through Gluetun, and the HDD layout | [Media Stack guide](../../Guides/Media-Stack.md), [Media Stack architecture](../../Platforms/Media%20Stack/Documentation/Architecture.md) |
 | `splunk.svg` | Splunk Enterprise and Enterprise Security on splunk-siem: inputs, apps, indexes and the alert path | [Splunk guide](../../Guides/Splunk.md) |
-| `netbird.svg` | The NetBird control plane on docker-network and the routed path into Access-A | [NetBird guide](../../Guides/NetBird.md) |
+| `netbird.svg` | The NetBird control plane on docker-network and the routed path into Access-A | [NetBird guide](../../Archive/Guides/NetBird.md) |
 | `nginx-proxy-manager.svg` | Internal HTTPS for 24 names: certificate path, local DNS, proxied backends and firewall allows | [Nginx Proxy Manager guide](../../Guides/Nginx-Proxy-Manager.md) |
 | `immich-migration.svg` | The 2026-05-28 storage migration from the WD Red Plus to the Toshiba | [Immich storage migration guide](../../Guides/Immich-Storage-Migration.md) |
 | `incident-response.svg` | The six steps from scope to close | [Security Incident Response guide](../../Guides/Security-Incident-Response.md) |

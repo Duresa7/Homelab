@@ -1,7 +1,9 @@
 # Internal Proxy Host Inventory
 
 **Created:** 2026-07-22  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
+
+On 2026-11-12 I deleted NetBird's host 1, `netbird.alphasecunited.com`, when I [retired NetBird](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md). The active host count is 28, the rows below, and the database holds 14 soft-deleted rows.
 
 On 2026-11-11 I added hosts 39, 40 and 41 for the E2B Embed trial on `e2b-01`, with a new certificate 3, `*.e2b.alphasecunited.com` and `e2b.alphasecunited.com`, and later host 42, the Desktop viewer. The active host count is 29: the 28 rows below plus NetBird (ID 1). [Embed Trial Deployment](../../E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 
@@ -46,7 +48,7 @@ Every row except host 38 uses certificate ID 1, Force SSL, HTTP/2, Block Common 
 | 29 | `mesh.alphasecunited.com` | `192.168.40.39:443` | HTTPS | MeshCentral on `docker-blue`, proxy host 29, added 2026-09-13. Forwards over HTTPS so the hop to the backend stays encrypted. WebSocket upgrade is on, which both the browser and the agents need. Proxy buffering and caching are off; proxy read, proxy send, and response-send timeouts are 3,600 seconds. |
 | 32 | `appportal.alphasecunited.com` | `192.168.40.35:3004` | HTTP | App Portal on `docker-main`, proxy host 32, added 2026-09-19. Serves the desktop client's API, so it carries a device bearer token and exists to keep that token off the wire in the clear. WebSocket upgrade is off; the client polls. |
 
-The existing `netbird.alphasecunited.com` host remains unchanged. NPM administration stays at `http://192.168.85.2:81` without a domain name.
+NPM administration stays at `http://192.168.85.2:81` without a domain name.
 
 The implementation and rollback record is [Internal HTTPS Service Onboarding - 2026-07-22](../Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md).
 

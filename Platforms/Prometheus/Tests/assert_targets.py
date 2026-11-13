@@ -89,7 +89,6 @@ EXPECTED_BLACKBOX_SERVICES = {
     "aiproxy",
     "mcp",
     "mesh",
-    "netbird",
     # The Discord alert bot's /health endpoint, added 2026-09-02. Not an NPM
     # name: probed directly over the Compose network as http://alert-bot:8080.
     "alert-bot",

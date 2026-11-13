@@ -1,12 +1,14 @@
 # Completed Work
 
 **Created:** 2026-08-09  
-**Last updated:** 2026-10-15
+**Last updated:** 2026-11-12
 
 This is my public history of work closed from [TODO.md](TODO.md): one line per item, newest first, with a link to the record that holds the detail. Active priorities, scheduled work, and system backlogs stay in that file.
 
 ## Completed
 
+- [x] 2026-11-12: [NetBird retired](Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md). Control plane, data, routing-peer client, proxy host, DNS name, probe and fleet-update entry removed from the lab; remote access is the UniFi WireGuard server alone.
+- [x] 2026-11-12: [Container image updates](Operations/Maintenance/Container%20Image%20Updates%20-%202026-11-12.md) on seven Docker hosts: Immich v3.4.1, CLI Proxy API, two Postgres minors, the media-01 services, the alpha-prod-01 game services and Hawser everywhere, all healthy afterwards.
 - [x] 2026-10-15: [Minecraft DNS pinned to `192.168.80.1`](Platforms/Minecraft/Documentation/Change%20Records/Pinned%20DNS%20Resolver%20-%202026-10-15.md). The container no longer depends on Alpha's resolver file being ready at boot, after the race hit it twice that day. A test reboot of `alpha-prod-01` lost the race again and Minecraft still resolved its authentication names.
 - [x] 2026-10-15: [Stale UniFi challenge record deleted](Infrastructure/Network/Cloudflare/Documentation/Change%20Records/UniFi%20DDNS%20Token%20Separation%20-%202026-10-13.md#open). UniFi's certificate manager left the `_acme-challenge.unifi.duresakadi.com` TXT record behind after its 2026-10-13 renewal ([incident](Security/Incidents/UniFi/Dynamic%20DNS%20Never%20Updated%20the%20Console%20Name%20-%202026-10-13.md)). The check after the next renewal stays in [TODO.md](TODO.md).
 
@@ -104,9 +106,9 @@ This is my public history of work closed from [TODO.md](TODO.md): one line per i
 - [x] 2026-07-13: [Wazuh endpoint agent removal](Platforms/Wazuh/Documentation/Change%20Records/Endpoint%20Agent%20Removal%20-%202026-07-13.md).
 - [x] 2026-07-13: [Security monitoring baseline cleanup](Platforms/Prometheus/Documentation/Change%20Records/Security%20Monitoring%20Baseline%20Cleanup%20-%202026-07-13.md).
 - [x] 2026-07-12: [Security-A migration of Wazuh/monitoring and the SIEM on Splunk Enterprise from MGMT-A to VLAN 72](Infrastructure/Network/UniFi/Documentation/Change%20Records/Security-A%20Migration%20-%202026-07-12.md), including verified UniFi CEF ingestion at the new SIEM address.
-- [x] 2026-07-12: [NetBird/NPM operational follow-ups and hardening descope](Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
-- [x] 2026-07-12: [NetBird first peer and routed VPN path into Access-A](Platforms/Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
-- [x] 2026-07-11: [NetBird and Nginx Proxy Manager HTTPS access stack on `docker-network`](Platforms/Netbird/Documentation/Deployment.md).
+- [x] 2026-07-12: [NetBird/NPM operational follow-ups and hardening descope](Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+- [x] 2026-07-12: [NetBird first peer and routed VPN path into Access-A](Archive/Platforms/Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+- [x] 2026-07-11: [NetBird and Nginx Proxy Manager HTTPS access stack on `docker-network`](Archive/Platforms/Netbird/Documentation/Deployment.md).
 - [x] 2026-07-10: [Galaxy docker-network LXC and Access-A egress foundation](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Docker-Network%20LXC%20Deployment%20-%202026-07-10.md).
 - [x] 2026-07-10: [Galaxy Cluster-Net Corosync link addition](Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Cluster-Net%20Corosync%20Link%20Addition%20-%202026-07-10.md).
 - [x] 2026-07-09: Enterprise workspace restructure.

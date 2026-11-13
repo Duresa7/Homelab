@@ -9,6 +9,7 @@ I verified the October 7 [service repairs](../../Maintenance/Service%20Failure%2
 
 ## Recent changes
 
+- 2026-11-12: I retired NetBird from `docker-network`: the control plane, its data, the routing-peer client, proxy host 1 and the `netbird` DNS name are gone. [NetBird Retirement](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md). The same evening I updated Immich to v3.4.1, CLI Proxy API, the BookOrbit and Sure databases, the media-01 *arr services, the alpha-prod-01 game services and Hawser on six hosts. [Container Image Updates](../../Maintenance/Container%20Image%20Updates%20-%202026-11-12.md).
 - 2026-11-11: I rebuilt `e2b-01`'s four E2B templates on Ubuntu 26.04, with Deno's Jupyter kernel for JavaScript in `code-interpreter-v1`, and deleted 138.1 GiB of template build layers no live template used. [Ubuntu 26.04 Templates and Storage Cleanup](../../../Platforms/E2B/Documentation/Change%20Records/Ubuntu%2026.04%20Templates%20and%20Storage%20Cleanup%20-%202026-11-11.md)
 - 2026-11-11: New VM 113 `e2b-01` on `grey-server` runs the [E2B](../../../Platforms/E2B/README.md) Embed 0.30.0 trial: Firecracker sandboxes for agents, reached through Nginx Proxy Manager at `e2b`, `api.e2b` and `sandbox.e2b.alphasecunited.com`. [Embed Trial Deployment](../../../Platforms/E2B/Documentation/Change%20Records/Embed%20Trial%20Deployment%20-%202026-11-11.md).
 - 2026-11-11: `HQ-DC01` and `security-01` run on `green-server`, and the stopped `hermes-01` sits on `red-server`. Their workloads did not change. [Guest Moves to Green and Red](../../../Infrastructure/Compute/Galaxy/Documentation/Change%20Records/Guest%20Moves%20to%20Green%20and%20Red%20-%202026-11-11.md).
@@ -78,7 +79,7 @@ All five nodes report `pve-manager/9.2.21` after the 2026-10-05 node package upg
 | ansible-01 | LXC 100 | blue-server | Automation and node provisioning | Ansible 14.2.0 / ansible-core 2.21.2<br>Semaphore 2.19.12<br>Galaxy PXE<br>tftpd-hpa 5.2+20240610-3<br>Wazuh agent 4.14.8 |
 | docker-main | LXC 110 | grey-server | Docker apps | Sure 0.7.5-hotfix.1<br>Immich 3.2.4<br>BookOrbit 3.2.0<br>Forgejo 16.0.5<br>Dockhand 1.0.51<br>CLI Proxy API 8.0.16<br>Ollama 0.35.1 / Qwen 3.5 2B<br>Open WebUI 0.11.4<br>App Portal 0.6.0<br>Internal documentation site, stopped since 2026-09-22<br>Wazuh agent 4.14.8 |
 | monitor-01 | LXC 104 | blue-server | Infrastructure monitoring (`192.168.73.2`, VLAN 73) | Prometheus 3.15.0<br>Grafana 13.2.3<br>Proxmox exporter 3.10.1<br>blackbox exporter 0.28.0<br>NUT exporter<br>Discord alert bot<br>PeaNUT 6.0.0<br>cAdvisor 0.60.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
-| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>NetBird server 0.80.0 / dashboard 2.94.0<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
+| docker-network | LXC 107 | blue-server | Network access control plane | Nginx Proxy Manager 2.15.1<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | docker-blue | LXC 108 | blue-server | Remote access and integrations | Docker MCP Gateway 0.43.3<br>UniFi Network MCP<br>Executor 2.0.0-beta.34<br>ssh-mcp 2.22.0<br>RustDesk hbbs / hbbr 1.1.16<br>MeshCentral 1.2.6<br>Hawser Edge 0.2.50<br>Wazuh agent 4.14.8 |
 | app-01 | VM 116 | purple-server | App platform, temporarily stopped since 2026-10-09; automatic startup disabled | Installed: Coolify 4.4.3<br>Traefik 3.7.12<br>PostgreSQL 15.19 / Redis 7.4.11 / Sentinel 1.0.2<br>cAdvisor 0.60.6<br>node_exporter / Wazuh agent 4.14.8 |
 | edge-01 | VM 121 | purple-server | Edge ingress | Caddy 2.6.2<br>cloudflared 2026.10.0<br>Wazuh agent 4.14.8 |
@@ -187,7 +188,6 @@ The [Uptime dashboard](../../../Platforms/Prometheus/Documentation/Change%20Reco
 | Workload | Details |
 | --- | --- |
 | Nginx Proxy Manager | 2.15.1, pinned by tag and excluded from Dockhand updates since 2026-09-25; Compose under `/opt/docker/nginx-proxy-manager`; 24 live proxy hosts and eleven soft-deleted on 2026-09-27; one Let's Encrypt certificate for `*.alphasecunited.com` and the apex, valid to 2026-12-08, used by every live host. [Platform record](../../../Platforms/Nginx%20Proxy%20Manager/README.md) |
-| NetBird | One combined `netbirdio/netbird-server:latest` container reporting management server 0.80.0, recreated on 2026-10-05, plus `netbirdio/dashboard:latest` labelled v2.94.0; no separate signal or relay container; also the Access-A routing peer advertising `192.168.85.0/24`. [Platform record](../../../Platforms/Netbird/README.md) |
 | Shared proxy network | External Docker network `proxy`, subnet `172.31.85.0/24`; Nginx Proxy Manager uses `172.31.85.10` |
 | cAdvisor, Hawser | Running; cAdvisor 0.60.6, Hawser 0.2.50 |
 | Wazuh agent | 4.14.8-1 since 2026-10-05, held; manager ID `011` as `docker-network` |

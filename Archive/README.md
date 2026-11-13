@@ -1,7 +1,7 @@
 # Archive
 
 **Created:** 2026-07-09  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-12
 
 I keep retired records under their original category, so the old owner and date stay obvious. Current records stay with their owner; this directory is not a holding area for files that lack a clear location.
 
@@ -9,6 +9,7 @@ I keep retired records under their original category, so the old owner and date 
 
 | System | Retained records |
 |---|---|
+| NetBird | [Platform README](Platforms/Netbird/README.md), [retirement record](Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md), deployment and change records, and the [walkthrough](Guides/NetBird.md); the control plane on `docker-network`, its data, the routing-peer client, proxy host 1, the DNS name, the uptime probe and the fleet-update entry removed on 2026-11-12 |
 | Homarr | [Platform README](Platforms/Homarr/README.md), [retirement record](Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md), deployment and integration records, and [placement research](Infrastructure/Compute/Galaxy/Documentation/Homarr%20Placement%20Research%20-%202026-09-27.md); deployment, data, proxy host, DNS name, firewall access, Proxmox account, Gluetun control API and stored credentials removed on 2026-11-01 |
 | Homelab Dashboard | [Retirement record](Platforms/Homelab%20Dashboard/Documentation/Change%20Records/Retirement%20-%202026-09-26.md) and [Compose reference](Platforms/Homelab%20Dashboard/Configuration/docker-compose.yml); deployment, data, publication, dashboard account and monitoring removed from `docker-main` on 2026-09-26 |
 | Weebarr | [Retirement record](Platforms/Weebarr/Documentation/Change%20Records/Retirement%20-%202026-09-25.md), [platform README](Platforms/Weebarr/README.md), and [deployment record](Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md). I deployed it on `media-01` on 2026-09-21; on 2026-09-24 it had no container, image, or Compose service there |

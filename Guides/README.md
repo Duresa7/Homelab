@@ -1,7 +1,7 @@
 # Homelab Guides
 
 **Created:** 2026-07-20  
-**Last updated:** 2026-09-25
+**Last updated:** 2026-11-12
 
 ![Lab map: the guides placed on the layer of the lab each one builds](../Assets/Diagrams/lab-map.svg)
 
@@ -20,7 +20,6 @@ Each guide is one build in the order I ran it, with the commands and the output 
 | [Ansible SSH Identity Automation](Ansible-SSH-Identity-Automation.md) | The controller, identity files, audit, onboarding, rotation, Semaphore templates | Verified 2026-09-24 |
 | [Active Directory](Active-Directory.md) | Two domain controllers, site and subnets, DNS, tiered OUs, password policy, Windows LAPS, a member server, an offline workstation join | Verified 2026-09-09 |
 | [Nginx Proxy Manager](Nginx-Proxy-Manager.md) | Compose deployment, the shared `proxy` network, the DNS-01 wildcard certificate, renewal | Verified 2026-09-24 |
-| [NetBird](NetBird.md) | Self-hosted control plane behind NPM, first peer, routed path into VLAN 85 | Verified 2026-09-24 |
 | [Prometheus](Prometheus.md) | Node exporters, config validation, the bind-mount reload trap, exact target assertions | Verified 2026-09-24 |
 | [Splunk](Splunk.md) | Rocky VM, Splunk Enterprise 10.4.0, HEC, SC4S, UniFi CEF into `netops`, Enterprise Security | Verified 2026-09-24 |
 | [Wazuh](Wazuh.md) | Manager health, agent enrollment, network checks, endpoint retirement | Verified 2026-09-24 |

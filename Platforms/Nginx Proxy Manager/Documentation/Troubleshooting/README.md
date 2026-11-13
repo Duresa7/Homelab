@@ -3,7 +3,7 @@
 **Created:** 2026-07-11  
 **Last updated:** 2026-07-22
 
-I record NPM-specific operational problems here. My authoritative cross-system narrative for the initial `docker-network` deployment is the [NetBird troubleshooting index](../../../Netbird/Documentation/Troubleshooting/README.md).
+I record NPM-specific operational problems here. My authoritative cross-system narrative for the initial `docker-network` deployment is the [NetBird troubleshooting index](../../../../Archive/Platforms/Netbird/Documentation/Troubleshooting/README.md).
 
 I keep one dated Markdown record per problem in this folder. The index links to the complete symptom, tests, cause, correction, and verification for each issue.
 

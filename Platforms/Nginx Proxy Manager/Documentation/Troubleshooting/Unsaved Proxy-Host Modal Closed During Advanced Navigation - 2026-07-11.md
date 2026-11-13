@@ -17,7 +17,7 @@
 1. Create and save the basic host.
 2. Verify the host row exists.
 3. Reopen the saved host.
-4. Add [netbird-advanced-config.conf](../../Configuration/netbird-advanced-config.conf).
+4. Add [netbird-advanced-config.conf](../../../../Archive/Platforms/Netbird/Configuration/netbird-advanced-config.conf).
 5. Run `nginx -t`, save, and validate every route.
 
 **Verification:** The host reports Online. The applied Advanced field contains the complete 1,296-character configuration, `nginx -t` succeeds, and a Host-header request through NPM returns the NetBird dashboard with HTTP `200`. The wildcard/apex certificate is assigned, Force SSL and HTTP/2 are enabled, and the authenticated HTTPS dashboard remained available after Compose restart validation.

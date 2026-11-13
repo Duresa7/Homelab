@@ -1,7 +1,7 @@
 # Nginx Proxy Manager Operations Runbook
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-12
 
 ## Scope
 
@@ -17,7 +17,6 @@ docker compose ps
 docker inspect -f 'status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}} ip={{(index .NetworkSettings.Networks "proxy").IPAddress}} restart={{.HostConfig.RestartPolicy.Name}}' nginx-proxy-manager
 curl -sS -o /dev/null -w 'admin_http=%{http_code}\n' http://127.0.0.1:81/
 curl -sS -o /dev/null -w 'http_entry=%{http_code}\n' http://127.0.0.1/
-curl -sS -o /dev/null -w 'netbird_https=%{http_code}\n' https://netbird.alphasecunited.com/
 docker exec nginx-proxy-manager nginx -t
 ```
 
@@ -28,7 +27,6 @@ Expected baseline:
 - Restart policy is `unless-stopped`.
 - Label `dockhand.update` is `false`, and the image is a pinned version tag rather than `latest`.
 - The administrator UI returns HTTP `200`.
-- The NetBird HTTPS host returns a successful application response and presents the wildcard certificate (on 2026-09-24 it expired 2026-12-08 at 3:03 AM UTC).
 - Each host in the [internal proxy inventory](../Configuration/internal-proxy-hosts.md) returns 200 or an expected application redirect. None returns 502 or 504.
 
 The UI is available internally at `http://192.168.85.2:81`. Live administrator login works. I retrieve the `email` and `password` fields from the standard application account item through the repository's credential workflow. NPM uses that email as its login identity. The [service-login standardization record](../../../Operations/Maintenance/Service%20Login%20Password%20Standardization%20-%202026-09-04.md) documents this shared source. I keep the email, password, and short-lived API token out of shell output and files. `POST /api/tokens` authenticated on 2026-09-05 and the API created Open WebUI proxy host 28. The API is a supported path for scripted host changes; the browser stays the path for certificate work.
@@ -55,7 +53,7 @@ docker compose restart
 docker compose ps
 ```
 
-After a restart I wait for `healthy`, test port 81, and test every configured proxy host. For NetBird I validate certificate presentation, Force SSL, the authenticated dashboard, and the generated OAuth2, WebSocket, management, signal, and gRPC routes. I validate peer-dependent traffic after a peer is enrolled.
+After a restart I wait for `healthy`, test port 81, and test every configured proxy host.
 
 For the internal application set I also verify that UniFi resolves every name to `192.168.85.2`, HTTP redirects to HTTPS, the wildcard certificate validates, and Cloudflare's public resolver returns NXDOMAIN. I keep the administrator UI at `http://192.168.85.2:81`.
 
@@ -64,26 +62,6 @@ For the internal application set I also verify that UniFi resolves every name to
 The [internal proxy-host inventory](../Configuration/internal-proxy-hosts.md) is the current mapping of names, schemes, upstreams, ports, and application-specific settings. When I add or change one host I update that inventory, the UniFi local-DNS record, and the narrow NPM-to-backend firewall policy together.
 
 I don't add database, Redis, exporter, agent, SSH, HEC, syslog, or synchronization ports to NPM. Direct IP-and-port access remains the rollback path.
-
-## Recreate or Verify the NetBird Proxy Host
-
-The current HTTPS proxy host is saved, Online, and validated. I use these settings to verify it or recreate it during recovery.
-
-1. Confirm internal DNS resolves `netbird.alphasecunited.com` to `192.168.85.2`.
-2. Confirm the Cloudflare DNS-01 wildcard/apex certificate exists in NPM and has not expired.
-3. Create a Proxy Host with:
-   - domain `netbird.alphasecunited.com`;
-   - scheme `http`;
-   - forward host `netbird-dashboard`;
-   - forward port `80`;
-   - Block Common Exploits enabled;
-   - WebSockets Support enabled.
-4. Save the basic host and verify its row exists before editing advanced settings.
-5. Reopen the host and paste the contents of [netbird-advanced-config.conf](../Configuration/netbird-advanced-config.conf) into Advanced.
-6. Assign the wildcard/apex certificate, enable Force SSL, and enable HTTP/2. Leave HSTS disabled unless a separate reviewed change enables it.
-7. Save and verify HTTP-to-HTTPS redirection, certificate presentation, the authenticated dashboard, and the generated route configuration from an internal client.
-
-The advanced configuration routes long-lived WebSocket, API/OAuth2, native signal, management, and gRPC requests to `netbird-server:80`. HTTP/2 is required for the gRPC route.
 
 ## Certificate Handling
 

@@ -1,7 +1,7 @@
 # Access Paths
 
 **Created:** 2026-09-25  
-**Last updated:** 2026-11-01
+**Last updated:** 2026-11-12
 
 This is how anything reaches the lab: the public, the LAN, me from outside, me at a console, and my MCP clients. Five paths, each with one owner. Figures are from the live readback on 2026-09-24 and 2026-09-25 unless a line says otherwise.
 
@@ -13,7 +13,7 @@ This is how anything reaches the lab: the public, the LAN, me from outside, me a
 |---|---|---|---|---|
 | Public ingress | Anyone on the Internet | Cloudflare Tunnel to `edge-01` | `*.alphsec.com` | [External Service Ingress](External-Service-Ingress.md) |
 | Internal HTTPS | LAN clients | Nginx Proxy Manager at `192.168.85.2` | `*.alphasecunited.com` | [Nginx Proxy Manager](../Platforms/Nginx%20Proxy%20Manager/README.md) |
-| Remote access | Me, off the LAN | UniFi `Management Access` WireGuard server; NetBird mesh | addresses, not names | [UniFi VPN networks](../Infrastructure/Network/UniFi/Configuration/vpn-networks-port-profiles.md), [NetBird](../Platforms/Netbird/README.md) |
+| Remote access | Me, off the LAN | UniFi `Management Access` WireGuard server | addresses, not names | [UniFi VPN networks](../Infrastructure/Network/UniFi/Configuration/vpn-networks-port-profiles.md) |
 | Remote control | Me, at a device's console | MeshCentral and RustDesk on `docker-blue` | `mesh.alphasecunited.com` | [MeshCentral](../Platforms/MeshCentral/README.md), [RustDesk](../Platforms/RustDesk/README.md) |
 | Agent access | My MCP clients on `ubuntu-dev` | Executor at `executor.alphasecunited.com` | one MCP endpoint | [Executor](../Platforms/Executor/README.md) |
 
@@ -33,7 +33,7 @@ The full chain, the firewall hop and the Access gap are in [External Service Ing
 
 `LAN client -> UniFi local DNS -> NPM 192.168.85.2:443 -> backend web port`
 
-- Nginx Proxy Manager 2.15.1 runs on CT 107 `docker-network`, VLAN 85. It holds 24 live proxy hosts: NetBird and 23 applications (2026-11-01, after I deleted Homarr's host 34 when I [retired Homarr](../Archive/Platforms/Homarr/Documentation/Change%20Records/Retirement%20-%202026-11-01.md)).
+- Nginx Proxy Manager 2.15.1 runs on CT 107 `docker-network`, VLAN 85. It holds 28 live proxy hosts, all applications (2026-11-12, after I deleted NetBird's host 1 when I [retired NetBird](../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md)).
 - UniFi holds 24 local A records pointing at `192.168.85.2`, one per live host. None of these names exists in public DNS.
 - One Let's Encrypt certificate covers `*.alphasecunited.com` and `alphasecunited.com`. It renews through Cloudflare DNS-01, so no inbound port is needed; on 2026-09-24 it expired 2026-12-08.
 - 13 UniFi policies name NPM. Ten let `192.168.85.2` reach one backend each on its listed web ports. Three admit clients to NPM on 443: the Hawser agents on alpha-prod-01 and security-01, and HQ-WS001.
@@ -42,10 +42,9 @@ The host list is the [proxy-host inventory](../Platforms/Nginx%20Proxy%20Manager
 
 ## Remote access
 
-Two VPNs exist, and they reach different things.
+One VPN exists. NetBird, the second, came out on 2026-11-12 ([retirement record](../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md)).
 
 - **UniFi `Management Access`**: a WireGuard server on the gateway, `10.6.0.1/24`, UDP 51822, enabled. It sits in the `Vpn` zone. Policies admit it to the `Internal` zone, the DMZ, RDP on the identity hosts and PeaNUT; the [firewall inventory](../Infrastructure/Network/UniFi/Configuration/firewall.md) lists them. The three other remote-user VPN servers (FamilyVPN, Game-Access, Temp) are disabled.
-- **NetBird**: a self-hosted WireGuard mesh on CT 107, management 0.79.0 and dashboard v2.93.0. `docker-network` is the only routing peer, and the only granted resource is `192.168.85.0/24`. Peers get no DNS from NetBird, so they reach NPM by address but cannot resolve the `alphasecunited.com` names. The detail is in [Access-Network.md](../Platforms/Netbird/Configuration/Access-Network.md).
 
 ## Remote control
 
@@ -67,5 +66,4 @@ Nothing on this path holds a mutation back. No Executor app declares an approval
 
 ## Open
 
-- NetBird peers cannot resolve internal names. A NetBird nameserver group for `alphasecunited.com` pointing at UniFi would close it.
 - Only `coolify-a1.alphsec.com` sits behind Cloudflare Access. Any other `*.alphsec.com` app is public the moment Coolify deploys it.

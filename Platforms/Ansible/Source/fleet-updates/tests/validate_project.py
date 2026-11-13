@@ -43,7 +43,6 @@ EXPECTED_COMPOSE_PROJECTS = {
         "sure": ("/opt/docker/sure", ()),
     },
     "docker-network": {
-        "netbird": ("/opt/docker/netbird", ()),
         "nginx-proxy-manager": ("/opt/docker/nginx-proxy-manager", ()),
     },
     "docker-blue": {
@@ -212,8 +211,8 @@ def main() -> int:
         len((host_vars or {}).get("compose_projects") or [])
         for host_vars in compose_hosts.values()
     )
-    if project_count != 22:
-        errors.append(f"expected 22 compose projects, found {project_count}")
+    if project_count != 21:
+        errors.append(f"expected 21 compose projects, found {project_count}")
 
     if errors:
         print("fleet-updates validation failed:")

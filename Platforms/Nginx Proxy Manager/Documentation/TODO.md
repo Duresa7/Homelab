@@ -11,13 +11,13 @@ One item is open: the manual upgrade to 2.16.0 under Manual Upgrades. Everything
 - [x] Request the `*.alphasecunited.com` and `alphasecunited.com` DNS-01 certificate.
 - [x] Assign the certificate, enable Force SSL, and enable HTTP/2.
 - [x] Verify certificate presentation and the authenticated NetBird dashboard over HTTPS.
-- [x] Enroll the first NetBird peer and verify VPN traffic plus peer-dependent API, OAuth2, WebSocket, signal, management, and gRPC behavior. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
-- [x] Verify the non-interactive Cloudflare DNS-01 renewal path with a successful Let's Encrypt staging dry-run and identify NPM's hourly renewal scheduler. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+- [x] Enroll the first NetBird peer and verify VPN traffic plus peer-dependent API, OAuth2, WebSocket, signal, management, and gRPC behavior. Completed 2026-07-12; see the NetBird [change record](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/First%20Peer%20and%20Routed%20VPN%20Path%20-%202026-07-12.md).
+- [x] Verify the non-interactive Cloudflare DNS-01 renewal path with a successful Let's Encrypt staging dry-run and identify NPM's hourly renewal scheduler. Completed 2026-07-12; see the NetBird [change record](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 ## Operational Readiness
 
 - [x] Perform NPM and NetBird Compose restart validation.
-- [x] Configure and verify bounded `json-file` logging (`10m`, 3 files) for `nginx-proxy-manager`. Completed 2026-07-12; see the NetBird [change record](../../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
+- [x] Configure and verify bounded `json-file` logging (`10m`, 3 files) for `nginx-proxy-manager`. Completed 2026-07-12; see the NetBird [change record](../../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md).
 
 Operational status is complete. I intentionally descoped further hardening on 2026-07-12; NPM stays internal-only with no WAN ingress and tracked `latest` until 2026-09-25, when a scheduled Dockhand update left it stopped. It is now pinned to 2.15.1 and excluded from Dockhand updates. [Incident](../../../Security/Incidents/Nginx%20Proxy%20Manager/Scheduled%20Update%20Stranded%20the%20Proxy%20-%202026-09-25.md).
 

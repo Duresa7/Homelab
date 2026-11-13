@@ -1,11 +1,11 @@
 # UniFi Local DNS
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
-The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 29 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
+The UniFi gateway answers these names for the LAN. Public authoritative DNS stays in Cloudflare and holds none of them. 28 records point at Nginx Proxy Manager on `docker-network` (`192.168.85.2`), five name the Galaxy nodes on MGMT-A, and one names Windows Admin Center on `HQ-MGT01`.
 
-**Last verified against the controller:** 2026-11-05. `unifi_list_dns_records` returned 31 static records. On 2026-11-11 I added four, making 35.
+**Last verified against the controller:** 2026-11-05. `unifi_list_dns_records` returned 31 static records. On 2026-11-11 I added four, making 35. On 2026-11-12 I deleted `netbird`, and the list returned 34.
 
 - 2026-09-27: I removed the `wud.alphasecunited.com` record with WUD retirement. The controller now holds 30 static records.
 
@@ -82,6 +82,7 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | 2026-09-21 | `weebarr` added; absent by 2026-09-24 | [Weebarr Deployment](../../../../Archive/Platforms/Weebarr/Documentation/Change%20Records/Deployment%20-%202026-09-21.md) |
 | 2026-09-15 | Dockge record replaced by `dockhand` | [Dockge Replacement](../../../../Platforms/Dockhand/Documentation/Change%20Records/Dockge%20Replacement%20-%202026-09-15.md) |
 | 2026-09-13 | `mesh` added | [MeshCentral Internal HTTPS](../../../../Platforms/MeshCentral/Documentation/Change%20Records/Internal%20HTTPS%20Through%20Nginx%20Proxy%20Manager%20-%202026-09-13.md) |
+| 2026-11-12 | `netbird` removed | [NetBird Retirement](../../../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md) |
 | 2026-09-12 | `hq-mgt01.ad` added | [WAC Deployment](../../../../Platforms/Windows%20Admin%20Center/Documentation/Change%20Records/Deployment%20-%202026-09-12.md) |
 | 2026-09-12 | `games` and `wings` removed | [Game 01 Retirement](../../../../Archive/Platforms/Game%20Servers/Documentation/Change%20Records/Game%2001%20Retirement%20-%202026-09-12.md) |
 | 2026-09-04 | `openwebui` added | [Open WebUI Internal HTTPS](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md) |
@@ -90,8 +91,8 @@ The UniFi gateway answers these names for the LAN. Public authoritative DNS stay
 | 2026-08-10 | `aiproxy` added | [CLI Proxy API Internal HTTPS](../../../../Platforms/CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md) |
 | 2026-07-28 | `ts3-manager` added | [TS3 Manager Internal HTTPS](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/TS3%20Manager%20Internal%20HTTPS%20-%202026-07-28.md) |
 | 2026-07-22 | First 19 application records | [Internal HTTPS Service Onboarding](../../../../Platforms/Nginx%20Proxy%20Manager/Documentation/Change%20Records/Internal%20HTTPS%20Service%20Onboarding%20-%202026-07-22.md) |
-| 2026-07-11 | `netbird`, the first record | [NetBird deployment](../../../../Platforms/Netbird/Documentation/Deployment.md) |
+| 2026-07-11 | `netbird`, the first record | [NetBird deployment](../../../../Archive/Platforms/Netbird/Documentation/Deployment.md) |
 
 On 2026-07-11 the `docker-network` LXC resolved `netbird` through its gateway resolver `192.168.85.1`, and a Windows client in Internal resolved the same record:
 
-![Enabled UniFi internal DNS record showing the address and 300-second TTL](../../../../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)
+![Enabled UniFi internal DNS record showing the address and 300-second TTL](../../../../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S06-UniFi-Internal-DNS-Record-2026-07-11.jpg)

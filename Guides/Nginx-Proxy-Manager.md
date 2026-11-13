@@ -44,7 +44,7 @@ I waited for the built-in health check and HTTP 200 responses on ports 80 and 81
 
 I opened the management interface on port 81, completed the administrator setup, and confirmed the dashboard reported Nginx Proxy Manager 2.15.1.
 
-![Nginx Proxy Manager initialized](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
+![Nginx Proxy Manager initialized](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S05-NPM-Admin-Initialized-2026-07-11.jpg)
 
 ### Step 4: Add the NetBird Proxy Host
 
@@ -52,13 +52,13 @@ I created `netbird.alphasecunited.com` with upstream `http://netbird-dashboard:8
 
 I ran `nginx -t` inside the container and sent a Host-header request through Nginx Proxy Manager. Both checks passed before I added TLS.
 
-![NetBird proxy host online](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg)
+![NetBird proxy host online](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07-NPM-NetBird-Proxy-Online-2026-07-11.jpg)
 
 ### Step 5: Issue and Assign the Certificate
 
 I created a Let's Encrypt request for `*.alphasecunited.com` and `alphasecunited.com`, selected Cloudflare DNS, and supplied `<REDACTED_CLOUDFLARE_DNS_TOKEN>` in the provider form. After issuance, I assigned the certificate to the NetBird host and enabled Force SSL and HTTP/2.
 
-![Wildcard certificate issued](../Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
+![Wildcard certificate issued](../Archive/Platforms/Netbird/Evidence/Docker-Network%20Access%20Stack%20Deployment%20-%202026-07-10/Screenshots/S07A-NPM-Wildcard-Certificate-Issued-2026-07-11.jpg)
 
 ### Step 6: Test Restart and Renewal Paths
 
@@ -84,7 +84,7 @@ HSTS was left disabled during the initial deployment. The certificate issued on 
 ## Source Records
 
 - [Deployment record](../Platforms/Nginx%20Proxy%20Manager/Documentation/Deployment.md)
-- [NetBird advanced configuration](../Platforms/Nginx%20Proxy%20Manager/Configuration/netbird-advanced-config.conf)
+- [NetBird advanced configuration](../Archive/Platforms/Netbird/Configuration/netbird-advanced-config.conf)
 - [Runbook](../Platforms/Nginx%20Proxy%20Manager/Documentation/Runbook.md)
 - [Internal proxy-host inventory](../Platforms/Nginx%20Proxy%20Manager/Configuration/internal-proxy-hosts.md)
-- [NetBird and NPM follow-ups](../Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
+- [NetBird and NPM follow-ups](../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)

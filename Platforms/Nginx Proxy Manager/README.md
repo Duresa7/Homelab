@@ -1,7 +1,7 @@
 # Nginx Proxy Manager
 
 **Created:** 2026-07-11  
-**Last updated:** 2026-11-11
+**Last updated:** 2026-11-12
 
 Nginx Proxy Manager (NPM) is my internal HTTPS front door. It runs on the `docker-network` LXC and serves every internal `*.alphasecunited.com` name with one Let's Encrypt DNS-01 wildcard certificate. It has no public DNS and no WAN ingress. Public traffic goes through Caddy on `edge-01` instead; see [Access Paths](../../Architecture/Access-Paths.md).
 
@@ -20,7 +20,7 @@ Read back on 2026-09-24 unless a row says otherwise.
 | Guest bindings | TCP 80, 81 and 443 |
 | Docker network | External `proxy`, `172.31.85.0/24`; NPM fixed at `172.31.85.10` |
 | Persistent data | `data/` and `letsencrypt/` bind mounts |
-| Proxy hosts | 29 live (NetBird plus 28 applications) after adding E2B hosts 39 to 42 on 2026-11-11, 13 soft-deleted; the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
+| Proxy hosts | 28 live, all applications, after I deleted NetBird's host 1 on 2026-11-12 ([NetBird retirement](../../Archive/Platforms/Netbird/Documentation/Change%20Records/Retirement%20-%202026-11-12.md)); the list is in the [proxy-host inventory](Configuration/internal-proxy-hosts.md) |
 | Shared certificate | Certificate 1, `*.alphasecunited.com` and `alphasecunited.com`; the API read `expires_on` 2027-02-06 07:45 UTC on 2026-11-11, after an automatic renewal through Cloudflare DNS-01 |
 | Second certificate | Certificate 2, `*.executor.apps.alphasecunited.com`, for host 38 only, issued 2026-11-02 and expiring 2027-01-31; same Cloudflare DNS-01 renewal path |
 | Third certificate | Certificate 3, `*.e2b.alphasecunited.com` and `e2b.alphasecunited.com`, for hosts 39 to 42, issued 2026-11-11 and expiring 2027-02-09; same Cloudflare DNS-01 renewal path |
@@ -71,12 +71,11 @@ Read back on 2026-09-24 unless a row says otherwise.
 - [Open WebUI internal HTTPS (2026-09-05)](Documentation/Change%20Records/Open%20WebUI%20Internal%20HTTPS%20-%202026-09-05.md)
 - [CLI Proxy API internal HTTPS (2026-08-10)](../CLI%20Proxy%20API/Documentation/Change%20Records/Internal%20HTTPS%20-%202026-08-10.md)
 - [CLI Proxy API relocation to docker-main (2026-08-19)](../CLI%20Proxy%20API/Documentation/Change%20Records/Relocation%20to%20docker-main%20-%202026-08-19.md)
-- [NetBird and NPM operational follow-ups and hardening descope (2026-07-12)](../Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
-- [NetBird platform](../Netbird/README.md)
+- [NetBird and NPM operational follow-ups and hardening descope (2026-07-12)](../../Archive/Platforms/Netbird/Documentation/Change%20Records/NPM%20Operational%20Follow-ups%20and%20Hardening%20Descope%20-%202026-07-12.md)
+- [NetBird platform, retired 2026-11-12](../../Archive/Platforms/Netbird/README.md)
 
 ## Network Boundaries
 
-- NetBird trusts only `172.31.85.10/32` as its HTTP proxy.
 - TCP 80, 81 and 443 bind on `192.168.85.2`. No WAN ingress points at the guest.
 - UniFi permits NPM only to each backend's listed web ports. On 2026-09-24, 13 policies named NPM: ten from NPM to a backend, three from clients (two Hawser agents and HQ-WS001) to NPM on 443.
 - NPM's `Public` access-list label means no NPM access list is assigned. It does not mean public DNS or an Internet path.
